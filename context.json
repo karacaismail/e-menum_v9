@@ -1,0 +1,366 @@
+{
+  "$schema": "https://e-menum.net/schemas/context-v1.json",
+  "moduleId": "001-menu-module",
+  "moduleName": "Menu Module",
+  "version": "1.0.0",
+  "generatedAt": "2026-01-31T21:00:00Z",
+  
+  "purpose": {
+    "summary": "E-Menum platformunun temel modülü - dijital menü oluşturma ve yönetimi",
+    "businessValue": "Restoran/kafelerin QR menülerini oluşturmasını, yönetmesini ve müşterilere sunmasını sağlar",
+    "userBenefit": "İşletmeler: Kolay menü yönetimi | Müşteriler: Hızlı, interaktif menü deneyimi"
+  },
+
+  "architecture": {
+    "layer": "domain",
+    "pattern": "modular-monolith",
+    "boundaries": {
+      "owns": ["menus", "categories", "menu_items", "variants", "options"],
+      "consumes": ["organizations", "branches", "users", "media"],
+      "exposes": ["menu.published", "item.stock_changed"]
+    }
+  },
+
+  "keyEntities": {
+    "Menu": {
+      "description": "Dijital menü container'ı",
+      "primaryKey": "id (UUID)",
+      "uniqueConstraints": ["slug per organization"],
+      "relationships": {
+        "belongsTo": "Organization",
+        "hasMany": ["Category", "MenuItem", "MenuVersion"]
+      },
+      "states": ["draft", "published", "archived"],
+      "criticalFields": ["slug", "status", "defaultLocale", "currency"]
+    },
+    
+    "Category": {
+      "description": "Menü kategorisi (hiyerarşik)",
+      "primaryKey": "id (UUID)",
+      "relationships": {
+        "belongsTo": "Menu",
+        "hasMany": "MenuItem",
+        "selfReference": "parentId (max 3 levels)"
+      },
+      "criticalFields": ["menuId", "sortOrder", "isActive", "translations"]
+    },
+    
+    "MenuItem": {
+      "description": "Menü ürünü",
+      "primaryKey": "id (UUID)",
+      "relationships": {
+        "belongsTo": ["Menu", "Category"],
+        "hasMany": ["Variant", "OptionGroup", "Image"]
+      },
+      "criticalFields": ["basePrice", "stockStatus", "allergens", "translations"]
+    },
+    
+    "Variant": {
+      "description": "Ürün varyantı (boyut, tip)",
+      "primaryKey": "id (UUID)",
+      "relationships": {
+        "belongsTo": "MenuItem"
+      },
+      "criticalFields": ["price", "attributes", "stockStatus"]
+    },
+    
+    "OptionGroup": {
+      "description": "Seçenek grubu (ekstralar)",
+      "primaryKey": "id (UUID)",
+      "relationships": {
+        "belongsTo": "MenuItem",
+        "hasMany": "Option"
+      },
+      "criticalFields": ["type", "isRequired", "minSelections", "maxSelections"]
+    }
+  },
+
+  "apiEndpoints": {
+    "management": {
+      "prefix": "/api/v1/menus",
+      "authentication": "required",
+      "operations": [
+        "GET / - List menus",
+        "POST / - Create menu",
+        "GET /:id - Get menu",
+        "PATCH /:id - Update menu",
+        "DELETE /:id - Delete menu",
+        "POST /:id/publish - Publish",
+        "POST /:id/unpublish - Unpublish",
+        "POST /:id/duplicate - Clone"
+      ]
+    },
+    "categories": {
+      "prefix": "/api/v1/menus/:menuId/categories",
+      "operations": ["GET", "POST", "PATCH /:id", "DELETE /:id", "POST /reorder"]
+    },
+    "items": {
+      "prefix": "/api/v1/menus/:menuId/items",
+      "operations": ["GET", "POST", "GET /:id", "PATCH /:id", "DELETE /:id", "POST /reorder", "PATCH /bulk", "POST /bulk-stock"]
+    },
+    "public": {
+      "prefix": "/api/v1/public/menus",
+      "authentication": "none",
+      "operations": ["GET /:slug", "GET /:slug/categories", "GET /:slug/items/:itemId"]
+    }
+  },
+
+  "businessRules": {
+    "validation": [
+      "Menu name: 2-100 chars",
+      "Category name: 2-50 chars per locale",
+      "Item name: 2-100 chars per locale",
+      "Price: >= 0, stored in minor units (kuruş)",
+      "Max categories per menu: 50",
+      "Max items per category: 100",
+      "Max variants per item: 10",
+      "Max option groups per item: 5",
+      "Max options per group: 20",
+      "Max images per item: tier-based (2-10)"
+    ],
+    "stateTransitions": {
+      "draft": ["publish → published", "archive → archived"],
+      "published": ["unpublish → draft", "edit → draft (new version)"],
+      "archived": ["restore → draft"]
+    },
+    "authorization": {
+      "create_menu": ["owner"],
+      "edit_menu": ["owner", "manager"],
+      "delete_menu": ["owner"],
+      "publish_menu": ["owner"],
+      "edit_items": ["owner", "manager"],
+      "update_stock": ["owner", "manager", "staff"],
+      "view_menu": ["owner", "manager", "staff", "viewer"]
+    }
+  },
+
+  "dataFlow": {
+    "createItem": [
+      "1. Validate input (Zod schema)",
+      "2. Check category exists and belongs to menu",
+      "3. Generate SKU if not provided",
+      "4. Process translations",
+      "5. Create item record",
+      "6. Process variants (if any)",
+      "7. Process option groups (if any)",
+      "8. Invalidate cache",
+      "9. Emit item.created event",
+      "10. Return created item"
+    ],
+    "publishMenu": [
+      "1. Verify user has owner role",
+      "2. Validate menu completeness",
+      "3. Create version snapshot",
+      "4. Update status to published",
+      "5. Set publishedAt timestamp",
+      "6. Invalidate public cache",
+      "7. Emit menu.published event",
+      "8. Return updated menu"
+    ],
+    "publicMenuFetch": [
+      "1. Check CDN cache",
+      "2. Check Redis cache",
+      "3. Query database (if cache miss)",
+      "4. Filter by locale",
+      "5. Apply visibility rules",
+      "6. Format response",
+      "7. Update caches",
+      "8. Return menu data"
+    ]
+  },
+
+  "codePatterns": {
+    "serviceStructure": {
+      "file": "src/modules/menu/menu.service.ts",
+      "pattern": "class-based service with injected repository",
+      "example": "class MenuService { constructor(private repo: MenuRepository) {} }"
+    },
+    "controllerStructure": {
+      "file": "src/modules/menu/menu.controller.ts",
+      "pattern": "Express router with middleware chain",
+      "example": "router.get('/:id', auth, rbac('menu:read'), controller.getById)"
+    },
+    "validationPattern": {
+      "library": "Zod",
+      "file": "src/modules/menu/menu.schema.ts",
+      "example": "const createMenuSchema = z.object({ name: z.string().min(2).max(100) })"
+    },
+    "repositoryPattern": {
+      "orm": "Prisma",
+      "file": "src/modules/menu/menu.repository.ts",
+      "example": "class MenuRepository { async findById(id) { return prisma.menu.findUnique() } }"
+    }
+  },
+
+  "fileStructure": {
+    "root": "src/modules/menu",
+    "files": [
+      "index.ts - Module exports",
+      "menu.controller.ts - HTTP handlers",
+      "menu.service.ts - Business logic",
+      "menu.repository.ts - Data access",
+      "menu.schema.ts - Zod schemas",
+      "menu.types.ts - TypeScript types",
+      "menu.routes.ts - Route definitions",
+      "menu.middleware.ts - Module-specific middleware",
+      "menu.events.ts - Event handlers",
+      "menu.constants.ts - Constants",
+      "__tests__/ - Test files"
+    ]
+  },
+
+  "dependencies": {
+    "internal": [
+      {
+        "module": "auth",
+        "usage": "JWT verification, user context",
+        "importPath": "@/modules/auth"
+      },
+      {
+        "module": "organization",
+        "usage": "Organization context, tier limits",
+        "importPath": "@/modules/organization"
+      },
+      {
+        "module": "media",
+        "usage": "Image upload and processing",
+        "importPath": "@/modules/media"
+      }
+    ],
+    "external": [
+      { "package": "zod", "usage": "Input validation" },
+      { "package": "@prisma/client", "usage": "Database ORM" },
+      { "package": "ioredis", "usage": "Caching" },
+      { "package": "slugify", "usage": "URL slug generation" }
+    ]
+  },
+
+  "testingGuidance": {
+    "unitTests": {
+      "focus": ["Price calculation", "Validation logic", "State transitions"],
+      "mocking": ["Repository layer", "External services"],
+      "coverage": "80% minimum"
+    },
+    "integrationTests": {
+      "focus": ["Full CRUD flow", "Authorization", "Cache invalidation"],
+      "database": "Test database with transactions",
+      "cleanup": "Rollback after each test"
+    },
+    "fixtures": {
+      "menu": "test/fixtures/menu.fixture.ts",
+      "category": "test/fixtures/category.fixture.ts",
+      "menuItem": "test/fixtures/menu-item.fixture.ts"
+    }
+  },
+
+  "commonTasks": {
+    "addNewField": [
+      "1. Update Prisma schema",
+      "2. Run migration",
+      "3. Update TypeScript types",
+      "4. Update Zod schema",
+      "5. Update service/repository",
+      "6. Update tests",
+      "7. Update API documentation"
+    ],
+    "addNewEndpoint": [
+      "1. Define route in menu.routes.ts",
+      "2. Add controller method",
+      "3. Add service method",
+      "4. Add repository method (if needed)",
+      "5. Add validation schema",
+      "6. Add authorization check",
+      "7. Add tests",
+      "8. Update OpenAPI spec"
+    ],
+    "fixBug": [
+      "1. Reproduce in test",
+      "2. Identify root cause",
+      "3. Implement fix",
+      "4. Verify test passes",
+      "5. Check for regressions",
+      "6. Update documentation if needed"
+    ]
+  },
+
+  "gotchas": [
+    {
+      "issue": "Price stored in minor units",
+      "solution": "Always divide by 100 for display, multiply by 100 for storage",
+      "example": "15000 kuruş = 150.00 TL"
+    },
+    {
+      "issue": "Cascade delete",
+      "solution": "Deleting category deletes all items. Use soft delete for menus.",
+      "warning": "Test delete operations carefully"
+    },
+    {
+      "issue": "Cache invalidation",
+      "solution": "Always invalidate cache after mutations",
+      "pattern": "Call cacheService.invalidate('menu:{slug}') in service"
+    },
+    {
+      "issue": "Concurrent edits",
+      "solution": "Use optimistic locking with version field",
+      "pattern": "Include version in update, check for conflict"
+    },
+    {
+      "issue": "Locale fallback",
+      "solution": "If translation missing, fall back to defaultLocale",
+      "pattern": "translation = item.translations.find(t => t.locale === locale) || item.translations.find(t => t.locale === menu.defaultLocale)"
+    }
+  ],
+
+  "relatedDocs": [
+    {
+      "name": "API_CONTRACTS.md",
+      "relevance": "API conventions and patterns",
+      "path": "/docs/auto-claude/architecture/API_CONTRACTS.md"
+    },
+    {
+      "name": "DATABASE_SCHEMA.md",
+      "relevance": "Database design and conventions",
+      "path": "/docs/auto-claude/architecture/DATABASE_SCHEMA.md"
+    },
+    {
+      "name": "BUSINESS_RULES.md",
+      "relevance": "Domain rules and pricing",
+      "path": "/docs/auto-claude/domain/BUSINESS_RULES.md"
+    },
+    {
+      "name": "CODING_STANDARDS.md",
+      "relevance": "Code style and patterns",
+      "path": "/docs/auto-claude/standards/CODING_STANDARDS.md"
+    }
+  ],
+
+  "aiInstructions": {
+    "whenGeneratingCode": [
+      "Follow TypeScript strict mode",
+      "Use Zod for all input validation",
+      "Include proper error handling with custom error classes",
+      "Add JSDoc comments for public methods",
+      "Follow existing file structure patterns",
+      "Include unit tests for new functions"
+    ],
+    "whenDebugging": [
+      "Check cache invalidation first for stale data issues",
+      "Verify authorization middleware is applied",
+      "Check locale fallback for missing translations",
+      "Verify price calculations use minor units"
+    ],
+    "whenRefactoring": [
+      "Maintain backward compatibility for public API",
+      "Update all affected tests",
+      "Check for event emission changes",
+      "Verify cache keys remain consistent"
+    ]
+  },
+
+  "examplePrompts": {
+    "featureRequest": "Menu modülüne yeni bir alan ekle: preparationTime (dakika cinsinden hazırlık süresi)",
+    "bugFix": "Menü yayınlandığında cache temizlenmiyor, müşteriler eski veriyi görüyor",
+    "refactoring": "MenuItem service'inde fiyat hesaplama mantığını ayrı bir utility'ye taşı",
+    "testing": "Menu duplicate fonksiyonu için integration test yaz"
+  }
+}

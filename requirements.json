@@ -1,0 +1,592 @@
+{
+  "$schema": "https://e-menum.net/schemas/requirements-v1.json",
+  "moduleId": "001-menu-module",
+  "moduleName": "Menu Module",
+  "version": "1.0.0",
+  "status": "draft",
+  "lastUpdated": "2026-01-31",
+  
+  "metadata": {
+    "priority": "P0",
+    "category": "core",
+    "estimatedEffort": {
+      "minDays": 15,
+      "maxDays": 20,
+      "confidence": "medium"
+    },
+    "dependencies": [
+      "auth-module",
+      "organization-module",
+      "media-module"
+    ],
+    "dependents": [
+      "order-module",
+      "analytics-module",
+      "ai-module",
+      "theme-module"
+    ]
+  },
+
+  "functional": {
+    "FR-MENU-001": {
+      "title": "Menü CRUD İşlemleri",
+      "description": "Kullanıcılar menü oluşturabilir, görüntüleyebilir, güncelleyebilir ve silebilir",
+      "priority": "must",
+      "acceptance": [
+        "Yeni menü oluşturulabilir",
+        "Menü detayları görüntülenebilir",
+        "Menü bilgileri güncellenebilir",
+        "Menü soft-delete yapılabilir",
+        "Silinen menü geri alınabilir"
+      ],
+      "roles": ["owner", "manager"],
+      "tier": "free"
+    },
+    
+    "FR-MENU-002": {
+      "title": "Kategori Yönetimi",
+      "description": "Menü içinde hiyerarşik kategori yapısı yönetilebilir",
+      "priority": "must",
+      "acceptance": [
+        "Kategori oluşturulabilir",
+        "Alt kategori oluşturulabilir (max 3 seviye)",
+        "Kategori sıralaması değiştirilebilir (drag & drop)",
+        "Kategori aktif/pasif yapılabilir",
+        "Kategori silinebilir (içindeki ürünlerle birlikte)"
+      ],
+      "roles": ["owner", "manager"],
+      "tier": "free",
+      "limits": {
+        "free": 5,
+        "starter": 20,
+        "professional": 50,
+        "business": 100,
+        "enterprise": null
+      }
+    },
+    
+    "FR-MENU-003": {
+      "title": "Ürün Yönetimi",
+      "description": "Menü ürünleri eklenebilir, düzenlenebilir ve yönetilebilir",
+      "priority": "must",
+      "acceptance": [
+        "Ürün oluşturulabilir (ad, açıklama, fiyat)",
+        "Ürün kategoriye atanabilir",
+        "Ürün görseli yüklenebilir",
+        "Ürün sıralaması değiştirilebilir",
+        "Ürün aktif/pasif yapılabilir",
+        "Ürün silinebilir"
+      ],
+      "roles": ["owner", "manager"],
+      "tier": "free",
+      "limits": {
+        "free": 25,
+        "starter": 100,
+        "professional": 300,
+        "business": 500,
+        "enterprise": null
+      }
+    },
+    
+    "FR-MENU-004": {
+      "title": "Ürün Varyantları",
+      "description": "Ürünlerde boyut/tip gibi varyantlar tanımlanabilir",
+      "priority": "must",
+      "acceptance": [
+        "Ürüne varyant eklenebilir (ör: S, M, L)",
+        "Her varyantın ayrı fiyatı olabilir",
+        "Varyantlar sıralanabilir",
+        "Varyant stok durumu ayrı yönetilebilir"
+      ],
+      "roles": ["owner", "manager"],
+      "tier": "starter",
+      "limits": {
+        "maxPerItem": 10
+      }
+    },
+    
+    "FR-MENU-005": {
+      "title": "Ürün Seçenekleri (Options)",
+      "description": "Ürünlere ekstra seçenekler eklenebilir",
+      "priority": "must",
+      "acceptance": [
+        "Seçenek grubu oluşturulabilir (ör: Soslar)",
+        "Grup tipi: tekli veya çoklu seçim",
+        "Zorunlu/opsiyonel seçenek grubu",
+        "Her seçeneğin ek fiyatı olabilir",
+        "Min/max seçim sayısı belirlenebilir"
+      ],
+      "roles": ["owner", "manager"],
+      "tier": "starter",
+      "limits": {
+        "maxGroupsPerItem": 5,
+        "maxOptionsPerGroup": 20
+      }
+    },
+    
+    "FR-MENU-006": {
+      "title": "Çoklu Dil Desteği",
+      "description": "Menü içerikleri birden fazla dilde yönetilebilir",
+      "priority": "must",
+      "acceptance": [
+        "Varsayılan dil seçilebilir",
+        "Desteklenen diller tanımlanabilir",
+        "Her içerik alanı dil bazlı düzenlenebilir",
+        "Müşteri arayüzünde dil değiştirilebilir",
+        "Eksik çeviri uyarısı gösterilir"
+      ],
+      "roles": ["owner", "manager"],
+      "tier": "free",
+      "supportedLocales": ["tr", "en", "ar", "de", "ru", "fr", "es", "zh"]
+    },
+    
+    "FR-MENU-007": {
+      "title": "Alerjen Bilgileri",
+      "description": "Ürünlerde alerjen bilgileri gösterilebilir",
+      "priority": "must",
+      "acceptance": [
+        "14 standart alerjen seçilebilir",
+        "Seçilen alerjenler ikon olarak gösterilir",
+        "Müşteri alerjen filtrelemesi yapabilir",
+        "Alerjen bilgilendirme metni gösterilir"
+      ],
+      "roles": ["owner", "manager"],
+      "tier": "free",
+      "allergens": [
+        "gluten", "dairy", "eggs", "fish", "shellfish",
+        "nuts", "peanuts", "soy", "sesame", "celery",
+        "mustard", "sulphites", "lupin", "molluscs"
+      ]
+    },
+    
+    "FR-MENU-008": {
+      "title": "Diyet Etiketleri",
+      "description": "Ürünlerde diyet uygunluk etiketleri gösterilebilir",
+      "priority": "should",
+      "acceptance": [
+        "Vegetarian/vegan işaretlenebilir",
+        "Helal/koşer işaretlenebilir",
+        "Glutensiz/laktozsuz işaretlenebilir",
+        "Etiketler badge olarak gösterilir",
+        "Müşteri filtrelemesi yapabilir"
+      ],
+      "roles": ["owner", "manager"],
+      "tier": "free",
+      "flags": ["vegetarian", "vegan", "halal", "kosher", "gluten_free", "dairy_free", "organic", "spicy"]
+    },
+    
+    "FR-MENU-009": {
+      "title": "Stok Durumu Yönetimi",
+      "description": "Ürün ve varyant stok durumları yönetilebilir",
+      "priority": "must",
+      "acceptance": [
+        "Stok durumu: Mevcut, Az, Tükendi olarak ayarlanabilir",
+        "Tükenmiş ürünler müşteriye gösterilir ama seçilemez",
+        "Hızlı stok güncelleme (tek tık)",
+        "Toplu stok güncelleme",
+        "Stok değişikliği log'lanır"
+      ],
+      "roles": ["owner", "manager", "staff"],
+      "tier": "free"
+    },
+    
+    "FR-MENU-010": {
+      "title": "Menü Yayınlama",
+      "description": "Menü taslak/yayında durumları yönetilebilir",
+      "priority": "must",
+      "acceptance": [
+        "Taslak menü oluşturulabilir",
+        "Taslak menü yayınlanabilir",
+        "Yayındaki menü yayından alınabilir",
+        "Yalnızca yayındaki menüler müşteriye görünür",
+        "Yayınlama onay gerektirir (owner)"
+      ],
+      "roles": ["owner"],
+      "tier": "free"
+    },
+    
+    "FR-MENU-011": {
+      "title": "Görsel Yönetimi",
+      "description": "Ürün görselleri yüklenip yönetilebilir",
+      "priority": "must",
+      "acceptance": [
+        "Görsel yüklenebilir (drag & drop)",
+        "Desteklenen formatlar: JPEG, PNG, WebP",
+        "Otomatik boyutlandırma ve optimizasyon",
+        "Birden fazla görsel (galeri)",
+        "Ana görsel seçilebilir",
+        "Görsel kırpma/döndürme"
+      ],
+      "roles": ["owner", "manager"],
+      "tier": "free",
+      "limits": {
+        "maxFileSize": "5MB",
+        "maxPerItem": {
+          "free": 2,
+          "starter": 3,
+          "professional": 5,
+          "business": 5,
+          "enterprise": 10
+        },
+        "formats": ["image/jpeg", "image/png", "image/webp"]
+      }
+    },
+    
+    "FR-MENU-012": {
+      "title": "Public Menü Görüntüleme",
+      "description": "Müşteriler QR kod ile menüyü görüntüleyebilir",
+      "priority": "must",
+      "acceptance": [
+        "QR kod taranınca menü açılır",
+        "Kategori navigasyonu çalışır",
+        "Ürün detayları görüntülenir",
+        "Alerjen/diyet filtreleme çalışır",
+        "Dil değiştirilebilir",
+        "Mobil uyumlu tasarım"
+      ],
+      "roles": ["customer"],
+      "tier": "free"
+    },
+    
+    "FR-MENU-013": {
+      "title": "Menü Kopyalama",
+      "description": "Mevcut menü kopyalanarak yeni menü oluşturulabilir",
+      "priority": "should",
+      "acceptance": [
+        "Menü tüm içeriğiyle kopyalanabilir",
+        "Kopyalanan menü taslak olarak oluşturulur",
+        "Görsel referansları korunur",
+        "Şube atamaları kopyalanmaz"
+      ],
+      "roles": ["owner"],
+      "tier": "starter"
+    },
+    
+    "FR-MENU-014": {
+      "title": "Zamanlı Görünürlük",
+      "description": "Kategori/ürünler belirli saatlerde görünür olabilir",
+      "priority": "could",
+      "acceptance": [
+        "Başlangıç-bitiş saati ayarlanabilir",
+        "Haftanın günleri seçilebilir",
+        "Zaman dışında ürün/kategori gizlenir",
+        "Sadece müşteri arayüzünü etkiler"
+      ],
+      "roles": ["owner", "manager"],
+      "tier": "professional"
+    },
+    
+    "FR-MENU-015": {
+      "title": "Öne Çıkan Ürünler",
+      "description": "Belirli ürünler öne çıkan olarak işaretlenebilir",
+      "priority": "should",
+      "acceptance": [
+        "Ürün öne çıkan olarak işaretlenebilir",
+        "Öne çıkan ürünler ayrı bölümde gösterilir",
+        "Max öne çıkan sayısı sınırlanabilir"
+      ],
+      "roles": ["owner", "manager"],
+      "tier": "free",
+      "limits": {
+        "maxFeatured": 10
+      }
+    },
+    
+    "FR-MENU-016": {
+      "title": "Toplu İşlemler",
+      "description": "Birden fazla ürün üzerinde toplu işlem yapılabilir",
+      "priority": "should",
+      "acceptance": [
+        "Çoklu ürün seçilebilir",
+        "Toplu kategori değiştirme",
+        "Toplu aktif/pasif yapma",
+        "Toplu silme",
+        "Toplu fiyat güncelleme (%)"
+      ],
+      "roles": ["owner", "manager"],
+      "tier": "starter"
+    },
+    
+    "FR-MENU-017": {
+      "title": "Menü Versiyonlama",
+      "description": "Menü değişiklikleri versiyonlanır",
+      "priority": "could",
+      "acceptance": [
+        "Her yayınlama yeni versiyon oluşturur",
+        "Versiyon geçmişi görüntülenebilir",
+        "Önceki versiyona geri dönülebilir",
+        "Versiyonlar arasında fark görüntülenebilir"
+      ],
+      "roles": ["owner"],
+      "tier": "business"
+    },
+    
+    "FR-MENU-018": {
+      "title": "Besin Değerleri",
+      "description": "Ürünlerde besin değerleri gösterilebilir",
+      "priority": "could",
+      "acceptance": [
+        "Kalori bilgisi girilebilir",
+        "Makro besinler (protein, karbonhidrat, yağ)",
+        "Porsiyon bazlı gösterim",
+        "Müşteri arayüzünde görüntülenir"
+      ],
+      "roles": ["owner", "manager"],
+      "tier": "professional"
+    },
+    
+    "FR-MENU-019": {
+      "title": "İçe/Dışa Aktarma",
+      "description": "Menü verileri dosya olarak import/export edilebilir",
+      "priority": "could",
+      "acceptance": [
+        "CSV/Excel export",
+        "CSV/Excel import",
+        "Şablon dosyası indirilebilir",
+        "Import hataları raporlanır",
+        "Mevcut verileri güncelleme/ekleme seçeneği"
+      ],
+      "roles": ["owner", "manager"],
+      "tier": "professional"
+    },
+    
+    "FR-MENU-020": {
+      "title": "Arama ve Filtreleme",
+      "description": "Admin panelinde ürünler aranıp filtrelenebilir",
+      "priority": "should",
+      "acceptance": [
+        "İsme göre arama",
+        "Kategoriye göre filtreleme",
+        "Stok durumuna göre filtreleme",
+        "Aktif/pasif filtreleme",
+        "Fiyat aralığı filtreleme"
+      ],
+      "roles": ["owner", "manager", "staff", "viewer"],
+      "tier": "free"
+    }
+  },
+
+  "nonFunctional": {
+    "NFR-MENU-001": {
+      "title": "Performans - API Yanıt Süreleri",
+      "category": "performance",
+      "requirements": [
+        {
+          "metric": "GET /public/menus/:slug response time",
+          "target": "100ms (p95)",
+          "maximum": "300ms"
+        },
+        {
+          "metric": "GET /menus (list) response time",
+          "target": "150ms (p95)",
+          "maximum": "500ms"
+        },
+        {
+          "metric": "POST /items response time",
+          "target": "200ms (p95)",
+          "maximum": "1000ms"
+        }
+      ]
+    },
+    
+    "NFR-MENU-002": {
+      "title": "Ölçeklenebilirlik",
+      "category": "scalability",
+      "requirements": [
+        "Single menu: 500+ items without performance degradation",
+        "Concurrent users: 1000+ viewing same menu",
+        "Database: Proper indexing for all query patterns"
+      ]
+    },
+    
+    "NFR-MENU-003": {
+      "title": "Erişilebilirlik",
+      "category": "accessibility",
+      "requirements": [
+        "WCAG 2.1 Level AA compliance",
+        "Screen reader compatible",
+        "Keyboard navigable",
+        "Touch target minimum 44x44px",
+        "Color contrast ratio 4.5:1 minimum"
+      ]
+    },
+    
+    "NFR-MENU-004": {
+      "title": "Güvenlik",
+      "category": "security",
+      "requirements": [
+        "Role-based access control enforced",
+        "Input sanitization (XSS prevention)",
+        "SQL injection prevention",
+        "Rate limiting on public endpoints",
+        "Audit logging for all mutations"
+      ]
+    },
+    
+    "NFR-MENU-005": {
+      "title": "Kullanılabilirlik",
+      "category": "usability",
+      "requirements": [
+        "Menu builder: Drag & drop support",
+        "Auto-save drafts every 30 seconds",
+        "Inline validation with clear error messages",
+        "Undo/redo support for editor",
+        "Mobile-responsive admin interface"
+      ]
+    },
+    
+    "NFR-MENU-006": {
+      "title": "Güvenilirlik",
+      "category": "reliability",
+      "requirements": [
+        "Data consistency: Optimistic locking for concurrent edits",
+        "Graceful degradation: Show cached menu if DB unavailable",
+        "Error recovery: Clear error states and retry options"
+      ]
+    },
+    
+    "NFR-MENU-007": {
+      "title": "Bakım Kolaylığı",
+      "category": "maintainability",
+      "requirements": [
+        "Code coverage: 80% minimum",
+        "API documentation: OpenAPI 3.0 spec",
+        "Modular architecture: Clear boundaries",
+        "Event-driven: Decoupled via events"
+      ]
+    }
+  },
+
+  "technicalSpecs": {
+    "database": {
+      "primaryEntities": [
+        "menus",
+        "categories",
+        "menu_items",
+        "menu_item_variants",
+        "option_groups",
+        "options",
+        "menu_item_images",
+        "menu_versions"
+      ],
+      "indexes": [
+        "menus(organization_id, status)",
+        "categories(menu_id, sort_order)",
+        "menu_items(category_id, sort_order)",
+        "menu_items(menu_id, is_active)",
+        "menus(slug) WHERE status = 'published'"
+      ],
+      "constraints": [
+        "menus.slug unique per organization",
+        "categories.sort_order unique per menu",
+        "menu_items.sku unique per organization (if set)"
+      ]
+    },
+    
+    "api": {
+      "basePath": "/api/v1",
+      "authentication": "JWT Bearer",
+      "contentType": "application/json",
+      "pagination": {
+        "defaultLimit": 20,
+        "maxLimit": 100,
+        "style": "cursor-based"
+      },
+      "versioning": "URL path"
+    },
+    
+    "caching": {
+      "publicMenu": {
+        "strategy": "stale-while-revalidate",
+        "cdnTtl": "5 minutes",
+        "redisTtl": "1 minute",
+        "keyPattern": "menu:{slug}:{locale}:{branchId?}"
+      },
+      "adminData": {
+        "cdnCache": false,
+        "redisTtl": "30 seconds (optional)"
+      },
+      "invalidation": ["publish", "item.update", "stock.change"]
+    },
+    
+    "events": {
+      "emitted": [
+        "menu.created",
+        "menu.updated",
+        "menu.published",
+        "menu.unpublished",
+        "menu.deleted",
+        "item.created",
+        "item.updated",
+        "item.deleted",
+        "item.stock_changed",
+        "category.created",
+        "category.deleted"
+      ]
+    }
+  },
+
+  "testing": {
+    "unit": {
+      "coverage": "80%",
+      "focus": [
+        "Price calculation",
+        "Stock status logic",
+        "Visibility rules",
+        "Validation functions",
+        "Slug generation"
+      ]
+    },
+    "integration": {
+      "focus": [
+        "Full CRUD cycles",
+        "Authorization enforcement",
+        "Validation error responses",
+        "Pagination",
+        "Bulk operations"
+      ]
+    },
+    "e2e": {
+      "criticalFlows": [
+        "Create menu → Add categories → Add items → Publish",
+        "Customer views menu → Filters → Views item details",
+        "Staff updates stock → Customer sees update",
+        "Bulk import from CSV",
+        "Duplicate menu for branch"
+      ]
+    }
+  },
+
+  "milestones": {
+    "M1": {
+      "name": "Core CRUD",
+      "duration": "5 days",
+      "deliverables": [
+        "Menu CRUD API",
+        "Category CRUD API",
+        "MenuItem CRUD API",
+        "Basic admin UI"
+      ]
+    },
+    "M2": {
+      "name": "Advanced Features",
+      "duration": "5 days",
+      "deliverables": [
+        "Variants & Options",
+        "Multi-language",
+        "Image upload",
+        "Stock management"
+      ]
+    },
+    "M3": {
+      "name": "Public & Polish",
+      "duration": "5 days",
+      "deliverables": [
+        "Public menu API",
+        "Public menu UI",
+        "Menu builder UI polish",
+        "Testing & bug fixes"
+      ]
+    }
+  }
+}
