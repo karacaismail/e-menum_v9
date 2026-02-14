@@ -6,8 +6,6 @@ This module defines the subscription-related models for E-Menum:
 - Plan: Subscription tiers (Free, Starter, Growth, Professional, Enterprise)
 - Subscription: Organization-Plan relationship with billing lifecycle
 - Invoice: Billing records for subscriptions
-
-Additional models to be added in later subtasks:
 - PlanFeature: Junction table for plan-feature relationships
 - OrganizationUsage: Resource usage tracking per organization
 
@@ -15,6 +13,8 @@ Critical Rules:
 - Plans are platform-level (no organization FK)
 - Features define capabilities that are controlled per plan
 - Subscriptions link organizations to plans with billing state
+- PlanFeature links plans to features with plan-specific configuration
+- OrganizationUsage tracks resource consumption per tenant
 - Use soft_delete() - never call delete() directly
 """
 
@@ -1732,5 +1732,550 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
 
     def set_metadata(self, key: str, value) -> None:
         """Set a value in invoice metadata."""
+        self.metadata[key] = value
+        self.save(update_fields=['metadata', 'updated_at'])
+
+
+class PlanFeature(TimeStampedMixin, models.Model):
+    """
+    PlanFeature model - junction table linking Plans to Features.
+
+    This enables many-to-many relationships between plans and features,
+    with plan-specific configuration for each feature (overriding defaults).
+
+    A PlanFeature entry defines:
+    - Which feature is included in which plan
+    - The specific value/limit for that feature in this plan
+    - Whether the feature is enabled for this plan
+
+    Note:
+    - This is a platform-level model (no organization FK)
+    - Features can have different values in different plans
+    - If is_enabled is False, the feature is not available even if included
+
+    Attributes:
+        id: UUID primary key
+        plan: FK to Plan
+        feature: FK to Feature
+        value: JSON field containing plan-specific feature configuration
+        is_enabled: Whether the feature is enabled for this plan
+        sort_order: Display order within plan (for UI listing)
+        metadata: Additional metadata (JSON)
+
+    Usage:
+        # Link a feature to a plan with specific value
+        plan_feature = PlanFeature.objects.create(
+            plan=starter_plan,
+            feature=max_menus_feature,
+            value={'limit': 3},
+            is_enabled=True
+        )
+
+        # Get all features for a plan
+        features = PlanFeature.objects.filter(
+            plan=plan,
+            is_enabled=True
+        ).select_related('feature')
+
+        # Check if a plan has a specific feature
+        has_ai = PlanFeature.objects.filter(
+            plan=plan,
+            feature__code='ai_content_generation',
+            is_enabled=True
+        ).exists()
+
+        # Get feature value for a plan
+        pf = PlanFeature.objects.get(plan=plan, feature__code='max_menus')
+        limit = pf.get_limit()
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    plan = models.ForeignKey(
+        Plan,
+        on_delete=models.CASCADE,
+        related_name='plan_features',
+        verbose_name=_('Plan'),
+        help_text=_('Plan that includes this feature')
+    )
+
+    feature = models.ForeignKey(
+        Feature,
+        on_delete=models.CASCADE,
+        related_name='plan_features',
+        verbose_name=_('Feature'),
+        help_text=_('Feature included in the plan')
+    )
+
+    value = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name=_('Value'),
+        help_text=_(
+            'Plan-specific feature configuration (JSON). '
+            'For LIMIT: {"limit": 10}, for BOOLEAN: {"enabled": true}, '
+            'for USAGE: {"credits": 100, "reset_period": "monthly"}'
+        )
+    )
+
+    is_enabled = models.BooleanField(
+        default=True,
+        db_index=True,
+        verbose_name=_('Is enabled'),
+        help_text=_('Whether this feature is enabled for this plan')
+    )
+
+    sort_order = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_('Sort order'),
+        help_text=_('Display order within plan (lower numbers appear first)')
+    )
+
+    metadata = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name=_('Metadata'),
+        help_text=_('Additional metadata for this plan-feature relationship (JSON)')
+    )
+
+    class Meta:
+        db_table = 'plan_features'
+        verbose_name = _('Plan Feature')
+        verbose_name_plural = _('Plan Features')
+        ordering = ['plan', 'sort_order', 'feature__category']
+        unique_together = [['plan', 'feature']]
+        indexes = [
+            models.Index(fields=['plan', 'is_enabled'], name='planfeat_plan_enabled_idx'),
+            models.Index(fields=['feature'], name='planfeat_feature_idx'),
+            models.Index(fields=['plan', 'sort_order'], name='planfeat_plan_sort_idx'),
+        ]
+
+    def __str__(self) -> str:
+        status = "enabled" if self.is_enabled else "disabled"
+        return f"{self.plan.name} - {self.feature.name} ({status})"
+
+    def __repr__(self) -> str:
+        return f"<PlanFeature(plan='{self.plan.name}', feature='{self.feature.code}', enabled={self.is_enabled})>"
+
+    @property
+    def is_boolean(self) -> bool:
+        """Check if the linked feature is a boolean type."""
+        return self.feature.feature_type == FeatureType.BOOLEAN
+
+    @property
+    def is_limit(self) -> bool:
+        """Check if the linked feature is a limit type."""
+        return self.feature.feature_type == FeatureType.LIMIT
+
+    @property
+    def is_usage(self) -> bool:
+        """Check if the linked feature is a usage type."""
+        return self.feature.feature_type == FeatureType.USAGE
+
+    def get_enabled(self) -> bool:
+        """
+        Get whether the feature is enabled.
+
+        For boolean features, checks the 'enabled' key in value.
+        For other types, returns is_enabled flag.
+
+        Returns:
+            True if the feature is enabled
+        """
+        if self.is_boolean:
+            return self.value.get('enabled', False) and self.is_enabled
+        return self.is_enabled
+
+    def get_limit(self, default: int = 0) -> int:
+        """
+        Get the limit value for limit-type features.
+
+        Args:
+            default: Default value if limit not set
+
+        Returns:
+            The limit value, or -1 for unlimited
+        """
+        if not self.is_limit:
+            return default
+        return self.value.get('limit', default)
+
+    def get_credits(self, default: int = 0) -> int:
+        """
+        Get the credits value for usage-type features.
+
+        Args:
+            default: Default value if credits not set
+
+        Returns:
+            The credits value
+        """
+        if not self.is_usage:
+            return default
+        return self.value.get('credits', default)
+
+    def get_reset_period(self) -> str:
+        """
+        Get the reset period for usage-type features.
+
+        Returns:
+            The reset period ('monthly', 'weekly', 'daily', or 'never')
+        """
+        if not self.is_usage:
+            return 'never'
+        return self.value.get('reset_period', 'monthly')
+
+    def get_value(self, key: str, default=None):
+        """
+        Get a specific value from the feature configuration.
+
+        Args:
+            key: The configuration key to retrieve
+            default: Default value if key not found
+
+        Returns:
+            The value or default
+        """
+        return self.value.get(key, default)
+
+    def set_value(self, key: str, val) -> None:
+        """
+        Set a specific value in the feature configuration.
+
+        Args:
+            key: The configuration key
+            val: The value to set
+        """
+        self.value[key] = val
+        self.save(update_fields=['value', 'updated_at'])
+
+    def get_metadata(self, key: str, default=None):
+        """Get a value from plan-feature metadata."""
+        return self.metadata.get(key, default)
+
+    def set_metadata(self, key: str, value) -> None:
+        """Set a value in plan-feature metadata."""
+        self.metadata[key] = value
+        self.save(update_fields=['metadata', 'updated_at'])
+
+
+class OrganizationUsage(TimeStampedMixin, models.Model):
+    """
+    OrganizationUsage model - tracks resource usage per organization.
+
+    This model enables metering and limiting of usage-based features
+    for organizations. It tracks current usage against plan limits
+    and supports periodic resets (e.g., monthly AI credits).
+
+    Usage tracking is essential for:
+    - Enforcing plan limits (max menus, max products, etc.)
+    - Metering usage-based features (AI generations, API calls)
+    - Billing calculations for overage charges
+    - Analytics on resource consumption
+
+    Note:
+    - This is tenant-scoped (has organization FK)
+    - Use soft_delete() if needed, but typically usage records are retained
+    - Reset operations should be performed by scheduled tasks
+
+    Attributes:
+        id: UUID primary key
+        organization: FK to Organization (tenant)
+        feature: FK to Feature being tracked
+        current_usage: Current usage count for this period
+        usage_limit: Limit from plan (cached for quick checks)
+        period_start: Start of current tracking period
+        period_end: End of current tracking period
+        last_reset_at: When usage was last reset
+        last_usage_at: When usage was last recorded
+        metadata: Additional metadata (JSON)
+
+    Usage:
+        # Create usage tracking for an organization
+        usage = OrganizationUsage.objects.create(
+            organization=org,
+            feature=ai_credits_feature,
+            current_usage=0,
+            usage_limit=100,
+            period_start=timezone.now(),
+            period_end=timezone.now() + timedelta(days=30)
+        )
+
+        # Increment usage
+        usage.increment()
+
+        # Check if limit exceeded
+        if usage.is_limit_exceeded:
+            raise QuotaExceededError()
+
+        # Reset usage (e.g., at start of new billing period)
+        usage.reset()
+
+        # Get remaining quota
+        remaining = usage.remaining_quota
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    organization = models.ForeignKey(
+        'core.Organization',
+        on_delete=models.CASCADE,
+        related_name='usage_records',
+        verbose_name=_('Organization'),
+        help_text=_('Organization this usage belongs to')
+    )
+
+    feature = models.ForeignKey(
+        Feature,
+        on_delete=models.CASCADE,
+        related_name='usage_records',
+        verbose_name=_('Feature'),
+        help_text=_('Feature being tracked')
+    )
+
+    current_usage = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_('Current usage'),
+        help_text=_('Current usage count for this period')
+    )
+
+    usage_limit = models.IntegerField(
+        default=-1,
+        verbose_name=_('Usage limit'),
+        help_text=_('Limit from plan (-1 = unlimited)')
+    )
+
+    period_start = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_('Period start'),
+        help_text=_('Start of current tracking period')
+    )
+
+    period_end = models.DateTimeField(
+        null=True,
+        blank=True,
+        db_index=True,
+        verbose_name=_('Period end'),
+        help_text=_('End of current tracking period')
+    )
+
+    last_reset_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_('Last reset at'),
+        help_text=_('When usage was last reset')
+    )
+
+    last_usage_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_('Last usage at'),
+        help_text=_('When usage was last recorded')
+    )
+
+    metadata = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name=_('Metadata'),
+        help_text=_('Additional usage metadata (e.g., usage breakdown, history)')
+    )
+
+    class Meta:
+        db_table = 'organization_usage'
+        verbose_name = _('Organization Usage')
+        verbose_name_plural = _('Organization Usage')
+        ordering = ['-updated_at']
+        unique_together = [['organization', 'feature']]
+        indexes = [
+            models.Index(fields=['organization', 'feature'], name='orgusage_org_feat_idx'),
+            models.Index(fields=['organization', 'period_end'], name='orgusage_org_period_idx'),
+            models.Index(fields=['feature', 'period_end'], name='orgusage_feat_period_idx'),
+        ]
+
+    def __str__(self) -> str:
+        limit_str = str(self.usage_limit) if self.usage_limit >= 0 else "∞"
+        return f"{self.organization.name} - {self.feature.name}: {self.current_usage}/{limit_str}"
+
+    def __repr__(self) -> str:
+        return f"<OrganizationUsage(org='{self.organization.name}', feature='{self.feature.code}', usage={self.current_usage}/{self.usage_limit})>"
+
+    @property
+    def is_unlimited(self) -> bool:
+        """Check if usage has no limit (unlimited)."""
+        return self.usage_limit == -1
+
+    @property
+    def is_limit_exceeded(self) -> bool:
+        """
+        Check if usage limit has been exceeded.
+
+        Returns:
+            True if current usage >= limit, False for unlimited
+        """
+        if self.is_unlimited:
+            return False
+        return self.current_usage >= self.usage_limit
+
+    @property
+    def remaining_quota(self) -> int:
+        """
+        Get remaining quota.
+
+        Returns:
+            Remaining usage count, or -1 for unlimited
+        """
+        if self.is_unlimited:
+            return -1
+        return max(0, self.usage_limit - self.current_usage)
+
+    @property
+    def usage_percentage(self) -> float:
+        """
+        Get usage as percentage of limit.
+
+        Returns:
+            Percentage (0-100+), or 0 for unlimited
+        """
+        if self.is_unlimited or self.usage_limit == 0:
+            return 0.0
+        return (self.current_usage / self.usage_limit) * 100
+
+    @property
+    def is_period_active(self) -> bool:
+        """Check if current tracking period is active."""
+        now = timezone.now()
+        if self.period_start and self.period_end:
+            return self.period_start <= now <= self.period_end
+        return True  # No period restrictions
+
+    @property
+    def is_period_expired(self) -> bool:
+        """Check if current tracking period has expired."""
+        if not self.period_end:
+            return False
+        return timezone.now() > self.period_end
+
+    def increment(self, amount: int = 1) -> bool:
+        """
+        Increment usage count.
+
+        Args:
+            amount: Amount to increment (default: 1)
+
+        Returns:
+            True if increment successful, False if would exceed limit
+        """
+        if not self.is_unlimited and (self.current_usage + amount) > self.usage_limit:
+            return False
+
+        self.current_usage += amount
+        self.last_usage_at = timezone.now()
+        self.save(update_fields=['current_usage', 'last_usage_at', 'updated_at'])
+        return True
+
+    def decrement(self, amount: int = 1) -> None:
+        """
+        Decrement usage count (e.g., for refunds or corrections).
+
+        Args:
+            amount: Amount to decrement (default: 1)
+        """
+        self.current_usage = max(0, self.current_usage - amount)
+        self.save(update_fields=['current_usage', 'updated_at'])
+
+    def set_usage(self, count: int) -> None:
+        """
+        Set usage to a specific count.
+
+        Args:
+            count: New usage count
+        """
+        self.current_usage = max(0, count)
+        self.last_usage_at = timezone.now()
+        self.save(update_fields=['current_usage', 'last_usage_at', 'updated_at'])
+
+    def reset(self, new_period_end: 'datetime' = None) -> None:
+        """
+        Reset usage count (typically at start of new billing period).
+
+        Args:
+            new_period_end: Optional new period end date
+        """
+        from datetime import timedelta
+
+        old_usage = self.current_usage
+
+        self.current_usage = 0
+        self.period_start = timezone.now()
+        self.last_reset_at = timezone.now()
+
+        if new_period_end:
+            self.period_end = new_period_end
+        elif self.period_end:
+            # Default: extend by same period duration
+            if self.period_start:
+                duration = self.period_end - self.period_start
+                self.period_end = self.period_start + duration
+            else:
+                # Default to 30 days
+                self.period_end = self.period_start + timedelta(days=30)
+
+        # Store reset history in metadata
+        reset_history = self.metadata.get('reset_history', [])
+        reset_history.append({
+            'reset_at': timezone.now().isoformat(),
+            'previous_usage': old_usage,
+        })
+        # Keep only last 12 resets
+        self.metadata['reset_history'] = reset_history[-12:]
+
+        self.save(update_fields=[
+            'current_usage', 'period_start', 'period_end',
+            'last_reset_at', 'metadata', 'updated_at'
+        ])
+
+    def update_limit(self, new_limit: int) -> None:
+        """
+        Update the usage limit (e.g., when plan changes).
+
+        Args:
+            new_limit: New usage limit (-1 for unlimited)
+        """
+        self.usage_limit = new_limit
+        self.save(update_fields=['usage_limit', 'updated_at'])
+
+    def can_use(self, amount: int = 1) -> bool:
+        """
+        Check if usage of given amount is allowed.
+
+        Args:
+            amount: Amount to check (default: 1)
+
+        Returns:
+            True if usage is allowed, False if would exceed limit
+        """
+        if self.is_unlimited:
+            return True
+        return (self.current_usage + amount) <= self.usage_limit
+
+    def get_metadata(self, key: str, default=None):
+        """Get a value from usage metadata."""
+        return self.metadata.get(key, default)
+
+    def set_metadata(self, key: str, value) -> None:
+        """Set a value in usage metadata."""
         self.metadata[key] = value
         self.save(update_fields=['metadata', 'updated_at'])
