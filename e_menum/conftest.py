@@ -29,16 +29,19 @@ def django_db_setup(django_db_setup, django_db_blocker):
         # Create default plans if they don't exist
         plans_data = [
             {
-                "name": "FREE",
-                "display_name": "Free",
+                "slug": "free",
+                "name": "Free",
+                "tier": "FREE",
                 "description": "Free tier for small businesses",
                 "price_monthly": 0,
                 "price_yearly": 0,
                 "is_active": True,
+                "is_default": True,
             },
             {
-                "name": "STARTER",
-                "display_name": "Starter",
+                "slug": "starter",
+                "name": "Starter",
+                "tier": "STARTER",
                 "description": "Starter plan for growing businesses",
                 "price_monthly": 2000,
                 "price_yearly": 20000,
@@ -48,7 +51,7 @@ def django_db_setup(django_db_setup, django_db_blocker):
 
         for plan_data in plans_data:
             Plan.objects.get_or_create(
-                name=plan_data["name"],
+                slug=plan_data["slug"],
                 defaults=plan_data
             )
 
@@ -178,12 +181,14 @@ def organization(db):
 
     # Get or create FREE plan
     plan, _ = Plan.objects.get_or_create(
-        name="FREE",
+        slug="free",
         defaults={
-            "display_name": "Free",
+            "name": "Free",
+            "tier": "FREE",
             "price_monthly": 0,
             "price_yearly": 0,
             "is_active": True,
+            "is_default": True,
         }
     )
 
@@ -341,13 +346,15 @@ def free_plan(db):
     from apps.subscriptions.models import Plan
 
     plan, _ = Plan.objects.get_or_create(
-        name="FREE",
+        slug="free",
         defaults={
-            "display_name": "Free",
+            "name": "Free",
+            "tier": "FREE",
             "description": "Free tier",
             "price_monthly": 0,
             "price_yearly": 0,
             "is_active": True,
+            "is_default": True,
         }
     )
     return plan
@@ -363,9 +370,10 @@ def starter_plan(db):
     from decimal import Decimal
 
     plan, _ = Plan.objects.get_or_create(
-        name="STARTER",
+        slug="starter",
         defaults={
-            "display_name": "Starter",
+            "name": "Starter",
+            "tier": "STARTER",
             "description": "Starter plan for growing businesses",
             "price_monthly": Decimal("2000.00"),
             "price_yearly": Decimal("20000.00"),
@@ -425,12 +433,14 @@ def make_organization(db):
     def _make_organization(**kwargs):
         # Ensure FREE plan exists
         plan, _ = Plan.objects.get_or_create(
-            name="FREE",
+            slug="free",
             defaults={
-                "display_name": "Free",
+                "name": "Free",
+                "tier": "FREE",
                 "price_monthly": 0,
                 "price_yearly": 0,
                 "is_active": True,
+                "is_default": True,
             }
         )
 

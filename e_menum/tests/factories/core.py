@@ -94,12 +94,14 @@ class OrganizationWithPlanFactory(OrganizationFactory):
 
         # Get or create FREE plan
         plan, _ = Plan.objects.get_or_create(
-            name="FREE",
+            slug="free",
             defaults={
-                "display_name": "Free",
+                "name": "Free",
+                "tier": "FREE",
                 "price_monthly": 0,
                 "price_yearly": 0,
                 "is_active": True,
+                "is_default": True,
             },
         )
 
