@@ -1,0 +1,368 @@
+{% extends "layouts/public.html" %}
+{% load static i18n %}
+
+{# Public Menu Page - Customer-facing menu view #}
+{# Accessed via QR code scan or direct URL #}
+
+{% block page_title %}{{ menu.name|default:organization.name }}{% endblock %}
+{% block meta_description %}{% blocktrans with name=organization.name %}Digital menu for {{ name }}. Browse our menu, view prices, and place orders directly from your phone.{% endblocktrans %}{% endblock %}
+
+{% block og_image %}{% if menu.theme.background_image %}{{ menu.theme.background_image }}{% elif organization.logo %}{{ organization.logo }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+
+{% block extra_head %}
+{{ block.super }}
+{# Apply theme CSS variables if theme is set #}
+{% if menu.theme %}
+<style>
+    :root {
+        {{ menu.theme.get_css_variables_string|safe }}
+    }
+    {% if menu.theme.custom_css %}
+    {{ menu.theme.custom_css|safe }}
+    {% endif %}
+</style>
+{% endif %}
+{% endblock %}
+
+{% block menu_content %}
+<div class="container mx-auto px-4 py-6">
+
+    {# Featured Products Section #}
+    {% if featured_products %}
+    <section class="mb-8" aria-label="{% trans 'Featured items' %}">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+            <i class="ph ph-star text-yellow-500 mr-2"></i>
+            {% trans "Chef's Recommendations" %}
+        </h2>
+        <div class="flex overflow-x-auto space-x-4 pb-4 -mx-4 px-4 scrollbar-hide">
+            {% for product in featured_products %}
+            <a
+                href="{% url 'public:menu_product_detail' org_slug=organization.slug menu_slug=menu.slug product_slug=product.slug %}"
+                class="flex-shrink-0 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow"
+            >
+                <div class="relative h-40 bg-gray-100 dark:bg-gray-700">
+                    {% if product.image %}
+                    <img
+                        src="{{ product.image }}"
+                        alt="{{ product.name }}"
+                        class="w-full h-full object-cover"
+                        loading="lazy"
+                    >
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center">
+                        <i class="ph ph-bowl-food text-4xl text-gray-400 dark:text-gray-500"></i>
+                    </div>
+                    {% endif %}
+                    {% if product.is_chef_recommended %}
+                    <span class="absolute top-2 left-2 px-2 py-1 bg-yellow-500 text-white text-xs font-medium rounded-full flex items-center">
+                        <i class="ph ph-chef-hat mr-1"></i>
+                        {% trans "Chef's Pick" %}
+                    </span>
+                    {% endif %}
+                    {% if not product.is_available %}
+                    <div class="absolute inset-0 bg-gray-900/60 flex items-center justify-center">
+                        <span class="px-3 py-1 bg-gray-800 text-white text-sm font-medium rounded-full">
+                            {% trans "Sold Out" %}
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="p-3">
+                    <h3 class="font-medium text-gray-900 dark:text-white truncate">{{ product.name }}</h3>
+                    {% if product.short_description %}
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">{{ product.short_description }}</p>
+                    {% endif %}
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="text-lg font-bold text-primary-600 dark:text-primary-400">
+                            {{ product.formatted_price }}
+                        </span>
+                        {% if product.spicy_level > 0 %}
+                        <span class="text-sm" title="{% trans 'Spicy level' %}: {{ product.spicy_level }}/5">
+                            {{ product.get_spicy_display }}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {# Categories and Products #}
+    {% for category in categories %}
+    <section
+        id="category-{{ category.slug }}"
+        class="mb-8 scroll-mt-24"
+        aria-label="{{ category.name }}"
+    >
+        {# Category Header #}
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    {{ category.name }}
+                </h2>
+                {% if category.description %}
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    {{ category.description }}
+                </p>
+                {% endif %}
+            </div>
+            {% if category.image %}
+            <img
+                src="{{ category.image }}"
+                alt="{{ category.name }}"
+                class="h-12 w-12 rounded-lg object-cover"
+                loading="lazy"
+            >
+            {% endif %}
+        </div>
+
+        {# Products Grid #}
+        <div class="space-y-3">
+            {% for product in category.products.all %}
+            {% if product.is_active %}
+            <article
+                class="flex bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow"
+                x-data="{ showQuickAdd: false }"
+            >
+                {# Product Image #}
+                <a
+                    href="{% url 'public:menu_product_detail' org_slug=organization.slug menu_slug=menu.slug product_slug=product.slug %}"
+                    class="flex-shrink-0 w-24 h-24 md:w-32 md:h-32 relative bg-gray-100 dark:bg-gray-700"
+                >
+                    {% if product.image %}
+                    <img
+                        src="{{ product.image }}"
+                        alt="{{ product.name }}"
+                        class="w-full h-full object-cover"
+                        loading="lazy"
+                    >
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center">
+                        <i class="ph ph-bowl-food text-3xl text-gray-400 dark:text-gray-500"></i>
+                    </div>
+                    {% endif %}
+                    {% if not product.is_available %}
+                    <div class="absolute inset-0 bg-gray-900/60 flex items-center justify-center">
+                        <span class="px-2 py-0.5 bg-gray-800 text-white text-xs font-medium rounded-full">
+                            {% trans "Sold Out" %}
+                        </span>
+                    </div>
+                    {% endif %}
+                </a>
+
+                {# Product Details #}
+                <div class="flex-1 min-w-0 p-3 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-start justify-between">
+                            <a
+                                href="{% url 'public:menu_product_detail' org_slug=organization.slug menu_slug=menu.slug product_slug=product.slug %}"
+                                class="flex-1"
+                            >
+                                <h3 class="font-medium text-gray-900 dark:text-white truncate pr-2">
+                                    {{ product.name }}
+                                </h3>
+                            </a>
+                            {# Badges #}
+                            <div class="flex items-center space-x-1 flex-shrink-0">
+                                {% if product.is_chef_recommended %}
+                                <span class="text-yellow-500" title="{% trans 'Chef Recommended' %}">
+                                    <i class="ph ph-chef-hat"></i>
+                                </span>
+                                {% endif %}
+                                {% if product.is_featured %}
+                                <span class="text-primary-500" title="{% trans 'Featured' %}">
+                                    <i class="ph ph-star"></i>
+                                </span>
+                                {% endif %}
+                                {% if product.spicy_level > 0 %}
+                                <span class="text-red-500 text-xs" title="{% trans 'Spicy level' %}: {{ product.spicy_level }}/5">
+                                    {{ product.get_spicy_display }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if product.short_description %}
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                            {{ product.short_description }}
+                        </p>
+                        {% endif %}
+                        {# Tags/Allergen Badges #}
+                        {% if product.tags or product.product_allergens.exists %}
+                        <div class="flex flex-wrap gap-1 mt-2">
+                            {% for tag in product.tags %}
+                            <span class="inline-flex items-center px-1.5 py-0.5 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded">
+                                {% if tag == 'vegetarian' %}
+                                <i class="ph ph-leaf text-green-600 mr-0.5"></i>
+                                {% elif tag == 'vegan' %}
+                                <i class="ph ph-plant text-green-600 mr-0.5"></i>
+                                {% elif tag == 'gluten-free' %}
+                                <i class="ph ph-grain-slash text-amber-600 mr-0.5"></i>
+                                {% elif tag == 'halal' %}
+                                <i class="ph ph-moon text-green-600 mr-0.5"></i>
+                                {% endif %}
+                                {{ tag|title }}
+                            </span>
+                            {% endfor %}
+                            {% for pa in product.product_allergens.all|slice:":3" %}
+                            <span
+                                class="inline-flex items-center px-1.5 py-0.5 text-xs font-medium bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded"
+                                title="{{ pa.allergen.name }}: {{ pa.get_severity_display }}"
+                            >
+                                <i class="ph ph-warning mr-0.5"></i>
+                                {{ pa.allergen.code }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {# Price and Add Button #}
+                    <div class="flex items-center justify-between mt-2">
+                        <div>
+                            <span class="text-lg font-bold text-primary-600 dark:text-primary-400">
+                                {{ product.formatted_price }}
+                            </span>
+                            {% if product.has_variants %}
+                            <span class="text-xs text-gray-500 dark:text-gray-400 ml-1">
+                                {% trans "from" %}
+                            </span>
+                            {% endif %}
+                        </div>
+                        {% if menu.settings.ordering_enabled and product.is_available %}
+                        <button
+                            @click.prevent="showQuickAdd = true; $dispatch('add-to-cart', { product: {{ product.id|stringformat:'s'|safe }}, quantity: 1 })"
+                            class="flex items-center justify-center h-8 w-8 bg-primary-600 hover:bg-primary-700 text-white rounded-full transition-colors touch-target"
+                            :class="{ 'bg-green-600': showQuickAdd }"
+                            aria-label="{% trans 'Add to cart' %}"
+                        >
+                            <i class="ph" :class="showQuickAdd ? 'ph-check' : 'ph-plus'"></i>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </article>
+            {% endif %}
+            {% empty %}
+            <p class="text-center text-gray-500 dark:text-gray-400 py-4">
+                {% trans "No products in this category" %}
+            </p>
+            {% endfor %}
+        </div>
+
+        {# Nested Subcategories #}
+        {% if category.children.exists %}
+        {% for subcategory in category.children.all %}
+        {% if subcategory.is_active %}
+        <div class="mt-6 ml-4 pl-4 border-l-2 border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">
+                {{ subcategory.name }}
+            </h3>
+            {% if subcategory.description %}
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                {{ subcategory.description }}
+            </p>
+            {% endif %}
+            <div class="space-y-3">
+                {% for product in subcategory.products.all %}
+                {% if product.is_active %}
+                {# Same product card structure - could be extracted to a partial #}
+                <article class="flex bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                    <a
+                        href="{% url 'public:menu_product_detail' org_slug=organization.slug menu_slug=menu.slug product_slug=product.slug %}"
+                        class="flex-shrink-0 w-20 h-20 relative bg-gray-100 dark:bg-gray-700"
+                    >
+                        {% if product.image %}
+                        <img src="{{ product.image }}" alt="{{ product.name }}" class="w-full h-full object-cover" loading="lazy">
+                        {% else %}
+                        <div class="w-full h-full flex items-center justify-center">
+                            <i class="ph ph-bowl-food text-2xl text-gray-400 dark:text-gray-500"></i>
+                        </div>
+                        {% endif %}
+                    </a>
+                    <div class="flex-1 min-w-0 p-2 flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-medium text-gray-900 dark:text-white truncate text-sm">{{ product.name }}</h4>
+                            {% if product.short_description %}
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">{{ product.short_description }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="flex items-center justify-between mt-1">
+                            <span class="font-bold text-primary-600 dark:text-primary-400">{{ product.formatted_price }}</span>
+                            {% if not product.is_available %}
+                            <span class="text-xs text-red-500">{% trans "Sold Out" %}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </article>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+    </section>
+    {% empty %}
+    <div class="text-center py-12">
+        <i class="ph ph-bowl-food text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            {% trans "Menu Coming Soon" %}
+        </h2>
+        <p class="text-gray-500 dark:text-gray-400">
+            {% trans "We're updating our menu. Please check back later." %}
+        </p>
+    </div>
+    {% endfor %}
+
+    {# Allergen Information Notice #}
+    {% if allergen_notice %}
+    <div class="mt-8 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl">
+        <div class="flex items-start">
+            <i class="ph ph-warning text-yellow-600 dark:text-yellow-500 text-xl mr-3 flex-shrink-0 mt-0.5"></i>
+            <div class="text-sm text-yellow-800 dark:text-yellow-200">
+                <p class="font-medium mb-1">{% trans "Allergen Information" %}</p>
+                <p>{% trans "Our food may contain allergens. Please inform our staff of any allergies before ordering. Full allergen information is available upon request." %}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    // Quick add animation reset
+    document.addEventListener('alpine:init', () => {
+        Alpine.magic('resetQuickAdd', () => {
+            return (el) => {
+                setTimeout(() => {
+                    el.showQuickAdd = false;
+                }, 1500);
+            };
+        });
+    });
+
+    // Add to cart handler
+    window.addEventListener('add-to-cart', async (event) => {
+        const { product, quantity } = event.detail;
+
+        // Get product data from API if needed for cart
+        try {
+            const response = await fetch(`/api/v1/public/products/${product}/`);
+            if (response.ok) {
+                const productData = await response.json();
+                if (productData.data) {
+                    Alpine.store('cart').add(productData.data, quantity);
+                    showToast('{% trans "Added to cart" %}', 'success', 2000);
+                }
+            }
+        } catch (error) {
+            showToast('{% trans "Failed to add item" %}', 'error', 3000);
+        }
+    });
+</script>
+{% endblock %}

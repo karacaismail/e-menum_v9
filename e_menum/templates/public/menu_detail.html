@@ -1,0 +1,503 @@
+{% extends "layouts/public.html" %}
+{% load static i18n %}
+
+{# Product Detail Page - Full product view with variants, modifiers, and nutrition #}
+
+{% block page_title %}{{ product.name }} - {{ menu.name }}{% endblock %}
+{% block meta_description %}{{ product.description|truncatechars:160 }}{% endblock %}
+
+{% block og_image %}{% if product.image %}{{ product.image }}{% elif menu.theme.background_image %}{{ menu.theme.background_image }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+
+{% block extra_head %}
+{{ block.super }}
+{# Apply theme CSS variables if theme is set #}
+{% if menu.theme %}
+<style>
+    :root {
+        {{ menu.theme.get_css_variables_string|safe }}
+    }
+    {% if menu.theme.custom_css %}
+    {{ menu.theme.custom_css|safe }}
+    {% endif %}
+</style>
+{% endif %}
+{% endblock %}
+
+{# Hide category navigation on detail page #}
+{% block category_navigation %}{% endblock %}
+
+{% block restaurant_header %}
+<div class="flex items-center space-x-3">
+    <a
+        href="{% url 'public:menu_view' org_slug=organization.slug menu_slug=menu.slug %}"
+        class="p-2 -ml-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full touch-target"
+        aria-label="{% trans 'Back to menu' %}"
+    >
+        <i class="ph ph-arrow-left text-xl"></i>
+    </a>
+    <div>
+        <h1 class="text-lg font-semibold text-gray-900 dark:text-white truncate max-w-[200px]">
+            {{ product.name }}
+        </h1>
+        <p class="text-xs text-gray-500 dark:text-gray-400">
+            {{ product.category.name }}
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block menu_content %}
+<div
+    class="container mx-auto"
+    x-data="{
+        quantity: 1,
+        selectedVariant: null,
+        selectedModifiers: [],
+        showNutrition: false,
+        showAllergens: false,
+
+        init() {
+            // Pre-select default variant if exists
+            {% if product.variants.exists %}
+            const defaultVariant = document.querySelector('[data-default-variant]');
+            if (defaultVariant) {
+                this.selectedVariant = {
+                    id: defaultVariant.dataset.id,
+                    name: defaultVariant.dataset.name,
+                    price: parseFloat(defaultVariant.dataset.price)
+                };
+            }
+            {% endif %}
+
+            // Pre-select default modifiers
+            document.querySelectorAll('[data-default-modifier]').forEach(el => {
+                this.toggleModifier({
+                    id: el.dataset.id,
+                    name: el.dataset.name,
+                    price: parseFloat(el.dataset.price)
+                });
+            });
+        },
+
+        get basePrice() {
+            return {{ product.base_price }};
+        },
+
+        get currentPrice() {
+            let price = this.selectedVariant ? this.selectedVariant.price : this.basePrice;
+            this.selectedModifiers.forEach(mod => {
+                price += mod.price;
+            });
+            return price;
+        },
+
+        get totalPrice() {
+            return this.currentPrice * this.quantity;
+        },
+
+        selectVariant(variant) {
+            this.selectedVariant = variant;
+        },
+
+        toggleModifier(modifier) {
+            const index = this.selectedModifiers.findIndex(m => m.id === modifier.id);
+            if (index > -1) {
+                this.selectedModifiers.splice(index, 1);
+            } else {
+                this.selectedModifiers.push(modifier);
+            }
+        },
+
+        hasModifier(id) {
+            return this.selectedModifiers.some(m => m.id === id);
+        },
+
+        incrementQuantity() {
+            if (this.quantity < 99) this.quantity++;
+        },
+
+        decrementQuantity() {
+            if (this.quantity > 1) this.quantity--;
+        },
+
+        addToCart() {
+            const cartItem = {
+                product: {
+                    id: '{{ product.id }}',
+                    name: '{{ product.name }}',
+                    image: '{{ product.image|default:"" }}',
+                    base_price: this.basePrice
+                },
+                variant: this.selectedVariant,
+                modifiers: [...this.selectedModifiers],
+                quantity: this.quantity,
+                unitPrice: this.currentPrice,
+                totalPrice: this.totalPrice
+            };
+
+            Alpine.store('cart').add(cartItem.product, cartItem.quantity, cartItem.modifiers);
+            showToast('{% trans "Added to cart" %}', 'success', 2000);
+        }
+    }"
+>
+    {# Product Hero Image #}
+    <div class="relative">
+        {% if product.image %}
+        <div class="relative h-64 md:h-80 lg:h-96 overflow-hidden">
+            <img
+                src="{{ product.image }}"
+                alt="{{ product.name }}"
+                class="w-full h-full object-cover"
+            >
+            {% if not product.is_available %}
+            <div class="absolute inset-0 bg-gray-900/60 flex items-center justify-center">
+                <span class="px-4 py-2 bg-gray-800 text-white text-lg font-medium rounded-full">
+                    {% trans "Currently Unavailable" %}
+                </span>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {# Gallery Thumbnails #}
+        {% if product.gallery %}
+        <div class="flex overflow-x-auto space-x-2 p-4 bg-gray-50 dark:bg-gray-800 scrollbar-hide">
+            {% if product.image %}
+            <button class="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden ring-2 ring-primary-500">
+                <img src="{{ product.image }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+            </button>
+            {% endif %}
+            {% for img in product.gallery %}
+            <button class="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden opacity-70 hover:opacity-100 transition-opacity">
+                <img src="{{ img }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+            </button>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    {# Product Info #}
+    <div class="px-4 py-6">
+        {# Name and Badges #}
+        <div class="flex items-start justify-between mb-4">
+            <div class="flex-1">
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                    {{ product.name }}
+                </h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    {{ product.category.name }}
+                </p>
+            </div>
+            <div class="flex items-center space-x-2 ml-4">
+                {% if product.is_chef_recommended %}
+                <span class="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 text-xs font-medium rounded-full flex items-center">
+                    <i class="ph ph-chef-hat mr-1"></i>
+                    {% trans "Chef's Pick" %}
+                </span>
+                {% endif %}
+                {% if product.is_featured %}
+                <span class="px-2 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-medium rounded-full flex items-center">
+                    <i class="ph ph-star mr-1"></i>
+                    {% trans "Featured" %}
+                </span>
+                {% endif %}
+            </div>
+        </div>
+
+        {# Description #}
+        {% if product.description %}
+        <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+            {{ product.description }}
+        </p>
+        {% endif %}
+
+        {# Product Attributes #}
+        <div class="flex flex-wrap gap-3 mb-6">
+            {% if product.spicy_level > 0 %}
+            <div class="flex items-center px-3 py-1.5 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                <span class="text-red-600 dark:text-red-400 mr-2">{{ product.get_spicy_display }}</span>
+                <span class="text-sm text-red-700 dark:text-red-300">{% trans "Spicy" %}</span>
+            </div>
+            {% endif %}
+            {% if product.preparation_time %}
+            <div class="flex items-center px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                <i class="ph ph-clock text-gray-600 dark:text-gray-400 mr-2"></i>
+                <span class="text-sm text-gray-700 dark:text-gray-300">~{{ product.preparation_time }} {% trans "min" %}</span>
+            </div>
+            {% endif %}
+            {% if product.calories %}
+            <div class="flex items-center px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                <i class="ph ph-fire text-orange-500 mr-2"></i>
+                <span class="text-sm text-gray-700 dark:text-gray-300">{{ product.calories }} {% trans "kcal" %}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        {# Tags #}
+        {% if product.tags %}
+        <div class="flex flex-wrap gap-2 mb-6">
+            {% for tag in product.tags %}
+            <span class="inline-flex items-center px-3 py-1 text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full">
+                {% if tag == 'vegetarian' %}
+                <i class="ph ph-leaf text-green-600 mr-1.5"></i>
+                {% elif tag == 'vegan' %}
+                <i class="ph ph-plant text-green-600 mr-1.5"></i>
+                {% elif tag == 'gluten-free' %}
+                <i class="ph ph-grain-slash text-amber-600 mr-1.5"></i>
+                {% elif tag == 'halal' %}
+                <i class="ph ph-moon text-green-600 mr-1.5"></i>
+                {% elif tag == 'organic' %}
+                <i class="ph ph-tree text-green-600 mr-1.5"></i>
+                {% endif %}
+                {{ tag|title }}
+            </span>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {# Variants Section #}
+        {% if product.variants.exists %}
+        <div class="mb-6">
+            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+                {% trans "Select Size" %}
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                {% for variant in product.variants.all %}
+                {% if variant.is_available %}
+                <button
+                    @click="selectVariant({ id: '{{ variant.id }}', name: '{{ variant.name }}', price: {{ variant.price }} })"
+                    :class="selectedVariant?.id === '{{ variant.id }}' ? 'ring-2 ring-primary-500 bg-primary-50 dark:bg-primary-900/30' : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700'"
+                    class="flex flex-col items-center justify-center p-3 border border-gray-200 dark:border-gray-700 rounded-xl transition-colors"
+                    data-id="{{ variant.id }}"
+                    data-name="{{ variant.name }}"
+                    data-price="{{ variant.price }}"
+                    {% if variant.is_default %}data-default-variant{% endif %}
+                >
+                    <span class="font-medium text-gray-900 dark:text-white">{{ variant.name }}</span>
+                    <span class="text-sm text-primary-600 dark:text-primary-400">{{ variant.formatted_price }}</span>
+                </button>
+                {% else %}
+                <button
+                    disabled
+                    class="flex flex-col items-center justify-center p-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800 opacity-50 cursor-not-allowed"
+                >
+                    <span class="font-medium text-gray-500 dark:text-gray-400">{{ variant.name }}</span>
+                    <span class="text-xs text-gray-400 dark:text-gray-500">{% trans "Unavailable" %}</span>
+                </button>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {# Modifiers Section #}
+        {% if product.modifiers.exists %}
+        <div class="mb-6">
+            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+                {% trans "Extras & Customizations" %}
+            </h3>
+            <div class="space-y-2">
+                {% for modifier in product.modifiers.all %}
+                <label
+                    class="flex items-center justify-between p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    :class="{ 'ring-2 ring-primary-500': hasModifier('{{ modifier.id }}') }"
+                >
+                    <div class="flex items-center">
+                        <input
+                            type="checkbox"
+                            :checked="hasModifier('{{ modifier.id }}')"
+                            @change="toggleModifier({ id: '{{ modifier.id }}', name: '{{ modifier.name }}', price: {{ modifier.price }} })"
+                            class="w-4 h-4 text-primary-600 border-gray-300 dark:border-gray-600 rounded focus:ring-primary-500 mr-3"
+                            data-id="{{ modifier.id }}"
+                            data-name="{{ modifier.name }}"
+                            data-price="{{ modifier.price }}"
+                            {% if modifier.is_default %}data-default-modifier{% endif %}
+                        >
+                        <span class="text-gray-900 dark:text-white">{{ modifier.name }}</span>
+                        {% if modifier.is_required %}
+                        <span class="ml-2 px-1.5 py-0.5 text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded">
+                            {% trans "Required" %}
+                        </span>
+                        {% endif %}
+                    </div>
+                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">
+                        {{ modifier.formatted_price }}
+                    </span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {# Allergens Section #}
+        {% if product.product_allergens.exists %}
+        <div class="mb-6">
+            <button
+                @click="showAllergens = !showAllergens"
+                class="flex items-center justify-between w-full p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl"
+            >
+                <div class="flex items-center">
+                    <i class="ph ph-warning text-red-600 dark:text-red-400 mr-2"></i>
+                    <span class="font-medium text-red-800 dark:text-red-200">{% trans "Allergen Information" %}</span>
+                </div>
+                <i class="ph text-red-600 dark:text-red-400" :class="showAllergens ? 'ph-caret-up' : 'ph-caret-down'"></i>
+            </button>
+            <div x-show="showAllergens" x-collapse class="mt-2 p-4 bg-red-50 dark:bg-red-900/10 rounded-xl">
+                <ul class="space-y-2">
+                    {% for pa in product.product_allergens.all %}
+                    <li class="flex items-start">
+                        <span class="font-medium text-red-800 dark:text-red-200 mr-2">{{ pa.allergen.name }}</span>
+                        <span class="text-sm text-red-600 dark:text-red-400">({{ pa.get_severity_display }})</span>
+                        {% if pa.notes %}
+                        <span class="text-sm text-red-500 dark:text-red-500 ml-2">- {{ pa.notes }}</span>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        {# Nutrition Information Section #}
+        {% if product.nutrition_info %}
+        <div class="mb-6">
+            <button
+                @click="showNutrition = !showNutrition"
+                class="flex items-center justify-between w-full p-3 bg-gray-100 dark:bg-gray-700 rounded-xl"
+            >
+                <div class="flex items-center">
+                    <i class="ph ph-chart-pie text-gray-600 dark:text-gray-400 mr-2"></i>
+                    <span class="font-medium text-gray-800 dark:text-gray-200">{% trans "Nutrition Facts" %}</span>
+                </div>
+                <i class="ph text-gray-600 dark:text-gray-400" :class="showNutrition ? 'ph-caret-up' : 'ph-caret-down'"></i>
+            </button>
+            <div x-show="showNutrition" x-collapse class="mt-2 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                    {% trans "Per serving" %}: {{ product.nutrition_info.serving_size }}
+                </p>
+                <div class="grid grid-cols-2 gap-3">
+                    {% if product.nutrition_info.calories %}
+                    <div class="bg-white dark:bg-gray-700 p-3 rounded-lg">
+                        <div class="text-xl font-bold text-gray-900 dark:text-white">{{ product.nutrition_info.calories }}</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">{% trans "Calories" %}</div>
+                    </div>
+                    {% endif %}
+                    {% if product.nutrition_info.protein %}
+                    <div class="bg-white dark:bg-gray-700 p-3 rounded-lg">
+                        <div class="text-xl font-bold text-gray-900 dark:text-white">{{ product.nutrition_info.protein }}g</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">{% trans "Protein" %}</div>
+                    </div>
+                    {% endif %}
+                    {% if product.nutrition_info.carbohydrates %}
+                    <div class="bg-white dark:bg-gray-700 p-3 rounded-lg">
+                        <div class="text-xl font-bold text-gray-900 dark:text-white">{{ product.nutrition_info.carbohydrates }}g</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">{% trans "Carbs" %}</div>
+                    </div>
+                    {% endif %}
+                    {% if product.nutrition_info.fat %}
+                    <div class="bg-white dark:bg-gray-700 p-3 rounded-lg">
+                        <div class="text-xl font-bold text-gray-900 dark:text-white">{{ product.nutrition_info.fat }}g</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">{% trans "Fat" %}</div>
+                    </div>
+                    {% endif %}
+                    {% if product.nutrition_info.fiber %}
+                    <div class="bg-white dark:bg-gray-700 p-3 rounded-lg">
+                        <div class="text-xl font-bold text-gray-900 dark:text-white">{{ product.nutrition_info.fiber }}g</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">{% trans "Fiber" %}</div>
+                    </div>
+                    {% endif %}
+                    {% if product.nutrition_info.sugar %}
+                    <div class="bg-white dark:bg-gray-700 p-3 rounded-lg">
+                        <div class="text-xl font-bold text-gray-900 dark:text-white">{{ product.nutrition_info.sugar }}g</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">{% trans "Sugar" %}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+    {# Add to Cart Fixed Footer #}
+    {% if menu.settings.ordering_enabled and product.is_available %}
+    <div class="fixed bottom-0 left-0 right-0 z-40 p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg">
+        <div class="container mx-auto flex items-center justify-between space-x-4">
+            {# Quantity Selector #}
+            <div class="flex items-center bg-gray-100 dark:bg-gray-700 rounded-xl">
+                <button
+                    @click="decrementQuantity"
+                    :disabled="quantity <= 1"
+                    class="w-10 h-10 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-l-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-target"
+                >
+                    <i class="ph ph-minus"></i>
+                </button>
+                <span class="w-12 text-center font-semibold text-gray-900 dark:text-white" x-text="quantity"></span>
+                <button
+                    @click="incrementQuantity"
+                    :disabled="quantity >= 99"
+                    class="w-10 h-10 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-r-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-target"
+                >
+                    <i class="ph ph-plus"></i>
+                </button>
+            </div>
+
+            {# Add to Cart Button #}
+            <button
+                @click="addToCart"
+                class="flex-1 flex items-center justify-center space-x-2 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl transition-colors touch-target"
+            >
+                <i class="ph ph-shopping-cart text-xl"></i>
+                <span>{% trans "Add" %}</span>
+                <span class="font-bold" x-text="formatCurrency(totalPrice)"></span>
+            </button>
+        </div>
+    </div>
+
+    {# Spacer for fixed footer #}
+    <div class="h-24"></div>
+    {% else %}
+    {# Not Available Notice #}
+    <div class="fixed bottom-0 left-0 right-0 z-40 p-4 bg-gray-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto text-center">
+            {% if not product.is_available %}
+            <p class="text-red-600 dark:text-red-400 font-medium">
+                <i class="ph ph-x-circle mr-2"></i>
+                {% trans "This item is currently unavailable" %}
+            </p>
+            {% elif not menu.settings.ordering_enabled %}
+            <p class="text-gray-600 dark:text-gray-400 font-medium">
+                <i class="ph ph-info mr-2"></i>
+                {% trans "Online ordering is not available for this menu" %}
+            </p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="h-16"></div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    // Alpine.js collapse directive (if not already included)
+    document.addEventListener('alpine:init', () => {
+        Alpine.directive('collapse', (el, { expression }, { effect, evaluateLater }) => {
+            let show = evaluateLater(expression || '$data.expanded');
+
+            effect(() => show(value => {
+                if (value) {
+                    el.style.maxHeight = el.scrollHeight + 'px';
+                    el.style.overflow = 'visible';
+                } else {
+                    el.style.maxHeight = '0px';
+                    el.style.overflow = 'hidden';
+                }
+            }));
+        });
+    });
+</script>
+{% endblock %}
+
+{% block floating_cart %}{% endblock %}
