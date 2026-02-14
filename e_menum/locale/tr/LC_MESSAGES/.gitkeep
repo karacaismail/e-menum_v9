@@ -1,0 +1,3 @@
+# Turkish translations
+# Run: python manage.py makemessages -l tr
+# Then: python manage.py compilemessages

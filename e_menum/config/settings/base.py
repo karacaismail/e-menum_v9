@@ -12,6 +12,8 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+from django.utils.translation import gettext_lazy as _
+
 # Try to use django-environ if available, fallback to os.environ
 try:
     import environ
@@ -503,10 +505,10 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# Available languages
+# Available languages (Turkish and English per spec requirements)
 LANGUAGES = [
-    ('tr', 'Turkce'),
-    ('en', 'English'),
+    ('tr', _('Türkçe')),
+    ('en', _('English')),
 ]
 
 LOCALE_PATHS = [
