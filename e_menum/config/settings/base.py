@@ -139,10 +139,10 @@ THIRD_PARTY_APPS = [
 # Note: Uncomment as apps are created
 LOCAL_APPS = [
     'apps.core.apps.CoreConfig',
-    # 'apps.menu.apps.MenuConfig',
-    # 'apps.orders.apps.OrdersConfig',
-    # 'apps.subscriptions.apps.SubscriptionsConfig',
-    # 'apps.customers.apps.CustomersConfig',
+    'apps.menu.apps.MenuConfig',
+    'apps.orders.apps.OrdersConfig',
+    'apps.subscriptions.apps.SubscriptionsConfig',
+    'apps.customers.apps.CustomersConfig',
     # 'apps.media.apps.MediaConfig',
     # 'apps.notifications.apps.NotificationsConfig',
     # 'apps.analytics.apps.AnalyticsConfig',
