@@ -30,7 +30,55 @@ Integration with django-guardian:
     ObjectPermissionBackend, configured in AUTHENTICATION_BACKENDS.
 """
 
-# Permission classes will be implemented in separate files
-# and exported here for clean imports
+from shared.permissions.abilities import (
+    # Core classes
+    Rule,
+    Ability,
+    Actions,
+    Resources,
+    # Builder functions
+    build_ability_for_user,
+    check_permission,
+    require_permission,
+    # DRF Permission classes
+    HasOrganizationPermission,
+    HasPlatformPermission,
+    IsTenantMember,
+    IsOwnerOrReadOnly,
+    IsAuthenticatedOrReadOnly,
+    AllowPublicRead,
+    # Decorators
+    permission_required,
+    # Predefined abilities
+    get_owner_abilities,
+    get_manager_abilities,
+    get_staff_abilities,
+    get_viewer_abilities,
+)
 
-__all__ = []
+
+__all__ = [
+    # Core classes
+    'Rule',
+    'Ability',
+    'Actions',
+    'Resources',
+    # Builder functions
+    'build_ability_for_user',
+    'check_permission',
+    'require_permission',
+    # DRF Permission classes
+    'HasOrganizationPermission',
+    'HasPlatformPermission',
+    'IsTenantMember',
+    'IsOwnerOrReadOnly',
+    'IsAuthenticatedOrReadOnly',
+    'AllowPublicRead',
+    # Decorators
+    'permission_required',
+    # Predefined abilities
+    'get_owner_abilities',
+    'get_manager_abilities',
+    'get_staff_abilities',
+    'get_viewer_abilities',
+]
