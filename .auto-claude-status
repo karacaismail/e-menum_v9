@@ -3,23 +3,23 @@
   "spec": "002-bu-projeyi-tamamen-django-ile-yap-enterprise-ready",
   "state": "building",
   "subtasks": {
-    "completed": 22,
+    "completed": 28,
     "total": 73,
     "in_progress": 1,
     "failed": 0
   },
   "phase": {
-    "current": "Menu Module Models",
+    "current": "Orders Module Models",
     "id": null,
-    "total": 7
+    "total": 6
   },
   "workers": {
     "active": 0,
     "max": 1
   },
   "session": {
-    "number": 23,
+    "number": 29,
     "started_at": "2026-02-14T13:26:11.524855"
   },
-  "last_update": "2026-02-14T14:32:23.811297"
+  "last_update": "2026-02-14T14:48:53.298485"
 }
