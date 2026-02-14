@@ -25,7 +25,14 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from apps.core.choices import OrganizationStatus, UserStatus
+from apps.core.choices import (
+    BranchStatus,
+    OrganizationStatus,
+    PermissionAction,
+    RoleScope,
+    SessionStatus,
+    UserStatus,
+)
 
 
 class SoftDeleteManager(models.Manager):
@@ -591,3 +598,781 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin, SoftDeleteMixin
         """Activate a suspended or invited user account."""
         self.status = UserStatus.ACTIVE
         self.save(update_fields=['status', 'updated_at'])
+
+
+class Branch(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    Branch model - represents physical locations within an organization.
+
+    Supports multi-location businesses with hierarchical structure.
+    Each branch can have its own settings, operating hours, and staff.
+
+    Attributes:
+        id: UUID primary key
+        organization: FK to parent Organization (tenant isolation)
+        name: Display name of the branch
+        slug: URL-friendly identifier (unique within organization)
+        address: Full street address
+        city: City name
+        district: District/neighborhood
+        postal_code: Postal/ZIP code
+        country: Country code (default: TR)
+        phone: Branch contact phone
+        email: Branch contact email
+        latitude: GPS latitude for mapping
+        longitude: GPS longitude for mapping
+        timezone: Branch timezone (default: Europe/Istanbul)
+        settings: JSON field for branch-specific configuration
+        operating_hours: JSON field for daily operating hours
+        status: Branch lifecycle status (ACTIVE, INACTIVE, SUSPENDED)
+        is_main: Whether this is the main/headquarters branch
+
+    Usage:
+        # Create a branch
+        branch = Branch.objects.create(
+            organization=org,
+            name="Kadıköy Şubesi",
+            slug="kadikoy",
+            address="Caferağa Mah. Moda Cad. No:42",
+            city="Istanbul",
+            district="Kadıköy"
+        )
+
+        # Query branches for organization (ALWAYS filter by organization!)
+        branches = Branch.objects.filter(organization=org)
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        related_name='branches',
+        verbose_name=_('Organization'),
+        help_text=_('Organization this branch belongs to')
+    )
+
+    name = models.CharField(
+        max_length=255,
+        verbose_name=_('Name'),
+        help_text=_('Display name of the branch')
+    )
+
+    slug = models.SlugField(
+        max_length=100,
+        verbose_name=_('Slug'),
+        help_text=_('URL-friendly identifier (unique within organization)')
+    )
+
+    address = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('Address'),
+        help_text=_('Full street address')
+    )
+
+    city = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name=_('City'),
+        help_text=_('City name')
+    )
+
+    district = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name=_('District'),
+        help_text=_('District or neighborhood')
+    )
+
+    postal_code = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True,
+        verbose_name=_('Postal code'),
+        help_text=_('Postal or ZIP code')
+    )
+
+    country = models.CharField(
+        max_length=2,
+        default='TR',
+        verbose_name=_('Country'),
+        help_text=_('Country code (ISO 3166-1 alpha-2)')
+    )
+
+    phone = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True,
+        verbose_name=_('Phone'),
+        help_text=_('Branch contact phone number')
+    )
+
+    email = models.EmailField(
+        blank=True,
+        null=True,
+        verbose_name=_('Email'),
+        help_text=_('Branch contact email')
+    )
+
+    latitude = models.DecimalField(
+        max_digits=10,
+        decimal_places=7,
+        blank=True,
+        null=True,
+        verbose_name=_('Latitude'),
+        help_text=_('GPS latitude coordinate')
+    )
+
+    longitude = models.DecimalField(
+        max_digits=10,
+        decimal_places=7,
+        blank=True,
+        null=True,
+        verbose_name=_('Longitude'),
+        help_text=_('GPS longitude coordinate')
+    )
+
+    timezone = models.CharField(
+        max_length=50,
+        default='Europe/Istanbul',
+        verbose_name=_('Timezone'),
+        help_text=_('Branch timezone (IANA format)')
+    )
+
+    settings = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name=_('Settings'),
+        help_text=_('Branch-specific settings (JSON)')
+    )
+
+    operating_hours = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name=_('Operating hours'),
+        help_text=_('Daily operating hours (JSON)')
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=BranchStatus.choices,
+        default=BranchStatus.ACTIVE,
+        db_index=True,
+        verbose_name=_('Status'),
+        help_text=_('Branch lifecycle status')
+    )
+
+    is_main = models.BooleanField(
+        default=False,
+        verbose_name=_('Is main branch'),
+        help_text=_('Whether this is the main/headquarters branch')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'branches'
+        verbose_name = _('Branch')
+        verbose_name_plural = _('Branches')
+        ordering = ['-is_main', 'name']
+        unique_together = [['organization', 'slug']]
+        indexes = [
+            models.Index(fields=['organization', 'status'], name='branch_org_status_idx'),
+            models.Index(fields=['organization', 'deleted_at'], name='branch_org_deleted_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.organization.name})"
+
+    def __repr__(self) -> str:
+        return f"<Branch(id={self.id}, name='{self.name}', org='{self.organization.name}')>"
+
+    @property
+    def is_active(self) -> bool:
+        """Check if branch is active and not deleted."""
+        return self.status == BranchStatus.ACTIVE and not self.is_deleted
+
+    @property
+    def full_address(self) -> str:
+        """Return the full formatted address."""
+        parts = [self.address, self.district, self.city, self.postal_code, self.country]
+        return ', '.join(p for p in parts if p)
+
+    def get_setting(self, key: str, default=None):
+        """Get a value from branch settings."""
+        return self.settings.get(key, default)
+
+    def set_setting(self, key: str, value) -> None:
+        """Set a value in branch settings."""
+        self.settings[key] = value
+        self.save(update_fields=['settings', 'updated_at'])
+
+
+class Role(TimeStampedMixin, models.Model):
+    """
+    Role model - defines RBAC roles for the system.
+
+    Roles can be either platform-scoped (super_admin, admin, sales, support)
+    or organization-scoped (owner, manager, staff, viewer).
+
+    System roles (is_system=True) are predefined and cannot be modified.
+    Custom roles can be created per organization.
+
+    Attributes:
+        id: UUID primary key
+        name: Internal role identifier (e.g., 'owner', 'manager')
+        display_name: Human-readable name (e.g., 'Organization Owner')
+        description: Detailed description of the role
+        scope: PLATFORM or ORGANIZATION scope
+        is_system: Whether this is a predefined system role
+        organization: FK to Organization (null for platform roles)
+        permissions: M2M relationship to Permission via RolePermission
+
+    Usage:
+        # Get all organization-scoped roles
+        org_roles = Role.objects.filter(scope=RoleScope.ORGANIZATION)
+
+        # Create custom role for organization
+        role = Role.objects.create(
+            name='inventory_manager',
+            display_name='Inventory Manager',
+            description='Can manage inventory and stock levels',
+            scope=RoleScope.ORGANIZATION,
+            organization=org
+        )
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    name = models.CharField(
+        max_length=50,
+        verbose_name=_('Name'),
+        help_text=_('Internal role identifier (lowercase, underscore-separated)')
+    )
+
+    display_name = models.CharField(
+        max_length=100,
+        verbose_name=_('Display name'),
+        help_text=_('Human-readable role name')
+    )
+
+    description = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('Description'),
+        help_text=_('Detailed description of the role and its capabilities')
+    )
+
+    scope = models.CharField(
+        max_length=20,
+        choices=RoleScope.choices,
+        default=RoleScope.ORGANIZATION,
+        db_index=True,
+        verbose_name=_('Scope'),
+        help_text=_('Role scope (PLATFORM or ORGANIZATION)')
+    )
+
+    is_system = models.BooleanField(
+        default=False,
+        verbose_name=_('Is system role'),
+        help_text=_('System roles are predefined and cannot be modified')
+    )
+
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='roles',
+        verbose_name=_('Organization'),
+        help_text=_('Organization for org-scoped roles (null for platform roles)')
+    )
+
+    permissions = models.ManyToManyField(
+        'Permission',
+        through='RolePermission',
+        related_name='roles',
+        verbose_name=_('Permissions'),
+        help_text=_('Permissions granted to this role')
+    )
+
+    class Meta:
+        db_table = 'roles'
+        verbose_name = _('Role')
+        verbose_name_plural = _('Roles')
+        ordering = ['scope', 'name']
+        unique_together = [['name', 'scope', 'organization']]
+        indexes = [
+            models.Index(fields=['scope'], name='role_scope_idx'),
+            models.Index(fields=['organization', 'scope'], name='role_org_scope_idx'),
+        ]
+
+    def __str__(self) -> str:
+        if self.organization:
+            return f"{self.display_name} ({self.organization.name})"
+        return f"{self.display_name} (Platform)"
+
+    def __repr__(self) -> str:
+        return f"<Role(id={self.id}, name='{self.name}', scope={self.scope})>"
+
+    @property
+    def is_platform_role(self) -> bool:
+        """Check if this is a platform-scoped role."""
+        return self.scope == RoleScope.PLATFORM
+
+    @property
+    def is_organization_role(self) -> bool:
+        """Check if this is an organization-scoped role."""
+        return self.scope == RoleScope.ORGANIZATION
+
+
+class Permission(TimeStampedMixin, models.Model):
+    """
+    Permission model - defines granular resource.action permissions.
+
+    Permissions follow the resource.action pattern (e.g., 'menu.create', 'order.view').
+    They are used with CASL-like permission checking for fine-grained access control.
+
+    Attributes:
+        id: UUID primary key
+        resource: Resource name (e.g., 'menu', 'order', 'user')
+        action: Action type (e.g., 'view', 'create', 'update', 'delete')
+        description: Human-readable description of the permission
+        is_system: Whether this is a predefined system permission
+
+    Usage:
+        # Create a permission
+        perm = Permission.objects.create(
+            resource='menu',
+            action=PermissionAction.CREATE,
+            description='Create new menus'
+        )
+
+        # Check if role has permission
+        has_perm = role.permissions.filter(resource='menu', action='create').exists()
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    resource = models.CharField(
+        max_length=50,
+        verbose_name=_('Resource'),
+        help_text=_('Resource name (e.g., menu, order, user)')
+    )
+
+    action = models.CharField(
+        max_length=20,
+        choices=PermissionAction.choices,
+        verbose_name=_('Action'),
+        help_text=_('Action type (view, create, update, delete, etc.)')
+    )
+
+    description = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name=_('Description'),
+        help_text=_('Human-readable description of the permission')
+    )
+
+    is_system = models.BooleanField(
+        default=False,
+        verbose_name=_('Is system permission'),
+        help_text=_('System permissions are predefined and cannot be deleted')
+    )
+
+    class Meta:
+        db_table = 'permissions'
+        verbose_name = _('Permission')
+        verbose_name_plural = _('Permissions')
+        ordering = ['resource', 'action']
+        unique_together = [['resource', 'action']]
+        indexes = [
+            models.Index(fields=['resource'], name='permission_resource_idx'),
+            models.Index(fields=['resource', 'action'], name='permission_res_action_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.resource}.{self.action}"
+
+    def __repr__(self) -> str:
+        return f"<Permission(id={self.id}, resource='{self.resource}', action='{self.action}')>"
+
+    @property
+    def code(self) -> str:
+        """Return the permission code (resource.action format)."""
+        return f"{self.resource}.{self.action}"
+
+
+class Session(TimeStampedMixin, models.Model):
+    """
+    Session model - manages JWT refresh tokens for user sessions.
+
+    Each session represents an active login with a refresh token.
+    Sessions can be revoked for security (logout, password change).
+
+    Attributes:
+        id: UUID primary key
+        user: FK to User who owns this session
+        refresh_token: Hashed refresh token
+        user_agent: Browser/client user agent string
+        ip_address: Client IP address
+        expires_at: When the session expires
+        status: Session status (ACTIVE, EXPIRED, REVOKED)
+        revoked_at: When the session was revoked (if applicable)
+        revoke_reason: Reason for revocation
+
+    Usage:
+        # Create a session
+        session = Session.objects.create(
+            user=user,
+            refresh_token=hashed_token,
+            user_agent=request.META.get('HTTP_USER_AGENT'),
+            ip_address=get_client_ip(request),
+            expires_at=timezone.now() + timedelta(days=7)
+        )
+
+        # Revoke a session (logout)
+        session.revoke(reason='User logged out')
+
+        # Revoke all sessions for a user (security)
+        Session.objects.filter(user=user, status='ACTIVE').update(
+            status='REVOKED',
+            revoked_at=timezone.now()
+        )
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='sessions',
+        verbose_name=_('User'),
+        help_text=_('User who owns this session')
+    )
+
+    refresh_token = models.CharField(
+        max_length=500,
+        verbose_name=_('Refresh token'),
+        help_text=_('Hashed refresh token')
+    )
+
+    user_agent = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('User agent'),
+        help_text=_('Browser/client user agent string')
+    )
+
+    ip_address = models.GenericIPAddressField(
+        blank=True,
+        null=True,
+        verbose_name=_('IP address'),
+        help_text=_('Client IP address')
+    )
+
+    expires_at = models.DateTimeField(
+        verbose_name=_('Expires at'),
+        help_text=_('When the session/refresh token expires')
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=SessionStatus.choices,
+        default=SessionStatus.ACTIVE,
+        db_index=True,
+        verbose_name=_('Status'),
+        help_text=_('Session status')
+    )
+
+    revoked_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_('Revoked at'),
+        help_text=_('When the session was revoked')
+    )
+
+    revoke_reason = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name=_('Revoke reason'),
+        help_text=_('Reason for session revocation')
+    )
+
+    class Meta:
+        db_table = 'sessions'
+        verbose_name = _('Session')
+        verbose_name_plural = _('Sessions')
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', 'status'], name='session_user_status_idx'),
+            models.Index(fields=['refresh_token'], name='session_token_idx'),
+            models.Index(fields=['expires_at'], name='session_expires_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"Session for {self.user.email} ({self.status})"
+
+    def __repr__(self) -> str:
+        return f"<Session(id={self.id}, user='{self.user.email}', status={self.status})>"
+
+    @property
+    def is_active(self) -> bool:
+        """Check if session is active and not expired."""
+        if self.status != SessionStatus.ACTIVE:
+            return False
+        return timezone.now() < self.expires_at
+
+    @property
+    def is_expired(self) -> bool:
+        """Check if session has expired."""
+        return timezone.now() >= self.expires_at
+
+    def revoke(self, reason: str = None) -> None:
+        """
+        Revoke this session.
+
+        Args:
+            reason: Optional reason for revocation
+        """
+        self.status = SessionStatus.REVOKED
+        self.revoked_at = timezone.now()
+        if reason:
+            self.revoke_reason = reason
+        self.save(update_fields=['status', 'revoked_at', 'revoke_reason', 'updated_at'])
+
+    def mark_expired(self) -> None:
+        """Mark this session as expired."""
+        self.status = SessionStatus.EXPIRED
+        self.save(update_fields=['status', 'updated_at'])
+
+
+class UserRole(TimeStampedMixin, models.Model):
+    """
+    UserRole model - junction table linking users to roles.
+
+    This enables many-to-many relationships between users and roles,
+    with optional organization and branch scoping.
+
+    Attributes:
+        id: UUID primary key
+        user: FK to User
+        role: FK to Role
+        organization: FK to Organization (for org-scoped role assignments)
+        branch: FK to Branch (for branch-level role restrictions)
+        granted_by: FK to User who granted this role
+        expires_at: Optional expiration for temporary role assignments
+
+    Usage:
+        # Assign a role to a user
+        user_role = UserRole.objects.create(
+            user=user,
+            role=manager_role,
+            organization=org,
+            granted_by=admin_user
+        )
+
+        # Get all roles for a user in an organization
+        user_roles = UserRole.objects.filter(
+            user=user,
+            organization=org
+        ).select_related('role')
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='user_roles',
+        verbose_name=_('User'),
+        help_text=_('User who has this role')
+    )
+
+    role = models.ForeignKey(
+        Role,
+        on_delete=models.CASCADE,
+        related_name='user_roles',
+        verbose_name=_('Role'),
+        help_text=_('Role assigned to the user')
+    )
+
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='user_roles',
+        verbose_name=_('Organization'),
+        help_text=_('Organization scope for this role assignment')
+    )
+
+    branch = models.ForeignKey(
+        Branch,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='user_roles',
+        verbose_name=_('Branch'),
+        help_text=_('Optional branch-level restriction')
+    )
+
+    granted_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='granted_roles',
+        verbose_name=_('Granted by'),
+        help_text=_('User who granted this role')
+    )
+
+    expires_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_('Expires at'),
+        help_text=_('Optional expiration for temporary role assignments')
+    )
+
+    class Meta:
+        db_table = 'user_roles'
+        verbose_name = _('User Role')
+        verbose_name_plural = _('User Roles')
+        ordering = ['-created_at']
+        unique_together = [['user', 'role', 'organization', 'branch']]
+        indexes = [
+            models.Index(fields=['user', 'organization'], name='userrole_user_org_idx'),
+            models.Index(fields=['organization', 'role'], name='userrole_org_role_idx'),
+        ]
+
+    def __str__(self) -> str:
+        scope = f" @ {self.organization.name}" if self.organization else " (Platform)"
+        return f"{self.user.email} - {self.role.display_name}{scope}"
+
+    def __repr__(self) -> str:
+        return f"<UserRole(user='{self.user.email}', role='{self.role.name}')>"
+
+    @property
+    def is_active(self) -> bool:
+        """Check if this role assignment is currently active."""
+        if self.expires_at is None:
+            return True
+        return timezone.now() < self.expires_at
+
+    @property
+    def is_expired(self) -> bool:
+        """Check if this role assignment has expired."""
+        if self.expires_at is None:
+            return False
+        return timezone.now() >= self.expires_at
+
+
+class RolePermission(TimeStampedMixin, models.Model):
+    """
+    RolePermission model - junction table linking roles to permissions.
+
+    This enables many-to-many relationships between roles and permissions,
+    with optional conditions for fine-grained access control.
+
+    Attributes:
+        id: UUID primary key
+        role: FK to Role
+        permission: FK to Permission
+        conditions: JSON field for CASL-like conditional permissions
+
+    Usage:
+        # Grant a permission to a role
+        role_perm = RolePermission.objects.create(
+            role=manager_role,
+            permission=menu_create_perm,
+            conditions={'organization_id': '${user.organization_id}'}
+        )
+
+        # Get all permissions for a role
+        perms = RolePermission.objects.filter(role=role).select_related('permission')
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    role = models.ForeignKey(
+        Role,
+        on_delete=models.CASCADE,
+        related_name='role_permissions',
+        verbose_name=_('Role'),
+        help_text=_('Role that has this permission')
+    )
+
+    permission = models.ForeignKey(
+        Permission,
+        on_delete=models.CASCADE,
+        related_name='role_permissions',
+        verbose_name=_('Permission'),
+        help_text=_('Permission granted to the role')
+    )
+
+    conditions = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name=_('Conditions'),
+        help_text=_('CASL-like conditions for fine-grained access control')
+    )
+
+    class Meta:
+        db_table = 'role_permissions'
+        verbose_name = _('Role Permission')
+        verbose_name_plural = _('Role Permissions')
+        ordering = ['role', 'permission']
+        unique_together = [['role', 'permission']]
+        indexes = [
+            models.Index(fields=['role'], name='roleperm_role_idx'),
+            models.Index(fields=['permission'], name='roleperm_perm_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.role.name} -> {self.permission.code}"
+
+    def __repr__(self) -> str:
+        return f"<RolePermission(role='{self.role.name}', perm='{self.permission.code}')>"
