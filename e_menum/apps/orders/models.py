@@ -6,9 +6,9 @@ This module defines the order-related models for E-Menum:
 - Table: Physical restaurant tables with status tracking
 - QRCode: Generated QR codes for menus/tables with scan analytics
 - QRScan: QR code scan tracking for analytics (device info, geolocation)
+- Order: Customer orders with full transaction details and status workflow
 
 Additional models to be added in subsequent subtasks:
-- Order: Customer orders with full transaction details
 - OrderItem: Individual line items within orders
 - ServiceRequest: Waiter call/service requests from tables
 
@@ -32,7 +32,14 @@ from apps.core.models import (
     TimeStampedMixin,
 )
 from apps.menu.models import Menu
-from apps.orders.choices import QRCodeType, TableStatus
+from apps.orders.choices import (
+    OrderStatus,
+    OrderType,
+    PaymentMethod,
+    PaymentStatus,
+    QRCodeType,
+    TableStatus,
+)
 
 
 class Zone(TimeStampedMixin, SoftDeleteMixin, models.Model):
@@ -1378,3 +1385,705 @@ class QRScan(TimeStampedMixin, models.Model):
             The metadata value or default
         """
         return self.metadata.get(key, default)
+
+
+class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    Order model - represents customer orders with full transaction details.
+
+    Orders capture all aspects of customer transactions including items ordered,
+    pricing details, payment status, and fulfillment workflow. Each order follows
+    a defined status progression from PENDING through COMPLETED or CANCELLED.
+
+    Status Workflow:
+    PENDING → CONFIRMED → PREPARING → READY → DELIVERED → COMPLETED
+                                                        ↘ CANCELLED (from any state)
+
+    Critical Rules:
+    - EVERY query MUST filter by organization (multi-tenant isolation)
+    - Use soft_delete() - never call delete() directly
+    - order_number should be unique within an organization
+    - Status transitions should follow the defined workflow
+
+    Attributes:
+        id: UUID primary key (ensures global uniqueness)
+        organization: FK to parent Organization (tenant isolation)
+        branch: Optional FK to Branch for multi-location support
+        table: Optional FK to Table (for dine-in orders)
+        customer: Optional FK to Customer (for registered customers)
+        order_number: Human-readable order number (e.g., "ORD-2024-0001")
+        status: Current order status (PENDING, CONFIRMED, PREPARING, etc.)
+        type: Order type (DINE_IN, TAKEAWAY, DELIVERY)
+        payment_status: Payment status (PENDING, PARTIAL, PAID, etc.)
+        payment_method: Payment method used (CASH, CREDIT_CARD, etc.)
+        subtotal: Sum of all items before tax/discount
+        tax_amount: Total tax amount
+        discount_amount: Total discount applied
+        tip_amount: Optional tip amount
+        total_amount: Final total after all calculations
+        currency: Currency code (default TRY)
+        guest_count: Number of guests (for dine-in)
+        notes: Staff/kitchen notes
+        special_instructions: Customer special instructions
+        customer_info: JSON field for guest customer details (name, phone, email)
+        delivery_address: JSON field for delivery address details
+        placed_at: Timestamp when order was placed
+        confirmed_at: Timestamp when order was confirmed
+        ready_at: Timestamp when order was ready
+        delivered_at: Timestamp when order was delivered
+        completed_at: Timestamp when order was completed
+        cancelled_at: Timestamp when order was cancelled
+        cancel_reason: Reason for cancellation
+        placed_by: FK to User who placed the order (staff)
+        assigned_to: FK to User assigned to handle the order
+        metadata: JSON field for additional order data
+
+    Usage:
+        # Create a dine-in order
+        order = Order.objects.create(
+            organization=org,
+            table=table_5,
+            type=OrderType.DINE_IN,
+            order_number="ORD-2024-0001",
+            guest_count=4
+        )
+
+        # Create a delivery order
+        order = Order.objects.create(
+            organization=org,
+            type=OrderType.DELIVERY,
+            order_number="ORD-2024-0002",
+            customer=customer,
+            delivery_address={
+                "street": "123 Main St",
+                "city": "Istanbul",
+                "postal_code": "34000"
+            }
+        )
+
+        # Query orders for organization (ALWAYS filter by organization!)
+        orders = Order.objects.filter(organization=org)
+
+        # Get pending orders
+        pending_orders = Order.objects.filter(
+            organization=org,
+            status=OrderStatus.PENDING
+        )
+
+        # Transition order status
+        order.confirm()
+        order.start_preparation()
+        order.mark_ready()
+        order.deliver()
+        order.complete()
+
+        # Soft delete order (NEVER use delete())
+        order.soft_delete()
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        related_name='orders',
+        verbose_name=_('Organization'),
+        help_text=_('Organization this order belongs to')
+    )
+
+    branch = models.ForeignKey(
+        Branch,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='orders',
+        verbose_name=_('Branch'),
+        help_text=_('Branch this order belongs to (optional for single-location)')
+    )
+
+    table = models.ForeignKey(
+        Table,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='orders',
+        verbose_name=_('Table'),
+        help_text=_('Table associated with this order (for dine-in)')
+    )
+
+    customer = models.ForeignKey(
+        'customers.Customer',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='orders',
+        verbose_name=_('Customer'),
+        help_text=_('Customer who placed this order (if registered)')
+    )
+
+    # Order identification
+    order_number = models.CharField(
+        max_length=50,
+        verbose_name=_('Order number'),
+        help_text=_('Human-readable order number (e.g., ORD-2024-0001)')
+    )
+
+    # Status and type
+    status = models.CharField(
+        max_length=20,
+        choices=OrderStatus.choices,
+        default=OrderStatus.PENDING,
+        db_index=True,
+        verbose_name=_('Status'),
+        help_text=_('Current order status')
+    )
+
+    type = models.CharField(
+        max_length=20,
+        choices=OrderType.choices,
+        default=OrderType.DINE_IN,
+        db_index=True,
+        verbose_name=_('Type'),
+        help_text=_('Order type (dine-in, takeaway, delivery)')
+    )
+
+    # Payment information
+    payment_status = models.CharField(
+        max_length=20,
+        choices=PaymentStatus.choices,
+        default=PaymentStatus.PENDING,
+        db_index=True,
+        verbose_name=_('Payment status'),
+        help_text=_('Current payment status')
+    )
+
+    payment_method = models.CharField(
+        max_length=20,
+        choices=PaymentMethod.choices,
+        blank=True,
+        null=True,
+        verbose_name=_('Payment method'),
+        help_text=_('Payment method used')
+    )
+
+    # Financial details
+    subtotal = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        verbose_name=_('Subtotal'),
+        help_text=_('Sum of all items before tax and discount')
+    )
+
+    tax_amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        verbose_name=_('Tax amount'),
+        help_text=_('Total tax amount')
+    )
+
+    discount_amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        verbose_name=_('Discount amount'),
+        help_text=_('Total discount applied')
+    )
+
+    tip_amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        verbose_name=_('Tip amount'),
+        help_text=_('Tip/gratuity amount')
+    )
+
+    total_amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        verbose_name=_('Total amount'),
+        help_text=_('Final total (subtotal + tax - discount + tip)')
+    )
+
+    currency = models.CharField(
+        max_length=3,
+        default='TRY',
+        verbose_name=_('Currency'),
+        help_text=_('Currency code (ISO 4217)')
+    )
+
+    # Guest information
+    guest_count = models.PositiveSmallIntegerField(
+        default=1,
+        verbose_name=_('Guest count'),
+        help_text=_('Number of guests (for dine-in orders)')
+    )
+
+    # Notes and instructions
+    notes = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('Notes'),
+        help_text=_('Staff/kitchen notes about the order')
+    )
+
+    special_instructions = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('Special instructions'),
+        help_text=_('Customer special instructions or requests')
+    )
+
+    # Customer info (for guest checkout without registration)
+    customer_info = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name=_('Customer info'),
+        help_text=_('Guest customer details: name, phone, email')
+    )
+
+    # Delivery address (for delivery orders)
+    delivery_address = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name=_('Delivery address'),
+        help_text=_('Delivery address details: street, city, postal_code, etc.')
+    )
+
+    # Timestamps for workflow tracking
+    placed_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name=_('Placed at'),
+        help_text=_('Timestamp when order was placed')
+    )
+
+    confirmed_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name=_('Confirmed at'),
+        help_text=_('Timestamp when order was confirmed by staff')
+    )
+
+    preparing_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name=_('Preparing at'),
+        help_text=_('Timestamp when order preparation started')
+    )
+
+    ready_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name=_('Ready at'),
+        help_text=_('Timestamp when order was ready')
+    )
+
+    delivered_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name=_('Delivered at'),
+        help_text=_('Timestamp when order was delivered to customer')
+    )
+
+    completed_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name=_('Completed at'),
+        help_text=_('Timestamp when order was completed')
+    )
+
+    cancelled_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name=_('Cancelled at'),
+        help_text=_('Timestamp when order was cancelled')
+    )
+
+    cancel_reason = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('Cancel reason'),
+        help_text=_('Reason for order cancellation')
+    )
+
+    # Staff assignments
+    placed_by = models.ForeignKey(
+        'core.User',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='placed_orders',
+        verbose_name=_('Placed by'),
+        help_text=_('Staff member who placed the order')
+    )
+
+    assigned_to = models.ForeignKey(
+        'core.User',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='assigned_orders',
+        verbose_name=_('Assigned to'),
+        help_text=_('Staff member assigned to handle this order')
+    )
+
+    # Additional metadata
+    metadata = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name=_('Metadata'),
+        help_text=_('Additional order data (source, promo codes, etc.)')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'orders'
+        verbose_name = _('Order')
+        verbose_name_plural = _('Orders')
+        ordering = ['-created_at']
+        unique_together = [['organization', 'order_number']]
+        indexes = [
+            models.Index(fields=['organization', 'status'], name='order_org_status_idx'),
+            models.Index(fields=['organization', 'type'], name='order_org_type_idx'),
+            models.Index(fields=['organization', 'payment_status'], name='order_org_pay_status_idx'),
+            models.Index(fields=['organization', 'deleted_at'], name='order_org_deleted_idx'),
+            models.Index(fields=['organization', 'branch'], name='order_org_branch_idx'),
+            models.Index(fields=['organization', 'table'], name='order_org_table_idx'),
+            models.Index(fields=['organization', 'customer'], name='order_org_customer_idx'),
+            models.Index(fields=['organization', 'placed_at'], name='order_org_placed_idx'),
+            models.Index(fields=['organization', 'order_number'], name='order_org_number_idx'),
+            models.Index(fields=['table', 'status'], name='order_table_status_idx'),
+            models.Index(fields=['assigned_to', 'status'], name='order_assigned_status_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"Order {self.order_number} ({self.status})"
+
+    def __repr__(self) -> str:
+        return f"<Order(id={self.id}, number='{self.order_number}', status={self.status})>"
+
+    @property
+    def is_pending(self) -> bool:
+        """Check if order is pending."""
+        return self.status == OrderStatus.PENDING
+
+    @property
+    def is_confirmed(self) -> bool:
+        """Check if order has been confirmed."""
+        return self.status == OrderStatus.CONFIRMED
+
+    @property
+    def is_preparing(self) -> bool:
+        """Check if order is being prepared."""
+        return self.status == OrderStatus.PREPARING
+
+    @property
+    def is_ready(self) -> bool:
+        """Check if order is ready."""
+        return self.status == OrderStatus.READY
+
+    @property
+    def is_delivered(self) -> bool:
+        """Check if order has been delivered."""
+        return self.status == OrderStatus.DELIVERED
+
+    @property
+    def is_completed(self) -> bool:
+        """Check if order is completed."""
+        return self.status == OrderStatus.COMPLETED
+
+    @property
+    def is_cancelled(self) -> bool:
+        """Check if order has been cancelled."""
+        return self.status == OrderStatus.CANCELLED
+
+    @property
+    def is_active(self) -> bool:
+        """Check if order is in an active state (not completed or cancelled)."""
+        return self.status not in [OrderStatus.COMPLETED, OrderStatus.CANCELLED]
+
+    @property
+    def is_paid(self) -> bool:
+        """Check if order has been fully paid."""
+        return self.payment_status == PaymentStatus.PAID
+
+    @property
+    def is_dine_in(self) -> bool:
+        """Check if order is dine-in type."""
+        return self.type == OrderType.DINE_IN
+
+    @property
+    def is_takeaway(self) -> bool:
+        """Check if order is takeaway type."""
+        return self.type == OrderType.TAKEAWAY
+
+    @property
+    def is_delivery(self) -> bool:
+        """Check if order is delivery type."""
+        return self.type == OrderType.DELIVERY
+
+    @property
+    def customer_name(self) -> str:
+        """Get customer name from customer object or customer_info."""
+        if self.customer:
+            return self.customer.full_name
+        return self.customer_info.get('name', _('Guest'))
+
+    @property
+    def customer_phone(self) -> str | None:
+        """Get customer phone from customer object or customer_info."""
+        if self.customer:
+            return self.customer.phone
+        return self.customer_info.get('phone')
+
+    @property
+    def customer_email(self) -> str | None:
+        """Get customer email from customer object or customer_info."""
+        if self.customer:
+            return self.customer.email
+        return self.customer_info.get('email')
+
+    @property
+    def item_count(self) -> int:
+        """Return the number of items in this order."""
+        return self.items.filter(deleted_at__isnull=True).count()
+
+    @property
+    def item_quantity(self) -> int:
+        """Return the total quantity of all items in this order."""
+        from django.db.models import Sum
+        result = self.items.filter(deleted_at__isnull=True).aggregate(
+            total=Sum('quantity')
+        )
+        return result['total'] or 0
+
+    def calculate_totals(self, save: bool = True) -> None:
+        """
+        Calculate and update order totals from items.
+
+        This method recalculates subtotal based on order items,
+        then calculates total_amount including tax, discount, and tip.
+
+        Args:
+            save: Whether to save the order after calculation
+        """
+        from django.db.models import Sum, F, DecimalField
+        from django.db.models.functions import Coalesce
+        from decimal import Decimal
+
+        # Calculate subtotal from items
+        result = self.items.filter(deleted_at__isnull=True).aggregate(
+            subtotal=Coalesce(
+                Sum(F('quantity') * F('unit_price'), output_field=DecimalField()),
+                Decimal('0')
+            )
+        )
+        self.subtotal = result['subtotal'] or Decimal('0')
+
+        # Calculate total
+        self.total_amount = (
+            self.subtotal
+            + self.tax_amount
+            - self.discount_amount
+            + self.tip_amount
+        )
+
+        if save:
+            self.save(update_fields=[
+                'subtotal', 'total_amount', 'updated_at'
+            ])
+
+    def set_status(self, status: str, timestamp_field: str = None) -> None:
+        """
+        Set the order status and optionally update a timestamp field.
+
+        Args:
+            status: OrderStatus value
+            timestamp_field: Optional field name to update with current time
+        """
+        from django.utils import timezone
+
+        if status not in OrderStatus.values:
+            raise ValueError(f"Invalid status: {status}. Must be one of {OrderStatus.values}")
+
+        self.status = status
+        update_fields = ['status', 'updated_at']
+
+        if timestamp_field:
+            setattr(self, timestamp_field, timezone.now())
+            update_fields.append(timestamp_field)
+
+        self.save(update_fields=update_fields)
+
+    def confirm(self) -> None:
+        """Confirm the order (staff acknowledges it)."""
+        if self.status != OrderStatus.PENDING:
+            raise ValueError(f"Cannot confirm order with status {self.status}")
+        self.set_status(OrderStatus.CONFIRMED, 'confirmed_at')
+
+    def start_preparation(self) -> None:
+        """Start preparing the order (kitchen/bar begins work)."""
+        if self.status != OrderStatus.CONFIRMED:
+            raise ValueError(f"Cannot start preparation for order with status {self.status}")
+        self.set_status(OrderStatus.PREPARING, 'preparing_at')
+
+    def mark_ready(self) -> None:
+        """Mark the order as ready for pickup/delivery."""
+        if self.status != OrderStatus.PREPARING:
+            raise ValueError(f"Cannot mark ready order with status {self.status}")
+        self.set_status(OrderStatus.READY, 'ready_at')
+
+    def deliver(self) -> None:
+        """Mark the order as delivered to customer."""
+        if self.status != OrderStatus.READY:
+            raise ValueError(f"Cannot deliver order with status {self.status}")
+        self.set_status(OrderStatus.DELIVERED, 'delivered_at')
+
+    def complete(self) -> None:
+        """Complete the order (fully done and paid)."""
+        if self.status not in [OrderStatus.READY, OrderStatus.DELIVERED]:
+            raise ValueError(f"Cannot complete order with status {self.status}")
+        self.set_status(OrderStatus.COMPLETED, 'completed_at')
+
+    def cancel(self, reason: str = None) -> None:
+        """
+        Cancel the order.
+
+        Args:
+            reason: Optional reason for cancellation
+        """
+        from django.utils import timezone
+
+        if self.status in [OrderStatus.COMPLETED, OrderStatus.CANCELLED]:
+            raise ValueError(f"Cannot cancel order with status {self.status}")
+
+        self.status = OrderStatus.CANCELLED
+        self.cancelled_at = timezone.now()
+        if reason:
+            self.cancel_reason = reason
+        self.save(update_fields=['status', 'cancelled_at', 'cancel_reason', 'updated_at'])
+
+    def set_payment_status(self, status: str, method: str = None) -> None:
+        """
+        Set the payment status and optionally the payment method.
+
+        Args:
+            status: PaymentStatus value
+            method: Optional PaymentMethod value
+        """
+        if status not in PaymentStatus.values:
+            raise ValueError(f"Invalid payment status: {status}")
+
+        self.payment_status = status
+        update_fields = ['payment_status', 'updated_at']
+
+        if method:
+            if method not in PaymentMethod.values:
+                raise ValueError(f"Invalid payment method: {method}")
+            self.payment_method = method
+            update_fields.append('payment_method')
+
+        self.save(update_fields=update_fields)
+
+    def mark_paid(self, method: str = None) -> None:
+        """
+        Mark the order as fully paid.
+
+        Args:
+            method: Optional payment method used
+        """
+        self.set_payment_status(PaymentStatus.PAID, method)
+
+    def assign_to(self, user) -> None:
+        """
+        Assign the order to a staff member.
+
+        Args:
+            user: User to assign the order to
+        """
+        self.assigned_to = user
+        self.save(update_fields=['assigned_to', 'updated_at'])
+
+    def get_metadata(self, key: str, default=None):
+        """
+        Get a value from order metadata.
+
+        Args:
+            key: The metadata key to retrieve
+            default: Default value if key not found
+
+        Returns:
+            The metadata value or default
+        """
+        return self.metadata.get(key, default)
+
+    def set_metadata(self, key: str, value) -> None:
+        """
+        Set a value in order metadata.
+
+        Args:
+            key: The metadata key
+            value: The value to set
+        """
+        self.metadata[key] = value
+        self.save(update_fields=['metadata', 'updated_at'])
+
+    def get_customer_info(self, key: str, default=None):
+        """
+        Get a value from customer_info.
+
+        Args:
+            key: The key to retrieve (name, phone, email)
+            default: Default value if key not found
+
+        Returns:
+            The value or default
+        """
+        return self.customer_info.get(key, default)
+
+    def set_customer_info(self, **kwargs) -> None:
+        """
+        Set customer info fields.
+
+        Args:
+            **kwargs: Key-value pairs to set (name, phone, email)
+        """
+        self.customer_info.update(kwargs)
+        self.save(update_fields=['customer_info', 'updated_at'])
+
+    def get_delivery_address(self, key: str = None, default=None):
+        """
+        Get delivery address or a specific field.
+
+        Args:
+            key: Optional key to retrieve from address
+            default: Default value if key not found
+
+        Returns:
+            Full address dict or specific field value
+        """
+        if key:
+            return self.delivery_address.get(key, default)
+        return self.delivery_address
+
+    def set_delivery_address(self, **kwargs) -> None:
+        """
+        Set delivery address fields.
+
+        Args:
+            **kwargs: Key-value pairs for address (street, city, postal_code, etc.)
+        """
+        self.delivery_address.update(kwargs)
+        self.save(update_fields=['delivery_address', 'updated_at'])
