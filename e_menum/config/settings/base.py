@@ -143,7 +143,7 @@ LOCAL_APPS = [
     'apps.orders.apps.OrdersConfig',
     'apps.subscriptions.apps.SubscriptionsConfig',
     'apps.customers.apps.CustomersConfig',
-    # 'apps.media.apps.MediaConfig',
+    'apps.media.apps.MediaConfig',
     # 'apps.notifications.apps.NotificationsConfig',
     # 'apps.analytics.apps.AnalyticsConfig',
     # 'apps.ai.apps.AiConfig',
