@@ -6,8 +6,8 @@ This module defines the menu-related models for E-Menum:
 - Menu: Restaurant menu container for organizing categories and products
 - Category: Product categories with nested support (hierarchical structure)
 - Product: Individual menu items (to be added in subtask-4-4)
-- ProductVariant: Size/portion options (to be added in subtask-4-5)
-- ProductModifier: Add-on options (to be added in subtask-4-5)
+- ProductVariant: Size/portion options (e.g., "Small", "Large")
+- ProductModifier: Add-on options (e.g., "Extra Cheese", "No Onion")
 - Allergen: Platform-level allergen definitions (to be added in subtask-4-6)
 - ProductAllergen: Junction table for product-allergen relationships (to be added in subtask-4-6)
 - NutritionInfo: One-to-one nutritional data per product (to be added in subtask-4-6)
@@ -1220,3 +1220,402 @@ class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def menu(self):
         """Get the menu this product belongs to via category."""
         return self.category.menu
+
+    @property
+    def variant_count(self) -> int:
+        """Return the number of active variants for this product."""
+        if hasattr(self, 'variants'):
+            return self.variants.filter(deleted_at__isnull=True).count()
+        return 0
+
+    @property
+    def modifier_count(self) -> int:
+        """Return the number of active modifiers for this product."""
+        if hasattr(self, 'modifiers'):
+            return self.modifiers.filter(deleted_at__isnull=True).count()
+        return 0
+
+    @property
+    def has_variants(self) -> bool:
+        """Check if product has any active variants."""
+        return self.variant_count > 0
+
+    @property
+    def has_modifiers(self) -> bool:
+        """Check if product has any active modifiers."""
+        return self.modifier_count > 0
+
+
+class ProductVariant(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    ProductVariant model - size/portion options for products.
+
+    Variants represent different sizes or portions of a product,
+    each with potentially different pricing. For example, a coffee
+    might have "Small", "Medium", and "Large" variants.
+
+    Critical Rules:
+    - EVERY query MUST filter by organization (via product lookup)
+    - Use soft_delete() - never call delete() directly
+    - Only one variant per product should be marked as is_default
+
+    Attributes:
+        id: UUID primary key (ensures global uniqueness)
+        product: FK to parent Product
+        name: Display name of the variant (e.g., "Small", "Large")
+        price: Price for this variant (may differ from base price)
+        is_default: Whether this is the default selected variant
+        is_available: Whether the variant is in stock
+        sort_order: Display order within the product
+
+    Usage:
+        # Create variants for a product
+        small = ProductVariant.objects.create(
+            product=coffee,
+            name="Small",
+            price=Decimal("25.00"),
+            is_default=True
+        )
+        large = ProductVariant.objects.create(
+            product=coffee,
+            name="Large",
+            price=Decimal("35.00")
+        )
+
+        # Query variants for a product
+        variants = ProductVariant.objects.filter(product=product)
+
+        # Get default variant
+        default = ProductVariant.objects.filter(
+            product=product,
+            is_default=True
+        ).first()
+
+        # Soft delete variant (NEVER use delete())
+        variant.soft_delete()
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='variants',
+        verbose_name=_('Product'),
+        help_text=_('Product this variant belongs to')
+    )
+
+    name = models.CharField(
+        max_length=100,
+        verbose_name=_('Name'),
+        help_text=_('Display name of the variant (e.g., Small, Large, Regular)')
+    )
+
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name=_('Price'),
+        help_text=_('Price for this variant')
+    )
+
+    is_default = models.BooleanField(
+        default=False,
+        db_index=True,
+        verbose_name=_('Is default'),
+        help_text=_('Whether this is the default selected variant')
+    )
+
+    is_available = models.BooleanField(
+        default=True,
+        db_index=True,
+        verbose_name=_('Is available'),
+        help_text=_('Whether the variant is in stock/available')
+    )
+
+    sort_order = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_('Sort order'),
+        help_text=_('Display order within the product (lower numbers appear first)')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'product_variants'
+        verbose_name = _('Product Variant')
+        verbose_name_plural = _('Product Variants')
+        ordering = ['sort_order', 'name']
+        indexes = [
+            models.Index(fields=['product', 'sort_order'], name='variant_product_sort_idx'),
+            models.Index(fields=['product', 'is_default'], name='variant_product_default_idx'),
+            models.Index(fields=['product', 'deleted_at'], name='variant_product_deleted_idx'),
+            models.Index(fields=['product', 'is_available'], name='variant_product_avail_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.product.name} - {self.name}"
+
+    def __repr__(self) -> str:
+        return f"<ProductVariant(id={self.id}, name='{self.name}', product='{self.product.name}')>"
+
+    @property
+    def is_orderable(self) -> bool:
+        """Check if variant can be ordered (available, not deleted)."""
+        return self.is_available and not self.is_deleted
+
+    @property
+    def formatted_price(self) -> str:
+        """Return formatted price with currency symbol."""
+        currency_symbols = {
+            'TRY': '₺',
+            'USD': '$',
+            'EUR': '€',
+            'GBP': '£',
+        }
+        currency = self.product.currency
+        symbol = currency_symbols.get(currency, currency)
+        return f"{symbol}{self.price:,.2f}"
+
+    @property
+    def price_difference(self):
+        """
+        Get the price difference from the base product price.
+
+        Returns:
+            Decimal: Positive if variant costs more, negative if less
+        """
+        return self.price - self.product.base_price
+
+    def set_as_default(self) -> None:
+        """
+        Set this variant as the default for the product.
+
+        Clears is_default flag on all other variants for the same product
+        and sets this variant as default.
+        """
+        # Clear default flag on other variants
+        ProductVariant.objects.filter(
+            product=self.product,
+            is_default=True
+        ).exclude(pk=self.pk).update(is_default=False)
+
+        # Set this variant as default
+        self.is_default = True
+        self.save(update_fields=['is_default', 'updated_at'])
+
+    def set_availability(self, is_available: bool) -> None:
+        """
+        Set variant availability (in stock / out of stock).
+
+        Args:
+            is_available: Whether the variant is available
+        """
+        self.is_available = is_available
+        self.save(update_fields=['is_available', 'updated_at'])
+
+    @property
+    def organization(self):
+        """Get the organization this variant belongs to via product."""
+        return self.product.organization
+
+
+class ProductModifier(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    ProductModifier model - add-on options for products.
+
+    Modifiers represent optional additions or customizations to a product,
+    each with an additional cost. For example, a burger might have
+    "Extra Cheese", "Extra Bacon", or "No Onion" modifiers.
+
+    Critical Rules:
+    - EVERY query MUST filter by organization (via product lookup)
+    - Use soft_delete() - never call delete() directly
+    - Modifiers marked as is_required must be selected by the customer
+
+    Attributes:
+        id: UUID primary key (ensures global uniqueness)
+        product: FK to parent Product
+        name: Display name of the modifier (e.g., "Extra Cheese")
+        price: Additional cost for this modifier
+        is_default: Whether the modifier is pre-selected
+        is_required: Whether the customer must select this modifier
+        max_quantity: Maximum times this modifier can be added
+        sort_order: Display order within the product
+
+    Usage:
+        # Create modifiers for a product
+        extra_cheese = ProductModifier.objects.create(
+            product=burger,
+            name="Extra Cheese",
+            price=Decimal("15.00"),
+            max_quantity=2
+        )
+        no_onion = ProductModifier.objects.create(
+            product=burger,
+            name="No Onion",
+            price=Decimal("0.00")  # Free modification
+        )
+
+        # Query modifiers for a product
+        modifiers = ProductModifier.objects.filter(product=product)
+
+        # Get required modifiers
+        required = ProductModifier.objects.filter(
+            product=product,
+            is_required=True
+        )
+
+        # Soft delete modifier (NEVER use delete())
+        modifier.soft_delete()
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='modifiers',
+        verbose_name=_('Product'),
+        help_text=_('Product this modifier belongs to')
+    )
+
+    name = models.CharField(
+        max_length=100,
+        verbose_name=_('Name'),
+        help_text=_('Display name of the modifier (e.g., Extra Cheese, No Onion)')
+    )
+
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        verbose_name=_('Price'),
+        help_text=_('Additional cost for this modifier (can be 0 for free mods)')
+    )
+
+    is_default = models.BooleanField(
+        default=False,
+        db_index=True,
+        verbose_name=_('Is default'),
+        help_text=_('Whether this modifier is pre-selected by default')
+    )
+
+    is_required = models.BooleanField(
+        default=False,
+        db_index=True,
+        verbose_name=_('Is required'),
+        help_text=_('Whether the customer must select this modifier')
+    )
+
+    max_quantity = models.PositiveIntegerField(
+        default=1,
+        verbose_name=_('Max quantity'),
+        help_text=_('Maximum times this modifier can be added to the order')
+    )
+
+    sort_order = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_('Sort order'),
+        help_text=_('Display order within the product (lower numbers appear first)')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'product_modifiers'
+        verbose_name = _('Product Modifier')
+        verbose_name_plural = _('Product Modifiers')
+        ordering = ['sort_order', 'name']
+        indexes = [
+            models.Index(fields=['product', 'sort_order'], name='modifier_product_sort_idx'),
+            models.Index(fields=['product', 'is_required'], name='modifier_product_req_idx'),
+            models.Index(fields=['product', 'is_default'], name='modifier_product_default_idx'),
+            models.Index(fields=['product', 'deleted_at'], name='modifier_product_deleted_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.product.name} - {self.name}"
+
+    def __repr__(self) -> str:
+        return f"<ProductModifier(id={self.id}, name='{self.name}', product='{self.product.name}')>"
+
+    @property
+    def is_free(self) -> bool:
+        """Check if the modifier has no additional cost."""
+        return self.price == 0
+
+    @property
+    def formatted_price(self) -> str:
+        """Return formatted price with currency symbol."""
+        if self.is_free:
+            return _('Free')
+        currency_symbols = {
+            'TRY': '₺',
+            'USD': '$',
+            'EUR': '€',
+            'GBP': '£',
+        }
+        currency = self.product.currency
+        symbol = currency_symbols.get(currency, currency)
+        return f"+{symbol}{self.price:,.2f}"
+
+    @property
+    def allows_multiple(self) -> bool:
+        """Check if multiple quantities of this modifier are allowed."""
+        return self.max_quantity > 1
+
+    def set_as_required(self, is_required: bool = True) -> None:
+        """
+        Set whether this modifier is required.
+
+        Args:
+            is_required: Whether the modifier is required
+        """
+        self.is_required = is_required
+        self.save(update_fields=['is_required', 'updated_at'])
+
+    def set_as_default(self, is_default: bool = True) -> None:
+        """
+        Set whether this modifier is pre-selected by default.
+
+        Args:
+            is_default: Whether the modifier is pre-selected
+        """
+        self.is_default = is_default
+        self.save(update_fields=['is_default', 'updated_at'])
+
+    def update_max_quantity(self, max_quantity: int) -> None:
+        """
+        Update the maximum quantity for this modifier.
+
+        Args:
+            max_quantity: New maximum quantity (must be >= 1)
+
+        Raises:
+            ValueError: If max_quantity is less than 1
+        """
+        if max_quantity < 1:
+            raise ValueError("max_quantity must be at least 1")
+        self.max_quantity = max_quantity
+        self.save(update_fields=['max_quantity', 'updated_at'])
+
+    @property
+    def organization(self):
+        """Get the organization this modifier belongs to via product."""
+        return self.product.organization
