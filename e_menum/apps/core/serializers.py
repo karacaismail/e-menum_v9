@@ -144,6 +144,369 @@ class OrganizationMinimalSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
+class OrganizationListSerializer(serializers.ModelSerializer):
+    """
+    Organization serializer for list views.
+
+    Includes summary information about the organization.
+    """
+
+    user_count = serializers.SerializerMethodField()
+    is_on_trial = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = Organization
+        fields = [
+            'id',
+            'name',
+            'slug',
+            'email',
+            'phone',
+            'logo',
+            'status',
+            'is_on_trial',
+            'trial_ends_at',
+            'user_count',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = fields
+
+    def get_user_count(self, obj):
+        """Get the count of active users in the organization."""
+        return obj.users.filter(deleted_at__isnull=True).count()
+
+
+class OrganizationDetailSerializer(serializers.ModelSerializer):
+    """
+    Full organization serializer for detail views.
+
+    Includes all organization fields and computed properties.
+    """
+
+    user_count = serializers.SerializerMethodField()
+    branch_count = serializers.SerializerMethodField()
+    is_active = serializers.BooleanField(read_only=True)
+    is_on_trial = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = Organization
+        fields = [
+            'id',
+            'name',
+            'slug',
+            'email',
+            'phone',
+            'logo',
+            'settings',
+            'status',
+            'is_active',
+            'is_on_trial',
+            'trial_ends_at',
+            'user_count',
+            'branch_count',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = [
+            'id',
+            'slug',
+            'is_active',
+            'is_on_trial',
+            'user_count',
+            'branch_count',
+            'created_at',
+            'updated_at',
+        ]
+
+    def get_user_count(self, obj):
+        """Get the count of active users in the organization."""
+        return obj.users.filter(deleted_at__isnull=True).count()
+
+    def get_branch_count(self, obj):
+        """Get the count of active branches in the organization."""
+        return obj.branches.filter(deleted_at__isnull=True).count()
+
+
+class OrganizationCreateSerializer(serializers.ModelSerializer):
+    """
+    Serializer for creating a new organization.
+
+    Generates slug automatically from name if not provided.
+    """
+
+    class Meta:
+        model = Organization
+        fields = [
+            'name',
+            'slug',
+            'email',
+            'phone',
+            'logo',
+            'settings',
+        ]
+        extra_kwargs = {
+            'slug': {'required': False},
+        }
+
+    def validate_slug(self, value):
+        """Ensure slug is unique."""
+        if value and Organization.objects.filter(slug=value).exists():
+            raise serializers.ValidationError(
+                _('An organization with this slug already exists.')
+            )
+        return value
+
+    def create(self, validated_data):
+        """Create organization with auto-generated slug if not provided."""
+        from django.utils.text import slugify
+        import uuid
+
+        if 'slug' not in validated_data or not validated_data['slug']:
+            base_slug = slugify(validated_data['name'])
+            slug = base_slug
+            counter = 1
+            while Organization.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            validated_data['slug'] = slug
+
+        return super().create(validated_data)
+
+
+class OrganizationUpdateSerializer(serializers.ModelSerializer):
+    """
+    Serializer for updating organization information.
+
+    Restricts which fields can be updated.
+    """
+
+    class Meta:
+        model = Organization
+        fields = [
+            'name',
+            'email',
+            'phone',
+            'logo',
+            'settings',
+        ]
+
+
+# =============================================================================
+# USER MANAGEMENT SERIALIZERS
+# =============================================================================
+
+class UserListSerializer(serializers.ModelSerializer):
+    """
+    User serializer for list views.
+
+    Optimized for listing users with minimal data.
+    """
+
+    full_name = serializers.CharField(read_only=True)
+    is_active_user = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'email',
+            'first_name',
+            'last_name',
+            'full_name',
+            'avatar',
+            'phone',
+            'status',
+            'is_active_user',
+            'is_staff',
+            'email_verified_at',
+            'last_login_at',
+            'created_at',
+        ]
+        read_only_fields = fields
+
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    """
+    Full user serializer for detail views.
+
+    Includes all user fields and related organization info.
+    """
+
+    full_name = serializers.CharField(read_only=True)
+    is_active_user = serializers.BooleanField(read_only=True)
+    is_email_verified = serializers.BooleanField(read_only=True)
+    organization_name = serializers.CharField(
+        source='organization.name',
+        read_only=True,
+        allow_null=True
+    )
+    roles = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'email',
+            'first_name',
+            'last_name',
+            'full_name',
+            'avatar',
+            'phone',
+            'status',
+            'is_active_user',
+            'is_staff',
+            'is_superuser',
+            'is_email_verified',
+            'email_verified_at',
+            'last_login_at',
+            'organization',
+            'organization_name',
+            'roles',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = [
+            'id',
+            'email',
+            'is_active_user',
+            'is_email_verified',
+            'is_staff',
+            'is_superuser',
+            'email_verified_at',
+            'last_login_at',
+            'created_at',
+            'updated_at',
+        ]
+
+    def get_roles(self, obj):
+        """Get the user's roles within their organization."""
+        from apps.core.models import UserRole
+        user_roles = UserRole.objects.filter(
+            user=obj,
+            organization=obj.organization
+        ).select_related('role')
+        return [
+            {
+                'id': str(ur.role.id),
+                'name': ur.role.name,
+                'display_name': ur.role.display_name,
+            }
+            for ur in user_roles
+        ]
+
+
+class UserCreateSerializer(serializers.ModelSerializer):
+    """
+    Serializer for creating a new user within an organization.
+
+    Requires password and handles initial user setup.
+    """
+
+    password = serializers.CharField(
+        write_only=True,
+        min_length=12,
+        style={'input_type': 'password'},
+        help_text=_('Password (minimum 12 characters)')
+    )
+    confirm_password = serializers.CharField(
+        write_only=True,
+        style={'input_type': 'password'},
+        help_text=_('Confirm password')
+    )
+    role = serializers.UUIDField(
+        required=False,
+        write_only=True,
+        help_text=_('Role ID to assign to the user')
+    )
+
+    class Meta:
+        model = User
+        fields = [
+            'email',
+            'first_name',
+            'last_name',
+            'phone',
+            'password',
+            'confirm_password',
+            'role',
+        ]
+
+    def validate_email(self, value):
+        """Ensure email is unique."""
+        email = value.lower().strip()
+        if User.objects.filter(email=email).exists():
+            raise serializers.ValidationError(
+                _('A user with this email already exists.')
+            )
+        return email
+
+    def validate(self, attrs):
+        """Validate password confirmation."""
+        if attrs.get('password') != attrs.get('confirm_password'):
+            raise serializers.ValidationError({
+                'confirm_password': _('Passwords do not match.')
+            })
+        return attrs
+
+    def create(self, validated_data):
+        """Create user with password and optional role assignment."""
+        from apps.core.models import Role, UserRole
+
+        validated_data.pop('confirm_password', None)
+        role_id = validated_data.pop('role', None)
+        password = validated_data.pop('password')
+        organization = validated_data.get('organization')
+
+        user = User.objects.create_user(
+            password=password,
+            **validated_data
+        )
+
+        # Assign role if provided
+        if role_id and organization:
+            try:
+                role = Role.objects.get(id=role_id)
+                UserRole.objects.create(
+                    user=user,
+                    role=role,
+                    organization=organization,
+                    granted_by=self.context['request'].user
+                )
+            except Role.DoesNotExist:
+                pass  # Silently ignore invalid role
+
+        return user
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    """
+    Serializer for updating user information.
+
+    Restricts which fields can be updated by organization managers.
+    """
+
+    class Meta:
+        model = User
+        fields = [
+            'first_name',
+            'last_name',
+            'phone',
+            'avatar',
+            'status',
+        ]
+
+    def validate_status(self, value):
+        """Prevent self-suspension."""
+        request = self.context.get('request')
+        if request and self.instance:
+            if self.instance.id == request.user.id and value == UserStatus.SUSPENDED:
+                raise serializers.ValidationError(
+                    _('You cannot suspend your own account.')
+                )
+        return value
+
+
 # =============================================================================
 # AUTHENTICATION SERIALIZERS
 # =============================================================================
@@ -505,13 +868,23 @@ class ErrorResponseSerializer(serializers.Serializer):
 # =============================================================================
 
 __all__ = [
-    # User serializers
+    # User serializers (minimal/profile)
     'UserMinimalSerializer',
     'UserSerializer',
     'UserProfileUpdateSerializer',
 
+    # User management serializers
+    'UserListSerializer',
+    'UserDetailSerializer',
+    'UserCreateSerializer',
+    'UserUpdateSerializer',
+
     # Organization serializers
     'OrganizationMinimalSerializer',
+    'OrganizationListSerializer',
+    'OrganizationDetailSerializer',
+    'OrganizationCreateSerializer',
+    'OrganizationUpdateSerializer',
 
     # Auth serializers
     'LoginSerializer',

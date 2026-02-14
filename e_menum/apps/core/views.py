@@ -43,7 +43,9 @@ from rest_framework_simplejwt.views import (
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 
-from apps.core.models import User, Session, AuditLog
+from django.db import models
+
+from apps.core.models import User, Session, AuditLog, Organization
 from apps.core.choices import AuditAction, SessionStatus
 from apps.core.serializers import (
     LoginSerializer,
@@ -56,11 +58,22 @@ from apps.core.serializers import (
     PasswordChangeSerializer,
     SessionSerializer,
     OrganizationMinimalSerializer,
+    # Organization management serializers
+    OrganizationListSerializer,
+    OrganizationDetailSerializer,
+    OrganizationCreateSerializer,
+    OrganizationUpdateSerializer,
+    # User management serializers
+    UserListSerializer,
+    UserDetailSerializer,
+    UserCreateSerializer,
+    UserUpdateSerializer,
 )
 from shared.utils.exceptions import (
     ErrorCodes,
     AuthenticationException,
 )
+from shared.views import BaseTenantViewSet, BaseModelViewSet
 
 
 # =============================================================================
@@ -726,6 +739,262 @@ class SessionRevokeAllView(APIView):
 
 
 # =============================================================================
+# ORGANIZATION VIEWSET
+# =============================================================================
+
+class OrganizationViewSet(BaseModelViewSet):
+    """
+    ViewSet for organization management.
+
+    This is a platform-level viewset that allows platform admins to manage
+    all organizations. For organization members managing their own org,
+    use the /api/v1/auth/me/organization/ endpoints.
+
+    API Endpoints:
+        GET    /api/v1/organizations/         - List all organizations
+        POST   /api/v1/organizations/         - Create a new organization
+        GET    /api/v1/organizations/{id}/    - Get organization details
+        PUT    /api/v1/organizations/{id}/    - Update organization
+        DELETE /api/v1/organizations/{id}/    - Soft delete organization
+
+    Permissions:
+        - Requires authentication
+        - Requires platform admin role for full access
+        - Organization owners can view their own organization
+    """
+
+    queryset = Organization.objects.all()
+    permission_resource = 'organization'
+
+    def get_serializer_class(self):
+        """Return the appropriate serializer based on action."""
+        if self.action == 'list':
+            return OrganizationListSerializer
+        elif self.action == 'create':
+            return OrganizationCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return OrganizationUpdateSerializer
+        return OrganizationDetailSerializer
+
+    def get_queryset(self):
+        """
+        Filter queryset based on user permissions.
+
+        Platform admins can see all organizations.
+        Regular users can only see their own organization.
+        """
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        if not user.is_authenticated:
+            return queryset.none()
+
+        # Platform admins (superusers or staff) can see all
+        if user.is_superuser or user.is_staff:
+            return queryset
+
+        # Regular users can only see their own organization
+        if user.organization:
+            return queryset.filter(id=user.organization.id)
+
+        return queryset.none()
+
+    def perform_create(self, serializer):
+        """Create organization."""
+        organization = serializer.save()
+
+        # Log audit event
+        AuditLog.log_action(
+            action=AuditAction.CREATE,
+            resource='organization',
+            resource_id=str(organization.id),
+            user=self.request.user,
+            organization=organization,
+            description=f'Created organization: {organization.name}',
+            new_values=serializer.validated_data,
+            ip_address=get_client_ip(self.request),
+            user_agent=self.request.META.get('HTTP_USER_AGENT', '')[:500]
+        )
+
+    def perform_update(self, serializer):
+        """Update organization with audit logging."""
+        old_values = {
+            'name': serializer.instance.name,
+            'email': serializer.instance.email,
+            'phone': serializer.instance.phone,
+        }
+
+        organization = serializer.save()
+
+        # Log audit event
+        AuditLog.log_action(
+            action=AuditAction.UPDATE,
+            resource='organization',
+            resource_id=str(organization.id),
+            user=self.request.user,
+            organization=organization,
+            description=f'Updated organization: {organization.name}',
+            old_values=old_values,
+            new_values=serializer.validated_data,
+            ip_address=get_client_ip(self.request),
+            user_agent=self.request.META.get('HTTP_USER_AGENT', '')[:500]
+        )
+
+    def perform_destroy(self, instance):
+        """Soft delete organization with audit logging."""
+        # Log audit event before deletion
+        AuditLog.log_action(
+            action=AuditAction.DELETE,
+            resource='organization',
+            resource_id=str(instance.id),
+            user=self.request.user,
+            organization=instance,
+            description=f'Deleted organization: {instance.name}',
+            ip_address=get_client_ip(self.request),
+            user_agent=self.request.META.get('HTTP_USER_AGENT', '')[:500]
+        )
+
+        # Soft delete (inherited from BaseModelViewSet)
+        super().perform_destroy(instance)
+
+
+# =============================================================================
+# USER VIEWSET
+# =============================================================================
+
+class UserViewSet(BaseTenantViewSet):
+    """
+    ViewSet for user management within an organization.
+
+    Allows organization owners/managers to manage users in their organization.
+
+    API Endpoints:
+        GET    /api/v1/users/         - List organization users
+        POST   /api/v1/users/         - Create a new user
+        GET    /api/v1/users/{id}/    - Get user details
+        PUT    /api/v1/users/{id}/    - Update user
+        DELETE /api/v1/users/{id}/    - Soft delete user
+
+    Permissions:
+        - Requires authentication
+        - Requires organization membership
+        - Requires user.view, user.create, user.update, user.delete permissions
+
+    Multi-Tenancy:
+        All queries are automatically filtered by the current organization.
+    """
+
+    queryset = User.objects.all()
+    permission_resource = 'user'
+
+    def get_serializer_class(self):
+        """Return the appropriate serializer based on action."""
+        if self.action == 'list':
+            return UserListSerializer
+        elif self.action == 'create':
+            return UserCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return UserUpdateSerializer
+        return UserDetailSerializer
+
+    def get_queryset(self):
+        """
+        Return users filtered by organization.
+
+        Uses TenantFilterMixin for automatic organization filtering.
+        """
+        queryset = super().get_queryset()
+
+        # Apply status filter if provided
+        status_filter = self.request.query_params.get('status')
+        if status_filter:
+            queryset = queryset.filter(status=status_filter)
+
+        # Apply search filter if provided
+        search = self.request.query_params.get('search')
+        if search:
+            queryset = queryset.filter(
+                models.Q(email__icontains=search) |
+                models.Q(first_name__icontains=search) |
+                models.Q(last_name__icontains=search)
+            )
+
+        return queryset.order_by('-created_at')
+
+    def perform_create(self, serializer):
+        """Create user within organization."""
+        organization = self.require_organization()
+        user = serializer.save(organization=organization)
+
+        # Log audit event
+        AuditLog.log_action(
+            action=AuditAction.CREATE,
+            resource='user',
+            resource_id=str(user.id),
+            user=self.request.user,
+            organization=organization,
+            description=f'Created user: {user.email}',
+            new_values={
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+            },
+            ip_address=get_client_ip(self.request),
+            user_agent=self.request.META.get('HTTP_USER_AGENT', '')[:500]
+        )
+
+    def perform_update(self, serializer):
+        """Update user with audit logging."""
+        instance = serializer.instance
+        old_values = {
+            'first_name': instance.first_name,
+            'last_name': instance.last_name,
+            'phone': instance.phone,
+            'status': instance.status,
+        }
+
+        user = serializer.save()
+
+        # Log audit event
+        AuditLog.log_action(
+            action=AuditAction.UPDATE,
+            resource='user',
+            resource_id=str(user.id),
+            user=self.request.user,
+            organization=user.organization,
+            description=f'Updated user: {user.email}',
+            old_values=old_values,
+            new_values=serializer.validated_data,
+            ip_address=get_client_ip(self.request),
+            user_agent=self.request.META.get('HTTP_USER_AGENT', '')[:500]
+        )
+
+    def perform_destroy(self, instance):
+        """Soft delete user with audit logging."""
+        # Prevent self-deletion
+        if instance.id == self.request.user.id:
+            from rest_framework.exceptions import ValidationError
+            raise ValidationError({
+                'detail': _('You cannot delete your own account.')
+            })
+
+        # Log audit event before deletion
+        AuditLog.log_action(
+            action=AuditAction.DELETE,
+            resource='user',
+            resource_id=str(instance.id),
+            user=self.request.user,
+            organization=instance.organization,
+            description=f'Deleted user: {instance.email}',
+            ip_address=get_client_ip(self.request),
+            user_agent=self.request.META.get('HTTP_USER_AGENT', '')[:500]
+        )
+
+        # Soft delete (inherited from BaseTenantViewSet)
+        super().perform_destroy(instance)
+
+
+# =============================================================================
 # EXPORTS
 # =============================================================================
 
@@ -744,6 +1013,10 @@ __all__ = [
     'SessionListView',
     'SessionRevokeView',
     'SessionRevokeAllView',
+
+    # ViewSets
+    'OrganizationViewSet',
+    'UserViewSet',
 
     # Utilities
     'get_client_ip',
