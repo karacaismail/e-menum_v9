@@ -26,6 +26,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from apps.core.choices import (
+    AuditAction,
     BranchStatus,
     OrganizationStatus,
     PermissionAction,
@@ -1376,3 +1377,252 @@ class RolePermission(TimeStampedMixin, models.Model):
 
     def __repr__(self) -> str:
         return f"<RolePermission(role='{self.role.name}', perm='{self.permission.code}')>"
+
+
+class AuditLog(models.Model):
+    """
+    AuditLog model - system-wide audit logging for compliance and security.
+
+    Captures all significant actions performed in the system, including who
+    performed the action, what was changed, and when it happened.
+
+    This is used for:
+    - Security analysis and threat detection
+    - Compliance reporting (KVKK/GDPR)
+    - Debugging and troubleshooting
+    - User activity tracking
+
+    Attributes:
+        id: UUID primary key
+        organization: Optional FK to Organization (for tenant-scoped audits)
+        user: FK to User who performed the action (null for system actions)
+        action: Type of action performed (CREATE, UPDATE, DELETE, etc.)
+        resource: Resource type affected (e.g., 'menu', 'order', 'user')
+        resource_id: ID of the affected resource
+        description: Human-readable description of the action
+        old_values: JSON snapshot of values before the change
+        new_values: JSON snapshot of values after the change
+        ip_address: Client IP address
+        user_agent: Client user agent string
+        metadata: Additional context data (JSON)
+        created_at: Timestamp when the action occurred
+
+    Usage:
+        # Log a create action
+        AuditLog.objects.create(
+            organization=org,
+            user=request.user,
+            action=AuditAction.CREATE,
+            resource='menu',
+            resource_id=str(menu.id),
+            description='Created menu "Akşam Menüsü"',
+            new_values={'name': 'Akşam Menüsü', 'is_published': False},
+            ip_address=get_client_ip(request),
+            user_agent=request.META.get('HTTP_USER_AGENT')
+        )
+
+        # Log an update action
+        AuditLog.objects.create(
+            organization=org,
+            user=request.user,
+            action=AuditAction.UPDATE,
+            resource='product',
+            resource_id=str(product.id),
+            description='Updated product price',
+            old_values={'price': '25.00'},
+            new_values={'price': '30.00'},
+            ip_address=get_client_ip(request)
+        )
+
+        # Query audit logs for an organization
+        logs = AuditLog.objects.filter(
+            organization=org,
+            created_at__gte=start_date
+        ).order_by('-created_at')
+
+    Notes:
+        - AuditLog records are NEVER deleted (no soft delete)
+        - Retention policy: 2 years, then archive to cold storage
+        - This model does NOT use SoftDeleteMixin intentionally
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='audit_logs',
+        verbose_name=_('Organization'),
+        help_text=_('Organization context for this audit log (null for platform-level actions)')
+    )
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='audit_logs',
+        verbose_name=_('User'),
+        help_text=_('User who performed the action (null for system actions)')
+    )
+
+    action = models.CharField(
+        max_length=30,
+        choices=AuditAction.choices,
+        db_index=True,
+        verbose_name=_('Action'),
+        help_text=_('Type of action performed')
+    )
+
+    resource = models.CharField(
+        max_length=50,
+        db_index=True,
+        verbose_name=_('Resource'),
+        help_text=_('Resource type affected (e.g., menu, order, user)')
+    )
+
+    resource_id = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        db_index=True,
+        verbose_name=_('Resource ID'),
+        help_text=_('ID of the affected resource')
+    )
+
+    description = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('Description'),
+        help_text=_('Human-readable description of the action')
+    )
+
+    old_values = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name=_('Old values'),
+        help_text=_('JSON snapshot of values before the change')
+    )
+
+    new_values = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name=_('New values'),
+        help_text=_('JSON snapshot of values after the change')
+    )
+
+    ip_address = models.GenericIPAddressField(
+        blank=True,
+        null=True,
+        verbose_name=_('IP address'),
+        help_text=_('Client IP address')
+    )
+
+    user_agent = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('User agent'),
+        help_text=_('Client user agent string')
+    )
+
+    metadata = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name=_('Metadata'),
+        help_text=_('Additional context data (JSON)')
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True,
+        verbose_name=_('Created at'),
+        help_text=_('Timestamp when the action occurred')
+    )
+
+    class Meta:
+        db_table = 'audit_logs'
+        verbose_name = _('Audit Log')
+        verbose_name_plural = _('Audit Logs')
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['organization', 'created_at'], name='audit_org_created_idx'),
+            models.Index(fields=['user', 'created_at'], name='audit_user_created_idx'),
+            models.Index(fields=['resource', 'resource_id'], name='audit_resource_idx'),
+            models.Index(fields=['action', 'created_at'], name='audit_action_created_idx'),
+            models.Index(fields=['organization', 'action', 'created_at'], name='audit_org_action_idx'),
+        ]
+
+    def __str__(self) -> str:
+        user_str = self.user.email if self.user else 'System'
+        return f"[{self.action}] {self.resource} by {user_str}"
+
+    def __repr__(self) -> str:
+        return f"<AuditLog(id={self.id}, action={self.action}, resource='{self.resource}')>"
+
+    @property
+    def has_changes(self) -> bool:
+        """Check if this audit log records any value changes."""
+        return bool(self.old_values) or bool(self.new_values)
+
+    @property
+    def changed_fields(self) -> list:
+        """Return list of field names that were changed."""
+        old_keys = set(self.old_values.keys()) if self.old_values else set()
+        new_keys = set(self.new_values.keys()) if self.new_values else set()
+        return list(old_keys | new_keys)
+
+    @classmethod
+    def log_action(
+        cls,
+        action: str,
+        resource: str,
+        resource_id: str = None,
+        user=None,
+        organization=None,
+        description: str = None,
+        old_values: dict = None,
+        new_values: dict = None,
+        ip_address: str = None,
+        user_agent: str = None,
+        metadata: dict = None
+    ) -> 'AuditLog':
+        """
+        Convenience method to create an audit log entry.
+
+        Args:
+            action: AuditAction value
+            resource: Resource type (e.g., 'menu', 'order')
+            resource_id: ID of the affected resource
+            user: User who performed the action
+            organization: Organization context
+            description: Human-readable description
+            old_values: Values before change
+            new_values: Values after change
+            ip_address: Client IP
+            user_agent: Client user agent
+            metadata: Additional context
+
+        Returns:
+            AuditLog: The created audit log entry
+        """
+        return cls.objects.create(
+            action=action,
+            resource=resource,
+            resource_id=resource_id,
+            user=user,
+            organization=organization,
+            description=description,
+            old_values=old_values or {},
+            new_values=new_values or {},
+            ip_address=ip_address,
+            user_agent=user_agent,
+            metadata=metadata or {}
+        )
