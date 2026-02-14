@@ -5,15 +5,15 @@ This module defines the menu-related models for E-Menum:
 - Theme: Menu styling customization with colors, fonts, and CSS options
 - Menu: Restaurant menu container for organizing categories and products
 - Category: Product categories with nested support (hierarchical structure)
-- Product: Individual menu items (to be added in subtask-4-4)
+- Product: Individual menu items with pricing and attributes
 - ProductVariant: Size/portion options (e.g., "Small", "Large")
 - ProductModifier: Add-on options (e.g., "Extra Cheese", "No Onion")
-- Allergen: Platform-level allergen definitions (to be added in subtask-4-6)
-- ProductAllergen: Junction table for product-allergen relationships (to be added in subtask-4-6)
-- NutritionInfo: One-to-one nutritional data per product (to be added in subtask-4-6)
+- Allergen: Platform-level allergen definitions (global, not tenant-specific)
+- ProductAllergen: Junction table for product-allergen relationships
+- NutritionInfo: One-to-one nutritional data per product
 
 Critical Rules:
-- Every query MUST include organization_id for tenant isolation
+- Every query MUST include organization_id for tenant isolation (except Allergen which is platform-level)
 - All entities use soft delete (deleted_at timestamp)
 - No physical deletions allowed (use soft_delete method)
 """
@@ -1619,3 +1619,595 @@ class ProductModifier(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def organization(self):
         """Get the organization this modifier belongs to via product."""
         return self.product.organization
+
+
+class AllergenSeverity(models.TextChoices):
+    """Allergen severity levels for product-allergen relationships."""
+    CONTAINS = 'contains', _('Contains')
+    MAY_CONTAIN = 'may_contain', _('May Contain')
+    TRACES = 'traces', _('Traces')
+
+
+class Allergen(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    Allergen model - platform-level allergen definitions.
+
+    Allergens are defined at the platform level (not tenant-specific) and can
+    be associated with products through the ProductAllergen junction table.
+    This ensures consistent allergen information across all organizations.
+
+    Common allergens include: Gluten, Dairy, Nuts, Peanuts, Soy, Eggs,
+    Fish, Shellfish, Sesame, Celery, Mustard, Lupin, Molluscs, Sulphites.
+
+    Note:
+    - This is a platform-level model (no organization FK)
+    - Standard allergen definitions should be seeded at app initialization
+    - Use soft_delete() - never call delete() directly
+
+    Attributes:
+        id: UUID primary key (ensures global uniqueness)
+        name: Display name of the allergen (e.g., "Gluten", "Nuts")
+        slug: URL-friendly identifier (globally unique)
+        code: Short code for the allergen (e.g., "GLU", "NUT")
+        icon: URL to allergen icon/image
+        description: Detailed description of the allergen
+        sort_order: Display order for consistent listing
+        is_active: Whether the allergen is available for selection
+
+    Usage:
+        # Get all active allergens
+        allergens = Allergen.objects.filter(is_active=True)
+
+        # Get allergen by code
+        gluten = Allergen.objects.filter(code='GLU').first()
+
+        # Get allergen by slug
+        nuts = Allergen.objects.filter(slug='nuts').first()
+
+        # Soft delete allergen (NEVER use delete())
+        allergen.soft_delete()
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    name = models.CharField(
+        max_length=100,
+        verbose_name=_('Name'),
+        help_text=_('Display name of the allergen (e.g., Gluten, Nuts, Dairy)')
+    )
+
+    slug = models.SlugField(
+        max_length=100,
+        unique=True,
+        verbose_name=_('Slug'),
+        help_text=_('URL-friendly identifier (globally unique)')
+    )
+
+    code = models.CharField(
+        max_length=10,
+        unique=True,
+        verbose_name=_('Code'),
+        help_text=_('Short code for the allergen (e.g., GLU, NUT, DAI)')
+    )
+
+    icon = models.URLField(
+        blank=True,
+        null=True,
+        max_length=500,
+        verbose_name=_('Icon URL'),
+        help_text=_('URL to allergen icon/image')
+    )
+
+    description = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('Description'),
+        help_text=_('Detailed description of the allergen and its sources')
+    )
+
+    sort_order = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_('Sort order'),
+        help_text=_('Display order for consistent listing (lower numbers appear first)')
+    )
+
+    is_active = models.BooleanField(
+        default=True,
+        db_index=True,
+        verbose_name=_('Is active'),
+        help_text=_('Whether the allergen is available for selection')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'allergens'
+        verbose_name = _('Allergen')
+        verbose_name_plural = _('Allergens')
+        ordering = ['sort_order', 'name']
+        indexes = [
+            models.Index(fields=['code'], name='allergen_code_idx'),
+            models.Index(fields=['slug'], name='allergen_slug_idx'),
+            models.Index(fields=['is_active'], name='allergen_active_idx'),
+            models.Index(fields=['deleted_at'], name='allergen_deleted_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.code})"
+
+    def __repr__(self) -> str:
+        return f"<Allergen(id={self.id}, name='{self.name}', code='{self.code}')>"
+
+    @property
+    def is_available(self) -> bool:
+        """Check if allergen is active and not deleted."""
+        return self.is_active and not self.is_deleted
+
+
+class ProductAllergen(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    ProductAllergen model - junction table for product-allergen relationships.
+
+    This model links products to allergens with additional information about
+    the severity level (contains, may contain, traces) and optional notes.
+    This allows for accurate allergen labeling on menus.
+
+    Critical Rules:
+    - EVERY query should consider tenant context via product
+    - Use soft_delete() - never call delete() directly
+    - A product should not have duplicate allergen entries
+
+    Attributes:
+        id: UUID primary key (ensures global uniqueness)
+        product: FK to Product (links to tenant via product.organization)
+        allergen: FK to platform-level Allergen
+        severity: Level of allergen presence (contains/may_contain/traces)
+        notes: Optional additional notes about the allergen in this product
+
+    Usage:
+        # Add allergen to product
+        product_allergen = ProductAllergen.objects.create(
+            product=pizza,
+            allergen=gluten_allergen,
+            severity=AllergenSeverity.CONTAINS,
+            notes="Contains wheat flour in the crust"
+        )
+
+        # Get all allergens for a product
+        product_allergens = ProductAllergen.objects.filter(product=product)
+
+        # Get products containing a specific allergen
+        products_with_gluten = ProductAllergen.objects.filter(
+            allergen=gluten_allergen,
+            product__organization=org
+        ).select_related('product')
+
+        # Soft delete (NEVER use delete())
+        product_allergen.soft_delete()
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='product_allergens',
+        verbose_name=_('Product'),
+        help_text=_('Product this allergen association belongs to')
+    )
+
+    allergen = models.ForeignKey(
+        Allergen,
+        on_delete=models.CASCADE,
+        related_name='product_allergens',
+        verbose_name=_('Allergen'),
+        help_text=_('The allergen associated with this product')
+    )
+
+    severity = models.CharField(
+        max_length=20,
+        choices=AllergenSeverity.choices,
+        default=AllergenSeverity.CONTAINS,
+        verbose_name=_('Severity'),
+        help_text=_('Level of allergen presence (contains/may_contain/traces)')
+    )
+
+    notes = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('Notes'),
+        help_text=_('Optional additional notes about this allergen in the product')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'product_allergens'
+        verbose_name = _('Product Allergen')
+        verbose_name_plural = _('Product Allergens')
+        ordering = ['allergen__sort_order', 'allergen__name']
+        unique_together = [['product', 'allergen']]
+        indexes = [
+            models.Index(fields=['product', 'allergen'], name='prod_allergen_prod_all_idx'),
+            models.Index(fields=['allergen', 'severity'], name='prod_allergen_sev_idx'),
+            models.Index(fields=['product', 'deleted_at'], name='prod_allergen_deleted_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.product.name} - {self.allergen.name} ({self.severity})"
+
+    def __repr__(self) -> str:
+        return f"<ProductAllergen(product='{self.product.name}', allergen='{self.allergen.name}')>"
+
+    @property
+    def organization(self):
+        """Get the organization this product allergen belongs to via product."""
+        return self.product.organization
+
+    @property
+    def severity_display(self) -> str:
+        """Get human-readable severity display."""
+        return self.get_severity_display()
+
+
+class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    NutritionInfo model - one-to-one nutritional data per product.
+
+    This model stores detailed nutritional information for products,
+    including standard nutrients (calories, protein, carbs, fat, etc.)
+    and allows for custom nutrients via a JSON field.
+
+    Critical Rules:
+    - One-to-one relationship with Product
+    - EVERY query should consider tenant context via product
+    - Use soft_delete() - never call delete() directly
+    - Nutrient values are per serving (specified by serving_size)
+
+    Attributes:
+        id: UUID primary key (ensures global uniqueness)
+        product: OneToOne to Product
+        serving_size: Description of serving size (e.g., "100g", "1 portion")
+        serving_size_grams: Numeric serving size in grams
+        calories: Energy in kcal
+        protein: Protein in grams
+        carbohydrates: Total carbohydrates in grams
+        sugar: Sugar content in grams
+        fiber: Dietary fiber in grams
+        fat: Total fat in grams
+        saturated_fat: Saturated fat in grams
+        trans_fat: Trans fat in grams
+        cholesterol: Cholesterol in mg
+        sodium: Sodium in mg
+        potassium: Potassium in mg
+        calcium: Calcium in mg (% DV or mg)
+        iron: Iron in mg (% DV or mg)
+        vitamin_a: Vitamin A (IU or % DV)
+        vitamin_c: Vitamin C (mg or % DV)
+        custom_nutrients: JSON field for additional nutrients
+
+    Usage:
+        # Create nutrition info for a product
+        nutrition = NutritionInfo.objects.create(
+            product=pizza,
+            serving_size="1 slice (125g)",
+            serving_size_grams=125,
+            calories=285,
+            protein=Decimal("12.0"),
+            carbohydrates=Decimal("36.0"),
+            fat=Decimal("10.5")
+        )
+
+        # Get nutrition info for a product
+        nutrition = NutritionInfo.objects.filter(product=product).first()
+        # Or via the product
+        nutrition = product.nutrition_info
+
+        # Soft delete (NEVER use delete())
+        nutrition.soft_delete()
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    product = models.OneToOneField(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='nutrition_info',
+        verbose_name=_('Product'),
+        help_text=_('Product this nutrition info belongs to')
+    )
+
+    # Serving information
+    serving_size = models.CharField(
+        max_length=100,
+        default='100g',
+        verbose_name=_('Serving size'),
+        help_text=_('Description of serving size (e.g., "100g", "1 portion", "1 slice")')
+    )
+
+    serving_size_grams = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name=_('Serving size (grams)'),
+        help_text=_('Numeric serving size in grams for calculations')
+    )
+
+    # Energy
+    calories = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        verbose_name=_('Calories'),
+        help_text=_('Energy in kcal per serving')
+    )
+
+    # Macronutrients (in grams)
+    protein = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name=_('Protein'),
+        help_text=_('Protein in grams per serving')
+    )
+
+    carbohydrates = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name=_('Carbohydrates'),
+        help_text=_('Total carbohydrates in grams per serving')
+    )
+
+    sugar = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name=_('Sugar'),
+        help_text=_('Sugar content in grams per serving')
+    )
+
+    fiber = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name=_('Fiber'),
+        help_text=_('Dietary fiber in grams per serving')
+    )
+
+    fat = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name=_('Fat'),
+        help_text=_('Total fat in grams per serving')
+    )
+
+    saturated_fat = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name=_('Saturated fat'),
+        help_text=_('Saturated fat in grams per serving')
+    )
+
+    trans_fat = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name=_('Trans fat'),
+        help_text=_('Trans fat in grams per serving')
+    )
+
+    # Micronutrients
+    cholesterol = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name=_('Cholesterol'),
+        help_text=_('Cholesterol in mg per serving')
+    )
+
+    sodium = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name=_('Sodium'),
+        help_text=_('Sodium in mg per serving')
+    )
+
+    potassium = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name=_('Potassium'),
+        help_text=_('Potassium in mg per serving')
+    )
+
+    calcium = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name=_('Calcium'),
+        help_text=_('Calcium in mg per serving')
+    )
+
+    iron = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name=_('Iron'),
+        help_text=_('Iron in mg per serving')
+    )
+
+    # Vitamins
+    vitamin_a = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name=_('Vitamin A'),
+        help_text=_('Vitamin A in IU or mcg per serving')
+    )
+
+    vitamin_c = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name=_('Vitamin C'),
+        help_text=_('Vitamin C in mg per serving')
+    )
+
+    # Flexible field for additional nutrients
+    custom_nutrients = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name=_('Custom nutrients'),
+        help_text=_('Additional nutrients not covered by standard fields (JSON)')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'nutrition_info'
+        verbose_name = _('Nutrition Info')
+        verbose_name_plural = _('Nutrition Info')
+        indexes = [
+            models.Index(fields=['product'], name='nutrition_product_idx'),
+            models.Index(fields=['deleted_at'], name='nutrition_deleted_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"Nutrition: {self.product.name}"
+
+    def __repr__(self) -> str:
+        return f"<NutritionInfo(product='{self.product.name}', calories={self.calories})>"
+
+    @property
+    def organization(self):
+        """Get the organization this nutrition info belongs to via product."""
+        return self.product.organization
+
+    @property
+    def has_macros(self) -> bool:
+        """Check if any macronutrient data is available."""
+        return any([
+            self.protein is not None,
+            self.carbohydrates is not None,
+            self.fat is not None
+        ])
+
+    @property
+    def has_vitamins(self) -> bool:
+        """Check if any vitamin data is available."""
+        return any([
+            self.vitamin_a is not None,
+            self.vitamin_c is not None
+        ])
+
+    @property
+    def has_minerals(self) -> bool:
+        """Check if any mineral data is available."""
+        return any([
+            self.calcium is not None,
+            self.iron is not None,
+            self.sodium is not None,
+            self.potassium is not None
+        ])
+
+    def get_macros_summary(self) -> dict:
+        """
+        Get a summary of macronutrients.
+
+        Returns:
+            Dictionary with protein, carbs, and fat values (or None if not set)
+        """
+        return {
+            'protein': self.protein,
+            'carbohydrates': self.carbohydrates,
+            'fat': self.fat,
+            'fiber': self.fiber,
+            'sugar': self.sugar,
+        }
+
+    def get_custom_nutrient(self, key: str, default=None):
+        """
+        Get a value from custom nutrients.
+
+        Args:
+            key: The nutrient key to retrieve
+            default: Default value if key not found
+
+        Returns:
+            The nutrient value or default
+        """
+        return self.custom_nutrients.get(key, default)
+
+    def set_custom_nutrient(self, key: str, value) -> None:
+        """
+        Set a value in custom nutrients.
+
+        Args:
+            key: The nutrient key
+            value: The value to set
+        """
+        self.custom_nutrients[key] = value
+        self.save(update_fields=['custom_nutrients', 'updated_at'])
+
+    def calculate_calories_from_macros(self) -> int:
+        """
+        Calculate estimated calories from macronutrients.
+
+        Uses standard conversion factors:
+        - Protein: 4 kcal/g
+        - Carbohydrates: 4 kcal/g
+        - Fat: 9 kcal/g
+
+        Returns:
+            Estimated calories, or 0 if no macro data available
+        """
+        calories = 0
+        if self.protein:
+            calories += float(self.protein) * 4
+        if self.carbohydrates:
+            calories += float(self.carbohydrates) * 4
+        if self.fat:
+            calories += float(self.fat) * 9
+        return round(calories)
