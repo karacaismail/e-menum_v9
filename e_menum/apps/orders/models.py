@@ -7,10 +7,8 @@ This module defines the order-related models for E-Menum:
 - QRCode: Generated QR codes for menus/tables with scan analytics
 - QRScan: QR code scan tracking for analytics (device info, geolocation)
 - Order: Customer orders with full transaction details and status workflow
-
-Additional models to be added in subsequent subtasks:
-- OrderItem: Individual line items within orders
-- ServiceRequest: Waiter call/service requests from tables
+- OrderItem: Individual line items within orders with modifiers and status tracking
+- ServiceRequest: Waiter call/service requests from tables with priority system
 
 Critical Rules:
 - Every query MUST include organization_id for tenant isolation
@@ -33,11 +31,14 @@ from apps.core.models import (
 )
 from apps.menu.models import Menu
 from apps.orders.choices import (
+    OrderItemStatus,
     OrderStatus,
     OrderType,
     PaymentMethod,
     PaymentStatus,
     QRCodeType,
+    ServiceRequestStatus,
+    ServiceRequestType,
     TableStatus,
 )
 
@@ -2087,3 +2088,901 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         self.delivery_address.update(kwargs)
         self.save(update_fields=['delivery_address', 'updated_at'])
+
+
+class OrderItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    OrderItem model - individual line items within orders.
+
+    Each OrderItem represents a single product/variant ordered by a customer,
+    including quantity, selected modifiers, pricing, and item-specific notes.
+    OrderItems follow their own status workflow independent of the parent order.
+
+    Status Workflow:
+    PENDING → PREPARING → READY → DELIVERED
+                                ↘ CANCELLED (from any state)
+
+    Critical Rules:
+    - EVERY query MUST filter by organization (via order lookup)
+    - Use soft_delete() - never call delete() directly
+    - Unit price should be captured at order time (not reference product price)
+    - Modifiers are stored as JSON snapshot at order time
+
+    Attributes:
+        id: UUID primary key (ensures global uniqueness)
+        order: FK to parent Order
+        product: FK to Product ordered (for reference, may be soft-deleted)
+        variant: Optional FK to ProductVariant selected
+        quantity: Number of items ordered
+        unit_price: Price per unit at time of order
+        total_price: Calculated total (unit_price * quantity + modifiers)
+        currency: Currency code (inherited from order)
+        status: Current item status (PENDING, PREPARING, READY, DELIVERED, CANCELLED)
+        modifiers: JSON snapshot of selected modifiers with prices
+        notes: Customer notes/special instructions for this item
+        is_gift: Whether this item is a complimentary gift
+        prepared_at: Timestamp when item preparation completed
+        delivered_at: Timestamp when item was delivered to customer
+        cancelled_at: Timestamp when item was cancelled
+        cancel_reason: Reason for cancellation
+        metadata: JSON field for additional item data
+
+    Usage:
+        # Create an order item
+        item = OrderItem.objects.create(
+            order=order,
+            product=pizza,
+            variant=large_variant,
+            quantity=2,
+            unit_price=Decimal("199.90"),
+            total_price=Decimal("399.80"),
+            modifiers=[
+                {"name": "Extra Cheese", "price": Decimal("15.00")}
+            ],
+            notes="No olives please"
+        )
+
+        # Query items for an order
+        items = OrderItem.objects.filter(order=order)
+
+        # Get pending items for kitchen
+        pending_items = OrderItem.objects.filter(
+            order__organization=org,
+            status=OrderItemStatus.PENDING
+        )
+
+        # Update item status
+        item.start_preparation()
+        item.mark_ready()
+        item.deliver()
+
+        # Soft delete item (NEVER use delete())
+        item.soft_delete()
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name='items',
+        verbose_name=_('Order'),
+        help_text=_('Order this item belongs to')
+    )
+
+    product = models.ForeignKey(
+        'menu.Product',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='order_items',
+        verbose_name=_('Product'),
+        help_text=_('Product ordered (reference, may be soft-deleted)')
+    )
+
+    variant = models.ForeignKey(
+        'menu.ProductVariant',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='order_items',
+        verbose_name=_('Variant'),
+        help_text=_('Product variant selected (e.g., Large, Small)')
+    )
+
+    # Quantity and pricing
+    quantity = models.PositiveIntegerField(
+        default=1,
+        verbose_name=_('Quantity'),
+        help_text=_('Number of items ordered')
+    )
+
+    unit_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name=_('Unit price'),
+        help_text=_('Price per unit at time of order (captured, not referenced)')
+    )
+
+    total_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name=_('Total price'),
+        help_text=_('Total price (unit_price * quantity + modifier costs)')
+    )
+
+    currency = models.CharField(
+        max_length=3,
+        default='TRY',
+        verbose_name=_('Currency'),
+        help_text=_('Currency code (ISO 4217)')
+    )
+
+    # Status
+    status = models.CharField(
+        max_length=20,
+        choices=OrderItemStatus.choices,
+        default=OrderItemStatus.PENDING,
+        db_index=True,
+        verbose_name=_('Status'),
+        help_text=_('Current item status')
+    )
+
+    # Modifiers snapshot (stored at order time)
+    modifiers = models.JSONField(
+        default=list,
+        blank=True,
+        verbose_name=_('Modifiers'),
+        help_text=_('JSON snapshot of selected modifiers with prices at order time')
+    )
+
+    # Notes and instructions
+    notes = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('Notes'),
+        help_text=_('Customer notes/special instructions for this item')
+    )
+
+    # Gift flag
+    is_gift = models.BooleanField(
+        default=False,
+        verbose_name=_('Is gift'),
+        help_text=_('Whether this item is a complimentary gift (zero charge)')
+    )
+
+    # Workflow timestamps
+    prepared_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name=_('Prepared at'),
+        help_text=_('Timestamp when item preparation completed')
+    )
+
+    delivered_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name=_('Delivered at'),
+        help_text=_('Timestamp when item was delivered to customer')
+    )
+
+    cancelled_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name=_('Cancelled at'),
+        help_text=_('Timestamp when item was cancelled')
+    )
+
+    cancel_reason = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('Cancel reason'),
+        help_text=_('Reason for item cancellation')
+    )
+
+    # Additional metadata
+    metadata = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name=_('Metadata'),
+        help_text=_('Additional item data (JSON)')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'order_items'
+        verbose_name = _('Order Item')
+        verbose_name_plural = _('Order Items')
+        ordering = ['created_at']
+        indexes = [
+            models.Index(fields=['order', 'status'], name='orderitem_order_status_idx'),
+            models.Index(fields=['order', 'deleted_at'], name='orderitem_order_deleted_idx'),
+            models.Index(fields=['product'], name='orderitem_product_idx'),
+            models.Index(fields=['status'], name='orderitem_status_idx'),
+        ]
+
+    def __str__(self) -> str:
+        product_name = self.product.name if self.product else _('Unknown Product')
+        return f"{self.quantity}x {product_name}"
+
+    def __repr__(self) -> str:
+        product_name = self.product.name if self.product else 'Unknown'
+        return f"<OrderItem(id={self.id}, product='{product_name}', qty={self.quantity}, status={self.status})>"
+
+    @property
+    def organization(self):
+        """Get the organization this order item belongs to via order."""
+        return self.order.organization
+
+    @property
+    def is_pending(self) -> bool:
+        """Check if item is pending preparation."""
+        return self.status == OrderItemStatus.PENDING
+
+    @property
+    def is_preparing(self) -> bool:
+        """Check if item is being prepared."""
+        return self.status == OrderItemStatus.PREPARING
+
+    @property
+    def is_ready(self) -> bool:
+        """Check if item is ready for delivery."""
+        return self.status == OrderItemStatus.READY
+
+    @property
+    def is_delivered(self) -> bool:
+        """Check if item has been delivered."""
+        return self.status == OrderItemStatus.DELIVERED
+
+    @property
+    def is_cancelled(self) -> bool:
+        """Check if item has been cancelled."""
+        return self.status == OrderItemStatus.CANCELLED
+
+    @property
+    def is_active(self) -> bool:
+        """Check if item is in an active state (not delivered or cancelled)."""
+        return self.status not in [OrderItemStatus.DELIVERED, OrderItemStatus.CANCELLED]
+
+    @property
+    def product_name(self) -> str:
+        """Get the product name, handling deleted products."""
+        if self.product:
+            return self.product.name
+        return self.metadata.get('product_name', _('Unknown Product'))
+
+    @property
+    def variant_name(self) -> str | None:
+        """Get the variant name if applicable."""
+        if self.variant:
+            return self.variant.name
+        return self.metadata.get('variant_name')
+
+    @property
+    def display_name(self) -> str:
+        """Get display name including variant if applicable."""
+        name = self.product_name
+        if self.variant_name:
+            name = f"{name} ({self.variant_name})"
+        return name
+
+    @property
+    def formatted_unit_price(self) -> str:
+        """Return formatted unit price with currency symbol."""
+        currency_symbols = {
+            'TRY': '₺',
+            'USD': '$',
+            'EUR': '€',
+            'GBP': '£',
+        }
+        symbol = currency_symbols.get(self.currency, self.currency)
+        return f"{symbol}{self.unit_price:,.2f}"
+
+    @property
+    def formatted_total_price(self) -> str:
+        """Return formatted total price with currency symbol."""
+        currency_symbols = {
+            'TRY': '₺',
+            'USD': '$',
+            'EUR': '€',
+            'GBP': '£',
+        }
+        symbol = currency_symbols.get(self.currency, self.currency)
+        return f"{symbol}{self.total_price:,.2f}"
+
+    @property
+    def modifier_total(self):
+        """Calculate total cost of all modifiers."""
+        from decimal import Decimal
+        total = Decimal('0')
+        for modifier in self.modifiers:
+            price = modifier.get('price', 0)
+            qty = modifier.get('quantity', 1)
+            total += Decimal(str(price)) * qty
+        return total
+
+    @property
+    def has_modifiers(self) -> bool:
+        """Check if item has any modifiers selected."""
+        return bool(self.modifiers)
+
+    @property
+    def has_notes(self) -> bool:
+        """Check if item has customer notes."""
+        return bool(self.notes)
+
+    def calculate_total(self, save: bool = True) -> None:
+        """
+        Calculate and update total price from unit price, quantity, and modifiers.
+
+        Args:
+            save: Whether to save the item after calculation
+        """
+        from decimal import Decimal
+        base_total = self.unit_price * self.quantity
+        modifier_cost = self.modifier_total * self.quantity
+        self.total_price = base_total + modifier_cost
+
+        if self.is_gift:
+            self.total_price = Decimal('0')
+
+        if save:
+            self.save(update_fields=['total_price', 'updated_at'])
+
+    def set_status(self, status: str, timestamp_field: str = None) -> None:
+        """
+        Set the item status and optionally update a timestamp field.
+
+        Args:
+            status: OrderItemStatus value
+            timestamp_field: Optional field name to update with current time
+        """
+        from django.utils import timezone
+
+        if status not in OrderItemStatus.values:
+            raise ValueError(f"Invalid status: {status}. Must be one of {OrderItemStatus.values}")
+
+        self.status = status
+        update_fields = ['status', 'updated_at']
+
+        if timestamp_field:
+            setattr(self, timestamp_field, timezone.now())
+            update_fields.append(timestamp_field)
+
+        self.save(update_fields=update_fields)
+
+    def start_preparation(self) -> None:
+        """Start preparing the item (kitchen/bar begins work)."""
+        if self.status != OrderItemStatus.PENDING:
+            raise ValueError(f"Cannot start preparation for item with status {self.status}")
+        self.set_status(OrderItemStatus.PREPARING)
+
+    def mark_ready(self) -> None:
+        """Mark the item as ready for delivery."""
+        if self.status != OrderItemStatus.PREPARING:
+            raise ValueError(f"Cannot mark ready item with status {self.status}")
+        self.set_status(OrderItemStatus.READY, 'prepared_at')
+
+    def deliver(self) -> None:
+        """Mark the item as delivered to customer."""
+        if self.status != OrderItemStatus.READY:
+            raise ValueError(f"Cannot deliver item with status {self.status}")
+        self.set_status(OrderItemStatus.DELIVERED, 'delivered_at')
+
+    def cancel(self, reason: str = None) -> None:
+        """
+        Cancel the item.
+
+        Args:
+            reason: Optional reason for cancellation
+        """
+        from django.utils import timezone
+
+        if self.status in [OrderItemStatus.DELIVERED, OrderItemStatus.CANCELLED]:
+            raise ValueError(f"Cannot cancel item with status {self.status}")
+
+        self.status = OrderItemStatus.CANCELLED
+        self.cancelled_at = timezone.now()
+        if reason:
+            self.cancel_reason = reason
+        self.save(update_fields=['status', 'cancelled_at', 'cancel_reason', 'updated_at'])
+
+    def add_modifier(self, name: str, price, quantity: int = 1) -> None:
+        """
+        Add a modifier to the item.
+
+        Args:
+            name: Modifier name
+            price: Modifier price
+            quantity: Quantity of this modifier
+        """
+        from decimal import Decimal
+        modifier = {
+            'name': name,
+            'price': str(Decimal(str(price))),
+            'quantity': quantity
+        }
+        if not self.modifiers:
+            self.modifiers = []
+        self.modifiers.append(modifier)
+        self.save(update_fields=['modifiers', 'updated_at'])
+
+    def get_metadata(self, key: str, default=None):
+        """
+        Get a value from item metadata.
+
+        Args:
+            key: The metadata key to retrieve
+            default: Default value if key not found
+
+        Returns:
+            The metadata value or default
+        """
+        return self.metadata.get(key, default)
+
+    def set_metadata(self, key: str, value) -> None:
+        """
+        Set a value in item metadata.
+
+        Args:
+            key: The metadata key
+            value: The value to set
+        """
+        self.metadata[key] = value
+        self.save(update_fields=['metadata', 'updated_at'])
+
+
+class ServiceRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    ServiceRequest model - waiter call/service requests from tables.
+
+    ServiceRequests enable customers to request assistance from staff without
+    leaving their table. Common request types include calling a waiter,
+    requesting the bill, or asking for help with the menu.
+
+    Status Workflow:
+    PENDING → IN_PROGRESS → COMPLETED
+                          ↘ CANCELLED (from any state)
+
+    Critical Rules:
+    - EVERY query MUST filter by organization (multi-tenant isolation)
+    - Use soft_delete() - never call delete() directly
+    - Requests should be acknowledged promptly (track response time)
+
+    Attributes:
+        id: UUID primary key (ensures global uniqueness)
+        organization: FK to parent Organization (tenant isolation)
+        branch: Optional FK to Branch for multi-location support
+        table: FK to Table making the request
+        order: Optional FK to related Order
+        customer: Optional FK to Customer if logged in
+        type: Type of request (WAITER_CALL, BILL_REQUEST, HELP, OTHER)
+        status: Current status (PENDING, IN_PROGRESS, COMPLETED, CANCELLED)
+        message: Optional customer message/notes
+        priority: Priority level (1-5, where 1 is highest)
+        assigned_to: FK to User (staff) assigned to handle request
+        acknowledged_at: Timestamp when request was acknowledged
+        completed_at: Timestamp when request was completed
+        cancelled_at: Timestamp when request was cancelled
+        cancel_reason: Reason for cancellation
+        response_time_seconds: Time to first response in seconds
+        metadata: JSON field for additional request data
+
+    Usage:
+        # Create a waiter call request
+        request = ServiceRequest.objects.create(
+            organization=org,
+            table=table_5,
+            type=ServiceRequestType.WAITER_CALL,
+            message="Need help with the menu"
+        )
+
+        # Create a bill request
+        bill_request = ServiceRequest.objects.create(
+            organization=org,
+            table=table_5,
+            order=active_order,
+            type=ServiceRequestType.BILL_REQUEST
+        )
+
+        # Query pending requests for organization (ALWAYS filter by organization!)
+        pending = ServiceRequest.objects.filter(
+            organization=org,
+            status=ServiceRequestStatus.PENDING
+        )
+
+        # Assign and acknowledge request
+        request.acknowledge(staff_user)
+
+        # Complete the request
+        request.complete()
+
+        # Soft delete request (NEVER use delete())
+        request.soft_delete()
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        related_name='service_requests',
+        verbose_name=_('Organization'),
+        help_text=_('Organization this request belongs to')
+    )
+
+    branch = models.ForeignKey(
+        Branch,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='service_requests',
+        verbose_name=_('Branch'),
+        help_text=_('Branch this request belongs to (optional for single-location)')
+    )
+
+    table = models.ForeignKey(
+        Table,
+        on_delete=models.CASCADE,
+        related_name='service_requests',
+        verbose_name=_('Table'),
+        help_text=_('Table making this request')
+    )
+
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='service_requests',
+        verbose_name=_('Order'),
+        help_text=_('Related order (if applicable)')
+    )
+
+    customer = models.ForeignKey(
+        'customers.Customer',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='service_requests',
+        verbose_name=_('Customer'),
+        help_text=_('Customer who made this request (if logged in)')
+    )
+
+    # Request type and status
+    type = models.CharField(
+        max_length=20,
+        choices=ServiceRequestType.choices,
+        default=ServiceRequestType.WAITER_CALL,
+        db_index=True,
+        verbose_name=_('Type'),
+        help_text=_('Type of service request')
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=ServiceRequestStatus.choices,
+        default=ServiceRequestStatus.PENDING,
+        db_index=True,
+        verbose_name=_('Status'),
+        help_text=_('Current request status')
+    )
+
+    # Message and priority
+    message = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('Message'),
+        help_text=_('Optional customer message or notes')
+    )
+
+    priority = models.PositiveSmallIntegerField(
+        default=3,
+        verbose_name=_('Priority'),
+        help_text=_('Priority level 1-5 (1 is highest priority)')
+    )
+
+    # Staff assignment
+    assigned_to = models.ForeignKey(
+        'core.User',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='assigned_service_requests',
+        verbose_name=_('Assigned to'),
+        help_text=_('Staff member assigned to handle this request')
+    )
+
+    # Workflow timestamps
+    acknowledged_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name=_('Acknowledged at'),
+        help_text=_('Timestamp when request was acknowledged by staff')
+    )
+
+    completed_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name=_('Completed at'),
+        help_text=_('Timestamp when request was completed')
+    )
+
+    cancelled_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name=_('Cancelled at'),
+        help_text=_('Timestamp when request was cancelled')
+    )
+
+    cancel_reason = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('Cancel reason'),
+        help_text=_('Reason for request cancellation')
+    )
+
+    # Performance metrics
+    response_time_seconds = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        verbose_name=_('Response time'),
+        help_text=_('Time to first response in seconds')
+    )
+
+    # Additional metadata
+    metadata = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name=_('Metadata'),
+        help_text=_('Additional request data (JSON)')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'service_requests'
+        verbose_name = _('Service Request')
+        verbose_name_plural = _('Service Requests')
+        ordering = ['priority', '-created_at']
+        indexes = [
+            models.Index(fields=['organization', 'status'], name='svcreq_org_status_idx'),
+            models.Index(fields=['organization', 'type'], name='svcreq_org_type_idx'),
+            models.Index(fields=['organization', 'deleted_at'], name='svcreq_org_deleted_idx'),
+            models.Index(fields=['organization', 'branch'], name='svcreq_org_branch_idx'),
+            models.Index(fields=['table', 'status'], name='svcreq_table_status_idx'),
+            models.Index(fields=['assigned_to', 'status'], name='svcreq_assigned_status_idx'),
+            models.Index(fields=['organization', 'priority', 'status'], name='svcreq_org_priority_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.get_type_display()} - {self.table.name} ({self.status})"
+
+    def __repr__(self) -> str:
+        return f"<ServiceRequest(id={self.id}, type={self.type}, table='{self.table.name}', status={self.status})>"
+
+    @property
+    def is_pending(self) -> bool:
+        """Check if request is pending."""
+        return self.status == ServiceRequestStatus.PENDING
+
+    @property
+    def is_in_progress(self) -> bool:
+        """Check if request is being handled."""
+        return self.status == ServiceRequestStatus.IN_PROGRESS
+
+    @property
+    def is_completed(self) -> bool:
+        """Check if request is completed."""
+        return self.status == ServiceRequestStatus.COMPLETED
+
+    @property
+    def is_cancelled(self) -> bool:
+        """Check if request has been cancelled."""
+        return self.status == ServiceRequestStatus.CANCELLED
+
+    @property
+    def is_active(self) -> bool:
+        """Check if request is in an active state (not completed or cancelled)."""
+        return self.status not in [ServiceRequestStatus.COMPLETED, ServiceRequestStatus.CANCELLED]
+
+    @property
+    def is_waiter_call(self) -> bool:
+        """Check if this is a waiter call request."""
+        return self.type == ServiceRequestType.WAITER_CALL
+
+    @property
+    def is_bill_request(self) -> bool:
+        """Check if this is a bill request."""
+        return self.type == ServiceRequestType.BILL_REQUEST
+
+    @property
+    def is_help_request(self) -> bool:
+        """Check if this is a help request."""
+        return self.type == ServiceRequestType.HELP
+
+    @property
+    def is_high_priority(self) -> bool:
+        """Check if request has high priority (1 or 2)."""
+        return self.priority <= 2
+
+    @property
+    def has_message(self) -> bool:
+        """Check if request has a message."""
+        return bool(self.message)
+
+    @property
+    def is_assigned(self) -> bool:
+        """Check if request is assigned to a staff member."""
+        return self.assigned_to is not None
+
+    @property
+    def wait_time_seconds(self) -> int | None:
+        """
+        Calculate current wait time in seconds.
+
+        Returns:
+            Seconds since request was created, or None if already completed
+        """
+        from django.utils import timezone
+
+        if self.status in [ServiceRequestStatus.COMPLETED, ServiceRequestStatus.CANCELLED]:
+            return None
+
+        delta = timezone.now() - self.created_at
+        return int(delta.total_seconds())
+
+    @property
+    def wait_time_display(self) -> str:
+        """Get human-readable wait time."""
+        seconds = self.wait_time_seconds
+        if seconds is None:
+            return _('Completed')
+
+        if seconds < 60:
+            return _('Just now')
+        elif seconds < 3600:
+            minutes = seconds // 60
+            return _('%(minutes)d min ago') % {'minutes': minutes}
+        else:
+            hours = seconds // 3600
+            return _('%(hours)d hr ago') % {'hours': hours}
+
+    def set_status(self, status: str, timestamp_field: str = None) -> None:
+        """
+        Set the request status and optionally update a timestamp field.
+
+        Args:
+            status: ServiceRequestStatus value
+            timestamp_field: Optional field name to update with current time
+        """
+        from django.utils import timezone
+
+        if status not in ServiceRequestStatus.values:
+            raise ValueError(f"Invalid status: {status}. Must be one of {ServiceRequestStatus.values}")
+
+        self.status = status
+        update_fields = ['status', 'updated_at']
+
+        if timestamp_field:
+            setattr(self, timestamp_field, timezone.now())
+            update_fields.append(timestamp_field)
+
+        self.save(update_fields=update_fields)
+
+    def acknowledge(self, user=None) -> None:
+        """
+        Acknowledge the request (staff begins handling it).
+
+        Args:
+            user: Optional staff member to assign
+        """
+        from django.utils import timezone
+
+        if self.status != ServiceRequestStatus.PENDING:
+            raise ValueError(f"Cannot acknowledge request with status {self.status}")
+
+        self.status = ServiceRequestStatus.IN_PROGRESS
+        self.acknowledged_at = timezone.now()
+
+        # Calculate response time
+        delta = self.acknowledged_at - self.created_at
+        self.response_time_seconds = int(delta.total_seconds())
+
+        update_fields = ['status', 'acknowledged_at', 'response_time_seconds', 'updated_at']
+
+        if user:
+            self.assigned_to = user
+            update_fields.append('assigned_to')
+
+        self.save(update_fields=update_fields)
+
+    def complete(self) -> None:
+        """Complete the request (fulfilled)."""
+        if self.status not in [ServiceRequestStatus.PENDING, ServiceRequestStatus.IN_PROGRESS]:
+            raise ValueError(f"Cannot complete request with status {self.status}")
+        self.set_status(ServiceRequestStatus.COMPLETED, 'completed_at')
+
+    def cancel(self, reason: str = None) -> None:
+        """
+        Cancel the request.
+
+        Args:
+            reason: Optional reason for cancellation
+        """
+        from django.utils import timezone
+
+        if self.status in [ServiceRequestStatus.COMPLETED, ServiceRequestStatus.CANCELLED]:
+            raise ValueError(f"Cannot cancel request with status {self.status}")
+
+        self.status = ServiceRequestStatus.CANCELLED
+        self.cancelled_at = timezone.now()
+        if reason:
+            self.cancel_reason = reason
+        self.save(update_fields=['status', 'cancelled_at', 'cancel_reason', 'updated_at'])
+
+    def assign_to(self, user) -> None:
+        """
+        Assign the request to a staff member.
+
+        Args:
+            user: User to assign the request to
+        """
+        self.assigned_to = user
+        self.save(update_fields=['assigned_to', 'updated_at'])
+
+    def set_priority(self, priority: int) -> None:
+        """
+        Set the request priority.
+
+        Args:
+            priority: Priority level 1-5 (1 is highest)
+
+        Raises:
+            ValueError: If priority is not between 1 and 5
+        """
+        if not 1 <= priority <= 5:
+            raise ValueError("Priority must be between 1 and 5")
+        self.priority = priority
+        self.save(update_fields=['priority', 'updated_at'])
+
+    def get_metadata(self, key: str, default=None):
+        """
+        Get a value from request metadata.
+
+        Args:
+            key: The metadata key to retrieve
+            default: Default value if key not found
+
+        Returns:
+            The metadata value or default
+        """
+        return self.metadata.get(key, default)
+
+    def set_metadata(self, key: str, value) -> None:
+        """
+        Set a value in request metadata.
+
+        Args:
+            key: The metadata key
+            value: The value to set
+        """
+        self.metadata[key] = value
+        self.save(update_fields=['metadata', 'updated_at'])
