@@ -522,8 +522,9 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin, SoftDeleteMixin
         help_text=_('Organization this user belongs to (null for platform users)')
     )
 
-    # Use custom manager
-    objects = UserManager()
+    # Managers
+    objects = UserManager()  # Default manager with create_user/create_superuser
+    all_objects = models.Manager()  # Includes ALL records (including soft-deleted)
 
     # Required for AbstractBaseUser
     USERNAME_FIELD = 'email'

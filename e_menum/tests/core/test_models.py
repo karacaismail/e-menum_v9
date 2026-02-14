@@ -416,7 +416,7 @@ class TestUser:
         assert user.deleted_at is not None
         assert user.is_deleted is True
         # Verify we can still fetch with all_objects
-        assert User.objects.model.all_objects.filter(id=user_id).exists()
+        assert User.all_objects.filter(id=user_id).exists()
 
     def test_user_restore(self):
         """Test restore clears deleted_at."""
