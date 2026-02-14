@@ -3,23 +3,23 @@
   "spec": "002-bu-projeyi-tamamen-django-ile-yap-enterprise-ready",
   "state": "building",
   "subtasks": {
-    "completed": 36,
+    "completed": 47,
     "total": 73,
     "in_progress": 1,
     "failed": 0
   },
   "phase": {
-    "current": "Subscriptions Module Models",
+    "current": "REST API Layer with DRF",
     "id": null,
-    "total": 5
+    "total": 6
   },
   "workers": {
     "active": 0,
     "max": 1
   },
   "session": {
-    "number": 39,
+    "number": 50,
     "started_at": "2026-02-14T13:26:11.524855"
   },
-  "last_update": "2026-02-14T15:32:25.172230"
+  "last_update": "2026-02-14T16:53:39.951490"
 }

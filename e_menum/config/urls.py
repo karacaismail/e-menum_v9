@@ -7,13 +7,24 @@ API endpoints follow the pattern: /api/v1/{resource}/
 URL Structure:
 - /admin/                   - Django Admin
 - /api/v1/                  - API Version 1 (current)
-- /api/v1/auth/             - Authentication endpoints
+- /api/v1/auth/             - Authentication endpoints (login, logout, tokens)
+- /api/v1/organizations/    - Organization management
+- /api/v1/users/            - User management
+- /api/v1/themes/           - Theme management
 - /api/v1/menus/            - Menu management
 - /api/v1/categories/       - Category management
-- /api/v1/products/         - Product management
-- /api/v1/orders/           - Order management
+- /api/v1/products/         - Product management (with variants/modifiers)
+- /api/v1/allergens/        - Allergen information
+- /api/v1/zones/            - Zone management
+- /api/v1/tables/           - Table management
 - /api/v1/qr-codes/         - QR code management
+- /api/v1/orders/           - Order management
+- /api/v1/service-requests/ - Service request management
+- /api/v1/features/         - Feature management
+- /api/v1/plans/            - Plan management
 - /api/v1/subscriptions/    - Subscription management
+- /api/v1/invoices/         - Invoice management
+- /api/v1/usage/            - Usage tracking
 - /health/                  - Health check endpoint
 - /m/{slug}/                - Public menu view (SSR)
 
@@ -26,7 +37,10 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.http import JsonResponse
-from django.views.generic import TemplateView
+
+# Import core module components for proper URL structure
+from apps.core.urls import auth_urlpatterns as core_auth_urlpatterns
+from apps.core.urls import router as core_router
 
 
 # =============================================================================
@@ -59,14 +73,29 @@ def api_root(request):
             'version': 'v1',
             'documentation': '/api/docs/',
             'endpoints': {
+                # Core module
                 'auth': '/api/v1/auth/',
+                'organizations': '/api/v1/organizations/',
+                'users': '/api/v1/users/',
+                # Menu module
+                'themes': '/api/v1/themes/',
                 'menus': '/api/v1/menus/',
                 'categories': '/api/v1/categories/',
                 'products': '/api/v1/products/',
-                'orders': '/api/v1/orders/',
+                'allergens': '/api/v1/allergens/',
+                # Orders module
+                'zones': '/api/v1/zones/',
+                'tables': '/api/v1/tables/',
                 'qr_codes': '/api/v1/qr-codes/',
+                'orders': '/api/v1/orders/',
+                'service_requests': '/api/v1/service-requests/',
+                # Subscriptions module
+                'features': '/api/v1/features/',
+                'plans': '/api/v1/plans/',
                 'subscriptions': '/api/v1/subscriptions/',
-                'organizations': '/api/v1/organizations/',
+                'invoices': '/api/v1/invoices/',
+                'plan_features': '/api/v1/plan-features/',
+                'usage': '/api/v1/usage/',
             }
         }
     })
@@ -80,46 +109,58 @@ api_v1_patterns = [
     # API root information
     path('', api_root, name='api-root'),
 
-    # Authentication endpoints (JWT)
-    path('auth/', include(('apps.core.urls', 'core'), namespace='auth')),
+    # -------------------------------------------------------------------------
+    # Core Module - Authentication endpoints
+    # -------------------------------------------------------------------------
+    # Auth endpoints at /api/v1/auth/ (login, logout, refresh, verify, me, etc.)
+    path('auth/', include((core_auth_urlpatterns, 'core'), namespace='auth')),
 
-    # Core module
-    # path('organizations/', include('apps.core.api.organization_urls')),
-    # path('users/', include('apps.core.api.user_urls')),
-    # path('roles/', include('apps.core.api.role_urls')),
+    # Core resources (organizations, users) at root level
+    path('', include(core_router.urls)),
 
-    # Menu module
-    # path('menus/', include('apps.menu.api.urls')),
-    # path('categories/', include('apps.menu.api.category_urls')),
-    # path('products/', include('apps.menu.api.product_urls')),
-    # path('themes/', include('apps.menu.api.theme_urls')),
+    # -------------------------------------------------------------------------
+    # Menu Module
+    # -------------------------------------------------------------------------
+    # themes/, menus/, categories/, products/, allergens/
+    # Also includes nested routes: products/<id>/variants/, products/<id>/modifiers/
+    path('', include(('apps.menu.urls', 'menu'), namespace='menu')),
 
-    # Orders module
-    # path('orders/', include('apps.orders.api.urls')),
-    # path('tables/', include('apps.orders.api.table_urls')),
-    # path('zones/', include('apps.orders.api.zone_urls')),
-    # path('qr-codes/', include('apps.orders.api.qrcode_urls')),
+    # -------------------------------------------------------------------------
+    # Orders Module
+    # -------------------------------------------------------------------------
+    # zones/, tables/, qr-codes/, orders/, service-requests/
+    path('', include(('apps.orders.urls', 'orders'), namespace='orders')),
 
-    # Subscriptions module
-    # path('plans/', include('apps.subscriptions.api.plan_urls')),
-    # path('subscriptions/', include('apps.subscriptions.api.subscription_urls')),
-    # path('invoices/', include('apps.subscriptions.api.invoice_urls')),
+    # -------------------------------------------------------------------------
+    # Subscriptions Module
+    # -------------------------------------------------------------------------
+    # features/, plans/, plan-features/, subscriptions/, invoices/, usage/
+    path('', include(('apps.subscriptions.urls', 'subscriptions'), namespace='subscriptions')),
 
-    # Customers module
-    # path('customers/', include('apps.customers.api.urls')),
-    # path('feedback/', include('apps.customers.api.feedback_urls')),
+    # -------------------------------------------------------------------------
+    # Customers Module (TODO: Implement when views are ready)
+    # -------------------------------------------------------------------------
+    # path('', include(('apps.customers.urls', 'customers'), namespace='customers')),
 
-    # Media module
-    # path('media/', include('apps.media.api.urls')),
+    # -------------------------------------------------------------------------
+    # Media Module (TODO: Implement when views are ready)
+    # -------------------------------------------------------------------------
+    # path('', include(('apps.media.urls', 'media'), namespace='media')),
 
-    # Notifications module
-    # path('notifications/', include('apps.notifications.api.urls')),
+    # -------------------------------------------------------------------------
+    # Notifications Module (TODO: Implement when views are ready)
+    # -------------------------------------------------------------------------
+    # path('', include(('apps.notifications.urls', 'notifications'), namespace='notifications')),
 
-    # Analytics module (read-only endpoints)
-    # path('analytics/', include('apps.analytics.api.urls')),
+    # -------------------------------------------------------------------------
+    # Analytics Module (TODO: Implement when views are ready)
+    # -------------------------------------------------------------------------
+    # path('', include(('apps.analytics.urls', 'analytics'), namespace='analytics')),
 
-    # AI module (content generation)
-    # path('ai/', include('apps.ai.api.urls')),
+    # -------------------------------------------------------------------------
+    # AI Module (TODO: Implement when views are ready)
+    # -------------------------------------------------------------------------
+    # path('', include(('apps.ai.urls', 'ai'), namespace='ai')),
 ]
 
 
