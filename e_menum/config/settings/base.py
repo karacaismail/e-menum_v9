@@ -138,7 +138,7 @@ THIRD_PARTY_APPS = [
 # E-Menum Local apps (ordered by dependency)
 # Note: Uncomment as apps are created
 LOCAL_APPS = [
-    # 'apps.core.apps.CoreConfig',
+    'apps.core.apps.CoreConfig',
     # 'apps.menu.apps.MenuConfig',
     # 'apps.orders.apps.OrdersConfig',
     # 'apps.subscriptions.apps.SubscriptionsConfig',
