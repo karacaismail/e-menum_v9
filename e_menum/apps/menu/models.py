@@ -3,8 +3,8 @@ Django ORM models for the Menu application.
 
 This module defines the menu-related models for E-Menum:
 - Theme: Menu styling customization with colors, fonts, and CSS options
-- Menu: Restaurant menu container (to be added in subtask-4-3)
-- Category: Product categories with nested support (to be added in subtask-4-3)
+- Menu: Restaurant menu container for organizing categories and products
+- Category: Product categories with nested support (hierarchical structure)
 - Product: Individual menu items (to be added in subtask-4-4)
 - ProductVariant: Size/portion options (to be added in subtask-4-5)
 - ProductModifier: Add-on options (to be added in subtask-4-5)
@@ -320,3 +320,491 @@ class Theme(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         variables = self.get_css_variables()
         return ' '.join(f'{key}: {value};' for key, value in variables.items())
+
+
+class Menu(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    Menu model - restaurant menu container for organizing categories and products.
+
+    Menus are the primary container for organizing a restaurant's offerings.
+    Each organization can have multiple menus (e.g., breakfast, lunch, dinner)
+    but only one should be set as the default menu.
+
+    Critical Rules:
+    - EVERY query MUST filter by organization (multi-tenant isolation)
+    - Use soft_delete() - never call delete() directly
+    - Only one menu per organization should be marked as is_default
+    - Published menus are visible to customers via QR codes
+
+    Attributes:
+        id: UUID primary key (ensures global uniqueness)
+        organization: FK to parent Organization (tenant isolation)
+        name: Display name of the menu
+        slug: URL-friendly identifier (unique within organization)
+        description: Optional description of the menu
+        is_published: Whether the menu is visible to customers
+        published_at: Timestamp when menu was published
+        is_default: Whether this is the default menu for the organization
+        theme: Optional FK to Theme for styling customization
+        settings: JSON field for additional menu settings
+        sort_order: Display order for menus
+
+    Usage:
+        # Create a menu
+        menu = Menu.objects.create(
+            organization=org,
+            name="Dinner Menu",
+            slug="dinner-menu",
+            description="Evening specials and main courses"
+        )
+
+        # Query menus for organization (ALWAYS filter by organization!)
+        menus = Menu.objects.filter(organization=org)
+
+        # Get default menu
+        default_menu = Menu.objects.filter(organization=org, is_default=True).first()
+
+        # Get published menus
+        published = Menu.objects.filter(organization=org, is_published=True)
+
+        # Soft delete menu (NEVER use delete())
+        menu.soft_delete()
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        related_name='menus',
+        verbose_name=_('Organization'),
+        help_text=_('Organization this menu belongs to')
+    )
+
+    name = models.CharField(
+        max_length=100,
+        verbose_name=_('Name'),
+        help_text=_('Display name of the menu')
+    )
+
+    slug = models.SlugField(
+        max_length=100,
+        verbose_name=_('Slug'),
+        help_text=_('URL-friendly identifier (unique within organization)')
+    )
+
+    description = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('Description'),
+        help_text=_('Optional description of the menu')
+    )
+
+    # Publication settings
+    is_published = models.BooleanField(
+        default=False,
+        db_index=True,
+        verbose_name=_('Is published'),
+        help_text=_('Whether the menu is visible to customers')
+    )
+
+    published_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name=_('Published at'),
+        help_text=_('Timestamp when the menu was published')
+    )
+
+    is_default = models.BooleanField(
+        default=False,
+        verbose_name=_('Is default'),
+        help_text=_('Whether this is the default menu for the organization')
+    )
+
+    # Styling
+    theme = models.ForeignKey(
+        Theme,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='menus',
+        verbose_name=_('Theme'),
+        help_text=_('Optional theme for styling customization')
+    )
+
+    # Additional settings
+    settings = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name=_('Settings'),
+        help_text=_('Additional menu settings (JSON)')
+    )
+
+    sort_order = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_('Sort order'),
+        help_text=_('Display order for menus (lower numbers appear first)')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'menus'
+        verbose_name = _('Menu')
+        verbose_name_plural = _('Menus')
+        ordering = ['sort_order', 'name']
+        unique_together = [['organization', 'slug']]
+        indexes = [
+            models.Index(fields=['organization', 'is_published'], name='menu_org_published_idx'),
+            models.Index(fields=['organization', 'is_default'], name='menu_org_default_idx'),
+            models.Index(fields=['organization', 'deleted_at'], name='menu_org_deleted_idx'),
+            models.Index(fields=['organization', 'sort_order'], name='menu_org_sort_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.organization.name})"
+
+    def __repr__(self) -> str:
+        return f"<Menu(id={self.id}, name='{self.name}', org='{self.organization.name}')>"
+
+    @property
+    def is_available(self) -> bool:
+        """Check if menu is published and not deleted."""
+        return self.is_published and not self.is_deleted
+
+    def get_setting(self, key: str, default=None):
+        """
+        Get a value from menu settings.
+
+        Args:
+            key: The setting key to retrieve
+            default: Default value if key not found
+
+        Returns:
+            The setting value or default
+        """
+        return self.settings.get(key, default)
+
+    def set_setting(self, key: str, value) -> None:
+        """
+        Set a value in menu settings.
+
+        Args:
+            key: The setting key
+            value: The value to set
+        """
+        self.settings[key] = value
+        self.save(update_fields=['settings', 'updated_at'])
+
+    def publish(self) -> None:
+        """
+        Publish the menu, making it visible to customers.
+
+        Sets is_published to True and records the publication timestamp.
+        """
+        from django.utils import timezone
+        self.is_published = True
+        self.published_at = timezone.now()
+        self.save(update_fields=['is_published', 'published_at', 'updated_at'])
+
+    def unpublish(self) -> None:
+        """
+        Unpublish the menu, hiding it from customers.
+
+        Sets is_published to False but preserves the published_at timestamp
+        for historical reference.
+        """
+        self.is_published = False
+        self.save(update_fields=['is_published', 'updated_at'])
+
+    def set_as_default(self) -> None:
+        """
+        Set this menu as the default for the organization.
+
+        Clears is_default flag on all other menus for the same organization
+        and sets this menu as default.
+        """
+        # Clear default flag on other menus
+        Menu.objects.filter(
+            organization=self.organization,
+            is_default=True
+        ).exclude(pk=self.pk).update(is_default=False)
+
+        # Set this menu as default
+        self.is_default = True
+        self.save(update_fields=['is_default', 'updated_at'])
+
+    @property
+    def category_count(self) -> int:
+        """Return the number of active categories in this menu."""
+        return self.categories.filter(deleted_at__isnull=True).count()
+
+
+class Category(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    Category model - product grouping with nested category support.
+
+    Categories organize products within a menu. They support hierarchical
+    structure through self-referential parent relationship, allowing for
+    nested subcategories (e.g., "Beverages" > "Hot Drinks" > "Coffee").
+
+    Critical Rules:
+    - EVERY query MUST filter by organization (multi-tenant isolation)
+    - Use soft_delete() - never call delete() directly
+    - Nested categories should be limited to 2-3 levels for UX
+
+    Attributes:
+        id: UUID primary key (ensures global uniqueness)
+        organization: FK to parent Organization (tenant isolation)
+        menu: FK to parent Menu
+        parent: Optional FK to parent Category (for nested categories)
+        name: Display name of the category
+        slug: URL-friendly identifier (unique within menu)
+        description: Optional description of the category
+        image: Optional URL to category image
+        is_active: Whether the category is visible/active
+        sort_order: Display order within parent category/menu
+
+    Usage:
+        # Create a top-level category
+        beverages = Category.objects.create(
+            organization=org,
+            menu=menu,
+            name="Beverages",
+            slug="beverages",
+            description="Hot and cold drinks"
+        )
+
+        # Create a nested category
+        hot_drinks = Category.objects.create(
+            organization=org,
+            menu=menu,
+            parent=beverages,
+            name="Hot Drinks",
+            slug="hot-drinks"
+        )
+
+        # Query categories for a menu (ALWAYS filter by organization!)
+        categories = Category.objects.filter(
+            organization=org,
+            menu=menu
+        )
+
+        # Get root categories (no parent)
+        root_categories = Category.objects.filter(
+            organization=org,
+            menu=menu,
+            parent__isnull=True
+        )
+
+        # Get children of a category
+        children = category.children.all()
+
+        # Soft delete category (NEVER use delete())
+        category.soft_delete()
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        related_name='categories',
+        verbose_name=_('Organization'),
+        help_text=_('Organization this category belongs to')
+    )
+
+    menu = models.ForeignKey(
+        Menu,
+        on_delete=models.CASCADE,
+        related_name='categories',
+        verbose_name=_('Menu'),
+        help_text=_('Menu this category belongs to')
+    )
+
+    parent = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='children',
+        verbose_name=_('Parent category'),
+        help_text=_('Parent category for nested structure (null for root categories)')
+    )
+
+    name = models.CharField(
+        max_length=100,
+        verbose_name=_('Name'),
+        help_text=_('Display name of the category')
+    )
+
+    slug = models.SlugField(
+        max_length=100,
+        verbose_name=_('Slug'),
+        help_text=_('URL-friendly identifier (unique within menu)')
+    )
+
+    description = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('Description'),
+        help_text=_('Optional description of the category')
+    )
+
+    image = models.URLField(
+        blank=True,
+        null=True,
+        max_length=500,
+        verbose_name=_('Image URL'),
+        help_text=_('URL to category image')
+    )
+
+    is_active = models.BooleanField(
+        default=True,
+        db_index=True,
+        verbose_name=_('Is active'),
+        help_text=_('Whether the category is visible/active')
+    )
+
+    sort_order = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_('Sort order'),
+        help_text=_('Display order within parent category/menu (lower numbers appear first)')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'categories'
+        verbose_name = _('Category')
+        verbose_name_plural = _('Categories')
+        ordering = ['sort_order', 'name']
+        unique_together = [['menu', 'slug']]
+        indexes = [
+            models.Index(fields=['menu', 'sort_order'], name='category_menu_sort_idx'),
+            models.Index(fields=['organization', 'deleted_at'], name='category_org_deleted_idx'),
+            models.Index(fields=['parent'], name='category_parent_idx'),
+            models.Index(fields=['menu', 'is_active'], name='category_menu_active_idx'),
+        ]
+
+    def __str__(self) -> str:
+        if self.parent:
+            return f"{self.parent.name} > {self.name}"
+        return self.name
+
+    def __repr__(self) -> str:
+        return f"<Category(id={self.id}, name='{self.name}', menu='{self.menu.name}')>"
+
+    @property
+    def is_available(self) -> bool:
+        """Check if category is active and not deleted."""
+        return self.is_active and not self.is_deleted
+
+    @property
+    def is_root(self) -> bool:
+        """Check if this is a root category (no parent)."""
+        return self.parent is None
+
+    @property
+    def depth(self) -> int:
+        """
+        Calculate the depth of this category in the hierarchy.
+
+        Returns:
+            0 for root categories, 1 for first-level children, etc.
+        """
+        depth = 0
+        current = self
+        while current.parent is not None:
+            depth += 1
+            current = current.parent
+        return depth
+
+    @property
+    def product_count(self) -> int:
+        """Return the number of active products in this category."""
+        # Note: products relation will be available after Product model is created
+        if hasattr(self, 'products'):
+            return self.products.filter(deleted_at__isnull=True).count()
+        return 0
+
+    def get_ancestors(self) -> list:
+        """
+        Get all ancestor categories from root to parent.
+
+        Returns:
+            List of ancestor Category objects, ordered from root to immediate parent
+        """
+        ancestors = []
+        current = self.parent
+        while current is not None:
+            ancestors.insert(0, current)
+            current = current.parent
+        return ancestors
+
+    def get_descendants(self) -> list:
+        """
+        Get all descendant categories recursively.
+
+        Returns:
+            List of all descendant Category objects
+        """
+        descendants = []
+        for child in self.children.all():
+            descendants.append(child)
+            descendants.extend(child.get_descendants())
+        return descendants
+
+    def get_breadcrumb(self) -> list:
+        """
+        Get breadcrumb path from root to this category.
+
+        Returns:
+            List of Category objects representing the path,
+            including this category as the last element
+        """
+        return self.get_ancestors() + [self]
+
+    def get_full_path(self) -> str:
+        """
+        Get the full path name of this category.
+
+        Returns:
+            String like "Beverages > Hot Drinks > Coffee"
+        """
+        return ' > '.join(cat.name for cat in self.get_breadcrumb())
+
+    def move_to(self, new_parent: 'Category' = None) -> None:
+        """
+        Move this category to a new parent.
+
+        Args:
+            new_parent: The new parent category, or None for root level
+
+        Raises:
+            ValueError: If trying to move to self or descendant
+        """
+        if new_parent is not None:
+            if new_parent.id == self.id:
+                raise ValueError("Cannot move category to itself")
+            if new_parent in self.get_descendants():
+                raise ValueError("Cannot move category to one of its descendants")
+
+        self.parent = new_parent
+        self.save(update_fields=['parent', 'updated_at'])
