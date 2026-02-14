@@ -218,17 +218,19 @@ class Organization(TimeStampedMixin, SoftDeleteMixin, models.Model):
         help_text=_('Organization lifecycle status')
     )
 
-    # Foreign key to Plan - will be linked when subscriptions app is created
-    # Using string reference to avoid circular imports
-    plan = models.ForeignKey(
-        'subscriptions.Plan',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='organizations',
-        verbose_name=_('Plan'),
-        help_text=_('Current subscription plan')
-    )
+    # TODO: Add plan FK when subscriptions app is created (subtask-6-*)
+    # This FK will be added in migration 0002_add_organization_plan.py
+    # after subscriptions.Plan model exists
+    #
+    # plan = models.ForeignKey(
+    #     'subscriptions.Plan',
+    #     on_delete=models.SET_NULL,
+    #     null=True,
+    #     blank=True,
+    #     related_name='organizations',
+    #     verbose_name=_('Plan'),
+    #     help_text=_('Current subscription plan')
+    # )
 
     trial_ends_at = models.DateTimeField(
         null=True,

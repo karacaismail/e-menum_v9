@@ -251,8 +251,7 @@ DEFAULT_DATABASE_OPTIONS = {
 # =============================================================================
 
 # Custom User Model
-# Note: Uncomment when apps.core is created
-# AUTH_USER_MODEL = 'core.User'
+AUTH_USER_MODEL = 'core.User'
 
 # Authentication backends (including django-guardian for object-level permissions)
 AUTHENTICATION_BACKENDS = [
