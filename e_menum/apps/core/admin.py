@@ -380,6 +380,16 @@ class BranchAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
     status_badge.admin_order_field = 'status'
 
 
+class RolePermissionInline(admin.TabularInline):
+    """Inline admin for managing role permissions."""
+
+    model = RolePermission
+    extra = 1
+    autocomplete_fields = ['permission']
+    verbose_name = _('Permission')
+    verbose_name_plural = _('Permissions')
+
+
 @admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
     """Admin interface for Role management."""
@@ -397,7 +407,7 @@ class RoleAdmin(admin.ModelAdmin):
     readonly_fields = ['id', 'created_at', 'updated_at']
     ordering = ['scope', 'name']
     list_per_page = 25
-    filter_horizontal = ('permissions',)
+    inlines = [RolePermissionInline]
 
     fieldsets = (
         (None, {
@@ -405,9 +415,6 @@ class RoleAdmin(admin.ModelAdmin):
         }),
         (_('Scope'), {
             'fields': ('scope', 'organization', 'is_system'),
-        }),
-        (_('Permissions'), {
-            'fields': ('permissions',),
         }),
         (_('Timestamps'), {
             'fields': ('created_at', 'updated_at'),

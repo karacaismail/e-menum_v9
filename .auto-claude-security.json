@@ -127,17 +127,17 @@
     "zip",
     "zsh"
   ],
-  "stack_commands": [],
+  "stack_commands": ["python", "python3", "pip", "pip3", "pytest", "django-admin"],
   "script_commands": [],
   "custom_commands": [],
   "detected_stack": {
-    "languages": [],
-    "package_managers": [],
-    "frameworks": [],
-    "databases": [],
-    "infrastructure": [],
+    "languages": ["python"],
+    "package_managers": ["pip"],
+    "frameworks": ["django"],
+    "databases": ["postgresql"],
+    "infrastructure": ["docker"],
     "cloud_providers": [],
-    "code_quality_tools": [],
+    "code_quality_tools": ["pytest", "black", "ruff"],
     "version_managers": []
   },
   "custom_scripts": {
