@@ -808,3 +808,415 @@ class Category(TimeStampedMixin, SoftDeleteMixin, models.Model):
 
         self.parent = new_parent
         self.save(update_fields=['parent', 'updated_at'])
+
+
+class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    Product model - individual menu items with pricing and attributes.
+
+    Products are the core menu items that customers view and order.
+    Each product belongs to a category and can have variants, modifiers,
+    allergen information, and nutritional data.
+
+    Critical Rules:
+    - EVERY query MUST filter by organization (multi-tenant isolation)
+    - Use soft_delete() - never call delete() directly
+    - Product slugs must be unique within their category
+
+    Attributes:
+        id: UUID primary key (ensures global uniqueness)
+        organization: FK to parent Organization (tenant isolation)
+        category: FK to parent Category
+        name: Display name of the product
+        slug: URL-friendly identifier (unique within category)
+        description: Full product description
+        short_description: Brief description (max 100 chars) for listings
+        base_price: Base price in the default currency
+        currency: Currency code (default: TRY)
+        image: Main product image URL
+        gallery: JSON array of additional image URLs
+        is_active: Whether the product is visible
+        is_available: Whether the product is in stock
+        is_featured: Whether to highlight on menu
+        is_chef_recommended: Special chef recommendation flag
+        preparation_time: Estimated preparation time in minutes
+        calories: Calorie count (optional)
+        spicy_level: Spiciness level 0-5 (0=not spicy, 5=very spicy)
+        tags: JSON array of tags for filtering
+        sort_order: Display order within category
+
+    Usage:
+        # Create a product
+        product = Product.objects.create(
+            organization=org,
+            category=category,
+            name="Margherita Pizza",
+            slug="margherita-pizza",
+            description="Classic Italian pizza with tomato and mozzarella",
+            short_description="Classic tomato and mozzarella",
+            base_price=Decimal("149.90"),
+            is_featured=True
+        )
+
+        # Query products for category (ALWAYS filter by organization!)
+        products = Product.objects.filter(
+            organization=org,
+            category=category,
+            is_active=True,
+            is_available=True
+        )
+
+        # Get featured products
+        featured = Product.objects.filter(
+            organization=org,
+            is_featured=True,
+            is_active=True
+        )
+
+        # Get chef recommendations
+        chef_picks = Product.objects.filter(
+            organization=org,
+            is_chef_recommended=True,
+            is_active=True
+        )
+
+        # Soft delete product (NEVER use delete())
+        product.soft_delete()
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        related_name='products',
+        verbose_name=_('Organization'),
+        help_text=_('Organization this product belongs to')
+    )
+
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name='products',
+        verbose_name=_('Category'),
+        help_text=_('Category this product belongs to')
+    )
+
+    name = models.CharField(
+        max_length=200,
+        verbose_name=_('Name'),
+        help_text=_('Display name of the product')
+    )
+
+    slug = models.SlugField(
+        max_length=200,
+        verbose_name=_('Slug'),
+        help_text=_('URL-friendly identifier (unique within category)')
+    )
+
+    description = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('Description'),
+        help_text=_('Full product description')
+    )
+
+    short_description = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name=_('Short description'),
+        help_text=_('Brief description for listings (max 100 chars)')
+    )
+
+    # Pricing
+    base_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name=_('Base price'),
+        help_text=_('Base price in the default currency')
+    )
+
+    currency = models.CharField(
+        max_length=3,
+        default='TRY',
+        verbose_name=_('Currency'),
+        help_text=_('Currency code (e.g., TRY, USD, EUR)')
+    )
+
+    # Images
+    image = models.URLField(
+        blank=True,
+        null=True,
+        max_length=500,
+        verbose_name=_('Image URL'),
+        help_text=_('Main product image URL')
+    )
+
+    gallery = models.JSONField(
+        default=list,
+        blank=True,
+        verbose_name=_('Gallery'),
+        help_text=_('Array of additional image URLs')
+    )
+
+    # Availability & Status
+    is_active = models.BooleanField(
+        default=True,
+        db_index=True,
+        verbose_name=_('Is active'),
+        help_text=_('Whether the product is visible on the menu')
+    )
+
+    is_available = models.BooleanField(
+        default=True,
+        db_index=True,
+        verbose_name=_('Is available'),
+        help_text=_('Whether the product is in stock/available for ordering')
+    )
+
+    is_featured = models.BooleanField(
+        default=False,
+        db_index=True,
+        verbose_name=_('Is featured'),
+        help_text=_('Whether to highlight this product on the menu')
+    )
+
+    is_chef_recommended = models.BooleanField(
+        default=False,
+        db_index=True,
+        verbose_name=_('Is chef recommended'),
+        help_text=_('Special chef recommendation flag')
+    )
+
+    # Product attributes
+    preparation_time = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        verbose_name=_('Preparation time'),
+        help_text=_('Estimated preparation time in minutes')
+    )
+
+    calories = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        verbose_name=_('Calories'),
+        help_text=_('Calorie count (kcal)')
+    )
+
+    spicy_level = models.PositiveSmallIntegerField(
+        default=0,
+        verbose_name=_('Spicy level'),
+        help_text=_('Spiciness level 0-5 (0=not spicy, 5=very spicy)')
+    )
+
+    tags = models.JSONField(
+        default=list,
+        blank=True,
+        verbose_name=_('Tags'),
+        help_text=_('Array of tags for filtering (e.g., vegetarian, vegan, gluten-free)')
+    )
+
+    sort_order = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_('Sort order'),
+        help_text=_('Display order within category (lower numbers appear first)')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'products'
+        verbose_name = _('Product')
+        verbose_name_plural = _('Products')
+        ordering = ['sort_order', 'name']
+        unique_together = [['category', 'slug']]
+        indexes = [
+            models.Index(fields=['category', 'sort_order'], name='product_category_sort_idx'),
+            models.Index(fields=['organization', 'deleted_at'], name='product_org_deleted_idx'),
+            models.Index(
+                fields=['organization', 'is_active', 'is_available'],
+                name='product_org_active_avail_idx'
+            ),
+            models.Index(fields=['organization', 'is_featured'], name='product_org_featured_idx'),
+            models.Index(
+                fields=['organization', 'is_chef_recommended'],
+                name='product_org_chef_rec_idx'
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.category.name})"
+
+    def __repr__(self) -> str:
+        return f"<Product(id={self.id}, name='{self.name}', category='{self.category.name}')>"
+
+    @property
+    def is_orderable(self) -> bool:
+        """Check if product can be ordered (active, available, not deleted)."""
+        return self.is_active and self.is_available and not self.is_deleted
+
+    @property
+    def formatted_price(self) -> str:
+        """Return formatted price with currency symbol."""
+        currency_symbols = {
+            'TRY': '₺',
+            'USD': '$',
+            'EUR': '€',
+            'GBP': '£',
+        }
+        symbol = currency_symbols.get(self.currency, self.currency)
+        return f"{symbol}{self.base_price:,.2f}"
+
+    @property
+    def gallery_count(self) -> int:
+        """Return the number of images in the gallery."""
+        return len(self.gallery) if self.gallery else 0
+
+    @property
+    def has_gallery(self) -> bool:
+        """Check if product has gallery images."""
+        return bool(self.gallery)
+
+    def get_all_images(self) -> list:
+        """
+        Get all product images including main image and gallery.
+
+        Returns:
+            List of image URLs, with main image first if exists
+        """
+        images = []
+        if self.image:
+            images.append(self.image)
+        if self.gallery:
+            images.extend(self.gallery)
+        return images
+
+    def add_gallery_image(self, image_url: str) -> None:
+        """
+        Add an image to the gallery.
+
+        Args:
+            image_url: URL of the image to add
+        """
+        if not self.gallery:
+            self.gallery = []
+        if image_url not in self.gallery:
+            self.gallery.append(image_url)
+            self.save(update_fields=['gallery', 'updated_at'])
+
+    def remove_gallery_image(self, image_url: str) -> bool:
+        """
+        Remove an image from the gallery.
+
+        Args:
+            image_url: URL of the image to remove
+
+        Returns:
+            True if image was removed, False if not found
+        """
+        if self.gallery and image_url in self.gallery:
+            self.gallery.remove(image_url)
+            self.save(update_fields=['gallery', 'updated_at'])
+            return True
+        return False
+
+    def add_tag(self, tag: str) -> None:
+        """
+        Add a tag to the product.
+
+        Args:
+            tag: Tag to add (will be normalized to lowercase)
+        """
+        normalized_tag = tag.lower().strip()
+        if not self.tags:
+            self.tags = []
+        if normalized_tag not in self.tags:
+            self.tags.append(normalized_tag)
+            self.save(update_fields=['tags', 'updated_at'])
+
+    def remove_tag(self, tag: str) -> bool:
+        """
+        Remove a tag from the product.
+
+        Args:
+            tag: Tag to remove
+
+        Returns:
+            True if tag was removed, False if not found
+        """
+        normalized_tag = tag.lower().strip()
+        if self.tags and normalized_tag in self.tags:
+            self.tags.remove(normalized_tag)
+            self.save(update_fields=['tags', 'updated_at'])
+            return True
+        return False
+
+    def has_tag(self, tag: str) -> bool:
+        """
+        Check if product has a specific tag.
+
+        Args:
+            tag: Tag to check
+
+        Returns:
+            True if product has the tag
+        """
+        normalized_tag = tag.lower().strip()
+        return self.tags and normalized_tag in self.tags
+
+    def set_availability(self, is_available: bool) -> None:
+        """
+        Set product availability (in stock / out of stock).
+
+        Args:
+            is_available: Whether the product is available
+        """
+        self.is_available = is_available
+        self.save(update_fields=['is_available', 'updated_at'])
+
+    def toggle_featured(self) -> bool:
+        """
+        Toggle the featured status of the product.
+
+        Returns:
+            New featured status
+        """
+        self.is_featured = not self.is_featured
+        self.save(update_fields=['is_featured', 'updated_at'])
+        return self.is_featured
+
+    def toggle_chef_recommended(self) -> bool:
+        """
+        Toggle the chef recommended status of the product.
+
+        Returns:
+            New chef recommended status
+        """
+        self.is_chef_recommended = not self.is_chef_recommended
+        self.save(update_fields=['is_chef_recommended', 'updated_at'])
+        return self.is_chef_recommended
+
+    def get_spicy_display(self) -> str:
+        """
+        Get a visual representation of spicy level.
+
+        Returns:
+            String with pepper emojis based on spicy level
+        """
+        if self.spicy_level == 0:
+            return _('Not spicy')
+        return '🌶️' * self.spicy_level
+
+    @property
+    def menu(self):
+        """Get the menu this product belongs to via category."""
+        return self.category.menu
