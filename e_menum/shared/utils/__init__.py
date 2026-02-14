@@ -32,4 +32,22 @@ Usage:
 # Utility functions will be implemented in separate files
 # and exported here for clean imports
 
-__all__ = []
+from shared.utils.exceptions import (
+    ErrorCodes,
+    AppException,
+    AuthenticationException,
+    PermissionException,
+    ResourceNotFoundException,
+    BusinessLogicException,
+    custom_exception_handler,
+)
+
+__all__ = [
+    'ErrorCodes',
+    'AppException',
+    'AuthenticationException',
+    'PermissionException',
+    'ResourceNotFoundException',
+    'BusinessLogicException',
+    'custom_exception_handler',
+]

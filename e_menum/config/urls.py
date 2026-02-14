@@ -81,8 +81,7 @@ api_v1_patterns = [
     path('', api_root, name='api-root'),
 
     # Authentication endpoints (JWT)
-    # Will be implemented in apps.core.urls
-    # path('auth/', include('apps.core.api.auth_urls')),
+    path('auth/', include(('apps.core.urls', 'core'), namespace='auth')),
 
     # Core module
     # path('organizations/', include('apps.core.api.organization_urls')),

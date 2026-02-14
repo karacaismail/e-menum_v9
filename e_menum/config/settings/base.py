@@ -125,14 +125,14 @@ DJANGO_APPS = [
 ]
 
 # Third-party apps
-# Note: Uncomment as dependencies are installed via requirements.txt
+# Note: These apps require their dependencies to be installed via requirements.txt
 THIRD_PARTY_APPS = [
-    # 'rest_framework',
-    # 'rest_framework_simplejwt',
-    # 'rest_framework_simplejwt.token_blacklist',
-    # 'django_filters',
-    # 'corsheaders',
-    # 'guardian',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
+    # 'django_filters',  # Uncomment when django-filter is installed
+    # 'corsheaders',  # Uncomment when django-cors-headers is installed
+    # 'guardian',  # Uncomment when django-guardian is installed
 ]
 
 # E-Menum Local apps (ordered by dependency)
