@@ -1,6 +1,31 @@
-# E-Menum Settings Package
-# Import from the appropriate environment-specific settings module.
-# The actual settings are loaded based on DJANGO_SETTINGS_MODULE environment variable.
+"""
+E-Menum Django Settings Package
 
-# This file intentionally left mostly empty to avoid import side effects.
-# Settings are imported via manage.py or WSGI/ASGI entry points.
+This package contains environment-specific Django settings modules:
+- base.py: Common settings for all environments
+- development.py: Development environment settings
+- staging.py: Staging environment settings
+- production.py: Production environment settings
+
+The settings module to use is determined by the DJANGO_SETTINGS_MODULE
+environment variable, which should be set to one of:
+- config.settings.development
+- config.settings.staging
+- config.settings.production
+
+For local development, use:
+    export DJANGO_SETTINGS_MODULE=config.settings.development
+
+For production, use:
+    export DJANGO_SETTINGS_MODULE=config.settings.production
+
+Note: This file intentionally does not import settings to avoid side effects.
+Settings are imported via manage.py or WSGI/ASGI entry points.
+"""
+
+# Version of the settings package
+__version__ = '1.0.0'
+
+# Default settings module hint (used by IDE tools)
+# Actual settings loading is done by Django based on DJANGO_SETTINGS_MODULE
+default_app_config = 'config.settings.development'
