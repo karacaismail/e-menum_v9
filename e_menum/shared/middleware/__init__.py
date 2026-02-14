@@ -29,7 +29,18 @@ Usage:
     ]
 """
 
-# Middleware classes will be implemented in separate files
-# and exported here for clean imports
+# Middleware classes implemented in separate files and exported here for clean imports
 
-__all__ = []
+from shared.middleware.tenant import (
+    TenantMiddleware,
+    TenantContextMixin,
+    get_current_organization,
+    set_current_organization,
+)
+
+__all__ = [
+    'TenantMiddleware',
+    'TenantContextMixin',
+    'get_current_organization',
+    'set_current_organization',
+]
