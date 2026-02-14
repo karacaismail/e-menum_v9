@@ -4,8 +4,8 @@ Base view classes for E-Menum Django REST Framework.
 This module provides base view classes that implement common
 functionality required across all DRF views:
 
-- TenantViewSet: ViewSet with automatic organization filtering
-- TenantAPIView: APIView with tenant context injection
+- BaseTenantViewSet: ViewSet with automatic organization filtering
+- BaseTenantAPIView: APIView with tenant context injection
 - SoftDeleteMixin: Implements soft delete instead of hard delete
 
 Multi-Tenancy Pattern:
@@ -27,22 +27,51 @@ Soft Delete Pattern:
 
     # CORRECT (soft delete)
     def perform_destroy(self, instance):
-        instance.deleted_at = timezone.now()
-        instance.save()
+        instance.soft_delete()
 
     # INCORRECT
     def perform_destroy(self, instance):
         instance.delete()  # Physical deletion FORBIDDEN
 
 Usage:
-    from shared.views import TenantViewSet
+    from shared.views import BaseTenantViewSet
 
-    class MenuViewSet(TenantViewSet):
+    class MenuViewSet(BaseTenantViewSet):
         queryset = Menu.objects.all()
         serializer_class = MenuSerializer
+        permission_resource = 'menu'
 """
 
-# View classes will be implemented in separate files
-# and exported here for clean imports
+from shared.views.base import (
+    # Pagination
+    StandardPagination,
+    # Mixins
+    StandardResponseMixin,
+    SoftDeleteMixin,
+    TenantFilterMixin,
+    # ViewSets
+    BaseModelViewSet,
+    BaseTenantViewSet,
+    BaseReadOnlyViewSet,
+    BaseTenantReadOnlyViewSet,
+    # API Views
+    BaseAPIView,
+    BaseTenantAPIView,
+)
 
-__all__ = []
+__all__ = [
+    # Pagination
+    'StandardPagination',
+    # Mixins
+    'StandardResponseMixin',
+    'SoftDeleteMixin',
+    'TenantFilterMixin',
+    # ViewSets
+    'BaseModelViewSet',
+    'BaseTenantViewSet',
+    'BaseReadOnlyViewSet',
+    'BaseTenantReadOnlyViewSet',
+    # API Views
+    'BaseAPIView',
+    'BaseTenantAPIView',
+]

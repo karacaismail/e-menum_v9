@@ -6,7 +6,7 @@ common functionality required across all DRF serializers:
 
 - TenantModelSerializer: Auto-injects organization from request context
 - SoftDeleteModelSerializer: Handles soft delete field exclusion
-- AuditSerializer: Includes audit fields (created_at, updated_at, etc.)
+- AuditModelSerializer: Includes audit fields (created_at, updated_at, etc.)
 
 Response Format:
     All API responses follow the standard format:
@@ -48,7 +48,42 @@ Usage:
             fields = ['id', 'name', 'slug', ...]
 """
 
-# Serializer classes will be implemented in separate files
-# and exported here for clean imports
+from shared.serializers.base import (
+    # Base serializers
+    BaseModelSerializer,
+    SoftDeleteModelSerializer,
+    AuditModelSerializer,
+    TenantModelSerializer,
+    # Response wrappers
+    StandardResponseSerializer,
+    PaginatedResponseSerializer,
+    ErrorDetailSerializer,
+    ErrorResponseSerializer,
+    # Utility serializers
+    IDListSerializer,
+    BulkActionResponseSerializer,
+    SlugLookupSerializer,
+    # Nested helpers
+    MinimalSerializer,
+    create_minimal_serializer,
+)
 
-__all__ = []
+__all__ = [
+    # Base serializers
+    'BaseModelSerializer',
+    'SoftDeleteModelSerializer',
+    'AuditModelSerializer',
+    'TenantModelSerializer',
+    # Response wrappers
+    'StandardResponseSerializer',
+    'PaginatedResponseSerializer',
+    'ErrorDetailSerializer',
+    'ErrorResponseSerializer',
+    # Utility serializers
+    'IDListSerializer',
+    'BulkActionResponseSerializer',
+    'SlugLookupSerializer',
+    # Nested helpers
+    'MinimalSerializer',
+    'create_minimal_serializer',
+]
