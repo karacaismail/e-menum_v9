@@ -1,0 +1,127 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block title %}Reports | E-Menum Admin{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs" aria-label="{% trans 'Breadcrumb' %}">
+    <a href="{% url 'admin:index' %}">
+        <i class="ph ph-house"></i>
+        {% trans 'Home' %}
+    </a>
+    <span class="breadcrumb-sep"><i class="ph ph-caret-right"></i></span>
+    <span class="breadcrumb-current">{% trans 'Reports' %}</span>
+</nav>
+{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    {# Page Header #}
+    <div class="dashboard-welcome">
+        <div class="welcome-text">
+            <h1><i class="ph ph-chart-bar"></i> {% trans 'Reports & Analytics' %}</h1>
+            <p>{% trans 'Monitor your business performance and track key metrics.' %}</p>
+        </div>
+    </div>
+
+    {# Quick Stats #}
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="ph ph-users-three"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-label">{% trans 'Total Users' %}</span>
+                <span class="stat-value">{{ total_users|default:"0" }}</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="ph ph-book-open"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-label">{% trans 'Active Menus' %}</span>
+                <span class="stat-value">{{ total_menus|default:"0" }}</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="ph ph-package"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-label">{% trans 'Products' %}</span>
+                <span class="stat-value">{{ total_products|default:"0" }}</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="ph ph-receipt"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-label">{% trans 'Orders' %}</span>
+                <span class="stat-value">{{ total_orders|default:"0" }}</span>
+            </div>
+        </div>
+    </div>
+
+    {# Reports Grid #}
+    <div class="dashboard-grid">
+        {# Available Reports #}
+        <div class="dashboard-card dashboard-card--wide">
+            <div class="card-header">
+                <h2><i class="ph ph-chart-line"></i> {% trans 'Available Reports' %}</h2>
+            </div>
+            <div class="card-body">
+                <div class="quick-access-grid">
+                    <a href="{% url 'admin:core_auditlog_changelist' %}" class="quick-access-item">
+                        <div class="qa-icon"><i class="ph ph-clipboard-text"></i></div>
+                        <div class="qa-info">
+                            <span class="qa-name">{% trans 'Audit Logs' %}</span>
+                            <span class="qa-app">{% trans 'System activity and changes' %}</span>
+                        </div>
+                    </a>
+                    <a href="{% url 'admin:core_user_changelist' %}" class="quick-access-item">
+                        <div class="qa-icon"><i class="ph ph-users"></i></div>
+                        <div class="qa-info">
+                            <span class="qa-name">{% trans 'User Activity' %}</span>
+                            <span class="qa-app">{% trans 'User sessions and logins' %}</span>
+                        </div>
+                    </a>
+                    <a href="{% url 'admin:orders_order_changelist' %}" class="quick-access-item">
+                        <div class="qa-icon"><i class="ph ph-receipt"></i></div>
+                        <div class="qa-info">
+                            <span class="qa-name">{% trans 'Order History' %}</span>
+                            <span class="qa-app">{% trans 'All orders and transactions' %}</span>
+                        </div>
+                    </a>
+                    <a href="{% url 'admin:menu_product_changelist' %}" class="quick-access-item">
+                        <div class="qa-icon"><i class="ph ph-package"></i></div>
+                        <div class="qa-info">
+                            <span class="qa-name">{% trans 'Product Catalog' %}</span>
+                            <span class="qa-app">{% trans 'Menu items and pricing' %}</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {# Coming Soon #}
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2><i class="ph ph-rocket-launch"></i> {% trans 'Coming Soon' %}</h2>
+            </div>
+            <div class="card-body">
+                <div class="empty-state" style="padding: 32px 16px;">
+                    <i class="ph ph-chart-pie" style="font-size: 48px; opacity: 0.3; display: block; margin-bottom: 12px;"></i>
+                    <p style="margin: 0 0 8px; font-size: 14px;">{% trans 'Advanced Analytics' %}</p>
+                    <p style="margin: 0; font-size: 12px; opacity: 0.5;">
+                        {% trans 'Revenue tracking, customer insights, menu performance, and AI-powered recommendations will be available in a future update.' %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

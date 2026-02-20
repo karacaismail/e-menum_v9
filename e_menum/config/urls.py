@@ -38,6 +38,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.http import JsonResponse
 from django.views.generic import RedirectView
+from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import render
 
 # Import core module components for proper URL structure
 from apps.core.urls import auth_urlpatterns as core_auth_urlpatterns
@@ -64,6 +66,27 @@ def health_check(request):
             'version': getattr(settings, 'EMENUM_API_VERSION', 'v1'),
         }
     })
+
+
+@staff_member_required
+def admin_reports(request):
+    """
+    Custom admin reports page with basic stats.
+    """
+    from apps.core.models import User
+    from apps.menu.models import Menu, Product
+    from apps.orders.models import Order
+
+    context = {
+        'title': 'Reports',
+        'total_users': User.objects.filter(deleted_at__isnull=True).count(),
+        'total_menus': Menu.objects.filter(deleted_at__isnull=True).count(),
+        'total_products': Product.objects.filter(deleted_at__isnull=True).count(),
+        'total_orders': Order.objects.filter(deleted_at__isnull=True).count(),
+        'is_nav_sidebar_enabled': False,
+        'has_permission': True,
+    }
+    return render(request, 'admin/reports.html', context)
 
 
 def api_root(request):
@@ -180,6 +203,11 @@ urlpatterns = [
     # Root redirect → Admin Dashboard
     # -------------------------------------------------------------------------
     path('', RedirectView.as_view(url='/admin/', permanent=False), name='root-redirect'),
+
+    # -------------------------------------------------------------------------
+    # Custom Admin Pages (must be BEFORE admin/ catch-all)
+    # -------------------------------------------------------------------------
+    path('admin/reports/', admin_reports, name='admin-reports'),
 
     # -------------------------------------------------------------------------
     # Django Admin
