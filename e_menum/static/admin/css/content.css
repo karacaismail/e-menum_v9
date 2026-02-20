@@ -1973,9 +1973,34 @@ div.breadcrumbs:not(.breadcrumbs) {
     .card-header h2 { font-size: 13px; }
     .activity-item { padding: 8px 14px; }
 
-    /* ── R2.10 Filter Panel ── */
+    /* ── R2.10 Filter Panel — full width, no scroll box ── */
     #changelist-filter {
         margin-left: 0 !important;
+        margin-right: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+        overflow-y: visible !important;
+        position: static !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        border-radius: 8px !important;
+    }
+    .changelist-content #changelist-filter {
+        max-height: none !important;
+        overflow: visible !important;
+        overflow-y: visible !important;
+        position: static !important;
+        flex-shrink: 1 !important;
+        width: 100% !important;
+    }
+    /* Changelist content stack on mobile */
+    .changelist-content {
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+    .changelist-results {
+        width: 100% !important;
+        min-width: 0 !important;
     }
 
     /* ── R2.11 Inline Groups ── */
@@ -2201,6 +2226,12 @@ div.breadcrumbs:not(.breadcrumbs) {
         flex-direction: column !important;
         align-items: stretch !important;
     }
+
+    /* Filter panel compact */
+    #changelist-filter h2 { padding: 8px 10px !important; font-size: 10px !important; }
+    #changelist-filter h3 { padding: 8px 10px 4px !important; font-size: 10px !important; }
+    #changelist-filter a { font-size: 12px !important; padding: 5px 8px !important; }
+    #changelist-filter ul { padding: 0 8px 8px !important; }
 }
 
 
