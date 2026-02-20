@@ -138,7 +138,6 @@ THIRD_PARTY_APPS = [
 ]
 
 # E-Menum Local apps (ordered by dependency)
-# Note: Uncomment as apps are created
 LOCAL_APPS = [
     'apps.core.apps.CoreConfig',
     'apps.menu.apps.MenuConfig',
@@ -146,9 +145,9 @@ LOCAL_APPS = [
     'apps.subscriptions.apps.SubscriptionsConfig',
     'apps.customers.apps.CustomersConfig',
     'apps.media.apps.MediaConfig',
-    # 'apps.notifications.apps.NotificationsConfig',
-    # 'apps.analytics.apps.AnalyticsConfig',
-    # 'apps.ai.apps.AiConfig',
+    'apps.notifications.apps.NotificationsConfig',
+    'apps.analytics.apps.AnalyticsConfig',
+    'apps.ai.apps.AiConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

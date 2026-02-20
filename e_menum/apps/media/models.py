@@ -569,7 +569,9 @@ class Media(TimeStampedMixin, SoftDeleteMixin, models.Model):
     @property
     def human_readable_size(self) -> str:
         """Return file size in human-readable format."""
-        size = self.file_size
+        if self.file_size is None:
+            return "0 B"
+        size = float(self.file_size)
         for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
             if size < 1024.0:
                 return f"{size:.1f} {unit}"

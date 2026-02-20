@@ -42,6 +42,9 @@ from django.http import JsonResponse
 from apps.core.urls import auth_urlpatterns as core_auth_urlpatterns
 from apps.core.urls import router as core_router
 
+# Import public menu SSR views
+from apps.menu.public_views import PublicMenuView, PublicMenuDetailView
+
 
 # =============================================================================
 # HEALTH CHECK & UTILITY VIEWS
@@ -138,27 +141,30 @@ api_v1_patterns = [
     path('', include(('apps.subscriptions.urls', 'subscriptions'), namespace='subscriptions')),
 
     # -------------------------------------------------------------------------
-    # Customers Module (TODO: Implement when views are ready)
+    # Notifications Module
     # -------------------------------------------------------------------------
-    # path('', include(('apps.customers.urls', 'customers'), namespace='customers')),
+    # notifications/ (list, detail, read, read-all, archive)
+    path('', include(('apps.notifications.urls', 'notifications'), namespace='notifications')),
 
     # -------------------------------------------------------------------------
-    # Media Module (TODO: Implement when views are ready)
+    # Media Module
     # -------------------------------------------------------------------------
-    # path('', include(('apps.media.urls', 'media'), namespace='media')),
+    # media/folders/, media/files/ (upload, CRUD, move)
+    path('', include(('apps.media.urls', 'media'), namespace='media')),
 
     # -------------------------------------------------------------------------
-    # Notifications Module (TODO: Implement when views are ready)
+    # Customers Module
     # -------------------------------------------------------------------------
-    # path('', include(('apps.notifications.urls', 'notifications'), namespace='notifications')),
+    # customers/, customers/feedback/ (CRUD, loyalty-history, respond, etc.)
+    path('', include(('apps.customers.urls', 'customers'), namespace='customers')),
 
     # -------------------------------------------------------------------------
-    # Analytics Module (TODO: Implement when views are ready)
+    # Analytics Module (STUB - not yet implemented)
     # -------------------------------------------------------------------------
     # path('', include(('apps.analytics.urls', 'analytics'), namespace='analytics')),
 
     # -------------------------------------------------------------------------
-    # AI Module (TODO: Implement when views are ready)
+    # AI Module (STUB - not yet implemented)
     # -------------------------------------------------------------------------
     # path('', include(('apps.ai.urls', 'ai'), namespace='ai')),
 ]
@@ -198,13 +204,18 @@ urlpatterns = [
     # -------------------------------------------------------------------------
     # Public Menu Views (Server-Side Rendered)
     # -------------------------------------------------------------------------
-    # Public menu display (no authentication required)
-    # path('m/<slug:menu_slug>/', include('apps.menu.public_urls')),
+    # Public menu display (no authentication required) - accessed via QR code
+    path('m/<slug:menu_slug>/', PublicMenuView.as_view(), name='public-menu'),
+    path('m/<slug:menu_slug>/product/<uuid:product_id>/', PublicMenuDetailView.as_view(), name='public-menu-product'),
 
     # -------------------------------------------------------------------------
     # JWT Token endpoints (Simple JWT)
     # -------------------------------------------------------------------------
-    # These will be uncommented when rest_framework_simplejwt is installed
+    # NOTE: JWT refresh/verify endpoints are already active via core/urls.py:
+    #   POST /api/v1/auth/refresh/  → TokenRefreshView (custom)
+    #   POST /api/v1/auth/verify/   → TokenVerifyView (custom)
+    #
+    # The SimpleJWT standard views below are NOT needed (custom views used):
     # path('api/v1/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # path('api/v1/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # path('api/v1/auth/token/verify/', TokenVerifyView.as_view(), name='token_verify'),

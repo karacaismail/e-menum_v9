@@ -1,0 +1,127 @@
+{% load i18n static %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" dir="{{ LANGUAGE_BIDI|yesno:"rtl,ltr,auto" }}"
+  data-theme="dark">
+<head>
+<title>{% block title %}{% endblock %}</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="NONE,NOARCHIVE">
+
+{# Core admin CSS - keep for form widgets, calendar popups, etc #}
+<link rel="stylesheet" href="{% static 'admin/css/base.css' %}">
+
+{# Our custom overrides #}
+{% block extrastyle %}{% endblock %}
+{% block extrahead %}{% endblock %}
+
+{# Force dark mode + override Django's CSS custom properties #}
+<style>
+  /* ═══════════════════════════════════════════════════════════
+     OVERRIDE DJANGO 5.x dark_mode.css CUSTOM PROPERTIES
+     Django's base.css uses these variables. We redefine them
+     to match our Metronic dark theme instead of Django defaults.
+     ═══════════════════════════════════════════════════════════ */
+  html[data-theme="dark"] {
+    color-scheme: dark;
+
+    /* Core backgrounds */
+    --primary: #1e2533;
+    --primary-fg: #f1f5f9;
+    --body-bg: #0f1219;
+    --body-fg: #94a3b8;
+    --body-quiet-color: #64748b;
+    --body-loud-color: #f1f5f9;
+
+    /* Surfaces & containers */
+    --darkened-bg: #1e2533;
+    --selected-bg: #252d3d;
+    --selected-row: rgba(99, 102, 241, 0.08);
+
+    /* Borders */
+    --border-color: rgba(255, 255, 255, 0.06);
+    --hairline-color: rgba(255, 255, 255, 0.03);
+
+    /* Links */
+    --link-fg: #818cf8;
+    --link-hover-color: #6366f1;
+    --link-selected-fg: #a5b4fc;
+
+    /* Buttons */
+    --button-bg: #6366f1;
+    --button-fg: #ffffff;
+    --button-hover-bg: #5558e6;
+    --default-button-bg: #6366f1;
+    --default-button-hover-bg: #5558e6;
+
+    /* Messages */
+    --message-success-bg: rgba(34, 197, 94, 0.08);
+    --message-warning-bg: rgba(245, 158, 11, 0.08);
+    --message-error-bg: rgba(239, 68, 68, 0.08);
+
+    /* Form elements */
+    --object-tools-bg: #6366f1;
+    --object-tools-hover-bg: #5558e6;
+    --close-button-bg: rgba(255, 255, 255, 0.06);
+    --close-button-hover-bg: rgba(255, 255, 255, 0.12);
+
+    /* Breadcrumbs */
+    --breadcrumbs-fg: #94a3b8;
+    --breadcrumbs-link-fg: #818cf8;
+    --breadcrumbs-bg: transparent;
+
+    /* Calendar widget */
+    --calendar-today-bg: rgba(99, 102, 241, 0.12);
+    --calendar-today-fg: #818cf8;
+
+    /* Django admin header overrides (hidden, but prevent flash) */
+    --header-color: #f1f5f9;
+    --header-branding-color: #f1f5f9;
+    --header-bg: #111827;
+    --header-link-color: #f1f5f9;
+
+    /* Error / delete colors */
+    --delete-button-bg: rgba(239, 68, 68, 0.08);
+    --delete-button-fg: #f87171;
+  }
+
+  /* Kill Django's default header, nav-sidebar, and footer completely */
+  #header, #nav-sidebar, .skip-to-content-link,
+  .toggle-nav-sidebar, #nav-filter { display: none !important; }
+  /* Remove Django's default main margin that accounts for sidebar */
+  .main { margin-left: 0 !important; padding: 0 !important; }
+  #container { padding: 0 !important; min-height: auto !important; }
+</style>
+</head>
+
+<body class="{% block bodyclass %}{% endblock %}" data-theme="dark">
+
+{% block body %}
+  {# Default body content - base_site.html overrides this with dual sidebar layout #}
+  {% block messages %}
+    {% if messages %}
+    <ul class="messagelist">{% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|capfirst }}</li>
+    {% endfor %}</ul>
+    {% endif %}
+  {% endblock messages %}
+
+  <div id="content" class="{% block coltype %}colM{% endblock %}">
+    {% block pretitle %}{% endblock %}
+    {% block content_title %}{% if title %}<h1>{{ title }}</h1>{% endif %}{% endblock %}
+    {% block content_subtitle %}{% if subtitle %}<h2>{{ subtitle }}</h2>{% endif %}{% endblock %}
+    {% block content %}
+      {% block object-tools %}{% endblock %}
+      {{ content }}
+    {% endblock %}
+    {% block sidebar %}{% endblock %}
+    <br class="clear">
+  </div>
+
+  {% block footer %}{% endblock %}
+{% endblock body %}
+
+{# Admin JS for widgets (calendar, prepopulate, etc.) #}
+<script src="{% url 'admin:jsi18n' %}"></script>
+{% block extrabody %}{% endblock %}
+</body>
+</html>

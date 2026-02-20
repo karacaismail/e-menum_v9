@@ -1,0 +1,690 @@
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | E-Menum Admin{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin/css/sidebar.css' %}">
+<link rel="stylesheet" href="{% static 'admin/css/content.css' %}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+{% endblock %}
+
+{% block bodyclass %}admin-layout-body{% endblock %}
+
+{% block body %}
+<div class="admin-layout" x-data="adminSidebar()" :class="{ 'collapsed': collapsed, 'layout-boxed': layoutMode === 'boxed' }">
+
+    {# ═══════════════════════════════════════════ #}
+    {# RAIL SIDEBAR (64px - leftmost icon bar)     #}
+    {# ═══════════════════════════════════════════ #}
+    <aside class="rail-sidebar">
+        <div class="rail-logo">
+            <div class="logo-mark">E</div>
+        </div>
+
+        <nav class="rail-nav">
+            <button class="rail-item" :class="{ 'active': activeGroup === 'dashboard' }"
+                @click="setGroup('dashboard')" title="Dashboard">
+                <i class="ph ph-squares-four"></i>
+                <span class="rail-tooltip">Dashboard</span>
+            </button>
+            <button class="rail-item" :class="{ 'active': activeGroup === 'core' }"
+                @click="setGroup('core')" title="Core">
+                <i class="ph ph-shield-check"></i>
+                <span class="rail-tooltip">Core</span>
+            </button>
+            <button class="rail-item" :class="{ 'active': activeGroup === 'customers' }"
+                @click="setGroup('customers')" title="Customers">
+                <i class="ph ph-users-three"></i>
+                <span class="rail-tooltip">Customers</span>
+            </button>
+            <button class="rail-item" :class="{ 'active': activeGroup === 'menu' }"
+                @click="setGroup('menu')" title="Menu Management">
+                <i class="ph ph-fork-knife"></i>
+                <span class="rail-tooltip">Menu</span>
+            </button>
+            <button class="rail-item" :class="{ 'active': activeGroup === 'orders' }"
+                @click="setGroup('orders')" title="Order Management">
+                <i class="ph ph-receipt"></i>
+                <span class="rail-tooltip">Orders</span>
+            </button>
+            <button class="rail-item" :class="{ 'active': activeGroup === 'media' }"
+                @click="setGroup('media')" title="Media">
+                <i class="ph ph-image"></i>
+                <span class="rail-tooltip">Media</span>
+            </button>
+            <button class="rail-item" :class="{ 'active': activeGroup === 'reports' }"
+                @click="setGroup('reports')" title="Reports">
+                <i class="ph ph-chart-bar"></i>
+                <span class="rail-tooltip">Reports</span>
+            </button>
+        </nav>
+
+        <div class="rail-footer">
+            <div class="rail-divider"></div>
+            <button class="rail-item" @click="collapsed = !collapsed" title="Toggle Sidebar">
+                <i class="ph" :class="collapsed ? 'ph-caret-right' : 'ph-caret-left'"></i>
+                <span class="rail-tooltip" x-text="collapsed ? 'Expand' : 'Collapse'"></span>
+            </button>
+            <button class="rail-item" @click="toggleLayout()" :title="layoutMode === 'wide' ? 'Switch to Boxed' : 'Switch to Wide'">
+                <i class="ph" :class="layoutMode === 'wide' ? 'ph-arrows-in-simple' : 'ph-arrows-out-simple'"></i>
+                <span class="rail-tooltip" x-text="layoutMode === 'wide' ? 'Boxed Layout' : 'Wide Layout'"></span>
+            </button>
+            <a href="{% url 'admin:password_change' %}" class="rail-item" title="{% trans 'Settings' %}">
+                <i class="ph ph-gear"></i>
+                <span class="rail-tooltip">{% trans 'Settings' %}</span>
+            </a>
+            <div class="rail-user-avatar" title="{{ user.get_username }}">
+                <span>{{ user.get_username|truncatechars:1 }}</span>
+            </div>
+            <a href="{% url 'admin:logout' %}" class="rail-item rail-item--danger" title="{% trans 'Log out' %}">
+                <i class="ph ph-sign-out"></i>
+                <span class="rail-tooltip">{% trans 'Log out' %}</span>
+            </a>
+        </div>
+    </aside>
+
+    {# ═══════════════════════════════════════════ #}
+    {# ACCORDION SIDEBAR (240px - menu items)      #}
+    {# ═══════════════════════════════════════════ #}
+    <aside class="accordion-sidebar" x-show="!collapsed" x-transition.opacity.duration.150ms>
+        <div class="sidebar-header">
+            <div class="sidebar-brand">
+                <span class="brand-name">E-Menum</span>
+                <span class="brand-badge">Admin</span>
+            </div>
+            <h3 class="sidebar-group-title" x-text="groups[activeGroup]?.label || 'Menu'"></h3>
+            <div class="sidebar-search-wrapper">
+                <i class="ph ph-magnifying-glass sidebar-search-icon"></i>
+                <input type="text"
+                       placeholder="{% trans 'Search menu...' %}"
+                       x-model="filterText"
+                       class="sidebar-search"
+                       @keyup.escape="filterText = ''">
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <template x-for="item in filteredItems" :key="item.url">
+                <a :href="item.url"
+                   :class="{ 'active': isActive(item.url) }"
+                   x-show="matchesFilter(item.label)">
+                    <i class="ph" :class="'ph-' + (item.icon || 'dot')"></i>
+                    <span x-text="item.label"></span>
+                </a>
+            </template>
+            <div class="sidebar-empty" x-show="filterText && noVisibleItems()">
+                <i class="ph ph-magnifying-glass"></i>
+                <span>{% trans 'No results' %}</span>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <div class="sidebar-user-avatar">
+                    <span>{{ user.get_username|truncatechars:1 }}</span>
+                </div>
+                <div class="sidebar-user-info">
+                    <span class="sidebar-user-name">{{ user.get_username }}</span>
+                    <span class="sidebar-user-role">{% trans 'Administrator' %}</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    {# ═══════════════════════════════════════════ #}
+    {# CONTENT AREA (remaining space)              #}
+    {# ═══════════════════════════════════════════ #}
+    <main class="content-area">
+        {# Top bar with breadcrumb and actions #}
+        <div class="content-topbar">
+            {% block breadcrumbs %}
+            <nav class="breadcrumbs" aria-label="{% trans 'Breadcrumb' %}">
+                <a href="{% url 'admin:index' %}">
+                    <i class="ph ph-house"></i>
+                    {% trans 'Home' %}
+                </a>
+                {% if title %}
+                    <span class="breadcrumb-sep"><i class="ph ph-caret-right"></i></span>
+                    <span class="breadcrumb-current">{{ title }}</span>
+                {% endif %}
+            </nav>
+            {% endblock %}
+
+            <div class="topbar-actions">
+                <a href="/" class="topbar-btn" target="_blank" title="{% trans 'View site' %}">
+                    <i class="ph ph-arrow-square-out"></i>
+                    <span>{% trans 'View site' %}</span>
+                </a>
+            </div>
+        </div>
+
+        {# Messages #}
+        {% block messages %}
+        {% if messages %}
+        <div class="message-list">
+            {% for message in messages %}
+            <div class="message message--{{ message.tags|default:'info' }}">
+                <i class="ph {% if 'success' in message.tags %}ph-check-circle{% elif 'error' in message.tags %}ph-x-circle{% elif 'warning' in message.tags %}ph-warning{% else %}ph-info{% endif %}"></i>
+                <span>{{ message|capfirst }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endblock messages %}
+
+        {# Main content container #}
+        <div id="content" class="{% block coltype %}colM{% endblock %}">
+            {% block pretitle %}{% endblock %}
+            {% block content_title %}
+                {% if title %}<h1 class="page-title">{{ title }}</h1>{% endif %}
+            {% endblock %}
+            {% block content_subtitle %}
+                {% if subtitle %}<h2 class="page-subtitle">{{ subtitle }}</h2>{% endif %}
+            {% endblock %}
+
+            {% block content %}
+                {% block object-tools %}{% endblock %}
+                {{ content }}
+            {% endblock %}
+
+            {% block sidebar %}{% endblock %}
+            <br class="clear">
+        </div>
+
+        {# Footer #}
+        {% block footer %}
+        <footer class="admin-footer">
+            <div class="footer-left">
+                <span class="footer-brand">E-Menum Platform</span>
+                <span class="footer-sep">&mdash;</span>
+                <span>&copy; {% now "Y" %} E-Menum.</span>
+                <span>{% trans "All rights reserved." %}</span>
+            </div>
+            <div class="footer-right">
+                <span class="footer-version">v1.0.0</span>
+            </div>
+        </footer>
+        {% endblock %}
+    </main>
+
+    {# Mobile bottom navigation bar #}
+    <nav class="mobile-nav" x-data="mobileNav()">
+        <a href="{% url 'admin:index' %}" class="mobile-nav-item" :class="{ 'active': isActive('/admin/', true) }">
+            <i class="ph ph-squares-four"></i>
+            <span>Home</span>
+        </a>
+        <button class="mobile-nav-item mobile-nav-menu" @click="toggleMenu()" :class="{ 'active': menuOpen }">
+            <i class="ph" :class="menuOpen ? 'ph-x' : 'ph-list'"></i>
+            <span>Menu</span>
+        </button>
+        <a href="{% url 'admin:password_change' %}" class="mobile-nav-item" :class="{ 'active': isActive('/password_change/') }">
+            <i class="ph ph-gear"></i>
+            <span>{% trans 'Settings' %}</span>
+        </a>
+        <a href="{% url 'admin:logout' %}" class="mobile-nav-item mobile-nav-item--danger">
+            <i class="ph ph-sign-out"></i>
+            <span>{% trans 'Log out' %}</span>
+        </a>
+
+        {# Slide-up menu panel #}
+        <div class="mobile-menu-panel" x-show="menuOpen" x-transition:enter="mmenu-enter"
+             x-transition:enter-start="mmenu-enter-start" x-transition:enter-end="mmenu-enter-end"
+             x-transition:leave="mmenu-leave" x-transition:leave-start="mmenu-leave-start"
+             x-transition:leave-end="mmenu-leave-end"
+             @click.outside="menuOpen = false">
+            <div class="mobile-menu-header">
+                <span class="mobile-menu-title">{% trans 'Navigation' %}</span>
+                <button @click="menuOpen = false" class="mobile-menu-close"><i class="ph ph-x"></i></button>
+            </div>
+            <div class="mobile-menu-groups">
+                <template x-for="(group, key) in groups" :key="key">
+                    <div class="mobile-menu-group">
+                        <div class="mobile-menu-group-title" x-text="group.label"></div>
+                        <template x-for="item in group.items" :key="item.url">
+                            <a :href="item.url" class="mobile-menu-link" :class="{ 'active': isActive(item.url) }">
+                                <i class="ph" :class="'ph-' + (item.icon || 'dot')"></i>
+                                <span x-text="item.label"></span>
+                            </a>
+                        </template>
+                    </div>
+                </template>
+            </div>
+        </div>
+        <div class="mobile-menu-overlay" x-show="menuOpen" @click="menuOpen = false" x-transition.opacity></div>
+    </nav>
+
+</div>
+
+<script>
+function adminSidebar() {
+    const path = window.location.pathname;
+    let initialGroup = 'dashboard';
+
+    if (path.includes('/core/')) initialGroup = 'core';
+    else if (path.includes('/customers/')) initialGroup = 'customers';
+    else if (path.includes('/menu/')) initialGroup = 'menu';
+    else if (path.includes('/orders/')) initialGroup = 'orders';
+    else if (path.includes('/media/')) initialGroup = 'media';
+    else if (path.includes('/reports/')) initialGroup = 'reports';
+    else if (path.includes('/notifications/')) initialGroup = 'core';
+    else if (path.includes('/subscriptions/')) initialGroup = 'core';
+    else if (path.includes('/auth/')) initialGroup = 'core';
+
+    return {
+        activeGroup: initialGroup,
+        collapsed: localStorage.getItem('sidebar-collapsed') === 'true',
+        layoutMode: localStorage.getItem('layout-mode') || 'wide',
+        filterText: '',
+        currentPath: path,
+
+        toggleLayout() {
+            this.layoutMode = this.layoutMode === 'wide' ? 'boxed' : 'wide';
+            localStorage.setItem('layout-mode', this.layoutMode);
+        },
+
+        setGroup(group) {
+            this.activeGroup = group;
+            this.filterText = '';
+        },
+
+        isActive(url) {
+            if (url === '/admin/' && this.currentPath === '/admin/') return true;
+            if (url === '/admin/') return false;
+            return this.currentPath.startsWith(url);
+        },
+
+        groups: {
+            dashboard: {
+                label: 'Dashboard',
+                items: [
+                    { label: 'Overview', url: '/admin/', icon: 'squares-four' },
+                ]
+            },
+            core: {
+                label: 'Core',
+                items: [
+                    { label: 'Organizations', url: '/admin/core/organization/', icon: 'buildings' },
+                    { label: 'Branches', url: '/admin/core/branch/', icon: 'map-pin' },
+                    { label: 'Users', url: '/admin/core/user/', icon: 'users' },
+                    { label: 'Roles', url: '/admin/core/role/', icon: 'shield' },
+                    { label: 'Permissions', url: '/admin/core/permission/', icon: 'key' },
+                    { label: 'Role Permissions', url: '/admin/core/rolepermission/', icon: 'lock-key' },
+                    { label: 'User Roles', url: '/admin/core/userrole/', icon: 'user-gear' },
+                    { label: 'Sessions', url: '/admin/core/session/', icon: 'fingerprint' },
+                    { label: 'Audit Logs', url: '/admin/core/auditlog/', icon: 'clipboard-text' },
+                ]
+            },
+            customers: {
+                label: 'Customers',
+                items: [
+                    { label: 'Customers', url: '/admin/customers/customer/', icon: 'user' },
+                    { label: 'Customer Visits', url: '/admin/customers/customervisit/', icon: 'footprints' },
+                    { label: 'Feedbacks', url: '/admin/customers/feedback/', icon: 'chat-dots' },
+                    { label: 'Loyalty Points', url: '/admin/customers/loyaltypoint/', icon: 'star' },
+                ]
+            },
+            menu: {
+                label: 'Menu Management',
+                items: [
+                    { label: 'Menus', url: '/admin/menu/menu/', icon: 'book-open' },
+                    { label: 'Categories', url: '/admin/menu/category/', icon: 'folders' },
+                    { label: 'Products', url: '/admin/menu/product/', icon: 'package' },
+                    { label: 'Product Variants', url: '/admin/menu/productvariant/', icon: 'stack' },
+                    { label: 'Product Modifiers', url: '/admin/menu/productmodifier/', icon: 'plus-circle' },
+                    { label: 'Allergens', url: '/admin/menu/allergen/', icon: 'warning-circle' },
+                    { label: 'Product Allergens', url: '/admin/menu/productallergen/', icon: 'shield-warning' },
+                    { label: 'Nutrition Info', url: '/admin/menu/nutritioninfo/', icon: 'leaf' },
+                    { label: 'Themes', url: '/admin/menu/theme/', icon: 'palette' },
+                ]
+            },
+            orders: {
+                label: 'Order Management',
+                items: [
+                    { label: 'Zones', url: '/admin/orders/zone/', icon: 'map-trifold' },
+                    { label: 'Tables', url: '/admin/orders/table/', icon: 'armchair' },
+                    { label: 'QR Codes', url: '/admin/orders/qrcode/', icon: 'qr-code' },
+                    { label: 'QR Scans', url: '/admin/orders/qrscan/', icon: 'scan' },
+                    { label: 'Orders', url: '/admin/orders/order/', icon: 'receipt' },
+                    { label: 'Order Items', url: '/admin/orders/orderitem/', icon: 'list-checks' },
+                    { label: 'Service Requests', url: '/admin/orders/servicerequest/', icon: 'bell-ringing' },
+                ]
+            },
+            media: {
+                label: 'Media',
+                items: [
+                    { label: 'Media Files', url: '/admin/media/media/', icon: 'image' },
+                    { label: 'Media Folders', url: '/admin/media/mediafolder/', icon: 'folder' },
+                ]
+            },
+            reports: {
+                label: 'Reports',
+                items: [
+                    { label: 'Analytics', url: '/admin/', icon: 'chart-line' },
+                ]
+            }
+        },
+
+        get filteredItems() {
+            return this.groups[this.activeGroup]?.items || [];
+        },
+
+        matchesFilter(label) {
+            if (!this.filterText) return true;
+            return label.toLowerCase().includes(this.filterText.toLowerCase());
+        },
+
+        noVisibleItems() {
+            if (!this.filterText) return false;
+            return !this.filteredItems.some(item =>
+                item.label.toLowerCase().includes(this.filterText.toLowerCase())
+            );
+        },
+
+        init() {
+            this.$watch('collapsed', val => {
+                localStorage.setItem('sidebar-collapsed', val);
+            });
+        }
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Custom Select Dropdown - Cross-platform identical look
+   Replaces native <select> with Alpine.js powered dropdown
+   ═══════════════════════════════════════════════════════════ */
+function initCustomSelects() {
+    // Create shared overlay for mobile bottom-sheet mode (only once)
+    if (!document.getElementById('custom-select-overlay')) {
+        var overlay = document.createElement('div');
+        overlay.id = 'custom-select-overlay';
+        overlay.className = 'custom-select-overlay';
+        overlay.addEventListener('click', function() {
+            // Close all open custom selects
+            document.querySelectorAll('.custom-select').forEach(function(cs) {
+                if (cs._x_dataStack) {
+                    cs._x_dataStack[0].close();
+                }
+            });
+            overlay.classList.remove('active');
+        });
+        document.body.appendChild(overlay);
+    }
+
+    document.querySelectorAll('select:not([multiple]):not([size]):not(.custom-select-initialized)').forEach(function(sel) {
+        // Skip if inside a hidden element or if it has fewer than 1 option
+        if (sel.closest('[style*="display: none"]') || sel.options.length < 1) return;
+        // Skip filter_horizontal / filter_vertical selects
+        if (sel.closest('.selector')) return;
+        // Skip if already wrapped
+        if (sel.closest('.custom-select')) return;
+
+        sel.classList.add('custom-select-initialized');
+
+        // Create wrapper
+        var wrapper = document.createElement('div');
+        wrapper.className = 'custom-select';
+        wrapper.setAttribute('x-data', 'customSelect');
+        wrapper.setAttribute('x-on:keydown.escape.window', 'close()');
+        wrapper.setAttribute('x-on:click.outside', 'close()');
+
+        // Create trigger button
+        var trigger = document.createElement('button');
+        trigger.type = 'button';
+        trigger.className = 'custom-select-trigger';
+        trigger.setAttribute('x-on:click', 'toggle()');
+        trigger.setAttribute('x-on:keydown.arrow-down.prevent', 'open(); focusNext()');
+        trigger.setAttribute('x-on:keydown.arrow-up.prevent', 'open(); focusPrev()');
+        trigger.setAttribute('x-on:keydown.enter.prevent', 'toggle()');
+        trigger.setAttribute('x-on:keydown.space.prevent', 'toggle()');
+        trigger.setAttribute('tabindex', '0');
+
+        var triggerText = document.createElement('span');
+        triggerText.className = 'custom-select-value';
+        triggerText.setAttribute('x-text', 'selectedLabel');
+
+        var triggerArrow = document.createElement('span');
+        triggerArrow.className = 'custom-select-arrow';
+        triggerArrow.setAttribute('x-bind:class', "{ 'rotated': isOpen }");
+        triggerArrow.innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+        trigger.appendChild(triggerText);
+        trigger.appendChild(triggerArrow);
+
+        // Create dropdown
+        var dropdown = document.createElement('div');
+        dropdown.className = 'custom-select-dropdown';
+        dropdown.setAttribute('x-show', 'isOpen');
+        dropdown.setAttribute('x-transition:enter', 'cs-enter');
+        dropdown.setAttribute('x-transition:enter-start', 'cs-enter-start');
+        dropdown.setAttribute('x-transition:enter-end', 'cs-enter-end');
+        dropdown.setAttribute('x-transition:leave', 'cs-leave');
+        dropdown.setAttribute('x-transition:leave-start', 'cs-leave-start');
+        dropdown.setAttribute('x-transition:leave-end', 'cs-leave-end');
+
+        var optionsList = document.createElement('div');
+        optionsList.className = 'custom-select-options';
+        optionsList.setAttribute('role', 'listbox');
+
+        // Build options from the original select
+        Array.from(sel.options).forEach(function(opt, idx) {
+            var optEl = document.createElement('div');
+            optEl.className = 'custom-select-option';
+            optEl.setAttribute('role', 'option');
+            optEl.setAttribute('x-on:click', 'selectOption(' + idx + ')');
+            optEl.setAttribute('x-bind:class', "{ 'selected': selectedIndex === " + idx + ", 'focused': focusedIndex === " + idx + " }");
+            optEl.setAttribute('x-on:mouseenter', 'focusedIndex = ' + idx);
+            optEl.dataset.value = opt.value;
+            optEl.dataset.index = idx;
+
+            var checkMark = document.createElement('span');
+            checkMark.className = 'custom-select-check';
+            checkMark.setAttribute('x-show', 'selectedIndex === ' + idx);
+            checkMark.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7L6 10L11 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+            var label = document.createElement('span');
+            label.className = 'custom-select-option-label';
+            label.textContent = opt.textContent;
+
+            optEl.appendChild(checkMark);
+            optEl.appendChild(label);
+            optionsList.appendChild(optEl);
+        });
+
+        dropdown.appendChild(optionsList);
+
+        // Hide original select but keep it in DOM for form submission
+        sel.style.cssText = 'position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;';
+        sel.tabIndex = -1;
+
+        // Insert wrapper
+        sel.parentNode.insertBefore(wrapper, sel);
+        wrapper.appendChild(sel);
+        wrapper.appendChild(trigger);
+        wrapper.appendChild(dropdown);
+    });
+}
+
+// Register Alpine.js custom select component
+document.addEventListener('alpine:init', function() {
+    Alpine.data('customSelect', function() {
+        return {
+            isOpen: false,
+            selectedIndex: 0,
+            focusedIndex: 0,
+            options: [],
+            _sel: null,
+
+            get selectedLabel() {
+                return this.options[this.selectedIndex] ? this.options[this.selectedIndex].label : '';
+            },
+
+            toggle() { this.isOpen ? this.close() : this.open(); },
+            open() {
+                this.isOpen = true;
+                this.focusedIndex = this.selectedIndex;
+                var overlay = document.getElementById('custom-select-overlay');
+                if (overlay && window.innerWidth <= 768) overlay.classList.add('active');
+            },
+            close() {
+                this.isOpen = false;
+                var overlay = document.getElementById('custom-select-overlay');
+                if (overlay) overlay.classList.remove('active');
+            },
+
+            selectOption(idx) {
+                this.selectedIndex = idx;
+                this.focusedIndex = idx;
+                if (this._sel) {
+                    this._sel.selectedIndex = idx;
+                    this._sel.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+                this.close();
+            },
+
+            focusNext() { if (this.focusedIndex < this.options.length - 1) this.focusedIndex++; },
+            focusPrev() { if (this.focusedIndex > 0) this.focusedIndex--; },
+
+            init() {
+                var self = this;
+                this._sel = this.$el.querySelector('select');
+                if (!this._sel) return;
+
+                // Read initial state
+                this.options = Array.from(this._sel.options).map(function(o) {
+                    return { value: o.value, label: o.textContent };
+                });
+                this.selectedIndex = this._sel.selectedIndex >= 0 ? this._sel.selectedIndex : 0;
+                this.focusedIndex = this.selectedIndex;
+
+                // Watch for external changes to the original select
+                var observer = new MutationObserver(function() {
+                    self.options = Array.from(self._sel.options).map(function(o) {
+                        return { value: o.value, label: o.textContent };
+                    });
+                    self.selectedIndex = self._sel.selectedIndex;
+                });
+                observer.observe(this._sel, { childList: true, subtree: true });
+            }
+        };
+    });
+});
+
+// Apply custom selects and init Alpine trees
+function applyCustomSelects() {
+    initCustomSelects();
+    if (typeof Alpine !== 'undefined' && Alpine.initTree) {
+        document.querySelectorAll('.custom-select[x-data]').forEach(function(el) {
+            if (!el._x_dataStack) {
+                Alpine.initTree(el);
+            }
+        });
+    }
+}
+
+// Try multiple strategies to ensure it runs after Alpine is ready
+var _customSelectsApplied = false;
+function applyOnce() {
+    if (_customSelectsApplied) return;
+    _customSelectsApplied = true;
+    applyCustomSelects();
+}
+
+// Strategy 1: Alpine's initialized event
+document.addEventListener('alpine:initialized', function() {
+    setTimeout(applyOnce, 50);
+});
+
+// Strategy 2: Fallback with longer timeout after DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(applyOnce, 500);
+});
+
+// Mobile navigation component
+function mobileNav() {
+    var path = window.location.pathname;
+    return {
+        menuOpen: false,
+        currentPath: path,
+
+        groups: {
+            dashboard: {
+                label: 'Dashboard',
+                items: [
+                    { label: 'Overview', url: '/admin/', icon: 'squares-four' }
+                ]
+            },
+            core: {
+                label: 'Core',
+                items: [
+                    { label: 'Organizations', url: '/admin/core/organization/', icon: 'buildings' },
+                    { label: 'Branches', url: '/admin/core/branch/', icon: 'map-pin' },
+                    { label: 'Users', url: '/admin/core/user/', icon: 'users' },
+                    { label: 'Roles', url: '/admin/core/role/', icon: 'shield' },
+                    { label: 'Audit Logs', url: '/admin/core/auditlog/', icon: 'clipboard-text' }
+                ]
+            },
+            menu: {
+                label: 'Menu',
+                items: [
+                    { label: 'Menus', url: '/admin/menu/menu/', icon: 'book-open' },
+                    { label: 'Categories', url: '/admin/menu/category/', icon: 'folders' },
+                    { label: 'Products', url: '/admin/menu/product/', icon: 'package' }
+                ]
+            },
+            orders: {
+                label: 'Orders',
+                items: [
+                    { label: 'Orders', url: '/admin/orders/order/', icon: 'receipt' },
+                    { label: 'Tables', url: '/admin/orders/table/', icon: 'armchair' },
+                    { label: 'QR Codes', url: '/admin/orders/qrcode/', icon: 'qr-code' }
+                ]
+            },
+            customers: {
+                label: 'Customers',
+                items: [
+                    { label: 'Customers', url: '/admin/customers/customer/', icon: 'user' },
+                    { label: 'Feedbacks', url: '/admin/customers/feedback/', icon: 'chat-dots' }
+                ]
+            }
+        },
+
+        toggleMenu() { this.menuOpen = !this.menuOpen; },
+
+        isActive(url, exact) {
+            if (exact) return this.currentPath === url;
+            if (url === '/admin/') return this.currentPath === '/admin/';
+            return this.currentPath.startsWith(url);
+        }
+    };
+}
+
+// Handle dynamically added selects (e.g. inline admin adds)
+if (typeof MutationObserver !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', function() {
+        var bodyObserver = new MutationObserver(function(mutations) {
+            var hasNewSelect = mutations.some(function(m) {
+                return Array.from(m.addedNodes).some(function(n) {
+                    return n.nodeType === 1 && (n.tagName === 'SELECT' || (n.querySelector && n.querySelector('select:not(.custom-select-initialized)')));
+                });
+            });
+            if (hasNewSelect) {
+                setTimeout(function() {
+                    initCustomSelects();
+                    if (typeof Alpine !== 'undefined' && Alpine.initTree) {
+                        document.querySelectorAll('.custom-select[x-data]').forEach(function(el) {
+                            if (!el._x_dataStack) Alpine.initTree(el);
+                        });
+                    }
+                }, 100);
+            }
+        });
+        bodyObserver.observe(document.body, { childList: true, subtree: true });
+    });
+}
+</script>
+{% endblock body %}
