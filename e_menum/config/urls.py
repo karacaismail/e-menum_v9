@@ -37,6 +37,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.http import JsonResponse
+from django.views.generic import RedirectView
 
 # Import core module components for proper URL structure
 from apps.core.urls import auth_urlpatterns as core_auth_urlpatterns
@@ -175,6 +176,11 @@ api_v1_patterns = [
 # =============================================================================
 
 urlpatterns = [
+    # -------------------------------------------------------------------------
+    # Root redirect → Admin Dashboard
+    # -------------------------------------------------------------------------
+    path('', RedirectView.as_view(url='/admin/', permanent=False), name='root-redirect'),
+
     # -------------------------------------------------------------------------
     # Django Admin
     # -------------------------------------------------------------------------
