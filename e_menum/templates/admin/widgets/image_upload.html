@@ -1,0 +1,247 @@
+{% load i18n %}
+<div class="image-upload-widget"
+     x-data="imageUploadWidget('{{ widget.name }}', '{{ widget.value|default_if_none:"" }}', '{{ widget.subfolder|default:"menu_items" }}')"
+     x-ref="container">
+
+    {# Hidden URL input that Django form reads #}
+    <input type="hidden"
+           name="{{ widget.name }}"
+           x-ref="urlInput"
+           :value="imageUrl"
+           id="{{ widget.attrs.id }}">
+
+    {# Preview Area #}
+    <div class="upload-preview-area" x-show="imageUrl && !error">
+        <div class="upload-preview-image">
+            <img :src="imageUrl"
+                 @error="previewError = true"
+                 @load="previewError = false"
+                 x-show="!previewError"
+                 alt="Preview">
+            <div class="preview-broken" x-show="previewError">
+                <i class="ph ph-image-broken"></i>
+                <span>{% trans 'Image could not be loaded' %}</span>
+            </div>
+        </div>
+        <div class="upload-preview-actions">
+            <button type="button"
+                    class="btn-upload-action btn-change"
+                    @click="$refs.fileInput.click()"
+                    title="{% trans 'Change image' %}">
+                <i class="ph ph-swap"></i>
+                {% trans 'Change' %}
+            </button>
+            <button type="button"
+                    class="btn-upload-action btn-delete"
+                    @click="removeImage()"
+                    title="{% trans 'Remove image' %}">
+                <i class="ph ph-trash"></i>
+                {% trans 'Remove' %}
+            </button>
+        </div>
+    </div>
+
+    {# Drop Zone (shown when no image) #}
+    <div class="upload-dropzone"
+         x-show="!imageUrl || error"
+         @dragover.prevent="dragover = true"
+         @dragleave.prevent="dragover = false"
+         @drop.prevent="handleDrop($event)"
+         :class="{ 'dragover': dragover }"
+         @click="$refs.fileInput.click()">
+
+        <div class="dropzone-content" x-show="!uploading">
+            <i class="ph ph-cloud-arrow-up dropzone-icon"></i>
+            <span class="dropzone-title">{% trans 'Drop image here or click to browse' %}</span>
+            <span class="dropzone-subtitle">{% trans 'JPEG, PNG, WebP, GIF - Max 10MB' %}</span>
+        </div>
+
+        {# Upload Progress #}
+        <div class="upload-progress-area" x-show="uploading">
+            <div class="upload-progress-info">
+                <i class="ph ph-spinner upload-spinner"></i>
+                <span x-text="uploadingFilename || '{% trans "Uploading..." %}'"></span>
+            </div>
+            <div class="upload-progress-bar">
+                <div class="upload-progress-fill" :style="'width: ' + progress + '%'"></div>
+            </div>
+            <span class="upload-progress-percent" x-text="progress + '%'"></span>
+        </div>
+    </div>
+
+    {# Error Display #}
+    <div class="upload-error" x-show="error" x-cloak>
+        <i class="ph ph-warning-circle"></i>
+        <span x-text="error"></span>
+        <button type="button" @click="error = ''" class="upload-error-close">
+            <i class="ph ph-x"></i>
+        </button>
+    </div>
+
+    {# Manual URL Input (collapsible) #}
+    <div class="upload-url-manual">
+        <button type="button"
+                class="url-toggle-btn"
+                @click="showUrlInput = !showUrlInput">
+            <i class="ph ph-link"></i>
+            <span x-text="showUrlInput ? '{% trans "Hide URL input" %}' : '{% trans "Or enter URL manually" %}'"></span>
+            <i class="ph" :class="showUrlInput ? 'ph-caret-up' : 'ph-caret-down'" style="margin-left: auto;"></i>
+        </button>
+        <div x-show="showUrlInput" x-transition>
+            <div class="url-input-row">
+                <input type="url"
+                       class="url-text-input"
+                       :value="imageUrl"
+                       @change="setUrlManually($event.target.value)"
+                       placeholder="https://example.com/image.jpg">
+                <button type="button"
+                        class="btn-url-apply"
+                        @click="setUrlManually($refs.manualUrl?.value || '')"
+                        x-ref="applyBtn">
+                    <i class="ph ph-check"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {# Hidden file input #}
+    <input type="file"
+           x-ref="fileInput"
+           accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+           @change="handleFileSelect($event)"
+           style="display: none;">
+</div>
+
+<script>
+if (!window._imageUploadWidgetRegistered) {
+    window._imageUploadWidgetRegistered = true;
+
+    document.addEventListener('alpine:init', function() {
+        Alpine.data('imageUploadWidget', function(fieldName, initialUrl, subfolder) {
+            return {
+                imageUrl: initialUrl || '',
+                dragover: false,
+                uploading: false,
+                progress: 0,
+                error: '',
+                previewError: false,
+                showUrlInput: false,
+                uploadingFilename: '',
+
+                handleDrop(event) {
+                    this.dragover = false;
+                    const files = event.dataTransfer.files;
+                    if (files.length > 0) {
+                        this.uploadFile(files[0]);
+                    }
+                },
+
+                handleFileSelect(event) {
+                    const files = event.target.files;
+                    if (files.length > 0) {
+                        this.uploadFile(files[0]);
+                    }
+                    // Reset so same file can be selected again
+                    event.target.value = '';
+                },
+
+                async uploadFile(file) {
+                    // Client-side validation
+                    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
+                    if (!allowedTypes.includes(file.type)) {
+                        this.error = 'Invalid file type. Allowed: JPEG, PNG, WebP, GIF, SVG.';
+                        return;
+                    }
+
+                    const maxSize = 10 * 1024 * 1024; // 10MB
+                    if (file.size > maxSize) {
+                        this.error = 'File too large. Maximum size is 10MB.';
+                        return;
+                    }
+
+                    this.error = '';
+                    this.uploading = true;
+                    this.progress = 0;
+                    this.uploadingFilename = file.name;
+
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('subfolder', subfolder || 'menu_items');
+
+                    try {
+                        const xhr = new XMLHttpRequest();
+                        const self = this;
+
+                        // Progress tracking
+                        xhr.upload.addEventListener('progress', function(e) {
+                            if (e.lengthComputable) {
+                                self.progress = Math.round((e.loaded / e.total) * 100);
+                            }
+                        });
+
+                        // Wrap in promise
+                        const response = await new Promise(function(resolve, reject) {
+                            xhr.onload = function() {
+                                if (xhr.status >= 200 && xhr.status < 300) {
+                                    resolve(JSON.parse(xhr.responseText));
+                                } else {
+                                    try {
+                                        const err = JSON.parse(xhr.responseText);
+                                        reject(new Error(err.error || 'Upload failed'));
+                                    } catch(e) {
+                                        reject(new Error('Upload failed: ' + xhr.status));
+                                    }
+                                }
+                            };
+                            xhr.onerror = function() {
+                                reject(new Error('Network error during upload'));
+                            };
+
+                            xhr.open('POST', '/admin/api/upload/');
+                            // Get CSRF token
+                            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value
+                                || self._getCookie('csrftoken');
+                            if (csrfToken) {
+                                xhr.setRequestHeader('X-CSRFToken', csrfToken);
+                            }
+                            xhr.send(formData);
+                        });
+
+                        if (response.success) {
+                            this.imageUrl = response.url;
+                            this.previewError = false;
+                        } else {
+                            this.error = response.error || 'Upload failed';
+                        }
+                    } catch (err) {
+                        this.error = err.message || 'Upload failed';
+                    } finally {
+                        this.uploading = false;
+                        this.progress = 0;
+                        this.uploadingFilename = '';
+                    }
+                },
+
+                setUrlManually(url) {
+                    this.imageUrl = url.trim();
+                    this.previewError = false;
+                    this.error = '';
+                },
+
+                removeImage() {
+                    this.imageUrl = '';
+                    this.previewError = false;
+                    this.error = '';
+                },
+
+                _getCookie(name) {
+                    const value = '; ' + document.cookie;
+                    const parts = value.split('; ' + name + '=');
+                    if (parts.length === 2) return parts.pop().split(';').shift();
+                    return '';
+                }
+            };
+        });
+    });
+}
+</script>

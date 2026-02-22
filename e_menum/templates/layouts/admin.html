@@ -1,0 +1,384 @@
+{% extends "layouts/base.html" %}
+{% load static i18n %}
+
+{% block body_class %}min-h-screen bg-gray-100 dark:bg-gray-900{% endblock %}
+
+{% block app_class %}{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block navigation %}{% endblock %}
+
+{% block main_class %}{% endblock %}
+
+{% block content %}
+{# Admin Layout with Sidebar #}
+<div class="flex h-screen overflow-hidden">
+
+    {# Sidebar Overlay (Mobile) #}
+    <div
+        x-show="sidebarOpen"
+        x-transition:enter="transition-opacity ease-linear duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition-opacity ease-linear duration-300"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"
+        @click="sidebarOpen = false"
+        aria-hidden="true"
+    ></div>
+
+    {# Sidebar #}
+    <aside
+        class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto"
+        :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"
+        x-cloak
+    >
+        {# Sidebar Header #}
+        <div class="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-gray-700">
+            {# Logo #}
+            <a href="{% url 'admin:index' %}" class="flex items-center space-x-2">
+                <img src="{% static 'images/logo.svg' %}" alt="E-Menum" class="h-8 w-auto" onerror="this.style.display='none'">
+                <span class="text-xl font-bold text-primary-600 dark:text-primary-400">E-Menum</span>
+            </a>
+
+            {# Close Button (Mobile) #}
+            <button
+                @click="sidebarOpen = false"
+                class="lg:hidden p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                aria-label="{% trans 'Close sidebar' %}"
+            >
+                <i class="ph ph-x text-xl"></i>
+            </button>
+        </div>
+
+        {# Organization Selector (if applicable) #}
+        {% block organization_selector %}
+        {% if user.organization %}
+        <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center space-x-3">
+                {% if user.organization.logo %}
+                <img src="{{ user.organization.logo }}" alt="{{ user.organization.name }}" class="h-10 w-10 rounded-full object-cover">
+                {% else %}
+                <div class="h-10 w-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center">
+                    <i class="ph ph-storefront text-xl text-primary-600 dark:text-primary-400"></i>
+                </div>
+                {% endif %}
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                        {{ user.organization.name }}
+                    </p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        {{ user.organization.plan.name|default:"Free Plan" }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endblock %}
+
+        {# Navigation Menu #}
+        <nav class="flex-1 px-2 py-4 space-y-1 overflow-y-auto" aria-label="{% trans 'Main Navigation' %}">
+            {% block sidebar_navigation %}
+            {# Dashboard #}
+            <a
+                href="{% url 'admin:index' %}"
+                class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors touch-target {% if request.resolver_match.url_name == 'index' %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+            >
+                <i class="ph ph-squares-four mr-3 text-xl"></i>
+                {% trans "Dashboard" %}
+            </a>
+
+            {# Menu Management #}
+            <div x-data="{ open: false }">
+                <button
+                    @click="open = !open"
+                    class="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors touch-target"
+                    :aria-expanded="open"
+                >
+                    <span class="flex items-center">
+                        <i class="ph ph-book-open mr-3 text-xl"></i>
+                        {% trans "Menus" %}
+                    </span>
+                    <i class="ph ph-caret-down transition-transform" :class="{ 'rotate-180': open }"></i>
+                </button>
+                <div x-show="open" x-collapse class="mt-1 space-y-1 pl-11">
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
+                        {% trans "All Menus" %}
+                    </a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
+                        {% trans "Categories" %}
+                    </a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
+                        {% trans "Products" %}
+                    </a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
+                        {% trans "Themes" %}
+                    </a>
+                </div>
+            </div>
+
+            {# Orders #}
+            <a
+                href="#"
+                class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors touch-target"
+            >
+                <i class="ph ph-receipt mr-3 text-xl"></i>
+                {% trans "Orders" %}
+                {% block order_count_badge %}{% endblock %}
+            </a>
+
+            {# Tables & QR Codes #}
+            <div x-data="{ open: false }">
+                <button
+                    @click="open = !open"
+                    class="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors touch-target"
+                    :aria-expanded="open"
+                >
+                    <span class="flex items-center">
+                        <i class="ph ph-qr-code mr-3 text-xl"></i>
+                        {% trans "Tables & QR" %}
+                    </span>
+                    <i class="ph ph-caret-down transition-transform" :class="{ 'rotate-180': open }"></i>
+                </button>
+                <div x-show="open" x-collapse class="mt-1 space-y-1 pl-11">
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
+                        {% trans "Zones" %}
+                    </a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
+                        {% trans "Tables" %}
+                    </a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
+                        {% trans "QR Codes" %}
+                    </a>
+                </div>
+            </div>
+
+            {# Customers #}
+            <a
+                href="#"
+                class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors touch-target"
+            >
+                <i class="ph ph-users mr-3 text-xl"></i>
+                {% trans "Customers" %}
+            </a>
+
+            {# Analytics #}
+            <a
+                href="#"
+                class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors touch-target"
+            >
+                <i class="ph ph-chart-line mr-3 text-xl"></i>
+                {% trans "Analytics" %}
+            </a>
+
+            {# Separator #}
+            <div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
+
+            {# Settings #}
+            <a
+                href="#"
+                class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors touch-target"
+            >
+                <i class="ph ph-gear mr-3 text-xl"></i>
+                {% trans "Settings" %}
+            </a>
+
+            {# Subscription #}
+            <a
+                href="#"
+                class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors touch-target"
+            >
+                <i class="ph ph-credit-card mr-3 text-xl"></i>
+                {% trans "Subscription" %}
+            </a>
+            {% endblock %}
+        </nav>
+
+        {# Sidebar Footer #}
+        <div class="flex-shrink-0 p-4 border-t border-gray-200 dark:border-gray-700">
+            {# User Menu #}
+            <div class="flex items-center">
+                {% if user.avatar %}
+                <img src="{{ user.avatar }}" alt="{{ user.get_full_name }}" class="h-10 w-10 rounded-full object-cover">
+                {% else %}
+                <div class="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                    <i class="ph ph-user text-xl text-gray-600 dark:text-gray-300"></i>
+                </div>
+                {% endif %}
+                <div class="ml-3 flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                        {{ user.get_full_name|default:user.email }}
+                    </p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        {{ user.email }}
+                    </p>
+                </div>
+                <a
+                    href="{% url 'admin:logout' %}"
+                    class="ml-2 p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                    title="{% trans 'Logout' %}"
+                >
+                    <i class="ph ph-sign-out text-xl"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    {# Main Content Area #}
+    <div class="flex-1 flex flex-col overflow-hidden">
+
+        {# Top Header Bar #}
+        <header class="bg-white dark:bg-gray-800 shadow-sm z-10">
+            <div class="flex items-center justify-between h-16 px-4 lg:px-6">
+                {# Mobile Menu Button #}
+                <button
+                    @click="sidebarOpen = true"
+                    class="lg:hidden p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    aria-label="{% trans 'Open sidebar' %}"
+                >
+                    <i class="ph ph-list text-xl"></i>
+                </button>
+
+                {# Page Title / Breadcrumb #}
+                <div class="flex-1 ml-4 lg:ml-0">
+                    {% block page_header %}
+                    <h1 class="text-xl font-semibold text-gray-900 dark:text-white">
+                        {% block admin_title %}{% trans "Dashboard" %}{% endblock %}
+                    </h1>
+                    {% endblock %}
+                </div>
+
+                {# Header Actions #}
+                <div class="flex items-center space-x-4">
+                    {# Search (Desktop) #}
+                    <div class="hidden md:block">
+                        <div class="relative">
+                            <input
+                                type="search"
+                                placeholder="{% trans 'Search...' %}"
+                                class="w-64 pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            >
+                            <i class="ph ph-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                    </div>
+
+                    {# Notifications #}
+                    <button
+                        class="relative p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 touch-target"
+                        aria-label="{% trans 'Notifications' %}"
+                    >
+                        <i class="ph ph-bell text-xl"></i>
+                        {% block notification_badge %}{% endblock %}
+                    </button>
+
+                    {# Dark Mode Toggle #}
+                    <button
+                        @click="darkMode = !darkMode"
+                        class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 touch-target"
+                        aria-label="{% trans 'Toggle dark mode' %}"
+                    >
+                        <i class="ph ph-sun text-xl" x-show="darkMode"></i>
+                        <i class="ph ph-moon text-xl" x-show="!darkMode"></i>
+                    </button>
+
+                    {# Language Switcher #}
+                    <div class="relative" x-data="{ open: false }">
+                        <button
+                            @click="open = !open"
+                            class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 touch-target"
+                            aria-label="{% trans 'Change language' %}"
+                        >
+                            <i class="ph ph-globe text-xl"></i>
+                        </button>
+                        <div
+                            x-show="open"
+                            @click.away="open = false"
+                            x-transition
+                            class="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1"
+                        >
+                            <a href="?lang=tr" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                Turkce
+                            </a>
+                            <a href="?lang=en" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                English
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        {# Main Content #}
+        <main class="flex-1 overflow-y-auto p-4 lg:p-6">
+            {# Breadcrumb Navigation #}
+            {% block breadcrumb %}
+            <nav class="mb-4" aria-label="{% trans 'Breadcrumb' %}">
+                <ol class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                    <li>
+                        <a href="{% url 'admin:index' %}" class="hover:text-primary-600 dark:hover:text-primary-400">
+                            <i class="ph ph-house"></i>
+                        </a>
+                    </li>
+                    {% block breadcrumb_items %}{% endblock %}
+                </ol>
+            </nav>
+            {% endblock %}
+
+            {# Page Content #}
+            {% block admin_content %}{% endblock %}
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    // Admin-specific JavaScript utilities
+    document.addEventListener('alpine:init', () => {
+        // Data table component
+        Alpine.data('dataTable', () => ({
+            selected: [],
+            selectAll: false,
+            toggleSelectAll() {
+                if (this.selectAll) {
+                    this.selected = [...document.querySelectorAll('[data-row-id]')].map(el => el.dataset.rowId);
+                } else {
+                    this.selected = [];
+                }
+            },
+            toggleRow(id) {
+                const index = this.selected.indexOf(id);
+                if (index > -1) {
+                    this.selected.splice(index, 1);
+                } else {
+                    this.selected.push(id);
+                }
+                this.selectAll = this.selected.length === document.querySelectorAll('[data-row-id]').length;
+            }
+        }));
+
+        // Confirmation dialog component
+        Alpine.data('confirmDialog', (message, onConfirm) => ({
+            show: false,
+            message: message,
+            confirm() {
+                this.show = false;
+                if (typeof onConfirm === 'function') onConfirm();
+            }
+        }));
+    });
+
+    // Auto-hide flash messages after 5 seconds
+    setTimeout(() => {
+        document.querySelectorAll('[role="alert"]').forEach(alert => {
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 300);
+        });
+    }, 5000);
+</script>
+{% endblock %}

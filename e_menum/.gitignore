@@ -1,0 +1,321 @@
+# =============================================================================
+# E-Menum Django - Git Ignore File
+# Enterprise QR Menu SaaS Platform
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Python Bytecode and Cache
+# -----------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# -----------------------------------------------------------------------------
+# Virtual Environments
+# -----------------------------------------------------------------------------
+venv/
+env/
+.venv/
+.env/
+ENV/
+env.bak/
+venv.bak/
+.python-version
+
+# -----------------------------------------------------------------------------
+# Environment Variables (IMPORTANT: Never commit secrets)
+# -----------------------------------------------------------------------------
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+*.env
+
+# Keep example file for reference
+!.env.example
+
+# -----------------------------------------------------------------------------
+# IDE and Editors
+# -----------------------------------------------------------------------------
+# VS Code
+.vscode/
+*.code-workspace
+
+# PyCharm / IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim / Neovim
+*.swp
+*.swo
+*.swn
+*~
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Spyder
+.spyderproject
+.spyproject
+
+# -----------------------------------------------------------------------------
+# Testing and Coverage
+# -----------------------------------------------------------------------------
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+nosetests.xml
+test-results/
+test-reports/
+
+# -----------------------------------------------------------------------------
+# Type Checking and Linting
+# -----------------------------------------------------------------------------
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff_cache/
+.pytype/
+
+# -----------------------------------------------------------------------------
+# Django Specific
+# -----------------------------------------------------------------------------
+# Local SQLite database (development)
+*.sqlite3
+*.db
+db.sqlite3
+
+# Static files (collected for production)
+staticfiles/
+static/collected/
+
+# Media files (user uploads)
+media/
+
+# Django migration backup files
+*.pyc
+
+# Local settings
+local_settings.py
+
+# Celery beat schedule
+celerybeat-schedule
+celerybeat.pid
+
+# Logs
+*.log
+logs/
+
+# Django debug toolbar
+.toolbar/
+
+# Compiled translation files (regenerated from .po files)
+*.mo
+
+# -----------------------------------------------------------------------------
+# Build and Distribution
+# -----------------------------------------------------------------------------
+dist/
+build/
+*.manifest
+*.spec
+
+# -----------------------------------------------------------------------------
+# Documentation
+# -----------------------------------------------------------------------------
+docs/_build/
+site/
+
+# -----------------------------------------------------------------------------
+# OS Specific
+# -----------------------------------------------------------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# -----------------------------------------------------------------------------
+# Temporary Files
+# -----------------------------------------------------------------------------
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.backup
+*.orig
+
+# -----------------------------------------------------------------------------
+# Security
+# -----------------------------------------------------------------------------
+# Private keys
+*.pem
+*.key
+!public.pem
+!public.key
+
+# Certificates (except self-signed dev certs if needed)
+*.crt
+*.cer
+*.p12
+*.pfx
+
+# Secrets
+secrets.json
+secrets.yaml
+secrets.yml
+credentials.json
+
+# -----------------------------------------------------------------------------
+# Development Tools
+# -----------------------------------------------------------------------------
+# IPython
+.ipython/
+profile_default/
+ipython_config.py
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# PIP
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Poetry
+poetry.lock
+
+# PDM
+.pdm.toml
+__pypackages__/
+
+# Pipenv
+Pipfile.lock
+
+# -----------------------------------------------------------------------------
+# Docker (local development)
+# -----------------------------------------------------------------------------
+# Don't ignore docker-compose files, but ignore local overrides
+docker-compose.override.yml
+.docker/data/
+*.tar
+
+# -----------------------------------------------------------------------------
+# CI/CD Local
+# -----------------------------------------------------------------------------
+.github/
+.gitlab-ci.yml
+.circleci/
+Jenkinsfile
+.travis.yml
+
+# -----------------------------------------------------------------------------
+# Auto-Claude (Development Worktrees)
+# -----------------------------------------------------------------------------
+.auto-claude/
+.auto-claude-status
+.auto-claude-security.json
+.claude_settings.json
+
+# -----------------------------------------------------------------------------
+# Miscellaneous
+# -----------------------------------------------------------------------------
+# Scratch files
+scratch/
+scratch.*
+
+# Lock files that shouldn't be committed
+*.lock
+
+# Keep requirements lock if using pip-tools
+!requirements*.txt
+
+# Backup files
+*.bak
+*.backup
+
+# Profiling
+*.prof
+*.lprof
+
+# Cache directories
+.cache/

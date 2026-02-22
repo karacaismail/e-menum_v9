@@ -1,0 +1,205 @@
+# =============================================================================
+# E-Menum Docker Compose - Development Overrides
+# =============================================================================
+# This file extends docker-compose.yml with development-specific settings.
+#
+# Usage:
+#   docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+#   docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+#   docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f web
+#
+# Or use the shorthand with COMPOSE_FILE environment variable:
+#   export COMPOSE_FILE=docker-compose.yml:docker-compose.dev.yml
+#   docker-compose up
+# =============================================================================
+
+version: "3.9"
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL - Development Overrides
+  # ---------------------------------------------------------------------------
+  db:
+    # Expose additional ports for debugging tools
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      # Enable verbose logging for debugging
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    # Named volume for persistence
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  # ---------------------------------------------------------------------------
+  # Redis - Development Overrides
+  # ---------------------------------------------------------------------------
+  redis:
+    # Expose port for Redis debugging tools (RedisInsight, etc.)
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+
+  # ---------------------------------------------------------------------------
+  # Django Web - Development Overrides
+  # ---------------------------------------------------------------------------
+  web:
+    # Build from development stage
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    environment:
+      # Force development settings
+      DJANGO_SETTINGS_MODULE: config.settings.development
+      DEBUG: "True"
+      # Disable collectstatic in development
+      DJANGO_COLLECT_STATIC: "False"
+      # Verbose Django logging
+      DJANGO_LOG_LEVEL: DEBUG
+      DB_LOG_LEVEL: DEBUG
+    volumes:
+      # Mount source code for hot-reload
+      - .:/app:cached
+      # Persist static and media files
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+      # Cache pip packages between builds
+      - pip_cache:/home/emenum/.cache/pip
+      # Preserve SQLite database if used
+      - ./db.sqlite3:/app/db.sqlite3:delegated
+    # Override command for development with auto-reload
+    command: >
+      sh -c "
+        echo 'Waiting for dependencies...' &&
+        sleep 2 &&
+        echo 'Running migrations...' &&
+        python manage.py migrate --noinput &&
+        echo 'Starting development server...' &&
+        python manage.py runserver 0.0.0.0:8000
+      "
+    # No health check in development (runserver doesn't have /health by default)
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    # tty and stdin for interactive debugging
+    stdin_open: true
+    tty: true
+
+  # ---------------------------------------------------------------------------
+  # Celery Worker - Development Overrides
+  # ---------------------------------------------------------------------------
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+      DEBUG: "True"
+      DJANGO_LOG_LEVEL: DEBUG
+    volumes:
+      - .:/app:cached
+      - media_volume:/app/media
+    # Development command with verbose logging and auto-reload
+    command: >
+      sh -c "
+        echo 'Starting Celery worker with auto-reload...' &&
+        watchmedo auto-restart \
+          --directory=./ \
+          --pattern='*.py' \
+          --recursive \
+          -- celery -A config worker \
+          --loglevel=debug \
+          --concurrency=2
+      "
+    # Optional: uncomment to disable Celery in development
+    # profiles:
+    #   - celery
+
+  # ---------------------------------------------------------------------------
+  # Celery Beat - Development Overrides
+  # ---------------------------------------------------------------------------
+  celery_beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+      DEBUG: "True"
+      DJANGO_LOG_LEVEL: DEBUG
+    volumes:
+      - .:/app:cached
+    command: >
+      celery -A config beat \
+        --loglevel=debug \
+        --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    # Optional: uncomment to disable Celery Beat in development
+    # profiles:
+    #   - celery
+
+  # ---------------------------------------------------------------------------
+  # MailHog - Development Email Catcher (Optional)
+  # ---------------------------------------------------------------------------
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: emenum_mailhog
+    restart: unless-stopped
+    ports:
+      - "${MAILHOG_SMTP_PORT:-1025}:1025"   # SMTP server
+      - "${MAILHOG_WEB_PORT:-8025}:8025"    # Web UI
+    networks:
+      - emenum_network
+    profiles:
+      - mail
+
+  # ---------------------------------------------------------------------------
+  # pgAdmin - Database Management UI (Optional)
+  # ---------------------------------------------------------------------------
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: emenum_pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@emenum.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - emenum_network
+    profiles:
+      - tools
+
+  # ---------------------------------------------------------------------------
+  # Redis Commander - Redis Management UI (Optional)
+  # ---------------------------------------------------------------------------
+  redis_commander:
+    image: rediscommander/redis-commander:latest
+    container_name: emenum_redis_commander
+    restart: unless-stopped
+    environment:
+      REDIS_HOSTS: "local:redis:6379"
+    ports:
+      - "${REDIS_COMMANDER_PORT:-8081}:8081"
+    depends_on:
+      - redis
+    networks:
+      - emenum_network
+    profiles:
+      - tools
+
+# =============================================================================
+# Development-only Volumes
+# =============================================================================
+volumes:
+  pgadmin_data:
+    name: emenum_pgadmin_data

@@ -1,0 +1,554 @@
+/* =============================================================================
+   Image Upload Widget Styles
+   Dark theme compatible - uses CSS variables from sidebar.css
+   ============================================================================= */
+
+/* --- Shared Variables --- */
+.image-upload-widget,
+.gallery-upload-widget {
+    --widget-bg: rgba(255, 255, 255, 0.03);
+    --widget-border: rgba(255, 255, 255, 0.08);
+    --widget-border-hover: rgba(99, 102, 241, 0.4);
+    --widget-accent: #6366f1;
+    --widget-accent-light: #818cf8;
+    --widget-danger: #ef4444;
+    --widget-success: #10b981;
+    --widget-text: #e5e7eb;
+    --widget-text-muted: #9ca3af;
+    --widget-radius: 10px;
+}
+
+/* =============================================================================
+   IMAGE UPLOAD WIDGET (Single Image)
+   ============================================================================= */
+
+.image-upload-widget {
+    max-width: 500px;
+}
+
+/* --- Preview Area --- */
+.upload-preview-area {
+    position: relative;
+    border: 1px solid var(--widget-border);
+    border-radius: var(--widget-radius);
+    overflow: hidden;
+    background: var(--widget-bg);
+}
+
+.upload-preview-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 160px;
+    max-height: 280px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.upload-preview-image img {
+    max-width: 100%;
+    max-height: 260px;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+.preview-broken {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--widget-text-muted);
+    padding: 24px;
+}
+
+.preview-broken i {
+    font-size: 36px;
+    opacity: 0.5;
+}
+
+.preview-broken span {
+    font-size: 12px;
+}
+
+.upload-preview-actions {
+    display: flex;
+    gap: 8px;
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid var(--widget-border);
+}
+
+.btn-upload-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    border: 1px solid var(--widget-border);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--widget-text);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-upload-action:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--widget-border-hover);
+}
+
+.btn-upload-action i {
+    font-size: 14px;
+}
+
+.btn-upload-action.btn-delete {
+    color: var(--widget-danger);
+    border-color: rgba(239, 68, 68, 0.2);
+}
+
+.btn-upload-action.btn-delete:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* --- Drop Zone --- */
+.upload-dropzone,
+.gallery-dropzone {
+    border: 2px dashed rgba(99, 102, 241, 0.25);
+    border-radius: var(--widget-radius);
+    background: rgba(99, 102, 241, 0.03);
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-dropzone:hover,
+.gallery-dropzone:hover,
+.upload-dropzone.dragover,
+.gallery-dropzone.dragover {
+    border-color: var(--widget-accent);
+    background: rgba(99, 102, 241, 0.08);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.12);
+}
+
+.dropzone-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.dropzone-icon {
+    font-size: 36px;
+    color: var(--widget-accent-light);
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.upload-dropzone:hover .dropzone-icon,
+.gallery-dropzone:hover .dropzone-icon,
+.upload-dropzone.dragover .dropzone-icon,
+.gallery-dropzone.dragover .dropzone-icon {
+    opacity: 1;
+    transform: scale(1.1) translateY(-2px);
+}
+
+.dropzone-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--widget-text);
+}
+
+.dropzone-subtitle {
+    font-size: 11px;
+    color: var(--widget-text-muted);
+}
+
+/* --- Upload Progress --- */
+.upload-progress-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+.upload-progress-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--widget-text);
+}
+
+.upload-spinner {
+    animation: spin 1s linear infinite;
+    color: var(--widget-accent-light);
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.upload-progress-bar {
+    width: 100%;
+    max-width: 300px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.upload-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--widget-accent), var(--widget-accent-light));
+    border-radius: 3px;
+    transition: width 0.2s ease;
+}
+
+.upload-progress-percent {
+    font-size: 11px;
+    color: var(--widget-text-muted);
+    font-weight: 600;
+}
+
+/* --- Error Display --- */
+.upload-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 6px;
+    color: #fca5a5;
+    font-size: 12px;
+}
+
+.upload-error i {
+    font-size: 16px;
+    color: var(--widget-danger);
+    flex-shrink: 0;
+}
+
+.upload-error-close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: #fca5a5;
+    cursor: pointer;
+    padding: 2px;
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+.upload-error-close:hover {
+    opacity: 1;
+}
+
+/* --- Manual URL Input --- */
+.upload-url-manual,
+.gallery-url-input {
+    margin-top: 8px;
+}
+
+.url-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: none;
+    border: none;
+    color: var(--widget-text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    width: 100%;
+    transition: color 0.2s;
+}
+
+.url-toggle-btn:hover {
+    color: var(--widget-accent-light);
+}
+
+.url-toggle-btn i {
+    font-size: 14px;
+}
+
+.url-input-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+    padding: 0 2px;
+}
+
+.url-text-input {
+    flex: 1;
+    padding: 7px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--widget-border);
+    border-radius: 6px;
+    color: var(--widget-text);
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.url-text-input:focus {
+    border-color: var(--widget-accent);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+}
+
+.url-text-input::placeholder {
+    color: rgba(156, 163, 175, 0.5);
+}
+
+.btn-url-apply {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 7px 14px;
+    background: var(--widget-accent);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-url-apply:hover {
+    background: var(--widget-accent-light);
+}
+
+.btn-url-apply i {
+    font-size: 14px;
+}
+
+
+/* =============================================================================
+   GALLERY UPLOAD WIDGET (Multiple Images)
+   ============================================================================= */
+
+.gallery-upload-widget {
+    position: relative;
+}
+
+/* --- Gallery Grid --- */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.gallery-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--widget-border);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gallery-item-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.gallery-item:hover .gallery-item-overlay {
+    opacity: 1;
+}
+
+.gallery-item-delete {
+    background: rgba(239, 68, 68, 0.8);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s;
+}
+
+.gallery-item-delete:hover {
+    background: var(--widget-danger);
+}
+
+.gallery-item-index {
+    position: absolute;
+    bottom: 4px;
+    right: 6px;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+}
+
+/* --- Add Card --- */
+.gallery-add-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border: 2px dashed rgba(99, 102, 241, 0.25);
+    background: rgba(99, 102, 241, 0.03);
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--widget-text-muted);
+}
+
+.gallery-add-card:hover {
+    border-color: var(--widget-accent);
+    background: rgba(99, 102, 241, 0.08);
+    color: var(--widget-accent-light);
+}
+
+.gallery-add-card i {
+    font-size: 24px;
+}
+
+.gallery-add-card span {
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* --- Gallery Drop Overlay (invisible until drag) --- */
+.gallery-drop-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--widget-radius);
+    pointer-events: none;
+    z-index: 10;
+    transition: all 0.3s;
+}
+
+.gallery-drop-overlay.dragover {
+    pointer-events: auto;
+    border: 2px dashed var(--widget-accent);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+/* --- Gallery Upload Progress --- */
+.gallery-upload-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--widget-border);
+    border-radius: 8px;
+}
+
+.gallery-upload-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--widget-text);
+}
+
+.upload-task-name {
+    min-width: 100px;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* --- Gallery Actions --- */
+.gallery-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.btn-gallery-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    border: 1px solid var(--widget-border);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--widget-text);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-gallery-action:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--widget-border-hover);
+}
+
+.btn-gallery-action i {
+    font-size: 14px;
+}
+
+.gallery-count {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--widget-text-muted);
+}
+
+
+/* =============================================================================
+   HIDE DEFAULT DJANGO URL INPUT
+   When widget is used, hide the original text input that Django renders
+   ============================================================================= */
+
+.image-upload-url-input {
+    display: none !important;
+}
+
+
+/* =============================================================================
+   ALPINE.JS HELPERS
+   ============================================================================= */
+
+[x-cloak] {
+    display: none !important;
+}
+
+
+/* =============================================================================
+   RESPONSIVE
+   ============================================================================= */
+
+@media (max-width: 768px) {
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    }
+
+    .gallery-actions {
+        flex-wrap: wrap;
+    }
+
+    .upload-preview-image {
+        min-height: 120px;
+    }
+}

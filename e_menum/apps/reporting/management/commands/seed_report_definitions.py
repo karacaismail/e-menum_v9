@@ -1,0 +1,1089 @@
+"""
+Management command to seed all ReportDefinition entries.
+
+Populates the platform-level report catalog with all 140 report definitions
+across 15 categories. Uses update_or_create keyed on feature_key for
+idempotent operation.
+
+Usage:
+    python manage.py seed_report_definitions
+"""
+
+from django.core.management.base import BaseCommand
+
+from apps.reporting.choices import (
+    AIModel,
+    PlanTier,
+    ReportCategory,
+    ReportPriority,
+)
+from apps.reporting.models import ReportDefinition
+
+# Default values applied to every report definition
+DEFAULT_SUPPORTED_FORMATS = ['JSON', 'PDF', 'EXCEL', 'CSV']
+DEFAULT_PARAMETERS: dict = {}
+DEFAULT_DIMENSIONS: list = []
+DEFAULT_HANDLER_CLASS = ''
+
+
+def _rpt(
+    feature_key: str,
+    name: str,
+    description: str,
+    category: str,
+    priority: str,
+    ai_model: str = AIModel.NONE,
+    credit_cost: int = 0,
+    min_plan: str = PlanTier.STARTER,
+    is_periodic: bool = False,
+    requires_ai: bool = False,
+) -> dict:
+    """Build a report definition dict with common defaults."""
+    return {
+        'feature_key': feature_key,
+        'name': name,
+        'description': description,
+        'category': category,
+        'priority': priority,
+        'ai_model': ai_model,
+        'credit_cost': credit_cost,
+        'min_plan': min_plan,
+        'is_periodic': is_periodic,
+        'requires_ai': requires_ai,
+        'is_active': True,
+        'handler_class': DEFAULT_HANDLER_CLASS,
+        'default_parameters': DEFAULT_PARAMETERS,
+        'supported_formats': DEFAULT_SUPPORTED_FORMATS,
+        'supported_dimensions': DEFAULT_DIMENSIONS,
+    }
+
+
+# =============================================================================
+# ALL REPORT DEFINITIONS (organized by category)
+# =============================================================================
+
+REPORT_DEFINITIONS: list[dict] = [
+    # =========================================================================
+    # SALES (10)
+    # =========================================================================
+    _rpt(
+        'RPT-SAL-001', 'Revenue Report',
+        'Comprehensive revenue report with breakdowns by period, category, and channel.',
+        ReportCategory.SALES, ReportPriority.P0,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.STARTER,
+        is_periodic=True,
+    ),
+    _rpt(
+        'RPT-SAL-002', 'Sales Trend Analysis',
+        'AI-powered trend analysis identifying patterns in sales data over time.',
+        ReportCategory.SALES, ReportPriority.P1,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.STARTER,
+    ),
+    _rpt(
+        'RPT-SAL-003', 'Payment Analysis',
+        'Breakdown of payment methods, transaction volumes, and settlement details.',
+        ReportCategory.SALES, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.STARTER,
+    ),
+    _rpt(
+        'RPT-SAL-004', 'Channel Performance',
+        'Sales performance comparison across ordering channels (dine-in, takeaway, delivery).',
+        ReportCategory.SALES, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.STARTER,
+    ),
+    _rpt(
+        'RPT-SAL-005', 'Time-based Sales Analysis',
+        'Sales analysis segmented by hour, day of week, and seasonal patterns.',
+        ReportCategory.SALES, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.STARTER,
+    ),
+    _rpt(
+        'RPT-SAL-006', 'Sales Comparison',
+        'Period-over-period sales comparison with variance analysis.',
+        ReportCategory.SALES, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-SAL-007', 'Discount Impact Analysis',
+        'AI-analyzed impact of discounts and promotions on revenue and margins.',
+        ReportCategory.SALES, ReportPriority.P2,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-SAL-008', 'Sales Forecast',
+        'AI-powered sales forecasting using historical data and seasonal patterns.',
+        ReportCategory.SALES, ReportPriority.P2,
+        ai_model=AIModel.SONNET, credit_cost=3, min_plan=PlanTier.BUSINESS,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-SAL-009', 'Top Sellers Report',
+        'Ranking of best-selling items by revenue and quantity with trend indicators.',
+        ReportCategory.SALES, ReportPriority.P0,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.STARTER,
+    ),
+    _rpt(
+        'RPT-SAL-010', 'Sales Breakdown',
+        'Detailed sales breakdown by category, subcategory, and individual items.',
+        ReportCategory.SALES, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.STARTER,
+    ),
+
+    # =========================================================================
+    # ORDERS (10)
+    # =========================================================================
+    _rpt(
+        'RPT-ORD-001', 'Order Analysis',
+        'Comprehensive order volume, value, and trend analysis.',
+        ReportCategory.ORDERS, ReportPriority.P0,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.STARTER,
+    ),
+    _rpt(
+        'RPT-ORD-002', 'Order Status Analysis',
+        'Distribution and timing analysis of order statuses and transitions.',
+        ReportCategory.ORDERS, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.STARTER,
+    ),
+    _rpt(
+        'RPT-ORD-003', 'Order Timing Analysis',
+        'Analysis of order placement patterns by time of day and day of week.',
+        ReportCategory.ORDERS, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.STARTER,
+    ),
+    _rpt(
+        'RPT-ORD-004', 'Average Order Value',
+        'AOV trends over time with segmentation by channel and customer type.',
+        ReportCategory.ORDERS, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.STARTER,
+    ),
+    _rpt(
+        'RPT-ORD-005', 'Order Channel Analysis',
+        'Order volume and value comparison across different ordering channels.',
+        ReportCategory.ORDERS, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.STARTER,
+    ),
+    _rpt(
+        'RPT-ORD-006', 'Cancel & Refund Analysis',
+        'AI-enhanced analysis of cancellations, refunds, and their root causes.',
+        ReportCategory.ORDERS, ReportPriority.P2,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-ORD-007', 'Basket Analysis',
+        'AI-powered market basket analysis identifying item affinities and cross-sell opportunities.',
+        ReportCategory.ORDERS, ReportPriority.P2,
+        ai_model=AIModel.SONNET, credit_cost=3, min_plan=PlanTier.BUSINESS,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-ORD-008', 'Order Heatmap',
+        'Visual heatmap of order density by time slots and days.',
+        ReportCategory.ORDERS, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-ORD-009', 'Repeat Order Analysis',
+        'Analysis of repeat ordering patterns and customer loyalty indicators.',
+        ReportCategory.ORDERS, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-ORD-010', 'Order Profitability',
+        'Profitability analysis per order with cost breakdown and margin calculations.',
+        ReportCategory.ORDERS, ReportPriority.P2,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.BUSINESS,
+    ),
+
+    # =========================================================================
+    # MENU (10)
+    # =========================================================================
+    _rpt(
+        'RPT-MNU-001', 'Menu Performance Matrix',
+        'AI-enhanced performance matrix plotting items by popularity and profitability.',
+        ReportCategory.MENU, ReportPriority.P0,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.STARTER,
+    ),
+    _rpt(
+        'RPT-MNU-002', 'Item Performance',
+        'Individual menu item performance metrics including sales, ratings, and trends.',
+        ReportCategory.MENU, ReportPriority.P0,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.STARTER,
+    ),
+    _rpt(
+        'RPT-MNU-003', 'Category Analysis',
+        'Menu category performance comparison with contribution analysis.',
+        ReportCategory.MENU, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.STARTER,
+    ),
+    _rpt(
+        'RPT-MNU-004', 'Price Optimization',
+        'AI-driven price optimization recommendations based on demand elasticity.',
+        ReportCategory.MENU, ReportPriority.P2,
+        ai_model=AIModel.SONNET, credit_cost=3, min_plan=PlanTier.BUSINESS,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-MNU-005', 'BCG Matrix Analysis',
+        'AI-enhanced BCG matrix categorizing menu items as stars, cash cows, question marks, or dogs.',
+        ReportCategory.MENU, ReportPriority.P1,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-MNU-006', 'Menu Mix Analysis',
+        'Analysis of menu item mix contribution to overall revenue and profitability.',
+        ReportCategory.MENU, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-MNU-007', 'Menu Optimization',
+        'AI-powered comprehensive menu optimization recommendations for layout and pricing.',
+        ReportCategory.MENU, ReportPriority.P3,
+        ai_model=AIModel.SONNET, credit_cost=5, min_plan=PlanTier.ENTERPRISE,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-MNU-008', 'Menu Engineering',
+        'AI-driven menu engineering analysis with detailed item repositioning suggestions.',
+        ReportCategory.MENU, ReportPriority.P3,
+        ai_model=AIModel.SONNET, credit_cost=5, min_plan=PlanTier.ENTERPRISE,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-MNU-009', 'Modifier Analysis',
+        'Analysis of modifier and add-on usage patterns and their revenue impact.',
+        ReportCategory.MENU, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-MNU-010', 'Menu Cost Analysis',
+        'AI-enhanced food cost analysis with margin optimization suggestions.',
+        ReportCategory.MENU, ReportPriority.P3,
+        ai_model=AIModel.HAIKU, credit_cost=2, min_plan=PlanTier.BUSINESS,
+    ),
+
+    # =========================================================================
+    # CUSTOMERS (12)
+    # =========================================================================
+    _rpt(
+        'RPT-CUS-001', 'Customer Overview',
+        'High-level customer metrics including total customers, new acquisitions, and activity rates.',
+        ReportCategory.CUSTOMERS, ReportPriority.P0,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.STARTER,
+    ),
+    _rpt(
+        'RPT-CUS-002', 'Customer Segmentation',
+        'AI-powered customer segmentation based on behavior, spending, and frequency.',
+        ReportCategory.CUSTOMERS, ReportPriority.P1,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-CUS-003', 'RFM Analysis',
+        'AI-enhanced Recency-Frequency-Monetary analysis for customer value scoring.',
+        ReportCategory.CUSTOMERS, ReportPriority.P1,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-CUS-004', 'Customer Retention',
+        'Retention rate analysis with cohort breakdowns and trend identification.',
+        ReportCategory.CUSTOMERS, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-CUS-005', 'Customer Lifetime Value',
+        'AI-powered CLV calculation and prediction for customer segments.',
+        ReportCategory.CUSTOMERS, ReportPriority.P2,
+        ai_model=AIModel.SONNET, credit_cost=3, min_plan=PlanTier.BUSINESS,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-CUS-006', 'Customer Acquisition',
+        'Customer acquisition analysis by channel, cost, and conversion rates.',
+        ReportCategory.CUSTOMERS, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-CUS-007', 'Customer Feedback',
+        'AI-analyzed customer feedback, ratings, and sentiment trends.',
+        ReportCategory.CUSTOMERS, ReportPriority.P1,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.STARTER,
+    ),
+    _rpt(
+        'RPT-CUS-008', 'Customer Behavior',
+        'AI-powered deep analysis of customer behavior patterns and preferences.',
+        ReportCategory.CUSTOMERS, ReportPriority.P2,
+        ai_model=AIModel.SONNET, credit_cost=3, min_plan=PlanTier.BUSINESS,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-CUS-009', 'Churn Analysis',
+        'AI-driven churn prediction and at-risk customer identification.',
+        ReportCategory.CUSTOMERS, ReportPriority.P2,
+        ai_model=AIModel.SONNET, credit_cost=3, min_plan=PlanTier.BUSINESS,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-CUS-010', 'Cohort Analysis',
+        'AI-enhanced cohort analysis tracking customer groups over time.',
+        ReportCategory.CUSTOMERS, ReportPriority.P2,
+        ai_model=AIModel.HAIKU, credit_cost=2, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-CUS-011', 'Customer Journey',
+        'AI-powered customer journey mapping from first visit to loyal customer.',
+        ReportCategory.CUSTOMERS, ReportPriority.P3,
+        ai_model=AIModel.SONNET, credit_cost=5, min_plan=PlanTier.ENTERPRISE,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-CUS-012', 'NPS Analysis',
+        'AI-enhanced Net Promoter Score analysis with driver identification.',
+        ReportCategory.CUSTOMERS, ReportPriority.P3,
+        ai_model=AIModel.HAIKU, credit_cost=2, min_plan=PlanTier.BUSINESS,
+    ),
+
+    # =========================================================================
+    # OPERATIONS (10)
+    # =========================================================================
+    _rpt(
+        'RPT-OPR-001', 'Operations Overview',
+        'High-level operational metrics dashboard with key performance indicators.',
+        ReportCategory.OPERATIONS, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.STARTER,
+    ),
+    _rpt(
+        'RPT-OPR-002', 'Peak Hours Analysis',
+        'Identification and analysis of peak operational hours and capacity utilization.',
+        ReportCategory.OPERATIONS, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.STARTER,
+    ),
+    _rpt(
+        'RPT-OPR-003', 'Kitchen Performance',
+        'Kitchen throughput, preparation time, and bottleneck analysis.',
+        ReportCategory.OPERATIONS, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-OPR-004', 'Table Turnover',
+        'Table turnover rate analysis with seating efficiency metrics.',
+        ReportCategory.OPERATIONS, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-OPR-005', 'Wait Time Analysis',
+        'Customer wait time analysis across different service stages.',
+        ReportCategory.OPERATIONS, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-OPR-006', 'Reservation Analysis',
+        'Reservation patterns, no-show rates, and capacity planning insights.',
+        ReportCategory.OPERATIONS, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-OPR-007', 'Delivery Performance',
+        'Delivery time, accuracy, and customer satisfaction metrics.',
+        ReportCategory.OPERATIONS, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-OPR-008', 'Takeaway Analysis',
+        'Takeaway order analysis including preparation times and peak patterns.',
+        ReportCategory.OPERATIONS, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-OPR-009', 'Service Request Analysis',
+        'Analysis of service requests, call-waiter patterns, and response times.',
+        ReportCategory.OPERATIONS, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-OPR-010', 'Equipment Status',
+        'Equipment utilization, maintenance schedules, and downtime tracking.',
+        ReportCategory.OPERATIONS, ReportPriority.P3,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+
+    # =========================================================================
+    # DIGITAL (6)
+    # =========================================================================
+    _rpt(
+        'RPT-DIG-001', 'QR Scan Analysis',
+        'QR code scan metrics including frequency, unique visitors, and conversion rates.',
+        ReportCategory.DIGITAL, ReportPriority.P0,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.STARTER,
+    ),
+    _rpt(
+        'RPT-DIG-002', 'Menu View Analytics',
+        'Digital menu viewing behavior including page views, dwell time, and navigation paths.',
+        ReportCategory.DIGITAL, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-DIG-003', 'Digital Engagement',
+        'Overall digital engagement metrics across all touchpoints.',
+        ReportCategory.DIGITAL, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-DIG-004', 'Web Analytics',
+        'Website traffic analytics including sessions, bounce rate, and user flow.',
+        ReportCategory.DIGITAL, ReportPriority.P3,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-DIG-005', 'Conversion Funnel',
+        'Conversion funnel analysis from menu view to completed order.',
+        ReportCategory.DIGITAL, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-DIG-006', 'Digital Payment Analysis',
+        'Digital payment method adoption and transaction analysis.',
+        ReportCategory.DIGITAL, ReportPriority.P3,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+
+    # =========================================================================
+    # PERIODIC (12)
+    # =========================================================================
+    _rpt(
+        'RPT-PER-001', 'Daily Summary',
+        'AI-enhanced daily summary with key metrics, highlights, and anomalies.',
+        ReportCategory.PERIODIC, ReportPriority.P0,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.STARTER,
+        is_periodic=True,
+    ),
+    _rpt(
+        'RPT-PER-002', 'Morning Brief',
+        'AI-generated morning briefing with yesterday recap and today forecast.',
+        ReportCategory.PERIODIC, ReportPriority.P1,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.STARTER,
+        is_periodic=True,
+    ),
+    _rpt(
+        'RPT-PER-003', 'Evening Recap',
+        'AI-generated evening recap with daily performance summary.',
+        ReportCategory.PERIODIC, ReportPriority.P1,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.STARTER,
+        is_periodic=True,
+    ),
+    _rpt(
+        'RPT-PER-004', 'Shift Summary',
+        'End-of-shift summary report with key metrics and handoff notes.',
+        ReportCategory.PERIODIC, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+        is_periodic=True,
+    ),
+    _rpt(
+        'RPT-PER-005', 'Weekly Trend',
+        'AI-enhanced weekly trend analysis with week-over-week comparisons.',
+        ReportCategory.PERIODIC, ReportPriority.P0,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.STARTER,
+        is_periodic=True,
+    ),
+    _rpt(
+        'RPT-PER-006', 'Performance Card',
+        'Weekly performance scorecard with KPI tracking and goal progress.',
+        ReportCategory.PERIODIC, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.STARTER,
+        is_periodic=True,
+    ),
+    _rpt(
+        'RPT-PER-007', 'Staff Ranking',
+        'Weekly staff performance ranking based on sales, speed, and ratings.',
+        ReportCategory.PERIODIC, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+        is_periodic=True,
+    ),
+    _rpt(
+        'RPT-PER-008', 'Monthly Analysis',
+        'AI-powered comprehensive monthly business analysis with insights.',
+        ReportCategory.PERIODIC, ReportPriority.P0,
+        ai_model=AIModel.SONNET, credit_cost=3, min_plan=PlanTier.STARTER,
+        is_periodic=True,
+    ),
+    _rpt(
+        'RPT-PER-009', 'Executive Summary',
+        'AI-generated executive summary with strategic insights and recommendations.',
+        ReportCategory.PERIODIC, ReportPriority.P2,
+        ai_model=AIModel.SONNET, credit_cost=3, min_plan=PlanTier.BUSINESS,
+        is_periodic=True, requires_ai=True,
+    ),
+    _rpt(
+        'RPT-PER-010', 'Quarterly Report',
+        'AI-powered quarterly business review with trend analysis and forecasts.',
+        ReportCategory.PERIODIC, ReportPriority.P2,
+        ai_model=AIModel.SONNET, credit_cost=3, min_plan=PlanTier.BUSINESS,
+        is_periodic=True, requires_ai=True,
+    ),
+    _rpt(
+        'RPT-PER-011', 'Yearly Report',
+        'AI-powered annual business review with year-over-year analysis.',
+        ReportCategory.PERIODIC, ReportPriority.P2,
+        ai_model=AIModel.SONNET, credit_cost=5, min_plan=PlanTier.BUSINESS,
+        is_periodic=True, requires_ai=True,
+    ),
+    _rpt(
+        'RPT-PER-012', 'Custom Period',
+        'AI-enhanced report for any custom date range selected by the user.',
+        ReportCategory.PERIODIC, ReportPriority.P2,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.PROFESSIONAL,
+    ),
+
+    # =========================================================================
+    # STAFF (10)
+    # =========================================================================
+    _rpt(
+        'RPT-STF-001', 'Staff Overview',
+        'High-level staff metrics including headcount, roles, and activity summary.',
+        ReportCategory.STAFF, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-STF-002', 'Staff Performance',
+        'Individual and team performance metrics including sales, speed, and ratings.',
+        ReportCategory.STAFF, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-STF-003', 'Staff Ranking',
+        'Staff ranking by key performance indicators with benchmarks.',
+        ReportCategory.STAFF, ReportPriority.P1,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-STF-004', 'Shift Analysis',
+        'Shift-level analysis of staffing levels, productivity, and coverage gaps.',
+        ReportCategory.STAFF, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-STF-005', 'Staff Scheduling',
+        'Staff scheduling optimization analysis with demand-based recommendations.',
+        ReportCategory.STAFF, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-STF-006', 'Labor Cost Analysis',
+        'AI-enhanced labor cost breakdown with efficiency metrics and optimization tips.',
+        ReportCategory.STAFF, ReportPriority.P2,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-STF-007', 'Staff Productivity',
+        'Staff productivity metrics including orders per hour and revenue per shift.',
+        ReportCategory.STAFF, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-STF-008', 'Staff Turnover',
+        'AI-enhanced staff turnover analysis with retention risk indicators.',
+        ReportCategory.STAFF, ReportPriority.P3,
+        ai_model=AIModel.HAIKU, credit_cost=2, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-STF-009', 'Training Progress',
+        'Staff training completion tracking and skill gap analysis.',
+        ReportCategory.STAFF, ReportPriority.P3,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-STF-010', 'Staff Satisfaction',
+        'AI-enhanced staff satisfaction analysis from surveys and engagement data.',
+        ReportCategory.STAFF, ReportPriority.P3,
+        ai_model=AIModel.HAIKU, credit_cost=2, min_plan=PlanTier.ENTERPRISE,
+    ),
+
+    # =========================================================================
+    # BRANCH (8)
+    # =========================================================================
+    _rpt(
+        'RPT-BRN-001', 'Branch Comparison',
+        'Side-by-side comparison of branch performance across key metrics.',
+        ReportCategory.BRANCH, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-BRN-002', 'Branch Ranking',
+        'Branch ranking by revenue, orders, customer satisfaction, and efficiency.',
+        ReportCategory.BRANCH, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-BRN-003', 'Consolidated Report',
+        'AI-enhanced consolidated report across all branches with unified metrics.',
+        ReportCategory.BRANCH, ReportPriority.P2,
+        ai_model=AIModel.HAIKU, credit_cost=2, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-BRN-004', 'Best Practice Analysis',
+        'AI-powered identification of best practices from top-performing branches.',
+        ReportCategory.BRANCH, ReportPriority.P3,
+        ai_model=AIModel.SONNET, credit_cost=5, min_plan=PlanTier.ENTERPRISE,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-BRN-005', 'Single Branch Report',
+        'Detailed performance report for an individual branch.',
+        ReportCategory.BRANCH, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-BRN-006', 'Geographic Analysis',
+        'Geographic performance analysis with regional comparisons.',
+        ReportCategory.BRANCH, ReportPriority.P3,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-BRN-007', 'Compliance Report',
+        'Branch compliance monitoring for operational standards and policies.',
+        ReportCategory.BRANCH, ReportPriority.P3,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-BRN-008', 'Franchise Report',
+        'AI-enhanced franchise-specific reporting with royalty and performance tracking.',
+        ReportCategory.BRANCH, ReportPriority.P3,
+        ai_model=AIModel.HAIKU, credit_cost=2, min_plan=PlanTier.ENTERPRISE,
+    ),
+
+    # =========================================================================
+    # INVENTORY (8)
+    # =========================================================================
+    _rpt(
+        'RPT-INV-001', 'Stock Status',
+        'Current stock levels with low-stock alerts and reorder recommendations.',
+        ReportCategory.INVENTORY, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-INV-002', 'Stock Forecast',
+        'AI-powered stock demand forecasting based on historical consumption patterns.',
+        ReportCategory.INVENTORY, ReportPriority.P2,
+        ai_model=AIModel.SONNET, credit_cost=3, min_plan=PlanTier.BUSINESS,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-INV-003', 'Waste & Loss',
+        'AI-enhanced waste and loss analysis with reduction recommendations.',
+        ReportCategory.INVENTORY, ReportPriority.P2,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-INV-004', 'Turnover Rate',
+        'Inventory turnover rate analysis by item and category.',
+        ReportCategory.INVENTORY, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-INV-005', 'Material Cost',
+        'Material and ingredient cost tracking with variance analysis.',
+        ReportCategory.INVENTORY, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-INV-006', 'Supplier Performance',
+        'Supplier reliability, pricing, and quality performance metrics.',
+        ReportCategory.INVENTORY, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-INV-007', 'Purchase History',
+        'Purchase order history with spending trends and supplier analysis.',
+        ReportCategory.INVENTORY, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-INV-008', 'Expiry Tracking',
+        'Ingredient and product expiry tracking with waste prevention alerts.',
+        ReportCategory.INVENTORY, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+
+    # =========================================================================
+    # CAMPAIGNS (8)
+    # =========================================================================
+    _rpt(
+        'RPT-CMP-001', 'Campaign Overview',
+        'Overview of all marketing campaigns with performance metrics.',
+        ReportCategory.CAMPAIGNS, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-CMP-002', 'Campaign ROI',
+        'AI-enhanced return on investment analysis for marketing campaigns.',
+        ReportCategory.CAMPAIGNS, ReportPriority.P2,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-CMP-003', 'Campaign Comparison',
+        'Side-by-side comparison of campaign performance and effectiveness.',
+        ReportCategory.CAMPAIGNS, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-CMP-004', 'Attribution Analysis',
+        'AI-powered multi-touch attribution analysis for campaign conversions.',
+        ReportCategory.CAMPAIGNS, ReportPriority.P3,
+        ai_model=AIModel.SONNET, credit_cost=3, min_plan=PlanTier.ENTERPRISE,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-CMP-005', 'Loyalty Overview',
+        'Loyalty program overview with member activity and reward redemption metrics.',
+        ReportCategory.CAMPAIGNS, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-CMP-006', 'Member Analysis',
+        'AI-enhanced loyalty member analysis with engagement and lifetime value insights.',
+        ReportCategory.CAMPAIGNS, ReportPriority.P2,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-CMP-007', 'Coupon Analysis',
+        'Coupon usage analysis with redemption rates and revenue impact.',
+        ReportCategory.CAMPAIGNS, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+    _rpt(
+        'RPT-CMP-008', 'Referral Analysis',
+        'Referral program analysis with conversion rates and viral coefficient.',
+        ReportCategory.CAMPAIGNS, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.BUSINESS,
+    ),
+
+    # =========================================================================
+    # PLATFORM (16)
+    # =========================================================================
+    _rpt(
+        'RPT-PLT-001', 'Platform Overview',
+        'High-level platform metrics including active tenants, revenue, and growth.',
+        ReportCategory.PLATFORM, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-PLT-002', 'Tenant Growth',
+        'Tenant acquisition, activation, and growth trend analysis.',
+        ReportCategory.PLATFORM, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-PLT-003', 'Tenant Usage',
+        'Tenant platform usage metrics including feature adoption and activity levels.',
+        ReportCategory.PLATFORM, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-PLT-004', 'Platform Revenue',
+        'Platform revenue analysis by plan tier, add-ons, and credit consumption.',
+        ReportCategory.PLATFORM, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-PLT-005', 'Churn Analysis',
+        'AI-enhanced tenant churn analysis with risk scoring and retention insights.',
+        ReportCategory.PLATFORM, ReportPriority.P2,
+        ai_model=AIModel.HAIKU, credit_cost=2, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-PLT-006', 'Feature Adoption',
+        'Feature adoption rates across tenant base with usage patterns.',
+        ReportCategory.PLATFORM, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-PLT-007', 'Plan Distribution',
+        'Distribution of tenants across plan tiers with upgrade/downgrade trends.',
+        ReportCategory.PLATFORM, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-PLT-008', 'System Health',
+        'System health metrics including uptime, response times, and error rates.',
+        ReportCategory.PLATFORM, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-PLT-009', 'API Usage',
+        'API usage metrics by endpoint, tenant, and rate limit utilization.',
+        ReportCategory.PLATFORM, ReportPriority.P3,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-PLT-010', 'Error Rate Analysis',
+        'Error rate analysis by type, endpoint, and tenant with trend detection.',
+        ReportCategory.PLATFORM, ReportPriority.P3,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-PLT-011', 'Credit Consumption',
+        'AI credit consumption analysis by tenant, report type, and model.',
+        ReportCategory.PLATFORM, ReportPriority.P2,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-PLT-012', 'Support Metrics',
+        'Support ticket metrics including volume, resolution time, and satisfaction.',
+        ReportCategory.PLATFORM, ReportPriority.P3,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-PLT-013', 'Onboarding Funnel',
+        'Tenant onboarding funnel analysis with drop-off identification.',
+        ReportCategory.PLATFORM, ReportPriority.P3,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-PLT-014', 'Content Metrics',
+        'Content generation metrics including AI usage, quality scores, and adoption.',
+        ReportCategory.PLATFORM, ReportPriority.P3,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-PLT-015', 'AI Usage Analytics',
+        'Detailed AI model usage analytics with token consumption and cost analysis.',
+        ReportCategory.PLATFORM, ReportPriority.P3,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+    _rpt(
+        'RPT-PLT-016', 'Billing Summary',
+        'Billing and invoicing summary across all tenants.',
+        ReportCategory.PLATFORM, ReportPriority.P3,
+        ai_model=AIModel.NONE, credit_cost=0, min_plan=PlanTier.ENTERPRISE,
+    ),
+
+    # =========================================================================
+    # AI_INSIGHTS (8)
+    # =========================================================================
+    _rpt(
+        'RPT-AII-001', 'Daily Insights',
+        'AI-generated daily business insights highlighting key observations.',
+        ReportCategory.AI_INSIGHTS, ReportPriority.P1,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-AII-002', 'Weekly Insights',
+        'AI-powered weekly insights with pattern recognition and strategic suggestions.',
+        ReportCategory.AI_INSIGHTS, ReportPriority.P1,
+        ai_model=AIModel.SONNET, credit_cost=3, min_plan=PlanTier.PROFESSIONAL,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-AII-003', 'Anomaly Detection',
+        'AI-driven anomaly detection in sales, orders, and operational metrics.',
+        ReportCategory.AI_INSIGHTS, ReportPriority.P2,
+        ai_model=AIModel.SONNET, credit_cost=3, min_plan=PlanTier.BUSINESS,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-AII-004', 'Trend Detection',
+        'AI-powered trend detection identifying emerging patterns in business data.',
+        ReportCategory.AI_INSIGHTS, ReportPriority.P2,
+        ai_model=AIModel.HAIKU, credit_cost=1, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-AII-005', 'Opportunity Finder',
+        'AI-powered identification of revenue opportunities and growth areas.',
+        ReportCategory.AI_INSIGHTS, ReportPriority.P2,
+        ai_model=AIModel.SONNET, credit_cost=3, min_plan=PlanTier.BUSINESS,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-AII-006', 'Risk Assessment',
+        'AI-powered business risk assessment covering financial, operational, and market risks.',
+        ReportCategory.AI_INSIGHTS, ReportPriority.P3,
+        ai_model=AIModel.SONNET, credit_cost=5, min_plan=PlanTier.ENTERPRISE,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-AII-007', 'Competitive Intelligence',
+        'AI-powered competitive intelligence based on market and industry data.',
+        ReportCategory.AI_INSIGHTS, ReportPriority.P3,
+        ai_model=AIModel.SONNET, credit_cost=8, min_plan=PlanTier.ENTERPRISE,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-AII-008', 'Industry Benchmark',
+        'AI-enhanced industry benchmarking comparing performance to sector averages.',
+        ReportCategory.AI_INSIGHTS, ReportPriority.P3,
+        ai_model=AIModel.HAIKU, credit_cost=2, min_plan=PlanTier.BUSINESS,
+    ),
+
+    # =========================================================================
+    # AI_QUERY (4)
+    # =========================================================================
+    _rpt(
+        'RPT-AIQ-001', 'Natural Language Query',
+        'Ask business questions in natural language and get AI-generated data answers.',
+        ReportCategory.AI_QUERY, ReportPriority.P1,
+        ai_model=AIModel.HAIKU, credit_cost=2, min_plan=PlanTier.PROFESSIONAL,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-AIQ-002', 'Custom Query Builder',
+        'AI-assisted custom query builder for creating ad-hoc data analyses.',
+        ReportCategory.AI_QUERY, ReportPriority.P2,
+        ai_model=AIModel.HAIKU, credit_cost=2, min_plan=PlanTier.PROFESSIONAL,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-AIQ-009', 'Conversational Analytics',
+        'Interactive conversational analytics with follow-up question support.',
+        ReportCategory.AI_QUERY, ReportPriority.P3,
+        ai_model=AIModel.SONNET, credit_cost=5, min_plan=PlanTier.ENTERPRISE,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-AIQ-010', 'Voice Query',
+        'Voice-activated query interface for hands-free data exploration.',
+        ReportCategory.AI_QUERY, ReportPriority.P3,
+        ai_model=AIModel.SONNET, credit_cost=5, min_plan=PlanTier.ENTERPRISE,
+        requires_ai=True,
+    ),
+
+    # =========================================================================
+    # FORECASTING (8)
+    # =========================================================================
+    _rpt(
+        'RPT-FOR-001', 'Revenue Forecast',
+        'AI-powered revenue forecasting with confidence intervals and scenario analysis.',
+        ReportCategory.FORECASTING, ReportPriority.P2,
+        ai_model=AIModel.SONNET, credit_cost=3, min_plan=PlanTier.BUSINESS,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-FOR-002', 'Order Forecast',
+        'AI-powered order volume forecasting for capacity and staffing planning.',
+        ReportCategory.FORECASTING, ReportPriority.P2,
+        ai_model=AIModel.SONNET, credit_cost=3, min_plan=PlanTier.BUSINESS,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-FOR-003', 'Customer Forecast',
+        'AI-powered customer traffic and acquisition forecasting.',
+        ReportCategory.FORECASTING, ReportPriority.P2,
+        ai_model=AIModel.SONNET, credit_cost=3, min_plan=PlanTier.BUSINESS,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-FOR-004', 'Demand Forecast',
+        'AI-powered demand forecasting by item and category for inventory planning.',
+        ReportCategory.FORECASTING, ReportPriority.P2,
+        ai_model=AIModel.SONNET, credit_cost=3, min_plan=PlanTier.BUSINESS,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-FOR-005', 'Seasonal Pattern',
+        'AI-enhanced seasonal pattern detection and year-round demand modeling.',
+        ReportCategory.FORECASTING, ReportPriority.P2,
+        ai_model=AIModel.HAIKU, credit_cost=2, min_plan=PlanTier.PROFESSIONAL,
+    ),
+    _rpt(
+        'RPT-FOR-006', 'What-If Price Change',
+        'AI-powered what-if scenario analysis for menu price changes.',
+        ReportCategory.FORECASTING, ReportPriority.P3,
+        ai_model=AIModel.SONNET, credit_cost=5, min_plan=PlanTier.ENTERPRISE,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-FOR-007', 'What-If Menu Change',
+        'AI-powered what-if scenario analysis for menu additions and removals.',
+        ReportCategory.FORECASTING, ReportPriority.P3,
+        ai_model=AIModel.SONNET, credit_cost=5, min_plan=PlanTier.ENTERPRISE,
+        requires_ai=True,
+    ),
+    _rpt(
+        'RPT-FOR-008', 'What-If Campaign',
+        'AI-powered what-if scenario analysis for marketing campaign planning.',
+        ReportCategory.FORECASTING, ReportPriority.P3,
+        ai_model=AIModel.SONNET, credit_cost=5, min_plan=PlanTier.ENTERPRISE,
+        requires_ai=True,
+    ),
+]
+
+
+class Command(BaseCommand):
+    help = 'Seed all ReportDefinition entries for the E-Menum reporting module.'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--dry-run',
+            action='store_true',
+            help='Show what would be created/updated without making changes.',
+        )
+
+    def handle(self, *args, **options):
+        dry_run = options['dry_run']
+        created_count = 0
+        updated_count = 0
+        skipped_count = 0
+
+        total = len(REPORT_DEFINITIONS)
+        self.stdout.write(
+            f'Seeding {total} report definitions '
+            f'{"(DRY RUN)" if dry_run else ""}...'
+        )
+
+        for defn in REPORT_DEFINITIONS:
+            feature_key = defn['feature_key']
+            defaults = {k: v for k, v in defn.items() if k != 'feature_key'}
+
+            if dry_run:
+                exists = ReportDefinition.objects.filter(
+                    feature_key=feature_key,
+                ).exists()
+                action = 'UPDATE' if exists else 'CREATE'
+                self.stdout.write(f'  [{action}] {feature_key}: {defn["name"]}')
+                if exists:
+                    updated_count += 1
+                else:
+                    created_count += 1
+                continue
+
+            _obj, was_created = ReportDefinition.objects.update_or_create(
+                feature_key=feature_key,
+                defaults=defaults,
+            )
+
+            if was_created:
+                created_count += 1
+                self.stdout.write(
+                    self.style.SUCCESS(f'  [CREATED] {feature_key}: {defn["name"]}')
+                )
+            else:
+                updated_count += 1
+                self.stdout.write(
+                    f'  [UPDATED] {feature_key}: {defn["name"]}'
+                )
+
+        # Summary by category
+        self.stdout.write('')
+        self.stdout.write('=' * 60)
+        self.stdout.write('SUMMARY')
+        self.stdout.write('=' * 60)
+
+        category_counts: dict[str, int] = {}
+        for defn in REPORT_DEFINITIONS:
+            cat = defn['category']
+            category_counts[cat] = category_counts.get(cat, 0) + 1
+
+        for cat, count in sorted(category_counts.items()):
+            self.stdout.write(f'  {cat:<20} {count:>3} reports')
+
+        self.stdout.write('-' * 60)
+        self.stdout.write(f'  {"TOTAL":<20} {total:>3} reports')
+        self.stdout.write('')
+
+        if dry_run:
+            self.stdout.write(self.style.WARNING(
+                f'DRY RUN: Would create {created_count}, '
+                f'update {updated_count} report definitions.'
+            ))
+        else:
+            self.stdout.write(self.style.SUCCESS(
+                f'Done! Created {created_count}, updated {updated_count}, '
+                f'skipped {skipped_count} report definitions.'
+            ))

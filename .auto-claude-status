@@ -1,0 +1,25 @@
+{
+  "active": true,
+  "spec": "002-bu-projeyi-tamamen-django-ile-yap-enterprise-ready",
+  "state": "building",
+  "subtasks": {
+    "completed": 51,
+    "total": 73,
+    "in_progress": 1,
+    "failed": 0
+  },
+  "phase": {
+    "current": "Django Admin & Templates",
+    "id": null,
+    "total": 6
+  },
+  "workers": {
+    "active": 0,
+    "max": 1
+  },
+  "session": {
+    "number": 54,
+    "started_at": "2026-02-14T13:26:11.524855"
+  },
+  "last_update": "2026-02-14T17:14:03.770196"
+}

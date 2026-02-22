@@ -1,0 +1,39 @@
+{
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true
+  },
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Read(./**)",
+      "Write(./**)",
+      "Edit(./**)",
+      "Glob(./**)",
+      "Grep(./**)",
+      "Read(/Users/karaca/Documents/e-menum_v9/.auto-claude/worktrees/tasks/002-bu-projeyi-tamamen-django-ile-yap-enterprise-ready/**)",
+      "Write(/Users/karaca/Documents/e-menum_v9/.auto-claude/worktrees/tasks/002-bu-projeyi-tamamen-django-ile-yap-enterprise-ready/**)",
+      "Edit(/Users/karaca/Documents/e-menum_v9/.auto-claude/worktrees/tasks/002-bu-projeyi-tamamen-django-ile-yap-enterprise-ready/**)",
+      "Glob(/Users/karaca/Documents/e-menum_v9/.auto-claude/worktrees/tasks/002-bu-projeyi-tamamen-django-ile-yap-enterprise-ready/**)",
+      "Grep(/Users/karaca/Documents/e-menum_v9/.auto-claude/worktrees/tasks/002-bu-projeyi-tamamen-django-ile-yap-enterprise-ready/**)",
+      "Read(/Users/karaca/Documents/e-menum_v9/.auto-claude/worktrees/tasks/002-bu-projeyi-tamamen-django-ile-yap-enterprise-ready/.auto-claude/specs/002-bu-projeyi-tamamen-django-ile-yap-enterprise-ready/**)",
+      "Write(/Users/karaca/Documents/e-menum_v9/.auto-claude/worktrees/tasks/002-bu-projeyi-tamamen-django-ile-yap-enterprise-ready/.auto-claude/specs/002-bu-projeyi-tamamen-django-ile-yap-enterprise-ready/**)",
+      "Edit(/Users/karaca/Documents/e-menum_v9/.auto-claude/worktrees/tasks/002-bu-projeyi-tamamen-django-ile-yap-enterprise-ready/.auto-claude/specs/002-bu-projeyi-tamamen-django-ile-yap-enterprise-ready/**)",
+      "Read(/Users/karaca/Documents/e-menum_v9/.auto-claude/**)",
+      "Write(/Users/karaca/Documents/e-menum_v9/.auto-claude/**)",
+      "Edit(/Users/karaca/Documents/e-menum_v9/.auto-claude/**)",
+      "Glob(/Users/karaca/Documents/e-menum_v9/.auto-claude/**)",
+      "Grep(/Users/karaca/Documents/e-menum_v9/.auto-claude/**)",
+      "Bash(*)",
+      "WebFetch(*)",
+      "WebSearch(*)",
+      "mcp__context7__resolve-library-id(*)",
+      "mcp__context7__get-library-docs(*)",
+      "mcp__graphiti-memory__search_nodes(*)",
+      "mcp__graphiti-memory__search_facts(*)",
+      "mcp__graphiti-memory__add_episode(*)",
+      "mcp__graphiti-memory__get_episodes(*)",
+      "mcp__graphiti-memory__get_entity_edge(*)"
+    ]
+  }
+}
