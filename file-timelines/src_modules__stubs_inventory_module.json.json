@@ -1,0 +1,28 @@
+{
+  "file_path": "src/modules/_stubs/inventory/module.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"$schema\": \"https://e-menum.net/schemas/module-v1.json\",\n  \"id\": \"inventory\",\n  \"name\": \"Inventory Module\",\n  \"version\": \"0.0.0\",\n  \"status\": \"stub\",\n  \"description\": \"Envanter y\u00f6netimi - stok takibi, tedarik ve malzeme y\u00f6netimi\",\n\n  \"type\": \"feature\",\n  \"category\": \"operations\",\n\n  \"author\": {\n    \"name\": \"E-Menum Team\",\n    \"email\": \"dev@e-menum.net\"\n  },\n\n  \"compatibility\": {\n    \"platform\": \">=1.0.0\",\n    \"node\": \">=20.0.0\"\n  },\n\n  \"dependencies\": {\n    \"modules\": [\"auth\", \"organization\", \"menu\"],\n    \"optional\": [\"notification\", \"analytics\", \"order\"]\n  },\n\n  \"provides\": {\n    \"services\": [\"IInventoryService\", \"IStockService\"],\n    \"events\": [\n      \"inventory.stock.updated\",\n      \"inventory.stock.low\",\n      \"inventory.stock.out\",\n      \"inventory.item.received\",\n      \"inventory.waste.recorded\"\n    ],\n    \"hooks\": [\n      \"beforeOrderCreate\",\n      \"afterOrderComplete\"\n    ],\n    \"permissions\": [\n      \"inventory:read\",\n      \"inventory:update\",\n      \"inventory:adjust\",\n      \"inventory:configure\"\n    ]\n  },\n\n  \"tier\": {\n    \"minimum\": \"professional\",\n    \"features\": {\n      \"professional\": [\"basic_tracking\", \"low_stock_alerts\"],\n      \"business\": [\"basic_tracking\", \"low_stock_alerts\", \"suppliers\", \"purchase_orders\", \"waste_tracking\"],\n      \"enterprise\": [\"basic_tracking\", \"low_stock_alerts\", \"suppliers\", \"purchase_orders\", \"waste_tracking\", \"cost_analysis\", \"forecasting\"]\n    }\n  },\n\n  \"plannedFeatures\": [\n    \"Stock level tracking\",\n    \"Low stock alerts\",\n    \"Automatic stock deduction on order\",\n    \"Supplier management\",\n    \"Purchase order creation\",\n    \"Stock receiving\",\n    \"Waste tracking\",\n    \"Cost analysis\",\n    \"Inventory valuation\",\n    \"Stock transfer between branches\"\n  ],\n\n  \"estimatedRelease\": \"Q3 2026\"\n}\n",
+        "last_modified": "2026-02-01T09:10:53.739501"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:25.933656",
+  "last_updated": "2026-02-01T08:03:25.943298"
+}

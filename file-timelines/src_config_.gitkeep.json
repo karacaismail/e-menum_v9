@@ -1,0 +1,28 @@
+{
+  "file_path": "src/config/.gitkeep",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "",
+        "last_modified": "2026-02-01T09:10:53.681043"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:24.499724",
+  "last_updated": "2026-02-01T08:03:24.509381"
+}

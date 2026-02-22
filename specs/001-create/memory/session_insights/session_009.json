@@ -1,0 +1,229 @@
+{
+  "session_number": 9,
+  "timestamp": "2026-01-31T22:16:09.486952+00:00",
+  "subtasks_completed": [
+    "subtask-2-4"
+  ],
+  "discoveries": {
+    "file_insights": [
+      {
+        "file": "prisma/schema/order.prisma",
+        "type": "NEW",
+        "lines_added": 379,
+        "purpose": "Database schema for order-related entities",
+        "key_entities": [
+          "Zone",
+          "Table",
+          "QRCode",
+          "QRScan",
+          "Order",
+          "OrderItem",
+          "ServiceRequest",
+          "Customer",
+          "CustomerVisit",
+          "Feedback",
+          "LoyaltyPoint",
+          "Notification"
+        ],
+        "notable_patterns": [
+          "Comprehensive organization-based multi-tenancy with organizationId fields",
+          "Soft delete support via deletedAt timestamps on Zone and Table",
+          "Rich relationship modeling with cascading deletes on dependent entities",
+          "Financial precision with Decimal(10,2) for currency fields",
+          "Polymorphic modeling for OrderItem with product snapshots",
+          "JSON fields for flexible metadata and modifiers storage",
+          "Extensive indexing strategy for query optimization",
+          "Status enums for lifecycle tracking (OrderStatus, TableStatus, OrderItemStatus, etc.)"
+        ]
+      }
+    ],
+    "patterns_discovered": [
+      {
+        "pattern": "Multi-tenancy by Organization",
+        "description": "All entities include organizationId field to support SaaS multi-tenant architecture",
+        "affected_entities": [
+          "Zone",
+          "Table",
+          "QRCode",
+          "Order",
+          "Customer",
+          "ServiceRequest",
+          "Feedback",
+          "LoyaltyPoint",
+          "Notification"
+        ]
+      },
+      {
+        "pattern": "Audit Trail Fields",
+        "description": "createdAt and updatedAt on all entities; some include deletedAt for soft deletes",
+        "affected_entities": "All models"
+      },
+      {
+        "pattern": "Composite Unique Constraints",
+        "description": "Multiple entities use combined fields for uniqueness (e.g., organizationId + number for Table)",
+        "examples": [
+          "Table: [organizationId, number]",
+          "Order: [organizationId, orderNumber]",
+          "Customer: [organizationId, email], [organizationId, phone]"
+        ]
+      },
+      {
+        "pattern": "Comprehensive Indexing",
+        "description": "Strategic index creation on foreign keys, status fields, and date ranges for filtering",
+        "examples": [
+          "organizationId + status for fast filtering",
+          "organizationId + createdAt for time-series queries",
+          "tableId + status for order lookup optimization"
+        ]
+      },
+      {
+        "pattern": "Cascading Delete Relations",
+        "description": "Dependent entities use onDelete: Cascade to maintain referential integrity",
+        "affected_entities": [
+          "OrderItem",
+          "QRScan",
+          "ServiceRequest",
+          "CustomerVisit",
+          "Feedback",
+          "LoyaltyPoint",
+          "Notification"
+        ]
+      },
+      {
+        "pattern": "Data Snapshot for Historical Accuracy",
+        "description": "OrderItem stores productName and variantName snapshots to preserve order history",
+        "rationale": "Protects against product name/price changes after order placement"
+      },
+      {
+        "pattern": "Flexible Metadata Storage",
+        "description": "Json fields used for extensible data (metadata, modifiers)",
+        "affected_entities": [
+          "QRScan",
+          "OrderItem",
+          "Customer",
+          "CustomerVisit",
+          "Feedback",
+          "LoyaltyPoint",
+          "Notification"
+        ]
+      },
+      {
+        "pattern": "Status Enums for Lifecycle",
+        "description": "Multiple enum-based status fields tracking entity state transitions",
+        "examples": [
+          "OrderStatus: PENDING, CONFIRMED, PREPARED, DELIVERED, COMPLETED, CANCELLED",
+          "TableStatus: AVAILABLE, OCCUPIED, RESERVED",
+          "OrderItemStatus: PENDING, CONFIRMED, PREPARED, DELIVERED, CANCELLED",
+          "QRCodeType: MENU, TABLE, CAMPAIGN",
+          "NotificationType: SYSTEM, ORDER, PROMOTION"
+        ]
+      }
+    ],
+    "gotchas_discovered": [
+      {
+        "gotcha": "Dual Table-Order Relations",
+        "description": "Table has both currentOrderId (single) and orders[] (many) relations to Order",
+        "impact": "Must maintain consistency: currentOrder must be in orders array; tableAsCurrent in Order creates bidirectional link",
+        "recommendation": "Add validation logic to ensure currentOrderId always references an active order in orders array"
+      },
+      {
+        "gotcha": "Optional Foreign Keys",
+        "description": "Multiple nullable foreign keys (customerId, staffId, tableId, zoneId) allow incomplete data",
+        "impact": "Application must handle null cases for customer orders, unassigned tables, tables without zones",
+        "recommendation": "Document business rules about which combinations are valid (e.g., can takeaway orders have tableId?)"
+      },
+      {
+        "gotcha": "Order Number Uniqueness",
+        "description": "orderNumber is unique only within organizationId scope, not globally",
+        "impact": "Different organizations can have same order numbers; must filter by organizationId in queries",
+        "recommendation": "Ensure application layer always includes organizationId in order number lookups"
+      },
+      {
+        "gotcha": "QRCode Single Table Link",
+        "description": "QRCode.tableId is unique, meaning each table can have only one QRCode",
+        "impact": "Cannot create multiple QR codes per table (e.g., for testing, backup links)",
+        "recommendation": "Clarify if this is intentional; may need to remove @unique to support multi-QR scenarios"
+      },
+      {
+        "gotcha": "Feedback One-to-One Constraint",
+        "description": "Feedback.orderId is unique, limiting one feedback per order",
+        "impact": "Prevents multiple feedback entries per order (e.g., separate food and service ratings)",
+        "recommendation": "Remove @unique if split-rating functionality is needed in future"
+      },
+      {
+        "gotcha": "Currency Hardcoded Default",
+        "description": "Order.currency defaults to 'TRY' (Turkish Lira)",
+        "impact": "May not work for non-Turkish restaurants; needs override at creation time",
+        "recommendation": "Consider making currency configurable per organization or validating against organization settings"
+      },
+      {
+        "gotcha": "Decimal Precision Fixed",
+        "description": "All monetary fields use Decimal(10, 2) - fixed max of 99,999.99",
+        "impact": "Large orders (e.g., catering, events) could overflow; no support for fractional cents",
+        "recommendation": "Document limit; consider Decimal(12, 2) or (15, 2) for enterprise use cases"
+      }
+    ],
+    "approach_outcome": {
+      "status": "SUCCESS",
+      "description": "Successfully created comprehensive order.prisma schema file",
+      "completeness": "All required entities created: Zone, Table, QRCode, Order, OrderItem, ServiceRequest plus extended entities (Customer, Feedback, LoyaltyPoint, Notification)",
+      "schema_quality": "Well-structured with comprehensive documentation, proper indexing strategy, cascading deletes, and multi-tenancy support",
+      "alignment_with_spec": "Follows patterns defined in DATABASE_SCHEMA.md section 3.4 with consistent id generation (cuid), audit fields, and relationship modeling"
+    },
+    "recommendations": [
+      {
+        "priority": "HIGH",
+        "category": "Data Integrity",
+        "recommendation": "Add database-level constraints or application validation for currentOrderId consistency - ensure Table.currentOrderId always exists in Table.orders array and is in an active status",
+        "rationale": "Orphaned currentOrderId references could cause UI/query issues"
+      },
+      {
+        "priority": "HIGH",
+        "category": "Schema Documentation",
+        "recommendation": "Document business rules for optional fields: which order types allow null tableId, null customerId, null staffId; when can orders transition between statuses",
+        "rationale": "Prevents data quality issues from ambiguous nullability"
+      },
+      {
+        "priority": "MEDIUM",
+        "category": "Financial Safety",
+        "recommendation": "Verify Decimal(10, 2) precision is sufficient for all order sizes; consider Decimal(12, 2) for enterprise safety margin",
+        "rationale": "Prevents overflow errors on large orders or high-volume days"
+      },
+      {
+        "priority": "MEDIUM",
+        "category": "Feature Flexibility",
+        "recommendation": "Remove @unique constraint from QRCode.tableId if multi-QR support needed; remove @unique from Feedback.orderId if detailed rating breakdowns planned",
+        "rationale": "Prevents refactoring pain if requirements change"
+      },
+      {
+        "priority": "MEDIUM",
+        "category": "Multi-tenancy",
+        "recommendation": "Add row-level security (RLS) policies at database level to prevent cross-organization data leaks; verify organizationId filtering in all queries",
+        "rationale": "Critical for SaaS security when handling multiple restaurant organizations"
+      },
+      {
+        "priority": "LOW",
+        "category": "Internationalization",
+        "recommendation": "Make Order.currency configurable per organization instead of defaulting to 'TRY'",
+        "rationale": "Supports global multi-currency restaurant networks"
+      },
+      {
+        "priority": "LOW",
+        "category": "Performance",
+        "recommendation": "Monitor index effectiveness on composite indexes; consider adding index on Order.staffId given staff analytics use cases",
+        "rationale": "Improves performance for staff performance reports and staff-to-order queries"
+      }
+    ],
+    "subtask_id": "subtask-2-4",
+    "session_num": 9,
+    "success": true,
+    "changed_files": [
+      "prisma/schema/order.prisma"
+    ]
+  },
+  "what_worked": [
+    "Implemented subtask: subtask-2-4"
+  ],
+  "what_failed": [],
+  "recommendations_for_next_session": []
+}

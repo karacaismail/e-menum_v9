@@ -1,0 +1,28 @@
+{
+  "file_path": "src/modules/_stubs/analytics/index.ts",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "/**\n * Analytics Module Stub\n *\n * This is a placeholder module for future analytics implementation.\n * Only interfaces and types are exported - no implementation.\n *\n * @module modules/_stubs/analytics\n */\n\nimport { AppException } from '@/core/exceptions/app.exception';\n\n// -----------------------------------------------------------------------------\n// Types Export\n// -----------------------------------------------------------------------------\n\nexport {\n  // Enums\n  ReportType,\n  TimePeriod,\n  MetricType,\n  // Data types\n  type DateRange,\n  type SalesSummary,\n  type MenuItemPerformance,\n  type PeakHourData,\n  type CustomerSegment,\n  type TimeSeriesDataPoint,\n  // Report types\n  type SalesReport,\n  type MenuPerformanceReport,\n  type CustomerInsightsReport,\n  // Request types\n  type GetAnalyticsRequest,\n  type GenerateReportRequest,\n  // Response types\n  type DashboardData,\n  type ReportResult,\n  // Service interfaces\n  type IAnalyticsService,\n  type IReportService,\n  // Event payloads\n  type ReportGeneratedEventPayload,\n  type AlertTriggeredEventPayload,\n} from '@/modules/_stubs/analytics/analytics.types';\n\n// -----------------------------------------------------------------------------\n// Stub Implementation\n// -----------------------------------------------------------------------------\n\n/**\n * Analytics service stub implementation\n */\nexport class AnalyticsServiceStub {\n  async getDashboard(): Promise<never> {\n    throw new AppException('ANALYTICS_MODULE_NOT_INSTALLED', 501, {\n      message: 'Analytics module is not installed. Please install the analytics module to use this feature.',\n    });\n  }\n\n  async getSalesSummary(): Promise<never> {\n    throw new AppException('ANALYTICS_MODULE_NOT_INSTALLED', 501, {\n      message: 'Analytics module is not installed. Please install the analytics module to use this feature.',\n    });\n  }\n\n  async getMenuPerformance(): Promise<never> {\n    throw new AppException('ANALYTICS_MODULE_NOT_INSTALLED', 501, {\n      message: 'Analytics module is not installed. Please install the analytics module to use this feature.',\n    });\n  }\n\n  async getPeakHours(): Promise<never> {\n    throw new AppException('ANALYTICS_MODULE_NOT_INSTALLED', 501, {\n      message: 'Analytics module is not installed. Please install the analytics module to use this feature.',\n    });\n  }\n\n  async trackEvent(): Promise<never> {\n    throw new AppException('ANALYTICS_MODULE_NOT_INSTALLED', 501, {\n      message: 'Analytics module is not installed. Please install the analytics module to use this feature.',\n    });\n  }\n}\n\n/**\n * Report service stub implementation\n */\nexport class ReportServiceStub {\n  async generateReport(): Promise<never> {\n    throw new AppException('ANALYTICS_MODULE_NOT_INSTALLED', 501, {\n      message: 'Analytics module is not installed. Please install the analytics module to use this feature.',\n    });\n  }\n\n  async getReport(): Promise<never> {\n    throw new AppException('ANALYTICS_MODULE_NOT_INSTALLED', 501, {\n      message: 'Analytics module is not installed. Please install the analytics module to use this feature.',\n    });\n  }\n\n  async listReports(): Promise<never> {\n    throw new AppException('ANALYTICS_MODULE_NOT_INSTALLED', 501, {\n      message: 'Analytics module is not installed. Please install the analytics module to use this feature.',\n    });\n  }\n\n  async exportReport(): Promise<never> {\n    throw new AppException('ANALYTICS_MODULE_NOT_INSTALLED', 501, {\n      message: 'Analytics module is not installed. Please install the analytics module to use this feature.',\n    });\n  }\n}\n\n/**\n * Check if analytics module is available\n */\nexport function isAnalyticsModuleAvailable(): boolean {\n  return false;\n}\n\n/**\n * Module metadata\n */\nexport const ANALYTICS_MODULE_METADATA = {\n  id: 'analytics',\n  name: 'Analytics Module',\n  status: 'stub' as const,\n  version: '0.0.0',\n};\n",
+        "last_modified": "2026-02-01T09:10:53.734025"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:25.785962",
+  "last_updated": "2026-02-01T08:03:25.795091"
+}

@@ -1,0 +1,831 @@
+{
+  "metadata": {
+    "document": "E-Menum Reporting Features Part 7",
+    "section": "AI Model Routing, Fallback Logic, Cost Optimization",
+    "version": "3.0.0"
+  },
+  "AI_MODEL_CATALOG": {
+    "models": {
+      "claude-haiku": {
+        "model_id": "claude-3-haiku-20240307",
+        "provider": "anthropic",
+        "category": "llm",
+        "tier": "fast",
+        "capabilities": {
+          "text_generation": true,
+          "summarization": true,
+          "simple_analysis": true,
+          "translation": true,
+          "classification": true
+        },
+        "performance": {
+          "avg_latency_ms": 500,
+          "p95_latency_ms": 1200,
+          "tokens_per_second": 150
+        },
+        "limits": {
+          "max_input_tokens": 200000,
+          "max_output_tokens": 4096,
+          "context_window": 200000
+        },
+        "cost": {
+          "input_per_1m_tokens": 0.25,
+          "output_per_1m_tokens": 1.25,
+          "credit_multiplier": 1.0
+        },
+        "use_cases": [
+          "basic_nl_queries",
+          "simple_summaries",
+          "trend_descriptions",
+          "alert_formatting",
+          "quick_insights"
+        ],
+        "availability": {
+          "sla_uptime": 99.9,
+          "regions": ["us-east", "eu-west", "ap-southeast"]
+        }
+      },
+      "claude-sonnet": {
+        "model_id": "claude-3-5-sonnet-20241022",
+        "provider": "anthropic",
+        "category": "llm",
+        "tier": "balanced",
+        "capabilities": {
+          "text_generation": true,
+          "complex_analysis": true,
+          "reasoning": true,
+          "recommendations": true,
+          "multi_step_thinking": true,
+          "code_generation": true
+        },
+        "performance": {
+          "avg_latency_ms": 2000,
+          "p95_latency_ms": 5000,
+          "tokens_per_second": 80
+        },
+        "limits": {
+          "max_input_tokens": 200000,
+          "max_output_tokens": 8192,
+          "context_window": 200000
+        },
+        "cost": {
+          "input_per_1m_tokens": 3.00,
+          "output_per_1m_tokens": 15.00,
+          "credit_multiplier": 5.0
+        },
+        "use_cases": [
+          "analytical_queries",
+          "recommendation_generation",
+          "root_cause_analysis",
+          "report_narratives",
+          "strategic_insights"
+        ],
+        "availability": {
+          "sla_uptime": 99.9,
+          "regions": ["us-east", "eu-west", "ap-southeast"]
+        }
+      },
+      "gpt-4o": {
+        "model_id": "gpt-4o-2024-08-06",
+        "provider": "openai",
+        "category": "llm",
+        "tier": "advanced",
+        "capabilities": {
+          "text_generation": true,
+          "complex_reasoning": true,
+          "multi_modal": true,
+          "code_generation": true,
+          "creative_writing": true
+        },
+        "performance": {
+          "avg_latency_ms": 3000,
+          "p95_latency_ms": 8000,
+          "tokens_per_second": 60
+        },
+        "limits": {
+          "max_input_tokens": 128000,
+          "max_output_tokens": 16384,
+          "context_window": 128000
+        },
+        "cost": {
+          "input_per_1m_tokens": 2.50,
+          "output_per_1m_tokens": 10.00,
+          "credit_multiplier": 8.0
+        },
+        "use_cases": [
+          "complex_multi_step_queries",
+          "fallback_for_claude",
+          "image_analysis",
+          "complex_reasoning"
+        ],
+        "availability": {
+          "sla_uptime": 99.9,
+          "regions": ["us-east", "eu-west", "asia"]
+        }
+      },
+      "gpt-4o-mini": {
+        "model_id": "gpt-4o-mini-2024-07-18",
+        "provider": "openai",
+        "category": "llm",
+        "tier": "fast",
+        "capabilities": {
+          "text_generation": true,
+          "summarization": true,
+          "simple_analysis": true,
+          "classification": true
+        },
+        "performance": {
+          "avg_latency_ms": 600,
+          "p95_latency_ms": 1500,
+          "tokens_per_second": 120
+        },
+        "limits": {
+          "max_input_tokens": 128000,
+          "max_output_tokens": 16384,
+          "context_window": 128000
+        },
+        "cost": {
+          "input_per_1m_tokens": 0.15,
+          "output_per_1m_tokens": 0.60,
+          "credit_multiplier": 0.8
+        },
+        "use_cases": [
+          "fallback_for_haiku",
+          "high_volume_simple_tasks",
+          "cost_optimization"
+        ],
+        "availability": {
+          "sla_uptime": 99.9,
+          "regions": ["us-east", "eu-west", "asia"]
+        }
+      },
+      "prophet": {
+        "model_id": "prophet-1.1",
+        "provider": "internal",
+        "category": "forecasting",
+        "tier": "specialized",
+        "capabilities": {
+          "time_series_forecasting": true,
+          "seasonality_detection": true,
+          "trend_analysis": true,
+          "anomaly_detection": true,
+          "changepoint_detection": true
+        },
+        "performance": {
+          "avg_latency_ms": 5000,
+          "p95_latency_ms": 15000,
+          "forecast_horizons": [7, 14, 30, 90]
+        },
+        "limits": {
+          "min_data_points": 30,
+          "max_forecast_days": 365,
+          "max_series_per_request": 100
+        },
+        "cost": {
+          "per_forecast": 0.10,
+          "credit_multiplier": 3.0
+        },
+        "use_cases": [
+          "demand_forecasting",
+          "revenue_projection",
+          "inventory_prediction",
+          "staffing_forecast",
+          "seasonality_analysis"
+        ],
+        "availability": {
+          "sla_uptime": 99.5,
+          "deployment": "internal_kubernetes"
+        }
+      },
+      "ml_clustering": {
+        "model_id": "sklearn-clustering-v2",
+        "provider": "internal",
+        "category": "ml",
+        "tier": "specialized",
+        "algorithms": ["kmeans", "dbscan", "hierarchical"],
+        "capabilities": {
+          "customer_segmentation": true,
+          "product_clustering": true,
+          "behavior_grouping": true
+        },
+        "performance": {
+          "avg_latency_ms": 3000,
+          "p95_latency_ms": 10000
+        },
+        "cost": {
+          "per_run": 0.05,
+          "credit_multiplier": 2.0
+        },
+        "use_cases": [
+          "rfm_segmentation",
+          "customer_clustering",
+          "menu_item_grouping"
+        ]
+      },
+      "ml_prediction": {
+        "model_id": "xgboost-prediction-v3",
+        "provider": "internal",
+        "category": "ml",
+        "tier": "specialized",
+        "algorithms": ["xgboost", "lightgbm", "random_forest"],
+        "capabilities": {
+          "churn_prediction": true,
+          "clv_prediction": true,
+          "demand_prediction": true,
+          "price_elasticity": true
+        },
+        "performance": {
+          "avg_latency_ms": 2000,
+          "p95_latency_ms": 8000
+        },
+        "cost": {
+          "per_prediction": 0.02,
+          "credit_multiplier": 2.5
+        },
+        "use_cases": [
+          "customer_churn_risk",
+          "lifetime_value_prediction",
+          "demand_forecasting",
+          "propensity_scoring"
+        ]
+      },
+      "ml_anomaly": {
+        "model_id": "anomaly-detection-v2",
+        "provider": "internal",
+        "category": "ml",
+        "tier": "specialized",
+        "algorithms": ["isolation_forest", "one_class_svm", "autoencoder"],
+        "capabilities": {
+          "anomaly_detection": true,
+          "outlier_detection": true,
+          "pattern_deviation": true
+        },
+        "performance": {
+          "avg_latency_ms": 500,
+          "p95_latency_ms": 2000,
+          "real_time_capable": true
+        },
+        "cost": {
+          "per_check": 0.001,
+          "credit_multiplier": 0
+        },
+        "use_cases": [
+          "real_time_anomaly_detection",
+          "fraud_detection",
+          "quality_monitoring"
+        ]
+      },
+      "sentiment_analysis": {
+        "model_id": "sentiment-bert-tr-v2",
+        "provider": "internal",
+        "category": "nlp",
+        "tier": "specialized",
+        "languages": ["tr", "en"],
+        "capabilities": {
+          "sentiment_classification": true,
+          "aspect_extraction": true,
+          "emotion_detection": true
+        },
+        "performance": {
+          "avg_latency_ms": 200,
+          "p95_latency_ms": 500,
+          "accuracy": 0.92
+        },
+        "cost": {
+          "per_analysis": 0.005,
+          "credit_multiplier": 0.5
+        },
+        "use_cases": [
+          "review_analysis",
+          "feedback_sentiment",
+          "social_listening"
+        ]
+      }
+    }
+  },
+  "ROUTING_RULES": {
+    "query_classification": {
+      "description": "Sorgu kompleksitesine göre model seçimi",
+      "rules": [
+        {
+          "rule_id": "ROUTE-001",
+          "name": "Simple Count/Sum Queries",
+          "condition": {
+            "query_type": ["count", "sum", "average", "top_n", "bottom_n"],
+            "complexity": "simple",
+            "requires_reasoning": false
+          },
+          "routing": {
+            "primary": "claude-haiku",
+            "fallback": "gpt-4o-mini",
+            "max_credits": 1
+          },
+          "examples": [
+            "Dün kaç sipariş geldi?",
+            "Bu haftanın cirosu ne?",
+            "En çok satan 5 ürün?"
+          ]
+        },
+        {
+          "rule_id": "ROUTE-002",
+          "name": "Comparison Queries",
+          "condition": {
+            "query_type": ["comparison", "vs", "trend"],
+            "complexity": "medium",
+            "requires_reasoning": false
+          },
+          "routing": {
+            "primary": "claude-haiku",
+            "fallback": "claude-sonnet",
+            "max_credits": 2
+          },
+          "examples": [
+            "Bu hafta vs geçen hafta?",
+            "Pazartesi mi Cumartesi mi daha iyi?"
+          ]
+        },
+        {
+          "rule_id": "ROUTE-003",
+          "name": "Why/Root Cause Queries",
+          "condition": {
+            "query_type": ["why", "root_cause", "explanation"],
+            "complexity": "complex",
+            "requires_reasoning": true
+          },
+          "routing": {
+            "primary": "claude-sonnet",
+            "fallback": "gpt-4o",
+            "max_credits": 5
+          },
+          "examples": [
+            "Neden satışlar düştü?",
+            "Bu düşüşün sebebi ne?"
+          ]
+        },
+        {
+          "rule_id": "ROUTE-004",
+          "name": "Recommendation Queries",
+          "condition": {
+            "query_type": ["recommendation", "what_should", "how_to"],
+            "complexity": "complex",
+            "requires_reasoning": true
+          },
+          "routing": {
+            "primary": "claude-sonnet",
+            "fallback": "gpt-4o",
+            "max_credits": 5
+          },
+          "examples": [
+            "Satışları nasıl artırırım?",
+            "Ne yapmalıyım?"
+          ]
+        },
+        {
+          "rule_id": "ROUTE-005",
+          "name": "Multi-step Complex Queries",
+          "condition": {
+            "query_type": ["multi_step", "strategic", "comprehensive"],
+            "complexity": "very_complex",
+            "requires_reasoning": true,
+            "requires_multiple_data_sources": true
+          },
+          "routing": {
+            "primary": "gpt-4o",
+            "fallback": "claude-sonnet",
+            "max_credits": 10
+          },
+          "examples": [
+            "En iyi 3 şubenin ortak özellikleri ve diğerlerine nasıl uygulanır?",
+            "Kapsamlı çeyrek strateji öner"
+          ]
+        },
+        {
+          "rule_id": "ROUTE-006",
+          "name": "Forecast Queries",
+          "condition": {
+            "query_type": ["forecast", "prediction", "projection"],
+            "requires_time_series": true
+          },
+          "routing": {
+            "primary": "prophet",
+            "secondary": "claude-haiku",
+            "fallback": "arima",
+            "max_credits": 5
+          },
+          "examples": [
+            "Yarın ne kadar satış beklemeliyim?",
+            "Önümüzdeki hafta nasıl olacak?"
+          ]
+        },
+        {
+          "rule_id": "ROUTE-007",
+          "name": "Summary Queries",
+          "condition": {
+            "query_type": ["summary", "overview", "highlights"],
+            "complexity": "medium"
+          },
+          "routing": {
+            "primary": "claude-haiku",
+            "fallback": "gpt-4o-mini",
+            "max_credits": 2
+          },
+          "examples": [
+            "Bu haftayı özetle",
+            "Öne çıkan noktalar ne?"
+          ]
+        }
+      ]
+    },
+    "report_routing": {
+      "description": "Rapor tipine göre model seçimi",
+      "rules": [
+        {
+          "rule_id": "RPT-ROUTE-001",
+          "report_category": "daily_auto",
+          "reports": ["daily_summary", "morning_brief", "evening_recap"],
+          "routing": {
+            "primary": "claude-haiku",
+            "fallback": "gpt-4o-mini",
+            "credits": 0
+          }
+        },
+        {
+          "rule_id": "RPT-ROUTE-002",
+          "report_category": "periodic_standard",
+          "reports": ["weekly_trend", "weekly_performance"],
+          "routing": {
+            "primary": "claude-haiku",
+            "fallback": "gpt-4o-mini",
+            "credits": 2
+          }
+        },
+        {
+          "rule_id": "RPT-ROUTE-003",
+          "report_category": "periodic_advanced",
+          "reports": ["monthly_analysis", "quarterly_review", "yearly_summary"],
+          "routing": {
+            "primary": "claude-sonnet",
+            "fallback": "gpt-4o",
+            "credits": 5
+          }
+        },
+        {
+          "rule_id": "RPT-ROUTE-004",
+          "report_category": "sales_basic",
+          "reports": ["revenue", "top_sellers", "payment_analysis"],
+          "routing": {
+            "primary": "claude-haiku",
+            "fallback": "gpt-4o-mini",
+            "credits": 1
+          }
+        },
+        {
+          "rule_id": "RPT-ROUTE-005",
+          "report_category": "menu_analysis",
+          "reports": ["menu_matrix", "item_performance", "pricing_analysis"],
+          "routing": {
+            "primary": "claude-sonnet",
+            "fallback": "gpt-4o",
+            "credits": 3
+          }
+        },
+        {
+          "rule_id": "RPT-ROUTE-006",
+          "report_category": "customer_segmentation",
+          "reports": ["rfm_segmentation", "customer_clustering"],
+          "routing": {
+            "primary": "ml_clustering",
+            "secondary": "claude-sonnet",
+            "credits": 8
+          }
+        },
+        {
+          "rule_id": "RPT-ROUTE-007",
+          "report_category": "customer_prediction",
+          "reports": ["churn_prediction", "clv_prediction"],
+          "routing": {
+            "primary": "ml_prediction",
+            "secondary": "claude-sonnet",
+            "credits": 8
+          }
+        },
+        {
+          "rule_id": "RPT-ROUTE-008",
+          "report_category": "forecasting",
+          "reports": ["demand_forecast", "revenue_forecast", "inventory_forecast"],
+          "routing": {
+            "primary": "prophet",
+            "secondary": "claude-haiku",
+            "credits": 5
+          }
+        },
+        {
+          "rule_id": "RPT-ROUTE-009",
+          "report_category": "whatif",
+          "reports": ["pricing_whatif", "menu_whatif", "capacity_whatif"],
+          "routing": {
+            "primary": "ml_prediction",
+            "secondary": "claude-sonnet",
+            "credits": 8
+          }
+        }
+      ]
+    },
+    "insight_routing": {
+      "description": "AI insight tipine göre model seçimi",
+      "rules": [
+        {
+          "rule_id": "INS-ROUTE-001",
+          "insight_type": "anomaly_detection",
+          "routing": {
+            "detection": "ml_anomaly",
+            "explanation": "claude-haiku",
+            "credits": 0
+          }
+        },
+        {
+          "rule_id": "INS-ROUTE-002",
+          "insight_type": "trend_detection",
+          "routing": {
+            "detection": "prophet",
+            "explanation": "claude-haiku",
+            "credits": 0
+          }
+        },
+        {
+          "rule_id": "INS-ROUTE-003",
+          "insight_type": "recommendation",
+          "routing": {
+            "analysis": "claude-sonnet",
+            "fallback": "gpt-4o",
+            "credits": 3
+          }
+        },
+        {
+          "rule_id": "INS-ROUTE-004",
+          "insight_type": "opportunity",
+          "routing": {
+            "detection": "ml_prediction",
+            "explanation": "claude-sonnet",
+            "credits": 5
+          }
+        }
+      ]
+    }
+  },
+  "FALLBACK_LOGIC": {
+    "triggers": {
+      "rate_limit": {
+        "description": "API rate limit aşıldığında",
+        "action": "switch_to_fallback",
+        "retry_after_seconds": 60
+      },
+      "timeout": {
+        "description": "Yanıt süresi aşıldığında",
+        "threshold_ms": 30000,
+        "action": "switch_to_fallback"
+      },
+      "error_response": {
+        "description": "API hata döndüğünde",
+        "error_codes": [500, 502, 503, 504],
+        "action": "retry_then_fallback",
+        "max_retries": 2
+      },
+      "quality_check_fail": {
+        "description": "Yanıt kalite kontrolünden geçemediğinde",
+        "action": "escalate_to_higher_tier"
+      },
+      "model_unavailable": {
+        "description": "Model geçici olarak kullanılamaz",
+        "action": "immediate_fallback"
+      }
+    },
+    "fallback_chains": {
+      "llm_fast": {
+        "description": "Hızlı LLM fallback zinciri",
+        "chain": ["claude-haiku", "gpt-4o-mini"],
+        "final_fallback": "cached_response"
+      },
+      "llm_balanced": {
+        "description": "Dengeli LLM fallback zinciri",
+        "chain": ["claude-sonnet", "gpt-4o", "claude-haiku"],
+        "final_fallback": "simplified_response"
+      },
+      "llm_advanced": {
+        "description": "Gelişmiş LLM fallback zinciri",
+        "chain": ["gpt-4o", "claude-sonnet"],
+        "final_fallback": "notify_user"
+      },
+      "forecasting": {
+        "description": "Tahmin fallback zinciri",
+        "chain": ["prophet", "arima", "moving_average"],
+        "final_fallback": "historical_average"
+      },
+      "ml": {
+        "description": "ML model fallback zinciri",
+        "chain": ["primary_model", "backup_model", "rule_based"],
+        "final_fallback": "heuristic"
+      }
+    },
+    "graceful_degradation": {
+      "enabled": true,
+      "strategies": [
+        {
+          "condition": "all_llm_unavailable",
+          "action": "serve_cached_insights",
+          "notification": "inform_user_of_limited_service"
+        },
+        {
+          "condition": "forecasting_unavailable",
+          "action": "show_historical_trends",
+          "notification": "inform_user_forecasting_limited"
+        },
+        {
+          "condition": "ml_models_unavailable",
+          "action": "use_rule_based_alternatives",
+          "notification": "inform_user_advanced_features_limited"
+        }
+      ]
+    }
+  },
+  "COST_OPTIMIZATION": {
+    "strategies": {
+      "caching": {
+        "description": "Tekrarlayan sorgular için önbellekleme",
+        "enabled": true,
+        "cache_layers": [
+          {
+            "layer": "query_result_cache",
+            "ttl_seconds": 300,
+            "max_size_mb": 500,
+            "hit_rate_target": 0.3
+          },
+          {
+            "layer": "report_cache",
+            "ttl_seconds": 3600,
+            "max_size_mb": 1000,
+            "hit_rate_target": 0.5
+          },
+          {
+            "layer": "forecast_cache",
+            "ttl_seconds": 86400,
+            "max_size_mb": 200,
+            "hit_rate_target": 0.7
+          }
+        ],
+        "invalidation_triggers": [
+          "new_order",
+          "data_update",
+          "configuration_change"
+        ]
+      },
+      "query_optimization": {
+        "description": "Sorgu optimizasyonu",
+        "techniques": [
+          {
+            "technique": "complexity_downgrade",
+            "description": "Basit sorguları daha ucuz modele yönlendir",
+            "savings_estimate": "30%"
+          },
+          {
+            "technique": "batch_processing",
+            "description": "Benzer sorguları grupla ve tek seferde işle",
+            "savings_estimate": "20%"
+          },
+          {
+            "technique": "prompt_compression",
+            "description": "Prompt'u optimize ederek token sayısını azalt",
+            "savings_estimate": "15%"
+          },
+          {
+            "technique": "response_streaming",
+            "description": "Streaming ile erken yanıt ver",
+            "savings_estimate": "10%"
+          }
+        ]
+      },
+      "model_selection_optimization": {
+        "description": "Dinamik model seçimi",
+        "factors": [
+          {
+            "factor": "query_complexity",
+            "weight": 0.4,
+            "description": "Sorgu karmaşıklığına göre model seç"
+          },
+          {
+            "factor": "user_tier",
+            "weight": 0.2,
+            "description": "Kullanıcı planına göre model kısıtla"
+          },
+          {
+            "factor": "current_load",
+            "weight": 0.2,
+            "description": "Sistem yüküne göre model seç"
+          },
+          {
+            "factor": "cost_budget",
+            "weight": 0.2,
+            "description": "Maliyet bütçesine göre model seç"
+          }
+        ]
+      },
+      "scheduled_processing": {
+        "description": "Zamanlanmış işlemler için off-peak optimizasyonu",
+        "enabled": true,
+        "off_peak_hours": ["02:00-06:00"],
+        "discount_rate": 0.5,
+        "applicable_to": ["batch_reports", "forecasting", "ml_training"]
+      },
+      "credit_pooling": {
+        "description": "Enterprise müşteriler için kredi havuzu",
+        "enabled": true,
+        "plan_requirement": "enterprise",
+        "features": [
+          "shared_credits_across_branches",
+          "flexible_allocation",
+          "usage_analytics"
+        ]
+      }
+    },
+    "monitoring": {
+      "metrics": [
+        {
+          "metric": "cost_per_query",
+          "target": "<$0.05",
+          "alert_threshold": "$0.10"
+        },
+        {
+          "metric": "cache_hit_rate",
+          "target": ">40%",
+          "alert_threshold": "<20%"
+        },
+        {
+          "metric": "model_efficiency_score",
+          "target": ">0.8",
+          "alert_threshold": "<0.6"
+        },
+        {
+          "metric": "fallback_rate",
+          "target": "<5%",
+          "alert_threshold": ">15%"
+        }
+      ],
+      "dashboards": [
+        "cost_analytics_dashboard",
+        "model_performance_dashboard",
+        "optimization_recommendations"
+      ]
+    }
+  },
+  "QUALITY_ASSURANCE": {
+    "response_validation": {
+      "enabled": true,
+      "checks": [
+        {
+          "check": "factual_accuracy",
+          "description": "Sayısal verilerin doğruluğu",
+          "method": "cross_reference_with_data",
+          "action_on_fail": "regenerate"
+        },
+        {
+          "check": "relevance",
+          "description": "Yanıtın soruyla ilgisi",
+          "method": "semantic_similarity",
+          "threshold": 0.7,
+          "action_on_fail": "escalate"
+        },
+        {
+          "check": "completeness",
+          "description": "Yanıtın tamlığı",
+          "method": "expected_elements_check",
+          "action_on_fail": "supplement"
+        },
+        {
+          "check": "format",
+          "description": "Format uygunluğu",
+          "method": "schema_validation",
+          "action_on_fail": "reformat"
+        },
+        {
+          "check": "safety",
+          "description": "Güvenlik kontrolü",
+          "method": "content_filter",
+          "action_on_fail": "block"
+        }
+      ]
+    },
+    "feedback_loop": {
+      "enabled": true,
+      "collection_methods": [
+        "thumbs_up_down",
+        "explicit_rating",
+        "implicit_signals"
+      ],
+      "usage": [
+        "model_fine_tuning",
+        "routing_optimization",
+        "prompt_improvement"
+      ]
+    }
+  }
+}

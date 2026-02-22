@@ -1,0 +1,116 @@
+{
+  "task_description": "Complete migration from Express.js/TypeScript/Prisma to Django/Python with enterprise-ready modular architecture for QR Menu SaaS platform",
+  "scoped_services": [
+    {
+      "name": "backend",
+      "path": "e_menum/",
+      "tech_stack": ["Django 5.0+", "Python 3.10+", "DRF 3.15+"],
+      "port": 8000,
+      "role": "Main Django application with modular apps"
+    },
+    {
+      "name": "database",
+      "path": null,
+      "tech_stack": ["PostgreSQL 15+"],
+      "port": 5432,
+      "role": "Data persistence with multi-tenant schema"
+    },
+    {
+      "name": "cache",
+      "path": null,
+      "tech_stack": ["Redis 7+"],
+      "port": 6379,
+      "role": "Celery broker and caching layer"
+    }
+  ],
+  "files_to_modify": [],
+  "files_to_create": {
+    "config": [
+      "e_menum/config/settings/base.py",
+      "e_menum/config/settings/development.py",
+      "e_menum/config/settings/production.py",
+      "e_menum/config/urls.py",
+      "e_menum/config/celery.py"
+    ],
+    "core": [
+      "e_menum/apps/core/models.py",
+      "e_menum/apps/core/choices.py",
+      "e_menum/apps/core/views.py",
+      "e_menum/apps/core/serializers.py"
+    ],
+    "menu": [
+      "e_menum/apps/menu/models.py",
+      "e_menum/apps/menu/views.py",
+      "e_menum/apps/menu/serializers.py"
+    ],
+    "orders": [
+      "e_menum/apps/orders/models.py",
+      "e_menum/apps/orders/choices.py",
+      "e_menum/apps/orders/views.py"
+    ],
+    "shared": [
+      "e_menum/shared/middleware/tenant.py",
+      "e_menum/shared/permissions/abilities.py",
+      "e_menum/shared/permissions/drf_permissions.py"
+    ]
+  },
+  "files_to_reference": [
+    {
+      "file": ".auto-claude/worktrees/tasks/001-create/prisma/schema/core.prisma",
+      "purpose": "Organization, User, Role, Permission model definitions"
+    },
+    {
+      "file": ".auto-claude/worktrees/tasks/001-create/prisma/schema/menu.prisma",
+      "purpose": "Menu, Category, Product, Theme model definitions"
+    },
+    {
+      "file": ".auto-claude/worktrees/tasks/001-create/prisma/schema/order.prisma",
+      "purpose": "Order, Table, QRCode, Customer model definitions"
+    },
+    {
+      "file": ".auto-claude/worktrees/tasks/001-create/prisma/schema/subscription.prisma",
+      "purpose": "Plan, Subscription, Invoice model definitions"
+    },
+    {
+      "file": ".auto-claude/worktrees/tasks/001-create/prisma/schema/base.prisma",
+      "purpose": "All enum definitions (status, types, etc.)"
+    },
+    {
+      "file": ".auto-claude/worktrees/tasks/001-create/prisma/schema/media.prisma",
+      "purpose": "Media, MediaFolder model definitions"
+    },
+    {
+      "file": "CLAUDE.md",
+      "purpose": "Business rules, critical constraints, domain model"
+    },
+    {
+      "file": "DATABASE_SCHEMA.md",
+      "purpose": "Entity relationships, indexes, constraints"
+    },
+    {
+      "file": "SECURITY_MODEL.md",
+      "purpose": "Auth/authz requirements, tenant isolation"
+    }
+  ],
+  "patterns": {
+    "multi_tenancy": "All tenant-scoped models have organizationId FK, every query MUST filter by organization",
+    "soft_delete": "All models use deleted_at timestamp, never physical delete",
+    "uuid_pk": "All models use UUIDField as primary key",
+    "status_enums": "Use Django TextChoices for all status fields",
+    "api_response": "Standard format: {success: bool, data: {...}, error: {...}}",
+    "authorization": "CASL-like RBAC/ABAC with organization-scoped permissions"
+  },
+  "existing_implementations": {
+    "description": "Source project is Express.js/TypeScript with Prisma ORM. All models and business logic to be migrated to Django equivalents.",
+    "prisma_schemas": [
+      "core.prisma - 10 models",
+      "menu.prisma - 8 models",
+      "order.prisma - 11 models",
+      "subscription.prisma - 6 models",
+      "media.prisma - 2 models"
+    ],
+    "total_models": 37
+  },
+  "created_at": "2026-02-14T12:53:24.036787",
+  "updated_at": "2026-02-14T13:00:00.000000"
+}

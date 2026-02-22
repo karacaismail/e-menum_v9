@@ -1,0 +1,28 @@
+{
+  "file_path": "src/shared/decorators/current-user.decorator.ts",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "/**\n * CurrentUser Decorator\n *\n * Parameter decorator for extracting the authenticated user from request.\n * Works with routing-controllers and the auth middleware.\n *\n * @module shared/decorators/current-user\n */\n\nimport { createParamDecorator } from 'routing-controllers';\nimport { Request } from 'express';\nimport { AuthUser, AuthenticatedRequest } from '@/core/middleware/auth.middleware';\nimport { AppException } from '@/core/exceptions/app.exception';\n\n/**\n * Options for the CurrentUser decorator\n */\nexport interface CurrentUserOptions {\n  /**\n   * Whether the user is required. If true, throws unauthorized when no user.\n   * @default true\n   */\n  required?: boolean;\n}\n\n/**\n * Parameter decorator that extracts the authenticated user from the request.\n *\n * The decorator retrieves the `user` object attached by the auth middleware\n * and provides it as a parameter to the controller method.\n *\n * @param options - Decorator options\n * @returns Parameter decorator\n *\n * @throws {AppException} UNAUTHORIZED - When user is not authenticated (if required: true)\n *\n * @example\n * ```typescript\n * import { CurrentUser } from '@/shared/decorators';\n * import { AuthUser } from '@/core/middleware/auth.middleware';\n *\n * @JsonController('/api/v1/profile')\n * @injectable()\n * export class ProfileController extends BaseController {\n *\n *   @Get('/')\n *   async getProfile(\n *     @CurrentUser() user: AuthUser,\n *   ): Promise<ApiResponse<UserProfile>> {\n *     const profile = await this.userService.getProfile(user.id);\n *     return this.success(profile);\n *   }\n *\n *   // Optional user (for public endpoints with optional personalization)\n *   @Get('/public')\n *   async getPublicData(\n *     @CurrentUser({ required: false }) user?: AuthUser,\n *   ): Promise<ApiResponse<PublicData>> {\n *     if (user) {\n *       // Personalized response\n *     }\n *     return this.success(data);\n *   }\n * }\n * ```\n */\nexport function CurrentUser(options: CurrentUserOptions = {}): ParameterDecorator {\n  const { required = true } = options;\n\n  return createParamDecorator({\n    required,\n    value: (action): AuthUser | undefined => {\n      const req = action.request as AuthenticatedRequest;\n\n      if (!req.user) {\n        if (required) {\n          throw AppException.unauthorized('Authentication required');\n        }\n        return undefined;\n      }\n\n      return req.user;\n    },\n  });\n}\n\n/**\n * Gets the current user from request.\n * Utility function for use in middleware or services.\n *\n * @param req - Express request object\n * @returns Authenticated user\n * @throws {AppException} UNAUTHORIZED - When user is not authenticated\n *\n * @example\n * ```typescript\n * import { getCurrentUser } from '@/shared/decorators';\n *\n * const user = getCurrentUser(req);\n * const menus = await menuService.findAll(user.organizationId);\n * ```\n */\nexport function getCurrentUser(req: Request): AuthUser {\n  const authReq = req as AuthenticatedRequest;\n\n  if (!authReq.user) {\n    throw AppException.unauthorized('Authentication required');\n  }\n\n  return authReq.user;\n}\n\n/**\n * Gets the current user from request, or undefined if not authenticated.\n * Utility function for use in middleware or services where auth is optional.\n *\n * @param req - Express request object\n * @returns Authenticated user or undefined\n *\n * @example\n * ```typescript\n * import { getCurrentUserOptional } from '@/shared/decorators';\n *\n * const user = getCurrentUserOptional(req);\n * if (user) {\n *   // Show personalized content\n * }\n * ```\n */\nexport function getCurrentUserOptional(req: Request): AuthUser | undefined {\n  return (req as AuthenticatedRequest).user;\n}\n\n/**\n * Checks if the request has an authenticated user.\n *\n * @param req - Express request object\n * @returns True if user is authenticated\n *\n * @example\n * ```typescript\n * import { isAuthenticated } from '@/shared/decorators';\n *\n * if (isAuthenticated(req)) {\n *   const user = getCurrentUser(req);\n * }\n * ```\n */\nexport function isAuthenticated(req: Request): boolean {\n  return (req as AuthenticatedRequest).user !== undefined;\n}\n",
+        "last_modified": "2026-02-01T09:10:53.765549"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:26.572659",
+  "last_updated": "2026-02-01T08:03:26.582325"
+}

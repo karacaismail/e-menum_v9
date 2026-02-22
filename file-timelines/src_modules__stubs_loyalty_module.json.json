@@ -1,0 +1,28 @@
+{
+  "file_path": "src/modules/_stubs/loyalty/module.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"$schema\": \"https://e-menum.net/schemas/module-v1.json\",\n  \"id\": \"loyalty\",\n  \"name\": \"Loyalty Module\",\n  \"version\": \"0.0.0\",\n  \"status\": \"stub\",\n  \"description\": \"Sadakat program\u0131 - puan sistemi, \u00f6d\u00fcller ve m\u00fc\u015fteri ba\u011fl\u0131l\u0131\u011f\u0131\",\n\n  \"type\": \"feature\",\n  \"category\": \"marketing\",\n\n  \"author\": {\n    \"name\": \"E-Menum Team\",\n    \"email\": \"dev@e-menum.net\"\n  },\n\n  \"compatibility\": {\n    \"platform\": \">=1.0.0\",\n    \"node\": \">=20.0.0\"\n  },\n\n  \"dependencies\": {\n    \"modules\": [\"auth\", \"organization\", \"order\"],\n    \"optional\": [\"notification\", \"campaign\"]\n  },\n\n  \"provides\": {\n    \"services\": [\"ILoyaltyService\", \"IRewardService\"],\n    \"events\": [\n      \"loyalty.points.earned\",\n      \"loyalty.points.redeemed\",\n      \"loyalty.tier.changed\",\n      \"loyalty.reward.unlocked\",\n      \"loyalty.reward.claimed\"\n    ],\n    \"hooks\": [\n      \"afterOrderCompleted\"\n    ],\n    \"permissions\": [\n      \"loyalty:read\",\n      \"loyalty:configure\",\n      \"loyalty:manage_tiers\",\n      \"loyalty:manage_rewards\"\n    ]\n  },\n\n  \"tier\": {\n    \"minimum\": \"professional\",\n    \"features\": {\n      \"professional\": [\"basic_points\", \"simple_rewards\"],\n      \"business\": [\"basic_points\", \"simple_rewards\", \"tiers\", \"custom_rewards\"],\n      \"enterprise\": [\"basic_points\", \"simple_rewards\", \"tiers\", \"custom_rewards\", \"gamification\", \"referrals\"]\n    }\n  },\n\n  \"plannedFeatures\": [\n    \"Point earning on orders\",\n    \"Point redemption\",\n    \"Tier-based rewards\",\n    \"Birthday rewards\",\n    \"Referral bonuses\",\n    \"Achievement badges\",\n    \"Streak rewards\",\n    \"Custom point multipliers\",\n    \"Points expiry management\",\n    \"Loyalty card generation\"\n  ],\n\n  \"estimatedRelease\": \"Q3 2026\"\n}\n",
+        "last_modified": "2026-02-01T09:10:53.742215"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:25.994829",
+  "last_updated": "2026-02-01T08:03:26.004152"
+}

@@ -1,0 +1,28 @@
+{
+  "file_path": "tests/integration/setup.ts",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "/**\n * Integration Test Setup\n *\n * Global setup file for integration tests.\n * Initializes test environment, database connections,\n * and provides utilities for test isolation.\n *\n * @module tests/integration/setup\n */\n\nimport 'reflect-metadata';\nimport { beforeAll, afterAll, beforeEach, vi } from 'vitest';\n\n// Mock environment variables for testing\nvi.stubEnv('NODE_ENV', 'test');\nvi.stubEnv('PORT', '3001');\nvi.stubEnv('APP_NAME', 'E-Menum Test');\nvi.stubEnv('APP_DOMAIN', 'test.e-menum.net');\nvi.stubEnv('APP_URL', 'http://localhost:3001');\nvi.stubEnv('CORS_ORIGIN', '*');\nvi.stubEnv('JWT_SECRET', 'test-jwt-secret-key-that-is-at-least-32-chars-long');\nvi.stubEnv('JWT_REFRESH_SECRET', 'test-jwt-refresh-secret-key-at-least-32-chars');\nvi.stubEnv('JWT_ACCESS_EXPIRY', '15m');\nvi.stubEnv('JWT_REFRESH_EXPIRY', '7d');\nvi.stubEnv('DATABASE_URL', 'postgresql://test:test@localhost:5432/emenum_test');\nvi.stubEnv('REDIS_URL', 'redis://localhost:6379/1');\nvi.stubEnv('LOG_LEVEL', 'error');\nvi.stubEnv('UPLOAD_DIR', './uploads');\nvi.stubEnv('MAX_UPLOAD_SIZE', '10485760');\n\n// Global test lifecycle hooks\nbeforeAll(async () => {\n  // Setup logging suppression in tests\n  vi.spyOn(console, 'log').mockImplementation(() => {});\n  vi.spyOn(console, 'info').mockImplementation(() => {});\n});\n\nafterAll(async () => {\n  // Restore console\n  vi.restoreAllMocks();\n});\n\nbeforeEach(() => {\n  // Clear all mocks before each test\n  vi.clearAllMocks();\n});\n",
+        "last_modified": "2026-02-01T09:10:53.775892"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:26.798313",
+  "last_updated": "2026-02-01T08:03:26.808125"
+}

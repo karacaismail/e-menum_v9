@@ -1,0 +1,28 @@
+{
+  "file_path": "src/__tests__/e2e/helpers/api-client.ts",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "/**\n * E2E Test API Client Helper\n *\n * Provides a wrapper around supertest for making authenticated API calls\n * in end-to-end tests.\n *\n * @module __tests__/e2e/helpers/api-client\n */\n\nimport supertest from 'supertest';\n\n/**\n * API Client configuration\n */\nexport interface ApiClientConfig {\n  baseUrl: string;\n  timeout?: number;\n}\n\n/**\n * Authentication state\n */\nexport interface AuthState {\n  accessToken: string;\n  refreshToken: string;\n  userId: string;\n  organizationId: string;\n}\n\n/**\n * API Client for E2E tests\n */\nexport class ApiClient {\n  private agent: supertest.Agent;\n  private authState: Partial<AuthState> = {};\n\n  constructor(config: ApiClientConfig) {\n    this.agent = supertest.agent(config.baseUrl);\n    if (config.timeout) {\n      this.agent.timeout(config.timeout);\n    }\n  }\n\n  /**\n   * Set authentication state\n   */\n  setAuth(auth: Partial<AuthState>): void {\n    this.authState = { ...this.authState, ...auth };\n  }\n\n  /**\n   * Clear authentication state\n   */\n  clearAuth(): void {\n    this.authState = {};\n  }\n\n  /**\n   * Get current auth state\n   */\n  getAuthState(): Partial<AuthState> {\n    return { ...this.authState };\n  }\n\n  /**\n   * Make a GET request\n   */\n  async get(path: string): Promise<supertest.Response> {\n    let request = this.agent.get(path);\n    request = this.applyAuth(request);\n    return request;\n  }\n\n  /**\n   * Make a POST request\n   */\n  async post(path: string, data?: unknown): Promise<supertest.Response> {\n    let request = this.agent.post(path);\n    request = this.applyAuth(request);\n    if (data) {\n      request = request.send(data);\n    }\n    return request;\n  }\n\n  /**\n   * Make a PUT request\n   */\n  async put(path: string, data?: unknown): Promise<supertest.Response> {\n    let request = this.agent.put(path);\n    request = this.applyAuth(request);\n    if (data) {\n      request = request.send(data);\n    }\n    return request;\n  }\n\n  /**\n   * Make a PATCH request\n   */\n  async patch(path: string, data?: unknown): Promise<supertest.Response> {\n    let request = this.agent.patch(path);\n    request = this.applyAuth(request);\n    if (data) {\n      request = request.send(data);\n    }\n    return request;\n  }\n\n  /**\n   * Make a DELETE request\n   */\n  async delete(path: string): Promise<supertest.Response> {\n    let request = this.agent.delete(path);\n    request = this.applyAuth(request);\n    return request;\n  }\n\n  /**\n   * Apply authentication headers to request\n   */\n  private applyAuth(request: supertest.Test): supertest.Test {\n    if (this.authState.accessToken) {\n      request = request.set('Authorization', `Bearer ${this.authState.accessToken}`);\n    }\n    if (this.authState.organizationId) {\n      request = request.set('X-Organization-Id', this.authState.organizationId);\n    }\n    return request;\n  }\n\n  /**\n   * Register a new user\n   */\n  async register(data: {\n    email: string;\n    password: string;\n    firstName: string;\n    lastName: string;\n  }): Promise<supertest.Response> {\n    return this.agent\n      .post('/api/v1/auth/register')\n      .send({\n        email: data.email,\n        password: data.password,\n        passwordConfirm: data.password,\n        firstName: data.firstName,\n        lastName: data.lastName,\n        acceptTerms: true,\n      });\n  }\n\n  /**\n   * Login with credentials\n   */\n  async login(email: string, password: string): Promise<supertest.Response> {\n    const response = await this.agent\n      .post('/api/v1/auth/login')\n      .send({\n        email,\n        password,\n        rememberMe: true,\n      });\n\n    if (response.status === 200 && response.body.success) {\n      this.setAuth({\n        accessToken: response.body.data.tokens.accessToken,\n        userId: response.body.data.user.id,\n      });\n\n      // Extract refresh token from cookies\n      const cookies = response.headers['set-cookie'];\n      if (cookies) {\n        const refreshCookie = Array.isArray(cookies)\n          ? cookies.find((c: string) => c.startsWith('refreshToken='))\n          : undefined;\n        if (refreshCookie) {\n          const match = refreshCookie.match(/refreshToken=([^;]+)/);\n          if (match) {\n            this.setAuth({ refreshToken: match[1] });\n          }\n        }\n      }\n    }\n\n    return response;\n  }\n\n  /**\n   * Logout\n   */\n  async logout(): Promise<supertest.Response> {\n    const response = await this.post('/api/v1/auth/logout', {});\n    this.clearAuth();\n    return response;\n  }\n}\n\n/**\n * Create an API client instance\n */\nexport function createApiClient(baseUrl?: string): ApiClient {\n  return new ApiClient({\n    baseUrl: baseUrl || process.env.API_BASE_URL || 'http://localhost:3000',\n    timeout: 30000,\n  });\n}\n",
+        "last_modified": "2026-02-01T09:10:53.679842"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:24.465525",
+  "last_updated": "2026-02-01T08:03:24.475003"
+}

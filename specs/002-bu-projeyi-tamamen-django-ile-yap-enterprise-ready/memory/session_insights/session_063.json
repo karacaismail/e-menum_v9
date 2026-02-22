@@ -1,0 +1,185 @@
+{
+  "session_number": 63,
+  "timestamp": "2026-02-14T14:43:55.986110+00:00",
+  "subtasks_completed": [
+    "subtask-11-3"
+  ],
+  "discoveries": {
+    "file_insights": [
+      {
+        "file_path": "e_menum/gunicorn.conf.py",
+        "file_type": "Python Configuration",
+        "lines_of_code": 282,
+        "purpose": "Production Gunicorn WSGI server configuration for E-Menum Django application",
+        "key_components": [
+          "Server socket binding configuration",
+          "Worker process management (CPU-based scaling)",
+          "Timeout configurations for long-running requests",
+          "Security headers and request limits",
+          "Structured JSON logging format",
+          "Django database connection lifecycle hooks",
+          "SSL/TLS configuration templates"
+        ],
+        "environment_variables_used": [
+          "GUNICORN_BIND",
+          "GUNICORN_WORKERS",
+          "GUNICORN_WORKER_CLASS",
+          "GUNICORN_THREADS",
+          "GUNICORN_TIMEOUT",
+          "GUNICORN_PIDFILE",
+          "GUNICORN_FORWARDED_ALLOW_IPS",
+          "GUNICORN_ACCESS_LOG",
+          "GUNICORN_ERROR_LOG",
+          "GUNICORN_LOG_LEVEL"
+        ],
+        "critical_configurations": [
+          "Worker formula: (CPU count * 2) + 1",
+          "Preload app enabled for memory efficiency",
+          "JSON structured logging for production observability",
+          "Database connection cleanup in post_fork and worker_exit hooks"
+        ]
+      }
+    ],
+    "patterns_discovered": [
+      {
+        "pattern_name": "Environment-driven Configuration",
+        "description": "All tunable parameters use os.environ.get() with sensible defaults, allowing deployment flexibility without code changes",
+        "locations": [
+          "bind",
+          "workers",
+          "threads",
+          "timeout",
+          "forwarded_allow_ips",
+          "logging paths"
+        ]
+      },
+      {
+        "pattern_name": "Django ORM Connection Management",
+        "description": "Explicit database connection closure in post_fork and worker_exit hooks to prevent connection pool exhaustion across forked worker processes",
+        "locations": [
+          "post_fork()",
+          "worker_exit()"
+        ]
+      },
+      {
+        "pattern_name": "Production-Ready Logging",
+        "description": "Structured JSON logging format for machine-readable access logs, enabling better log aggregation and monitoring",
+        "locations": [
+          "access_log_format"
+        ]
+      },
+      {
+        "pattern_name": "Hardware-aware Scaling",
+        "description": "Worker count dynamically calculated based on CPU count using multiprocessing.cpu_count()",
+        "locations": [
+          "_default_workers calculation"
+        ]
+      },
+      {
+        "pattern_name": "Worker Lifecycle Management",
+        "description": "Max requests with jitter to gracefully rotate workers and prevent memory leak accumulation",
+        "locations": [
+          "max_requests",
+          "max_requests_jitter"
+        ]
+      }
+    ],
+    "gotchas_discovered": [
+      {
+        "gotcha": "Database connection pooling across forked processes",
+        "issue": "Django database connections are not fork-safe; child worker processes inherit parent connections leading to connection pool corruption",
+        "solution_implemented": "post_fork() and worker_exit() hooks explicitly close all connections",
+        "severity": "HIGH"
+      },
+      {
+        "gotcha": "Worker timeout vs request duration",
+        "issue": "Default 120s timeout may be insufficient for long-running AI content generation tasks mentioned in comments",
+        "solution_implemented": "Timeout is configurable via GUNICORN_TIMEOUT environment variable",
+        "severity": "MEDIUM"
+      },
+      {
+        "gotcha": "Forwarded headers trust configuration",
+        "issue": "forwarded_allow_ips defaults to '127.0.0.1' only; behind Nginx proxy may need adjustment",
+        "solution_implemented": "Made configurable via GUNICORN_FORWARDED_ALLOW_IPS environment variable with comment warning",
+        "severity": "MEDIUM"
+      },
+      {
+        "gotcha": "Reload disabled in production",
+        "issue": "reload = False prevents automatic code reloading but is essential for production stability",
+        "solution_implemented": "Explicitly set to False with comment noting 'development only' warning",
+        "severity": "LOW"
+      },
+      {
+        "gotcha": "Hetzner CX21 hardware assumptions",
+        "issue": "Default worker calculation (5 workers for 2 vCPU) assumes specific hardware specs",
+        "solution_implemented": "Dynamic CPU-based calculation allows override via GUNICORN_WORKERS",
+        "severity": "LOW"
+      }
+    ],
+    "approach_outcome": {
+      "status": "SUCCESS",
+      "approach_type": "Configuration File Creation",
+      "strategy": "Created comprehensive, production-ready Gunicorn configuration with environment-driven parameters, Django-specific lifecycle hooks, and structured logging",
+      "key_decisions": [
+        "Chose sync worker class as default for predictability and compatibility",
+        "Implemented JSON structured logging instead of Apache Combined log format",
+        "Preload app enabled to reduce memory footprint across workers",
+        "Included comprehensive documentation and commented-out SSL section",
+        "Made all critical parameters configurable via environment variables"
+      ],
+      "file_created": 1,
+      "lines_of_code_added": 282,
+      "git_commits": 1,
+      "estimated_effort": "Medium - comprehensive production configuration requiring domain knowledge of Gunicorn, Django, and deployment best practices"
+    },
+    "recommendations": [
+      {
+        "recommendation": "Add worker class flexibility for async workloads",
+        "reasoning": "Current default 'sync' worker class may bottleneck under high concurrency; gevent or gthread could improve throughput for I/O-heavy operations",
+        "priority": "MEDIUM",
+        "implementation_effort": "Low - configuration already supports GUNICORN_WORKER_CLASS override"
+      },
+      {
+        "recommendation": "Implement custom logging function for error tracking integration",
+        "reasoning": "While JSON logging is structured, no integration with error tracking services (Sentry, etc.) is configured",
+        "priority": "MEDIUM",
+        "implementation_effort": "Medium - requires error handler hooks and service credentials"
+      },
+      {
+        "recommendation": "Add health check endpoint configuration",
+        "reasoning": "No health check mechanism defined; useful for load balancer integration and monitoring uptime",
+        "priority": "MEDIUM",
+        "implementation_effort": "Low - add check_config and simple endpoint path configuration"
+      },
+      {
+        "recommendation": "Document recommended Nginx proxy_timeout settings",
+        "reasoning": "Current 120s worker timeout requires coordination with Nginx proxy_timeout to avoid mismatches",
+        "priority": "LOW",
+        "implementation_effort": "Low - documentation-only change"
+      },
+      {
+        "recommendation": "Consider gthread worker class for AI content generation workloads",
+        "reasoning": "Comments mention long-running AI requests; gthread (Python threading) may be more suitable than sync for concurrent request handling",
+        "priority": "LOW",
+        "implementation_effort": "Low - requires testing and potential thread tuning"
+      },
+      {
+        "recommendation": "Add metrics endpoint for Prometheus monitoring",
+        "reasoning": "Current logging is passive; active metrics collection would enable better observability and alerting",
+        "priority": "LOW",
+        "implementation_effort": "Medium - requires prometheus-client integration"
+      }
+    ],
+    "subtask_id": "subtask-11-3",
+    "session_num": 63,
+    "success": true,
+    "changed_files": [
+      "e_menum/gunicorn.conf.py"
+    ]
+  },
+  "what_worked": [
+    "Implemented subtask: subtask-11-3"
+  ],
+  "what_failed": [],
+  "recommendations_for_next_session": []
+}

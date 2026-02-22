@@ -1,0 +1,184 @@
+{
+  "session_number": 16,
+  "timestamp": "2026-01-31T22:36:05.807838+00:00",
+  "subtasks_completed": [
+    "subtask-3-5"
+  ],
+  "discoveries": {
+    "file_insights": [
+      {
+        "file_path": "src/core/kernel/container.ts",
+        "file_type": "TypeScript",
+        "lines_of_code": 357,
+        "primary_purpose": "Dependency Injection container setup using tsyringe library",
+        "key_components": [
+          "Injection token constants (TOKENS object)",
+          "Core service registration (registerCoreServices)",
+          "Service registration helpers (registerSingleton, registerInstance, registerFactory, registerScoped)",
+          "Service resolution helpers (resolve, resolveOptional, isRegistered)",
+          "Child container management for request scoping",
+          "Container reset for testing",
+          "Re-exports of tsyringe decorators and types"
+        ],
+        "dependencies": [
+          "reflect-metadata",
+          "tsyringe (container, DependencyContainer, InjectionToken)",
+          "@prisma/client (PrismaClient)",
+          "ioredis (Redis)",
+          "@/config/database (prisma instance)",
+          "@/config/redis (redis instance)"
+        ],
+        "exports": [
+          "TOKENS (injection token constants)",
+          "TokenName (type for token names)",
+          "appContainer (global DI container)",
+          "registerCoreServices (bootstrap function)",
+          "registerSingleton, registerInstance, registerFactory, registerScoped (registration helpers)",
+          "resolve, resolveOptional, isRegistered (resolution helpers)",
+          "createChildContainer, disposeChildContainer (scoping functions)",
+          "resetContainer (testing utility)",
+          "Re-exports: injectable, inject, singleton, delay, injectAll, DependencyContainer, InjectionToken"
+        ]
+      }
+    ],
+    "patterns_discovered": [
+      {
+        "pattern_name": "Injection Token Pattern",
+        "description": "Uses string-based injection tokens with TypeScript type safety via InjectionToken<T> generic",
+        "implementation": "TOKENS object maps readable names to strongly-typed tokens",
+        "benefit": "Type-safe dependency injection with readable token names"
+      },
+      {
+        "pattern_name": "Singleton Registration",
+        "description": "Core infrastructure (Prisma, Redis) registered as singletons with existence checks",
+        "implementation": "Uses container.isRegistered() check before registration to prevent duplicates",
+        "benefit": "Ensures single instance across application lifetime"
+      },
+      {
+        "pattern_name": "Multiple Registration Strategies",
+        "description": "Provides multiple ways to register services (singleton, instance, factory, scoped)",
+        "implementation": "Four helper functions with different registration approaches",
+        "benefit": "Flexibility for different dependency types (classes, instances, factories, scoped)"
+      },
+      {
+        "pattern_name": "Child Container Pattern",
+        "description": "Request-scoped isolation using child containers",
+        "implementation": "createChildContainer() and disposeChildContainer() functions",
+        "benefit": "Isolates per-request dependencies and prevents cross-request pollution"
+      },
+      {
+        "pattern_name": "Graceful Failure Handling",
+        "description": "resolveOptional with try-catch for optional dependencies",
+        "implementation": "Returns undefined instead of throwing when dependency not found",
+        "benefit": "Allows optional feature toggling without container errors"
+      },
+      {
+        "pattern_name": "Comprehensive Documentation",
+        "description": "Detailed JSDoc comments with examples for every exported function",
+        "implementation": "Module docstring, parameter descriptions, return types, @example blocks",
+        "benefit": "Excellent developer experience and API discoverability"
+      }
+    ],
+    "gotchas_discovered": [
+      {
+        "gotcha": "reflect-metadata import required",
+        "description": "Must import 'reflect-metadata' at top of file for tsyringe decorators to work",
+        "impact": "HIGH - Without this import, decorator metadata won't be available at runtime",
+        "mitigation": "Already implemented as first import in the file"
+      },
+      {
+        "gotcha": "Pre-created instances for Prisma and Redis",
+        "description": "Uses pre-imported prisma and redis instances rather than creating new ones",
+        "impact": "MEDIUM - Assumes proper initialization in @/config/database and @/config/redis",
+        "mitigation": "Dependency injection handles this but requires config modules to be set up first"
+      },
+      {
+        "gotcha": "tsyringe scoped limitation",
+        "description": "registerScoped function doesn't truly implement scoped lifetime (noted in comment)",
+        "impact": "MEDIUM - Uses child containers instead for proper request scoping",
+        "mitigation": "Function still present but comment explains the workaround"
+      },
+      {
+        "gotcha": "Manual child container cleanup required",
+        "description": "disposeChildContainer must be called explicitly to prevent memory leaks",
+        "impact": "HIGH - Forgetting cleanup will accumulate memory over requests",
+        "mitigation": "Should be integrated into request lifecycle middleware"
+      },
+      {
+        "gotcha": "ESLint disable comments throughout",
+        "description": "Multiple eslint-disable-next-line directives for console.log and @typescript-eslint/no-explicit-any",
+        "impact": "LOW - Intentional exceptions but indicates deliberate rule violations",
+        "mitigation": "Console for debugging, any type for flexibility in registration"
+      }
+    ],
+    "approach_outcome": {
+      "status": "SUCCESS",
+      "summary": "Successfully implemented a comprehensive DI container setup using tsyringe with strong TypeScript integration",
+      "key_achievements": [
+        "Created well-structured injection token system with type safety",
+        "Implemented multiple service registration strategies (singleton, instance, factory, scoped)",
+        "Provided intuitive resolution APIs (resolve, resolveOptional, isRegistered)",
+        "Added request-scoped dependency isolation via child containers",
+        "Included testing utilities for container reset",
+        "Comprehensive documentation with examples throughout",
+        "Proper decorator and type re-exports for consumer convenience"
+      ],
+      "quality_indicators": [
+        "357 lines of well-organized, documented code",
+        "Clear separation of concerns (tokens, registration, resolution, scoping)",
+        "Type-safe API design using generics",
+        "Defensive programming (existence checks, try-catch)",
+        "Ready-to-use in production bootstrap"
+      ]
+    },
+    "recommendations": [
+      {
+        "category": "Integration",
+        "priority": "HIGH",
+        "recommendation": "Ensure registerCoreServices() is called during application bootstrap before module loading",
+        "rationale": "Core services (Prisma, Redis) must be available before any module tries to resolve them"
+      },
+      {
+        "category": "Middleware Integration",
+        "priority": "HIGH",
+        "recommendation": "Create request middleware that integrates createChildContainer and disposeChildContainer",
+        "rationale": "Manual cleanup will be error-prone; should be automatic in middleware lifecycle"
+      },
+      {
+        "category": "Module Loading",
+        "priority": "MEDIUM",
+        "recommendation": "Implement ModuleLoader service to dynamically register services from feature modules",
+        "rationale": "TOKENS.ModuleLoader is defined but not implemented; needed for dynamic feature registration"
+      },
+      {
+        "category": "Error Handling",
+        "priority": "MEDIUM",
+        "recommendation": "Add error handling wrapper around resolve() that provides context about missing dependencies",
+        "rationale": "Will improve debugging when services aren't registered as expected"
+      },
+      {
+        "category": "Testing",
+        "priority": "MEDIUM",
+        "recommendation": "Create test helper that combines resetContainer() and registerCoreServices() into single function",
+        "rationale": "Tests will repeatedly perform this sequence; helper will reduce boilerplate"
+      },
+      {
+        "category": "Documentation",
+        "priority": "LOW",
+        "recommendation": "Add architectural diagram or guide explaining when to use singleton vs scoped vs factory",
+        "rationale": "While examples are clear, decision tree would help developers choose right pattern"
+      }
+    ],
+    "subtask_id": "subtask-3-5",
+    "session_num": 16,
+    "success": true,
+    "changed_files": [
+      "src/core/kernel/container.ts"
+    ]
+  },
+  "what_worked": [
+    "Implemented subtask: subtask-3-5"
+  ],
+  "what_failed": [],
+  "recommendations_for_next_session": []
+}

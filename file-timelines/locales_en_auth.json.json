@@ -1,0 +1,28 @@
+{
+  "file_path": "locales/en/auth.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"login\": {\n    \"title\": \"Sign In\",\n    \"subtitle\": \"Sign in to your account\",\n    \"email\": \"Email Address\",\n    \"emailPlaceholder\": \"example@email.com\",\n    \"password\": \"Password\",\n    \"passwordPlaceholder\": \"Enter your password\",\n    \"rememberMe\": \"Remember me\",\n    \"forgotPassword\": \"Forgot password\",\n    \"submit\": \"Sign In\",\n    \"submitting\": \"Signing in...\",\n    \"noAccount\": \"Don't have an account?\",\n    \"register\": \"Register\"\n  },\n  \"register\": {\n    \"title\": \"Register\",\n    \"subtitle\": \"Create a new account\",\n    \"name\": \"Full Name\",\n    \"namePlaceholder\": \"Your Full Name\",\n    \"email\": \"Email Address\",\n    \"emailPlaceholder\": \"example@email.com\",\n    \"password\": \"Password\",\n    \"passwordPlaceholder\": \"At least 8 characters\",\n    \"confirmPassword\": \"Confirm Password\",\n    \"confirmPasswordPlaceholder\": \"Re-enter your password\",\n    \"organizationName\": \"Business Name\",\n    \"organizationPlaceholder\": \"Your business name\",\n    \"terms\": \"I accept the terms of service and privacy policy\",\n    \"submit\": \"Register\",\n    \"submitting\": \"Registering...\",\n    \"hasAccount\": \"Already have an account?\",\n    \"login\": \"Sign in\"\n  },\n  \"forgotPassword\": {\n    \"title\": \"Forgot Password\",\n    \"subtitle\": \"Enter your email address to receive a password reset link\",\n    \"email\": \"Email Address\",\n    \"emailPlaceholder\": \"example@email.com\",\n    \"submit\": \"Send Reset Link\",\n    \"submitting\": \"Sending...\",\n    \"backToLogin\": \"Back to login\",\n    \"success\": \"Password reset link has been sent to your email\",\n    \"checkInbox\": \"Please check your inbox\"\n  },\n  \"resetPassword\": {\n    \"title\": \"Reset Password\",\n    \"subtitle\": \"Set your new password\",\n    \"newPassword\": \"New Password\",\n    \"newPasswordPlaceholder\": \"At least 8 characters\",\n    \"confirmPassword\": \"Confirm Password\",\n    \"confirmPasswordPlaceholder\": \"Re-enter your new password\",\n    \"submit\": \"Reset Password\",\n    \"submitting\": \"Resetting...\",\n    \"success\": \"Your password has been reset successfully\",\n    \"loginNow\": \"You can now sign in\"\n  },\n  \"verifyEmail\": {\n    \"title\": \"Email Verification\",\n    \"subtitle\": \"Verify your email address\",\n    \"sent\": \"Verification link sent\",\n    \"checkInbox\": \"Please check your inbox and click the link\",\n    \"resend\": \"Resend\",\n    \"resending\": \"Sending...\",\n    \"success\": \"Your email address has been verified successfully\",\n    \"expired\": \"The verification link has expired\",\n    \"invalid\": \"Invalid verification link\"\n  },\n  \"logout\": {\n    \"title\": \"Sign Out\",\n    \"confirm\": \"Are you sure you want to sign out?\",\n    \"success\": \"Signed out successfully\"\n  },\n  \"session\": {\n    \"expired\": \"Your session has expired. Please sign in again.\",\n    \"invalid\": \"Invalid session. Please sign in again.\"\n  },\n  \"twoFactor\": {\n    \"title\": \"Two-Factor Authentication\",\n    \"subtitle\": \"Enter your security code\",\n    \"code\": \"Verification Code\",\n    \"codePlaceholder\": \"6-digit code\",\n    \"submit\": \"Verify\",\n    \"submitting\": \"Verifying...\",\n    \"useBackup\": \"Use backup code\",\n    \"resend\": \"Resend code\"\n  },\n  \"inviteAccept\": {\n    \"title\": \"Invitation\",\n    \"subtitle\": \"You have been invited to {{organization}}\",\n    \"accept\": \"Accept Invitation\",\n    \"decline\": \"Decline\",\n    \"expired\": \"The invitation link has expired\",\n    \"invalid\": \"Invalid invitation link\"\n  }\n}\n",
+        "last_modified": "2026-02-01T09:10:53.667955"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:24.175899",
+  "last_updated": "2026-02-01T08:03:24.185405"
+}

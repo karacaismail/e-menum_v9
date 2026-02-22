@@ -1,0 +1,28 @@
+{
+  "file_path": "src/shared/decorators/index.ts",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "/**\n * Shared Decorators\n *\n * Re-exports all custom decorators for the E-Menum application.\n * These decorators work with routing-controllers and the core middleware.\n *\n * @module shared/decorators\n *\n * @example\n * ```typescript\n * import {\n *   CurrentUser,\n *   CurrentOrg,\n *   CurrentOrgId,\n *   Authorized,\n *   RequireRoles,\n *   RequirePlan,\n * } from '@/shared/decorators';\n *\n * @JsonController('/api/v1/menus')\n * @injectable()\n * export class MenuController extends BaseController {\n *\n *   @Get('/')\n *   @Authorized(['menu.view'])\n *   async list(\n *     @CurrentUser() user: AuthUser,\n *     @CurrentOrg() org: TenantOrganization,\n *   ): Promise<ApiResponse<Menu[]>> {\n *     const menus = await this.menuService.findAll(org.id);\n *     return this.success(menus);\n *   }\n *\n *   @Post('/')\n *   @Authorized(['menu.create'])\n *   async create(\n *     @CurrentOrg() org: TenantOrganization,\n *     @Body() data: CreateMenuDto,\n *   ): Promise<ApiResponse<Menu>> {\n *     const menu = await this.menuService.create(org.id, data);\n *     return this.created(menu);\n *   }\n *\n *   @Delete('/:id')\n *   @Authorized(['menu.delete'])\n *   @RequireRoles(['owner', 'manager'])\n *   async delete(\n *     @Param('id') id: string,\n *     @CurrentOrgId() orgId: string,\n *   ): Promise<void> {\n *     await this.menuService.delete(id, orgId);\n *   }\n * }\n * ```\n */\n\n// -----------------------------------------------------------------------------\n// CurrentUser Decorator\n// -----------------------------------------------------------------------------\n\nexport {\n  CurrentUser,\n  CurrentUserOptions,\n  getCurrentUser,\n  getCurrentUserOptional,\n  isAuthenticated,\n} from './current-user.decorator';\n\n// -----------------------------------------------------------------------------\n// CurrentOrg Decorator\n// -----------------------------------------------------------------------------\n\nexport {\n  CurrentOrg,\n  CurrentOrgId,\n  CurrentOrgOptions,\n  getCurrentOrg,\n  getCurrentOrgOptional,\n  getCurrentOrgId,\n  hasOrgContext,\n  validateOrgAccess,\n} from './current-org.decorator';\n\n// -----------------------------------------------------------------------------\n// Authorized Decorator\n// -----------------------------------------------------------------------------\n\nexport {\n  Authorized,\n  AuthorizedOptions,\n  PermissionString,\n  PermissionSpec,\n  RequireRoles,\n  RequirePlan,\n  RequireAnyPermission,\n  RequireAllPermissions,\n} from './authorized.decorator';\n",
+        "last_modified": "2026-02-01T09:10:53.766083"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:26.582799",
+  "last_updated": "2026-02-01T08:03:26.592098"
+}

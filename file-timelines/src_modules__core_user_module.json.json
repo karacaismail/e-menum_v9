@@ -1,0 +1,28 @@
+{
+  "file_path": "src/modules/_core/user/module.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"$schema\": \"https://e-menum.net/schemas/module-v1.json\",\n  \"id\": \"user\",\n  \"name\": \"User Module\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Core user management module providing user CRUD, role assignment, and profile management\",\n\n  \"type\": \"core\",\n  \"category\": \"system\",\n\n  \"author\": {\n    \"name\": \"E-Menum Team\",\n    \"email\": \"dev@e-menum.net\"\n  },\n\n  \"compatibility\": {\n    \"platform\": \">=1.0.0\",\n    \"node\": \">=20.0.0\"\n  },\n\n  \"dependencies\": {\n    \"modules\": [\"auth\", \"organization\"],\n    \"optional\": []\n  },\n\n  \"provides\": {\n    \"routes\": true,\n    \"events\": [\n      \"user.created\",\n      \"user.updated\",\n      \"user.deleted\",\n      \"user.status.changed\",\n      \"user.role.assigned\",\n      \"user.role.removed\",\n      \"user.profile.updated\",\n      \"user.password.changed\"\n    ],\n    \"hooks\": [\n      \"beforeCreate\",\n      \"afterCreate\",\n      \"beforeUpdate\",\n      \"afterUpdate\",\n      \"beforeDelete\",\n      \"afterDelete\"\n    ],\n    \"permissions\": [\n      \"user:read\",\n      \"user:create\",\n      \"user:update\",\n      \"user:delete\",\n      \"user:profile.read\",\n      \"user:profile.update\",\n      \"user:role.assign\",\n      \"user:role.remove\",\n      \"user:status.update\"\n    ],\n    \"services\": [\n      \"UserService\"\n    ]\n  },\n\n  \"requires\": {\n    \"permissions\": [\"auth:verify\", \"organization:read\"],\n    \"events\": [\"organization.created\"]\n  },\n\n  \"tier\": {\n    \"minimum\": \"free\",\n    \"features\": {\n      \"free\": [\"basic_users\", \"single_role\"],\n      \"starter\": [\"multiple_roles\", \"user_invite\"],\n      \"professional\": [\"advanced_permissions\", \"user_groups\"],\n      \"business\": [\"sso_integration\", \"audit_trail\"],\n      \"enterprise\": [\"custom_roles\", \"ldap_integration\"]\n    }\n  },\n\n  \"lifecycle\": {\n    \"install\": \"lifecycle/install.ts\",\n    \"uninstall\": \"lifecycle/uninstall.ts\",\n    \"activate\": \"lifecycle/activate.ts\",\n    \"deactivate\": \"lifecycle/deactivate.ts\",\n    \"upgrade\": \"lifecycle/upgrade.ts\"\n  },\n\n  \"admin\": {\n    \"menu\": {\n      \"label\": \"Users\",\n      \"icon\": \"ph-users\",\n      \"route\": \"/admin/users\",\n      \"order\": 20,\n      \"hidden\": false\n    }\n  },\n\n  \"settings\": {\n    \"schema\": \"settings.schema.json\",\n    \"defaults\": {\n      \"defaultRole\": \"staff\",\n      \"requireEmailVerification\": true,\n      \"allowSelfRegistration\": false,\n      \"maxUsersPerOrg\": 50,\n      \"passwordMinLength\": 8,\n      \"passwordRequireUppercase\": true,\n      \"passwordRequireNumbers\": true,\n      \"sessionMaxAge\": 604800000\n    }\n  }\n}\n",
+        "last_modified": "2026-02-01T09:10:53.723887"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:25.507377",
+  "last_updated": "2026-02-01T08:03:25.517312"
+}

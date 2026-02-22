@@ -8,3 +8,19 @@
 .worktrees/
 .security-key
 logs/security/
+
+# Environment variables (secrets)
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+.gitignore_checked
+
+# Claude worktrees
+worktrees/
+.claude/
+
+# Node
+node_modules/

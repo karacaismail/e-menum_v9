@@ -1,0 +1,122 @@
+{
+  "complexity": "complex",
+  "workflow_type": "feature",
+  "confidence": 0.95,
+  "reasoning": "Complete greenfield Django enterprise SaaS build. Requires implementing 20+ database models, multi-tenant architecture, RBAC/ABAC authorization, modular Django apps system, JWT auth, admin panel, public menu views, order management, subscription system, media management, i18n, and full REST API. This is an entire platform rebuild from Node.js/Express specifications to Python/Django.",
+
+  "analysis": {
+    "scope": {
+      "estimated_files": 150,
+      "estimated_services": 8,
+      "is_cross_cutting": true,
+      "notes": "Core services: auth, users, organizations, menus, products, orders, subscriptions, media. Each requires models, views, serializers, urls, permissions, tests. Multi-tenancy is a cross-cutting concern affecting every model and query."
+    },
+    "integrations": {
+      "external_services": ["PostgreSQL", "Redis"],
+      "new_dependencies": [
+        "django",
+        "djangorestframework",
+        "django-filter",
+        "django-cors-headers",
+        "djangorestframework-simplejwt",
+        "django-rules",
+        "celery",
+        "redis",
+        "psycopg2-binary",
+        "pillow",
+        "python-dotenv"
+      ],
+      "research_needed": true,
+      "notes": "Need to research Django equivalents for: CASL (permission system), tsyringe (DI), routing-controllers (decorators), BullMQ (async jobs). Django has patterns but need to map Express concepts."
+    },
+    "infrastructure": {
+      "docker_changes": true,
+      "database_changes": true,
+      "config_changes": true,
+      "notes": "Complete infrastructure setup required: Docker Compose with Python, PostgreSQL, Redis. Database schema implementation with Django ORM. Environment configuration for Django settings split by environment."
+    },
+    "knowledge": {
+      "patterns_exist": false,
+      "research_required": true,
+      "unfamiliar_tech": [
+        "Django project structure for enterprise",
+        "Django multi-tenant patterns",
+        "Django permission systems (django-rules, django-guardian)",
+        "Django modular apps architecture",
+        "DRF best practices for large APIs"
+      ],
+      "notes": "Current codebase is Node.js/Express/TypeScript. No existing Django patterns to follow. Must research Django enterprise patterns: settings organization, app structure, multi-tenancy middleware, permission systems."
+    },
+    "risk": {
+      "level": "high",
+      "concerns": [
+        "Multi-tenant data isolation - critical security requirement",
+        "Authorization system complexity - RBAC + ABAC equivalent to CASL",
+        "Module system - dynamic app loading is non-trivial in Django",
+        "Data model complexity - 20+ models with complex relationships",
+        "No incremental migration - complete platform rebuild",
+        "Enterprise security requirements - JWT, session management, audit logging"
+      ],
+      "notes": "Single biggest risk is multi-tenant data isolation. Every query must filter by organization_id. Authorization is second major risk - mapping CASL's ABAC to Django requires careful design."
+    }
+  },
+
+  "recommended_phases": [
+    "discovery",
+    "requirements",
+    "research",
+    "context",
+    "spec_writing",
+    "self_critique",
+    "planning",
+    "validation"
+  ],
+
+  "flags": {
+    "needs_research": true,
+    "needs_self_critique": true,
+    "needs_infrastructure_setup": true
+  },
+
+  "validation_recommendations": {
+    "risk_level": "critical",
+    "skip_validation": false,
+    "minimal_mode": false,
+    "test_types_required": ["unit", "integration", "e2e", "security"],
+    "security_scan_required": true,
+    "staging_deployment_required": true,
+    "reasoning": "Enterprise SaaS with multi-tenant architecture, authentication, authorization, and financial features (subscriptions). Requires maximum validation depth including security scanning for tenant isolation, authentication flows, and payment-related code. Staging deployment needed to verify infrastructure setup."
+  },
+
+  "additional_notes": {
+    "key_architectural_decisions_needed": [
+      "Multi-tenancy approach: Schema-based vs Row-based isolation",
+      "Permission system: django-rules vs django-guardian vs custom CASL port",
+      "Module system: Django apps vs plugin architecture",
+      "Frontend approach: Django templates vs DRF + separate frontend",
+      "Settings management: django-environ vs django-split-settings",
+      "API versioning strategy"
+    ],
+    "suggested_implementation_order": [
+      "1. Core infrastructure (Docker, settings, database)",
+      "2. Base models (Organization, User)",
+      "3. Authentication (JWT, sessions)",
+      "4. Authorization (permissions system)",
+      "5. Multi-tenant middleware",
+      "6. Feature modules (menu, products, orders)",
+      "7. Admin interface",
+      "8. Public API endpoints",
+      "9. Testing and security hardening"
+    ],
+    "existing_specs_to_reference": [
+      ".auto-claude/CONSTRAINTS.md",
+      ".auto-claude/MVP_SCOPE.md",
+      ".auto-claude/MODULE_SYSTEM.md",
+      "architecture/DATABASE_SCHEMA.md",
+      "architecture/SECURITY_MODEL.md",
+      "domain/BUSINESS_RULES.md"
+    ]
+  },
+
+  "created_at": "2025-02-14T12:00:00Z"
+}

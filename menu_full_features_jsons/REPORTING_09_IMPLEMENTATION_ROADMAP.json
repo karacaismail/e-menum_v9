@@ -1,0 +1,963 @@
+{
+  "metadata": {
+    "document": "E-Menum Reporting Features Part 9",
+    "section": "Implementation Roadmap, Priorities, Dependencies, Timeline",
+    "version": "3.0.0"
+  },
+  "IMPLEMENTATION_SUMMARY": {
+    "total_features": 142,
+    "priority_breakdown": {
+      "P0_critical": 35,
+      "P1_important": 58,
+      "P2_nice_to_have": 38,
+      "P3_future": 11
+    },
+    "total_effort_days": 845,
+    "estimated_team_months": 14,
+    "phases": 4
+  },
+  "PRIORITY_DEFINITIONS": {
+    "P0": {
+      "name": "Critical",
+      "description": "MVP için zorunlu, müşteri değeri için kritik",
+      "criteria": [
+        "Temel işlevsellik için gerekli",
+        "Rekabet için olmazsa olmaz",
+        "Müşteri beklentisi yüksek",
+        "Gelir etkisi direkt"
+      ],
+      "target_completion": "Phase 1 (Month 1-3)"
+    },
+    "P1": {
+      "name": "Important",
+      "description": "Önemli farklilaşma ve değer yaratma",
+      "criteria": [
+        "Rekabet avantajı sağlayan",
+        "Müşteri memnuniyetini artıran",
+        "Plan upgrade'i tetikleyen",
+        "Operasyonel verimlilik sağlayan"
+      ],
+      "target_completion": "Phase 2 (Month 4-6)"
+    },
+    "P2": {
+      "name": "Nice to Have",
+      "description": "Ek değer sağlayan gelişmiş özellikler",
+      "criteria": [
+        "Enterprise segment için değerli",
+        "Gelişmiş analitik yetenekler",
+        "Niche kullanım senaryoları",
+        "Nice-to-have otomasyonlar"
+      ],
+      "target_completion": "Phase 3 (Month 7-10)"
+    },
+    "P3": {
+      "name": "Future",
+      "description": "Gelecek vizyonu için planlanan",
+      "criteria": [
+        "Uzun vadeli rekabet avantajı",
+        "Yenilikçi özellikler",
+        "Pazar oluşturan özellikler"
+      ],
+      "target_completion": "Phase 4+ (Month 11+)"
+    }
+  },
+  "PHASE_1_MVP": {
+    "name": "MVP Core Features",
+    "duration": "Month 1-3",
+    "total_effort_days": 180,
+    "focus": "Temel raporlama altyapısı ve AI sorgu sistemi",
+    "features": {
+      "INFRASTRUCTURE": [
+        {
+          "feature_id": "INFRA-001",
+          "name": "Reporting Database Schema",
+          "effort_days": 10,
+          "dependencies": [],
+          "team": "Backend",
+          "sprint": 1
+        },
+        {
+          "feature_id": "INFRA-002",
+          "name": "AI Model Integration Layer",
+          "effort_days": 15,
+          "dependencies": ["INFRA-001"],
+          "team": "Backend + AI",
+          "sprint": 1
+        },
+        {
+          "feature_id": "INFRA-003",
+          "name": "Credit System Implementation",
+          "effort_days": 8,
+          "dependencies": ["INFRA-001"],
+          "team": "Backend",
+          "sprint": 2
+        },
+        {
+          "feature_id": "INFRA-004",
+          "name": "Report Generation Engine",
+          "effort_days": 12,
+          "dependencies": ["INFRA-001", "INFRA-002"],
+          "team": "Backend",
+          "sprint": 2
+        },
+        {
+          "feature_id": "INFRA-005",
+          "name": "Real-time Data Pipeline",
+          "effort_days": 10,
+          "dependencies": ["INFRA-001"],
+          "team": "Backend",
+          "sprint": 3
+        }
+      ],
+      "AI_QUERY_P0": [
+        {
+          "feature_id": "AI-NLQ-001",
+          "name": "Basic NL Query",
+          "effort_days": 8,
+          "dependencies": ["INFRA-002", "INFRA-004"],
+          "team": "AI + Frontend",
+          "sprint": 3
+        },
+        {
+          "feature_id": "AI-NLQ-002",
+          "name": "Comparison Query",
+          "effort_days": 6,
+          "dependencies": ["AI-NLQ-001"],
+          "team": "AI",
+          "sprint": 4
+        },
+        {
+          "feature_id": "AI-NLQ-003",
+          "name": "Analytical Query",
+          "effort_days": 12,
+          "dependencies": ["AI-NLQ-001"],
+          "team": "AI",
+          "sprint": 4
+        },
+        {
+          "feature_id": "AI-NLQ-004",
+          "name": "Recommendation Query",
+          "effort_days": 10,
+          "dependencies": ["AI-NLQ-003"],
+          "team": "AI",
+          "sprint": 5
+        }
+      ],
+      "PERIODIC_REPORTS_P0": [
+        {
+          "feature_id": "RPT-PER-001",
+          "name": "Daily Summary",
+          "effort_days": 5,
+          "dependencies": ["INFRA-004"],
+          "team": "Backend + AI",
+          "sprint": 4
+        },
+        {
+          "feature_id": "RPT-PER-005",
+          "name": "Weekly Trend",
+          "effort_days": 5,
+          "dependencies": ["RPT-PER-001"],
+          "team": "Backend + AI",
+          "sprint": 5
+        },
+        {
+          "feature_id": "RPT-PER-008",
+          "name": "Monthly Analysis",
+          "effort_days": 8,
+          "dependencies": ["RPT-PER-005"],
+          "team": "Backend + AI",
+          "sprint": 6
+        }
+      ],
+      "SALES_REPORTS_P0": [
+        {
+          "feature_id": "RPT-SAL-001",
+          "name": "Revenue Report",
+          "effort_days": 5,
+          "dependencies": ["INFRA-004"],
+          "team": "Backend",
+          "sprint": 4
+        },
+        {
+          "feature_id": "RPT-SAL-009",
+          "name": "Top Sellers",
+          "effort_days": 3,
+          "dependencies": ["RPT-SAL-001"],
+          "team": "Backend",
+          "sprint": 4
+        },
+        {
+          "feature_id": "RPT-SAL-003",
+          "name": "Sales Comparison",
+          "effort_days": 4,
+          "dependencies": ["RPT-SAL-001"],
+          "team": "Backend",
+          "sprint": 5
+        }
+      ],
+      "AI_INSIGHTS_P0": [
+        {
+          "feature_id": "AI-INS-001",
+          "name": "Auto Daily Insights",
+          "effort_days": 10,
+          "dependencies": ["INFRA-002", "INFRA-005"],
+          "team": "AI + Backend",
+          "sprint": 5
+        },
+        {
+          "feature_id": "AI-INS-002",
+          "name": "Anomaly Detection",
+          "effort_days": 15,
+          "dependencies": ["INFRA-005"],
+          "team": "AI + Backend",
+          "sprint": 5
+        }
+      ],
+      "DASHBOARD_P0": [
+        {
+          "feature_id": "DSH-001",
+          "name": "Basic Dashboard",
+          "effort_days": 10,
+          "dependencies": ["RPT-SAL-001", "RPT-PER-001"],
+          "team": "Frontend",
+          "sprint": 5
+        }
+      ],
+      "DIGITAL_REPORTS_P0": [
+        {
+          "feature_id": "RPT-DIG-001",
+          "name": "QR Scan Analytics",
+          "effort_days": 5,
+          "dependencies": ["INFRA-004"],
+          "team": "Backend",
+          "sprint": 4
+        }
+      ],
+      "PLATFORM_REPORTS_P0": [
+        {
+          "feature_id": "RPT-PLT-001",
+          "name": "MRR Dashboard",
+          "effort_days": 10,
+          "dependencies": ["INFRA-004"],
+          "team": "Backend + Frontend",
+          "sprint": 6
+        },
+        {
+          "feature_id": "RPT-PLT-006",
+          "name": "AI Credit Usage",
+          "effort_days": 8,
+          "dependencies": ["INFRA-003"],
+          "team": "Backend",
+          "sprint": 6
+        },
+        {
+          "feature_id": "RPT-PLT-007",
+          "name": "System Health",
+          "effort_days": 12,
+          "dependencies": ["INFRA-005"],
+          "team": "Backend + DevOps",
+          "sprint": 6
+        }
+      ]
+    },
+    "milestones": [
+      {"week": 4, "milestone": "AI Query Foundation Complete"},
+      {"week": 8, "milestone": "Core Reports Available"},
+      {"week": 12, "milestone": "MVP Ready for Beta"}
+    ],
+    "success_criteria": [
+      "Basic NL queries working with <3s response time",
+      "Daily/Weekly reports auto-generating",
+      "Credit system tracking accurately",
+      "Dashboard showing real-time metrics"
+    ]
+  },
+  "PHASE_2_GROWTH": {
+    "name": "Growth Features",
+    "duration": "Month 4-6",
+    "total_effort_days": 220,
+    "focus": "Gelişmiş analitik ve tahminleme özellikleri",
+    "features": {
+      "AI_QUERY_P1": [
+        {
+          "feature_id": "AI-NLQ-005",
+          "name": "Forecast Query",
+          "effort_days": 10,
+          "dependencies": ["AI-FOR-001"],
+          "team": "AI",
+          "sprint": 7
+        },
+        {
+          "feature_id": "AI-NLQ-007",
+          "name": "Summary Query",
+          "effort_days": 5,
+          "dependencies": ["AI-NLQ-001"],
+          "team": "AI",
+          "sprint": 7
+        },
+        {
+          "feature_id": "AI-NLQ-008",
+          "name": "Anomaly Query",
+          "effort_days": 7,
+          "dependencies": ["AI-INS-002"],
+          "team": "AI",
+          "sprint": 8
+        },
+        {
+          "feature_id": "AI-NLQ-009",
+          "name": "Trend Query",
+          "effort_days": 6,
+          "dependencies": ["AI-INS-003"],
+          "team": "AI",
+          "sprint": 8
+        }
+      ],
+      "FORECASTING_P1": [
+        {
+          "feature_id": "AI-FOR-001",
+          "name": "Short-term Forecast (7d)",
+          "effort_days": 12,
+          "dependencies": ["INFRA-005"],
+          "team": "AI + Data Science",
+          "sprint": 7
+        },
+        {
+          "feature_id": "AI-FOR-002",
+          "name": "Medium-term Forecast (30d)",
+          "effort_days": 10,
+          "dependencies": ["AI-FOR-001"],
+          "team": "AI + Data Science",
+          "sprint": 8
+        },
+        {
+          "feature_id": "AI-FOR-004",
+          "name": "Item Demand Forecast",
+          "effort_days": 10,
+          "dependencies": ["AI-FOR-001"],
+          "team": "AI + Data Science",
+          "sprint": 9
+        }
+      ],
+      "MENU_REPORTS_P1": [
+        {
+          "feature_id": "RPT-MNU-001",
+          "name": "Performance Matrix (BCG)",
+          "effort_days": 8,
+          "dependencies": ["RPT-SAL-001"],
+          "team": "Backend + AI",
+          "sprint": 7
+        },
+        {
+          "feature_id": "RPT-MNU-002",
+          "name": "Item Performance",
+          "effort_days": 5,
+          "dependencies": ["RPT-MNU-001"],
+          "team": "Backend",
+          "sprint": 8
+        },
+        {
+          "feature_id": "RPT-MNU-004",
+          "name": "Pricing Analysis",
+          "effort_days": 8,
+          "dependencies": ["RPT-MNU-001"],
+          "team": "Backend + AI",
+          "sprint": 9
+        }
+      ],
+      "CUSTOMER_REPORTS_P1": [
+        {
+          "feature_id": "RPT-CUS-001",
+          "name": "Customer Overview",
+          "effort_days": 6,
+          "dependencies": ["INFRA-004"],
+          "team": "Backend",
+          "sprint": 8
+        },
+        {
+          "feature_id": "RPT-CUS-004",
+          "name": "Retention Analysis",
+          "effort_days": 8,
+          "dependencies": ["RPT-CUS-001"],
+          "team": "Backend + AI",
+          "sprint": 9
+        },
+        {
+          "feature_id": "RPT-CUS-006",
+          "name": "Feedback Analysis",
+          "effort_days": 6,
+          "dependencies": ["RPT-CUS-001"],
+          "team": "AI",
+          "sprint": 9
+        }
+      ],
+      "STAFF_REPORTS_P1": [
+        {
+          "feature_id": "RPT-STF-001",
+          "name": "Staff Overview",
+          "effort_days": 5,
+          "dependencies": ["INFRA-004"],
+          "team": "Backend",
+          "sprint": 8
+        },
+        {
+          "feature_id": "RPT-STF-002",
+          "name": "Performance Scorecard",
+          "effort_days": 8,
+          "dependencies": ["RPT-STF-001"],
+          "team": "Backend + AI",
+          "sprint": 9
+        },
+        {
+          "feature_id": "RPT-STF-005",
+          "name": "Staff Ranking",
+          "effort_days": 5,
+          "dependencies": ["RPT-STF-002"],
+          "team": "Backend",
+          "sprint": 10
+        }
+      ],
+      "AI_INSIGHTS_P1": [
+        {
+          "feature_id": "AI-INS-003",
+          "name": "Trend Detection",
+          "effort_days": 10,
+          "dependencies": ["AI-FOR-001"],
+          "team": "AI",
+          "sprint": 8
+        },
+        {
+          "feature_id": "AI-INS-004",
+          "name": "Proactive Recommendations",
+          "effort_days": 12,
+          "dependencies": ["AI-INS-001"],
+          "team": "AI",
+          "sprint": 9
+        },
+        {
+          "feature_id": "AI-INS-005",
+          "name": "Smart Alerts",
+          "effort_days": 8,
+          "dependencies": ["AI-INS-002"],
+          "team": "AI + Backend",
+          "sprint": 10
+        }
+      ],
+      "PLATFORM_REPORTS_P1": [
+        {
+          "feature_id": "RPT-PLT-002",
+          "name": "Churn Analysis",
+          "effort_days": 15,
+          "dependencies": ["RPT-PLT-001"],
+          "team": "AI + Backend",
+          "sprint": 10
+        },
+        {
+          "feature_id": "RPT-PLT-005",
+          "name": "Plan Conversion",
+          "effort_days": 10,
+          "dependencies": ["RPT-PLT-001"],
+          "team": "Backend + AI",
+          "sprint": 11
+        },
+        {
+          "feature_id": "RPT-PLT-010",
+          "name": "Financial Projection",
+          "effort_days": 12,
+          "dependencies": ["AI-FOR-002"],
+          "team": "AI + Backend",
+          "sprint": 11
+        }
+      ],
+      "DASHBOARD_P1": [
+        {
+          "feature_id": "DSH-002",
+          "name": "Realtime Dashboard",
+          "effort_days": 15,
+          "dependencies": ["DSH-001", "INFRA-005"],
+          "team": "Frontend + Backend",
+          "sprint": 10
+        }
+      ],
+      "EXPORT_P1": [
+        {
+          "feature_id": "EXP-001",
+          "name": "PDF Export",
+          "effort_days": 8,
+          "dependencies": ["INFRA-004"],
+          "team": "Backend",
+          "sprint": 10
+        },
+        {
+          "feature_id": "EXP-002",
+          "name": "Excel Export",
+          "effort_days": 5,
+          "dependencies": ["INFRA-004"],
+          "team": "Backend",
+          "sprint": 10
+        }
+      ]
+    },
+    "milestones": [
+      {"week": 16, "milestone": "Forecasting Engine Live"},
+      {"week": 20, "milestone": "Customer Analytics Complete"},
+      {"week": 24, "milestone": "Growth Features Beta"}
+    ],
+    "success_criteria": [
+      "Forecast accuracy >80%",
+      "Customer segmentation working",
+      "Real-time dashboard <1s latency",
+      "Pro plan features complete"
+    ]
+  },
+  "PHASE_3_ENTERPRISE": {
+    "name": "Enterprise Features",
+    "duration": "Month 7-10",
+    "total_effort_days": 280,
+    "focus": "Gelişmiş ML özellikleri ve çoklu şube desteği",
+    "features": {
+      "AI_QUERY_P2": [
+        {
+          "feature_id": "AI-NLQ-006",
+          "name": "Complex Query",
+          "effort_days": 15,
+          "dependencies": ["AI-NLQ-003", "AI-NLQ-004"],
+          "team": "AI",
+          "sprint": 13
+        }
+      ],
+      "CUSTOMER_REPORTS_P2": [
+        {
+          "feature_id": "RPT-CUS-002",
+          "name": "RFM Segmentation",
+          "effort_days": 12,
+          "dependencies": ["RPT-CUS-001"],
+          "team": "AI + Data Science",
+          "sprint": 13
+        },
+        {
+          "feature_id": "RPT-CUS-003",
+          "name": "Lifetime Value (CLV)",
+          "effort_days": 15,
+          "dependencies": ["RPT-CUS-002"],
+          "team": "AI + Data Science",
+          "sprint": 14
+        },
+        {
+          "feature_id": "RPT-CUS-005",
+          "name": "Churn Risk",
+          "effort_days": 15,
+          "dependencies": ["RPT-CUS-003"],
+          "team": "AI + Data Science",
+          "sprint": 15
+        }
+      ],
+      "WHATIF_P2": [
+        {
+          "feature_id": "AI-WIF-001",
+          "name": "Pricing What-If",
+          "effort_days": 12,
+          "dependencies": ["AI-FOR-001"],
+          "team": "AI + Data Science",
+          "sprint": 14
+        },
+        {
+          "feature_id": "AI-WIF-002",
+          "name": "Menu What-If",
+          "effort_days": 10,
+          "dependencies": ["AI-WIF-001"],
+          "team": "AI + Data Science",
+          "sprint": 15
+        },
+        {
+          "feature_id": "AI-WIF-003",
+          "name": "Capacity What-If",
+          "effort_days": 8,
+          "dependencies": ["AI-WIF-001"],
+          "team": "AI + Data Science",
+          "sprint": 15
+        },
+        {
+          "feature_id": "AI-WIF-004",
+          "name": "Campaign What-If",
+          "effort_days": 8,
+          "dependencies": ["AI-WIF-001"],
+          "team": "AI + Data Science",
+          "sprint": 16
+        }
+      ],
+      "BRANCH_REPORTS_P2": [
+        {
+          "feature_id": "RPT-BRN-001",
+          "name": "Branch Comparison",
+          "effort_days": 10,
+          "dependencies": ["RPT-SAL-001"],
+          "team": "Backend",
+          "sprint": 14
+        },
+        {
+          "feature_id": "RPT-BRN-003",
+          "name": "Consolidated Report",
+          "effort_days": 12,
+          "dependencies": ["RPT-BRN-001"],
+          "team": "Backend + AI",
+          "sprint": 15
+        },
+        {
+          "feature_id": "RPT-BRN-004",
+          "name": "Best Practices",
+          "effort_days": 10,
+          "dependencies": ["RPT-BRN-001"],
+          "team": "AI",
+          "sprint": 16
+        }
+      ],
+      "FORECASTING_P2": [
+        {
+          "feature_id": "AI-FOR-003",
+          "name": "Long-term Forecast (90d)",
+          "effort_days": 12,
+          "dependencies": ["AI-FOR-002"],
+          "team": "AI + Data Science",
+          "sprint": 13
+        },
+        {
+          "feature_id": "AI-FOR-005",
+          "name": "Staffing Forecast",
+          "effort_days": 8,
+          "dependencies": ["AI-FOR-001"],
+          "team": "AI + Data Science",
+          "sprint": 14
+        },
+        {
+          "feature_id": "AI-FOR-007",
+          "name": "Churn Forecast",
+          "effort_days": 15,
+          "dependencies": ["RPT-CUS-005"],
+          "team": "AI + Data Science",
+          "sprint": 16
+        }
+      ],
+      "AI_INSIGHTS_P2": [
+        {
+          "feature_id": "AI-INS-006",
+          "name": "Opportunity Finder",
+          "effort_days": 10,
+          "dependencies": ["AI-INS-004"],
+          "team": "AI",
+          "sprint": 15
+        },
+        {
+          "feature_id": "AI-INS-008",
+          "name": "Industry Benchmark",
+          "effort_days": 8,
+          "dependencies": ["INFRA-004"],
+          "team": "AI + Backend",
+          "sprint": 16
+        }
+      ],
+      "CAMPAIGN_REPORTS_P2": [
+        {
+          "feature_id": "RPT-CMP-002",
+          "name": "Campaign ROI",
+          "effort_days": 8,
+          "dependencies": ["RPT-CMP-001"],
+          "team": "Backend + AI",
+          "sprint": 14
+        },
+        {
+          "feature_id": "RPT-CMP-004",
+          "name": "Attribution Analysis",
+          "effort_days": 15,
+          "dependencies": ["RPT-CMP-002"],
+          "team": "AI + Data Science",
+          "sprint": 15
+        }
+      ],
+      "DASHBOARD_P2": [
+        {
+          "feature_id": "DSH-003",
+          "name": "Custom Dashboard",
+          "effort_days": 20,
+          "dependencies": ["DSH-002"],
+          "team": "Frontend + Backend",
+          "sprint": 16
+        }
+      ],
+      "SCHEDULING_P2": [
+        {
+          "feature_id": "SCH-001",
+          "name": "Report Scheduling",
+          "effort_days": 12,
+          "dependencies": ["INFRA-004", "EXP-001"],
+          "team": "Backend",
+          "sprint": 14
+        },
+        {
+          "feature_id": "SCH-002",
+          "name": "Multi-channel Delivery",
+          "effort_days": 8,
+          "dependencies": ["SCH-001"],
+          "team": "Backend",
+          "sprint": 15
+        }
+      ]
+    },
+    "milestones": [
+      {"week": 28, "milestone": "ML Models Production Ready"},
+      {"week": 32, "milestone": "Multi-branch Features Complete"},
+      {"week": 40, "milestone": "Enterprise Features GA"}
+    ],
+    "success_criteria": [
+      "CLV prediction accuracy >75%",
+      "Churn prediction accuracy >70%",
+      "What-if scenarios generating actionable insights",
+      "Business plan features complete"
+    ]
+  },
+  "PHASE_4_INNOVATION": {
+    "name": "Innovation Features",
+    "duration": "Month 11+",
+    "total_effort_days": 165,
+    "focus": "Yenilikçi ve gelecek vizyonu özellikleri",
+    "features": {
+      "AI_QUERY_P3": [
+        {
+          "feature_id": "AI-NLQ-010",
+          "name": "Voice Query",
+          "effort_days": 20,
+          "dependencies": ["AI-NLQ-001"],
+          "team": "AI + Mobile",
+          "sprint": "TBD"
+        }
+      ],
+      "AI_INSIGHTS_P3": [
+        {
+          "feature_id": "AI-INS-007",
+          "name": "Competitive Intelligence",
+          "effort_days": 15,
+          "dependencies": ["AI-INS-001"],
+          "team": "AI",
+          "sprint": "TBD"
+        }
+      ],
+      "WHATIF_P3": [
+        {
+          "feature_id": "AI-WIF-005",
+          "name": "Staffing What-If",
+          "effort_days": 8,
+          "dependencies": ["AI-FOR-005"],
+          "team": "AI + Data Science",
+          "sprint": "TBD"
+        },
+        {
+          "feature_id": "AI-WIF-006",
+          "name": "Expansion What-If",
+          "effort_days": 15,
+          "dependencies": ["AI-WIF-001", "RPT-BRN-006"],
+          "team": "AI + Data Science",
+          "sprint": "TBD"
+        }
+      ],
+      "BRANCH_REPORTS_P3": [
+        {
+          "feature_id": "RPT-BRN-006",
+          "name": "Geo Analysis",
+          "effort_days": 12,
+          "dependencies": ["RPT-BRN-001"],
+          "team": "Backend + AI",
+          "sprint": "TBD"
+        }
+      ],
+      "CONVERSATIONAL_P3": [
+        {
+          "feature_id": "AI-NLQ-CON",
+          "name": "Conversational Analytics",
+          "effort_days": 15,
+          "dependencies": ["AI-NLQ-006"],
+          "team": "AI",
+          "sprint": "TBD"
+        }
+      ],
+      "INTEGRATION_P3": [
+        {
+          "feature_id": "INT-001",
+          "name": "BI Tool Integration",
+          "effort_days": 15,
+          "dependencies": ["EXP-004"],
+          "team": "Backend",
+          "sprint": "TBD"
+        },
+        {
+          "feature_id": "INT-002",
+          "name": "Webhook/API Automation",
+          "effort_days": 12,
+          "dependencies": ["SCH-002"],
+          "team": "Backend",
+          "sprint": "TBD"
+        }
+      ]
+    },
+    "milestones": [
+      {"month": 12, "milestone": "Voice Assistant Beta"},
+      {"month": 14, "milestone": "Full Competitive Intelligence"},
+      {"month": 18, "milestone": "Platform Ecosystem Complete"}
+    ]
+  },
+  "DEPENDENCY_GRAPH": {
+    "critical_path": [
+      "INFRA-001 → INFRA-002 → AI-NLQ-001 → AI-NLQ-003 → AI-NLQ-004",
+      "INFRA-001 → INFRA-005 → AI-FOR-001 → AI-FOR-002 → AI-FOR-003",
+      "INFRA-001 → INFRA-004 → RPT-SAL-001 → RPT-MNU-001",
+      "RPT-CUS-001 → RPT-CUS-002 → RPT-CUS-003 → RPT-CUS-005"
+    ],
+    "parallel_tracks": {
+      "track_1_ai_query": ["AI-NLQ-001", "AI-NLQ-002", "AI-NLQ-003", "AI-NLQ-004"],
+      "track_2_reports": ["RPT-PER-*", "RPT-SAL-*", "RPT-MNU-*"],
+      "track_3_forecasting": ["AI-FOR-001", "AI-FOR-002", "AI-FOR-004"],
+      "track_4_ml": ["RPT-CUS-002", "RPT-CUS-003", "RPT-CUS-005", "AI-WIF-*"],
+      "track_5_platform": ["RPT-PLT-001", "RPT-PLT-002", "RPT-PLT-006"]
+    },
+    "blocking_dependencies": [
+      {
+        "blocker": "INFRA-002",
+        "blocks": ["All AI features"],
+        "risk": "HIGH",
+        "mitigation": "Prioritize in Sprint 1"
+      },
+      {
+        "blocker": "AI-FOR-001",
+        "blocks": ["All forecasting, What-if analysis"],
+        "risk": "MEDIUM",
+        "mitigation": "Start data collection early"
+      },
+      {
+        "blocker": "RPT-CUS-002",
+        "blocks": ["CLV, Churn prediction"],
+        "risk": "MEDIUM",
+        "mitigation": "Use rule-based fallback initially"
+      }
+    ]
+  },
+  "TEAM_ALLOCATION": {
+    "roles_needed": {
+      "backend_engineer": {
+        "count": 2,
+        "skills": ["Node.js/Python", "PostgreSQL", "Redis", "API design"],
+        "allocation": "Full-time"
+      },
+      "ai_engineer": {
+        "count": 2,
+        "skills": ["LLM integration", "Prompt engineering", "ML pipelines"],
+        "allocation": "Full-time"
+      },
+      "data_scientist": {
+        "count": 1,
+        "skills": ["Prophet", "XGBoost", "Clustering", "Time series"],
+        "allocation": "Full-time Phase 2+, Part-time Phase 1"
+      },
+      "frontend_engineer": {
+        "count": 2,
+        "skills": ["React", "TypeScript", "Data visualization", "Real-time"],
+        "allocation": "Full-time"
+      },
+      "devops_engineer": {
+        "count": 1,
+        "skills": ["Kubernetes", "CI/CD", "Monitoring", "ML deployment"],
+        "allocation": "Part-time"
+      }
+    },
+    "sprint_capacity": {
+      "points_per_sprint": 80,
+      "sprint_duration_weeks": 2,
+      "buffer_percentage": 20
+    }
+  },
+  "RISK_MITIGATION": {
+    "technical_risks": [
+      {
+        "risk": "LLM API rate limits",
+        "probability": "HIGH",
+        "impact": "MEDIUM",
+        "mitigation": "Implement caching, fallback models, request queuing"
+      },
+      {
+        "risk": "Prophet forecasting accuracy",
+        "probability": "MEDIUM",
+        "impact": "HIGH",
+        "mitigation": "Start with simpler models, iterate with more data"
+      },
+      {
+        "risk": "Real-time performance",
+        "probability": "MEDIUM",
+        "impact": "MEDIUM",
+        "mitigation": "Pre-aggregation, Redis caching, WebSocket optimization"
+      }
+    ],
+    "resource_risks": [
+      {
+        "risk": "AI engineer hiring delay",
+        "probability": "MEDIUM",
+        "impact": "HIGH",
+        "mitigation": "Start with consultants, use managed AI services"
+      },
+      {
+        "risk": "Data scientist availability",
+        "probability": "LOW",
+        "impact": "MEDIUM",
+        "mitigation": "Delay ML features to Phase 2, use pre-trained models"
+      }
+    ],
+    "business_risks": [
+      {
+        "risk": "Credit system pricing mismatch",
+        "probability": "MEDIUM",
+        "impact": "MEDIUM",
+        "mitigation": "A/B test pricing, generous free tier initially"
+      },
+      {
+        "risk": "Feature complexity overwhelming users",
+        "probability": "LOW",
+        "impact": "MEDIUM",
+        "mitigation": "Progressive disclosure, guided onboarding"
+      }
+    ]
+  },
+  "SUCCESS_METRICS": {
+    "phase_1": {
+      "technical": [
+        {"metric": "NL Query Response Time", "target": "<3s p95"},
+        {"metric": "Report Generation Time", "target": "<10s"},
+        {"metric": "System Uptime", "target": ">99.5%"}
+      ],
+      "business": [
+        {"metric": "Beta Users", "target": "50"},
+        {"metric": "NL Queries/Day/User", "target": ">3"},
+        {"metric": "Feature Adoption", "target": ">60%"}
+      ]
+    },
+    "phase_2": {
+      "technical": [
+        {"metric": "Forecast Accuracy", "target": ">80%"},
+        {"metric": "Anomaly Detection Precision", "target": ">85%"},
+        {"metric": "Cache Hit Rate", "target": ">40%"}
+      ],
+      "business": [
+        {"metric": "Paid Conversions", "target": "30%"},
+        {"metric": "Pro Plan Upgrades", "target": "15%"},
+        {"metric": "NPS Score", "target": ">40"}
+      ]
+    },
+    "phase_3": {
+      "technical": [
+        {"metric": "CLV Prediction Accuracy", "target": ">75%"},
+        {"metric": "Churn Prediction AUC", "target": ">0.8"},
+        {"metric": "What-if Latency", "target": "<15s"}
+      ],
+      "business": [
+        {"metric": "Enterprise Customers", "target": "10"},
+        {"metric": "MRR from AI Features", "target": ">40%"},
+        {"metric": "Customer Retention", "target": ">85%"}
+      ]
+    }
+  }
+}

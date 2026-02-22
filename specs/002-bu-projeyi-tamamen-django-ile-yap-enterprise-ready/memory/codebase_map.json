@@ -1,0 +1,120 @@
+{
+  "discovered_files": {
+    "e_menum/": {
+      "description": "Django project skeleton created with config directory structure. Uses split settings pattern (base.py, development.py) for environment-specific configuration. Turkish (tr) is the default language with Europe/Istanbul timezone.",
+      "category": "architecture",
+      "discovered_at": "2026-02-14T10:27:58.428126+00:00"
+    },
+    "e_menum/config/settings/base.py": {
+      "description": "Base Django settings with comprehensive enterprise configuration. Third-party apps (rest_framework, guardian, corsheaders) and local apps are commented out until dependencies are installed. Includes FallbackEnv class for graceful django-environ fallback.",
+      "category": "configuration",
+      "discovered_at": "2026-02-14T10:32:38.448311+00:00"
+    },
+    "e_menum/config/settings/": {
+      "description": "Environment-specific settings: development.py (DEBUG=True, SQLite, relaxed security), staging.py (DEBUG=False, PostgreSQL, HTTPS, shorter HSTS), production.py (DEBUG=False, strict validation, JSON logging, Sentry required)",
+      "category": "architecture",
+      "discovered_at": "2026-02-14T10:36:03.503083+00:00"
+    },
+    "e_menum/config/urls.py": {
+      "description": "Root URL configuration with API v1 versioning. Includes: health check endpoints (/health/, /healthz/), API root with endpoint discovery (/api/v1/), Django admin customization, development-only URLs for debug toolbar and media serving. All app module URLs are commented out until apps are created.",
+      "category": "routing",
+      "discovered_at": "2026-02-14T10:42:23.339676+00:00"
+    },
+    "e_menum/apps/core/models.py": {
+      "description": "Organization model is the multi-tenant anchor. All tenant-scoped queries MUST filter by organization. Uses SoftDeleteMixin and TimeStampedMixin base classes for reusability. SoftDeleteManager auto-filters deleted records.",
+      "category": "architecture",
+      "discovered_at": "2026-02-14T10:53:50.818991+00:00"
+    },
+    "e_menum/apps/core/migrations/0001_initial.py": {
+      "description": "Initial core migration creates 9 models: Permission, Organization, User, Branch, Role, Session, RolePermission, UserRole, AuditLog. Uses UUID primary keys, soft delete patterns, and proper indexes. AUTH_USER_MODEL must be enabled in settings before migrations run.",
+      "category": "migration",
+      "discovered_at": "2026-02-14T11:06:22.198559+00:00"
+    },
+    "e_menum/shared/middleware/tenant.py": {
+      "description": "TenantMiddleware injects request.organization, request.organization_id, and request.is_tenant_aware. Resolution order: 1) user.organization FK, 2) X-Organization-ID header, 3) emenum_org_id cookie. Includes TenantContextMixin for views and utility functions get_current_organization/set_current_organization.",
+      "category": "middleware",
+      "discovered_at": "2026-02-14T11:10:33.330430+00:00"
+    },
+    "e_menum/shared/permissions/abilities.py": {
+      "description": "CASL-like permission system implementation with Ability class, Rule dataclass, build_ability_for_user() function, and DRF permission classes. Supports ABAC with condition evaluation and variable substitution (${user.organization_id}).",
+      "category": "architecture",
+      "discovered_at": "2026-02-14T11:14:21.450384+00:00"
+    },
+    "e_menum/apps/core/views.py": {
+      "description": "JWT authentication views implemented with LoginView, LogoutView, TokenRefreshView, TokenVerifyView. Uses SimpleJWT for token management with custom claims (email, organization_id). Session model tracks refresh tokens (hashed) for security. AuditLog records all auth events.",
+      "category": "authentication",
+      "discovered_at": "2026-02-14T11:22:46.974716+00:00"
+    },
+    "e_menum/apps/menu/": {
+      "description": "Menu module API completed with DRF. Contains serializers.py (Theme/Menu/Category/Product serializers with List/Detail/Create/Update variants), views.py (ViewSets extending BaseTenantViewSet with custom actions like publish, toggle-featured, set-default), and urls.py (router-based with nested routers for variants/modifiers). All tenant-scoped with organization filtering. AllergenViewSet is read-only and public (AllowAny).",
+      "category": "api",
+      "discovered_at": "2026-02-14T13:40:09.846359+00:00"
+    },
+    "e_menum/apps/orders/models.py": {
+      "description": "Zone and Table models for restaurant layout management. Zone organizes tables into sections (Garden, Indoor, VIP). Table tracks physical tables with status (Available/Occupied/Reserved), capacity, and floor plan positioning.",
+      "category": "model",
+      "discovered_at": "2026-02-14T11:48:22.166196+00:00"
+    },
+    "e_menum/apps/subscriptions/models.py": {
+      "description": "Feature and Plan models created for subscriptions module. Feature uses FeatureType (BOOLEAN, LIMIT, USAGE) with JSON default_value for flexibility. Plan uses PlanTier choices with JSON fields for limits (max_menus, max_products, etc.) and feature_flags (boolean toggles). Both are platform-level models (no organization FK). Plan has helper methods: get_limit(), get_feature_flag(), is_limit_exceeded(), get_remaining_quota().",
+      "category": "models",
+      "discovered_at": "2026-02-14T12:24:50.881061+00:00"
+    },
+    "e_menum/apps/customers/models.py": {
+      "description": "Customer model includes denormalized counters (total_orders, total_spent, loyalty_points_balance) that should be updated via signals when orders are placed. CustomerVisit and LoyaltyPoint are append-only models without soft delete for analytics/ledger integrity.",
+      "category": "model-design",
+      "discovered_at": "2026-02-14T12:39:54.728445+00:00"
+    },
+    "e_menum/shared/serializers/base.py": {
+      "description": "Base serializers: BaseModelSerializer (UUID handling), SoftDeleteModelSerializer (excludes deleted_at), AuditModelSerializer (created_at, updated_at), TenantModelSerializer (auto-injects organization). Also includes StandardResponseSerializer, ErrorResponseSerializer, and utility serializers (IDListSerializer, BulkActionResponseSerializer).",
+      "category": "architecture",
+      "discovered_at": "2026-02-14T12:57:35.587895+00:00"
+    },
+    "e_menum/shared/views/base.py": {
+      "description": "Base viewsets with standard response format: StandardPagination (E-Menum format with meta), StandardResponseMixin (wraps responses in {\"success\": true, \"data\": ...}), SoftDeleteMixin (soft_delete instead of delete), TenantFilterMixin (auto organization filter). BaseModelViewSet for non-tenant, BaseTenantViewSet for tenant-scoped resources.",
+      "category": "architecture",
+      "discovered_at": "2026-02-14T12:57:38.090826+00:00"
+    },
+    "e_menum/apps/orders/": {
+      "description": "Orders module API completed with DRF. Contains serializers.py (Zone/Table/QRCode/Order/OrderItem/ServiceRequest serializers with List/Detail/Create/Update variants), views.py (ViewSets extending BaseTenantViewSet with custom actions like set-available, confirm, mark-paid, acknowledge), and urls.py (router-based). All tenant-scoped with organization filtering. Includes workflow actions for order status transitions.",
+      "category": "api",
+      "discovered_at": "2026-02-14T13:47:08.952554+00:00"
+    },
+    "e_menum/apps/subscriptions/": {
+      "description": "Subscriptions module API completed with DRF. Contains serializers.py (Feature/Plan/Subscription/Invoice/PlanFeature/OrganizationUsage serializers with List/Detail/Create/Update variants), views.py (ViewSets with custom actions like cancel, reactivate, change-plan, mark-paid, refund, summary), and urls.py (router-based). Platform-level models (Feature, Plan, PlanFeature) use BaseModelViewSet with AllowAny for reads. Tenant-scoped models (Subscription, Invoice, OrganizationUsage) use BaseTenantViewSet with organization filtering.",
+      "category": "api",
+      "discovered_at": "2026-02-14T13:53:01.791811+00:00"
+    },
+    "e_menum/templates/layouts/": {
+      "description": "Template layouts created with base.html (master), admin.html (dashboard with sidebar), and public.html (customer-facing menu). All use Tailwind CSS, Alpine.js, Phosphor Icons. i18n support for TR/EN. Dark mode via class toggle. Accessibility features included.",
+      "category": "template",
+      "discovered_at": "2026-02-14T14:18:26.035034+00:00"
+    },
+    "e_menum/templates/public/": {
+      "description": "Public menu templates (menu.html, menu_detail.html) for customer-facing QR code access. Templates extend layouts/public.html and use Alpine.js for interactivity (cart, variants, modifiers). Uses Django URL reversing with org_slug/menu_slug/product_slug parameters for public routes.",
+      "category": "templates",
+      "discovered_at": "2026-02-14T14:23:01.608397+00:00"
+    },
+    "e_menum/apps/subscriptions/management/commands/seed_plans.py": {
+      "description": "seed_plans management command for creating initial subscription plans and features. Idempotent with --force (update existing) and --dry-run (preview) flags. Creates: 21 features across 11 categories, 5 plans (Free/Starter/Growth/Professional/Enterprise), PlanFeature junction records with specific limits. Plan limits follow spec Appendix B.",
+      "category": "management_commands",
+      "discovered_at": "2026-02-14T14:31:13.727894+00:00"
+    },
+    "e_menum/apps/core/management/commands/seed_roles.py": {
+      "description": "seed_roles management command creates 8 system roles (super_admin, admin, sales, support for PLATFORM; owner, manager, staff, viewer for ORGANIZATION) with associated permissions across 20 resources. Organization-scoped role permissions include tenant conditions: {'organization_id': '${user.organization_id}'} for CASL-like ABAC support.",
+      "category": "management_commands",
+      "discovered_at": "2026-02-14T14:35:57.236287+00:00"
+    },
+    "e_menum/docker-compose.yml": {
+      "description": "Docker Compose setup for local development. Main services: db (PostgreSQL 15), redis (Redis 7), web (Django), celery_worker, celery_beat. Use with docker-compose.dev.yml for development mode. Optional tools via profiles: --profile tools (pgAdmin, Redis Commander), --profile mail (MailHog). All services use emenum_network. Environment variables have sensible defaults.",
+      "category": "deployment",
+      "discovered_at": "2026-02-14T14:41:18.320709+00:00"
+    },
+    "e_menum/db.sqlite3": {
+      "description": "Initial seed data populated: 5 subscription plans with 20 features, 8 system roles with 141 permissions, 14 EU standard allergens. Seed commands are idempotent and support --force and --dry-run flags.",
+      "category": "database",
+      "discovered_at": "2026-02-14T15:14:35.967974+00:00"
+    }
+  },
+  "last_updated": "2026-02-14T15:14:35.967990+00:00"
+}

@@ -1,0 +1,103 @@
+{
+  "task_description": "Complete greenfield implementation of E-Menum Enterprise QR Menu Platform",
+  "scoped_services": ["backend", "database", "cache", "frontend"],
+  "files_to_modify": {
+    "note": "Greenfield project - all files will be created"
+  },
+  "files_to_create": {
+    "config": [
+      "src/config/env.ts",
+      "src/config/database.ts",
+      "src/config/redis.ts",
+      "src/config/constants.ts"
+    ],
+    "kernel": [
+      "src/main.ts",
+      "src/core/kernel/bootstrap.ts",
+      "src/core/kernel/container.ts",
+      "src/core/kernel/module-loader.ts"
+    ],
+    "base_classes": [
+      "src/core/base/base.controller.ts",
+      "src/core/base/base.service.ts",
+      "src/core/base/base.repository.ts"
+    ],
+    "middleware": [
+      "src/core/middleware/auth.middleware.ts",
+      "src/core/middleware/tenant.middleware.ts",
+      "src/core/middleware/permission.middleware.ts",
+      "src/core/middleware/rate-limit.middleware.ts",
+      "src/core/middleware/error.middleware.ts"
+    ],
+    "services": [
+      "src/core/services/auth.service.ts",
+      "src/core/services/permission.service.ts",
+      "src/core/services/event.service.ts"
+    ],
+    "exceptions": [
+      "src/core/exceptions/app.exception.ts",
+      "src/core/exceptions/error-codes.ts"
+    ],
+    "database": [
+      "prisma/schema/base.prisma",
+      "prisma/schema/core.prisma",
+      "prisma/schema/menu.prisma",
+      "prisma/schema/order.prisma"
+    ],
+    "i18n": [
+      "locales/tr/common.json",
+      "locales/en/common.json"
+    ]
+  },
+  "files_to_reference": [
+    "CONSTRAINTS.md",
+    "MVP_SCOPE.md",
+    "MODULE_SYSTEM.md",
+    "MODULE_DEVELOPMENT_GUIDE.md",
+    "DATABASE_SCHEMA.md",
+    "API_CONTRACTS.md",
+    "SECURITY_MODEL.md",
+    "CODING_STANDARDS.md",
+    "TESTING_STRATEGY.md",
+    "FRONTEND_ARCHITECTURE.md"
+  ],
+  "patterns": {
+    "module_structure": {
+      "files": ["module.json", "index.ts", "{name}.module.ts", "{name}.controller.ts", "{name}.service.ts", "{name}.repository.ts", "{name}.schema.ts", "{name}.types.ts", "{name}.routes.ts", "{name}.events.ts"],
+      "description": "Each module must have manifest, public exports, and standard file structure"
+    },
+    "multi_tenancy": {
+      "pattern": "organizationId REQUIRED on ALL tenant-scoped queries",
+      "middleware": "tenant.middleware.ts sets req.organization from JWT"
+    },
+    "service_pattern": {
+      "pattern": "Extend BaseService, use @injectable decorator, inject PrismaClient and EventService",
+      "example": "@injectable() class MenuService extends BaseService<Menu>"
+    },
+    "controller_pattern": {
+      "pattern": "Use @JsonController, @Authorized decorators, @CurrentOrg for tenant context",
+      "example": "@JsonController('/api/v1/menus') @Authorized(['menu.view'])"
+    },
+    "error_handling": {
+      "pattern": "Always throw AppException, never raw Error",
+      "example": "throw new AppException('MENU_NOT_FOUND', 404)"
+    },
+    "validation": {
+      "pattern": "All input validated with Zod schemas",
+      "example": "const schema = z.object({ name: z.string().min(1) })"
+    },
+    "soft_delete": {
+      "pattern": "Never physical delete, always set deletedAt timestamp",
+      "filter": "deletedAt: null in all queries"
+    },
+    "import_alias": {
+      "pattern": "Use @/ alias for all internal imports",
+      "example": "import { BaseService } from '@/core/base/base.service'"
+    }
+  },
+  "existing_implementations": {
+    "description": "No existing code - this is a greenfield project",
+    "reference_docs": "Extensive documentation in .auto-claude/ and root directory"
+  },
+  "created_at": "2026-02-01T00:53:00.000Z"
+}

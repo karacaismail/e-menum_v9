@@ -1,0 +1,28 @@
+{
+  "file_path": "locales/en/common.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"appName\": \"E-Menum\",\n  \"language\": \"Language\",\n  \"languages\": {\n    \"tr\": \"Turkish\",\n    \"en\": \"English\"\n  },\n  \"actions\": \"Actions\",\n  \"view\": \"View\",\n  \"viewDetails\": \"View Details\",\n  \"viewAll\": \"View All\",\n  \"edit\": \"Edit\",\n  \"delete\": \"Delete\",\n  \"cancel\": \"Cancel\",\n  \"save\": \"Save\",\n  \"submit\": \"Submit\",\n  \"confirm\": \"Confirm\",\n  \"close\": \"Close\",\n  \"back\": \"Back\",\n  \"next\": \"Next\",\n  \"previous\": \"Previous\",\n  \"search\": \"Search\",\n  \"filter\": \"Filter\",\n  \"clearFilters\": \"Clear Filters\",\n  \"loading\": \"Loading...\",\n  \"noData\": \"No data found\",\n  \"optional\": \"optional\",\n  \"required\": \"required\",\n  \"yes\": \"Yes\",\n  \"no\": \"No\",\n  \"or\": \"or\",\n  \"and\": \"and\",\n  \"status\": \"Status\",\n  \"type\": \"Type\",\n  \"name\": \"Name\",\n  \"description\": \"Description\",\n  \"date\": \"Date\",\n  \"time\": \"Time\",\n  \"price\": \"Price\",\n  \"total\": \"Total\",\n  \"amount\": \"Amount\",\n  \"quantity\": \"Quantity\",\n  \"table\": \"Table\",\n  \"currency\": \"TRY\",\n  \"moreActions\": \"More actions\",\n  \"duplicate\": \"Duplicate\",\n  \"preview\": \"Preview\",\n  \"publish\": \"Publish\",\n  \"unpublish\": \"Unpublish\",\n  \"updated\": \"Updated\",\n  \"created\": \"Created\",\n  \"pagination\": \"Pagination\",\n  \"showing\": \"Showing\",\n  \"to\": \"to\",\n  \"of\": \"of\",\n  \"results\": \"results\",\n  \"page\": \"Page\",\n  \"perPage\": \"Per page\",\n  \"from\": \"From\",\n  \"success\": \"Success\",\n  \"error\": \"Error\",\n  \"warning\": \"Warning\",\n  \"info\": \"Info\",\n  \"all\": \"All\",\n  \"none\": \"None\",\n  \"select\": \"Select\",\n  \"selected\": \"Selected\",\n  \"upload\": \"Upload\",\n  \"download\": \"Download\",\n  \"image\": \"Image\",\n  \"file\": \"File\",\n  \"email\": \"Email\",\n  \"phone\": \"Phone\",\n  \"address\": \"Address\",\n  \"website\": \"Website\",\n  \"settings\": \"Settings\",\n  \"profile\": \"Profile\",\n  \"logout\": \"Logout\",\n  \"help\": \"Help\",\n  \"support\": \"Support\",\n  \"notifications\": \"Notifications\",\n  \"active\": \"Active\",\n  \"inactive\": \"Inactive\",\n  \"enabled\": \"Enabled\",\n  \"disabled\": \"Disabled\",\n  \"online\": \"Online\",\n  \"offline\": \"Offline\",\n  \"today\": \"Today\",\n  \"yesterday\": \"Yesterday\",\n  \"tomorrow\": \"Tomorrow\",\n  \"week\": \"Week\",\n  \"month\": \"Month\",\n  \"year\": \"Year\",\n  \"daily\": \"Daily\",\n  \"weekly\": \"Weekly\",\n  \"monthly\": \"Monthly\",\n  \"yearly\": \"Yearly\",\n  \"days\": {\n    \"monday\": \"Monday\",\n    \"tuesday\": \"Tuesday\",\n    \"wednesday\": \"Wednesday\",\n    \"thursday\": \"Thursday\",\n    \"friday\": \"Friday\",\n    \"saturday\": \"Saturday\",\n    \"sunday\": \"Sunday\"\n  },\n  \"months\": {\n    \"january\": \"January\",\n    \"february\": \"February\",\n    \"march\": \"March\",\n    \"april\": \"April\",\n    \"may\": \"May\",\n    \"june\": \"June\",\n    \"july\": \"July\",\n    \"august\": \"August\",\n    \"september\": \"September\",\n    \"october\": \"October\",\n    \"november\": \"November\",\n    \"december\": \"December\"\n  },\n  \"validation\": {\n    \"required\": \"This field is required\",\n    \"email\": \"Please enter a valid email address\",\n    \"phone\": \"Please enter a valid phone number\",\n    \"minLength\": \"Must be at least {{min}} characters\",\n    \"maxLength\": \"Must be at most {{max}} characters\",\n    \"min\": \"Must be at least {{min}}\",\n    \"max\": \"Must be at most {{max}}\",\n    \"pattern\": \"Invalid format\"\n  },\n  \"confirm\": {\n    \"delete\": \"Are you sure you want to delete this item?\",\n    \"unsavedChanges\": \"You have unsaved changes. Do you want to continue?\"\n  },\n  \"footer\": {\n    \"copyright\": \"\u00a9 {{year}} E-Menum. All rights reserved.\",\n    \"terms\": \"Terms of Service\",\n    \"privacy\": \"Privacy Policy\",\n    \"contact\": \"Contact\"\n  }\n}\n",
+        "last_modified": "2026-02-01T09:10:53.668453"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:24.185844",
+  "last_updated": "2026-02-01T08:03:24.196163"
+}

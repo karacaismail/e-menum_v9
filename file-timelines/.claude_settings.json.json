@@ -1,0 +1,28 @@
+{
+  "file_path": ".claude_settings.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"sandbox\": {\n    \"enabled\": true,\n    \"autoAllowBashIfSandboxed\": true\n  },\n  \"permissions\": {\n    \"defaultMode\": \"acceptEdits\",\n    \"allow\": [\n      \"Read(./**)\",\n      \"Write(./**)\",\n      \"Edit(./**)\",\n      \"Glob(./**)\",\n      \"Grep(./**)\",\n      \"Read(/Users/karaca/Documents/e-menum_v9/.auto-claude/worktrees/tasks/001-create/**)\",\n      \"Write(/Users/karaca/Documents/e-menum_v9/.auto-claude/worktrees/tasks/001-create/**)\",\n      \"Edit(/Users/karaca/Documents/e-menum_v9/.auto-claude/worktrees/tasks/001-create/**)\",\n      \"Glob(/Users/karaca/Documents/e-menum_v9/.auto-claude/worktrees/tasks/001-create/**)\",\n      \"Grep(/Users/karaca/Documents/e-menum_v9/.auto-claude/worktrees/tasks/001-create/**)\",\n      \"Read(/Users/karaca/Documents/e-menum_v9/.auto-claude/worktrees/tasks/001-create/.auto-claude/specs/001-create/**)\",\n      \"Write(/Users/karaca/Documents/e-menum_v9/.auto-claude/worktrees/tasks/001-create/.auto-claude/specs/001-create/**)\",\n      \"Edit(/Users/karaca/Documents/e-menum_v9/.auto-claude/worktrees/tasks/001-create/.auto-claude/specs/001-create/**)\",\n      \"Read(/Users/karaca/Documents/e-menum_v9/.auto-claude/**)\",\n      \"Write(/Users/karaca/Documents/e-menum_v9/.auto-claude/**)\",\n      \"Edit(/Users/karaca/Documents/e-menum_v9/.auto-claude/**)\",\n      \"Glob(/Users/karaca/Documents/e-menum_v9/.auto-claude/**)\",\n      \"Grep(/Users/karaca/Documents/e-menum_v9/.auto-claude/**)\",\n      \"Bash(*)\",\n      \"WebFetch(*)\",\n      \"WebSearch(*)\",\n      \"mcp__context7__resolve-library-id(*)\",\n      \"mcp__context7__get-library-docs(*)\"\n    ]\n  }\n}",
+        "last_modified": "2026-02-01T09:10:53.663118"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:24.031138",
+  "last_updated": "2026-02-01T08:03:24.052252"
+}

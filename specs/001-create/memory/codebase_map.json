@@ -1,0 +1,160 @@
+{
+  "discovered_files": {
+    "prisma/schema/base.prisma": {
+      "description": "Base Prisma schema contains datasource (PostgreSQL), generator (prisma-client-js with fullTextSearch and multiSchema preview features), and 18 base enums: OrganizationStatus, UserStatus, RoleScope, TableStatus, QRCodeType, OrderStatus, OrderType, OrderItemStatus, SubscriptionStatus, InvoiceStatus, PaymentMethod, NotificationType, NotificationStatus, MediaType, MediaStorage, AuditAction, FeatureFlagStatus. All other .prisma files in this directory will be merged into schema.prisma via npm run schema:merge.",
+      "category": "database",
+      "discovered_at": "2026-01-31T22:08:59.057199+00:00"
+    },
+    "prisma/schema/core.prisma": {
+      "description": "Core Prisma schema contains 8 models: Organization (tenant root), User (with org membership), Role (PLATFORM/ORGANIZATION scope), Permission (resource.action granular), Session (JWT refresh tokens), UserRole (junction with assignment metadata), RolePermission (junction), AuditLog (compliance logging). All models use CUID PKs, have createdAt/updatedAt timestamps, support soft delete via deletedAt, and include proper indexes. Organization is the tenant root - all tenant-scoped entities reference it via organizationId FK.",
+      "category": "database",
+      "discovered_at": "2026-01-31T22:10:57.367573+00:00"
+    },
+    "prisma/schema/menu.prisma": {
+      "description": "Menu schema created with 10 models: Theme, Menu, Category, Product, ProductVariant, ProductModifier, Allergen, ProductAllergen, NutritionInfo, Media. Category supports hierarchy via parentId self-reference. Product has M:N relation to Allergen via ProductAllergen junction. Forward references to QRCode and OrderItem (defined in order.prisma).",
+      "category": "database",
+      "discovered_at": "2026-01-31T22:13:34.223141+00:00"
+    },
+    ".env": {
+      "description": "Development environment file created with DATABASE_URL=postgresql://postgres:password@localhost:5432/emenum and all required config. File is gitignored for security.",
+      "category": "configuration",
+      "discovered_at": "2026-01-31T22:25:02.560327+00:00"
+    },
+    "src/config/constants.ts": {
+      "description": "Centralized constants file containing TIER_LIMITS (resource and monthly limits per plan), FEATURE_FLAGS (feature availability matrix), AI_CREDIT_COSTS, VALIDATION rules, RESERVED_SLUGS, ORDER_STATUS transitions, EXPIRATION times, AUDIT_EVENTS, and EU14 ALLERGENS. Includes helper functions: isUnlimited(), getResourceLimit(), getMonthlyLimit(), hasFeature(), getMinimumPlanForFeature(), canUpgrade(), canDowngrade(), isReservedSlug(), isValidOrderTransition().",
+      "category": "config",
+      "discovered_at": "2026-01-31T22:33:40.824238+00:00"
+    },
+    "src/core/exceptions/app.exception.ts": {
+      "description": "AppException class is the base exception class for all application errors. Has factory methods: unauthorized(), tokenExpired(), invalidCredentials(), invalidToken(), forbidden(action), insufficientPlan(feature, plan), featureDisabled(feature), validation(errors), invalidInput(msg, field), badRequest(msg), notFound(resource, id), alreadyExists(resource, identifier), conflict(msg), rateLimited(retryAfter), quotaExceeded(resource, limit), internal(msg), serviceUnavailable(service), databaseError(operation), moduleNotFound(id), moduleDependencyError(id, deps), coreModuleProtected(id), tenantNotFound(orgId), tenantAccessDenied(orgId). Also exports ValidationError interface, isAppException() type guard, and toAppException() helper.",
+      "category": "error-handling",
+      "discovered_at": "2026-01-31T22:45:29.053662+00:00"
+    },
+    "src/core/middleware/auth.middleware.ts": {
+      "description": "JWT auth middleware contains: verifyToken() for access token verification, verifyRefreshToken() for refresh tokens, authMiddleware and optionalAuthMiddleware Express handlers, requireRoles() and requirePermissions() middleware factories, generateAccessToken() and generateRefreshToken() for token creation. Follows SECURITY_MODEL.md JWT payload structure with sub (userId), org (organizationId), role, permissions[], jti (tokenId). Uses HS256 algorithm with env.JWT_SECRET and env.JWT_REFRESH_SECRET.",
+      "category": "middleware",
+      "discovered_at": "2026-01-31T22:58:35.152022+00:00"
+    },
+    "src/core/middleware/permission.middleware.ts": {
+      "description": "CASL permission middleware implements RBAC+ABAC authorization. Key exports: defineAbilitiesFor(user, organization, planTier) builds MongoAbility, permissionMiddleware attaches ability to request, requirePermission(action, subject) and requirePlan(tier) middleware factories. Supports 10 actions (manage, create, read, update, delete, publish, view, export, import, use, access) and 18 subjects. Plan hierarchy: free < starter < professional < business < enterprise. Platform roles have cross-org access; org roles are scoped via organizationId condition. Utility functions: getAbility(), canPerform(), assertCan(), packPermissions().",
+      "category": "middleware",
+      "discovered_at": "2026-01-31T23:03:46.306632+00:00"
+    },
+    "src/core/middleware/error.middleware.ts": {
+      "description": "Global error handler middleware. Exports: errorHandler (ErrorRequestHandler for Express), notFoundHandler (404 handler), asyncHandler (wraps async routes to catch errors), withErrorBoundary (service layer error handling). Converts AppException/Zod/Prisma errors to API_CONTRACTS.md format: { success: false, error: { code, message, details?, requestId, timestamp, stack? } }. Generates request IDs, hides stack in production, logs 5xx errors.",
+      "category": "middleware",
+      "discovered_at": "2026-01-31T23:09:06.174742+00:00"
+    },
+    "src/core/services/permission.service.ts": {
+      "description": "PermissionService is the core CASL authorization service. Key exports: defineAbilitiesFor(user, org, planTier) builds abilities, packPermissions(ability) for JWT, unpackPermissions(permissions[]) to rebuild abilities. Constants: PLAN_HIERARCHY, PLATFORM_ROLES, ORGANIZATION_ROLES, PERMISSION_SUBJECTS, PERMISSION_ACTIONS. Uses @injectable() decorator for tsyringe DI.",
+      "category": "architecture",
+      "discovered_at": "2026-01-31T23:15:54.743923+00:00"
+    },
+    "src/core/services/event.service.ts": {
+      "description": "EventService provides typed domain events using EventEmitter2. Supports wildcard patterns (e.g., 'menu.*'), async/sync emission, once/onMany subscriptions, waitFor Promise helper, and event statistics. Key exports: EventService class (@injectable), DomainEvents interface (type map), DomainEventName type (union of event names), EventHandler type. Usage: emit('menu.created', {menuId}) and on('menu.created', handler).",
+      "category": "service",
+      "discovered_at": "2026-01-31T23:18:46.216115+00:00"
+    },
+    "src/shared/decorators/index.ts": {
+      "description": "Shared decorators for routing-controllers: @CurrentUser (AuthUser extraction), @CurrentOrg/@CurrentOrgId (TenantOrganization extraction), @Authorized (CASL permission checking). Supports permission strings ('menu.view'), plan tier requirements, role checks, and anyPermission mode. Also includes helper decorators: @RequireRoles, @RequirePlan, @RequireAnyPermission, @RequireAllPermissions. Utility functions exported for use in middleware/services: getCurrentUser(), getCurrentOrg(), validateOrgAccess(), etc.",
+      "category": "pattern",
+      "discovered_at": "2026-01-31T23:21:49.948028+00:00"
+    },
+    "src/modules/_core/auth/auth.controller.ts": {
+      "description": "Auth controller implements 12 endpoints for authentication: register, login, refresh, logout, forgot-password, reset-password, change-password, verify-email, resend-verification, me, sessions (list), sessions/:id (delete). Uses @JsonController('/api/v1/auth'), extends BaseController, injects AuthModuleService. Refresh token is stored in HTTP-only cookie with path /api/v1/auth. Login and refresh endpoints return Response directly to set cookies properly.",
+      "category": "pattern",
+      "discovered_at": "2026-01-31T23:33:57.839901+00:00"
+    },
+    "src/modules/_core/auth/": {
+      "description": "Auth module complete with 8 files: module.json (manifest), auth.types.ts (types), auth.schema.ts (Zod validation), auth.service.ts (business logic), auth.controller.ts (REST endpoints), auth.routes.ts (route config), auth.module.ts (ModuleInstance lifecycle), index.ts (public API). Module follows MODULE_SYSTEM.md patterns with onLoad/onEnable/onDisable/onUnload lifecycle hooks.",
+      "category": "module-structure",
+      "discovered_at": "2026-01-31T23:37:56.367198+00:00"
+    },
+    "src/modules/_core/organization/": {
+      "description": "Organization module complete with 9 files implementing multi-tenant organization management. Follows same pattern as auth module: module.json (manifest), *.types.ts (TypeScript types), *.schema.ts (Zod validation), *.repository.ts (data access using BaseNonTenantRepository pattern since Organization IS the tenant root), *.service.ts (business logic with event emission), *.controller.ts (REST endpoints with routing-controllers decorators), *.routes.ts (route config), *.module.ts (ModuleInstance lifecycle), index.ts (public exports). Key features: CRUD, settings merge, status changes, slug auto-generation, soft delete.",
+      "category": "module",
+      "discovered_at": "2026-01-31T23:49:20.799660+00:00"
+    },
+    "src/modules/_core/user/": {
+      "description": "User module complete with 9 files implementing user management. Follows same pattern as auth and organization modules: module.json (manifest), *.types.ts (TypeScript types), *.schema.ts (Zod validation), *.repository.ts (data access with tenant-scoped queries), *.service.ts (business logic with password hashing via AuthService), *.controller.ts (REST endpoints with routing-controllers decorators), *.routes.ts (route config), *.module.ts (ModuleInstance lifecycle), index.ts (public exports). Key features: CRUD, role assignment/removal, profile management, password changes, user invitations, status changes, soft delete.",
+      "category": "module",
+      "discovered_at": "2026-01-31T23:59:59.054596+00:00"
+    },
+    "src/modules/_core/branch/": {
+      "description": "Branch module follows exact same pattern as Organization module: module.json, types, schema, repository, service, controller, routes, module definition, and index.ts exports. Branch supports hierarchical parent-child relationships with circular reference prevention and max depth validation.",
+      "category": "module_pattern",
+      "discovered_at": "2026-02-01T00:10:12.842856+00:00"
+    },
+    "src/modules/_core/media/": {
+      "description": "Media module complete with 9 files implementing file upload, image processing, and asset management. Follows same pattern as Organization module: module.json (manifest), *.types.ts (TypeScript types), *.schema.ts (Zod validation), *.repository.ts (data access with tenant-scoped queries), *.service.ts (business logic with event emission), *.controller.ts (REST endpoints with routing-controllers decorators), *.routes.ts (route config), *.module.ts (ModuleInstance lifecycle), index.ts (public exports). Key features: file upload with validation, image processing, thumbnail generation, multiple storage backends (local, S3, CDN), soft delete.",
+      "category": "module",
+      "discovered_at": "2026-02-01T00:24:23.180667+00:00"
+    },
+    "src/modules/_core/notification/": {
+      "description": "Notification module complete with 9 files implementing email and in-app notification management. Follows same pattern as Organization and Media modules: module.json (manifest), *.types.ts (TypeScript types), *.schema.ts (Zod validation), *.repository.ts (data access with user-scoped queries), *.service.ts (business logic with event emission), *.controller.ts (REST endpoints with routing-controllers decorators), *.routes.ts (route config), *.module.ts (ModuleInstance lifecycle), index.ts (public exports). Key features: notification CRUD, broadcast to multiple users, mark as read operations, notification counts/statistics, email notification support.",
+      "category": "architecture",
+      "discovered_at": "2026-02-01T00:32:52.930125+00:00"
+    },
+    "src/modules/_core/module-loader/": {
+      "description": "Module Loader admin module complete with 7 files. ModuleLoaderService wraps kernel ModuleLoader providing activateModule(), deactivateModule(), listModules(), checkDependencies(), checkModuleHealth() methods. ModuleLoaderController exposes REST endpoints at /api/v1/admin/modules/* for admin panel. Types include ModuleInfo, ModuleActionResponse, DependencyCheckResult, ModuleHealthCheckResult. Routes config includes status/category helper functions and icons.",
+      "category": "module",
+      "discovered_at": "2026-02-01T00:47:59.758426+00:00"
+    },
+    "src/modules/menu/": {
+      "description": "Menu module complete with 14 files: module.json (manifest), menu.types.ts (TypeScript types), menu.schema.ts (Zod validation), menu.repository.ts (data access), menu.service.ts (business logic), category.repository.ts, category.service.ts, product.repository.ts, product.service.ts, qrcode.service.ts, menu.controller.ts (REST endpoints with routing-controllers decorators), menu.routes.ts (route config), menu.events.ts (typed domain events), menu.module.ts (ModuleInstance lifecycle), index.ts (public exports). Feature module that can be enabled/disabled per organization. Key features: CRUD for menus/categories/products/variants/modifiers, publishing workflow, QR code generation, hook system for extensibility.",
+      "category": "module_implementation",
+      "discovered_at": "2026-02-01T01:19:48.593140+00:00"
+    },
+    "src/modules/menu/product.service.ts": {
+      "description": "ProductService provides comprehensive product management with: createWithRelations() for atomic creation with variants/modifiers/allergens/nutritionInfo, separate CRUD methods for variants (createVariant, updateVariant, deleteVariant, setDefaultVariant), modifiers (createModifier, updateModifier, deleteModifier), allergen associations (setAllergens, addAllergen, removeAllergen), and nutrition info (upsertNutritionInfo, deleteNutritionInfo). All methods emit domain events and use CategoryRepository for category verification.",
+      "category": "service",
+      "discovered_at": "2026-02-01T01:08:14.861466+00:00"
+    },
+    "src/modules/order/": {
+      "description": "Order module created with module.json, order.types.ts, and order.schema.ts. Types cover Order, OrderItem, Table, Zone, QRCode, Customer, Feedback, ServiceRequest entities. Schema includes validation for all CRUD operations with utility functions for order calculations (generateOrderNumber, calculateOrderTotals, isValidStatusTransition).",
+      "category": "module-structure",
+      "discovered_at": "2026-02-01T01:30:00.413410+00:00"
+    },
+    "src/modules/order/order.service.ts": {
+      "description": "OrderService implements complete status workflow: PENDING \u2192 CONFIRMED \u2192 PREPARING \u2192 READY \u2192 DELIVERED \u2192 COMPLETED, with cancellation from any status up to PREPARING (with role-based permissions). Key exports: OrderService class (@injectable), CreateOrderResponse, ChangeStatusResponse interfaces, shortcut methods (confirm, startPreparing, markReady, markDelivered, complete, cancel), order item operations (addItem, updateItem, removeItem, updateItemStatus), getKitchenOrders for kitchen display. Uses isValidStatusTransition from schema and ORDER_STATUS_TRANSITIONS from constants.",
+      "category": "module",
+      "discovered_at": "2026-02-01T01:42:57.696865+00:00"
+    },
+    "src/views/admin/": {
+      "description": "Admin dashboard views created with 6 EJS templates: dashboard.ejs (stats cards, revenue chart, recent orders, quick actions), menus/index.ejs (grid view with filters/pagination), menus/create.ejs (form with image upload, theme selection), menus/edit.ejs (form with tabs, status management), orders/index.ejs (table with status filters, date range), orders/detail.ejs (order items, customer info, status history, payment). All views use Tailwind CSS, Alpine.js, Phosphor Icons, i18n t() function with fallbacks, and follow FRONTEND_ARCHITECTURE.md patterns.",
+      "category": "frontend",
+      "discovered_at": "2026-02-01T02:21:41.394525+00:00"
+    },
+    "src/views/public/": {
+      "description": "Public customer-facing views directory containing: menu.ejs (main QR menu display with categories/products), cart.ejs (standalone cart page), checkout.ejs (order placement form), order-status.ejs (order tracking with progress steps). All views use product-theme components and follow i18n patterns with typeof t === 'function' ? t('key') : 'fallback'.",
+      "category": "frontend",
+      "discovered_at": "2026-02-01T02:26:37.819648+00:00"
+    },
+    "src/modules/_examples/advanced-example/": {
+      "description": "Advanced Example Module is a complete reference implementation demonstrating all E-Menum module patterns: module.json manifest, types.ts (enums, entities, DTOs, events, hooks), schema.ts (Zod validation with utility functions), repository.ts (tenant-isolated data access), service.ts (business logic with validation and events), controller.ts (routing-controllers with @Authorized decorators), routes.ts (route config with path builders), events.ts (typed events with emitters), hooks.ts (extensible hook system), module.ts (lifecycle implementation), index.ts (public API exports). Use this as a template for new modules.",
+      "category": "module_pattern",
+      "discovered_at": "2026-02-01T02:37:25.124129+00:00"
+    },
+    "locales/tr/*.json": {
+      "description": "Turkish translation files created with comprehensive coverage of all UI strings. Organized into 5 files: common.json (general UI), auth.json (authentication), menu.json (menu/dashboard), order.json (orders/cart/checkout), errors.json (all error codes).",
+      "category": "i18n",
+      "discovered_at": "2026-02-01T02:55:34.162252+00:00"
+    },
+    "src/": {
+      "description": "Full project structure verified: 90,781 lines of TypeScript, 23 modules (8 core + 2 business + 1 example + 12 stubs), 20 module manifests, all using correct @/ alias imports. Build verification requires external npm commands.",
+      "category": "architecture",
+      "discovered_at": "2026-02-01T03:10:20.159657+00:00"
+    },
+    "src/__tests__/e2e/full-flow.e2e.spec.ts": {
+      "description": "Full E2E test covering complete user journey: registration \u2192 login \u2192 organization creation \u2192 menu/category/product creation \u2192 publishing \u2192 order placement \u2192 status workflow (PENDING \u2192 CONFIRMED \u2192 PREPARING \u2192 READY \u2192 DELIVERED \u2192 COMPLETED) \u2192 admin verification. Uses supertest for API calls and vitest for assertions.",
+      "category": "test",
+      "discovered_at": "2026-02-01T03:31:49.834552+00:00"
+    },
+    "scripts/verify-e2e-flow.ts": {
+      "description": "Standalone E2E verification script with colored terminal output, step-by-step flow execution, and summary report. Run with `npm run verify:e2e`. Reports success/failure counts and outputs created test data IDs for debugging.",
+      "category": "test",
+      "discovered_at": "2026-02-01T03:31:51.720740+00:00"
+    }
+  },
+  "last_updated": "2026-02-01T03:31:51.720753+00:00"
+}

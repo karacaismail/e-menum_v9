@@ -1,0 +1,28 @@
+{
+  "file_path": "src/shared/types/index.ts",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "/**\n * Shared Types\n *\n * Re-exports all shared type definitions for the E-Menum application.\n * Import types from this module for consistent API contracts.\n *\n * @module shared/types\n *\n * @example\n * ```typescript\n * import {\n *   ApiResponse,\n *   PaginatedResponse,\n *   ApiErrorResponse,\n *   PaginationMeta,\n *   ValidationErrorDetail,\n *   ListQuery,\n *   isApiSuccess,\n * } from '@/shared/types';\n *\n * // In a controller\n * @Get('/')\n * @Authorized(['menu.view'])\n * async list(\n *   @QueryParams() query: ListQuery,\n * ): Promise<PaginatedResponse<Menu>> {\n *   const result = await this.menuService.findAll(orgId, query);\n *   return this.paginated(result);\n * }\n *\n * // In a service or utility\n * function handleApiResult<T>(response: ApiResponse<T> | ApiErrorResponse): T {\n *   if (isApiSuccess(response)) {\n *     return response.data;\n *   }\n *   throw new Error(response.error.message);\n * }\n * ```\n */\n\n// -----------------------------------------------------------------------------\n// API Response Types\n// -----------------------------------------------------------------------------\n\nexport type {\n  // Success responses\n  ApiResponse,\n  PaginatedResponse,\n  PaginationMeta,\n\n  // Error responses\n  ApiErrorResponse,\n  ApiError,\n  ValidationErrorDetail,\n\n  // Union types\n  ApiResult,\n  PaginatedResult,\n\n  // Request types\n  PaginationQuery,\n  SortQuery,\n  FilterOperator,\n  FilterQuery,\n  ListQuery,\n\n  // HTTP types\n  HttpMethod,\n  HttpStatusCode,\n\n  // Utility types\n  ExtractApiData,\n  ExtractPaginatedItem,\n  AsyncApiResponse,\n  AsyncPaginatedResponse,\n\n  // Cursor pagination\n  CursorPaginationMeta,\n  CursorPaginatedResponse,\n  CursorPaginationQuery,\n\n  // Batch operations\n  BatchItemResult,\n  BatchResponse,\n} from './api.types';\n\n// -----------------------------------------------------------------------------\n// Type Guards\n// -----------------------------------------------------------------------------\n\nexport {\n  isApiSuccess,\n  isApiError,\n  isPaginatedResponse,\n} from './api.types';\n",
+        "last_modified": "2026-02-01T09:10:53.768382"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:26.622659",
+  "last_updated": "2026-02-01T08:03:26.632513"
+}

@@ -1,0 +1,1915 @@
+{
+  "metadata": {
+    "document": "E-Menum Reporting Features Part 4",
+    "section": "AI Query, AI Insights, Forecasting, What-If Analysis",
+    "version": "3.0.0"
+  },
+  "FEATURES": {
+    "AI_QUERY": [
+      {
+        "feature_key": "feature_nl_query_basic",
+        "feature_id": "RPT-AIQ-001",
+        "name_tr": "Temel Doğal Dil Sorgu",
+        "name_en": "Basic Natural Language Query",
+        "category": "AI_QUERY",
+        "subcategory": "basic",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Basit sorularla veri sorgulama - sayısal cevaplar",
+        "description_en": "Simple questions for data querying - numerical answers",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini",
+          "model_id": "claude-3-haiku-20240307"
+        },
+        "credit_cost": 1,
+        "query_complexity": "simple",
+        "response_time_target_ms": 2000,
+        "example_queries": [
+          {
+            "query_tr": "Dün kaç sipariş geldi?",
+            "query_en": "How many orders came yesterday?",
+            "response_type": "single_number",
+            "data_source": ["orders"]
+          },
+          {
+            "query_tr": "Bu haftanın cirosu ne?",
+            "query_en": "What's this week's revenue?",
+            "response_type": "single_number",
+            "data_source": ["orders", "payments"]
+          },
+          {
+            "query_tr": "Bugün en çok satan ürün hangisi?",
+            "query_en": "What's the best-selling item today?",
+            "response_type": "single_item",
+            "data_source": ["order_items"]
+          },
+          {
+            "query_tr": "Şu an kaç masa dolu?",
+            "query_en": "How many tables are occupied now?",
+            "response_type": "single_number",
+            "data_source": ["tables"]
+          },
+          {
+            "query_tr": "Ortalama sipariş tutarı ne kadar?",
+            "query_en": "What's the average order value?",
+            "response_type": "single_number",
+            "data_source": ["orders"]
+          }
+        ],
+        "supported_operations": [
+          "count",
+          "sum",
+          "average",
+          "max",
+          "min",
+          "latest",
+          "top_n"
+        ],
+        "supported_time_frames": [
+          "today",
+          "yesterday",
+          "this_week",
+          "last_week",
+          "this_month",
+          "last_month"
+        ],
+        "output_format": {
+          "style": "concise",
+          "include_comparison": false,
+          "max_tokens": 100
+        },
+        "plan_availability": {
+          "free": true,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "daily_limits": {
+          "free": 2,
+          "lite": 10,
+          "pro": 50,
+          "business": 200,
+          "enterprise": -1
+        },
+        "priority": "P0",
+        "implementation_status": "planned",
+        "estimated_effort_days": 8
+      },
+      {
+        "feature_key": "feature_nl_query_comparison",
+        "feature_id": "RPT-AIQ-002",
+        "name_tr": "Karşılaştırmalı Sorgu",
+        "name_en": "Comparison Query",
+        "category": "AI_QUERY",
+        "subcategory": "comparison",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Dönem ve metrik karşılaştırma sorguları",
+        "description_en": "Period and metric comparison queries",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "query_complexity": "medium",
+        "response_time_target_ms": 3000,
+        "example_queries": [
+          {
+            "query_tr": "Bu ay geçen ayla karşılaştırıldığında nasıl?",
+            "query_en": "How does this month compare to last month?",
+            "response_type": "comparison_table",
+            "comparison_type": "mom"
+          },
+          {
+            "query_tr": "Pazartesi mi Cumartesi mi daha iyi satış yapıyor?",
+            "query_en": "Which day sells better - Monday or Saturday?",
+            "response_type": "comparison",
+            "comparison_type": "day_of_week"
+          },
+          {
+            "query_tr": "Öğlen mi akşam mı daha yoğun?",
+            "query_en": "Is lunch or dinner busier?",
+            "response_type": "comparison",
+            "comparison_type": "time_slot"
+          },
+          {
+            "query_tr": "Geçen yılın aynı dönemine göre nasılız?",
+            "query_en": "How are we doing vs same period last year?",
+            "response_type": "comparison_table",
+            "comparison_type": "yoy"
+          },
+          {
+            "query_tr": "Hangi kategori daha karlı - içecekler mi yemekler mi?",
+            "query_en": "Which category is more profitable - drinks or food?",
+            "response_type": "comparison",
+            "comparison_type": "category"
+          }
+        ],
+        "supported_comparisons": [
+          "period_vs_period",
+          "category_vs_category",
+          "product_vs_product",
+          "staff_vs_staff",
+          "channel_vs_channel",
+          "day_vs_day",
+          "time_slot_vs_time_slot"
+        ],
+        "output_format": {
+          "style": "structured",
+          "include_delta": true,
+          "include_percentage": true,
+          "max_tokens": 300
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "daily_limits": {
+          "free": 0,
+          "lite": 5,
+          "pro": 30,
+          "business": 150,
+          "enterprise": -1
+        },
+        "priority": "P0",
+        "implementation_status": "planned",
+        "estimated_effort_days": 6
+      },
+      {
+        "feature_key": "feature_nl_query_analysis",
+        "feature_id": "RPT-AIQ-003",
+        "name_tr": "Analitik Sorgu",
+        "name_en": "Analytical Query",
+        "category": "AI_QUERY",
+        "subcategory": "analysis",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Neden/nasıl sorularıyla derinlemesine analiz",
+        "description_en": "Deep analysis with why/how questions",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "query_complexity": "complex",
+        "response_time_target_ms": 8000,
+        "example_queries": [
+          {
+            "query_tr": "Neden bu hafta satışlar düştü?",
+            "query_en": "Why did sales drop this week?",
+            "response_type": "root_cause_analysis",
+            "analysis_depth": "deep"
+          },
+          {
+            "query_tr": "En karlı ürünler hangisi ve neden?",
+            "query_en": "Which are the most profitable items and why?",
+            "response_type": "analysis_with_reasoning",
+            "analysis_depth": "medium"
+          },
+          {
+            "query_tr": "Müşteri kaybının ana nedenleri neler?",
+            "query_en": "What are the main reasons for customer churn?",
+            "response_type": "multi_factor_analysis",
+            "analysis_depth": "deep"
+          },
+          {
+            "query_tr": "Hangi saatler en verimsiz ve nasıl iyileştirilebilir?",
+            "query_en": "Which hours are least efficient and how to improve?",
+            "response_type": "analysis_with_recommendations",
+            "analysis_depth": "deep"
+          },
+          {
+            "query_tr": "Personel performansındaki düşüşün sebepleri neler?",
+            "query_en": "What are the reasons for staff performance decline?",
+            "response_type": "root_cause_analysis",
+            "analysis_depth": "deep"
+          }
+        ],
+        "analysis_capabilities": [
+          "root_cause_analysis",
+          "correlation_detection",
+          "trend_explanation",
+          "anomaly_explanation",
+          "factor_decomposition",
+          "pattern_identification"
+        ],
+        "output_format": {
+          "style": "detailed",
+          "include_evidence": true,
+          "include_confidence": true,
+          "max_tokens": 1000
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "daily_limits": {
+          "free": 0,
+          "lite": 0,
+          "pro": 10,
+          "business": 50,
+          "enterprise": -1
+        },
+        "priority": "P0",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "feature_nl_query_recommendation",
+        "feature_id": "RPT-AIQ-004",
+        "name_tr": "Öneri Sorgusu",
+        "name_en": "Recommendation Query",
+        "category": "AI_QUERY",
+        "subcategory": "recommendation",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Aksiyon ve öneri isteyen sorgular",
+        "description_en": "Queries requesting actions and recommendations",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "query_complexity": "complex",
+        "response_time_target_ms": 10000,
+        "example_queries": [
+          {
+            "query_tr": "Satışları artırmak için ne yapmalıyım?",
+            "query_en": "What should I do to increase sales?",
+            "response_type": "action_plan",
+            "recommendation_count": 5
+          },
+          {
+            "query_tr": "Menüde hangi değişiklikler yapmalıyım?",
+            "query_en": "What changes should I make to the menu?",
+            "response_type": "recommendations",
+            "recommendation_count": 5
+          },
+          {
+            "query_tr": "Personel verimliliğini nasıl artırabilirim?",
+            "query_en": "How can I improve staff efficiency?",
+            "response_type": "action_plan",
+            "recommendation_count": 5
+          },
+          {
+            "query_tr": "Maliyetleri nasıl düşürebilirim?",
+            "query_en": "How can I reduce costs?",
+            "response_type": "recommendations",
+            "recommendation_count": 5
+          },
+          {
+            "query_tr": "Müşteri memnuniyetini artırmak için öneriler?",
+            "query_en": "Suggestions to improve customer satisfaction?",
+            "response_type": "action_plan",
+            "recommendation_count": 5
+          }
+        ],
+        "recommendation_features": {
+          "prioritization": true,
+          "effort_estimation": true,
+          "impact_estimation": true,
+          "timeline_suggestion": true,
+          "dependencies": true
+        },
+        "output_format": {
+          "style": "actionable",
+          "include_priority": true,
+          "include_effort": true,
+          "include_impact": true,
+          "max_tokens": 1500
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "daily_limits": {
+          "free": 0,
+          "lite": 0,
+          "pro": 5,
+          "business": 30,
+          "enterprise": -1
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 8
+      },
+      {
+        "feature_key": "feature_nl_query_complex",
+        "feature_id": "RPT-AIQ-005",
+        "name_tr": "Kompleks Sorgu",
+        "name_en": "Complex Query",
+        "category": "AI_QUERY",
+        "subcategory": "complex",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Çoklu adım gerektiren kompleks sorgular",
+        "description_en": "Multi-step complex queries",
+        "ai_model": {
+          "primary": "gpt-4o",
+          "fallback": "claude-sonnet"
+        },
+        "credit_cost": 10,
+        "query_complexity": "very_complex",
+        "response_time_target_ms": 15000,
+        "example_queries": [
+          {
+            "query_tr": "En iyi 3 şubenin ortak özellikleri neler ve diğerlerine nasıl uygulanır?",
+            "query_en": "What are common traits of top 3 branches and how to apply to others?",
+            "steps": ["identify_top_performers", "analyze_patterns", "create_playbook", "suggest_implementation"]
+          },
+          {
+            "query_tr": "Geçen yılın verilerini kullanarak önümüzdeki 3 ay için strateji öner",
+            "query_en": "Using last year's data, suggest strategy for next 3 months",
+            "steps": ["historical_analysis", "pattern_detection", "forecasting", "strategy_formulation"]
+          },
+          {
+            "query_tr": "Tüm şubeleri karşılaştır, sorunlu olanları tespit et ve iyileştirme planı oluştur",
+            "query_en": "Compare all branches, identify problematic ones and create improvement plan",
+            "steps": ["data_aggregation", "comparison", "problem_detection", "plan_creation"]
+          },
+          {
+            "query_tr": "Müşteri segmentlerini analiz et, her segment için kişiselleştirilmiş kampanya öner",
+            "query_en": "Analyze customer segments and suggest personalized campaigns for each",
+            "steps": ["segmentation", "segment_analysis", "campaign_design", "roi_estimation"]
+          }
+        ],
+        "capabilities": [
+          "multi_step_reasoning",
+          "cross_domain_analysis",
+          "strategic_planning",
+          "complex_calculations",
+          "multi_source_aggregation"
+        ],
+        "output_format": {
+          "style": "comprehensive",
+          "include_methodology": true,
+          "include_assumptions": true,
+          "max_tokens": 3000
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "daily_limits": {
+          "free": 0,
+          "lite": 0,
+          "pro": 0,
+          "business": 10,
+          "enterprise": -1
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 15
+      },
+      {
+        "feature_key": "feature_nl_query_trend",
+        "feature_id": "RPT-AIQ-006",
+        "name_tr": "Trend Sorgusu",
+        "name_en": "Trend Query",
+        "category": "AI_QUERY",
+        "subcategory": "trend",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Trend ve değişim sorgulama",
+        "description_en": "Trend and change queries",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "query_complexity": "medium",
+        "response_time_target_ms": 4000,
+        "example_queries": [
+          {
+            "query_tr": "Son 3 ayda ne değişti?",
+            "query_en": "What changed in the last 3 months?",
+            "response_type": "change_summary"
+          },
+          {
+            "query_tr": "Satış trendi nasıl gidiyor?",
+            "query_en": "How is the sales trend going?",
+            "response_type": "trend_analysis"
+          },
+          {
+            "query_tr": "Hangi ürünlerin popülaritesi artıyor?",
+            "query_en": "Which products are gaining popularity?",
+            "response_type": "rising_trends"
+          },
+          {
+            "query_tr": "Müşteri davranışlarında değişiklik var mı?",
+            "query_en": "Any changes in customer behavior?",
+            "response_type": "behavior_change_analysis"
+          }
+        ],
+        "trend_types": [
+          "increasing",
+          "decreasing",
+          "stable",
+          "volatile",
+          "seasonal",
+          "cyclical"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "daily_limits": {
+          "free": 0,
+          "lite": 5,
+          "pro": 20,
+          "business": 100,
+          "enterprise": -1
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "feature_nl_query_anomaly",
+        "feature_id": "RPT-AIQ-007",
+        "name_tr": "Anomali Sorgusu",
+        "name_en": "Anomaly Query",
+        "category": "AI_QUERY",
+        "subcategory": "anomaly",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Olağandışı durumları sorgulama",
+        "description_en": "Querying unusual situations",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "query_complexity": "medium",
+        "response_time_target_ms": 4000,
+        "example_queries": [
+          {
+            "query_tr": "Bugün olağandışı bir şey var mı?",
+            "query_en": "Is there anything unusual today?",
+            "response_type": "anomaly_list"
+          },
+          {
+            "query_tr": "Son hafta dikkat çeken durumlar?",
+            "query_en": "Notable situations in the last week?",
+            "response_type": "anomaly_summary"
+          },
+          {
+            "query_tr": "Normalden sapan metrikler hangileri?",
+            "query_en": "Which metrics are deviating from normal?",
+            "response_type": "deviation_report"
+          }
+        ],
+        "anomaly_types": [
+          "spike",
+          "drop",
+          "unusual_pattern",
+          "outlier",
+          "missing_data",
+          "unexpected_correlation"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "daily_limits": {
+          "free": 0,
+          "lite": 0,
+          "pro": 10,
+          "business": 50,
+          "enterprise": -1
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "feature_nl_query_summary",
+        "feature_id": "RPT-AIQ-008",
+        "name_tr": "Özet Sorgusu",
+        "name_en": "Summary Query",
+        "category": "AI_QUERY",
+        "subcategory": "summary",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Dönem veya konu özeti isteme",
+        "description_en": "Request period or topic summary",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "query_complexity": "medium",
+        "response_time_target_ms": 5000,
+        "example_queries": [
+          {
+            "query_tr": "Bu haftayı özetle",
+            "query_en": "Summarize this week",
+            "response_type": "period_summary"
+          },
+          {
+            "query_tr": "Menü performansını özetle",
+            "query_en": "Summarize menu performance",
+            "response_type": "topic_summary"
+          },
+          {
+            "query_tr": "Personel durumunu özetle",
+            "query_en": "Summarize staff situation",
+            "response_type": "topic_summary"
+          },
+          {
+            "query_tr": "Bugünün önemli noktaları neler?",
+            "query_en": "What are today's highlights?",
+            "response_type": "highlights"
+          }
+        ],
+        "summary_sections": [
+          "key_metrics",
+          "highlights",
+          "concerns",
+          "opportunities",
+          "action_items"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "daily_limits": {
+          "free": 0,
+          "lite": 5,
+          "pro": 20,
+          "business": 100,
+          "enterprise": -1
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "feature_nl_query_conversational",
+        "feature_id": "RPT-AIQ-009",
+        "name_tr": "Konuşmaya Dayalı Sorgu",
+        "name_en": "Conversational Query",
+        "category": "AI_QUERY",
+        "subcategory": "conversational",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Çok turlu diyalog ile derinleştirme",
+        "description_en": "Multi-turn dialogue for deeper exploration",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 3,
+        "query_complexity": "variable",
+        "response_time_target_ms": 5000,
+        "features": {
+          "context_retention": true,
+          "follow_up_questions": true,
+          "clarification_requests": true,
+          "drill_down_capability": true,
+          "conversation_history": 10
+        },
+        "example_conversation": [
+          {
+            "turn": 1,
+            "user": "Satışlar nasıl?",
+            "assistant": "Bu hafta satışlar ₺45,000, geçen haftaya göre %8 artış."
+          },
+          {
+            "turn": 2,
+            "user": "En çok hangi kategori katkı sağladı?",
+            "assistant": "Ana yemekler %40 ile en büyük katkıyı sağladı, özellikle kebaplar."
+          },
+          {
+            "turn": 3,
+            "user": "Kebapları daha detaylı göster",
+            "assistant": "Kebap kategorisinde: Adana Kebap ₺5,200, Urfa Kebap ₺3,800..."
+          }
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "daily_limits": {
+          "free": 0,
+          "lite": 0,
+          "pro": 20,
+          "business": 100,
+          "enterprise": -1
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 12
+      },
+      {
+        "feature_key": "feature_nl_query_voice",
+        "feature_id": "RPT-AIQ-010",
+        "name_tr": "Sesli Sorgu",
+        "name_en": "Voice Query",
+        "category": "AI_QUERY",
+        "subcategory": "voice",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Sesli komutlarla sorgulama",
+        "description_en": "Query via voice commands",
+        "ai_model": {
+          "stt": "whisper",
+          "nlp": "claude-haiku",
+          "tts": "elevenlabs"
+        },
+        "credit_cost": 3,
+        "query_complexity": "variable",
+        "features": {
+          "speech_to_text": true,
+          "text_to_speech": true,
+          "noise_cancellation": true,
+          "multi_language": ["tr", "en"],
+          "wake_word": "Hey E-Menum"
+        },
+        "use_cases": [
+          "hands_free_kitchen",
+          "busy_manager",
+          "accessibility"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "daily_limits": {
+          "free": 0,
+          "lite": 0,
+          "pro": 0,
+          "business": 50,
+          "enterprise": -1
+        },
+        "priority": "P3",
+        "implementation_status": "future",
+        "estimated_effort_days": 20
+      }
+    ],
+    "AI_INSIGHTS": [
+      {
+        "feature_key": "feature_ai_insights_auto",
+        "feature_id": "RPT-AII-001",
+        "name_tr": "Otomatik AI İçgörüler",
+        "name_en": "Automatic AI Insights",
+        "category": "AI_INSIGHTS",
+        "subcategory": "automatic",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Proaktif olarak üretilen AI insights",
+        "description_en": "Proactively generated AI insights",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 0,
+        "auto_generate": true,
+        "generation_schedule": {
+          "frequency": "daily",
+          "trigger_time": "06:00",
+          "timezone": "Europe/Istanbul"
+        },
+        "insight_categories": [
+          {
+            "category": "performance",
+            "name_tr": "Performans İçgörüleri",
+            "examples": [
+              "Dünkü ciro hedefin %15 üzerinde",
+              "Bu hafta ortalama sipariş değeri yükseldi"
+            ]
+          },
+          {
+            "category": "opportunity",
+            "name_tr": "Fırsat İçgörüleri",
+            "examples": [
+              "Akşam saatlerinde boş masa oranı yüksek, happy hour düşünülebilir",
+              "Tatlı kategorisi potansiyelinin altında satıyor"
+            ]
+          },
+          {
+            "category": "warning",
+            "name_tr": "Uyarı İçgörüleri",
+            "examples": [
+              "Stok kritik seviyeye yaklaşıyor: Domates, Soğan",
+              "Müşteri puanları son 2 haftada düşüşte"
+            ]
+          },
+          {
+            "category": "celebration",
+            "name_tr": "Kutlama İçgörüleri",
+            "examples": [
+              "🎉 Aylık rekor kırıldı!",
+              "⭐ 5 yıldız değerlendirme sayısı 100'ü geçti"
+            ]
+          }
+        ],
+        "insight_format": {
+          "max_insights_per_day": 5,
+          "priority_based": true,
+          "actionable": true
+        },
+        "delivery_channels": ["dashboard", "push", "email"],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P0",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "feature_ai_anomaly_detection",
+        "feature_id": "RPT-AII-002",
+        "name_tr": "Anomali Tespiti",
+        "name_en": "Anomaly Detection",
+        "category": "AI_INSIGHTS",
+        "subcategory": "anomaly",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Otomatik anomali tespiti ve anında uyarı",
+        "description_en": "Automatic anomaly detection with instant alerts",
+        "ai_model": {
+          "primary": "ml_anomaly_detection",
+          "secondary": "claude-haiku"
+        },
+        "credit_cost": 0,
+        "auto_generate": true,
+        "real_time": true,
+        "detection_methods": [
+          {
+            "method": "statistical",
+            "name_tr": "İstatistiksel",
+            "techniques": ["z_score", "iqr", "moving_average"]
+          },
+          {
+            "method": "ml_based",
+            "name_tr": "ML Tabanlı",
+            "techniques": ["isolation_forest", "one_class_svm", "autoencoder"]
+          },
+          {
+            "method": "rule_based",
+            "name_tr": "Kural Tabanlı",
+            "techniques": ["threshold", "rate_of_change", "pattern_match"]
+          }
+        ],
+        "monitored_metrics": [
+          {
+            "metric": "revenue",
+            "sensitivity": "high",
+            "baseline": "rolling_30_day"
+          },
+          {
+            "metric": "order_count",
+            "sensitivity": "high",
+            "baseline": "same_day_last_week"
+          },
+          {
+            "metric": "avg_order_value",
+            "sensitivity": "medium",
+            "baseline": "rolling_7_day"
+          },
+          {
+            "metric": "customer_rating",
+            "sensitivity": "high",
+            "baseline": "rolling_30_day"
+          },
+          {
+            "metric": "service_time",
+            "sensitivity": "medium",
+            "baseline": "rolling_7_day"
+          },
+          {
+            "metric": "cancellation_rate",
+            "sensitivity": "high",
+            "baseline": "rolling_7_day"
+          }
+        ],
+        "alert_config": {
+          "severity_levels": ["info", "warning", "critical"],
+          "channels": {
+            "info": ["dashboard"],
+            "warning": ["dashboard", "push"],
+            "critical": ["dashboard", "push", "email", "sms"]
+          },
+          "cooldown_minutes": 60
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P0",
+        "implementation_status": "planned",
+        "estimated_effort_days": 15
+      },
+      {
+        "feature_key": "feature_ai_trend_detection",
+        "feature_id": "RPT-AII-003",
+        "name_tr": "Trend Tespiti",
+        "name_en": "Trend Detection",
+        "category": "AI_INSIGHTS",
+        "subcategory": "trend",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Otomatik trend ve pattern tespiti",
+        "description_en": "Automatic trend and pattern detection",
+        "ai_model": {
+          "primary": "ml_trend_detection",
+          "secondary": "claude-haiku"
+        },
+        "credit_cost": 0,
+        "auto_generate": true,
+        "detection_types": [
+          {
+            "type": "linear_trend",
+            "name_tr": "Doğrusal Trend",
+            "description": "Sürekli artış veya düşüş"
+          },
+          {
+            "type": "seasonal",
+            "name_tr": "Mevsimsel",
+            "description": "Düzenli tekrar eden pattern"
+          },
+          {
+            "type": "cyclical",
+            "name_tr": "Döngüsel",
+            "description": "Düzensiz aralıklarla tekrar"
+          },
+          {
+            "type": "emerging",
+            "name_tr": "Yeni Ortaya Çıkan",
+            "description": "Yeni başlayan trend"
+          },
+          {
+            "type": "fading",
+            "name_tr": "Sönmekte Olan",
+            "description": "Sona yaklaşan trend"
+          }
+        ],
+        "analyzed_dimensions": [
+          "product_popularity",
+          "category_performance",
+          "customer_behavior",
+          "time_patterns",
+          "staff_performance"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "feature_ai_recommendations",
+        "feature_id": "RPT-AII-004",
+        "name_tr": "AI Aksiyon Önerileri",
+        "name_en": "AI Action Recommendations",
+        "category": "AI_INSIGHTS",
+        "subcategory": "recommendations",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Veriye dayalı aksiyon önerileri",
+        "description_en": "Data-driven action recommendations",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 3,
+        "auto_generate": true,
+        "generation_frequency": "weekly",
+        "recommendation_categories": [
+          {
+            "category": "revenue_optimization",
+            "name_tr": "Gelir Optimizasyonu",
+            "examples": [
+              "Fiyat artışı önerileri",
+              "Upsell stratejileri",
+              "Yeni ürün önerileri"
+            ]
+          },
+          {
+            "category": "cost_reduction",
+            "name_tr": "Maliyet Azaltma",
+            "examples": [
+              "Tedarikçi değişikliği",
+              "Porsiyon optimizasyonu",
+              "Vardiya planlaması"
+            ]
+          },
+          {
+            "category": "customer_retention",
+            "name_tr": "Müşteri Tutma",
+            "examples": [
+              "Risk altındaki müşterilere kampanya",
+              "Sadakat programı iyileştirmeleri"
+            ]
+          },
+          {
+            "category": "operational_efficiency",
+            "name_tr": "Operasyonel Verimlilik",
+            "examples": [
+              "Personel planlaması",
+              "Mutfak akışı optimizasyonu"
+            ]
+          }
+        ],
+        "recommendation_format": {
+          "title": true,
+          "description": true,
+          "expected_impact": true,
+          "effort_level": true,
+          "priority": true,
+          "implementation_steps": true
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 12
+      },
+      {
+        "feature_key": "feature_ai_alerts_smart",
+        "feature_id": "RPT-AII-005",
+        "name_tr": "Akıllı Uyarılar",
+        "name_en": "Smart Alerts",
+        "category": "AI_INSIGHTS",
+        "subcategory": "alerts",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Bağlama duyarlı akıllı uyarı sistemi",
+        "description_en": "Context-aware smart alert system",
+        "ai_model": {
+          "primary": "ml_classifier",
+          "secondary": "claude-haiku"
+        },
+        "credit_cost": 0,
+        "auto_generate": true,
+        "real_time": true,
+        "alert_types": [
+          {
+            "type": "operational",
+            "name_tr": "Operasyonel",
+            "examples": ["Uzun bekleme süresi", "Stok tükenmesi", "Sistem hatası"]
+          },
+          {
+            "type": "financial",
+            "name_tr": "Finansal",
+            "examples": ["Hedef altı satış", "Yüksek indirim oranı", "Düşük kar marjı"]
+          },
+          {
+            "type": "customer",
+            "name_tr": "Müşteri",
+            "examples": ["Düşük puan", "Şikayet", "VIP müşteri ziyareti"]
+          },
+          {
+            "type": "staff",
+            "name_tr": "Personel",
+            "examples": ["Performans düşüşü", "Devamsızlık", "Başarı"]
+          }
+        ],
+        "smart_features": {
+          "deduplication": true,
+          "priority_learning": true,
+          "time_aware": true,
+          "role_based_routing": true,
+          "escalation": true
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "feature_ai_opportunity_finder",
+        "feature_id": "RPT-AII-006",
+        "name_tr": "Fırsat Bulucu",
+        "name_en": "Opportunity Finder",
+        "category": "AI_INSIGHTS",
+        "subcategory": "opportunities",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Potansiyel gelir fırsatlarını tespit",
+        "description_en": "Identify potential revenue opportunities",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": true,
+        "generation_frequency": "weekly",
+        "opportunity_types": [
+          {
+            "type": "pricing",
+            "name_tr": "Fiyatlandırma",
+            "description": "Fiyat artırılabilecek ürünler"
+          },
+          {
+            "type": "upsell",
+            "name_tr": "Upsell",
+            "description": "Upsell potansiyeli yüksek siparişler"
+          },
+          {
+            "type": "timing",
+            "name_tr": "Zamanlama",
+            "description": "Değerlendirilmemiş zaman dilimleri"
+          },
+          {
+            "type": "product",
+            "name_tr": "Ürün",
+            "description": "Eksik ürün kategorileri"
+          },
+          {
+            "type": "customer",
+            "name_tr": "Müşteri",
+            "description": "Geri kazanılabilir müşteriler"
+          }
+        ],
+        "opportunity_scoring": {
+          "impact_estimation": true,
+          "effort_estimation": true,
+          "confidence_score": true,
+          "roi_calculation": true
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "feature_ai_competitive_intelligence",
+        "feature_id": "RPT-AII-007",
+        "name_tr": "Rekabet İstihbaratı",
+        "name_en": "Competitive Intelligence",
+        "category": "AI_INSIGHTS",
+        "subcategory": "competitive",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Rakip analizi ve pazar konumlandırma",
+        "description_en": "Competitor analysis and market positioning",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 8,
+        "auto_generate": false,
+        "data_sources": [
+          "google_reviews",
+          "tripadvisor",
+          "foursquare",
+          "social_media",
+          "price_aggregators"
+        ],
+        "analysis_features": [
+          "rating_comparison",
+          "price_benchmarking",
+          "sentiment_comparison",
+          "menu_gap_analysis",
+          "trend_comparison"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": false,
+          "enterprise": true
+        },
+        "priority": "P3",
+        "implementation_status": "future",
+        "estimated_effort_days": 15
+      },
+      {
+        "feature_key": "feature_ai_benchmark",
+        "feature_id": "RPT-AII-008",
+        "name_tr": "Sektör Benchmark",
+        "name_en": "Industry Benchmark",
+        "category": "AI_INSIGHTS",
+        "subcategory": "benchmark",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Sektör ortalamaları ile karşılaştırma",
+        "description_en": "Comparison with industry averages",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 3,
+        "auto_generate": false,
+        "benchmark_metrics": [
+          "food_cost_percentage",
+          "labor_cost_percentage",
+          "avg_check",
+          "table_turnover",
+          "customer_satisfaction",
+          "revenue_per_sqm"
+        ],
+        "benchmark_sources": [
+          "e_menum_aggregate",
+          "industry_reports",
+          "similar_segment"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 8
+      }
+    ],
+    "FORECASTING": [
+      {
+        "feature_key": "feature_forecasting_demand_short",
+        "feature_id": "RPT-FOR-001",
+        "name_tr": "Kısa Vadeli Talep Tahmini (7 gün)",
+        "name_en": "Short-term Demand Forecast (7 days)",
+        "category": "FORECASTING",
+        "subcategory": "demand",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "7 günlük talep ve sipariş tahmini",
+        "description_en": "7-day demand and order forecast",
+        "ai_model": {
+          "primary": "prophet",
+          "secondary": "claude-haiku",
+          "fallback": "arima"
+        },
+        "credit_cost": 3,
+        "forecast_config": {
+          "horizon_days": 7,
+          "granularity": "hourly",
+          "confidence_intervals": [80, 95],
+          "update_frequency": "daily"
+        },
+        "forecast_targets": [
+          {
+            "target": "order_count",
+            "name_tr": "Sipariş Sayısı"
+          },
+          {
+            "target": "revenue",
+            "name_tr": "Ciro"
+          },
+          {
+            "target": "customer_count",
+            "name_tr": "Müşteri Sayısı"
+          },
+          {
+            "target": "item_demand",
+            "name_tr": "Ürün Talebi",
+            "per_item": true
+          }
+        ],
+        "factors_considered": [
+          "historical_data",
+          "day_of_week",
+          "seasonality",
+          "holidays",
+          "weather",
+          "local_events",
+          "promotions"
+        ],
+        "outputs": [
+          "forecast_values",
+          "confidence_bounds",
+          "trend_component",
+          "seasonality_component",
+          "staffing_recommendations",
+          "inventory_recommendations"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 12
+      },
+      {
+        "feature_key": "feature_forecasting_demand_medium",
+        "feature_id": "RPT-FOR-002",
+        "name_tr": "Orta Vadeli Talep Tahmini (30 gün)",
+        "name_en": "Medium-term Demand Forecast (30 days)",
+        "category": "FORECASTING",
+        "subcategory": "demand",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "30 günlük talep ve planlama tahmini",
+        "description_en": "30-day demand and planning forecast",
+        "ai_model": {
+          "primary": "prophet",
+          "secondary": "claude-sonnet",
+          "fallback": "xgboost"
+        },
+        "credit_cost": 8,
+        "forecast_config": {
+          "horizon_days": 30,
+          "granularity": "daily",
+          "confidence_intervals": [80, 95],
+          "update_frequency": "weekly"
+        },
+        "additional_outputs": [
+          "resource_planning",
+          "budget_projection",
+          "capacity_planning"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "feature_forecasting_demand_long",
+        "feature_id": "RPT-FOR-003",
+        "name_tr": "Uzun Vadeli Talep Tahmini (90 gün)",
+        "name_en": "Long-term Demand Forecast (90 days)",
+        "category": "FORECASTING",
+        "subcategory": "demand",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "90 günlük stratejik tahmin",
+        "description_en": "90-day strategic forecast",
+        "ai_model": {
+          "primary": "prophet",
+          "secondary": "claude-sonnet"
+        },
+        "credit_cost": 15,
+        "forecast_config": {
+          "horizon_days": 90,
+          "granularity": "weekly",
+          "confidence_intervals": [80, 95],
+          "update_frequency": "monthly"
+        },
+        "strategic_outputs": [
+          "quarterly_projections",
+          "growth_trajectory",
+          "seasonal_planning",
+          "investment_timing"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 12
+      },
+      {
+        "feature_key": "feature_forecasting_revenue",
+        "feature_id": "RPT-FOR-004",
+        "name_tr": "Gelir Tahmini",
+        "name_en": "Revenue Forecast",
+        "category": "FORECASTING",
+        "subcategory": "financial",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Detaylı gelir projeksiyonu",
+        "description_en": "Detailed revenue projection",
+        "ai_model": {
+          "primary": "prophet",
+          "secondary": "claude-sonnet"
+        },
+        "credit_cost": 5,
+        "forecast_features": {
+          "base_forecast": true,
+          "scenario_modeling": true,
+          "breakdown_by_category": true,
+          "breakdown_by_channel": true
+        },
+        "scenarios": [
+          {
+            "scenario": "base",
+            "name_tr": "Baz Senaryo",
+            "assumption": "Current trends continue"
+          },
+          {
+            "scenario": "optimistic",
+            "name_tr": "İyimser Senaryo",
+            "assumption": "Growth accelerates"
+          },
+          {
+            "scenario": "pessimistic",
+            "name_tr": "Kötümser Senaryo",
+            "assumption": "Growth slows"
+          }
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "feature_forecasting_inventory",
+        "feature_id": "RPT-FOR-005",
+        "name_tr": "Stok Tahmini",
+        "name_en": "Inventory Forecast",
+        "category": "FORECASTING",
+        "subcategory": "inventory",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Stok tüketim ve sipariş tahmini",
+        "description_en": "Stock consumption and reorder forecast",
+        "ai_model": {
+          "primary": "prophet",
+          "secondary": "claude-haiku"
+        },
+        "credit_cost": 3,
+        "forecast_outputs": [
+          "consumption_forecast",
+          "stockout_prediction",
+          "reorder_timing",
+          "optimal_quantities",
+          "cost_projection"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 8
+      },
+      {
+        "feature_key": "feature_forecasting_staffing",
+        "feature_id": "RPT-FOR-006",
+        "name_tr": "Personel İhtiyaç Tahmini",
+        "name_en": "Staffing Forecast",
+        "category": "FORECASTING",
+        "subcategory": "staffing",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Personel ihtiyacı ve vardiya tahmini",
+        "description_en": "Staff requirement and shift forecast",
+        "ai_model": {
+          "primary": "prophet",
+          "secondary": "claude-sonnet"
+        },
+        "credit_cost": 5,
+        "forecast_outputs": [
+          "staff_needed_by_hour",
+          "shift_recommendations",
+          "overtime_prediction",
+          "hiring_recommendations"
+        ],
+        "optimization_features": {
+          "cost_optimization": true,
+          "service_level_targeting": true,
+          "skill_matching": true
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "feature_forecasting_churn",
+        "feature_id": "RPT-FOR-007",
+        "name_tr": "Müşteri Kaybı Tahmini",
+        "name_en": "Customer Churn Forecast",
+        "category": "FORECASTING",
+        "subcategory": "customer",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Müşteri kaybı riski ve önleme",
+        "description_en": "Customer churn risk prediction and prevention",
+        "ai_model": {
+          "primary": "ml_churn_model",
+          "secondary": "claude-sonnet"
+        },
+        "credit_cost": 8,
+        "prediction_features": {
+          "churn_probability": true,
+          "churn_timing": true,
+          "churn_reasons": true,
+          "intervention_recommendations": true,
+          "revenue_at_risk": true
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 15
+      },
+      {
+        "feature_key": "feature_forecasting_seasonal",
+        "feature_id": "RPT-FOR-008",
+        "name_tr": "Mevsimsel Tahmin",
+        "name_en": "Seasonal Forecast",
+        "category": "FORECASTING",
+        "subcategory": "seasonal",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Mevsimsel pattern ve planlama",
+        "description_en": "Seasonal patterns and planning",
+        "ai_model": {
+          "primary": "prophet",
+          "secondary": "claude-sonnet"
+        },
+        "credit_cost": 5,
+        "seasonal_analysis": {
+          "yearly_patterns": true,
+          "monthly_patterns": true,
+          "weekly_patterns": true,
+          "holiday_impact": true,
+          "event_impact": true
+        },
+        "planning_outputs": [
+          "peak_season_preparation",
+          "off_season_strategies",
+          "menu_rotation_timing",
+          "promotional_calendar"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 8
+      }
+    ],
+    "WHAT_IF_ANALYSIS": [
+      {
+        "feature_key": "feature_whatif_pricing",
+        "feature_id": "RPT-WIF-001",
+        "name_tr": "Fiyat What-If Analizi",
+        "name_en": "Pricing What-If Analysis",
+        "category": "WHAT_IF",
+        "subcategory": "pricing",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Fiyat değişikliği simülasyonu ve etki tahmini",
+        "description_en": "Price change simulation and impact prediction",
+        "ai_model": {
+          "primary": "ml_elasticity",
+          "secondary": "claude-sonnet"
+        },
+        "credit_cost": 5,
+        "simulation_parameters": [
+          {
+            "param": "price_change_percent",
+            "name_tr": "Fiyat Değişim %",
+            "type": "range",
+            "min": -30,
+            "max": 50,
+            "step": 5
+          },
+          {
+            "param": "scope",
+            "name_tr": "Kapsam",
+            "type": "select",
+            "options": ["all_items", "category", "specific_items"]
+          },
+          {
+            "param": "time_period",
+            "name_tr": "Zaman Periyodu",
+            "type": "select",
+            "options": ["1_week", "1_month", "3_months"]
+          }
+        ],
+        "prediction_outputs": [
+          {
+            "output": "revenue_change",
+            "name_tr": "Ciro Değişimi",
+            "format": "percentage_and_currency"
+          },
+          {
+            "output": "volume_change",
+            "name_tr": "Hacim Değişimi",
+            "format": "percentage"
+          },
+          {
+            "output": "profit_change",
+            "name_tr": "Kar Değişimi",
+            "format": "percentage_and_currency"
+          },
+          {
+            "output": "customer_impact",
+            "name_tr": "Müşteri Etkisi",
+            "format": "text"
+          }
+        ],
+        "visualization": {
+          "chart_type": "sensitivity_curve",
+          "comparison_view": true,
+          "scenario_comparison": true
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 12
+      },
+      {
+        "feature_key": "feature_whatif_capacity",
+        "feature_id": "RPT-WIF-002",
+        "name_tr": "Kapasite What-If Analizi",
+        "name_en": "Capacity What-If Analysis",
+        "category": "WHAT_IF",
+        "subcategory": "capacity",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Kapasite değişikliği simülasyonu",
+        "description_en": "Capacity change simulation",
+        "ai_model": {
+          "primary": "ml_simulation",
+          "secondary": "claude-sonnet"
+        },
+        "credit_cost": 5,
+        "simulation_parameters": [
+          {
+            "param": "table_count_change",
+            "name_tr": "Masa Sayısı Değişimi",
+            "type": "number"
+          },
+          {
+            "param": "staff_count_change",
+            "name_tr": "Personel Sayısı Değişimi",
+            "type": "number"
+          },
+          {
+            "param": "operating_hours_change",
+            "name_tr": "Çalışma Saati Değişimi",
+            "type": "hours"
+          },
+          {
+            "param": "kitchen_capacity_change",
+            "name_tr": "Mutfak Kapasitesi Değişimi",
+            "type": "percentage"
+          }
+        ],
+        "prediction_outputs": [
+          "revenue_impact",
+          "cost_impact",
+          "profit_impact",
+          "service_time_impact",
+          "customer_satisfaction_impact"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "feature_whatif_menu",
+        "feature_id": "RPT-WIF-003",
+        "name_tr": "Menü What-If Analizi",
+        "name_en": "Menu What-If Analysis",
+        "category": "WHAT_IF",
+        "subcategory": "menu",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Menü değişikliği simülasyonu",
+        "description_en": "Menu change simulation",
+        "ai_model": {
+          "primary": "ml_simulation",
+          "secondary": "claude-sonnet"
+        },
+        "credit_cost": 8,
+        "simulation_scenarios": [
+          {
+            "scenario": "add_item",
+            "name_tr": "Ürün Ekleme",
+            "parameters": ["category", "price_point", "target_segment"]
+          },
+          {
+            "scenario": "remove_item",
+            "name_tr": "Ürün Kaldırma",
+            "parameters": ["item_id", "replacement_suggestion"]
+          },
+          {
+            "scenario": "modify_item",
+            "name_tr": "Ürün Değiştirme",
+            "parameters": ["item_id", "new_price", "new_portion"]
+          },
+          {
+            "scenario": "add_category",
+            "name_tr": "Kategori Ekleme",
+            "parameters": ["category_type", "item_count", "avg_price"]
+          }
+        ],
+        "prediction_outputs": [
+          "revenue_impact",
+          "category_mix_change",
+          "customer_response_prediction",
+          "cannibalization_risk",
+          "operational_impact"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 12
+      },
+      {
+        "feature_key": "feature_whatif_campaign",
+        "feature_id": "RPT-WIF-004",
+        "name_tr": "Kampanya What-If Analizi",
+        "name_en": "Campaign What-If Analysis",
+        "category": "WHAT_IF",
+        "subcategory": "campaign",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Kampanya etkisi simülasyonu",
+        "description_en": "Campaign impact simulation",
+        "ai_model": {
+          "primary": "ml_simulation",
+          "secondary": "claude-sonnet"
+        },
+        "credit_cost": 5,
+        "simulation_parameters": [
+          {
+            "param": "campaign_type",
+            "name_tr": "Kampanya Tipi",
+            "options": ["discount", "bogo", "loyalty_multiplier", "free_item"]
+          },
+          {
+            "param": "discount_rate",
+            "name_tr": "İndirim Oranı",
+            "type": "percentage"
+          },
+          {
+            "param": "target_audience",
+            "name_tr": "Hedef Kitle",
+            "options": ["all", "new_customers", "loyal_customers", "at_risk"]
+          },
+          {
+            "param": "duration",
+            "name_tr": "Süre",
+            "type": "days"
+          }
+        ],
+        "prediction_outputs": [
+          "expected_redemptions",
+          "revenue_impact",
+          "cost_of_campaign",
+          "expected_roi",
+          "new_customer_acquisition",
+          "cannibalization_estimate"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "feature_whatif_staffing",
+        "feature_id": "RPT-WIF-005",
+        "name_tr": "Personel What-If Analizi",
+        "name_en": "Staffing What-If Analysis",
+        "category": "WHAT_IF",
+        "subcategory": "staffing",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Personel değişikliği simülasyonu",
+        "description_en": "Staffing change simulation",
+        "ai_model": {
+          "primary": "ml_simulation",
+          "secondary": "claude-sonnet"
+        },
+        "credit_cost": 5,
+        "simulation_parameters": [
+          {
+            "param": "staff_change",
+            "name_tr": "Personel Değişimi",
+            "type": "number"
+          },
+          {
+            "param": "shift_pattern",
+            "name_tr": "Vardiya Düzeni",
+            "type": "select"
+          },
+          {
+            "param": "training_investment",
+            "name_tr": "Eğitim Yatırımı",
+            "type": "currency"
+          }
+        ],
+        "prediction_outputs": [
+          "labor_cost_change",
+          "service_time_impact",
+          "customer_satisfaction_impact",
+          "revenue_per_employee",
+          "break_even_analysis"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 8
+      },
+      {
+        "feature_key": "feature_whatif_expansion",
+        "feature_id": "RPT-WIF-006",
+        "name_tr": "Genişleme What-If Analizi",
+        "name_en": "Expansion What-If Analysis",
+        "category": "WHAT_IF",
+        "subcategory": "expansion",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Yeni şube/alan genişleme simülasyonu",
+        "description_en": "New branch/area expansion simulation",
+        "ai_model": {
+          "primary": "ml_simulation",
+          "secondary": "claude-sonnet"
+        },
+        "credit_cost": 10,
+        "simulation_scenarios": [
+          {
+            "scenario": "new_branch",
+            "name_tr": "Yeni Şube",
+            "parameters": ["location", "size", "concept", "investment"]
+          },
+          {
+            "scenario": "delivery_zone",
+            "name_tr": "Teslimat Bölgesi",
+            "parameters": ["zone", "expected_demand", "logistics_cost"]
+          },
+          {
+            "scenario": "outdoor_seating",
+            "name_tr": "Açık Alan",
+            "parameters": ["capacity", "seasonal_usage", "investment"]
+          }
+        ],
+        "prediction_outputs": [
+          "projected_revenue",
+          "break_even_timeline",
+          "cannibalization_risk",
+          "roi_projection",
+          "risk_assessment"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": false,
+          "enterprise": true
+        },
+        "priority": "P3",
+        "implementation_status": "future",
+        "estimated_effort_days": 15
+      }
+    ]
+  }
+}

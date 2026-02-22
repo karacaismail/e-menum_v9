@@ -1,0 +1,169 @@
+{
+  "session_number": 27,
+  "timestamp": "2026-01-31T23:04:10.874162+00:00",
+  "subtasks_completed": [
+    "subtask-5-3"
+  ],
+  "discoveries": {
+    "file_insights": [
+      {
+        "file_path": "src/core/middleware/permission.middleware.ts",
+        "lines_of_code": 842,
+        "file_type": "TypeScript",
+        "purpose": "CASL permission middleware implementing RBAC and ABAC access control",
+        "key_exports": [
+          "permissionMiddleware",
+          "requirePermission",
+          "checkAbility",
+          "defineAbilitiesFor"
+        ],
+        "dependencies": [
+          "@casl/ability",
+          "express",
+          "app.exception",
+          "auth.middleware",
+          "tenant.middleware"
+        ]
+      }
+    ],
+    "patterns_discovered": [
+      {
+        "pattern": "Role-Based Access Control (RBAC)",
+        "description": "Implements role hierarchy with platform roles (super_admin, admin, sales, support) and organization roles (owner, manager, staff, cashier, viewer)",
+        "implementation_detail": "defineAbilitiesFor function uses switch statement to define abilities based on user.role"
+      },
+      {
+        "pattern": "Attribute-Based Access Control (ABAC)",
+        "description": "Adds plan-tier based restrictions on top of RBAC using PlanTier hierarchy",
+        "implementation_detail": "getPlanLevel() helper determines feature access based on subscription tier (free, starter, professional, business, enterprise)"
+      },
+      {
+        "pattern": "Tenant Isolation",
+        "description": "Critical organization-scoped conditions enforced across all tenant roles",
+        "implementation_detail": "orgCondition = { organizationId: orgId } applied to all can() rules for organization roles"
+      },
+      {
+        "pattern": "Middleware Chain Composition",
+        "description": "Middleware expects prior execution of authMiddleware and tenantMiddleware to inject user and organization context",
+        "implementation_detail": "permissionMiddleware reads from TenantRequest which is extended by previous middlewares"
+      },
+      {
+        "pattern": "CASL Ability Builder Pattern",
+        "description": "Uses CASL's AbilityBuilder to construct ability rules using can/cannot pattern",
+        "implementation_detail": "MongoAbility with [PermissionAction, PermissionSubject] type parameters for flexibility"
+      },
+      {
+        "pattern": "Permission Granularity",
+        "description": "Supports field-level permission checks in addition to action-subject level",
+        "implementation_detail": "checkAbility and requirePermission support optional field parameter"
+      }
+    ],
+    "gotchas_discovered": [
+      {
+        "gotcha": "Tenant Isolation Critical",
+        "description": "All organization-scoped rules use organizationId condition. Missing this could cause cross-tenant data leaks",
+        "severity": "CRITICAL",
+        "location": "defineAbilitiesFor function, organization roles section"
+      },
+      {
+        "gotcha": "Plan Tier Hierarchy Dependency",
+        "description": "Feature access depends on accurate plan tier from organization.settings. Invalid/null tier defaults to 'free' tier with minimal permissions",
+        "severity": "HIGH",
+        "location": "permissionMiddleware, getPlanLevel() function"
+      },
+      {
+        "gotcha": "Middleware Order Dependency",
+        "description": "permissionMiddleware must execute after tenantMiddleware. Using before tenantMiddleware will fail when attempting to access organization context",
+        "severity": "HIGH",
+        "location": "permissionMiddleware implementation"
+      },
+      {
+        "gotcha": "Owner Role Exclusion in Manager Rule",
+        "description": "Manager role cannot manage other users with owner role: { role: { $ne: 'owner' } }. This is a safety guard but must be documented",
+        "severity": "MEDIUM",
+        "location": "defineAbilitiesFor, manager case"
+      },
+      {
+        "gotcha": "Plan-Based Cannot Rules Override",
+        "description": "Plan restrictions use cannot() which override previous can() rules. Order matters if same action/subject checked multiple times",
+        "severity": "MEDIUM",
+        "location": "Plan-Based Restrictions section"
+      },
+      {
+        "gotcha": "No Explicit API Error Messages",
+        "description": "requirePermission throws generic AppException.forbidden() with action/subject. Users won't know if failure is due to role or plan tier",
+        "severity": "LOW",
+        "location": "requirePermission function"
+      }
+    ],
+    "approach_outcome": {
+      "status": "SUCCESS",
+      "subtask_id": "subtask-5-3",
+      "implementation_completeness": "COMPLETE",
+      "key_accomplishments": [
+        "Implemented comprehensive CASL permission middleware with 8 distinct organizational roles",
+        "Created plan-tier based feature restrictions (AI, analytics export, branch management)",
+        "Established tenant isolation patterns with organizationId conditions",
+        "Provided multiple permission check methods (middleware, function-based, field-level)",
+        "Defined complete type system for AppAbility, PermissionAction, and PermissionSubject"
+      ],
+      "production_readiness": "HIGH",
+      "architecture_alignment": "Aligns with SECURITY_MODEL.md section 3.4 ability builder pattern"
+    },
+    "recommendations": [
+      {
+        "recommendation": "Add comprehensive integration tests",
+        "rationale": "Test all role combinations with various plan tiers to catch tenant isolation and permission grant/deny scenarios",
+        "priority": "HIGH",
+        "effort": "MEDIUM"
+      },
+      {
+        "recommendation": "Implement permission caching strategy",
+        "rationale": "Computing abilities on every request could impact performance; consider caching per user session",
+        "priority": "MEDIUM",
+        "effort": "MEDIUM"
+      },
+      {
+        "recommendation": "Add detailed audit logging for permission checks",
+        "rationale": "Log both successful and failed permission checks with action, subject, role, and organization for security analysis",
+        "priority": "MEDIUM",
+        "effort": "LOW"
+      },
+      {
+        "recommendation": "Document role transition workflows",
+        "rationale": "Provide clear documentation on what permissions each role loses/gains during transitions, especially manager\u2192staff",
+        "priority": "MEDIUM",
+        "effort": "LOW"
+      },
+      {
+        "recommendation": "Add permission explanation helper",
+        "rationale": "Create function to explain why a permission was denied (role vs. plan) for better frontend UX",
+        "priority": "LOW",
+        "effort": "MEDIUM"
+      },
+      {
+        "recommendation": "Validate plan tier at subscription service",
+        "rationale": "Currently defaults to 'free' if planTier is null; add validation to ensure plan tier matches actual subscription",
+        "priority": "HIGH",
+        "effort": "LOW"
+      },
+      {
+        "recommendation": "Consider resource ownership checks",
+        "rationale": "Current implementation doesn't include ownership checks (e.g., can only delete own orders); consider adding this pattern",
+        "priority": "MEDIUM",
+        "effort": "MEDIUM"
+      }
+    ],
+    "subtask_id": "subtask-5-3",
+    "session_num": 27,
+    "success": true,
+    "changed_files": [
+      "src/core/middleware/permission.middleware.ts"
+    ]
+  },
+  "what_worked": [
+    "Implemented subtask: subtask-5-3"
+  ],
+  "what_failed": [],
+  "recommendations_for_next_session": []
+}

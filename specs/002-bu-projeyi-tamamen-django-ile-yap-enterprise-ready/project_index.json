@@ -1,0 +1,3641 @@
+{
+  "project_root": "/Users/karaca/Documents/e-menum_v9",
+  "project_type": "single",
+  "services": {
+    "main": {
+      "name": "main",
+      "path": "/Users/karaca/Documents/e-menum_v9",
+      "language": "TypeScript",
+      "framework": "Express",
+      "type": "backend",
+      "package_manager": "npm",
+      "default_port": 3000,
+      "dev_command": "npm run dev",
+      "key_directories": {
+        "src": {
+          "path": "src",
+          "purpose": "Source code"
+        }
+      },
+      "entry_point": "src/app.ts",
+      "dependencies": [
+        "ejs",
+        "express",
+        "zod"
+      ],
+      "dev_dependencies": [
+        "@types/express",
+        "@types/node",
+        "ts-node",
+        "typescript"
+      ],
+      "environment": {
+        "variables": {
+          "PORT": {
+            "value": "3000",
+            "source": ".env",
+            "type": "number",
+            "sensitive": false,
+            "required": false
+          },
+          "NODE_ENV": {
+            "value": "development",
+            "source": ".env",
+            "type": "string",
+            "sensitive": false,
+            "required": false
+          },
+          "DATABASE_URL": {
+            "value": "postgresql://postgres:postgres@localhost:15432/emenum",
+            "source": ".env",
+            "type": "url",
+            "sensitive": false,
+            "required": false
+          },
+          "REDIS_URL": {
+            "value": "redis://localhost:16379",
+            "source": ".env",
+            "type": "url",
+            "sensitive": false,
+            "required": false
+          }
+        },
+        "required_count": 0,
+        "optional_count": 0,
+        "detected_count": 4
+      },
+      "api": {
+        "routes": [
+          {
+            "path": "/health",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/main.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/health/ready",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/main.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/health/live",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/main.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/main.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/main.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/admin",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/main.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/health",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/main.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/health/ready",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/main.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/health/live",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/main.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/main.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/admin/api-info",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/main.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/error.middleware.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/sensitive-action",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/rate-limit.middleware.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menu/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/rate-limit.middleware.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/v1/menus",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/rate-limit.middleware.js",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/webhooks/payment",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/rate-limit.middleware.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/v1/orders",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/rate-limit.middleware.js",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/auth/login",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/rate-limit.middleware.js",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/media/upload",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/rate-limit.middleware.js",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/ai/generate",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/rate-limit.middleware.js",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/protected",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/auth.middleware.js",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/menu/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/auth.middleware.js",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/m/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/tenant.middleware.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/health",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/kernel/bootstrap.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/hello",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/modules/hello/hello.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/hello/world",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/modules/hello/hello.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/login",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/auth.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/register",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/auth.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/forgot-password",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/auth.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/reset-password/:token",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/auth.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/verify-email/:token",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/auth.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/logout",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/auth.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/public.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/m/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/public.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/cart",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/public.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/checkout",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/public.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/order/:orderNumber",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/public.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/restaurant/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/public.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/admin.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/admin.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus/create",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/admin.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus/:id/edit",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/admin.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/orders",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/admin.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/orders/:id",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/admin.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/products",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/admin.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/products/create",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/admin.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/products/:id/edit",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/admin.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/categories",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/admin.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/qr-codes",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/admin.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/tables",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/admin.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/admin.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/users",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/admin.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/profile",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/routes/admin.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/error.middleware.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/sensitive-action",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/rate-limit.middleware.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menu/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/rate-limit.middleware.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/v1/menus",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/rate-limit.middleware.js",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/webhooks/payment",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/rate-limit.middleware.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/v1/orders",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/rate-limit.middleware.js",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/auth/login",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/rate-limit.middleware.js",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/media/upload",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/rate-limit.middleware.js",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/ai/generate",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/rate-limit.middleware.js",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/protected",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/auth.middleware.js",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/menu/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/auth.middleware.js",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/m/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/tenant.middleware.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/health",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/kernel/bootstrap.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/hello",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/modules/hello/hello.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/hello/world",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/modules/hello/hello.routes.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/admin/qr-codes",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/app.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/admin/qr-codes/create",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/app.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/admin/api/qr-codes",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/app.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/app.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/admin",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/app.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/health",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/main.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/health/ready",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/main.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/health/live",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/main.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/main.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/v1/auth/register",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/main.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/api/v1/auth/login",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/main.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/admin/api-info",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/main.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/sensitive-action",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/rate-limit.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menu/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/rate-limit.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/v1/menus",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/rate-limit.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/webhooks/payment",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/rate-limit.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/v1/orders",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/rate-limit.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/auth/login",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/rate-limit.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/media/upload",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/rate-limit.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/ai/generate",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/rate-limit.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/protected",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/auth.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/menu/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/auth.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/menus",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/error.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/m/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/middleware/tenant.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/health",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/core/kernel/bootstrap.d.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/sensitive-action",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/rate-limit.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menu/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/rate-limit.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/v1/menus",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/rate-limit.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/webhooks/payment",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/rate-limit.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/v1/orders",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/rate-limit.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/auth/login",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/rate-limit.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/media/upload",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/rate-limit.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/ai/generate",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/rate-limit.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/protected",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/auth.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/menu/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/auth.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/menus",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/error.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/m/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/middleware/tenant.middleware.d.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/health",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/dist/src/core/kernel/bootstrap.d.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus/create",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus/:id/edit",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus/:id/categories",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus/:id/products",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus/:id/qr",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/orders",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/orders/:id",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/products",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/products/create",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/products/:id/edit",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/categories",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/media",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/analytics",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/qr-codes",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/qr-codes/create",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/tables",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings/upload-logo",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings/upgrade",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/notifications",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/users",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/profile",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/admin.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/public.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/pricing",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/public.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/features",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/public.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/features/:feature",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/public.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/solutions/:industry",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/public.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/demo",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/public.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/compare",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/public.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/compare/:competitor",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/public.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/enterprise",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/public.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/r/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/public.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/m/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/public.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/cart",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/public.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/checkout",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/public.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/order/:orderNumber",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/public.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/restaurant/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/public.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/login",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/auth.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/register",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/auth.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/forgot-password",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/auth.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/reset-password/:token",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/auth.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/verify-email/:token",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/auth.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/logout",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/auth.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/organizations",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/organizations/create",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/organizations/:id",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/organizations/:id/edit",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/organizations",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/organizations/:id",
+            "methods": [
+              "PUT"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/organizations/:id/status",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/organizations/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/users",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/users/create",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/users/:id",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/users/:id/edit",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/users/:id",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/users",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/users/:id/sessions",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/users/:id/sessions/:sessionId",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/users/:id/sessions",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/users/:id/audit",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/users/:id/suspend",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/users/:id/activate",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/users/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/plans",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/plans/create",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/plans/:id/edit",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/plans",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/plans/:id",
+            "methods": [
+              "PUT"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/plans/:id",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/plans/:id/duplicate",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/plans/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/subscriptions",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/subscriptions/:id",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/subscriptions/:id/payment",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/audit-logs",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/modules",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/modules/:id",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/modules/discover",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/modules/:id/activate",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/modules/:id/deactivate",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/modules/:id/install",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/modules/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/modules/:id/upgrade",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/modules/:id/settings",
+            "methods": [
+              "PATCH"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/features",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/features/:id/history",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/features",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/features/:id/toggle",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/features/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings/general",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings/email",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings/email",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings/email/test",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings/security",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings/security",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings/integrations",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings/maintenance",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings/maintenance",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings/advanced",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings/advanced",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/impersonate",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/impersonate/start",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/impersonate/stop",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/database",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/database/settings",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/database/settings",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/database/status",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/database/backup",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/database/backup/:id/restore",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/database/backup/:id/download",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/database/backup/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/cache",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/cache/clear",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/cache/clear",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/cache/settings",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/cache",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/cache/clear",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/cache/settings",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/changelog",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/notifications",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/notifications/count",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/notifications",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/notifications/settings",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/notifications/settings",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/notifications/mark-all-read",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/notifications/mark-all-read",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/notifications/:id/read",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/notifications/:id/read",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/notifications/:id/archive",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/notifications/:id/archive",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/notifications/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/notifications/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/notifications/clear-all",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/notifications/clear-all",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/notifications/settings/integration",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/notifications/settings/webhook",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/notifications/settings/webhook/test",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/search",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/media",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/media",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/media/upload",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/media/upload-multiple",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/media/:id",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/media/:id",
+            "methods": [
+              "PATCH"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/media/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/media/:id/permanent",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/media/bulk-delete",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/media/stats",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/ai/generate",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/core/middleware/feature.middleware.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/menu",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/core/middleware/feature.middleware.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/menus",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/core/middleware/feature.middleware.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/products/bulk",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/core/middleware/feature.middleware.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/m/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/core/middleware/tenant.middleware.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/core/middleware/error.middleware.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/protected",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/core/middleware/auth.middleware.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/menu/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/core/middleware/auth.middleware.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/sensitive-action",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/core/middleware/rate-limit.middleware.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menu/:slug",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/core/middleware/rate-limit.middleware.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/v1/menus",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/core/middleware/rate-limit.middleware.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/webhooks/payment",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/core/middleware/rate-limit.middleware.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/v1/orders",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/core/middleware/rate-limit.middleware.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/auth/login",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/core/middleware/rate-limit.middleware.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/media/upload",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/core/middleware/rate-limit.middleware.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/ai/generate",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/core/middleware/rate-limit.middleware.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/health",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/core/kernel/bootstrap.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/integrations",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/integration/integration.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/integrations",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/integration/integration.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/integrations/:id",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/integration/integration.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/integrations/:id/activate",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/integration/integration.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/integrations/:id/deactivate",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/integration/integration.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/integrations/:id/test",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/integration/integration.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/webhooks",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/integration/integration.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/webhooks",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/integration/integration.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/webhooks/:id/logs",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/integration/integration.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/payments",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/payment/payment.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/payments/:id",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/payment/payment.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/payments/:id/refund",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/payment/payment.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/payments/:id/cancel",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/payment/payment.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/orders/:orderId/payments",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/payment/payment.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/kitchen/orders",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/kitchen-display/kitchen-display.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/kitchen/stats",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/kitchen-display/kitchen-display.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/kitchen/orders/:id/start",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/kitchen-display/kitchen-display.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/kitchen/orders/:id/ready",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/kitchen-display/kitchen-display.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/kitchen/orders/:id/served",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/kitchen-display/kitchen-display.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/kitchen/orders/:id/bump",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/kitchen-display/kitchen-display.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/kitchen/items/:itemId/status",
+            "methods": [
+              "PATCH"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/kitchen-display/kitchen-display.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/loyalty/rewards",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/loyalty/loyalty.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/loyalty/rewards",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/loyalty/loyalty.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/loyalty/leaderboard",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/loyalty/loyalty.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/loyalty/members/:customerId",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/loyalty/loyalty.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/loyalty/members",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/loyalty/loyalty.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/loyalty/members/:customerId/earn",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/loyalty/loyalty.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/loyalty/members/:customerId/redeem",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/loyalty/loyalty.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/pos/terminals",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/pos/pos.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/pos/terminals",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/pos/pos.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/pos/terminals/:id",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/pos/pos.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/pos/terminals/:id/connect",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/pos/pos.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/pos/terminals/:id/disconnect",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/pos/pos.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/pos/terminals/:id/sync",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/pos/pos.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/pos/terminals/:id/transactions",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/pos/pos.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/pos/terminals/:id/transactions",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/pos/pos.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/pos/terminals/:id/drawer/open",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/pos/pos.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/pos/terminals/:id/drawer/close",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/pos/pos.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/pos/terminals/:id/drawer",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/pos/pos.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/pos/terminals/:id/drawer/history",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/pos/pos.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/ai/generate-description",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/ai/ai.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/ai/translate",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/ai/ai.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/ai/recommendations",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/ai/ai.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/ai/sentiment",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/ai/ai.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/ai/menu-optimization",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/ai/ai.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/ai/credits",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/ai/ai.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/ai/history",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/ai/ai.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/inventory",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/inventory/inventory.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/inventory/summary",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/inventory/inventory.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/inventory/alerts",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/inventory/inventory.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/inventory",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/inventory/inventory.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/inventory/:id",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/inventory/inventory.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/inventory/:id",
+            "methods": [
+              "PATCH"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/inventory/inventory.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/inventory/:id/stock",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/inventory/inventory.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/inventory/:id/history",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/inventory/inventory.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus/summaries",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus/:id",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus/:id",
+            "methods": [
+              "PUT"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus/:id/publish",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus/:id/unpublish",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus/:id/duplicate",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/menus/:id/categories",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/categories",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/categories/:id",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/categories",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/categories/:id",
+            "methods": [
+              "PUT"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/categories/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/products",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/products/:id",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/products",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/products/:id",
+            "methods": [
+              "PUT"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/products/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/products/:id/variants",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/products/:id/variants/:variantId",
+            "methods": [
+              "PUT"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/products/:id/variants/:variantId",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/products/:id/modifiers",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/products/:id/modifiers/:modifierId",
+            "methods": [
+              "PUT"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/products/:id/modifiers/:modifierId",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/products/:id/images",
+            "methods": [
+              "PUT"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/qr-codes",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/qr-codes",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/qr-codes/:id",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/qr-codes/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/menu/menu.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/campaigns",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/campaign/campaign.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/campaigns/active",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/campaign/campaign.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/campaigns",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/campaign/campaign.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/campaigns/:id",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/campaign/campaign.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/campaigns/:id",
+            "methods": [
+              "PATCH"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/campaign/campaign.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/campaigns/:id/activate",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/campaign/campaign.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/campaigns/:id/pause",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/campaign/campaign.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/hello",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/hello/hello.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/hello/world",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/hello/hello.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/_core/media/media.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/summaries",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/_core/media/media.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/storage",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/_core/media/media.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/:id",
+            "methods": [
+              "GET"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/_core/media/media.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/upload",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/_core/media/media.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/:id",
+            "methods": [
+              "PATCH"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/_core/media/media.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/_core/media/media.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/bulk-delete",
+            "methods": [
+              "POST"
+            ],
+            "file": ".auto-claude/worktrees/tasks/001-create/src/modules/_core/media/media.api.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/admin/theme-options",
+            "methods": [
+              "GET"
+            ],
+            "file": "_implementation/theme-options/routes.example.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/admin/api/theme-options",
+            "methods": [
+              "GET"
+            ],
+            "file": "_implementation/theme-options/routes.example.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/admin/api/theme-options",
+            "methods": [
+              "PATCH"
+            ],
+            "file": "_implementation/theme-options/routes.example.ts",
+            "framework": "Express",
+            "requires_auth": true
+          },
+          {
+            "path": "/theme-options",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/routes/admin-theme-options.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/theme-options",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/routes/admin-theme-options.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/api/theme-options",
+            "methods": [
+              "PATCH"
+            ],
+            "file": "src/routes/admin-theme-options.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/dashboard",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/subscriptions",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/routes/platform.routes.ts",
+            "framework": "Express",
+            "requires_auth": false
+          }
+        ],
+        "total_routes": 388,
+        "methods": [
+          "DELETE",
+          "POST",
+          "PUT",
+          "PATCH",
+          "GET"
+        ],
+        "protected_routes": [
+          "/api/v1/menus",
+          "/api/v1/orders",
+          "/auth/login",
+          "/media/upload",
+          "/ai/generate",
+          "/protected",
+          "/menu/:slug",
+          "/api/v1/menus",
+          "/api/v1/orders",
+          "/auth/login",
+          "/media/upload",
+          "/ai/generate",
+          "/protected",
+          "/menu/:slug",
+          "/api/v1/auth/register",
+          "/api/v1/auth/login",
+          "/api/v1/menus",
+          "/api/v1/orders",
+          "/auth/login",
+          "/media/upload",
+          "/ai/generate",
+          "/protected",
+          "/menu/:slug",
+          "/api/v1/menus",
+          "/api/v1/orders",
+          "/auth/login",
+          "/media/upload",
+          "/ai/generate",
+          "/protected",
+          "/menu/:slug",
+          "/ai/generate",
+          "/menu",
+          "/menus",
+          "/products/bulk",
+          "/protected",
+          "/menu/:slug",
+          "/api/v1/menus",
+          "/api/v1/orders",
+          "/auth/login",
+          "/media/upload",
+          "/ai/generate",
+          "/admin/theme-options",
+          "/admin/api/theme-options",
+          "/admin/api/theme-options"
+        ]
+      },
+      "monitoring": {
+        "health_checks": [
+          "/health",
+          "/health/ready",
+          "/health/live",
+          "/health",
+          "/health/ready",
+          "/health/live",
+          "/health",
+          "/health",
+          "/health",
+          "/health/ready",
+          "/health/live",
+          "/health",
+          "/health",
+          "/health"
+        ]
+      }
+    }
+  },
+  "infrastructure": {},
+  "conventions": {
+    "typescript": true
+  }
+}

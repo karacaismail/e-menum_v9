@@ -1,0 +1,28 @@
+{
+  "file_path": "Dockerfile",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "# ============================================\n# E-Menum Production Dockerfile\n# ============================================\n# Multi-stage build for optimal image size\n# Node.js 20 LTS with TypeScript\n# ============================================\n\n# --------------------------------------------\n# Stage 1: Dependencies\n# --------------------------------------------\nFROM node:20-alpine AS deps\n\n# Install build dependencies for native modules (bcrypt, sharp)\nRUN apk add --no-cache libc6-compat python3 make g++\n\nWORKDIR /app\n\n# Copy package files\nCOPY package*.json ./\nCOPY prisma ./prisma/\n\n# Install all dependencies (including devDependencies for build)\nRUN npm ci\n\n# --------------------------------------------\n# Stage 2: Builder\n# --------------------------------------------\nFROM node:20-alpine AS builder\n\nWORKDIR /app\n\n# Copy dependencies from deps stage\nCOPY --from=deps /app/node_modules ./node_modules\nCOPY --from=deps /app/package*.json ./\n\n# Copy source code\nCOPY . .\n\n# Generate Prisma client\nRUN npm run prisma:generate\n\n# Build TypeScript\nRUN npm run build\n\n# Remove devDependencies\nRUN npm prune --production\n\n# --------------------------------------------\n# Stage 3: Production Runner\n# --------------------------------------------\nFROM node:20-alpine AS runner\n\n# Security: Run as non-root user\nRUN addgroup --system --gid 1001 nodejs\nRUN adduser --system --uid 1001 emenum\n\nWORKDIR /app\n\n# Set production environment\nENV NODE_ENV=production\nENV PORT=3000\n\n# Copy built application\nCOPY --from=builder --chown=emenum:nodejs /app/dist ./dist\nCOPY --from=builder --chown=emenum:nodejs /app/node_modules ./node_modules\nCOPY --from=builder --chown=emenum:nodejs /app/package*.json ./\n\n# Copy Prisma schema and migrations for runtime\nCOPY --from=builder --chown=emenum:nodejs /app/prisma ./prisma\n\n# Copy static assets\nCOPY --from=builder --chown=emenum:nodejs /app/public ./public\nCOPY --from=builder --chown=emenum:nodejs /app/locales ./locales\nCOPY --from=builder --chown=emenum:nodejs /app/themes ./themes\n\n# Create uploads directory with correct permissions\nRUN mkdir -p uploads && chown -R emenum:nodejs uploads\n\n# Switch to non-root user\nUSER emenum\n\n# Expose port\nEXPOSE 3000\n\n# Health check\nHEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \\\n  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1\n\n# Start application\nCMD [\"node\", \"dist/main.js\"]\n",
+        "last_modified": "2026-02-01T09:10:53.666892"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:24.144938",
+  "last_updated": "2026-02-01T08:03:24.154374"
+}

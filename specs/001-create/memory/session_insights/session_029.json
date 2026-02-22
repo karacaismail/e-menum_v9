@@ -1,0 +1,170 @@
+{
+  "session_number": 29,
+  "timestamp": "2026-01-31T23:09:31.370188+00:00",
+  "subtasks_completed": [
+    "subtask-5-5"
+  ],
+  "discoveries": {
+    "file_insights": [
+      {
+        "file_path": "src/core/middleware/error.middleware.ts",
+        "file_type": "TypeScript",
+        "size_lines": 384,
+        "purpose": "Global error handler middleware for Express application",
+        "key_exports": [
+          "errorHandler",
+          "notFoundHandler",
+          "asyncHandler",
+          "withErrorBoundary",
+          "ErrorResponse"
+        ],
+        "dependencies": [
+          "express",
+          "zod",
+          "@/core/exceptions/app.exception",
+          "@/config/env"
+        ],
+        "complexity_level": "medium"
+      }
+    ],
+    "patterns_discovered": [
+      {
+        "pattern_name": "Error Type Discrimination",
+        "description": "Uses type guard functions (isZodError, isPrismaError, isJsonParseError) to identify and handle different error types appropriately",
+        "lines": "56-78",
+        "benefit": "Centralized error type checking with reusable logic"
+      },
+      {
+        "pattern_name": "Error Conversion Pipeline",
+        "description": "Converts different error types (Zod, Prisma, generic Error) into a unified AppException format",
+        "lines": "89-143",
+        "benefit": "Standardizes error handling across the application"
+      },
+      {
+        "pattern_name": "Prisma Error Code Mapping",
+        "description": "Maps specific Prisma error codes (P2002, P2003, P2025, etc.) to application-specific exceptions",
+        "lines": "104-138",
+        "benefit": "Database-specific error semantics preserved in application layer"
+      },
+      {
+        "pattern_name": "Request Correlation",
+        "description": "Generates unique request IDs and includes them in error responses for tracking and debugging",
+        "lines": "145-150, 191-192",
+        "benefit": "End-to-end request tracing capability"
+      },
+      {
+        "pattern_name": "Async Handler Wrapper",
+        "description": "Higher-order function that wraps async route handlers to automatically catch and forward errors to middleware",
+        "lines": "285-303",
+        "benefit": "Eliminates try-catch boilerplate in route handlers"
+      },
+      {
+        "pattern_name": "Error Boundary Utility",
+        "description": "Generic wrapper for promise-based operations with automatic error conversion",
+        "lines": "309-341",
+        "benefit": "Consistent error handling in service layer without explicit try-catch"
+      },
+      {
+        "pattern_name": "Conditional Stack Trace Exposure",
+        "description": "Stack traces only included in development environment, hidden in production",
+        "lines": "225-227",
+        "benefit": "Security best practice preventing information disclosure"
+      }
+    ],
+    "gotchas_discovered": [
+      {
+        "gotcha_name": "Error Type Guard Order",
+        "description": "The error type checks must happen in correct order - AppException check before generic Error check, otherwise all errors would match the generic Error instance check",
+        "location": "lines 203-216",
+        "severity": "high",
+        "mitigation": "Type guards ordered from most specific to most generic"
+      },
+      {
+        "gotcha_name": "Prisma Error Code Type Assumption",
+        "description": "isPrismaError assumes error.code is a string and checks for 'P' prefix, but Prisma can have other error types; code string checking is crucial",
+        "location": "lines 67-73",
+        "severity": "medium",
+        "mitigation": "Type guard includes explicit string type validation"
+      },
+      {
+        "gotcha_name": "Request ID Fallback Chain",
+        "description": "Request ID resolution uses three fallbacks (request.id, X-Request-ID header, generated) - ambiguity about which takes precedence",
+        "location": "line 192",
+        "severity": "low",
+        "mitigation": "Fallback chain is reasonable but behavior should be documented"
+      },
+      {
+        "gotcha_name": "Details Field Extraction Logic",
+        "description": "Complex conditional logic for including exception details - distinguishes between validation errors array and other details",
+        "location": "lines 218-227",
+        "severity": "medium",
+        "mitigation": "Logic is correct but somewhat brittle if exception.details structure changes"
+      },
+      {
+        "gotcha_name": "Express Error Handler Signature",
+        "description": "Error handlers require exactly 4 parameters (including err and unused _next) to be recognized by Express as error middleware",
+        "location": "line 189",
+        "severity": "high",
+        "mitigation": "Signature is correct with explicit unused _next parameter"
+      }
+    ],
+    "approach_outcome": {
+      "status": "SUCCESS",
+      "summary": "Comprehensive global error handler middleware successfully created with 384 lines of well-documented code",
+      "key_achievements": [
+        "Implemented ErrorRequestHandler that conforms to Express middleware pattern",
+        "Created type-safe error discrimination system supporting Zod, Prisma, and AppException",
+        "Added utility functions (asyncHandler, withErrorBoundary) to simplify error handling in application code",
+        "Implemented request correlation through request ID tracking",
+        "Environment-aware error logging and stack trace exposure (dev vs production)",
+        "404 handler middleware for unmatched routes",
+        "Comprehensive inline documentation with examples"
+      ],
+      "code_quality": "high",
+      "coverage": "Handles expected error types: validation errors, database errors, JSON parsing errors, internal errors, and unknown errors"
+    },
+    "recommendations": [
+      {
+        "category": "Testing",
+        "recommendation": "Create unit tests for error conversion functions (convertZodErrors, convertPrismaError) with specific error code cases",
+        "priority": "high"
+      },
+      {
+        "category": "Documentation",
+        "recommendation": "Document the request ID priority/fallback behavior and how to propagate request IDs through service layers",
+        "priority": "medium"
+      },
+      {
+        "category": "Monitoring",
+        "recommendation": "Consider adding error event emission or metrics collection (e.g., error type counts) for production monitoring",
+        "priority": "medium"
+      },
+      {
+        "category": "Enhancement",
+        "recommendation": "Add support for rate limiting errors and authentication/authorization errors with specific handling",
+        "priority": "low"
+      },
+      {
+        "category": "Integration",
+        "recommendation": "Verify errorHandler and notFoundHandler are registered in the correct order in main Express app setup (404 before error handler)",
+        "priority": "high"
+      },
+      {
+        "category": "Type Safety",
+        "recommendation": "Consider using a discriminated union type for error handling to ensure all error paths are type-checked",
+        "priority": "low"
+      }
+    ],
+    "subtask_id": "subtask-5-5",
+    "session_num": 29,
+    "success": true,
+    "changed_files": [
+      "src/core/middleware/error.middleware.ts"
+    ]
+  },
+  "what_worked": [
+    "Implemented subtask: subtask-5-5"
+  ],
+  "what_failed": [],
+  "recommendations_for_next_session": []
+}

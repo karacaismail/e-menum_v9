@@ -1,0 +1,1122 @@
+{
+  "metadata": {
+    "document": "E-Menum Reporting Features Part 5",
+    "section": "Platform Reports, RBAC Matrix, Plan Limits",
+    "version": "3.0.0"
+  },
+  "FEATURES": {
+    "PLATFORM_REPORTS": [
+      {
+        "feature_key": "report_platform_mrr_dashboard",
+        "feature_id": "RPT-PLT-001",
+        "name_tr": "MRR/ARR Dashboard",
+        "name_en": "MRR/ARR Dashboard",
+        "category": "PLATFORM",
+        "subcategory": "financial",
+        "type": "boolean",
+        "default_value": true,
+        "description_tr": "Aylık ve yıllık tekrarlayan gelir takibi",
+        "description_en": "Monthly and annual recurring revenue tracking",
+        "access_level": "super_admin",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 0,
+        "real_time": true,
+        "metrics": [
+          {
+            "metric": "mrr",
+            "name_tr": "Aylık Tekrarlayan Gelir",
+            "formula": "sum(active_subscriptions * monthly_price)",
+            "format": "currency"
+          },
+          {
+            "metric": "arr",
+            "name_tr": "Yıllık Tekrarlayan Gelir",
+            "formula": "MRR * 12",
+            "format": "currency"
+          },
+          {
+            "metric": "mrr_growth",
+            "name_tr": "MRR Büyümesi",
+            "format": "percentage"
+          },
+          {
+            "metric": "new_mrr",
+            "name_tr": "Yeni MRR",
+            "description": "Yeni müşterilerden gelen"
+          },
+          {
+            "metric": "expansion_mrr",
+            "name_tr": "Genişleme MRR",
+            "description": "Upgrade'lerden gelen"
+          },
+          {
+            "metric": "contraction_mrr",
+            "name_tr": "Daralma MRR",
+            "description": "Downgrade'lerden kayıp"
+          },
+          {
+            "metric": "churned_mrr",
+            "name_tr": "Kayıp MRR",
+            "description": "İptallerden kayıp"
+          },
+          {
+            "metric": "net_mrr_change",
+            "name_tr": "Net MRR Değişimi",
+            "formula": "new + expansion - contraction - churned"
+          }
+        ],
+        "breakdowns": [
+          "by_plan",
+          "by_region",
+          "by_acquisition_channel",
+          "by_cohort"
+        ],
+        "visualizations": [
+          "mrr_trend_chart",
+          "mrr_waterfall",
+          "plan_distribution",
+          "growth_components"
+        ],
+        "priority": "P0",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "report_platform_churn_analysis",
+        "feature_id": "RPT-PLT-002",
+        "name_tr": "Churn Analizi",
+        "name_en": "Churn Analysis",
+        "category": "PLATFORM",
+        "subcategory": "retention",
+        "type": "boolean",
+        "default_value": true,
+        "description_tr": "Platform müşteri kaybı analizi ve tahmin",
+        "description_en": "Platform customer churn analysis and prediction",
+        "access_level": "super_admin",
+        "ai_model": {
+          "primary": "ml_churn_prediction",
+          "secondary": "claude-sonnet"
+        },
+        "credit_cost": 0,
+        "churn_metrics": [
+          {
+            "metric": "customer_churn_rate",
+            "name_tr": "Müşteri Churn Oranı",
+            "formula": "churned_customers / total_customers",
+            "period": "monthly"
+          },
+          {
+            "metric": "revenue_churn_rate",
+            "name_tr": "Gelir Churn Oranı",
+            "formula": "churned_mrr / total_mrr",
+            "period": "monthly"
+          },
+          {
+            "metric": "net_revenue_retention",
+            "name_tr": "Net Gelir Tutma",
+            "formula": "(starting_mrr + expansion - contraction - churn) / starting_mrr",
+            "target": ">100%"
+          },
+          {
+            "metric": "logo_retention",
+            "name_tr": "Logo Tutma",
+            "formula": "(starting_customers - churned) / starting_customers"
+          }
+        ],
+        "churn_analysis": {
+          "by_plan": true,
+          "by_tenure": true,
+          "by_usage": true,
+          "by_industry": true,
+          "by_size": true
+        },
+        "prediction_features": {
+          "at_risk_customers": true,
+          "churn_probability_score": true,
+          "recommended_interventions": true,
+          "revenue_at_risk": true
+        },
+        "early_warning_signals": [
+          "usage_decline",
+          "support_tickets_increase",
+          "login_frequency_drop",
+          "feature_adoption_stall",
+          "billing_issues"
+        ],
+        "priority": "P0",
+        "implementation_status": "planned",
+        "estimated_effort_days": 15
+      },
+      {
+        "feature_key": "report_platform_lead_pipeline",
+        "feature_id": "RPT-PLT-003",
+        "name_tr": "Lead Pipeline",
+        "name_en": "Lead Pipeline",
+        "category": "PLATFORM",
+        "subcategory": "sales",
+        "type": "boolean",
+        "default_value": true,
+        "description_tr": "Satış hunisi ve lead takibi",
+        "description_en": "Sales funnel and lead tracking",
+        "access_level": "super_admin",
+        "ai_model": {
+          "primary": "ml_lead_scoring",
+          "secondary": "claude-sonnet"
+        },
+        "credit_cost": 0,
+        "pipeline_stages": [
+          {
+            "stage": "awareness",
+            "name_tr": "Farkındalık",
+            "metrics": ["website_visits", "ad_impressions", "content_views"]
+          },
+          {
+            "stage": "interest",
+            "name_tr": "İlgi",
+            "metrics": ["signup_starts", "demo_requests", "pricing_views"]
+          },
+          {
+            "stage": "consideration",
+            "name_tr": "Değerlendirme",
+            "metrics": ["trial_starts", "feature_exploration", "sales_calls"]
+          },
+          {
+            "stage": "intent",
+            "name_tr": "Niyet",
+            "metrics": ["pricing_discussions", "proposal_sent", "contract_views"]
+          },
+          {
+            "stage": "evaluation",
+            "name_tr": "Değerlendirme",
+            "metrics": ["trial_active_usage", "integration_tests"]
+          },
+          {
+            "stage": "purchase",
+            "name_tr": "Satın Alma",
+            "metrics": ["subscription_started", "payment_completed"]
+          }
+        ],
+        "lead_scoring": {
+          "demographic_score": true,
+          "behavioral_score": true,
+          "engagement_score": true,
+          "fit_score": true
+        },
+        "conversion_metrics": [
+          "stage_conversion_rates",
+          "time_in_stage",
+          "velocity",
+          "win_rate"
+        ],
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 12
+      },
+      {
+        "feature_key": "report_platform_region_performance",
+        "feature_id": "RPT-PLT-004",
+        "name_tr": "Bölge Performans Haritası",
+        "name_en": "Regional Performance Map",
+        "category": "PLATFORM",
+        "subcategory": "geographic",
+        "type": "boolean",
+        "default_value": true,
+        "description_tr": "Coğrafi bölge bazlı platform performansı",
+        "description_en": "Geographic region-based platform performance",
+        "access_level": "super_admin",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 0,
+        "geographic_levels": [
+          "country",
+          "region",
+          "city",
+          "district"
+        ],
+        "metrics_per_region": [
+          "customer_count",
+          "mrr",
+          "growth_rate",
+          "churn_rate",
+          "penetration_rate",
+          "avg_revenue_per_customer"
+        ],
+        "visualizations": [
+          "heat_map",
+          "bubble_map",
+          "choropleth",
+          "trend_by_region"
+        ],
+        "ai_insights": [
+          "high_potential_regions",
+          "underperforming_regions",
+          "expansion_opportunities",
+          "competitive_landscape"
+        ],
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "report_platform_plan_conversion",
+        "feature_id": "RPT-PLT-005",
+        "name_tr": "Paket Dönüşüm Analizi",
+        "name_en": "Plan Conversion Analysis",
+        "category": "PLATFORM",
+        "subcategory": "conversion",
+        "type": "boolean",
+        "default_value": true,
+        "description_tr": "Paket geçişleri ve upgrade/downgrade analizi",
+        "description_en": "Plan transitions and upgrade/downgrade analysis",
+        "access_level": "super_admin",
+        "ai_model": {
+          "primary": "ml_propensity",
+          "secondary": "claude-sonnet"
+        },
+        "credit_cost": 0,
+        "transition_tracking": {
+          "free_to_paid": true,
+          "trial_to_paid": true,
+          "plan_upgrades": true,
+          "plan_downgrades": true,
+          "plan_to_churn": true
+        },
+        "conversion_metrics": [
+          "trial_to_paid_rate",
+          "free_to_paid_rate",
+          "upgrade_rate",
+          "downgrade_rate",
+          "time_to_upgrade",
+          "upgrade_triggers"
+        ],
+        "propensity_modeling": {
+          "upgrade_probability": true,
+          "optimal_upgrade_timing": true,
+          "personalized_offers": true
+        },
+        "plan_flow_visualization": {
+          "sankey_diagram": true,
+          "transition_matrix": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "report_platform_ai_credit_usage",
+        "feature_id": "RPT-PLT-006",
+        "name_tr": "AI Kredi Kullanım Raporu",
+        "name_en": "AI Credit Usage Report",
+        "category": "PLATFORM",
+        "subcategory": "ai_operations",
+        "type": "boolean",
+        "default_value": true,
+        "description_tr": "AI kredi kullanım pattern'leri ve maliyet optimizasyonu",
+        "description_en": "AI credit usage patterns and cost optimization",
+        "access_level": "super_admin",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 0,
+        "usage_metrics": [
+          {
+            "metric": "total_credits_consumed",
+            "name_tr": "Toplam Tüketilen Kredi",
+            "breakdown": ["by_feature", "by_customer", "by_plan"]
+          },
+          {
+            "metric": "credits_per_customer",
+            "name_tr": "Müşteri Başı Kredi"
+          },
+          {
+            "metric": "credits_by_model",
+            "name_tr": "Model Bazlı Kredi",
+            "breakdown": ["haiku", "sonnet", "gpt4o", "prophet"]
+          },
+          {
+            "metric": "credits_by_feature",
+            "name_tr": "Özellik Bazlı Kredi"
+          },
+          {
+            "metric": "credit_utilization_rate",
+            "name_tr": "Kredi Kullanım Oranı",
+            "formula": "used / allocated"
+          }
+        ],
+        "cost_tracking": {
+          "cost_per_credit": true,
+          "total_ai_cost": true,
+          "cost_by_model": true,
+          "cost_trend": true,
+          "budget_vs_actual": true
+        },
+        "optimization_insights": [
+          "high_cost_features",
+          "model_routing_efficiency",
+          "cost_reduction_opportunities"
+        ],
+        "priority": "P0",
+        "implementation_status": "planned",
+        "estimated_effort_days": 8
+      },
+      {
+        "feature_key": "report_platform_system_health",
+        "feature_id": "RPT-PLT-007",
+        "name_tr": "Sistem Sağlık Raporu",
+        "name_en": "System Health Report",
+        "category": "PLATFORM",
+        "subcategory": "infrastructure",
+        "type": "boolean",
+        "default_value": true,
+        "description_tr": "Platform altyapı ve performans izleme",
+        "description_en": "Platform infrastructure and performance monitoring",
+        "access_level": "super_admin",
+        "credit_cost": 0,
+        "real_time": true,
+        "health_metrics": [
+          {
+            "metric": "uptime",
+            "name_tr": "Çalışma Süresi",
+            "target": "99.9%"
+          },
+          {
+            "metric": "api_latency",
+            "name_tr": "API Gecikme",
+            "target": "<200ms p95"
+          },
+          {
+            "metric": "error_rate",
+            "name_tr": "Hata Oranı",
+            "target": "<0.1%"
+          },
+          {
+            "metric": "database_performance",
+            "name_tr": "Veritabanı Performansı"
+          },
+          {
+            "metric": "queue_depth",
+            "name_tr": "Kuyruk Derinliği"
+          },
+          {
+            "metric": "cache_hit_rate",
+            "name_tr": "Cache Hit Oranı"
+          }
+        ],
+        "infrastructure_monitoring": [
+          "cpu_usage",
+          "memory_usage",
+          "disk_usage",
+          "network_throughput",
+          "container_health"
+        ],
+        "ai_service_health": [
+          "ai_api_latency",
+          "ai_error_rate",
+          "model_availability",
+          "queue_processing_time"
+        ],
+        "alerting": {
+          "thresholds": true,
+          "anomaly_detection": true,
+          "escalation_rules": true
+        },
+        "priority": "P0",
+        "implementation_status": "planned",
+        "estimated_effort_days": 12
+      },
+      {
+        "feature_key": "report_platform_competitor_benchmark",
+        "feature_id": "RPT-PLT-008",
+        "name_tr": "Rakip Benchmark Raporu",
+        "name_en": "Competitor Benchmark Report",
+        "category": "PLATFORM",
+        "subcategory": "competitive",
+        "type": "boolean",
+        "default_value": true,
+        "description_tr": "Rakip karşılaştırma ve pazar konumlandırma",
+        "description_en": "Competitor comparison and market positioning",
+        "access_level": "super_admin",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 0,
+        "competitors_tracked": [
+          "menulux",
+          "qrall",
+          "finedinemenu",
+          "tablesafe",
+          "orderlord"
+        ],
+        "comparison_dimensions": [
+          "feature_comparison",
+          "pricing_comparison",
+          "market_share_estimate",
+          "customer_reviews",
+          "social_presence"
+        ],
+        "data_sources": [
+          "public_reviews",
+          "social_media",
+          "job_postings",
+          "press_releases",
+          "app_store_data"
+        ],
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 15
+      },
+      {
+        "feature_key": "report_platform_nps_satisfaction",
+        "feature_id": "RPT-PLT-009",
+        "name_tr": "NPS & Memnuniyet Raporu",
+        "name_en": "NPS & Satisfaction Report",
+        "category": "PLATFORM",
+        "subcategory": "customer_success",
+        "type": "boolean",
+        "default_value": true,
+        "description_tr": "Platform NPS ve müşteri memnuniyeti analizi",
+        "description_en": "Platform NPS and customer satisfaction analysis",
+        "access_level": "super_admin",
+        "ai_model": {
+          "primary": "sentiment_analysis",
+          "secondary": "claude-sonnet"
+        },
+        "credit_cost": 0,
+        "nps_tracking": {
+          "current_nps": true,
+          "nps_trend": true,
+          "nps_by_segment": true,
+          "nps_by_plan": true,
+          "nps_by_tenure": true
+        },
+        "satisfaction_metrics": [
+          "csat_score",
+          "ces_score",
+          "support_satisfaction",
+          "feature_satisfaction"
+        ],
+        "feedback_analysis": {
+          "sentiment_breakdown": true,
+          "topic_extraction": true,
+          "common_complaints": true,
+          "feature_requests": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "report_platform_financial_projection",
+        "feature_id": "RPT-PLT-010",
+        "name_tr": "Finansal Projeksiyon Raporu",
+        "name_en": "Financial Projection Report",
+        "category": "PLATFORM",
+        "subcategory": "financial",
+        "type": "boolean",
+        "default_value": true,
+        "description_tr": "3-6-12 aylık finansal tahmin ve senaryo analizi",
+        "description_en": "3-6-12 month financial forecast and scenario analysis",
+        "access_level": "super_admin",
+        "ai_model": {
+          "primary": "prophet",
+          "secondary": "claude-sonnet"
+        },
+        "credit_cost": 0,
+        "projection_horizons": [3, 6, 12],
+        "projection_metrics": [
+          "mrr_projection",
+          "customer_count_projection",
+          "churn_projection",
+          "cac_projection",
+          "ltv_projection",
+          "runway_calculation"
+        ],
+        "scenarios": [
+          {
+            "scenario": "base",
+            "name_tr": "Baz Senaryo",
+            "assumptions": "Current trends continue"
+          },
+          {
+            "scenario": "optimistic",
+            "name_tr": "İyimser Senaryo",
+            "assumptions": "Growth accelerates 20%"
+          },
+          {
+            "scenario": "pessimistic",
+            "name_tr": "Kötümser Senaryo",
+            "assumptions": "Growth slows 30%"
+          },
+          {
+            "scenario": "breakeven",
+            "name_tr": "Başa Baş Senaryosu",
+            "assumptions": "Minimum growth for profitability"
+          }
+        ],
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 12
+      },
+      {
+        "feature_key": "report_platform_usage_analytics",
+        "feature_id": "RPT-PLT-011",
+        "name_tr": "Kullanım Analitiği",
+        "name_en": "Usage Analytics",
+        "category": "PLATFORM",
+        "subcategory": "product",
+        "type": "boolean",
+        "default_value": true,
+        "description_tr": "Platform ve özellik kullanım analizi",
+        "description_en": "Platform and feature usage analysis",
+        "access_level": "super_admin",
+        "credit_cost": 0,
+        "usage_metrics": [
+          "dau_mau_ratio",
+          "feature_adoption_rate",
+          "session_duration",
+          "actions_per_session",
+          "feature_usage_frequency"
+        ],
+        "feature_analytics": {
+          "most_used_features": true,
+          "underutilized_features": true,
+          "feature_stickiness": true,
+          "feature_correlation": true
+        },
+        "user_journey": {
+          "onboarding_completion": true,
+          "time_to_value": true,
+          "aha_moment_tracking": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "report_platform_support_analytics",
+        "feature_id": "RPT-PLT-012",
+        "name_tr": "Destek Analitiği",
+        "name_en": "Support Analytics",
+        "category": "PLATFORM",
+        "subcategory": "support",
+        "type": "boolean",
+        "default_value": true,
+        "description_tr": "Müşteri destek performansı ve trend analizi",
+        "description_en": "Customer support performance and trend analysis",
+        "access_level": "super_admin",
+        "credit_cost": 0,
+        "support_metrics": [
+          "ticket_volume",
+          "first_response_time",
+          "resolution_time",
+          "customer_satisfaction",
+          "ticket_by_category",
+          "agent_performance"
+        ],
+        "trend_analysis": {
+          "volume_trends": true,
+          "category_trends": true,
+          "common_issues": true,
+          "self_service_rate": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 8
+      },
+      {
+        "feature_key": "report_platform_cohort_analysis",
+        "feature_id": "RPT-PLT-013",
+        "name_tr": "Cohort Analizi",
+        "name_en": "Cohort Analysis",
+        "category": "PLATFORM",
+        "subcategory": "retention",
+        "type": "boolean",
+        "default_value": true,
+        "description_tr": "Müşteri cohort bazlı davranış analizi",
+        "description_en": "Customer cohort-based behavior analysis",
+        "access_level": "super_admin",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 0,
+        "cohort_dimensions": [
+          "signup_month",
+          "acquisition_channel",
+          "initial_plan",
+          "industry",
+          "company_size"
+        ],
+        "cohort_metrics": [
+          "retention_by_cohort",
+          "revenue_by_cohort",
+          "ltv_by_cohort",
+          "engagement_by_cohort"
+        ],
+        "visualization": "cohort_heatmap",
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "report_platform_onboarding_analytics",
+        "feature_id": "RPT-PLT-014",
+        "name_tr": "Onboarding Analitiği",
+        "name_en": "Onboarding Analytics",
+        "category": "PLATFORM",
+        "subcategory": "onboarding",
+        "type": "boolean",
+        "default_value": true,
+        "description_tr": "Müşteri onboarding performansı ve tıkanma noktaları",
+        "description_en": "Customer onboarding performance and friction points",
+        "access_level": "super_admin",
+        "credit_cost": 0,
+        "onboarding_funnel": [
+          "signup_complete",
+          "profile_setup",
+          "menu_created",
+          "first_qr_generated",
+          "first_order_received",
+          "payment_setup",
+          "team_invited"
+        ],
+        "metrics": [
+          "step_completion_rate",
+          "time_per_step",
+          "drop_off_points",
+          "time_to_first_value",
+          "onboarding_completion_rate"
+        ],
+        "ai_insights": [
+          "friction_identification",
+          "improvement_suggestions",
+          "segment_comparison"
+        ],
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 8
+      },
+      {
+        "feature_key": "report_platform_sales_performance",
+        "feature_id": "RPT-PLT-015",
+        "name_tr": "Satış Ekibi Performansı",
+        "name_en": "Sales Team Performance",
+        "category": "PLATFORM",
+        "subcategory": "sales",
+        "type": "boolean",
+        "default_value": true,
+        "description_tr": "Satış ekibi performans takibi ve analizi",
+        "description_en": "Sales team performance tracking and analysis",
+        "access_level": "super_admin",
+        "credit_cost": 0,
+        "sales_metrics": [
+          "deals_closed",
+          "revenue_generated",
+          "conversion_rate",
+          "avg_deal_size",
+          "sales_cycle_length",
+          "quota_attainment"
+        ],
+        "team_comparison": true,
+        "individual_dashboards": true,
+        "gamification": {
+          "leaderboard": true,
+          "achievements": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 8
+      },
+      {
+        "feature_key": "report_platform_api_analytics",
+        "feature_id": "RPT-PLT-016",
+        "name_tr": "API Kullanım Analitiği",
+        "name_en": "API Usage Analytics",
+        "category": "PLATFORM",
+        "subcategory": "technical",
+        "type": "boolean",
+        "default_value": true,
+        "description_tr": "API kullanım pattern'leri ve performans",
+        "description_en": "API usage patterns and performance",
+        "access_level": "super_admin",
+        "credit_cost": 0,
+        "api_metrics": [
+          "requests_per_minute",
+          "requests_by_endpoint",
+          "requests_by_customer",
+          "error_rate_by_endpoint",
+          "latency_percentiles",
+          "rate_limit_hits"
+        ],
+        "usage_patterns": {
+          "peak_usage_times": true,
+          "endpoint_popularity": true,
+          "integration_usage": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 6
+      }
+    ]
+  },
+  "RBAC_MATRIX": {
+    "description": "Role-Based Access Control matrix for reporting features",
+    "roles": {
+      "super_admin": {
+        "role_id": "ROLE-001",
+        "name_tr": "Süper Admin",
+        "name_en": "Super Admin",
+        "description": "E-Menum platform yöneticisi",
+        "level": 100,
+        "scope": "platform"
+      },
+      "support": {
+        "role_id": "ROLE-002",
+        "name_tr": "Destek",
+        "name_en": "Support",
+        "description": "Müşteri destek ekibi",
+        "level": 90,
+        "scope": "platform"
+      },
+      "sales": {
+        "role_id": "ROLE-003",
+        "name_tr": "Satış",
+        "name_en": "Sales",
+        "description": "Satış ekibi",
+        "level": 80,
+        "scope": "platform"
+      },
+      "owner": {
+        "role_id": "ROLE-010",
+        "name_tr": "İşletme Sahibi",
+        "name_en": "Owner",
+        "description": "Restoran sahibi",
+        "level": 70,
+        "scope": "tenant"
+      },
+      "admin": {
+        "role_id": "ROLE-011",
+        "name_tr": "Yönetici",
+        "name_en": "Admin",
+        "description": "Restoran yöneticisi",
+        "level": 60,
+        "scope": "tenant"
+      },
+      "manager": {
+        "role_id": "ROLE-012",
+        "name_tr": "Müdür",
+        "name_en": "Manager",
+        "description": "Şube/vardiya müdürü",
+        "level": 50,
+        "scope": "branch"
+      },
+      "waiter": {
+        "role_id": "ROLE-013",
+        "name_tr": "Garson",
+        "name_en": "Waiter",
+        "description": "Servis personeli",
+        "level": 30,
+        "scope": "self"
+      },
+      "kitchen": {
+        "role_id": "ROLE-014",
+        "name_tr": "Mutfak",
+        "name_en": "Kitchen",
+        "description": "Mutfak personeli",
+        "level": 20,
+        "scope": "kitchen"
+      },
+      "cashier": {
+        "role_id": "ROLE-015",
+        "name_tr": "Kasiyer",
+        "name_en": "Cashier",
+        "description": "Kasa personeli",
+        "level": 25,
+        "scope": "pos"
+      }
+    },
+    "access_levels": {
+      "full": {
+        "code": "F",
+        "description": "Tam erişim - okuma, yazma, silme",
+        "permissions": ["read", "write", "delete", "export", "share"]
+      },
+      "read_write": {
+        "code": "RW",
+        "description": "Okuma ve yazma",
+        "permissions": ["read", "write"]
+      },
+      "read_only": {
+        "code": "R",
+        "description": "Sadece okuma",
+        "permissions": ["read"]
+      },
+      "limited": {
+        "code": "L",
+        "description": "Sınırlı erişim",
+        "permissions": ["read_limited"]
+      },
+      "self_only": {
+        "code": "S",
+        "description": "Sadece kendi verisi",
+        "permissions": ["read_self"]
+      },
+      "none": {
+        "code": "-",
+        "description": "Erişim yok",
+        "permissions": []
+      }
+    },
+    "report_access_matrix": {
+      "PERIODIC_REPORTS": {
+        "report_daily_summary": {"super_admin": "F", "support": "R", "sales": "L", "owner": "F", "admin": "F", "manager": "R", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_weekly_trend": {"super_admin": "F", "support": "R", "sales": "L", "owner": "F", "admin": "F", "manager": "R", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_monthly_analysis": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "F", "manager": "L", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_quarterly_review": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "R", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_yearly_summary": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "R", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"}
+      },
+      "SALES_REPORTS": {
+        "report_sales_revenue": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "F", "manager": "R", "waiter": "-", "kitchen": "-", "cashier": "L"},
+        "report_sales_breakdown": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "F", "manager": "R", "waiter": "-", "kitchen": "-", "cashier": "L"},
+        "report_profit_margin": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "R", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_top_sellers": {"super_admin": "F", "support": "R", "sales": "L", "owner": "F", "admin": "F", "manager": "F", "waiter": "R", "kitchen": "R", "cashier": "R"}
+      },
+      "MENU_REPORTS": {
+        "report_menu_performance_matrix": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "F", "manager": "R", "waiter": "-", "kitchen": "L", "cashier": "-"},
+        "report_menu_item_performance": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "F", "manager": "R", "waiter": "L", "kitchen": "R", "cashier": "-"},
+        "report_menu_optimization": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "R", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"}
+      },
+      "ORDER_REPORTS": {
+        "report_order_analysis": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "F", "manager": "F", "waiter": "L", "kitchen": "L", "cashier": "R"},
+        "report_order_peak_hours": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "F", "manager": "F", "waiter": "-", "kitchen": "R", "cashier": "-"},
+        "report_order_cancellation": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "F", "manager": "R", "waiter": "S", "kitchen": "-", "cashier": "-"}
+      },
+      "CUSTOMER_REPORTS": {
+        "report_customer_overview": {"super_admin": "F", "support": "R", "sales": "L", "owner": "F", "admin": "F", "manager": "R", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_customer_segmentation": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "R", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_customer_churn_risk": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "R", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_customer_feedback": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "F", "manager": "R", "waiter": "S", "kitchen": "-", "cashier": "-"}
+      },
+      "STAFF_REPORTS": {
+        "report_staff_overview": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "F", "manager": "R", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_staff_performance_scorecard": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "F", "manager": "R", "waiter": "S", "kitchen": "S", "cashier": "S"},
+        "report_staff_ranking": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "F", "manager": "R", "waiter": "R", "kitchen": "R", "cashier": "R"},
+        "report_staff_individual_dashboard": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "F", "manager": "R", "waiter": "S", "kitchen": "S", "cashier": "S"}
+      },
+      "INVENTORY_REPORTS": {
+        "report_inventory_status": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "F", "manager": "F", "waiter": "-", "kitchen": "R", "cashier": "-"},
+        "report_inventory_forecast": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "F", "manager": "R", "waiter": "-", "kitchen": "L", "cashier": "-"},
+        "report_inventory_waste": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "F", "manager": "R", "waiter": "-", "kitchen": "R", "cashier": "-"}
+      },
+      "CAMPAIGN_REPORTS": {
+        "report_campaign_overview": {"super_admin": "F", "support": "R", "sales": "L", "owner": "F", "admin": "F", "manager": "R", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_campaign_roi": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "R", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_loyalty_overview": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "F", "manager": "R", "waiter": "L", "kitchen": "-", "cashier": "L"}
+      },
+      "OPERATION_REPORTS": {
+        "report_table_utilization": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "F", "manager": "F", "waiter": "R", "kitchen": "-", "cashier": "-"},
+        "report_kitchen_performance": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "F", "manager": "R", "waiter": "-", "kitchen": "F", "cashier": "-"},
+        "report_service_time": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "F", "manager": "F", "waiter": "L", "kitchen": "L", "cashier": "-"}
+      },
+      "DIGITAL_REPORTS": {
+        "report_qr_scan_analytics": {"super_admin": "F", "support": "R", "sales": "L", "owner": "F", "admin": "F", "manager": "R", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_menu_views": {"super_admin": "F", "support": "R", "sales": "L", "owner": "F", "admin": "F", "manager": "R", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_ordering_funnel": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "R", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"}
+      },
+      "BRANCH_REPORTS": {
+        "report_branch_comparison": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "R", "manager": "L", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_branch_ranking": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "R", "manager": "L", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_branch_consolidated": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "R", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"}
+      },
+      "AI_QUERY": {
+        "feature_nl_query_basic": {"super_admin": "F", "support": "R", "sales": "L", "owner": "F", "admin": "F", "manager": "F", "waiter": "L", "kitchen": "-", "cashier": "-"},
+        "feature_nl_query_comparison": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "F", "manager": "R", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "feature_nl_query_analysis": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "R", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "feature_nl_query_recommendation": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "R", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "feature_nl_query_complex": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "-", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"}
+      },
+      "AI_INSIGHTS": {
+        "feature_ai_insights_auto": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "F", "manager": "R", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "feature_ai_anomaly_detection": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "F", "manager": "R", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "feature_ai_recommendations": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "R", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"}
+      },
+      "FORECASTING": {
+        "feature_forecasting_demand_short": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "F", "manager": "R", "waiter": "-", "kitchen": "L", "cashier": "-"},
+        "feature_forecasting_demand_medium": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "R", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "feature_forecasting_revenue": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "R", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"}
+      },
+      "WHAT_IF": {
+        "feature_whatif_pricing": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "R", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "feature_whatif_capacity": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "R", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "feature_whatif_menu": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "R", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"}
+      },
+      "PLATFORM_REPORTS": {
+        "report_platform_mrr_dashboard": {"super_admin": "F", "support": "R", "sales": "L", "owner": "-", "admin": "-", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_platform_churn_analysis": {"super_admin": "F", "support": "R", "sales": "-", "owner": "-", "admin": "-", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_platform_lead_pipeline": {"super_admin": "F", "support": "-", "sales": "F", "owner": "-", "admin": "-", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_platform_system_health": {"super_admin": "F", "support": "R", "sales": "-", "owner": "-", "admin": "-", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "report_platform_ai_credit_usage": {"super_admin": "F", "support": "R", "sales": "-", "owner": "-", "admin": "-", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"}
+      },
+      "EXPORT": {
+        "feature_export_pdf": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "F", "manager": "L", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "feature_export_excel": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "F", "manager": "L", "waiter": "-", "kitchen": "-", "cashier": "-"},
+        "feature_export_api": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "R", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"}
+      },
+      "DASHBOARD": {
+        "feature_dashboard_basic": {"super_admin": "F", "support": "R", "sales": "R", "owner": "F", "admin": "F", "manager": "F", "waiter": "R", "kitchen": "R", "cashier": "R"},
+        "feature_dashboard_realtime": {"super_admin": "F", "support": "R", "sales": "-", "owner": "F", "admin": "F", "manager": "F", "waiter": "L", "kitchen": "L", "cashier": "L"},
+        "feature_dashboard_custom": {"super_admin": "F", "support": "-", "sales": "-", "owner": "F", "admin": "F", "manager": "-", "waiter": "-", "kitchen": "-", "cashier": "-"}
+      }
+    }
+  },
+  "PLAN_MATRIX": {
+    "description": "Plan-based feature availability and limits",
+    "plans": {
+      "free": {
+        "plan_id": "PLAN-001",
+        "name_tr": "Ücretsiz",
+        "name_en": "Free",
+        "price_monthly": 0,
+        "price_yearly": 0,
+        "target_segment": "Trial/Starter"
+      },
+      "lite": {
+        "plan_id": "PLAN-002",
+        "name_tr": "Lite",
+        "name_en": "Lite",
+        "price_monthly": 499,
+        "price_yearly": 4990,
+        "target_segment": "Small Business"
+      },
+      "pro": {
+        "plan_id": "PLAN-003",
+        "name_tr": "Pro",
+        "name_en": "Pro",
+        "price_monthly": 1499,
+        "price_yearly": 14990,
+        "target_segment": "Growing Business"
+      },
+      "business": {
+        "plan_id": "PLAN-004",
+        "name_tr": "Business",
+        "name_en": "Business",
+        "price_monthly": 3999,
+        "price_yearly": 39990,
+        "target_segment": "Multi-Location"
+      },
+      "enterprise": {
+        "plan_id": "PLAN-005",
+        "name_tr": "Enterprise",
+        "name_en": "Enterprise",
+        "price_monthly": 7999,
+        "price_yearly": 79990,
+        "target_segment": "Large Chain"
+      }
+    },
+    "feature_limits": {
+      "reporting": {
+        "limit_nl_queries_daily": {"free": 2, "lite": 10, "pro": 50, "business": 200, "enterprise": -1},
+        "limit_custom_reports": {"free": 0, "lite": 0, "pro": 3, "business": 10, "enterprise": -1},
+        "limit_scheduled_reports": {"free": 0, "lite": 1, "pro": 5, "business": 20, "enterprise": -1},
+        "limit_forecast_days": {"free": 0, "lite": 0, "pro": 7, "business": 30, "enterprise": 90},
+        "limit_data_retention_days": {"free": 7, "lite": 30, "pro": 90, "business": 365, "enterprise": -1},
+        "limit_export_per_month": {"free": 0, "lite": 5, "pro": 30, "business": 100, "enterprise": -1}
+      },
+      "ai_credits": {
+        "monthly_credits": {"free": 50, "lite": 200, "pro": 1000, "business": 5000, "enterprise": 25000},
+        "rollover_enabled": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true},
+        "rollover_limit_months": {"free": 0, "lite": 0, "pro": 1, "business": 3, "enterprise": 6}
+      }
+    },
+    "feature_availability": {
+      "PERIODIC_REPORTS": {
+        "report_daily_summary": {"free": false, "lite": true, "pro": true, "business": true, "enterprise": true},
+        "report_daily_morning_brief": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true},
+        "report_weekly_trend": {"free": false, "lite": true, "pro": true, "business": true, "enterprise": true},
+        "report_monthly_analysis": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true},
+        "report_quarterly_review": {"free": false, "lite": false, "pro": false, "business": true, "enterprise": true},
+        "report_yearly_summary": {"free": false, "lite": false, "pro": false, "business": false, "enterprise": true}
+      },
+      "SALES_REPORTS": {
+        "report_sales_revenue": {"free": false, "lite": true, "pro": true, "business": true, "enterprise": true},
+        "report_sales_comparison": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true},
+        "report_profit_margin": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true},
+        "report_top_sellers": {"free": true, "lite": true, "pro": true, "business": true, "enterprise": true}
+      },
+      "MENU_REPORTS": {
+        "report_menu_performance_matrix": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true},
+        "report_menu_item_performance": {"free": false, "lite": true, "pro": true, "business": true, "enterprise": true},
+        "report_menu_optimization": {"free": false, "lite": false, "pro": false, "business": true, "enterprise": true}
+      },
+      "CUSTOMER_REPORTS": {
+        "report_customer_overview": {"free": false, "lite": true, "pro": true, "business": true, "enterprise": true},
+        "report_customer_segmentation": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true},
+        "report_customer_lifetime_value": {"free": false, "lite": false, "pro": false, "business": true, "enterprise": true},
+        "report_customer_churn_risk": {"free": false, "lite": false, "pro": false, "business": true, "enterprise": true}
+      },
+      "STAFF_REPORTS": {
+        "report_staff_overview": {"free": false, "lite": true, "pro": true, "business": true, "enterprise": true},
+        "report_staff_performance_scorecard": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true},
+        "report_staff_individual_dashboard": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true}
+      },
+      "AI_QUERY": {
+        "feature_nl_query_basic": {"free": true, "lite": true, "pro": true, "business": true, "enterprise": true},
+        "feature_nl_query_comparison": {"free": false, "lite": true, "pro": true, "business": true, "enterprise": true},
+        "feature_nl_query_analysis": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true},
+        "feature_nl_query_recommendation": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true},
+        "feature_nl_query_complex": {"free": false, "lite": false, "pro": false, "business": true, "enterprise": true},
+        "feature_nl_query_conversational": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true},
+        "feature_nl_query_voice": {"free": false, "lite": false, "pro": false, "business": true, "enterprise": true}
+      },
+      "AI_INSIGHTS": {
+        "feature_ai_insights_auto": {"free": false, "lite": true, "pro": true, "business": true, "enterprise": true},
+        "feature_ai_anomaly_detection": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true},
+        "feature_ai_recommendations": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true},
+        "feature_ai_opportunity_finder": {"free": false, "lite": false, "pro": false, "business": true, "enterprise": true}
+      },
+      "FORECASTING": {
+        "feature_forecasting_demand_short": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true},
+        "feature_forecasting_demand_medium": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true},
+        "feature_forecasting_demand_long": {"free": false, "lite": false, "pro": false, "business": true, "enterprise": true},
+        "feature_forecasting_revenue": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true}
+      },
+      "WHAT_IF": {
+        "feature_whatif_pricing": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true},
+        "feature_whatif_capacity": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true},
+        "feature_whatif_menu": {"free": false, "lite": false, "pro": false, "business": true, "enterprise": true},
+        "feature_whatif_expansion": {"free": false, "lite": false, "pro": false, "business": false, "enterprise": true}
+      },
+      "EXPORT": {
+        "feature_export_pdf": {"free": false, "lite": true, "pro": true, "business": true, "enterprise": true},
+        "feature_export_excel": {"free": false, "lite": true, "pro": true, "business": true, "enterprise": true},
+        "feature_export_csv": {"free": false, "lite": true, "pro": true, "business": true, "enterprise": true},
+        "feature_export_api": {"free": false, "lite": false, "pro": false, "business": true, "enterprise": true}
+      },
+      "DASHBOARD": {
+        "feature_dashboard_basic": {"free": true, "lite": true, "pro": true, "business": true, "enterprise": true},
+        "feature_dashboard_realtime": {"free": false, "lite": false, "pro": true, "business": true, "enterprise": true},
+        "feature_dashboard_custom": {"free": false, "lite": false, "pro": false, "business": true, "enterprise": true}
+      },
+      "BRANCH_REPORTS": {
+        "report_branch_comparison": {"free": false, "lite": false, "pro": false, "business": true, "enterprise": true},
+        "report_branch_ranking": {"free": false, "lite": false, "pro": false, "business": true, "enterprise": true},
+        "report_branch_consolidated": {"free": false, "lite": false, "pro": false, "business": true, "enterprise": true},
+        "report_branch_best_practices": {"free": false, "lite": false, "pro": false, "business": true, "enterprise": true}
+      }
+    },
+    "ai_model_access": {
+      "free": ["claude-haiku"],
+      "lite": ["claude-haiku"],
+      "pro": ["claude-haiku", "claude-sonnet", "gpt-4o-mini"],
+      "business": ["claude-haiku", "claude-sonnet", "gpt-4o-mini", "gpt-4o"],
+      "enterprise": ["claude-haiku", "claude-sonnet", "gpt-4o-mini", "gpt-4o", "prophet", "custom-fine-tuned"]
+    }
+  }
+}

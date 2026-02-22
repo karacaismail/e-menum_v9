@@ -1,0 +1,28 @@
+{
+  "file_path": ".auto-claude-security.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"base_commands\": [\n    \".\",\n    \"[\",\n    \"[[\",\n    \"ag\",\n    \"awk\",\n    \"basename\",\n    \"bash\",\n    \"bc\",\n    \"break\",\n    \"cat\",\n    \"cd\",\n    \"chmod\",\n    \"clear\",\n    \"cmp\",\n    \"column\",\n    \"comm\",\n    \"command\",\n    \"continue\",\n    \"cp\",\n    \"curl\",\n    \"cut\",\n    \"date\",\n    \"df\",\n    \"diff\",\n    \"dig\",\n    \"dirname\",\n    \"du\",\n    \"echo\",\n    \"egrep\",\n    \"env\",\n    \"eval\",\n    \"exec\",\n    \"exit\",\n    \"expand\",\n    \"export\",\n    \"expr\",\n    \"false\",\n    \"fd\",\n    \"fgrep\",\n    \"file\",\n    \"find\",\n    \"fmt\",\n    \"fold\",\n    \"gawk\",\n    \"gh\",\n    \"git\",\n    \"grep\",\n    \"gunzip\",\n    \"gzip\",\n    \"head\",\n    \"help\",\n    \"host\",\n    \"iconv\",\n    \"id\",\n    \"jobs\",\n    \"join\",\n    \"jq\",\n    \"kill\",\n    \"killall\",\n    \"less\",\n    \"let\",\n    \"ln\",\n    \"ls\",\n    \"lsof\",\n    \"man\",\n    \"mkdir\",\n    \"mktemp\",\n    \"more\",\n    \"mv\",\n    \"nl\",\n    \"paste\",\n    \"pgrep\",\n    \"ping\",\n    \"pkill\",\n    \"popd\",\n    \"printenv\",\n    \"printf\",\n    \"ps\",\n    \"pushd\",\n    \"pwd\",\n    \"read\",\n    \"readlink\",\n    \"realpath\",\n    \"reset\",\n    \"return\",\n    \"rev\",\n    \"rg\",\n    \"rm\",\n    \"rmdir\",\n    \"sed\",\n    \"seq\",\n    \"set\",\n    \"sh\",\n    \"shuf\",\n    \"sleep\",\n    \"sort\",\n    \"source\",\n    \"split\",\n    \"stat\",\n    \"tail\",\n    \"tar\",\n    \"tee\",\n    \"test\",\n    \"time\",\n    \"timeout\",\n    \"touch\",\n    \"tr\",\n    \"tree\",\n    \"true\",\n    \"type\",\n    \"uname\",\n    \"unexpand\",\n    \"uniq\",\n    \"unset\",\n    \"unzip\",\n    \"watch\",\n    \"wc\",\n    \"wget\",\n    \"whereis\",\n    \"which\",\n    \"whoami\",\n    \"xargs\",\n    \"yes\",\n    \"yq\",\n    \"zip\",\n    \"zsh\"\n  ],\n  \"stack_commands\": [],\n  \"script_commands\": [],\n  \"custom_commands\": [],\n  \"detected_stack\": {\n    \"languages\": [],\n    \"package_managers\": [],\n    \"frameworks\": [],\n    \"databases\": [],\n    \"infrastructure\": [],\n    \"cloud_providers\": [],\n    \"code_quality_tools\": [],\n    \"version_managers\": []\n  },\n  \"custom_scripts\": {\n    \"npm_scripts\": [],\n    \"make_targets\": [],\n    \"poetry_scripts\": [],\n    \"cargo_aliases\": [],\n    \"shell_scripts\": []\n  },\n  \"project_dir\": \"/Users/karaca/Documents/e-menum_v9\",\n  \"created_at\": \"2026-02-01T00:47:47.427518\",\n  \"project_hash\": \"3e87662cd380aa7f9beaf1314a6dc70c\",\n  \"inherited_from\": \"/Users/karaca/Documents/e-menum_v9\"\n}",
+        "last_modified": "2026-02-01T09:10:53.662015"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:23.990844",
+  "last_updated": "2026-02-01T08:03:24.013538"
+}

@@ -1,0 +1,28 @@
+{
+  "file_path": "locales/tr/common.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"appName\": \"E-Menum\",\n  \"language\": \"Dil\",\n  \"languages\": {\n    \"tr\": \"T\u00fcrk\u00e7e\",\n    \"en\": \"English\"\n  },\n  \"actions\": \"\u0130\u015flemler\",\n  \"view\": \"G\u00f6r\u00fcnt\u00fcle\",\n  \"viewDetails\": \"Detaylar\u0131 G\u00f6r\u00fcnt\u00fcle\",\n  \"viewAll\": \"T\u00fcm\u00fcn\u00fc G\u00f6r\",\n  \"edit\": \"D\u00fczenle\",\n  \"delete\": \"Sil\",\n  \"cancel\": \"\u0130ptal\",\n  \"save\": \"Kaydet\",\n  \"submit\": \"G\u00f6nder\",\n  \"confirm\": \"Onayla\",\n  \"close\": \"Kapat\",\n  \"back\": \"Geri\",\n  \"next\": \"Sonraki\",\n  \"previous\": \"\u00d6nceki\",\n  \"search\": \"Ara\",\n  \"filter\": \"Filtrele\",\n  \"clearFilters\": \"Filtreleri Temizle\",\n  \"loading\": \"Y\u00fckleniyor...\",\n  \"noData\": \"Veri bulunamad\u0131\",\n  \"optional\": \"iste\u011fe ba\u011fl\u0131\",\n  \"required\": \"zorunlu\",\n  \"yes\": \"Evet\",\n  \"no\": \"Hay\u0131r\",\n  \"or\": \"veya\",\n  \"and\": \"ve\",\n  \"status\": \"Durum\",\n  \"type\": \"T\u00fcr\",\n  \"name\": \"Ad\",\n  \"description\": \"A\u00e7\u0131klama\",\n  \"date\": \"Tarih\",\n  \"time\": \"Saat\",\n  \"price\": \"Fiyat\",\n  \"total\": \"Toplam\",\n  \"amount\": \"Tutar\",\n  \"quantity\": \"Adet\",\n  \"table\": \"Masa\",\n  \"currency\": \"TL\",\n  \"moreActions\": \"Di\u011fer i\u015flemler\",\n  \"duplicate\": \"Kopyala\",\n  \"preview\": \"\u00d6nizleme\",\n  \"publish\": \"Yay\u0131nla\",\n  \"unpublish\": \"Yay\u0131ndan Kald\u0131r\",\n  \"updated\": \"G\u00fcncellendi\",\n  \"created\": \"Olu\u015fturuldu\",\n  \"pagination\": \"Sayfalama\",\n  \"showing\": \"G\u00f6sterilen\",\n  \"to\": \"-\",\n  \"of\": \"/\",\n  \"results\": \"sonu\u00e7\",\n  \"page\": \"Sayfa\",\n  \"perPage\": \"Sayfa ba\u015f\u0131na\",\n  \"from\": \"Ba\u015flang\u0131\u00e7\",\n  \"success\": \"Ba\u015far\u0131l\u0131\",\n  \"error\": \"Hata\",\n  \"warning\": \"Uyar\u0131\",\n  \"info\": \"Bilgi\",\n  \"all\": \"T\u00fcm\u00fc\",\n  \"none\": \"Hi\u00e7biri\",\n  \"select\": \"Se\u00e7\",\n  \"selected\": \"Se\u00e7ili\",\n  \"upload\": \"Y\u00fckle\",\n  \"download\": \"\u0130ndir\",\n  \"image\": \"G\u00f6rsel\",\n  \"file\": \"Dosya\",\n  \"email\": \"E-posta\",\n  \"phone\": \"Telefon\",\n  \"address\": \"Adres\",\n  \"website\": \"Web Sitesi\",\n  \"settings\": \"Ayarlar\",\n  \"profile\": \"Profil\",\n  \"logout\": \"\u00c7\u0131k\u0131\u015f Yap\",\n  \"help\": \"Yard\u0131m\",\n  \"support\": \"Destek\",\n  \"notifications\": \"Bildirimler\",\n  \"active\": \"Aktif\",\n  \"inactive\": \"Pasif\",\n  \"enabled\": \"Etkin\",\n  \"disabled\": \"Devre D\u0131\u015f\u0131\",\n  \"online\": \"\u00c7evrimi\u00e7i\",\n  \"offline\": \"\u00c7evrimd\u0131\u015f\u0131\",\n  \"today\": \"Bug\u00fcn\",\n  \"yesterday\": \"D\u00fcn\",\n  \"tomorrow\": \"Yar\u0131n\",\n  \"week\": \"Hafta\",\n  \"month\": \"Ay\",\n  \"year\": \"Y\u0131l\",\n  \"daily\": \"G\u00fcnl\u00fck\",\n  \"weekly\": \"Haftal\u0131k\",\n  \"monthly\": \"Ayl\u0131k\",\n  \"yearly\": \"Y\u0131ll\u0131k\",\n  \"days\": {\n    \"monday\": \"Pazartesi\",\n    \"tuesday\": \"Sal\u0131\",\n    \"wednesday\": \"\u00c7ar\u015famba\",\n    \"thursday\": \"Per\u015fembe\",\n    \"friday\": \"Cuma\",\n    \"saturday\": \"Cumartesi\",\n    \"sunday\": \"Pazar\"\n  },\n  \"months\": {\n    \"january\": \"Ocak\",\n    \"february\": \"\u015eubat\",\n    \"march\": \"Mart\",\n    \"april\": \"Nisan\",\n    \"may\": \"May\u0131s\",\n    \"june\": \"Haziran\",\n    \"july\": \"Temmuz\",\n    \"august\": \"A\u011fustos\",\n    \"september\": \"Eyl\u00fcl\",\n    \"october\": \"Ekim\",\n    \"november\": \"Kas\u0131m\",\n    \"december\": \"Aral\u0131k\"\n  },\n  \"validation\": {\n    \"required\": \"Bu alan zorunludur\",\n    \"email\": \"Ge\u00e7erli bir e-posta adresi giriniz\",\n    \"phone\": \"Ge\u00e7erli bir telefon numaras\u0131 giriniz\",\n    \"minLength\": \"En az {{min}} karakter olmal\u0131d\u0131r\",\n    \"maxLength\": \"En fazla {{max}} karakter olabilir\",\n    \"min\": \"En az {{min}} olmal\u0131d\u0131r\",\n    \"max\": \"En fazla {{max}} olabilir\",\n    \"pattern\": \"Ge\u00e7ersiz format\"\n  },\n  \"confirm\": {\n    \"delete\": \"Bu \u00f6\u011feyi silmek istedi\u011finizden emin misiniz?\",\n    \"unsavedChanges\": \"Kaydedilmemi\u015f de\u011fi\u015fiklikler var. Devam etmek istiyor musunuz?\"\n  },\n  \"footer\": {\n    \"copyright\": \"\u00a9 {{year}} E-Menum. T\u00fcm haklar\u0131 sakl\u0131d\u0131r.\",\n    \"terms\": \"Kullan\u0131m Ko\u015fullar\u0131\",\n    \"privacy\": \"Gizlilik Politikas\u0131\",\n    \"contact\": \"\u0130leti\u015fim\"\n  }\n}\n",
+        "last_modified": "2026-02-01T09:10:53.670523"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:24.250415",
+  "last_updated": "2026-02-01T08:03:24.261073"
+}

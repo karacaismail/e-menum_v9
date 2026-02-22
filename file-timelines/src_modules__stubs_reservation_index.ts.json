@@ -1,0 +1,28 @@
+{
+  "file_path": "src/modules/_stubs/reservation/index.ts",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "/**\n * Reservation Module Stub\n *\n * This is a placeholder module for future reservation management implementation.\n * Only interfaces and types are exported - no implementation.\n *\n * @module modules/_stubs/reservation\n */\n\nimport { AppException } from '@/core/exceptions/app.exception';\n\n// -----------------------------------------------------------------------------\n// Types Export\n// -----------------------------------------------------------------------------\n\nexport {\n  // Enums\n  ReservationStatus,\n  ReservationSource,\n  TimeSlotStatus,\n  // Entity types\n  type Reservation,\n  type TimeSlot,\n  type ReservationSettings,\n  // Request types\n  type CreateReservationRequest,\n  type UpdateReservationRequest,\n  type CheckAvailabilityRequest,\n  type CancelReservationRequest,\n  // Response types\n  type AvailabilityResponse,\n  type ReservationResult,\n  // Service interfaces\n  type IReservationService,\n  type IAvailabilityService,\n  // Event payloads\n  type ReservationCreatedEventPayload,\n  type ReservationConfirmedEventPayload,\n  type ReservationCancelledEventPayload,\n  type ReservationNoShowEventPayload,\n} from '@/modules/_stubs/reservation/reservation.types';\n\n// -----------------------------------------------------------------------------\n// Stub Implementation\n// -----------------------------------------------------------------------------\n\n/**\n * Reservation service stub implementation\n */\nexport class ReservationServiceStub {\n  async createReservation(): Promise<never> {\n    throw new AppException('RESERVATION_MODULE_NOT_INSTALLED', 501, {\n      message: 'Reservation module is not installed. Please install the reservation module to use this feature.',\n    });\n  }\n\n  async updateReservation(): Promise<never> {\n    throw new AppException('RESERVATION_MODULE_NOT_INSTALLED', 501, {\n      message: 'Reservation module is not installed. Please install the reservation module to use this feature.',\n    });\n  }\n\n  async cancelReservation(): Promise<never> {\n    throw new AppException('RESERVATION_MODULE_NOT_INSTALLED', 501, {\n      message: 'Reservation module is not installed. Please install the reservation module to use this feature.',\n    });\n  }\n\n  async getReservation(): Promise<never> {\n    throw new AppException('RESERVATION_MODULE_NOT_INSTALLED', 501, {\n      message: 'Reservation module is not installed. Please install the reservation module to use this feature.',\n    });\n  }\n\n  async listReservations(): Promise<never> {\n    throw new AppException('RESERVATION_MODULE_NOT_INSTALLED', 501, {\n      message: 'Reservation module is not installed. Please install the reservation module to use this feature.',\n    });\n  }\n\n  async confirmReservation(): Promise<never> {\n    throw new AppException('RESERVATION_MODULE_NOT_INSTALLED', 501, {\n      message: 'Reservation module is not installed. Please install the reservation module to use this feature.',\n    });\n  }\n}\n\n/**\n * Availability service stub implementation\n */\nexport class AvailabilityServiceStub {\n  async checkAvailability(): Promise<never> {\n    throw new AppException('RESERVATION_MODULE_NOT_INSTALLED', 501, {\n      message: 'Reservation module is not installed. Please install the reservation module to use this feature.',\n    });\n  }\n\n  async getAvailableDates(): Promise<never> {\n    throw new AppException('RESERVATION_MODULE_NOT_INSTALLED', 501, {\n      message: 'Reservation module is not installed. Please install the reservation module to use this feature.',\n    });\n  }\n\n  async blockTimeSlots(): Promise<never> {\n    throw new AppException('RESERVATION_MODULE_NOT_INSTALLED', 501, {\n      message: 'Reservation module is not installed. Please install the reservation module to use this feature.',\n    });\n  }\n}\n\n/**\n * Check if reservation module is available\n */\nexport function isReservationModuleAvailable(): boolean {\n  return false;\n}\n\n/**\n * Module metadata\n */\nexport const RESERVATION_MODULE_METADATA = {\n  id: 'reservation',\n  name: 'Reservation Module',\n  status: 'stub' as const,\n  version: '0.0.0',\n};\n",
+        "last_modified": "2026-02-01T09:10:53.744968"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:26.073595",
+  "last_updated": "2026-02-01T08:03:26.115489"
+}

@@ -1,0 +1,142 @@
+{
+  "session_number": 20,
+  "timestamp": "2026-01-31T22:45:49.262567+00:00",
+  "subtasks_completed": [
+    "subtask-4-1"
+  ],
+  "discoveries": {
+    "file_insights": [
+      {
+        "file_path": "src/core/exceptions/app.exception.ts",
+        "type": "created",
+        "size_lines": 428,
+        "key_components": [
+          "AppException class extending Error",
+          "19 factory methods organized by HTTP status codes",
+          "ValidationError interface for field-level errors",
+          "Type guard function isAppException",
+          "Helper function toAppException for error wrapping"
+        ],
+        "patterns": [
+          "Factory pattern for exception creation",
+          "Status code organization (401, 403, 400, 404, 409, 429, 500, 503)",
+          "Consistent error code naming convention (UPPER_SNAKE_CASE)",
+          "Details object for additional error metadata",
+          "Stack trace preservation for V8 engines"
+        ]
+      },
+      {
+        "file_path": "src/core/exceptions/.gitkeep",
+        "type": "deleted",
+        "reason": "Replaced by actual implementation file"
+      }
+    ],
+    "patterns_discovered": [
+      {
+        "pattern": "HTTP Status Code Organization",
+        "description": "Factory methods grouped by HTTP status: 401 (auth), 403 (authz), 400 (validation), 404/409 (resources), 429 (rate limit), 500/503 (server)"
+      },
+      {
+        "pattern": "Comprehensive Error Coverage",
+        "description": "19 factory methods covering authentication, authorization, validation, resource errors, rate limiting, server errors, and domain-specific errors (modules, multi-tenancy)"
+      },
+      {
+        "pattern": "Metadata-Rich Errors",
+        "description": "Details object captures context: resource IDs, field names, conflicting identifiers, retry info, missing dependencies"
+      },
+      {
+        "pattern": "Error Code Standardization",
+        "description": "Consistent UPPER_SNAKE_CASE error codes for i18n and client-side identification"
+      },
+      {
+        "pattern": "Type Safety with Helpers",
+        "description": "Type guard (isAppException) and wrapper function (toAppException) for safe error handling"
+      },
+      {
+        "pattern": "Documentation Excellence",
+        "description": "Comprehensive JSDoc comments with @example, @param, and usage descriptions for each factory method"
+      }
+    ],
+    "gotchas_discovered": [
+      {
+        "gotcha": "Stack trace handling",
+        "description": "Uses Error.captureStackTrace to maintain proper stack traces in V8 engines, critical for debugging in production"
+      },
+      {
+        "gotcha": "Error code generation",
+        "description": "Some factory methods (notFound, alreadyExists) dynamically generate error codes from resource names (e.g., 'MENU_NOT_FOUND') - ensure resource names are consistently cased"
+      },
+      {
+        "gotcha": "Details field as Any",
+        "description": "Details uses Record<string, unknown> which is flexible but requires careful typing in consuming code"
+      },
+      {
+        "gotcha": "ValidationError interface",
+        "description": "Value field is optional for security reasons (to avoid exposing sensitive data), consumers must handle this gracefully"
+      },
+      {
+        "gotcha": "toAppException wrapping",
+        "description": "Wraps unknown errors but may lose important error type information - consider adding custom error class detection"
+      }
+    ],
+    "approach_outcome": {
+      "status": "SUCCESS",
+      "summary": "Successfully implemented a production-ready AppException class with comprehensive factory methods for standardized error handling",
+      "key_achievements": [
+        "Created base exception class with proper Error inheritance and stack trace preservation",
+        "Implemented 19 specialized factory methods covering all major error scenarios",
+        "Organized methods by HTTP status codes for easy navigation",
+        "Added type guards and wrapper utilities for safe error handling",
+        "Included detailed JSDoc documentation with examples",
+        "Designed ValidationError interface for field-level validation errors",
+        "Provided extensible details object for context-specific metadata"
+      ],
+      "completeness": "100%",
+      "code_quality": "High - well-documented, type-safe, follows single responsibility principle"
+    },
+    "recommendations": [
+      {
+        "category": "Enhancement",
+        "item": "Add method for combining multiple validation errors",
+        "rationale": "Currently validation() accepts array but no convenience method to build errors progressively"
+      },
+      {
+        "category": "Testing",
+        "item": "Create comprehensive test suite covering all factory methods",
+        "rationale": "Each factory method should be tested for correct HTTP status codes and error codes"
+      },
+      {
+        "category": "Documentation",
+        "item": "Add usage guide document linking error codes to i18n translation keys",
+        "rationale": "Error codes need translation - central reference would help maintain consistency"
+      },
+      {
+        "category": "Pattern",
+        "item": "Consider creating specific exception subclasses for domain areas (AuthException, ValidationException)",
+        "rationale": "Could provide additional type safety and domain-specific handling logic"
+      },
+      {
+        "category": "Future Integration",
+        "item": "Add toJSON() extensibility for custom error response formatting",
+        "rationale": "Different endpoints may need different error response formats"
+      },
+      {
+        "category": "Safety",
+        "item": "Add error code constants as enum or const object",
+        "rationale": "Would prevent typos in error codes and provide IDE autocompletion"
+      }
+    ],
+    "subtask_id": "subtask-4-1",
+    "session_num": 20,
+    "success": true,
+    "changed_files": [
+      "src/core/exceptions/.gitkeep",
+      "src/core/exceptions/app.exception.ts"
+    ]
+  },
+  "what_worked": [
+    "Implemented subtask: subtask-4-1"
+  ],
+  "what_failed": [],
+  "recommendations_for_next_session": []
+}

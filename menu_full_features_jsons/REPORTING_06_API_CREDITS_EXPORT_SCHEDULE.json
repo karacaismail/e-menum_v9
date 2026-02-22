@@ -1,0 +1,970 @@
+{
+  "metadata": {
+    "document": "E-Menum Reporting Features Part 6",
+    "section": "API Endpoints, Credit System, Export, Scheduling, Management",
+    "version": "3.0.0"
+  },
+  "API_ENDPOINTS": {
+    "base_url": "https://api.e-menum.net/v2/reports",
+    "authentication": {
+      "type": "Bearer Token",
+      "header": "Authorization: Bearer {token}",
+      "token_expiry": "24 hours"
+    },
+    "rate_limits": {
+      "free": {"requests_per_minute": 10, "requests_per_day": 100},
+      "lite": {"requests_per_minute": 30, "requests_per_day": 500},
+      "pro": {"requests_per_minute": 60, "requests_per_day": 2000},
+      "business": {"requests_per_minute": 120, "requests_per_day": 10000},
+      "enterprise": {"requests_per_minute": 300, "requests_per_day": -1}
+    },
+    "endpoints": {
+      "natural_language_query": [
+        {
+          "endpoint": "POST /query",
+          "description": "Doğal dil sorgusu gönder",
+          "request_body": {
+            "query": "string (required) - Doğal dil sorgusu",
+            "context": "object (optional) - Ek bağlam",
+            "response_format": "string (optional) - text|json|chart",
+            "language": "string (optional) - tr|en"
+          },
+          "response": {
+            "success": true,
+            "data": {
+              "answer": "string - AI yanıtı",
+              "data_points": "array - Kullanılan veriler",
+              "charts": "array - Grafik verileri",
+              "confidence": "number - Güven skoru",
+              "credits_used": "number"
+            }
+          },
+          "credits": "1-10 (kompleksiteye göre)"
+        },
+        {
+          "endpoint": "POST /query/stream",
+          "description": "Streaming doğal dil sorgusu (SSE)",
+          "request_body": {
+            "query": "string (required)",
+            "stream": true
+          },
+          "response_type": "Server-Sent Events",
+          "events": ["thinking", "data", "chart", "complete", "error"]
+        },
+        {
+          "endpoint": "GET /query/history",
+          "description": "Sorgu geçmişi",
+          "query_params": {
+            "limit": "number (default: 20)",
+            "offset": "number (default: 0)",
+            "from_date": "ISO date",
+            "to_date": "ISO date"
+          }
+        },
+        {
+          "endpoint": "GET /query/suggestions",
+          "description": "Önerilen sorgular",
+          "query_params": {
+            "context": "string - dashboard|menu|sales|staff"
+          },
+          "response": {
+            "suggestions": ["Dün kaç sipariş geldi?", "Bu haftanın cirosu ne?", "..."]
+          }
+        }
+      ],
+      "preset_reports": [
+        {
+          "endpoint": "GET /presets",
+          "description": "Mevcut preset raporları listele",
+          "query_params": {
+            "category": "string - periodic|sales|menu|...",
+            "include_disabled": "boolean (default: false)"
+          },
+          "response": {
+            "reports": [
+              {
+                "report_id": "RPT-PER-001",
+                "key": "report_daily_summary",
+                "name": "Günlük Özet Raporu",
+                "category": "periodic",
+                "auto_generate": true,
+                "credits": 0,
+                "enabled": true
+              }
+            ]
+          }
+        },
+        {
+          "endpoint": "POST /presets/{report_id}/run",
+          "description": "Preset raporu çalıştır",
+          "path_params": {
+            "report_id": "string - Rapor ID"
+          },
+          "request_body": {
+            "date_range": {
+              "start": "ISO date",
+              "end": "ISO date"
+            },
+            "filters": "object (optional)",
+            "output_format": "string - dashboard|pdf|excel|json"
+          },
+          "response": {
+            "report": {
+              "generated_at": "ISO datetime",
+              "data": "object - Rapor verisi",
+              "ai_summary": "string - AI özeti",
+              "charts": "array - Grafikler"
+            }
+          }
+        },
+        {
+          "endpoint": "GET /presets/{report_id}/config",
+          "description": "Rapor konfigürasyonunu getir"
+        },
+        {
+          "endpoint": "PUT /presets/{report_id}/config",
+          "description": "Rapor konfigürasyonunu güncelle",
+          "request_body": {
+            "enabled": "boolean",
+            "auto_generate": "boolean",
+            "delivery_channels": "array",
+            "notification_recipients": "array"
+          }
+        }
+      ],
+      "custom_reports": [
+        {
+          "endpoint": "POST /custom/create",
+          "description": "Yeni özel rapor oluştur",
+          "request_body": {
+            "name": "string (required)",
+            "description": "string (optional)",
+            "metrics": "array (required) - Seçilen metrikler",
+            "dimensions": "array (required) - Boyutlar",
+            "filters": "object (optional)",
+            "visualizations": "array (optional)",
+            "schedule": "object (optional)"
+          },
+          "response": {
+            "report_id": "string",
+            "created_at": "ISO datetime"
+          }
+        },
+        {
+          "endpoint": "GET /custom",
+          "description": "Özel raporları listele"
+        },
+        {
+          "endpoint": "GET /custom/{report_id}",
+          "description": "Özel rapor detayı"
+        },
+        {
+          "endpoint": "PUT /custom/{report_id}",
+          "description": "Özel raporu güncelle"
+        },
+        {
+          "endpoint": "DELETE /custom/{report_id}",
+          "description": "Özel raporu sil"
+        },
+        {
+          "endpoint": "POST /custom/{report_id}/run",
+          "description": "Özel raporu çalıştır"
+        },
+        {
+          "endpoint": "POST /custom/{report_id}/duplicate",
+          "description": "Özel raporu kopyala"
+        }
+      ],
+      "scheduled_reports": [
+        {
+          "endpoint": "POST /schedules",
+          "description": "Yeni zamanlanmış rapor oluştur",
+          "request_body": {
+            "report_id": "string (required) - Rapor ID (preset veya custom)",
+            "frequency": "string (required) - daily|weekly|monthly",
+            "day_of_week": "number (optional) - 0-6 for weekly",
+            "day_of_month": "number (optional) - 1-28 for monthly",
+            "time": "string (required) - HH:mm",
+            "timezone": "string (required)",
+            "recipients": "array (required) - Email adresleri",
+            "format": "string (required) - pdf|excel|email_body",
+            "enabled": "boolean (default: true)"
+          }
+        },
+        {
+          "endpoint": "GET /schedules",
+          "description": "Zamanlanmış raporları listele"
+        },
+        {
+          "endpoint": "GET /schedules/{schedule_id}",
+          "description": "Zamanlanmış rapor detayı"
+        },
+        {
+          "endpoint": "PUT /schedules/{schedule_id}",
+          "description": "Zamanlanmış raporu güncelle"
+        },
+        {
+          "endpoint": "DELETE /schedules/{schedule_id}",
+          "description": "Zamanlanmış raporu sil"
+        },
+        {
+          "endpoint": "POST /schedules/{schedule_id}/run-now",
+          "description": "Zamanlanmış raporu hemen çalıştır"
+        },
+        {
+          "endpoint": "GET /schedules/{schedule_id}/history",
+          "description": "Çalıştırma geçmişi"
+        }
+      ],
+      "export": [
+        {
+          "endpoint": "POST /export",
+          "description": "Rapor dışa aktar",
+          "request_body": {
+            "report_type": "string (required) - preset|custom|query",
+            "report_id": "string (conditional)",
+            "query_result_id": "string (conditional)",
+            "format": "string (required) - pdf|excel|csv|json",
+            "options": {
+              "include_charts": "boolean",
+              "include_ai_summary": "boolean",
+              "page_size": "string - A4|Letter",
+              "orientation": "string - portrait|landscape"
+            }
+          },
+          "response": {
+            "export_id": "string",
+            "status": "processing|complete|failed",
+            "download_url": "string (when complete)",
+            "expires_at": "ISO datetime"
+          }
+        },
+        {
+          "endpoint": "GET /export/{export_id}",
+          "description": "Export durumunu kontrol et"
+        },
+        {
+          "endpoint": "GET /export/{export_id}/download",
+          "description": "Export dosyasını indir"
+        }
+      ],
+      "insights": [
+        {
+          "endpoint": "GET /insights/anomalies",
+          "description": "Tespit edilen anomalileri getir",
+          "query_params": {
+            "severity": "string - info|warning|critical",
+            "metric": "string (optional)",
+            "from_date": "ISO date",
+            "acknowledged": "boolean"
+          }
+        },
+        {
+          "endpoint": "POST /insights/anomalies/{id}/acknowledge",
+          "description": "Anomaliyi onayla"
+        },
+        {
+          "endpoint": "GET /insights/trends",
+          "description": "Tespit edilen trendleri getir"
+        },
+        {
+          "endpoint": "GET /insights/recommendations",
+          "description": "AI önerilerini getir",
+          "query_params": {
+            "category": "string - revenue|cost|customer|operational",
+            "priority": "string - high|medium|low"
+          }
+        },
+        {
+          "endpoint": "POST /insights/recommendations/{id}/dismiss",
+          "description": "Öneriyi kapat"
+        },
+        {
+          "endpoint": "POST /insights/recommendations/{id}/implement",
+          "description": "Öneriyi uygula olarak işaretle"
+        },
+        {
+          "endpoint": "POST /insights/whatif",
+          "description": "What-If analizi çalıştır",
+          "request_body": {
+            "scenario_type": "string - pricing|capacity|menu|campaign",
+            "parameters": "object - Senaryo parametreleri"
+          }
+        }
+      ],
+      "forecasting": [
+        {
+          "endpoint": "POST /forecast/demand",
+          "description": "Talep tahmini oluştur",
+          "request_body": {
+            "horizon_days": "number (required) - 7|30|90",
+            "granularity": "string - hourly|daily|weekly",
+            "targets": "array - order_count|revenue|customer_count",
+            "include_factors": "array - weather|events|promotions"
+          }
+        },
+        {
+          "endpoint": "GET /forecast/{forecast_id}",
+          "description": "Tahmin sonuçlarını getir"
+        },
+        {
+          "endpoint": "POST /forecast/revenue",
+          "description": "Gelir tahmini oluştur"
+        },
+        {
+          "endpoint": "POST /forecast/inventory",
+          "description": "Stok tahmini oluştur"
+        }
+      ],
+      "dashboard": [
+        {
+          "endpoint": "GET /dashboard/metrics",
+          "description": "Dashboard metriklerini getir",
+          "query_params": {
+            "metrics": "array - revenue|orders|customers|rating",
+            "period": "string - today|yesterday|this_week|this_month",
+            "compare": "boolean - Karşılaştırma dahil"
+          }
+        },
+        {
+          "endpoint": "GET /dashboard/config",
+          "description": "Dashboard konfigürasyonunu getir"
+        },
+        {
+          "endpoint": "PUT /dashboard/config",
+          "description": "Dashboard konfigürasyonunu güncelle"
+        },
+        {
+          "endpoint": "GET /dashboard/widgets",
+          "description": "Mevcut widget'ları getir"
+        },
+        {
+          "endpoint": "POST /dashboard/widgets",
+          "description": "Yeni widget ekle"
+        }
+      ],
+      "realtime": [
+        {
+          "endpoint": "WebSocket wss://api.e-menum.net/v2/reports/live",
+          "description": "Gerçek zamanlı veri akışı",
+          "channels": [
+            "orders",
+            "revenue",
+            "occupancy",
+            "kitchen",
+            "alerts"
+          ],
+          "message_format": {
+            "type": "string - data|alert|heartbeat",
+            "channel": "string",
+            "payload": "object",
+            "timestamp": "ISO datetime"
+          }
+        },
+        {
+          "endpoint": "GET /live/metrics",
+          "description": "Anlık metrikleri getir (polling alternative)"
+        }
+      ],
+      "platform_admin": [
+        {
+          "endpoint": "GET /platform/mrr",
+          "description": "MRR dashboard verisi",
+          "access": "super_admin only"
+        },
+        {
+          "endpoint": "GET /platform/churn",
+          "description": "Churn analizi",
+          "access": "super_admin only"
+        },
+        {
+          "endpoint": "GET /platform/cohort",
+          "description": "Cohort analizi",
+          "access": "super_admin only"
+        },
+        {
+          "endpoint": "POST /platform/query",
+          "description": "Platform seviyesi NL sorgu",
+          "access": "super_admin only"
+        },
+        {
+          "endpoint": "GET /platform/ai-usage",
+          "description": "AI kullanım raporu",
+          "access": "super_admin only"
+        },
+        {
+          "endpoint": "GET /platform/health",
+          "description": "Sistem sağlığı",
+          "access": "super_admin only"
+        }
+      ]
+    },
+    "error_codes": {
+      "400": "Bad Request - Geçersiz istek",
+      "401": "Unauthorized - Yetkilendirme hatası",
+      "403": "Forbidden - Erişim yetkisi yok",
+      "404": "Not Found - Kaynak bulunamadı",
+      "429": "Too Many Requests - Rate limit aşıldı",
+      "500": "Internal Server Error - Sunucu hatası",
+      "503": "Service Unavailable - Servis kullanılamıyor"
+    },
+    "error_response_format": {
+      "success": false,
+      "error": {
+        "code": "string",
+        "message": "string",
+        "details": "object (optional)"
+      }
+    }
+  },
+  "CREDIT_SYSTEM": {
+    "overview": {
+      "description": "AI özelliklerinin kullanımı için kredi sistemi",
+      "credit_refresh": "monthly",
+      "rollover": "plan-dependent"
+    },
+    "credit_allocation_by_plan": {
+      "free": {
+        "monthly_credits": 50,
+        "bonus_credits": 0,
+        "rollover_enabled": false,
+        "purchase_additional": false
+      },
+      "lite": {
+        "monthly_credits": 200,
+        "bonus_credits": 0,
+        "rollover_enabled": false,
+        "purchase_additional": true,
+        "additional_credit_price": 0.50
+      },
+      "pro": {
+        "monthly_credits": 1000,
+        "bonus_credits": 100,
+        "rollover_enabled": true,
+        "rollover_limit_months": 1,
+        "rollover_max_credits": 500,
+        "purchase_additional": true,
+        "additional_credit_price": 0.40
+      },
+      "business": {
+        "monthly_credits": 5000,
+        "bonus_credits": 500,
+        "rollover_enabled": true,
+        "rollover_limit_months": 3,
+        "rollover_max_credits": 5000,
+        "purchase_additional": true,
+        "additional_credit_price": 0.30
+      },
+      "enterprise": {
+        "monthly_credits": 25000,
+        "bonus_credits": 2500,
+        "rollover_enabled": true,
+        "rollover_limit_months": 6,
+        "rollover_max_credits": 25000,
+        "purchase_additional": true,
+        "additional_credit_price": 0.20,
+        "custom_allocation": true
+      }
+    },
+    "credit_consumption": {
+      "nl_query": {
+        "basic": {"credits": 1, "model": "claude-haiku", "description": "Basit sorgu"},
+        "comparison": {"credits": 2, "model": "claude-haiku", "description": "Karşılaştırma sorgusu"},
+        "analysis": {"credits": 5, "model": "claude-sonnet", "description": "Analitik sorgu"},
+        "recommendation": {"credits": 5, "model": "claude-sonnet", "description": "Öneri sorgusu"},
+        "complex": {"credits": 10, "model": "gpt-4o", "description": "Kompleks sorgu"},
+        "conversational_turn": {"credits": 3, "model": "claude-sonnet", "description": "Konuşma turu"}
+      },
+      "preset_reports": {
+        "daily_summary": {"credits": 0, "note": "Plan dahilinde"},
+        "weekly_trend": {"credits": 2, "model": "claude-haiku"},
+        "monthly_analysis": {"credits": 5, "model": "claude-sonnet"},
+        "quarterly_review": {"credits": 15, "model": "claude-sonnet"},
+        "menu_matrix": {"credits": 5, "model": "claude-sonnet"},
+        "customer_segmentation": {"credits": 8, "model": "ml+claude-sonnet"},
+        "staff_performance": {"credits": 3, "model": "claude-sonnet"}
+      },
+      "custom_reports": {
+        "creation": {"credits": 3, "model": "claude-sonnet"},
+        "run_simple": {"credits": 2, "model": "claude-haiku"},
+        "run_complex": {"credits": 5, "model": "claude-sonnet"}
+      },
+      "ai_insights": {
+        "auto_daily": {"credits": 0, "note": "Plan dahilinde"},
+        "on_demand": {"credits": 3, "model": "claude-sonnet"},
+        "deep_analysis": {"credits": 8, "model": "claude-sonnet"}
+      },
+      "forecasting": {
+        "7_day": {"credits": 3, "model": "prophet+haiku"},
+        "30_day": {"credits": 8, "model": "prophet+sonnet"},
+        "90_day": {"credits": 15, "model": "prophet+sonnet"}
+      },
+      "whatif_analysis": {
+        "pricing": {"credits": 5, "model": "ml+sonnet"},
+        "capacity": {"credits": 5, "model": "ml+sonnet"},
+        "menu": {"credits": 8, "model": "ml+sonnet"},
+        "campaign": {"credits": 5, "model": "ml+sonnet"}
+      },
+      "export": {
+        "pdf_with_summary": {"credits": 2, "model": "claude-haiku"},
+        "excel": {"credits": 0, "note": "Kredi gerektirmez"},
+        "csv": {"credits": 0, "note": "Kredi gerektirmez"}
+      },
+      "scheduled_reports": {
+        "discount": 0.5,
+        "note": "Zamanlanmış raporlar normal kredinin %50'sini kullanır"
+      }
+    },
+    "credit_tracking": {
+      "real_time_balance": true,
+      "usage_history": true,
+      "breakdown_by_feature": true,
+      "alerts": {
+        "threshold_70": true,
+        "threshold_90": true,
+        "threshold_100": true
+      }
+    },
+    "credit_api_endpoints": [
+      {
+        "endpoint": "GET /credits/balance",
+        "description": "Mevcut kredi bakiyesi",
+        "response": {
+          "current_balance": 450,
+          "monthly_allocation": 1000,
+          "rollover_credits": 100,
+          "purchased_credits": 0,
+          "used_this_month": 550,
+          "reset_date": "2026-02-01"
+        }
+      },
+      {
+        "endpoint": "GET /credits/usage",
+        "description": "Kredi kullanım geçmişi",
+        "query_params": {
+          "from_date": "ISO date",
+          "to_date": "ISO date",
+          "group_by": "day|feature|user"
+        }
+      },
+      {
+        "endpoint": "POST /credits/purchase",
+        "description": "Ek kredi satın al",
+        "request_body": {
+          "amount": "number - Kredi miktarı",
+          "payment_method_id": "string"
+        }
+      }
+    ]
+  },
+  "EXPORT_FEATURES": {
+    "formats": {
+      "pdf": {
+        "format_id": "EXP-001",
+        "name": "PDF Export",
+        "mime_type": "application/pdf",
+        "features": {
+          "ai_summary": true,
+          "charts": true,
+          "tables": true,
+          "custom_branding": true,
+          "watermark": "plan-dependent"
+        },
+        "options": {
+          "page_size": ["A4", "Letter", "Legal"],
+          "orientation": ["portrait", "landscape"],
+          "include_cover": true,
+          "include_toc": true,
+          "color_mode": ["color", "grayscale"]
+        },
+        "credits": 2,
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        }
+      },
+      "excel": {
+        "format_id": "EXP-002",
+        "name": "Excel Export",
+        "mime_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "features": {
+          "multiple_sheets": true,
+          "formulas": true,
+          "charts": true,
+          "pivot_ready": true,
+          "formatting": true
+        },
+        "options": {
+          "include_charts": true,
+          "freeze_headers": true,
+          "auto_filter": true
+        },
+        "credits": 0,
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        }
+      },
+      "csv": {
+        "format_id": "EXP-003",
+        "name": "CSV Export",
+        "mime_type": "text/csv",
+        "features": {
+          "raw_data": true,
+          "large_datasets": true
+        },
+        "options": {
+          "delimiter": [",", ";", "tab"],
+          "encoding": ["UTF-8", "UTF-16", "ISO-8859-1"],
+          "include_headers": true
+        },
+        "credits": 0,
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        }
+      },
+      "json": {
+        "format_id": "EXP-004",
+        "name": "JSON Export",
+        "mime_type": "application/json",
+        "features": {
+          "api_integration": true,
+          "structured_data": true
+        },
+        "options": {
+          "pretty_print": true,
+          "include_metadata": true
+        },
+        "credits": 0,
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        }
+      }
+    },
+    "limits_by_plan": {
+      "free": {"exports_per_month": 0},
+      "lite": {"exports_per_month": 5, "max_rows": 1000},
+      "pro": {"exports_per_month": 30, "max_rows": 10000},
+      "business": {"exports_per_month": 100, "max_rows": 100000},
+      "enterprise": {"exports_per_month": -1, "max_rows": -1}
+    }
+  },
+  "SCHEDULING_FEATURES": {
+    "schedule_types": {
+      "daily": {
+        "type_id": "SCH-001",
+        "description": "Her gün belirli saatte",
+        "config": {
+          "time": "HH:mm",
+          "timezone": "string",
+          "skip_weekends": "boolean",
+          "skip_holidays": "boolean"
+        }
+      },
+      "weekly": {
+        "type_id": "SCH-002",
+        "description": "Her hafta belirli günde",
+        "config": {
+          "day_of_week": "0-6",
+          "time": "HH:mm",
+          "timezone": "string"
+        }
+      },
+      "monthly": {
+        "type_id": "SCH-003",
+        "description": "Her ay belirli günde",
+        "config": {
+          "day_of_month": "1-28",
+          "time": "HH:mm",
+          "timezone": "string"
+        }
+      },
+      "quarterly": {
+        "type_id": "SCH-004",
+        "description": "Her çeyrek başında",
+        "config": {
+          "months": [1, 4, 7, 10],
+          "day_of_month": "1-28",
+          "time": "HH:mm"
+        }
+      },
+      "custom_cron": {
+        "type_id": "SCH-005",
+        "description": "Custom cron expression",
+        "config": {
+          "cron": "string - Cron expression"
+        },
+        "plan_requirement": "enterprise"
+      }
+    },
+    "delivery_channels": {
+      "email": {
+        "channel_id": "DEL-001",
+        "features": {
+          "multiple_recipients": true,
+          "cc_bcc": true,
+          "custom_subject": true,
+          "custom_body": true,
+          "attachment": true,
+          "inline_summary": true
+        }
+      },
+      "push_notification": {
+        "channel_id": "DEL-002",
+        "features": {
+          "mobile_app": true,
+          "web_push": true,
+          "summary_only": true
+        }
+      },
+      "webhook": {
+        "channel_id": "DEL-003",
+        "features": {
+          "custom_url": true,
+          "custom_headers": true,
+          "retry_on_failure": true,
+          "signature_verification": true
+        },
+        "plan_requirement": "business"
+      },
+      "slack": {
+        "channel_id": "DEL-004",
+        "features": {
+          "channel_selection": true,
+          "formatted_message": true,
+          "file_attachment": true
+        },
+        "plan_requirement": "pro"
+      },
+      "google_drive": {
+        "channel_id": "DEL-005",
+        "features": {
+          "folder_selection": true,
+          "auto_naming": true,
+          "version_control": true
+        },
+        "plan_requirement": "business"
+      }
+    },
+    "limits_by_plan": {
+      "free": {"scheduled_reports": 0},
+      "lite": {"scheduled_reports": 1, "delivery_channels": ["email"]},
+      "pro": {"scheduled_reports": 5, "delivery_channels": ["email", "push", "slack"]},
+      "business": {"scheduled_reports": 20, "delivery_channels": ["email", "push", "slack", "webhook", "google_drive"]},
+      "enterprise": {"scheduled_reports": -1, "delivery_channels": "all"}
+    }
+  },
+  "REPORT_MANAGEMENT_FEATURES": {
+    "feature_key": "feature_custom_reports",
+    "feature_id": "RPT-MGT-001",
+    "capabilities": {
+      "report_builder": {
+        "description": "Sürükle-bırak rapor oluşturucu",
+        "features": [
+          "metric_selection",
+          "dimension_selection",
+          "filter_builder",
+          "visualization_picker",
+          "layout_customization"
+        ],
+        "plan_requirement": "pro"
+      },
+      "templates": {
+        "description": "Rapor şablonları",
+        "features": [
+          "preset_templates",
+          "save_as_template",
+          "share_templates",
+          "template_marketplace"
+        ]
+      },
+      "collaboration": {
+        "description": "Takım işbirliği özellikleri",
+        "features": [
+          "share_reports",
+          "comment_on_reports",
+          "assign_to_team",
+          "version_history"
+        ],
+        "plan_requirement": "business"
+      },
+      "favorites": {
+        "description": "Favori raporlar",
+        "features": [
+          "mark_favorite",
+          "quick_access",
+          "pin_to_dashboard"
+        ]
+      },
+      "search": {
+        "description": "Rapor arama",
+        "features": [
+          "full_text_search",
+          "filter_by_category",
+          "filter_by_date",
+          "recent_reports"
+        ]
+      }
+    }
+  },
+  "DASHBOARD_FEATURES": {
+    "basic_dashboard": {
+      "feature_key": "feature_dashboard_basic",
+      "feature_id": "RPT-DSH-001",
+      "description": "Temel metrik kartları ve grafikler",
+      "widgets": [
+        "kpi_card",
+        "simple_chart",
+        "top_list",
+        "trend_indicator"
+      ],
+      "plan_availability": {
+        "free": true,
+        "lite": true,
+        "pro": true,
+        "business": true,
+        "enterprise": true
+      }
+    },
+    "realtime_dashboard": {
+      "feature_key": "feature_dashboard_realtime",
+      "feature_id": "RPT-DSH-002",
+      "description": "Gerçek zamanlı veri akışlı dashboard",
+      "features": {
+        "live_updates": true,
+        "update_frequency_seconds": 5,
+        "connection_type": "websocket"
+      },
+      "widgets": [
+        "live_orders",
+        "live_revenue",
+        "live_occupancy",
+        "kitchen_queue",
+        "alerts_feed"
+      ],
+      "plan_availability": {
+        "free": false,
+        "lite": false,
+        "pro": true,
+        "business": true,
+        "enterprise": true
+      }
+    },
+    "custom_dashboard": {
+      "feature_key": "feature_dashboard_custom",
+      "feature_id": "RPT-DSH-003",
+      "description": "Kendi dashboard'unu tasarlama",
+      "features": {
+        "drag_drop_builder": true,
+        "grid_layout": true,
+        "widget_library": true,
+        "custom_metrics": true,
+        "multiple_dashboards": true,
+        "sharing": true
+      },
+      "widget_types": [
+        "kpi_card",
+        "line_chart",
+        "bar_chart",
+        "pie_chart",
+        "donut_chart",
+        "heatmap",
+        "table",
+        "funnel",
+        "gauge",
+        "map",
+        "text_block",
+        "image",
+        "iframe"
+      ],
+      "limits_by_plan": {
+        "business": {"max_dashboards": 5, "max_widgets_per_dashboard": 20},
+        "enterprise": {"max_dashboards": -1, "max_widgets_per_dashboard": -1}
+      },
+      "plan_availability": {
+        "free": false,
+        "lite": false,
+        "pro": false,
+        "business": true,
+        "enterprise": true
+      }
+    }
+  },
+  "NOTIFICATION_SYSTEM": {
+    "notification_types": {
+      "alert": {
+        "type_id": "NOT-001",
+        "description": "Kritik uyarılar",
+        "priority": "high",
+        "channels": ["push", "email", "sms"]
+      },
+      "insight": {
+        "type_id": "NOT-002",
+        "description": "AI insight bildirimleri",
+        "priority": "medium",
+        "channels": ["push", "dashboard"]
+      },
+      "report_ready": {
+        "type_id": "NOT-003",
+        "description": "Rapor hazır bildirimi",
+        "priority": "low",
+        "channels": ["push", "email"]
+      },
+      "threshold_breach": {
+        "type_id": "NOT-004",
+        "description": "Eşik değer aşımı",
+        "priority": "high",
+        "channels": ["push", "email"]
+      },
+      "anomaly_detected": {
+        "type_id": "NOT-005",
+        "description": "Anomali tespiti",
+        "priority": "medium",
+        "channels": ["push", "dashboard"]
+      },
+      "goal_achieved": {
+        "type_id": "NOT-006",
+        "description": "Hedef başarımı",
+        "priority": "low",
+        "channels": ["push", "dashboard"]
+      }
+    },
+    "notification_preferences": {
+      "per_user": true,
+      "per_notification_type": true,
+      "quiet_hours": true,
+      "frequency_limits": true,
+      "channel_preferences": true
+    },
+    "delivery_methods": {
+      "push": {
+        "providers": ["firebase", "apns"],
+        "features": ["rich_notifications", "action_buttons"]
+      },
+      "email": {
+        "features": ["html_template", "inline_charts", "attachments"]
+      },
+      "sms": {
+        "providers": ["twilio", "netgsm"],
+        "plan_requirement": "business"
+      },
+      "in_app": {
+        "features": ["notification_center", "badge_count", "toast"]
+      }
+    }
+  }
+}

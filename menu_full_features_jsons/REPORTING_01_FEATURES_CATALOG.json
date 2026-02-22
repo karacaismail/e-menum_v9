@@ -1,0 +1,2024 @@
+{
+  "metadata": {
+    "document": "E-Menum AI Reporting Features Catalog",
+    "version": "3.0.0",
+    "created_at": "2026-01-28",
+    "total_features": 142,
+    "categories": 15,
+    "description": "Kapsamlı raporlama özellikleri kataloğu - tüm detaylar"
+  },
+  "REPORT_CATEGORIES": {
+    "PERIODIC": {
+      "id": "CAT-001",
+      "name": "Periyodik Raporlar",
+      "description": "Otomatik oluşturulan zamana dayalı raporlar",
+      "icon": "ph-calendar-check",
+      "color": "#3B82F6",
+      "features_count": 12
+    },
+    "SALES": {
+      "id": "CAT-002",
+      "name": "Satış Raporları",
+      "description": "Ciro, sipariş ve finansal analiz raporları",
+      "icon": "ph-chart-line-up",
+      "color": "#10B981",
+      "features_count": 14
+    },
+    "MENU": {
+      "id": "CAT-003",
+      "name": "Menü Raporları",
+      "description": "Ürün performans ve menü analiz raporları",
+      "icon": "ph-fork-knife",
+      "color": "#F59E0B",
+      "features_count": 12
+    },
+    "ORDER": {
+      "id": "CAT-004",
+      "name": "Sipariş Raporları",
+      "description": "Sipariş akışı ve operasyonel raporlar",
+      "icon": "ph-receipt",
+      "color": "#8B5CF6",
+      "features_count": 10
+    },
+    "CUSTOMER": {
+      "id": "CAT-005",
+      "name": "Müşteri Raporları",
+      "description": "Müşteri analizi ve CRM raporları",
+      "icon": "ph-users",
+      "color": "#EC4899",
+      "features_count": 12
+    },
+    "STAFF": {
+      "id": "CAT-006",
+      "name": "Personel Raporları",
+      "description": "Personel performans ve HR raporları",
+      "icon": "ph-user-gear",
+      "color": "#06B6D4",
+      "features_count": 10
+    },
+    "INVENTORY": {
+      "id": "CAT-007",
+      "name": "Envanter Raporları",
+      "description": "Stok ve malzeme raporları",
+      "icon": "ph-package",
+      "color": "#84CC16",
+      "features_count": 8
+    },
+    "CAMPAIGN": {
+      "id": "CAT-008",
+      "name": "Kampanya Raporları",
+      "description": "Marketing ve kampanya analiz raporları",
+      "icon": "ph-megaphone",
+      "color": "#F97316",
+      "features_count": 8
+    },
+    "OPERATION": {
+      "id": "CAT-009",
+      "name": "Operasyon Raporları",
+      "description": "Fiziksel operasyon ve servis raporları",
+      "icon": "ph-gear",
+      "color": "#64748B",
+      "features_count": 10
+    },
+    "DIGITAL": {
+      "id": "CAT-010",
+      "name": "Dijital Raporlar",
+      "description": "QR, menü görüntüleme ve dijital etkileşim",
+      "icon": "ph-qr-code",
+      "color": "#0EA5E9",
+      "features_count": 6
+    },
+    "BRANCH": {
+      "id": "CAT-011",
+      "name": "Şube Raporları",
+      "description": "Multi-location ve şube karşılaştırma raporları",
+      "icon": "ph-buildings",
+      "color": "#7C3AED",
+      "features_count": 8
+    },
+    "AI_QUERY": {
+      "id": "CAT-012",
+      "name": "AI Sorgu Özellikleri",
+      "description": "Doğal dil sorgu ve AI analitik",
+      "icon": "ph-chat-centered-text",
+      "color": "#14B8A6",
+      "features_count": 10
+    },
+    "AI_INSIGHTS": {
+      "id": "CAT-013",
+      "name": "AI İçgörüler",
+      "description": "Otomatik insight ve anomali tespiti",
+      "icon": "ph-lightbulb",
+      "color": "#EAB308",
+      "features_count": 8
+    },
+    "FORECASTING": {
+      "id": "CAT-014",
+      "name": "Tahminleme",
+      "description": "AI destekli tahmin ve projeksiyon",
+      "icon": "ph-trend-up",
+      "color": "#22C55E",
+      "features_count": 8
+    },
+    "PLATFORM": {
+      "id": "CAT-015",
+      "name": "Platform Raporları",
+      "description": "Super Admin platform seviyesi raporlar",
+      "icon": "ph-shield-check",
+      "color": "#EF4444",
+      "features_count": 16
+    }
+  },
+  "FEATURES": {
+    "PERIODIC_REPORTS": [
+      {
+        "feature_key": "report_daily_summary",
+        "feature_id": "RPT-PER-001",
+        "name_tr": "Günlük Özet Raporu",
+        "name_en": "Daily Summary Report",
+        "category": "PERIODIC",
+        "subcategory": "daily",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Her gün otomatik oluşturulan performans özeti",
+        "description_en": "Auto-generated daily performance summary",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini",
+          "model_id": "claude-3-haiku-20240307"
+        },
+        "credit_cost": 0,
+        "auto_generate": true,
+        "generation_config": {
+          "trigger_time": "06:00",
+          "timezone": "Europe/Istanbul",
+          "frequency": "daily",
+          "retry_attempts": 3,
+          "retry_delay_minutes": 30
+        },
+        "delivery_channels": ["dashboard", "email", "push", "webhook"],
+        "data_requirements": {
+          "min_data_days": 1,
+          "required_metrics": ["revenue", "orders", "avg_rating"],
+          "optional_metrics": ["customers", "items_sold", "avg_order_value"]
+        },
+        "output_format": {
+          "sections": ["summary_stats", "comparison", "highlights", "alerts"],
+          "visualizations": ["kpi_cards", "trend_sparkline"],
+          "max_length_tokens": 500
+        },
+        "personalization": {
+          "role_based_content": true,
+          "language_support": ["tr", "en"],
+          "tone": "professional"
+        },
+        "dependencies": [],
+        "conflicts": [],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P0",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_daily_morning_brief",
+        "feature_id": "RPT-PER-002",
+        "name_tr": "Sabah Brifingi",
+        "name_en": "Morning Briefing",
+        "category": "PERIODIC",
+        "subcategory": "daily",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Sabah 07:00'de gönderilen günün tahmini ve önerileri",
+        "description_en": "Morning briefing with day forecast and recommendations",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini",
+          "model_id": "claude-3-haiku-20240307"
+        },
+        "credit_cost": 1,
+        "auto_generate": true,
+        "generation_config": {
+          "trigger_time": "07:00",
+          "timezone": "Europe/Istanbul",
+          "frequency": "daily",
+          "skip_days": [],
+          "business_hours_only": false
+        },
+        "delivery_channels": ["push", "email", "sms"],
+        "content_includes": [
+          "yesterday_recap",
+          "today_forecast",
+          "weather_impact",
+          "special_events",
+          "staff_schedule",
+          "inventory_alerts",
+          "action_items"
+        ],
+        "output_format": {
+          "style": "concise",
+          "max_length_tokens": 300,
+          "bullet_points": true
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 3
+      },
+      {
+        "feature_key": "report_daily_evening_recap",
+        "feature_id": "RPT-PER-003",
+        "name_tr": "Akşam Özeti",
+        "name_en": "Evening Recap",
+        "category": "PERIODIC",
+        "subcategory": "daily",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Gün sonu performans özeti ve yarın hazırlık önerileri",
+        "description_en": "End of day summary with next day preparation tips",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 1,
+        "auto_generate": true,
+        "generation_config": {
+          "trigger_time": "22:00",
+          "timezone": "Europe/Istanbul",
+          "frequency": "daily",
+          "adjust_to_closing_time": true
+        },
+        "delivery_channels": ["push", "email"],
+        "content_includes": [
+          "today_summary",
+          "goal_achievement",
+          "top_performers",
+          "issues_detected",
+          "tomorrow_prep",
+          "inventory_status"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 3
+      },
+      {
+        "feature_key": "report_daily_shift_summary",
+        "feature_id": "RPT-PER-004",
+        "name_tr": "Vardiya Özeti",
+        "name_en": "Shift Summary",
+        "category": "PERIODIC",
+        "subcategory": "daily",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Her vardiya sonunda otomatik performans özeti",
+        "description_en": "Auto-generated summary at the end of each shift",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 1,
+        "auto_generate": true,
+        "generation_config": {
+          "trigger": "shift_end",
+          "shifts": ["morning", "afternoon", "evening", "night"],
+          "per_shift": true
+        },
+        "delivery_channels": ["dashboard", "push"],
+        "content_includes": [
+          "shift_revenue",
+          "orders_count",
+          "staff_performance",
+          "issues",
+          "handover_notes"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      },
+      {
+        "feature_key": "report_weekly_trend",
+        "feature_id": "RPT-PER-005",
+        "name_tr": "Haftalık Trend Raporu",
+        "name_en": "Weekly Trend Report",
+        "category": "PERIODIC",
+        "subcategory": "weekly",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Haftalık trend analizi, WoW karşılaştırma, AI insights",
+        "description_en": "Weekly trend analysis with WoW comparison and AI insights",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "claude-sonnet"
+        },
+        "credit_cost": 2,
+        "auto_generate": true,
+        "generation_config": {
+          "trigger_day": "monday",
+          "trigger_time": "08:00",
+          "timezone": "Europe/Istanbul",
+          "frequency": "weekly"
+        },
+        "delivery_channels": ["dashboard", "email", "pdf"],
+        "content_includes": [
+          "week_summary",
+          "wow_comparison",
+          "daily_breakdown",
+          "best_worst_days",
+          "trend_analysis",
+          "ai_insights",
+          "next_week_forecast"
+        ],
+        "visualizations": [
+          "line_chart_daily",
+          "bar_chart_comparison",
+          "heatmap_hours"
+        ],
+        "output_format": {
+          "sections": 8,
+          "max_length_tokens": 1500,
+          "include_charts": true
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P0",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_weekly_performance_card",
+        "feature_id": "RPT-PER-006",
+        "name_tr": "Haftalık Performans Kartı",
+        "name_en": "Weekly Performance Card",
+        "category": "PERIODIC",
+        "subcategory": "weekly",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "KPI özeti, hedef vs gerçekleşen karşılaştırması",
+        "description_en": "KPI summary with target vs actual comparison",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": true,
+        "generation_config": {
+          "trigger_day": "monday",
+          "trigger_time": "09:00"
+        },
+        "delivery_channels": ["dashboard", "email"],
+        "kpi_metrics": [
+          {
+            "metric": "revenue",
+            "target_source": "manual|ai_suggested|historical",
+            "comparison": "wow",
+            "alert_threshold_percent": 10
+          },
+          {
+            "metric": "orders",
+            "target_source": "manual|ai_suggested|historical",
+            "comparison": "wow",
+            "alert_threshold_percent": 15
+          },
+          {
+            "metric": "avg_rating",
+            "target_source": "manual",
+            "comparison": "wow",
+            "alert_threshold": 0.2
+          },
+          {
+            "metric": "avg_order_value",
+            "target_source": "ai_suggested",
+            "comparison": "wow",
+            "alert_threshold_percent": 5
+          }
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      },
+      {
+        "feature_key": "report_weekly_staff_ranking",
+        "feature_id": "RPT-PER-007",
+        "name_tr": "Haftalık Personel Sıralaması",
+        "name_en": "Weekly Staff Ranking",
+        "category": "PERIODIC",
+        "subcategory": "weekly",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Haftalık personel performans sıralaması ve ödüller",
+        "description_en": "Weekly staff performance ranking with achievements",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 1,
+        "auto_generate": true,
+        "generation_config": {
+          "trigger_day": "monday",
+          "trigger_time": "10:00"
+        },
+        "delivery_channels": ["dashboard", "push"],
+        "ranking_metrics": [
+          "orders_handled",
+          "revenue_generated",
+          "avg_rating",
+          "upsell_rate",
+          "attendance"
+        ],
+        "gamification_integration": true,
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 3
+      },
+      {
+        "feature_key": "report_monthly_analysis",
+        "feature_id": "RPT-PER-008",
+        "name_tr": "Aylık Analiz Raporu",
+        "name_en": "Monthly Analysis Report",
+        "category": "PERIODIC",
+        "subcategory": "monthly",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Detaylı aylık performans analizi, MoM karşılaştırma, AI recommendations",
+        "description_en": "Detailed monthly analysis with MoM comparison and AI recommendations",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": true,
+        "generation_config": {
+          "trigger_day": 1,
+          "trigger_time": "08:00",
+          "frequency": "monthly"
+        },
+        "delivery_channels": ["dashboard", "email", "pdf"],
+        "content_includes": [
+          "executive_summary",
+          "revenue_analysis",
+          "order_analysis",
+          "customer_analysis",
+          "menu_performance",
+          "staff_performance",
+          "inventory_summary",
+          "campaign_effectiveness",
+          "mom_comparison",
+          "yoy_comparison",
+          "ai_insights",
+          "recommendations",
+          "next_month_forecast"
+        ],
+        "visualizations": [
+          "revenue_trend",
+          "category_breakdown",
+          "customer_heatmap",
+          "staff_performance_chart",
+          "inventory_turnover"
+        ],
+        "output_format": {
+          "sections": 15,
+          "max_length_tokens": 5000,
+          "include_charts": true,
+          "pdf_pages_estimate": 8
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P0",
+        "implementation_status": "planned",
+        "estimated_effort_days": 8
+      },
+      {
+        "feature_key": "report_monthly_executive",
+        "feature_id": "RPT-PER-009",
+        "name_tr": "Aylık Yönetici Özeti",
+        "name_en": "Monthly Executive Summary",
+        "category": "PERIODIC",
+        "subcategory": "monthly",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Yönetici düzeyinde özet rapor, stratejik öneriler",
+        "description_en": "Executive-level summary with strategic recommendations",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 8,
+        "auto_generate": true,
+        "generation_config": {
+          "trigger_day": 1,
+          "trigger_time": "09:00",
+          "frequency": "monthly"
+        },
+        "delivery_channels": ["pdf", "email"],
+        "content_includes": [
+          "one_page_summary",
+          "key_metrics",
+          "strategic_insights",
+          "risk_assessment",
+          "opportunity_analysis",
+          "action_priorities",
+          "budget_vs_actual"
+        ],
+        "output_format": {
+          "style": "executive",
+          "max_pages": 2,
+          "bullet_heavy": true
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_quarterly_review",
+        "feature_id": "RPT-PER-010",
+        "name_tr": "Çeyreklik Değerlendirme",
+        "name_en": "Quarterly Review",
+        "category": "PERIODIC",
+        "subcategory": "quarterly",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "3 aylık kapsamlı performans değerlendirmesi",
+        "description_en": "Comprehensive quarterly performance evaluation",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 15,
+        "auto_generate": true,
+        "generation_config": {
+          "trigger_months": [1, 4, 7, 10],
+          "trigger_day": 5,
+          "trigger_time": "08:00",
+          "frequency": "quarterly"
+        },
+        "delivery_channels": ["pdf", "email"],
+        "content_includes": [
+          "quarter_summary",
+          "goal_achievement",
+          "trend_analysis",
+          "strategic_review",
+          "competitive_position",
+          "growth_opportunities",
+          "risk_mitigation",
+          "next_quarter_plan"
+        ],
+        "output_format": {
+          "pdf_pages_estimate": 15,
+          "include_appendix": true
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "report_yearly_summary",
+        "feature_id": "RPT-PER-011",
+        "name_tr": "Yıllık Özet Raporu",
+        "name_en": "Annual Summary Report",
+        "category": "PERIODIC",
+        "subcategory": "yearly",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Yıllık kapsamlı performans raporu, YoY karşılaştırma",
+        "description_en": "Comprehensive annual report with YoY comparison",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 25,
+        "auto_generate": true,
+        "generation_config": {
+          "trigger_month": 1,
+          "trigger_day": 15,
+          "trigger_time": "08:00",
+          "frequency": "yearly"
+        },
+        "delivery_channels": ["pdf", "email"],
+        "content_includes": [
+          "year_in_review",
+          "financial_summary",
+          "growth_analysis",
+          "milestone_achievements",
+          "customer_evolution",
+          "market_position",
+          "lessons_learned",
+          "next_year_strategy"
+        ],
+        "output_format": {
+          "pdf_pages_estimate": 25,
+          "include_appendix": true,
+          "presentation_ready": true
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": false,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 15
+      },
+      {
+        "feature_key": "report_custom_period",
+        "feature_id": "RPT-PER-012",
+        "name_tr": "Özel Dönem Raporu",
+        "name_en": "Custom Period Report",
+        "category": "PERIODIC",
+        "subcategory": "custom",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Kullanıcının belirlediği tarih aralığı için rapor",
+        "description_en": "Report for user-defined date range",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": false,
+        "parameters": {
+          "start_date": "required",
+          "end_date": "required",
+          "comparison_period": "optional",
+          "metrics": "selectable"
+        },
+        "delivery_channels": ["dashboard", "pdf", "email"],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 6
+      }
+    ],
+    "SALES_REPORTS": [
+      {
+        "feature_key": "report_sales_revenue",
+        "feature_id": "RPT-SAL-001",
+        "name_tr": "Ciro Raporu",
+        "name_en": "Revenue Report",
+        "category": "SALES",
+        "subcategory": "financial",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Detaylı ciro analizi, trend grafikleri, karşılaştırmalar",
+        "description_en": "Detailed revenue analysis with trends and comparisons",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "dimensions": [
+          "date",
+          "hour",
+          "day_of_week",
+          "category",
+          "product",
+          "channel",
+          "payment_type",
+          "branch"
+        ],
+        "metrics": [
+          {
+            "key": "gross_revenue",
+            "name_tr": "Brüt Ciro",
+            "aggregations": ["sum", "avg", "min", "max"],
+            "format": "currency"
+          },
+          {
+            "key": "net_revenue",
+            "name_tr": "Net Ciro",
+            "aggregations": ["sum", "avg"],
+            "format": "currency"
+          },
+          {
+            "key": "revenue_growth",
+            "name_tr": "Ciro Büyümesi",
+            "aggregations": ["percent"],
+            "format": "percentage"
+          },
+          {
+            "key": "revenue_per_order",
+            "name_tr": "Sipariş Başı Ciro",
+            "aggregations": ["avg"],
+            "format": "currency"
+          },
+          {
+            "key": "revenue_per_customer",
+            "name_tr": "Müşteri Başı Ciro",
+            "aggregations": ["avg"],
+            "format": "currency"
+          }
+        ],
+        "visualizations": [
+          "line_chart",
+          "bar_chart",
+          "pie_chart",
+          "heatmap"
+        ],
+        "filters": [
+          "date_range",
+          "category",
+          "product",
+          "channel",
+          "payment_type"
+        ],
+        "comparison_options": [
+          "previous_period",
+          "same_period_last_year",
+          "custom_period"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P0",
+        "implementation_status": "planned",
+        "estimated_effort_days": 6
+      },
+      {
+        "feature_key": "report_sales_breakdown",
+        "feature_id": "RPT-SAL-002",
+        "name_tr": "Satış Dağılım Raporu",
+        "name_en": "Sales Breakdown Report",
+        "category": "SALES",
+        "subcategory": "financial",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Kategori, saat, gün bazlı satış dağılımı",
+        "description_en": "Sales distribution by category, hour, day",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "breakdown_dimensions": [
+          {
+            "dimension": "category",
+            "name_tr": "Kategori Bazlı",
+            "visualization": "pie_chart"
+          },
+          {
+            "dimension": "hour",
+            "name_tr": "Saat Bazlı",
+            "visualization": "bar_chart"
+          },
+          {
+            "dimension": "day_of_week",
+            "name_tr": "Gün Bazlı",
+            "visualization": "bar_chart"
+          },
+          {
+            "dimension": "payment_type",
+            "name_tr": "Ödeme Tipi Bazlı",
+            "visualization": "pie_chart"
+          },
+          {
+            "dimension": "channel",
+            "name_tr": "Kanal Bazlı",
+            "visualization": "donut_chart"
+          }
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      },
+      {
+        "feature_key": "report_sales_comparison",
+        "feature_id": "RPT-SAL-003",
+        "name_tr": "Satış Karşılaştırma Raporu",
+        "name_en": "Sales Comparison Report",
+        "category": "SALES",
+        "subcategory": "financial",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Dönem karşılaştırması (WoW, MoM, YoY)",
+        "description_en": "Period comparison (WoW, MoM, YoY)",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 3,
+        "auto_generate": false,
+        "comparison_types": [
+          {
+            "type": "wow",
+            "name_tr": "Haftalık (WoW)",
+            "periods": 2,
+            "granularity": "day"
+          },
+          {
+            "type": "mom",
+            "name_tr": "Aylık (MoM)",
+            "periods": 2,
+            "granularity": "day"
+          },
+          {
+            "type": "yoy",
+            "name_tr": "Yıllık (YoY)",
+            "periods": 2,
+            "granularity": "month"
+          },
+          {
+            "type": "custom",
+            "name_tr": "Özel Dönem",
+            "periods": "user_defined",
+            "granularity": "user_defined"
+          }
+        ],
+        "comparison_metrics": [
+          "revenue",
+          "orders",
+          "customers",
+          "avg_order_value",
+          "items_sold"
+        ],
+        "ai_analysis": {
+          "variance_explanation": true,
+          "trend_identification": true,
+          "anomaly_detection": true
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_profit_margin",
+        "feature_id": "RPT-SAL-004",
+        "name_tr": "Kar Marjı Raporu",
+        "name_en": "Profit Margin Report",
+        "category": "SALES",
+        "subcategory": "financial",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Ürün ve kategori bazlı kar marjı analizi",
+        "description_en": "Profit margin analysis by product and category",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": false,
+        "requires": ["cost_data"],
+        "metrics": [
+          {
+            "key": "gross_margin",
+            "name_tr": "Brüt Kar Marjı",
+            "formula": "(revenue - cogs) / revenue * 100",
+            "format": "percentage"
+          },
+          {
+            "key": "net_margin",
+            "name_tr": "Net Kar Marjı",
+            "formula": "(revenue - total_cost) / revenue * 100",
+            "format": "percentage"
+          },
+          {
+            "key": "contribution_margin",
+            "name_tr": "Katkı Marjı",
+            "formula": "(revenue - variable_cost) / revenue * 100",
+            "format": "percentage"
+          },
+          {
+            "key": "margin_by_product",
+            "name_tr": "Ürün Bazlı Marj",
+            "breakdown": true
+          },
+          {
+            "key": "margin_by_category",
+            "name_tr": "Kategori Bazlı Marj",
+            "breakdown": true
+          }
+        ],
+        "ai_insights": [
+          "low_margin_products",
+          "margin_improvement_opportunities",
+          "cost_optimization_suggestions"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 6
+      },
+      {
+        "feature_key": "report_payment_analysis",
+        "feature_id": "RPT-SAL-005",
+        "name_tr": "Ödeme Analizi Raporu",
+        "name_en": "Payment Analysis Report",
+        "category": "SALES",
+        "subcategory": "financial",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Ödeme yöntemi dağılımı ve trendleri",
+        "description_en": "Payment method distribution and trends",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 1,
+        "auto_generate": false,
+        "payment_types": [
+          "cash",
+          "credit_card",
+          "debit_card",
+          "mobile_payment",
+          "online",
+          "meal_card",
+          "gift_card",
+          "split_payment"
+        ],
+        "metrics": [
+          "payment_type_distribution",
+          "average_by_payment_type",
+          "payment_type_trend",
+          "transaction_count"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 3
+      },
+      {
+        "feature_key": "report_discount_analysis",
+        "feature_id": "RPT-SAL-006",
+        "name_tr": "İndirim Analizi Raporu",
+        "name_en": "Discount Analysis Report",
+        "category": "SALES",
+        "subcategory": "financial",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Uygulanan indirimlerin etkisi ve analizi",
+        "description_en": "Impact analysis of applied discounts",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 3,
+        "auto_generate": false,
+        "discount_types": [
+          "percentage",
+          "fixed_amount",
+          "buy_x_get_y",
+          "loyalty",
+          "coupon",
+          "staff_discount",
+          "happy_hour"
+        ],
+        "metrics": [
+          {
+            "key": "total_discount_amount",
+            "name_tr": "Toplam İndirim Tutarı"
+          },
+          {
+            "key": "discount_rate",
+            "name_tr": "İndirim Oranı"
+          },
+          {
+            "key": "discount_frequency",
+            "name_tr": "İndirim Sıklığı"
+          },
+          {
+            "key": "discount_roi",
+            "name_tr": "İndirim ROI"
+          },
+          {
+            "key": "avg_basket_with_discount",
+            "name_tr": "İndirimli Ortalama Sepet"
+          },
+          {
+            "key": "avg_basket_without_discount",
+            "name_tr": "İndirimsiz Ortalama Sepet"
+          }
+        ],
+        "ai_insights": [
+          "discount_effectiveness",
+          "optimal_discount_rate",
+          "abuse_detection"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_hourly_sales",
+        "feature_id": "RPT-SAL-007",
+        "name_tr": "Saatlik Satış Raporu",
+        "name_en": "Hourly Sales Report",
+        "category": "SALES",
+        "subcategory": "temporal",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Saat bazlı satış yoğunluğu ve pattern analizi",
+        "description_en": "Hourly sales intensity and pattern analysis",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "time_granularity": ["15min", "30min", "1hour"],
+        "metrics": [
+          "revenue_by_hour",
+          "orders_by_hour",
+          "avg_order_value_by_hour",
+          "staff_utilization_by_hour"
+        ],
+        "visualizations": [
+          "heatmap",
+          "line_chart",
+          "area_chart"
+        ],
+        "ai_insights": [
+          "peak_hours_identification",
+          "staffing_recommendations",
+          "promotion_timing"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      },
+      {
+        "feature_key": "report_daily_sales",
+        "feature_id": "RPT-SAL-008",
+        "name_tr": "Günlük Satış Raporu",
+        "name_en": "Daily Sales Report",
+        "category": "SALES",
+        "subcategory": "temporal",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Gün bazlı satış analizi ve karşılaştırma",
+        "description_en": "Daily sales analysis and comparison",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 1,
+        "auto_generate": false,
+        "metrics": [
+          "revenue_by_day",
+          "orders_by_day",
+          "customers_by_day",
+          "avg_order_value_by_day"
+        ],
+        "day_of_week_analysis": true,
+        "holiday_impact_analysis": true,
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 3
+      },
+      {
+        "feature_key": "report_top_sellers",
+        "feature_id": "RPT-SAL-009",
+        "name_tr": "En Çok Satanlar Raporu",
+        "name_en": "Top Sellers Report",
+        "category": "SALES",
+        "subcategory": "product",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "En çok satan ürünler ve kategoriler",
+        "description_en": "Top selling products and categories",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 1,
+        "auto_generate": false,
+        "ranking_criteria": [
+          "quantity_sold",
+          "revenue_generated",
+          "profit_margin",
+          "order_frequency"
+        ],
+        "top_n_options": [5, 10, 20, 50],
+        "grouping_options": [
+          "product",
+          "category",
+          "brand"
+        ],
+        "plan_availability": {
+          "free": true,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P0",
+        "implementation_status": "planned",
+        "estimated_effort_days": 3
+      },
+      {
+        "feature_key": "report_bottom_sellers",
+        "feature_id": "RPT-SAL-010",
+        "name_tr": "En Az Satanlar Raporu",
+        "name_en": "Bottom Sellers Report",
+        "category": "SALES",
+        "subcategory": "product",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "En az satan ürünler ve iyileştirme önerileri",
+        "description_en": "Lowest selling products with improvement suggestions",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 3,
+        "auto_generate": false,
+        "ai_insights": [
+          "removal_candidates",
+          "repositioning_suggestions",
+          "pricing_recommendations",
+          "promotion_opportunities"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      },
+      {
+        "feature_key": "report_sales_target_tracking",
+        "feature_id": "RPT-SAL-011",
+        "name_tr": "Satış Hedef Takip Raporu",
+        "name_en": "Sales Target Tracking Report",
+        "category": "SALES",
+        "subcategory": "performance",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Hedef vs gerçekleşen karşılaştırması",
+        "description_en": "Target vs actual comparison",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "target_types": [
+          "daily_revenue",
+          "weekly_revenue",
+          "monthly_revenue",
+          "order_count",
+          "avg_order_value",
+          "new_customers"
+        ],
+        "tracking_features": [
+          "progress_percentage",
+          "days_remaining",
+          "required_daily_rate",
+          "forecast_achievement"
+        ],
+        "visualizations": [
+          "gauge_chart",
+          "progress_bar",
+          "trend_line"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_sales_channel",
+        "feature_id": "RPT-SAL-012",
+        "name_tr": "Satış Kanalı Raporu",
+        "name_en": "Sales Channel Report",
+        "category": "SALES",
+        "subcategory": "channel",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Kanal bazlı satış performansı (dine-in, takeaway, delivery)",
+        "description_en": "Sales performance by channel",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "channels": [
+          {
+            "channel_id": "dine_in",
+            "name_tr": "Restoran İçi",
+            "metrics": ["revenue", "orders", "avg_check", "table_turnover"]
+          },
+          {
+            "channel_id": "takeaway",
+            "name_tr": "Paket Servis",
+            "metrics": ["revenue", "orders", "avg_check", "prep_time"]
+          },
+          {
+            "channel_id": "delivery",
+            "name_tr": "Teslimat",
+            "metrics": ["revenue", "orders", "avg_check", "delivery_time"]
+          },
+          {
+            "channel_id": "online",
+            "name_tr": "Online Sipariş",
+            "metrics": ["revenue", "orders", "conversion_rate"]
+          }
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      },
+      {
+        "feature_key": "report_vat_summary",
+        "feature_id": "RPT-SAL-013",
+        "name_tr": "KDV Özet Raporu",
+        "name_en": "VAT Summary Report",
+        "category": "SALES",
+        "subcategory": "tax",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "KDV hesaplama ve vergi özeti",
+        "description_en": "VAT calculation and tax summary",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 1,
+        "auto_generate": false,
+        "vat_rates": [1, 8, 10, 18, 20],
+        "metrics": [
+          "gross_sales",
+          "net_sales",
+          "vat_collected",
+          "vat_by_rate"
+        ],
+        "export_formats": ["pdf", "excel"],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 3
+      },
+      {
+        "feature_key": "report_cashflow",
+        "feature_id": "RPT-SAL-014",
+        "name_tr": "Nakit Akış Raporu",
+        "name_en": "Cashflow Report",
+        "category": "SALES",
+        "subcategory": "financial",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Günlük/haftalık nakit akış özeti",
+        "description_en": "Daily/weekly cashflow summary",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 3,
+        "auto_generate": false,
+        "metrics": [
+          "cash_received",
+          "card_received",
+          "total_income",
+          "expenses",
+          "net_cashflow"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      }
+    ],
+    "MENU_REPORTS": [
+      {
+        "feature_key": "report_menu_performance_matrix",
+        "feature_id": "RPT-MNU-001",
+        "name_tr": "Menü Performans Matrisi",
+        "name_en": "Menu Performance Matrix",
+        "category": "MENU",
+        "subcategory": "analysis",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "BCG matrisi - Star/Cash Cow/Question Mark/Dog analizi",
+        "description_en": "BCG matrix analysis for menu items",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": false,
+        "matrix_quadrants": [
+          {
+            "quadrant": "star",
+            "name_tr": "Yıldız",
+            "name_en": "Star",
+            "criteria": "high_popularity + high_profitability",
+            "action": "Promote, maintain quality",
+            "color": "#10B981"
+          },
+          {
+            "quadrant": "cash_cow",
+            "name_tr": "Nakit İneği",
+            "name_en": "Cash Cow",
+            "criteria": "high_popularity + low_profitability",
+            "action": "Optimize cost, increase price",
+            "color": "#3B82F6"
+          },
+          {
+            "quadrant": "question_mark",
+            "name_tr": "Soru İşareti",
+            "name_en": "Question Mark",
+            "criteria": "low_popularity + high_profitability",
+            "action": "Promote, reposition",
+            "color": "#F59E0B"
+          },
+          {
+            "quadrant": "dog",
+            "name_tr": "Köpek",
+            "name_en": "Dog",
+            "criteria": "low_popularity + low_profitability",
+            "action": "Consider removal, repricing",
+            "color": "#EF4444"
+          }
+        ],
+        "calculation_method": {
+          "popularity_axis": {
+            "metric": "sales_mix_percentage",
+            "threshold": "average"
+          },
+          "profitability_axis": {
+            "metric": "contribution_margin",
+            "threshold": "average"
+          }
+        },
+        "ai_recommendations": {
+          "per_quadrant": true,
+          "per_item": true,
+          "action_priority": true
+        },
+        "visualizations": [
+          "scatter_plot_matrix",
+          "quadrant_chart",
+          "item_cards"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P0",
+        "implementation_status": "planned",
+        "estimated_effort_days": 8
+      },
+      {
+        "feature_key": "report_menu_item_performance",
+        "feature_id": "RPT-MNU-002",
+        "name_tr": "Ürün Performans Raporu",
+        "name_en": "Item Performance Report",
+        "category": "MENU",
+        "subcategory": "analysis",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Ürün bazlı detaylı performans analizi",
+        "description_en": "Detailed item-level performance analysis",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "metrics_per_item": [
+          {
+            "key": "quantity_sold",
+            "name_tr": "Satış Adedi",
+            "aggregations": ["sum", "avg_daily", "trend"]
+          },
+          {
+            "key": "revenue",
+            "name_tr": "Ciro",
+            "aggregations": ["sum", "avg_daily", "trend"]
+          },
+          {
+            "key": "sales_mix",
+            "name_tr": "Satış Karışımı %",
+            "format": "percentage"
+          },
+          {
+            "key": "profit_margin",
+            "name_tr": "Kar Marjı",
+            "format": "percentage"
+          },
+          {
+            "key": "contribution_margin",
+            "name_tr": "Katkı Marjı",
+            "format": "currency"
+          },
+          {
+            "key": "avg_rating",
+            "name_tr": "Ortalama Puan",
+            "format": "rating"
+          },
+          {
+            "key": "review_count",
+            "name_tr": "Değerlendirme Sayısı"
+          },
+          {
+            "key": "return_rate",
+            "name_tr": "İade Oranı",
+            "format": "percentage"
+          },
+          {
+            "key": "prep_time_avg",
+            "name_tr": "Ortalama Hazırlık Süresi",
+            "format": "duration"
+          }
+        ],
+        "filters": [
+          "category",
+          "date_range",
+          "channel",
+          "branch"
+        ],
+        "sorting_options": [
+          "quantity_desc",
+          "revenue_desc",
+          "margin_desc",
+          "rating_desc"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P0",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_menu_category_analysis",
+        "feature_id": "RPT-MNU-003",
+        "name_tr": "Kategori Analiz Raporu",
+        "name_en": "Category Analysis Report",
+        "category": "MENU",
+        "subcategory": "analysis",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Kategori bazlı performans ve karşılaştırma",
+        "description_en": "Category-level performance and comparison",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "metrics_per_category": [
+          "total_revenue",
+          "total_quantity",
+          "revenue_share",
+          "quantity_share",
+          "avg_item_price",
+          "avg_margin",
+          "item_count",
+          "active_item_count"
+        ],
+        "category_comparison": true,
+        "trend_analysis": true,
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      },
+      {
+        "feature_key": "report_menu_pricing_analysis",
+        "feature_id": "RPT-MNU-004",
+        "name_tr": "Fiyat Analiz Raporu",
+        "name_en": "Pricing Analysis Report",
+        "category": "MENU",
+        "subcategory": "pricing",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Fiyat elastikiyeti ve optimizasyon analizi",
+        "description_en": "Price elasticity and optimization analysis",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": false,
+        "analysis_types": [
+          {
+            "type": "price_elasticity",
+            "name_tr": "Fiyat Elastikiyeti",
+            "description": "Fiyat değişikliğinin talebe etkisi"
+          },
+          {
+            "type": "price_sensitivity",
+            "name_tr": "Fiyat Hassasiyeti",
+            "description": "Müşteri fiyat duyarlılığı analizi"
+          },
+          {
+            "type": "price_optimization",
+            "name_tr": "Fiyat Optimizasyonu",
+            "description": "Optimal fiyat noktası önerisi"
+          },
+          {
+            "type": "competitive_pricing",
+            "name_tr": "Rekabetçi Fiyatlama",
+            "description": "Pazar fiyatlarıyla karşılaştırma"
+          }
+        ],
+        "ai_recommendations": [
+          "price_increase_candidates",
+          "price_decrease_candidates",
+          "optimal_price_points",
+          "bundle_pricing_suggestions"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 7
+      },
+      {
+        "feature_key": "report_menu_popularity_trend",
+        "feature_id": "RPT-MNU-005",
+        "name_tr": "Popülerlik Trend Raporu",
+        "name_en": "Popularity Trend Report",
+        "category": "MENU",
+        "subcategory": "trend",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Ürün popülerlik trendleri ve mevsimsellik",
+        "description_en": "Item popularity trends and seasonality",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "trend_analysis": {
+          "time_periods": ["daily", "weekly", "monthly", "quarterly"],
+          "trend_types": ["rising", "falling", "stable", "seasonal"],
+          "seasonality_detection": true
+        },
+        "alerts": {
+          "rising_star": "Yükselen trend tespit edildi",
+          "declining_item": "Düşen trend tespit edildi",
+          "seasonal_peak": "Mevsimsel zirve yaklaşıyor"
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_menu_pairing_analysis",
+        "feature_id": "RPT-MNU-006",
+        "name_tr": "Ürün Eşleştirme Analizi",
+        "name_en": "Item Pairing Analysis",
+        "category": "MENU",
+        "subcategory": "basket",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Birlikte satılan ürünler ve combo önerileri",
+        "description_en": "Co-purchased items and combo suggestions",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": false,
+        "analysis_methods": [
+          {
+            "method": "association_rules",
+            "name_tr": "Birliktelik Kuralları",
+            "metrics": ["support", "confidence", "lift"]
+          },
+          {
+            "method": "market_basket",
+            "name_tr": "Sepet Analizi",
+            "metrics": ["co_purchase_frequency", "correlation"]
+          }
+        ],
+        "outputs": [
+          "frequently_bought_together",
+          "recommended_combos",
+          "upsell_suggestions",
+          "cross_sell_opportunities"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 6
+      },
+      {
+        "feature_key": "report_menu_optimization",
+        "feature_id": "RPT-MNU-007",
+        "name_tr": "Menü Optimizasyon Raporu",
+        "name_en": "Menu Optimization Report",
+        "category": "MENU",
+        "subcategory": "optimization",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "AI destekli kapsamlı menü optimizasyon önerileri",
+        "description_en": "AI-powered comprehensive menu optimization recommendations",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 8,
+        "auto_generate": false,
+        "optimization_areas": [
+          {
+            "area": "item_removal",
+            "name_tr": "Kaldırılacak Ürünler",
+            "criteria": ["low_sales", "low_margin", "low_rating", "high_waste"]
+          },
+          {
+            "area": "item_addition",
+            "name_tr": "Eklenecek Ürünler",
+            "criteria": ["market_trends", "customer_requests", "gap_analysis"]
+          },
+          {
+            "area": "price_adjustment",
+            "name_tr": "Fiyat Ayarlaması",
+            "criteria": ["margin_improvement", "competitive_positioning"]
+          },
+          {
+            "area": "positioning",
+            "name_tr": "Konumlandırma",
+            "criteria": ["menu_placement", "description_improvement"]
+          },
+          {
+            "area": "portion_size",
+            "name_tr": "Porsiyon Boyutu",
+            "criteria": ["waste_reduction", "cost_optimization"]
+          }
+        ],
+        "roi_estimation": true,
+        "implementation_priority": true,
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "report_menu_engineering",
+        "feature_id": "RPT-MNU-008",
+        "name_tr": "Menü Mühendisliği Raporu",
+        "name_en": "Menu Engineering Report",
+        "category": "MENU",
+        "subcategory": "engineering",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Profesyonel menü mühendisliği analizi",
+        "description_en": "Professional menu engineering analysis",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 8,
+        "auto_generate": false,
+        "engineering_elements": [
+          "menu_mix_analysis",
+          "profitability_analysis",
+          "popularity_analysis",
+          "visual_placement_recommendations",
+          "description_optimization",
+          "psychological_pricing"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 8
+      },
+      {
+        "feature_key": "report_menu_review_analysis",
+        "feature_id": "RPT-MNU-009",
+        "name_tr": "Menü Değerlendirme Analizi",
+        "name_en": "Menu Review Analysis",
+        "category": "MENU",
+        "subcategory": "feedback",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Ürün bazlı müşteri yorumları ve sentiment analizi",
+        "description_en": "Item-level customer reviews and sentiment analysis",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": false,
+        "analysis_types": [
+          "sentiment_analysis",
+          "topic_extraction",
+          "complaint_categorization",
+          "praise_identification"
+        ],
+        "per_item_output": [
+          "overall_sentiment",
+          "common_praises",
+          "common_complaints",
+          "improvement_suggestions"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 6
+      },
+      {
+        "feature_key": "report_menu_cost_analysis",
+        "feature_id": "RPT-MNU-010",
+        "name_tr": "Menü Maliyet Analizi",
+        "name_en": "Menu Cost Analysis",
+        "category": "MENU",
+        "subcategory": "cost",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Ürün bazlı maliyet ve food cost analizi",
+        "description_en": "Item-level cost and food cost analysis",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": false,
+        "requires": ["recipe_data", "ingredient_costs"],
+        "metrics": [
+          "food_cost_percentage",
+          "ingredient_cost_breakdown",
+          "labor_cost_allocation",
+          "overhead_allocation",
+          "total_cost_per_item"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 6
+      },
+      {
+        "feature_key": "report_menu_modifier_analysis",
+        "feature_id": "RPT-MNU-011",
+        "name_tr": "Modifier/Opsiyon Analizi",
+        "name_en": "Modifier/Option Analysis",
+        "category": "MENU",
+        "subcategory": "customization",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Ürün özelleştirme opsiyonlarının analizi",
+        "description_en": "Analysis of item customization options",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "analysis_elements": [
+          "modifier_popularity",
+          "modifier_revenue_impact",
+          "common_combinations",
+          "unused_modifiers"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      },
+      {
+        "feature_key": "report_menu_availability",
+        "feature_id": "RPT-MNU-012",
+        "name_tr": "Menü Uygunluk Raporu",
+        "name_en": "Menu Availability Report",
+        "category": "MENU",
+        "subcategory": "operations",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Ürün tükenmesi ve 86'd analizi",
+        "description_en": "Item out-of-stock and 86'd analysis",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": true,
+        "metrics": [
+          "out_of_stock_frequency",
+          "out_of_stock_duration",
+          "lost_revenue_estimate",
+          "peak_time_stockouts"
+        ],
+        "alerts": {
+          "frequent_stockouts": true,
+          "revenue_impact_threshold": 1000
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      }
+    ]
+  }
+}

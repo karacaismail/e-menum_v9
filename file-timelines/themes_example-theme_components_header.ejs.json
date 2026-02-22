@@ -1,0 +1,28 @@
+{
+  "file_path": "themes/example-theme/components/header.ejs",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "<%#\n  ============================================================================\n  HEADER COMPONENT - Example Theme\n  ============================================================================\n\n  Simple header with logo, restaurant name, and theme toggle.\n\n  PROPS (passed via include):\n  - menu: Menu object {id, name, slug, ...}\n  - organization: Organization object {name, logo, ...}\n  - tableNumber: Table number from QR scan (optional)\n\n  AVAILABLE ALPINE.JS STATE (from parent layout):\n  - cartItemCount: Number of items in cart\n  - cartOpen: Boolean to open/close cart\n\n  STYLING RULES:\n  1. Use CSS classes from main.css\n  2. Use CSS variables for colors (--brand-primary, --text-primary, etc.)\n  3. Use Phosphor icons (ph ph-icon-name)\n  4. Minimum touch target: 48x48px\n%>\n<header\n  role=\"banner\"\n  class=\"header\"\n>\n  <div class=\"header-inner\">\n    <!--\n      Logo / Restaurant Name\n      Links back to menu home page\n    -->\n    <a\n      href=\"<%= locals.menu ? '/m/' + menu.slug : '/' %>\"\n      class=\"header-brand\"\n      aria-label=\"<%= locals.organization ? organization.name : (typeof t === 'function' ? t('nav.home') : 'Home') %>\"\n    >\n      <!--\n        Organization Logo\n        Falls back to first letter of name if no logo\n      -->\n      <% if (locals.organization && organization.logo) { %>\n        <img\n          src=\"<%= organization.logo %>\"\n          alt=\"\"\n          class=\"header-logo\"\n        >\n      <% } else { %>\n        <div class=\"header-logo-fallback\">\n          <%= locals.organization ? organization.name.charAt(0).toUpperCase() : 'M' %>\n        </div>\n      <% } %>\n\n      <!-- Restaurant Name (hidden on mobile) -->\n      <span class=\"header-title\">\n        <%= locals.organization ? organization.name : (typeof t === 'function' ? t('common.menu') : 'Menu') %>\n      </span>\n    </a>\n\n    <!--\n      Table Badge\n      Shows when customer scanned QR code at a specific table\n    -->\n    <% if (locals.tableNumber) { %>\n      <span class=\"badge badge-primary\">\n        <i class=\"ph ph-table\" aria-hidden=\"true\"></i>\n        <%= typeof t === 'function' ? t('common.table') : 'Table' %> <%= tableNumber %>\n      </span>\n    <% } %>\n\n    <!-- Spacer to push actions to the right -->\n    <div class=\"flex-1\"></div>\n\n    <!--\n      Theme Toggle Button\n      Switches between light and dark mode\n      Uses Alpine.js for reactivity\n    -->\n    <button\n      x-data=\"{ dark: document.documentElement.getAttribute('data-theme') === 'dark' }\"\n      @click=\"dark = !dark; document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light'); localStorage.setItem('theme', dark ? 'dark' : 'light')\"\n      type=\"button\"\n      class=\"btn btn-icon\"\n      :aria-label=\"dark ? '<%= typeof t === 'function' ? t('common.lightMode') : 'Light mode' %>' : '<%= typeof t === 'function' ? t('common.darkMode') : 'Dark mode' %>'\"\n    >\n      <!--\n        Icon Changes Based on Current Theme\n        Moon icon for light mode (click to go dark)\n        Sun icon for dark mode (click to go light)\n      -->\n      <template x-if=\"!dark\">\n        <i class=\"ph ph-moon\" aria-hidden=\"true\"></i>\n      </template>\n      <template x-if=\"dark\">\n        <i class=\"ph ph-sun\" aria-hidden=\"true\"></i>\n      </template>\n    </button>\n\n    <!--\n      Cart Button\n      Opens the cart drawer\n      Shows item count badge when items in cart\n    -->\n    <button\n      @click=\"cartOpen = true\"\n      type=\"button\"\n      class=\"btn btn-primary btn-icon\"\n      aria-label=\"<%= typeof t === 'function' ? t('cart.viewCart') : 'View cart' %>\"\n    >\n      <i class=\"ph ph-shopping-cart\" aria-hidden=\"true\"></i>\n      <!--\n        Item Count Badge\n        Only shows when cart has items\n      -->\n      <span\n        x-show=\"cartItemCount > 0\"\n        x-text=\"cartItemCount\"\n        class=\"cart-count-badge\"\n      ></span>\n    </button>\n  </div>\n</header>\n",
+        "last_modified": "2026-02-01T09:10:53.779941"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:26.914035",
+  "last_updated": "2026-02-01T08:03:26.923802"
+}

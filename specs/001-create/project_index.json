@@ -1,0 +1,56 @@
+{
+  "project_root": "/Users/karaca/Documents/e-menum_v9",
+  "project_type": "single",
+  "services": {
+    "backend": {
+      "path": ".",
+      "tech_stack": ["typescript", "express", "prisma", "tsyringe", "zod", "casl"],
+      "port": 3000,
+      "dev_command": "npm run dev",
+      "test_command": "npm test",
+      "build_command": "npm run build",
+      "entry_point": "src/main.ts"
+    },
+    "database": {
+      "path": "prisma",
+      "tech_stack": ["postgresql", "prisma"],
+      "port": 5432,
+      "dev_command": "npm run prisma:studio",
+      "migrate_command": "npm run prisma:migrate",
+      "seed_command": "npm run prisma:seed"
+    },
+    "cache": {
+      "path": ".",
+      "tech_stack": ["redis", "bullmq"],
+      "port": 6379
+    },
+    "frontend": {
+      "path": ".",
+      "tech_stack": ["ejs", "tailwindcss", "alpinejs", "flowbite"],
+      "port": 3000,
+      "build_command": "npm run build:css"
+    }
+  },
+  "infrastructure": {
+    "docker": true,
+    "database": "postgresql",
+    "cache": "redis",
+    "queue": "bullmq",
+    "deployment": "coolify"
+  },
+  "conventions": {
+    "linter": "eslint",
+    "formatter": "prettier",
+    "testing": "vitest",
+    "package_manager": "npm",
+    "import_alias": "@/",
+    "commit_style": "conventional"
+  },
+  "module_system": {
+    "core_modules": ["auth", "organization", "branch", "user", "media", "notification", "subscription", "module-loader"],
+    "business_modules": ["menu", "order"],
+    "example_modules": ["advanced-example"],
+    "stub_modules": ["payment", "analytics", "ai", "campaign", "loyalty", "inventory", "reservation", "feedback", "integration", "pos", "kitchen-display", "table-management"],
+    "themes": ["admin-theme", "product-theme", "example-theme"]
+  }
+}

@@ -1,0 +1,189 @@
+{
+  "session_number": 19,
+  "timestamp": "2026-01-31T22:43:47.219177+00:00",
+  "subtasks_completed": [
+    "subtask-3-8"
+  ],
+  "discoveries": {
+    "file_insights": [
+      {
+        "file_path": "src/main.ts",
+        "file_type": "TypeScript",
+        "purpose": "Application entry point for E-Menum Enterprise QR Menu Platform",
+        "size_lines": 318,
+        "key_components": [
+          "Express application factory (createApp)",
+          "HTTP server startup (startServer)",
+          "Main entry point orchestration (main)",
+          "Middleware configuration stack",
+          "Health check endpoints",
+          "Graceful shutdown handling",
+          "Error handling (global and server-level)"
+        ],
+        "dependencies": [
+          "express",
+          "helmet",
+          "cors",
+          "compression",
+          "cookie-parser",
+          "reflect-metadata",
+          "config/env",
+          "core/kernel/bootstrap"
+        ],
+        "exports": [
+          "createApp",
+          "startServer"
+        ]
+      }
+    ],
+    "patterns_discovered": [
+      {
+        "pattern": "reflect-metadata Import First",
+        "description": "reflect-metadata is imported at the very top before any other code to enable tsyringe dependency injection",
+        "location": "lines 19-20",
+        "significance": "Critical for DI container functionality"
+      },
+      {
+        "pattern": "Three-Phase Startup Flow",
+        "description": "Bootstrap \u2192 Express App Creation \u2192 Server Startup with orchestration through main()",
+        "location": "lines 278-297",
+        "significance": "Structured initialization ensures all dependencies are ready before server starts"
+      },
+      {
+        "pattern": "Environment-Aware Configuration",
+        "description": "Different middleware and logging behavior for development vs production",
+        "location": "lines 48-51, 87-92, 169-175, 207-218",
+        "significance": "Security and performance optimization across environments"
+      },
+      {
+        "pattern": "Multi-Layer Health Checks",
+        "description": "Three separate health endpoints: /health (full), /health/ready (readiness), /health/live (liveness)",
+        "location": "lines 101-118",
+        "significance": "Kubernetes-ready health check pattern for orchestration"
+      },
+      {
+        "pattern": "Graceful Shutdown Handler",
+        "description": "SIGTERM and SIGINT handling with 30-second timeout for service cleanup",
+        "location": "lines 231-257",
+        "significance": "Production-grade shutdown with coordination between server and services"
+      },
+      {
+        "pattern": "Middleware Stack Organization",
+        "description": "Security \u2192 CORS \u2192 Parsing \u2192 Static Files \u2192 Custom Middleware \u2192 Routes \u2192 Error Handling",
+        "location": "lines 58-93, 101-160",
+        "significance": "Proper middleware ordering for functionality and security"
+      },
+      {
+        "pattern": "Comprehensive Error Handling",
+        "description": "Global error handler with environment-aware error exposure and 404 handler",
+        "location": "lines 145-169",
+        "significance": "Production-safe error responses prevent information leakage"
+      }
+    ],
+    "gotchas_discovered": [
+      {
+        "gotcha": "Module Route Mounting TODO",
+        "description": "Route mounting is marked as TODO - routes are not yet wired up to the Express app",
+        "location": "lines 137-141",
+        "impact": "Application currently has no business logic routes despite having the infrastructure in place",
+        "severity": "high"
+      },
+      {
+        "gotcha": "EJS View Engine Configuration",
+        "description": "View engine is set to EJS with hardcoded path './src/views', but no middleware is set up for rendering template routes",
+        "location": "lines 53-54",
+        "impact": "View rendering capability is configured but no routes use it",
+        "severity": "medium"
+      },
+      {
+        "gotcha": "Trust Proxy Only in Production",
+        "description": "Trust proxy setting is only applied in production, not development, which may cause IP detection issues during local development",
+        "location": "lines 48-51",
+        "impact": "IP-based features (rate limiting, logging) may report incorrect IPs in development",
+        "severity": "low"
+      },
+      {
+        "gotcha": "Forced Shutdown Timeout",
+        "description": "Server forces shutdown after 30 seconds of graceful shutdown attempt without checking if services completed cleanup",
+        "location": "lines 251-254",
+        "impact": "Database connections or cache operations may be forcefully terminated mid-operation",
+        "severity": "medium"
+      },
+      {
+        "gotcha": "ESLint Disable Comments Throughout",
+        "description": "Extensive use of 'no-console' eslint-disable comments for logging, suggesting console is normally disabled in linting rules",
+        "location": "multiple locations",
+        "impact": "May indicate non-standard logging patterns; consider using proper logger in production code",
+        "severity": "low"
+      }
+    ],
+    "approach_outcome": {
+      "status": "SUCCESS",
+      "description": "Application entry point successfully created with comprehensive Express setup, health checks, and graceful shutdown handling",
+      "completeness": "Structurally complete with proper middleware stack and error handling, but functionally incomplete without route mounting",
+      "quality_indicators": [
+        "Well-documented with JSDoc comments",
+        "Follows Express best practices",
+        "Includes production-grade features (health checks, graceful shutdown, helmet security)",
+        "Environment-aware configuration",
+        "Proper error handling with global error handler"
+      ],
+      "blockers": "Route mounting implementation is marked as TODO - dependent on module structure completion"
+    },
+    "recommendations": [
+      {
+        "priority": "high",
+        "category": "Functionality",
+        "recommendation": "Implement route mounting in createApp() function to connect module routes to the Express application",
+        "rationale": "Application currently accepts requests but has no business logic endpoints available",
+        "location": "lines 137-141"
+      },
+      {
+        "priority": "high",
+        "category": "Reliability",
+        "recommendation": "Enhance graceful shutdown to track pending operations and adjust timeout based on service shutdown completion",
+        "rationale": "Current 30-second hard timeout may interrupt database transactions or cache operations",
+        "location": "lines 231-254"
+      },
+      {
+        "priority": "medium",
+        "category": "Development Experience",
+        "recommendation": "Implement proper logger abstraction instead of console.log throughout the file",
+        "rationale": "Reduce eslint disable comments and enable structured logging for production use",
+        "location": "multiple locations"
+      },
+      {
+        "priority": "medium",
+        "category": "Configuration",
+        "recommendation": "Add trust proxy configuration for development environment pointing to localhost",
+        "rationale": "Ensure consistent IP detection behavior between development and production",
+        "location": "lines 48-51"
+      },
+      {
+        "priority": "low",
+        "category": "Documentation",
+        "recommendation": "Add comments explaining the purpose of each health check endpoint and their monitoring usage",
+        "rationale": "Kubernetes operators may not understand the distinction between /health, /health/ready, and /health/live",
+        "location": "lines 101-118"
+      },
+      {
+        "priority": "low",
+        "category": "Testing",
+        "recommendation": "Ensure createApp and startServer exports are utilized in test files with proper server instance cleanup",
+        "rationale": "Exported functions indicate intent to support testing but no test files reference them yet",
+        "location": "lines 315-316"
+      }
+    ],
+    "subtask_id": "subtask-3-8",
+    "session_num": 19,
+    "success": true,
+    "changed_files": [
+      "src/main.ts"
+    ]
+  },
+  "what_worked": [
+    "Implemented subtask: subtask-3-8"
+  ],
+  "what_failed": [],
+  "recommendations_for_next_session": []
+}

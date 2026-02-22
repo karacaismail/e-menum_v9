@@ -1,0 +1,1012 @@
+{
+  "subtasks": {
+    "subtask-1-1": {
+      "attempts": [
+        {
+          "session": 1,
+          "timestamp": "2026-02-01T01:00:00.223354",
+          "approach": "Implemented: Create package.json with dependencies (express, prisma, tsyringe, zod, casl, etc.)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-1-2": {
+      "attempts": [
+        {
+          "session": 2,
+          "timestamp": "2026-02-01T01:01:39.627633",
+          "approach": "Implemented: Create tsconfig.json with strict mode and path aliases (@/)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-1-3": {
+      "attempts": [
+        {
+          "session": 3,
+          "timestamp": "2026-02-01T01:04:09.294110",
+          "approach": "Implemented: Create ESLint and Prettier config files",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-1-4": {
+      "attempts": [
+        {
+          "session": 4,
+          "timestamp": "2026-02-01T01:05:44.707225",
+          "approach": "Implemented: Create .env.example and .gitignore files",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-1-5": {
+      "attempts": [
+        {
+          "session": 5,
+          "timestamp": "2026-02-01T01:07:11.835527",
+          "approach": "Implemented: Create project directory structure (src/config, src/core, src/modules, etc.)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-2-1": {
+      "attempts": [
+        {
+          "session": 6,
+          "timestamp": "2026-02-01T01:09:11.166819",
+          "approach": "Implemented: Create base.prisma with datasource, generator, and base enum definitions",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-2-2": {
+      "attempts": [
+        {
+          "session": 7,
+          "timestamp": "2026-02-01T01:11:07.641110",
+          "approach": "Implemented: Create core.prisma with Organization, User, Role, Permission, Session entities",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-2-3": {
+      "attempts": [
+        {
+          "session": 8,
+          "timestamp": "2026-02-01T01:13:42.696791",
+          "approach": "Implemented: Create menu.prisma with Menu, Category, Product, Variant, Modifier, Allergen entities",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-2-4": {
+      "attempts": [
+        {
+          "session": 9,
+          "timestamp": "2026-02-01T01:15:47.489866",
+          "approach": "Implemented: Create order.prisma with Order, OrderItem, Table, Zone, QRCode entities",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-2-5": {
+      "attempts": [
+        {
+          "session": 10,
+          "timestamp": "2026-02-01T01:22:18.623503",
+          "approach": "Implemented: Create schema merge script and generate Prisma client",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-2-6": {
+      "attempts": [
+        {
+          "session": 11,
+          "timestamp": "2026-02-01T01:25:25.690240",
+          "approach": "Implemented: Create and run initial database migration",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-3-1": {
+      "attempts": [
+        {
+          "session": 12,
+          "timestamp": "2026-02-01T01:27:18.454225",
+          "approach": "Implemented: Create Zod-validated environment config (src/config/env.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-3-2": {
+      "attempts": [
+        {
+          "session": 13,
+          "timestamp": "2026-02-01T01:29:01.774199",
+          "approach": "Implemented: Create Prisma client singleton (src/config/database.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-3-3": {
+      "attempts": [
+        {
+          "session": 14,
+          "timestamp": "2026-02-01T01:31:18.877719",
+          "approach": "Implemented: Create Redis client config (src/config/redis.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-3-4": {
+      "attempts": [
+        {
+          "session": 15,
+          "timestamp": "2026-02-01T01:33:47.495457",
+          "approach": "Implemented: Create constants file (src/config/constants.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-3-5": {
+      "attempts": [
+        {
+          "session": 16,
+          "timestamp": "2026-02-01T01:35:47.573426",
+          "approach": "Implemented: Create DI container setup (src/core/kernel/container.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-3-6": {
+      "attempts": [
+        {
+          "session": 17,
+          "timestamp": "2026-02-01T01:38:37.843886",
+          "approach": "Implemented: Create module loader (src/core/kernel/module-loader.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-3-7": {
+      "attempts": [
+        {
+          "session": 18,
+          "timestamp": "2026-02-01T01:40:45.346374",
+          "approach": "Implemented: Create bootstrap sequence (src/core/kernel/bootstrap.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-3-8": {
+      "attempts": [
+        {
+          "session": 19,
+          "timestamp": "2026-02-01T01:43:30.663359",
+          "approach": "Implemented: Create application entry point (src/main.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-4-1": {
+      "attempts": [
+        {
+          "session": 20,
+          "timestamp": "2026-02-01T01:45:36.815726",
+          "approach": "Implemented: Create AppException class with factory methods (src/core/exceptions/app.exception.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-4-2": {
+      "attempts": [
+        {
+          "session": 21,
+          "timestamp": "2026-02-01T01:48:21.614089",
+          "approach": "Implemented: Create centralized error codes (src/core/exceptions/error-codes.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-4-3": {
+      "attempts": [
+        {
+          "session": 22,
+          "timestamp": "2026-02-01T01:51:01.360099",
+          "approach": "Implemented: Create BaseRepository with multi-tenant support (src/core/base/base.repository.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-4-4": {
+      "attempts": [
+        {
+          "session": 23,
+          "timestamp": "2026-02-01T01:53:57.595279",
+          "approach": "Implemented: Create BaseService with CRUD operations (src/core/base/base.service.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-4-5": {
+      "attempts": [
+        {
+          "session": 24,
+          "timestamp": "2026-02-01T01:56:10.538804",
+          "approach": "Implemented: Create BaseController with response helpers (src/core/base/base.controller.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-5-1": {
+      "attempts": [
+        {
+          "session": 25,
+          "timestamp": "2026-02-01T01:58:46.389491",
+          "approach": "Implemented: Create JWT auth middleware (src/core/middleware/auth.middleware.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-5-2": {
+      "attempts": [
+        {
+          "session": 26,
+          "timestamp": "2026-02-01T02:01:04.093108",
+          "approach": "Implemented: Create tenant context middleware (src/core/middleware/tenant.middleware.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-5-3": {
+      "attempts": [
+        {
+          "session": 27,
+          "timestamp": "2026-02-01T02:03:54.319733",
+          "approach": "Implemented: Create CASL permission middleware (src/core/middleware/permission.middleware.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-5-4": {
+      "attempts": [
+        {
+          "session": 28,
+          "timestamp": "2026-02-01T02:06:39.163455",
+          "approach": "Implemented: Create rate limiting middleware (src/core/middleware/rate-limit.middleware.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-5-5": {
+      "attempts": [
+        {
+          "session": 29,
+          "timestamp": "2026-02-01T02:09:15.414865",
+          "approach": "Implemented: Create global error handler middleware (src/core/middleware/error.middleware.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-6-1": {
+      "attempts": [
+        {
+          "session": 30,
+          "timestamp": "2026-02-01T02:12:14.761120",
+          "approach": "Implemented: Create Auth service with JWT generation (src/core/services/auth.service.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-6-2": {
+      "attempts": [
+        {
+          "session": 31,
+          "timestamp": "2026-02-01T02:16:05.942094",
+          "approach": "Implemented: Create CASL Permission service (src/core/services/permission.service.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-6-3": {
+      "attempts": [
+        {
+          "session": 32,
+          "timestamp": "2026-02-01T02:18:55.173538",
+          "approach": "Implemented: Create Event bus service (src/core/services/event.service.ts)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-6-4": {
+      "attempts": [
+        {
+          "session": 33,
+          "timestamp": "2026-02-01T02:21:57.197879",
+          "approach": "Implemented: Create shared decorators (@CurrentUser, @CurrentOrg, @Authorized)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-6-5": {
+      "attempts": [
+        {
+          "session": 34,
+          "timestamp": "2026-02-01T02:24:29.417973",
+          "approach": "Implemented: Create shared types (ApiResponse, PaginatedResponse, etc.)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-7-1": {
+      "attempts": [
+        {
+          "session": 35,
+          "timestamp": "2026-02-01T02:28:16.848087",
+          "approach": "Implemented: Create Auth module structure (module.json, types, schema)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-7-2": {
+      "attempts": [
+        {
+          "session": 36,
+          "timestamp": "2026-02-01T02:31:33.022837",
+          "approach": "Implemented: Create Auth service with registration, login, token management",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-7-3": {
+      "attempts": [
+        {
+          "session": 37,
+          "timestamp": "2026-02-01T02:34:05.889296",
+          "approach": "Implemented: Create Auth controller with endpoints (POST /auth/register, /auth/login, etc.)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-7-4": {
+      "attempts": [
+        {
+          "session": 38,
+          "timestamp": "2026-02-01T02:38:04.367451",
+          "approach": "Implemented: Create Auth routes and module definition",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-7-5": {
+      "attempts": [
+        {
+          "session": 39,
+          "timestamp": "2026-02-01T02:42:08.012860",
+          "approach": "Implemented: Create Auth module tests",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-8-1": {
+      "attempts": [
+        {
+          "session": 40,
+          "timestamp": "2026-02-01T02:49:32.015366",
+          "approach": "Implemented: Create Organization module (CRUD, settings, tenant management)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-8-2": {
+      "attempts": [
+        {
+          "session": 41,
+          "timestamp": "2026-02-01T03:00:21.673005",
+          "approach": "Implemented: Create User module (CRUD, roles, profile management)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-8-3": {
+      "attempts": [
+        {
+          "session": 42,
+          "timestamp": "2026-02-01T03:10:22.434808",
+          "approach": "Implemented: Create Branch module (branch management, hierarchy)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-8-4": {
+      "attempts": [
+        {
+          "session": 43,
+          "timestamp": "2026-02-01T03:15:07.218155",
+          "approach": "Implemented: Create tests for Organization, User, Branch modules",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-9-1": {
+      "attempts": [
+        {
+          "session": 44,
+          "timestamp": "2026-02-01T03:24:33.476495",
+          "approach": "Implemented: Create Media module (file upload, image processing)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-9-2": {
+      "attempts": [
+        {
+          "session": 45,
+          "timestamp": "2026-02-01T03:33:04.586791",
+          "approach": "Implemented: Create Notification module (email, in-app notifications)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-9-3": {
+      "attempts": [
+        {
+          "session": 46,
+          "timestamp": "2026-02-01T03:42:12.517220",
+          "approach": "Implemented: Create Subscription module (plans, billing, feature gates)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-10-1": {
+      "attempts": [
+        {
+          "session": 47,
+          "timestamp": "2026-02-01T03:48:08.551285",
+          "approach": "Implemented: Create Module Loader module (manifest reading, activation logic)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-10-2": {
+      "attempts": [
+        {
+          "session": 48,
+          "timestamp": "2026-02-01T03:51:26.028979",
+          "approach": "Implemented: Create Module Loader tests",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-11-1": {
+      "attempts": [
+        {
+          "session": 49,
+          "timestamp": "2026-02-01T03:55:57.527073",
+          "approach": "Implemented: Create Menu module structure and types",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-11-2": {
+      "attempts": [
+        {
+          "session": 50,
+          "timestamp": "2026-02-01T04:00:02.910161",
+          "approach": "Implemented: Create Menu service and repository with CRUD operations",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-11-3": {
+      "attempts": [
+        {
+          "session": 51,
+          "timestamp": "2026-02-01T04:03:29.083627",
+          "approach": "Implemented: Create Category service and repository",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-11-4": {
+      "attempts": [
+        {
+          "session": 52,
+          "timestamp": "2026-02-01T04:08:23.170449",
+          "approach": "Implemented: Create Product service with variants and modifiers support",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-11-5": {
+      "attempts": [
+        {
+          "session": 53,
+          "timestamp": "2026-02-01T04:12:40.655489",
+          "approach": "Implemented: Create Menu controller with all endpoints",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-11-6": {
+      "attempts": [
+        {
+          "session": 54,
+          "timestamp": "2026-02-01T04:15:42.381357",
+          "approach": "Implemented: Create QR code generation service",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-11-7": {
+      "attempts": [
+        {
+          "session": 55,
+          "timestamp": "2026-02-01T04:19:58.075151",
+          "approach": "Implemented: Create Menu module routes, events, and module definition",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-11-8": {
+      "attempts": [
+        {
+          "session": 56,
+          "timestamp": "2026-02-01T04:26:12.120430",
+          "approach": "Implemented: Create Menu module tests",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-12-1": {
+      "attempts": [
+        {
+          "session": 57,
+          "timestamp": "2026-02-01T04:30:12.990461",
+          "approach": "Implemented: Create Order module structure and types",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-12-2": {
+      "attempts": [
+        {
+          "session": 58,
+          "timestamp": "2026-02-01T04:34:35.352881",
+          "approach": "Implemented: Create Table and Zone services",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-12-3": {
+      "attempts": [
+        {
+          "session": 59,
+          "timestamp": "2026-02-01T04:38:04.878817",
+          "approach": "Implemented: Create Cart service",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-12-4": {
+      "attempts": [
+        {
+          "session": 60,
+          "timestamp": "2026-02-01T04:43:11.609389",
+          "approach": "Implemented: Create Order service with status workflow",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-12-5": {
+      "attempts": [
+        {
+          "session": 61,
+          "timestamp": "2026-02-01T04:46:29.209500",
+          "approach": "Implemented: Create Order controller with all endpoints",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-12-6": {
+      "attempts": [
+        {
+          "session": 62,
+          "timestamp": "2026-02-01T04:51:24.418861",
+          "approach": "Implemented: Create Order module routes, events, and module definition",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-12-7": {
+      "attempts": [
+        {
+          "session": 63,
+          "timestamp": "2026-02-01T04:56:06.718733",
+          "approach": "Implemented: Create Order module tests",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-13-1": {
+      "attempts": [
+        {
+          "session": 64,
+          "timestamp": "2026-02-01T05:02:34.376330",
+          "approach": "Implemented: Create admin-theme with layouts and core components",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-13-2": {
+      "attempts": [
+        {
+          "session": 65,
+          "timestamp": "2026-02-01T05:08:16.987642",
+          "approach": "Implemented: Create product-theme (customer-facing menu theme)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-13-3": {
+      "attempts": [
+        {
+          "session": 66,
+          "timestamp": "2026-02-01T05:13:39.723680",
+          "approach": "Implemented: Create example-theme (reference for theme developers)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-13-4": {
+      "attempts": [
+        {
+          "session": 67,
+          "timestamp": "2026-02-01T05:21:54.865074",
+          "approach": "Implemented: Create admin dashboard views (dashboard, menus, orders)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-13-5": {
+      "attempts": [
+        {
+          "session": 68,
+          "timestamp": "2026-02-01T05:26:45.219846",
+          "approach": "Implemented: Create public menu views (QR menu display)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-14-1": {
+      "attempts": [
+        {
+          "session": 69,
+          "timestamp": "2026-02-01T05:37:34.502820",
+          "approach": "Implemented: Create advanced-example module (full reference implementation)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-14-2": {
+      "attempts": [
+        {
+          "session": 70,
+          "timestamp": "2026-02-01T05:44:51.842007",
+          "approach": "Implemented: Create stub modules (payment, analytics, ai, campaign, loyalty, inventory)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-14-3": {
+      "attempts": [
+        {
+          "session": 71,
+          "timestamp": "2026-02-01T05:51:53.407361",
+          "approach": "Implemented: Create remaining stub modules (reservation, feedback, integration, pos, kitchen-display, table-manag",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-15-1": {
+      "attempts": [
+        {
+          "session": 72,
+          "timestamp": "2026-02-01T05:55:45.370546",
+          "approach": "Implemented: Create Turkish translation files",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-15-2": {
+      "attempts": [
+        {
+          "session": 73,
+          "timestamp": "2026-02-01T05:59:05.665221",
+          "approach": "Implemented: Create English translation files",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-15-3": {
+      "attempts": [
+        {
+          "session": 74,
+          "timestamp": "2026-02-01T06:02:19.681327",
+          "approach": "Implemented: Create database seed file with default data (plans, roles, permissions, allergens)",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-16-1": {
+      "attempts": [
+        {
+          "session": 75,
+          "timestamp": "2026-02-01T06:04:12.356074",
+          "approach": "Implemented: Create Dockerfile and docker-compose.yml",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-16-2": {
+      "attempts": [
+        {
+          "session": 76,
+          "timestamp": "2026-02-01T06:05:58.200753",
+          "approach": "Implemented: Create GitHub Actions CI workflow",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-16-3": {
+      "attempts": [
+        {
+          "session": 77,
+          "timestamp": "2026-02-01T06:07:50.343845",
+          "approach": "Implemented: Create deployment workflow for Coolify",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-17-1": {
+      "attempts": [
+        {
+          "session": 78,
+          "timestamp": "2026-02-01T06:11:02.348803",
+          "approach": "Implemented: Verify application boots and all modules load",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-17-2": {
+      "attempts": [
+        {
+          "session": 79,
+          "timestamp": "2026-02-01T06:12:36.687966",
+          "approach": "Session ended without progress",
+          "success": false,
+          "error": "Subtask status is pending"
+        },
+        {
+          "session": 80,
+          "timestamp": "2026-02-01T06:14:50.065388",
+          "approach": "Implemented: Run all unit tests and verify coverage",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-17-3": {
+      "attempts": [
+        {
+          "session": 81,
+          "timestamp": "2026-02-01T06:18:24.042932",
+          "approach": "Implemented: Create and run integration tests for auth flow",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-17-4": {
+      "attempts": [
+        {
+          "session": 82,
+          "timestamp": "2026-02-01T06:22:04.384427",
+          "approach": "Implemented: Create and run integration tests for menu flow",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-17-5": {
+      "attempts": [
+        {
+          "session": 83,
+          "timestamp": "2026-02-01T06:26:26.086107",
+          "approach": "Implemented: Create and run integration tests for order flow",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-17-6": {
+      "attempts": [
+        {
+          "session": 84,
+          "timestamp": "2026-02-01T06:32:09.002918",
+          "approach": "Implemented: End-to-end verification: Registration \u2192 Menu Creation \u2192 Order Placement",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    }
+  },
+  "stuck_subtasks": [],
+  "metadata": {
+    "created_at": "2026-02-01T00:58:43.127871",
+    "last_updated": "2026-02-01T06:32:09.002941"
+  }
+}

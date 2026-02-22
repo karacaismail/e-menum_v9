@@ -1,0 +1,21 @@
+{
+  "id": "session-1771103660655",
+  "projectId": "eed8c181-1361-428d-b645-5d893478abce",
+  "title": "📁 /Users/karaca/Documents/e-menum_v9/.auto-claude...",
+  "messages": [
+    {
+      "id": "msg-1771103660657",
+      "role": "user",
+      "content": "📁 /Users/karaca/Documents/e-menum_v9/.auto-claude/worktrees/tasks/002-bu-projeyi-tamamen-django-ile-yap-enterprise-ready\nproje nasıl çalıştırılacak localhost ?",
+      "timestamp": "2026-02-14T21:14:20.657Z"
+    },
+    {
+      "id": "msg-1771103664348",
+      "role": "assistant",
+      "content": "Your account does not have access to Claude Code. Please run /login.",
+      "timestamp": "2026-02-14T21:14:24.348Z"
+    }
+  ],
+  "createdAt": "2026-02-14T21:14:20.655Z",
+  "updatedAt": "2026-02-14T21:14:24.348Z"
+}

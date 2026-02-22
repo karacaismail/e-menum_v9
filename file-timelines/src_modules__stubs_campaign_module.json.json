@@ -1,0 +1,28 @@
+{
+  "file_path": "src/modules/_stubs/campaign/module.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"$schema\": \"https://e-menum.net/schemas/module-v1.json\",\n  \"id\": \"campaign\",\n  \"name\": \"Campaign Module\",\n  \"version\": \"0.0.0\",\n  \"status\": \"stub\",\n  \"description\": \"Kampanya y\u00f6netimi - promosyonlar, indirimler ve \u00f6zel teklifler\",\n\n  \"type\": \"feature\",\n  \"category\": \"marketing\",\n\n  \"author\": {\n    \"name\": \"E-Menum Team\",\n    \"email\": \"dev@e-menum.net\"\n  },\n\n  \"compatibility\": {\n    \"platform\": \">=1.0.0\",\n    \"node\": \">=20.0.0\"\n  },\n\n  \"dependencies\": {\n    \"modules\": [\"auth\", \"organization\", \"menu\", \"order\"],\n    \"optional\": [\"notification\", \"analytics\", \"loyalty\"]\n  },\n\n  \"provides\": {\n    \"services\": [\"ICampaignService\", \"IDiscountService\"],\n    \"events\": [\n      \"campaign.created\",\n      \"campaign.activated\",\n      \"campaign.deactivated\",\n      \"campaign.expired\",\n      \"discount.applied\",\n      \"discount.redeemed\"\n    ],\n    \"hooks\": [\n      \"beforeOrderTotal\",\n      \"afterOrderCreated\"\n    ],\n    \"permissions\": [\n      \"campaign:read\",\n      \"campaign:create\",\n      \"campaign:update\",\n      \"campaign:delete\",\n      \"campaign:activate\"\n    ]\n  },\n\n  \"tier\": {\n    \"minimum\": \"starter\",\n    \"features\": {\n      \"starter\": [\"basic_discounts\", \"promo_codes\"],\n      \"professional\": [\"basic_discounts\", \"promo_codes\", \"time_limited\", \"category_discounts\"],\n      \"business\": [\"basic_discounts\", \"promo_codes\", \"time_limited\", \"category_discounts\", \"bundle_deals\", \"happy_hour\"],\n      \"enterprise\": [\"basic_discounts\", \"promo_codes\", \"time_limited\", \"category_discounts\", \"bundle_deals\", \"happy_hour\", \"personalized\", \"ab_testing\"]\n    }\n  },\n\n  \"plannedFeatures\": [\n    \"Percentage discounts\",\n    \"Fixed amount discounts\",\n    \"Promo codes\",\n    \"Time-limited offers\",\n    \"Happy hour pricing\",\n    \"Bundle deals\",\n    \"Buy X Get Y free\",\n    \"Category-wide discounts\",\n    \"Customer segment targeting\",\n    \"A/B testing for campaigns\"\n  ],\n\n  \"estimatedRelease\": \"Q2 2026\"\n}\n",
+        "last_modified": "2026-02-01T09:10:53.735596"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:25.837631",
+  "last_updated": "2026-02-01T08:03:25.848120"
+}

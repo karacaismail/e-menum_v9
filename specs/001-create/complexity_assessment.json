@@ -1,0 +1,39 @@
+{
+  "complexity": "complex",
+  "confidence": 0.85,
+  "reasoning": "6 integrations, 4 services, 2 files; infrastructure changes detected",
+  "signals": {
+    "simple_keywords": 1,
+    "complex_keywords": 10,
+    "multi_service_keywords": 4,
+    "external_integrations": 6,
+    "infrastructure_changes": true,
+    "estimated_files": 2,
+    "estimated_services": 4
+  },
+  "estimated_files": 2,
+  "estimated_services": 4,
+  "external_integrations": [
+    "payment",
+    "graphql",
+    "cache",
+    "ai",
+    "jwt",
+    "mongodb"
+  ],
+  "infrastructure_changes": true,
+  "phases_to_run": [
+    "discovery",
+    "historical_context",
+    "requirements",
+    "research",
+    "context",
+    "spec_writing",
+    "self_critique",
+    "planning",
+    "validation"
+  ],
+  "needs_research": false,
+  "needs_self_critique": false,
+  "created_at": "2026-02-01T00:40:52.686446"
+}

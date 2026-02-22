@@ -1,0 +1,28 @@
+{
+  "file_path": "src/modules/_core/media/module.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"$schema\": \"https://e-menum.net/schemas/module-v1.json\",\n  \"id\": \"media\",\n  \"name\": \"Media Module\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Core media management module providing file upload, image processing, and asset management for E-Menum\",\n\n  \"type\": \"core\",\n  \"category\": \"system\",\n\n  \"author\": {\n    \"name\": \"E-Menum Team\",\n    \"email\": \"dev@e-menum.net\"\n  },\n\n  \"compatibility\": {\n    \"platform\": \">=1.0.0\",\n    \"node\": \">=20.0.0\"\n  },\n\n  \"dependencies\": {\n    \"modules\": [\"auth\", \"organization\"],\n    \"optional\": []\n  },\n\n  \"provides\": {\n    \"routes\": true,\n    \"events\": [\n      \"media.uploaded\",\n      \"media.deleted\",\n      \"media.processed\",\n      \"media.thumbnail.created\"\n    ],\n    \"hooks\": [\n      \"beforeUpload\",\n      \"afterUpload\",\n      \"beforeDelete\",\n      \"afterDelete\",\n      \"onProcess\"\n    ],\n    \"permissions\": [\n      \"media:read\",\n      \"media:upload\",\n      \"media:delete\",\n      \"media:manage\"\n    ],\n    \"services\": [\n      \"MediaService\"\n    ]\n  },\n\n  \"requires\": {\n    \"permissions\": [\"auth:verify\", \"organization:read\"],\n    \"events\": []\n  },\n\n  \"tier\": {\n    \"minimum\": \"free\",\n    \"features\": {\n      \"free\": [\"basic_upload\", \"image_resize\"],\n      \"starter\": [\"multiple_upload\", \"gallery\"],\n      \"professional\": [\"video_upload\", \"advanced_processing\"],\n      \"business\": [\"cdn_storage\", \"bulk_operations\"],\n      \"enterprise\": [\"custom_storage\", \"api_access\"]\n    }\n  },\n\n  \"lifecycle\": {\n    \"install\": \"lifecycle/install.ts\",\n    \"uninstall\": \"lifecycle/uninstall.ts\",\n    \"activate\": \"lifecycle/activate.ts\",\n    \"deactivate\": \"lifecycle/deactivate.ts\",\n    \"upgrade\": \"lifecycle/upgrade.ts\"\n  },\n\n  \"admin\": {\n    \"menu\": {\n      \"label\": \"Media Library\",\n      \"icon\": \"ph-images\",\n      \"route\": \"/admin/media\",\n      \"order\": 40,\n      \"hidden\": false\n    }\n  },\n\n  \"settings\": {\n    \"schema\": \"settings.schema.json\",\n    \"defaults\": {\n      \"maxFileSize\": 5242880,\n      \"allowedMimeTypes\": [\"image/jpeg\", \"image/png\", \"image/webp\", \"image/gif\"],\n      \"thumbnailSizes\": {\n        \"small\": 150,\n        \"medium\": 300,\n        \"large\": 600\n      },\n      \"storageProvider\": \"local\",\n      \"cdnEnabled\": false,\n      \"autoOptimize\": true\n    }\n  }\n}\n",
+        "last_modified": "2026-02-01T09:10:53.706126"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:25.086877",
+  "last_updated": "2026-02-01T08:03:25.097959"
+}

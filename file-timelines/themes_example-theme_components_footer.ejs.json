@@ -1,0 +1,28 @@
+{
+  "file_path": "themes/example-theme/components/footer.ejs",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "<%#\n  ============================================================================\n  FOOTER COMPONENT - Example Theme\n  ============================================================================\n\n  Simple footer with restaurant info and E-Menum branding.\n\n  PROPS (passed via include):\n  - organization: Organization object {name, logo, address, phone, ...}\n  - menu: Current menu object\n\n  RULES:\n  1. Always show E-Menum branding (required by terms of service)\n  2. Use CSS variables for all colors\n  3. Use t() for all text strings\n  4. Include legal links (Privacy, Terms)\n%>\n<footer\n  role=\"contentinfo\"\n  class=\"footer\"\n>\n  <div class=\"footer-inner\">\n    <!--\n      Restaurant Info Section\n      Shows restaurant name, address, and contact\n    -->\n    <% if (locals.organization) { %>\n      <div class=\"footer-restaurant\">\n        <h2 class=\"footer-title\">\n          <%= organization.name %>\n        </h2>\n\n        <% if (organization.address) { %>\n          <p class=\"footer-address\">\n            <i class=\"ph ph-map-pin\" aria-hidden=\"true\"></i>\n            <%= organization.address %>\n          </p>\n        <% } %>\n\n        <!--\n          Contact Actions\n          Phone call and WhatsApp buttons\n        -->\n        <div class=\"footer-actions\">\n          <% if (organization.phone) { %>\n            <a\n              href=\"tel:<%= organization.phone %>\"\n              class=\"btn btn-outline btn-sm\"\n            >\n              <i class=\"ph ph-phone\" aria-hidden=\"true\"></i>\n              <%= typeof t === 'function' ? t('common.call') : 'Call' %>\n            </a>\n          <% } %>\n\n          <% if (organization.whatsapp) { %>\n            <a\n              href=\"https://wa.me/<%= organization.whatsapp.replace(/\\D/g, '') %>\"\n              target=\"_blank\"\n              rel=\"noopener noreferrer\"\n              class=\"btn btn-outline btn-sm\"\n            >\n              <i class=\"ph ph-whatsapp-logo\" aria-hidden=\"true\"></i>\n              WhatsApp\n            </a>\n          <% } %>\n        </div>\n      </div>\n    <% } %>\n\n    <!--\n      Allergen Notice\n      Important legal notice about food allergies\n    -->\n    <% if (locals.menu && menu.showAllergenNotice !== false) { %>\n      <div class=\"footer-allergen-notice\" role=\"note\">\n        <i class=\"ph ph-warning\" aria-hidden=\"true\"></i>\n        <p>\n          <%= typeof t === 'function' ? t('menu.allergenNotice') : 'Please inform our staff of any food allergies or dietary requirements before ordering.' %>\n        </p>\n      </div>\n    <% } %>\n\n    <!-- Divider -->\n    <hr class=\"footer-divider\">\n\n    <!--\n      E-Menum Branding\n      Required - do not remove\n    -->\n    <div class=\"footer-branding\">\n      <a\n        href=\"https://e-menum.net\"\n        target=\"_blank\"\n        rel=\"noopener noreferrer\"\n        class=\"footer-brand-link\"\n      >\n        <span><%= typeof t === 'function' ? t('common.poweredBy') : 'Powered by' %></span>\n        <strong>E-Menum</strong>\n      </a>\n    </div>\n\n    <!--\n      Copyright\n    -->\n    <p class=\"footer-copyright\">\n      &copy; <%= new Date().getFullYear() %> <%= locals.organization ? organization.name : 'E-Menum' %>.\n      <%= typeof t === 'function' ? t('common.allRightsReserved') : 'All rights reserved.' %>\n    </p>\n\n    <!--\n      Legal Links\n      Privacy Policy, Terms of Service, etc.\n    -->\n    <nav class=\"footer-legal\" aria-label=\"<%= typeof t === 'function' ? t('nav.legal') : 'Legal' %>\">\n      <a href=\"/privacy\">\n        <%= typeof t === 'function' ? t('nav.privacy') : 'Privacy Policy' %>\n      </a>\n      <span aria-hidden=\"true\">&middot;</span>\n      <a href=\"/terms\">\n        <%= typeof t === 'function' ? t('nav.terms') : 'Terms of Service' %>\n      </a>\n    </nav>\n  </div>\n</footer>\n",
+        "last_modified": "2026-02-01T09:10:53.779562"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:26.903997",
+  "last_updated": "2026-02-01T08:03:26.913407"
+}

@@ -1,0 +1,28 @@
+{
+  "file_path": "docker-compose.yml",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "# ============================================\n# E-Menum Docker Compose Configuration\n# ============================================\n# Development environment with all services\n# Usage:\n#   docker-compose up -d          # Start all services\n#   docker-compose up -d db redis # Start only DB and Redis\n#   docker-compose down           # Stop all services\n#   docker-compose logs -f app    # Follow app logs\n# ============================================\n\nversion: '3.8'\n\nservices:\n  # --------------------------------------------\n  # Application Service\n  # --------------------------------------------\n  app:\n    build:\n      context: .\n      dockerfile: Dockerfile\n    container_name: emenum-app\n    restart: unless-stopped\n    ports:\n      - '3000:3000'\n    environment:\n      NODE_ENV: production\n      PORT: 3000\n      APP_NAME: E-Menum\n      APP_DOMAIN: e-menum.net\n      APP_URL: http://localhost:3000\n      DATABASE_URL: postgresql://postgres:password@db:5432/emenum\n      REDIS_URL: redis://redis:6379\n      REDIS_PREFIX: 'emenum:'\n      JWT_SECRET: ${JWT_SECRET:-change-me-in-production-256-bit-secret}\n      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-change-me-refresh-secret}\n      JWT_ACCESS_EXPIRY: 15m\n      JWT_REFRESH_EXPIRY: 7d\n      BCRYPT_ROUNDS: 12\n      LOG_LEVEL: info\n      LOG_FORMAT: json\n    depends_on:\n      db:\n        condition: service_healthy\n      redis:\n        condition: service_healthy\n    volumes:\n      - uploads:/app/uploads\n    networks:\n      - emenum-network\n    healthcheck:\n      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:3000/health']\n      interval: 30s\n      timeout: 10s\n      retries: 3\n      start_period: 10s\n\n  # --------------------------------------------\n  # PostgreSQL Database\n  # --------------------------------------------\n  db:\n    image: postgres:15-alpine\n    container_name: emenum-db\n    restart: unless-stopped\n    ports:\n      - '5432:5432'\n    environment:\n      POSTGRES_USER: postgres\n      POSTGRES_PASSWORD: password\n      POSTGRES_DB: emenum\n      PGDATA: /var/lib/postgresql/data/pgdata\n    volumes:\n      - postgres_data:/var/lib/postgresql/data/pgdata\n    networks:\n      - emenum-network\n    healthcheck:\n      test: ['CMD-SHELL', 'pg_isready -U postgres -d emenum']\n      interval: 10s\n      timeout: 5s\n      retries: 5\n      start_period: 10s\n\n  # --------------------------------------------\n  # Redis Cache & Queue\n  # --------------------------------------------\n  redis:\n    image: redis:7-alpine\n    container_name: emenum-redis\n    restart: unless-stopped\n    ports:\n      - '6379:6379'\n    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru\n    volumes:\n      - redis_data:/data\n    networks:\n      - emenum-network\n    healthcheck:\n      test: ['CMD', 'redis-cli', 'ping']\n      interval: 10s\n      timeout: 5s\n      retries: 5\n      start_period: 5s\n\n# --------------------------------------------\n# Development Override (docker-compose.dev.yml)\n# --------------------------------------------\n# For development, create docker-compose.override.yml:\n#\n# version: '3.8'\n# services:\n#   app:\n#     build:\n#       target: deps\n#     command: npm run dev\n#     volumes:\n#       - .:/app\n#       - /app/node_modules\n#     environment:\n#       NODE_ENV: development\n#       LOG_LEVEL: debug\n#       LOG_FORMAT: pretty\n# --------------------------------------------\n\n# --------------------------------------------\n# Volumes\n# --------------------------------------------\nvolumes:\n  postgres_data:\n    driver: local\n  redis_data:\n    driver: local\n  uploads:\n    driver: local\n\n# --------------------------------------------\n# Networks\n# --------------------------------------------\nnetworks:\n  emenum-network:\n    driver: bridge\n",
+        "last_modified": "2026-02-01T09:10:53.667257"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:24.154777",
+  "last_updated": "2026-02-01T08:03:24.164917"
+}

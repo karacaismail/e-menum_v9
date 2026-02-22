@@ -1,0 +1,28 @@
+{
+  "file_path": "themes/product-theme/theme.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"name\": \"product-theme\",\n  \"displayName\": \"E-Menum Customer Menu Theme\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Mobile-first customer-facing menu theme for QR code ordering with WCAG 2.1 AA compliance, dark mode support, and touch-optimized interface\",\n  \"author\": \"E-Menum\",\n  \"type\": \"product\",\n  \"enabled\": true,\n  \"priority\": 100,\n\n  \"layouts\": {\n    \"default\": \"layouts/default.ejs\"\n  },\n\n  \"components\": {\n    \"header\": \"components/header.ejs\",\n    \"footer\": \"components/footer.ejs\",\n    \"menu-item\": \"components/menu-item.ejs\",\n    \"category-nav\": \"components/category-nav.ejs\",\n    \"cart\": \"components/cart.ejs\"\n  },\n\n  \"partials\": {\n    \"product-modal\": \"partials/product-modal.ejs\",\n    \"allergen-icons\": \"partials/allergen-icons.ejs\"\n  },\n\n  \"styles\": {\n    \"main\": \"styles/main.css\"\n  },\n\n  \"assets\": {\n    \"logo\": {\n      \"light\": \"/images/logo-light.svg\",\n      \"dark\": \"/images/logo-dark.svg\"\n    },\n    \"favicon\": \"/favicon.ico\",\n    \"placeholder\": \"/images/product-placeholder.svg\"\n  },\n\n  \"features\": {\n    \"darkMode\": true,\n    \"rtlSupport\": false,\n    \"responsive\": true,\n    \"offlineSupport\": true,\n    \"pwa\": true,\n    \"accessibility\": {\n      \"wcagLevel\": \"AA\",\n      \"highContrast\": true,\n      \"reducedMotion\": true,\n      \"touchTargetSize\": \"48px\"\n    }\n  },\n\n  \"navigation\": {\n    \"header\": {\n      \"fixed\": true,\n      \"showLogo\": true,\n      \"showSearch\": true,\n      \"showCart\": true\n    },\n    \"categoryNav\": {\n      \"style\": \"horizontal-scroll\",\n      \"sticky\": true,\n      \"showIcons\": true\n    },\n    \"footer\": {\n      \"showBranding\": true,\n      \"showSocialLinks\": false\n    }\n  },\n\n  \"colors\": {\n    \"primary\": \"#2563eb\",\n    \"primaryLight\": \"#3b82f6\",\n    \"primaryDark\": \"#1d4ed8\",\n    \"secondary\": \"#7c3aed\",\n    \"accent\": \"#f59e0b\"\n  },\n\n  \"cart\": {\n    \"position\": \"bottom-fixed\",\n    \"animation\": \"slide-up\",\n    \"showItemCount\": true,\n    \"showTotal\": true\n  },\n\n  \"product\": {\n    \"imageAspectRatio\": \"4:3\",\n    \"showPrice\": true,\n    \"showDescription\": true,\n    \"showAllergens\": true,\n    \"showBadges\": true\n  },\n\n  \"breakpoints\": {\n    \"sm\": \"640px\",\n    \"md\": \"768px\",\n    \"lg\": \"1024px\",\n    \"xl\": \"1280px\"\n  },\n\n  \"dependencies\": {\n    \"css\": [\"tailwindcss\"],\n    \"js\": [\"alpinejs\"],\n    \"icons\": [\"phosphor-icons\"]\n  }\n}\n",
+        "last_modified": "2026-02-01T09:10:53.784609"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:27.039762",
+  "last_updated": "2026-02-01T08:03:27.049571"
+}

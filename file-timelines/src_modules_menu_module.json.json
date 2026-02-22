@@ -1,0 +1,28 @@
+{
+  "file_path": "src/modules/menu/module.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"$schema\": \"https://e-menum.net/schemas/module-v1.json\",\n  \"id\": \"menu\",\n  \"name\": \"Menu Module\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Digital menu management module providing menu, category, product, variant, and modifier CRUD operations with publishing and QR code support\",\n\n  \"type\": \"feature\",\n  \"category\": \"core-feature\",\n\n  \"author\": {\n    \"name\": \"E-Menum Team\",\n    \"email\": \"dev@e-menum.net\"\n  },\n\n  \"compatibility\": {\n    \"platform\": \">=1.0.0\",\n    \"node\": \">=20.0.0\"\n  },\n\n  \"dependencies\": {\n    \"modules\": [\"auth\", \"organization\", \"media\"],\n    \"optional\": [\"ai\"]\n  },\n\n  \"provides\": {\n    \"routes\": true,\n    \"events\": [\n      \"menu.created\",\n      \"menu.updated\",\n      \"menu.deleted\",\n      \"menu.published\",\n      \"menu.unpublished\",\n      \"category.created\",\n      \"category.updated\",\n      \"category.deleted\",\n      \"category.reordered\",\n      \"product.created\",\n      \"product.updated\",\n      \"product.deleted\",\n      \"product.availability.changed\",\n      \"variant.created\",\n      \"variant.updated\",\n      \"variant.deleted\",\n      \"modifier.created\",\n      \"modifier.updated\",\n      \"modifier.deleted\",\n      \"theme.created\",\n      \"theme.updated\",\n      \"theme.deleted\"\n    ],\n    \"hooks\": [\n      \"beforeMenuCreate\",\n      \"afterMenuCreate\",\n      \"beforeMenuPublish\",\n      \"afterMenuPublish\",\n      \"beforeProductCreate\",\n      \"afterProductCreate\",\n      \"beforeProductUpdate\",\n      \"afterProductUpdate\",\n      \"beforeCategoryCreate\",\n      \"afterCategoryCreate\"\n    ],\n    \"permissions\": [\n      \"menu:read\",\n      \"menu:create\",\n      \"menu:update\",\n      \"menu:delete\",\n      \"menu:publish\",\n      \"category:read\",\n      \"category:create\",\n      \"category:update\",\n      \"category:delete\",\n      \"product:read\",\n      \"product:create\",\n      \"product:update\",\n      \"product:delete\",\n      \"variant:read\",\n      \"variant:create\",\n      \"variant:update\",\n      \"variant:delete\",\n      \"modifier:read\",\n      \"modifier:create\",\n      \"modifier:update\",\n      \"modifier:delete\",\n      \"theme:read\",\n      \"theme:create\",\n      \"theme:update\",\n      \"theme:delete\"\n    ],\n    \"services\": [\n      \"MenuService\",\n      \"CategoryService\",\n      \"ProductService\",\n      \"VariantService\",\n      \"ModifierService\",\n      \"ThemeService\"\n    ]\n  },\n\n  \"requires\": {\n    \"permissions\": [\"auth:verify\", \"organization:read\", \"media:upload\"],\n    \"events\": [\"organization.created\"]\n  },\n\n  \"tier\": {\n    \"minimum\": \"free\",\n    \"features\": {\n      \"free\": [\"basic_menu\", \"single_menu\", \"max_50_products\"],\n      \"starter\": [\"multiple_menus\", \"max_200_products\", \"custom_themes\"],\n      \"professional\": [\"unlimited_products\", \"advanced_modifiers\", \"nutrition_info\"],\n      \"business\": [\"ai_descriptions\", \"bulk_import\", \"analytics\"],\n      \"enterprise\": [\"api_access\", \"white_label\", \"custom_integrations\"]\n    }\n  },\n\n  \"lifecycle\": {\n    \"install\": \"lifecycle/install.ts\",\n    \"uninstall\": \"lifecycle/uninstall.ts\",\n    \"activate\": \"lifecycle/activate.ts\",\n    \"deactivate\": \"lifecycle/deactivate.ts\",\n    \"upgrade\": \"lifecycle/upgrade.ts\"\n  },\n\n  \"admin\": {\n    \"menu\": {\n      \"label\": \"Menus\",\n      \"icon\": \"ph-list-bullets\",\n      \"route\": \"/admin/menus\",\n      \"order\": 20,\n      \"hidden\": false\n    },\n    \"submenu\": [\n      {\n        \"label\": \"All Menus\",\n        \"route\": \"/admin/menus\",\n        \"icon\": \"ph-list\",\n        \"order\": 1\n      },\n      {\n        \"label\": \"Categories\",\n        \"route\": \"/admin/menus/categories\",\n        \"icon\": \"ph-folders\",\n        \"order\": 2\n      },\n      {\n        \"label\": \"Products\",\n        \"route\": \"/admin/menus/products\",\n        \"icon\": \"ph-package\",\n        \"order\": 3\n      },\n      {\n        \"label\": \"Themes\",\n        \"route\": \"/admin/menus/themes\",\n        \"icon\": \"ph-palette\",\n        \"order\": 4\n      }\n    ]\n  },\n\n  \"settings\": {\n    \"schema\": \"settings.schema.json\",\n    \"defaults\": {\n      \"defaultCurrency\": \"TRY\",\n      \"enableVariants\": true,\n      \"enableModifiers\": true,\n      \"enableNutritionInfo\": false,\n      \"enableAllergens\": true,\n      \"maxCategoriesPerMenu\": 50,\n      \"maxProductsPerCategory\": 100,\n      \"maxVariantsPerProduct\": 10,\n      \"maxModifiersPerProduct\": 20,\n      \"maxImagesPerProduct\": 10,\n      \"imageMaxSizeKb\": 2048,\n      \"slugAutoGenerate\": true\n    }\n  }\n}\n",
+        "last_modified": "2026-02-01T09:10:53.753387"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:26.319792",
+  "last_updated": "2026-02-01T08:03:26.329082"
+}

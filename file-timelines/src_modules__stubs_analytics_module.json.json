@@ -1,0 +1,28 @@
+{
+  "file_path": "src/modules/_stubs/analytics/module.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"$schema\": \"https://e-menum.net/schemas/module-v1.json\",\n  \"id\": \"analytics\",\n  \"name\": \"Analytics Module\",\n  \"version\": \"0.0.0\",\n  \"status\": \"stub\",\n  \"description\": \"\u0130\u015fletme analiti\u011fi - sat\u0131\u015f, men\u00fc performans\u0131 ve m\u00fc\u015fteri davran\u0131\u015f analizi\",\n\n  \"type\": \"feature\",\n  \"category\": \"analytics\",\n\n  \"author\": {\n    \"name\": \"E-Menum Team\",\n    \"email\": \"dev@e-menum.net\"\n  },\n\n  \"compatibility\": {\n    \"platform\": \">=1.0.0\",\n    \"node\": \">=20.0.0\"\n  },\n\n  \"dependencies\": {\n    \"modules\": [\"auth\", \"organization\", \"menu\", \"order\"],\n    \"optional\": [\"payment\"]\n  },\n\n  \"provides\": {\n    \"services\": [\"IAnalyticsService\", \"IReportService\"],\n    \"events\": [\n      \"analytics.report.generated\",\n      \"analytics.insight.created\",\n      \"analytics.alert.triggered\"\n    ],\n    \"permissions\": [\n      \"analytics:view\",\n      \"analytics:export\",\n      \"analytics:configure\"\n    ]\n  },\n\n  \"tier\": {\n    \"minimum\": \"starter\",\n    \"features\": {\n      \"starter\": [\"basic_stats\", \"daily_reports\"],\n      \"professional\": [\"basic_stats\", \"daily_reports\", \"menu_performance\", \"weekly_reports\"],\n      \"business\": [\"basic_stats\", \"daily_reports\", \"menu_performance\", \"weekly_reports\", \"customer_insights\", \"export\"],\n      \"enterprise\": [\"basic_stats\", \"daily_reports\", \"menu_performance\", \"weekly_reports\", \"customer_insights\", \"export\", \"custom_reports\", \"api_access\"]\n    }\n  },\n\n  \"plannedFeatures\": [\n    \"Sales analytics dashboard\",\n    \"Menu performance analysis\",\n    \"Peak hours identification\",\n    \"Customer behavior tracking\",\n    \"Revenue forecasting\",\n    \"Custom report builder\",\n    \"Scheduled reports\",\n    \"Real-time metrics\"\n  ],\n\n  \"estimatedRelease\": \"Q2 2026\"\n}\n",
+        "last_modified": "2026-02-01T09:10:53.734490"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:25.795599",
+  "last_updated": "2026-02-01T08:03:25.804928"
+}

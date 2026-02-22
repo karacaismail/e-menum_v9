@@ -1,0 +1,28 @@
+{
+  "file_path": "locales/en/order.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"title\": \"Order\",\n  \"orders\": \"Orders\",\n  \"order\": \"Order\",\n  \"orderNumber\": \"Order No\",\n  \"customer\": \"Customer\",\n  \"table\": \"Table\",\n  \"total\": \"Total\",\n  \"status\": \"Status\",\n  \"time\": \"Time\",\n  \"items\": \"items\",\n  \"guest\": \"Guest\",\n  \"takeaway\": \"Takeaway\",\n  \"all\": \"All\",\n  \"noOrdersFound\": \"No orders found\",\n  \"tryDifferentFilters\": \"Try adjusting your filters to find orders.\",\n  \"waitingForOrders\": \"Orders will appear here as customers order from your menu.\",\n  \"searchPlaceholder\": \"Search by order number, customer name...\",\n  \"allTypes\": \"All Types\",\n  \"confirm\": \"Confirm\",\n  \"startPreparing\": \"Start Preparing\",\n  \"markReady\": \"Mark as Ready\",\n  \"markDelivered\": \"Mark as Delivered\",\n  \"cancel\": \"Cancel Order\",\n  \"print\": \"Print Order\",\n  \"confirmCancel\": \"Are you sure you want to cancel this order?\",\n  \"status\": {\n    \"pending\": \"Pending\",\n    \"confirmed\": \"Confirmed\",\n    \"preparing\": \"Preparing\",\n    \"ready\": \"Ready\",\n    \"delivered\": \"Delivered\",\n    \"cancelled\": \"Cancelled\"\n  },\n  \"type\": {\n    \"dine_in\": \"Dine In\",\n    \"takeaway\": \"Takeaway\",\n    \"delivery\": \"Delivery\"\n  },\n  \"payment\": {\n    \"pending\": \"Payment Pending\",\n    \"paid\": \"Paid\",\n    \"refunded\": \"Refunded\",\n    \"failed\": \"Failed\"\n  },\n  \"cart\": {\n    \"title\": \"Your Order\",\n    \"items\": \"items\",\n    \"empty\": \"Your cart is empty\",\n    \"emptyDescription\": \"Add delicious items from the menu to get started\",\n    \"browseMenu\": \"Browse Menu\",\n    \"itemList\": \"Cart items\",\n    \"removeItem\": \"Remove item\",\n    \"decreaseQuantity\": \"Decrease quantity\",\n    \"increaseQuantity\": \"Increase quantity\",\n    \"quantity\": \"Quantity\",\n    \"each\": \"each\",\n    \"specialInstructions\": \"Special Instructions\",\n    \"instructionsPlaceholder\": \"Any allergies or special requests? Let us know...\",\n    \"orderSummary\": \"Order Summary\",\n    \"subtotal\": \"Subtotal\",\n    \"total\": \"Total\",\n    \"proceedToCheckout\": \"Proceed to Checkout\",\n    \"addMore\": \"Add More\",\n    \"clearCart\": \"Clear\",\n    \"clearConfirm\": \"Are you sure you want to clear your cart?\",\n    \"paymentInfo\": \"Payment Information\",\n    \"paymentNote\": \"Payment will be collected at the counter or by your server after placing your order.\"\n  },\n  \"checkout\": {\n    \"title\": \"Checkout\",\n    \"subtitle\": \"Complete your order\",\n    \"orderType\": \"Order Type\",\n    \"dineIn\": \"Dine In\",\n    \"takeaway\": \"Takeaway\",\n    \"customerInfo\": \"Your Information\",\n    \"name\": \"Your Name\",\n    \"namePlaceholder\": \"Enter your name\",\n    \"phone\": \"Phone Number\",\n    \"phonePlaceholder\": \"+90 532 123 45 67\",\n    \"notes\": \"Special Requests\",\n    \"notesPlaceholder\": \"Any allergies, dietary restrictions, or special requests?\",\n    \"orderSummary\": \"Order Summary\",\n    \"subtotal\": \"Subtotal\",\n    \"total\": \"Total\",\n    \"placeOrder\": \"Place Order\",\n    \"placing\": \"Placing Order...\",\n    \"termsNotice\": \"By placing an order, you accept the terms of service.\",\n    \"cartEmpty\": \"Your cart is empty\",\n    \"cartEmptyDesc\": \"Add items to your cart before checking out\",\n    \"errors\": {\n      \"nameRequired\": \"Please enter your name\",\n      \"phoneRequired\": \"Please enter your phone number\",\n      \"phoneInvalid\": \"Please enter a valid phone number\",\n      \"cartEmpty\": \"Your cart is empty\",\n      \"submitFailed\": \"Failed to place order. Please try again.\",\n      \"networkError\": \"Network error. Please check your connection.\"\n    }\n  },\n  \"orderStatus\": {\n    \"title\": \"Order Status\",\n    \"yourOrder\": \"Your Order\",\n    \"orderReceived\": \"Order Received\",\n    \"thankYou\": \"Thank you!\",\n    \"preparingOrder\": \"Your order is being prepared\",\n    \"estimatedTime\": \"Estimated Time\",\n    \"minutes\": \"minutes\",\n    \"orderDetails\": \"Order Details\",\n    \"trackingSteps\": {\n      \"received\": \"Received\",\n      \"confirmed\": \"Confirmed\",\n      \"preparing\": \"Preparing\",\n      \"ready\": \"Ready\",\n      \"delivered\": \"Delivered\"\n    }\n  },\n  \"detail\": {\n    \"title\": \"Order Details\",\n    \"orderInfo\": \"Order Information\",\n    \"customerInfo\": \"Customer Information\",\n    \"items\": \"Order Items\",\n    \"timeline\": \"Order History\",\n    \"notes\": \"Notes\",\n    \"updateStatus\": \"Update Status\",\n    \"refund\": \"Refund\",\n    \"printReceipt\": \"Print Receipt\"\n  },\n  \"notifications\": {\n    \"newOrder\": \"New order received!\",\n    \"orderConfirmed\": \"Your order has been confirmed\",\n    \"orderPreparing\": \"Your order is being prepared\",\n    \"orderReady\": \"Your order is ready!\",\n    \"orderDelivered\": \"Your order has been delivered\"\n  }\n}\n",
+        "last_modified": "2026-02-01T09:10:53.669541"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:24.218968",
+  "last_updated": "2026-02-01T08:03:24.229007"
+}

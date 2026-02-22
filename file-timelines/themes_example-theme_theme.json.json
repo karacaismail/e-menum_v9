@@ -1,0 +1,28 @@
+{
+  "file_path": "themes/example-theme/theme.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"$comment\": [\n    \"E-Menum Theme Manifest\",\n    \"This is an example/reference theme for developers creating custom themes.\",\n    \"Copy this entire folder and modify to create your own theme.\"\n  ],\n\n  \"name\": \"example-theme\",\n  \"displayName\": \"Example Reference Theme\",\n  \"version\": \"1.0.0\",\n  \"description\": \"A minimal, well-documented example theme for developers. Use this as a starting point for creating custom themes.\",\n  \"author\": \"E-Menum\",\n  \"type\": \"product\",\n  \"enabled\": false,\n  \"priority\": 200,\n\n  \"layouts\": {\n    \"default\": \"layouts/default.ejs\"\n  },\n\n  \"components\": {\n    \"header\": \"components/header.ejs\",\n    \"footer\": \"components/footer.ejs\",\n    \"menu-item\": \"components/menu-item.ejs\"\n  },\n\n  \"partials\": {},\n\n  \"styles\": {\n    \"main\": \"styles/main.css\"\n  },\n\n  \"assets\": {\n    \"logo\": {\n      \"light\": \"/images/logo-light.svg\",\n      \"dark\": \"/images/logo-dark.svg\"\n    },\n    \"favicon\": \"/favicon.ico\",\n    \"placeholder\": \"/images/product-placeholder.svg\"\n  },\n\n  \"features\": {\n    \"darkMode\": true,\n    \"rtlSupport\": false,\n    \"responsive\": true,\n    \"offlineSupport\": false,\n    \"pwa\": false,\n    \"accessibility\": {\n      \"wcagLevel\": \"AA\",\n      \"highContrast\": true,\n      \"reducedMotion\": true,\n      \"touchTargetSize\": \"48px\"\n    }\n  },\n\n  \"navigation\": {\n    \"header\": {\n      \"fixed\": true,\n      \"showLogo\": true,\n      \"showSearch\": false,\n      \"showCart\": true\n    },\n    \"footer\": {\n      \"showBranding\": true,\n      \"showSocialLinks\": false\n    }\n  },\n\n  \"colors\": {\n    \"primary\": \"#6366f1\",\n    \"primaryLight\": \"#818cf8\",\n    \"primaryDark\": \"#4f46e5\",\n    \"secondary\": \"#ec4899\",\n    \"accent\": \"#10b981\"\n  },\n\n  \"cart\": {\n    \"position\": \"bottom-fixed\",\n    \"animation\": \"slide-up\",\n    \"showItemCount\": true,\n    \"showTotal\": true\n  },\n\n  \"product\": {\n    \"imageAspectRatio\": \"4:3\",\n    \"showPrice\": true,\n    \"showDescription\": true,\n    \"showAllergens\": true,\n    \"showBadges\": true\n  },\n\n  \"breakpoints\": {\n    \"sm\": \"640px\",\n    \"md\": \"768px\",\n    \"lg\": \"1024px\",\n    \"xl\": \"1280px\"\n  },\n\n  \"dependencies\": {\n    \"css\": [],\n    \"js\": [\"alpinejs\"],\n    \"icons\": [\"phosphor-icons\"]\n  }\n}\n",
+        "last_modified": "2026-02-01T09:10:53.781397"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:26.954121",
+  "last_updated": "2026-02-01T08:03:26.963468"
+}

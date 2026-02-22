@@ -1,0 +1,216 @@
+{
+  "session_number": 15,
+  "timestamp": "2026-02-14T11:11:02.543446+00:00",
+  "subtasks_completed": [
+    "subtask-3-2"
+  ],
+  "discoveries": {
+    "file_insights": [
+      {
+        "file_path": "e_menum/shared/middleware/__init__.py",
+        "changes": "Added imports and exports for TenantMiddleware, TenantContextMixin, and utility functions",
+        "lines_added": 11,
+        "lines_removed": 2,
+        "purpose": "Expose tenant middleware components for clean package-level imports",
+        "exports": [
+          "TenantMiddleware",
+          "TenantContextMixin",
+          "get_current_organization",
+          "set_current_organization"
+        ]
+      },
+      {
+        "file_path": "e_menum/shared/middleware/tenant.py",
+        "changes": "Created comprehensive multi-tenant middleware implementation",
+        "lines_added": 400,
+        "lines_removed": 0,
+        "purpose": "Central middleware for organization context injection and tenant isolation",
+        "key_components": [
+          "TenantMiddleware class",
+          "TenantContextMixin class",
+          "Utility functions for context access"
+        ]
+      }
+    ],
+    "patterns_discovered": [
+      {
+        "pattern": "Organization Resolution Order",
+        "description": "Three-tier fallback mechanism for resolving tenant context",
+        "implementation": "User's org \u2192 X-Organization-ID header \u2192 Cookie",
+        "priority_order": [
+          "Authenticated user's organization FK",
+          "X-Organization-ID header (multi-org users/admin)",
+          "emenum_org_id cookie (session persistence)"
+        ]
+      },
+      {
+        "pattern": "URL Path Classification",
+        "description": "Requests classified as public or tenant-required based on URL prefixes",
+        "public_prefixes": [
+          "/admin/",
+          "/health/",
+          "/healthz/",
+          "/api/v1/auth/",
+          "/api/v1/public/",
+          "/static/",
+          "/media/",
+          "/m/"
+        ],
+        "tenant_required_prefixes": [
+          "/api/v1/menus/",
+          "/api/v1/categories/",
+          "/api/v1/products/",
+          "/api/v1/orders/",
+          "/api/v1/tables/",
+          "/api/v1/qr-codes/",
+          "/api/v1/customers/",
+          "/api/v1/analytics/"
+        ]
+      },
+      {
+        "pattern": "Caching Strategy",
+        "description": "In-memory organization cache to reduce database queries",
+        "mechanism": "UUID-keyed cache within middleware instance",
+        "scope": "Per-request/worker lifecycle"
+      },
+      {
+        "pattern": "Header Name Normalization",
+        "description": "Automatic conversion of custom header names to Django META format",
+        "example": "X-Organization-ID \u2192 HTTP_X_ORGANIZATION_ID",
+        "approach": "String manipulation with upper() and replace('-', '_')"
+      },
+      {
+        "pattern": "Soft Delete Support",
+        "description": "Organization queries filtered by deleted_at__isnull=True",
+        "status_check": "Only active organizations returned (status='ACTIVE')",
+        "approach": "Defensive querying at middleware level"
+      }
+    ],
+    "gotchas_discovered": [
+      {
+        "gotcha": "Middleware Ordering Requirement",
+        "description": "TenantMiddleware MUST run AFTER AuthenticationMiddleware",
+        "impact": "Critical - request.user must be available before organization resolution",
+        "documented": true,
+        "location": "Docstring with clear usage instructions"
+      },
+      {
+        "gotcha": "Circular Import Prevention",
+        "description": "Organization model imported inside methods with TYPE_CHECKING guard",
+        "impact": "Prevents import errors during middleware initialization",
+        "approach": "Lazy import in _get_organization_by_id method"
+      },
+      {
+        "gotcha": "UUID Format Validation",
+        "description": "Organization IDs must be valid UUIDs when from header/cookie",
+        "impact": "Silently logs warning and returns None on invalid format",
+        "risk": "Could mask configuration errors if not monitored"
+      },
+      {
+        "gotcha": "Header Name Case Sensitivity",
+        "description": "Django converts HTTP headers to uppercase META format",
+        "impact": "Manual string manipulation required for custom header names",
+        "error_prone": "Configuration settings MUST match expected format"
+      },
+      {
+        "gotcha": "Public Endpoint Bypass",
+        "description": "Public URLs skip tenant resolution entirely",
+        "impact": "request.organization will be None for /m/ (public menu display)",
+        "security": "Must explicitly handle None organization in public views"
+      },
+      {
+        "gotcha": "Anonymous User Handling",
+        "description": "request.user.is_authenticated check prevents AttributeError",
+        "impact": "Defensive coding needed for has_attr check on user.organization",
+        "implication": "Public endpoints must tolerate missing user.organization"
+      }
+    ],
+    "approach_outcome": {
+      "result": "SUCCESS",
+      "subtask_id": "subtask-3-2",
+      "session_number": 15,
+      "implementation_scope": "Complete multi-tenant middleware with context injection",
+      "key_achievements": [
+        "Implemented TenantMiddleware class with request context injection",
+        "Created TenantContextMixin for view integration",
+        "Provided utility functions for context access",
+        "Added comprehensive documentation and logging",
+        "Implemented three-tier organization resolution strategy",
+        "Added URL path classification for public vs tenant-required routes",
+        "Implemented organization caching for performance",
+        "Added soft delete and status checks for organization queries"
+      ],
+      "lines_of_code": 411,
+      "code_quality_indicators": [
+        "Extensive docstrings with usage examples",
+        "Type hints throughout (TYPE_CHECKING for circular imports)",
+        "Comprehensive logging at debug and warning levels",
+        "Error handling for invalid UUIDs and missing organizations",
+        "Configuration flexibility (customizable header/cookie names)"
+      ]
+    },
+    "recommendations": [
+      {
+        "category": "Testing",
+        "priority": "HIGH",
+        "recommendation": "Create comprehensive test suite for middleware",
+        "details": "Test all three organization resolution paths, public URL handling, tenant-required enforcement, and error cases",
+        "rationale": "Multi-tenant security is critical; middleware must be thoroughly tested"
+      },
+      {
+        "category": "Configuration",
+        "priority": "HIGH",
+        "recommendation": "Document all configuration settings in settings/base.py",
+        "details": "EMENUM_TENANT_HEADER, EMENUM_TENANT_COOKIE, and other settings should be clearly defined with defaults",
+        "rationale": "Configuration flexibility documented in code but not in settings"
+      },
+      {
+        "category": "Monitoring",
+        "priority": "MEDIUM",
+        "recommendation": "Add metrics/monitoring for tenant context resolution",
+        "details": "Track resolution source distribution, cache hit rates, invalid organization lookups",
+        "rationale": "Helps identify configuration issues and performance problems in production"
+      },
+      {
+        "category": "Documentation",
+        "priority": "MEDIUM",
+        "recommendation": "Create migration guide for existing views",
+        "details": "Document how to update existing views to use TenantContextMixin and request.organization",
+        "rationale": "Code provides examples but systematic migration approach would be helpful"
+      },
+      {
+        "category": "Performance",
+        "priority": "MEDIUM",
+        "recommendation": "Consider distributed caching for organization lookups",
+        "details": "Current in-memory cache doesn't persist across workers; consider Redis for high-traffic scenarios",
+        "rationale": "Current implementation could cause repeated database queries in multi-worker setup"
+      },
+      {
+        "category": "Security",
+        "priority": "HIGH",
+        "recommendation": "Validate user has permission to access organization from header",
+        "details": "Current implementation allows any authenticated user to switch organizations via header",
+        "rationale": "Multi-org users might need permission checks before allowing organization override"
+      },
+      {
+        "category": "Error Handling",
+        "priority": "MEDIUM",
+        "recommendation": "Standardize error responses across middleware",
+        "details": "_tenant_required_response() returns 403, but other errors are logged silently",
+        "rationale": "Consistent error handling would improve API debugging experience"
+      }
+    ],
+    "subtask_id": "subtask-3-2",
+    "session_num": 15,
+    "success": true,
+    "changed_files": [
+      "e_menum/shared/middleware/__init__.py",
+      "e_menum/shared/middleware/tenant.py"
+    ]
+  },
+  "what_worked": [
+    "Implemented subtask: subtask-3-2"
+  ],
+  "what_failed": [],
+  "recommendations_for_next_session": []
+}

@@ -1,0 +1,28 @@
+{
+  "file_path": "src/modules/_stubs/campaign/index.ts",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "/**\n * Campaign Module Stub\n *\n * This is a placeholder module for future campaign implementation.\n * Only interfaces and types are exported - no implementation.\n *\n * @module modules/_stubs/campaign\n */\n\nimport { AppException } from '@/core/exceptions/app.exception';\n\n// -----------------------------------------------------------------------------\n// Types Export\n// -----------------------------------------------------------------------------\n\nexport {\n  // Enums\n  CampaignStatus,\n  DiscountType,\n  CampaignType,\n  CampaignTarget,\n  // Entity types\n  type Campaign,\n  type DiscountRule,\n  type CampaignTargetConfig,\n  type CampaignConditions,\n  type CampaignSchedule,\n  type CampaignLimits,\n  type CampaignUsage,\n  type AppliedDiscount,\n  // Request types\n  type CreateCampaignRequest,\n  type UpdateCampaignRequest,\n  type ApplyDiscountRequest,\n  // Response types\n  type ApplyDiscountResult,\n  type ValidatePromoCodeResult,\n  // Service interfaces\n  type ICampaignService,\n  type IDiscountService,\n  // Event payloads\n  type CampaignCreatedEventPayload,\n  type CampaignActivatedEventPayload,\n  type DiscountAppliedEventPayload,\n} from '@/modules/_stubs/campaign/campaign.types';\n\n// -----------------------------------------------------------------------------\n// Stub Implementation\n// -----------------------------------------------------------------------------\n\n/**\n * Campaign service stub implementation\n */\nexport class CampaignServiceStub {\n  async create(): Promise<never> {\n    throw new AppException('CAMPAIGN_MODULE_NOT_INSTALLED', 501, {\n      message: 'Campaign module is not installed. Please install the campaign module to use this feature.',\n    });\n  }\n\n  async update(): Promise<never> {\n    throw new AppException('CAMPAIGN_MODULE_NOT_INSTALLED', 501, {\n      message: 'Campaign module is not installed. Please install the campaign module to use this feature.',\n    });\n  }\n\n  async activate(): Promise<never> {\n    throw new AppException('CAMPAIGN_MODULE_NOT_INSTALLED', 501, {\n      message: 'Campaign module is not installed. Please install the campaign module to use this feature.',\n    });\n  }\n\n  async deactivate(): Promise<never> {\n    throw new AppException('CAMPAIGN_MODULE_NOT_INSTALLED', 501, {\n      message: 'Campaign module is not installed. Please install the campaign module to use this feature.',\n    });\n  }\n\n  async delete(): Promise<never> {\n    throw new AppException('CAMPAIGN_MODULE_NOT_INSTALLED', 501, {\n      message: 'Campaign module is not installed. Please install the campaign module to use this feature.',\n    });\n  }\n\n  async getById(): Promise<never> {\n    throw new AppException('CAMPAIGN_MODULE_NOT_INSTALLED', 501, {\n      message: 'Campaign module is not installed. Please install the campaign module to use this feature.',\n    });\n  }\n\n  async list(): Promise<never> {\n    throw new AppException('CAMPAIGN_MODULE_NOT_INSTALLED', 501, {\n      message: 'Campaign module is not installed. Please install the campaign module to use this feature.',\n    });\n  }\n\n  async validatePromoCode(): Promise<never> {\n    throw new AppException('CAMPAIGN_MODULE_NOT_INSTALLED', 501, {\n      message: 'Campaign module is not installed. Please install the campaign module to use this feature.',\n    });\n  }\n}\n\n/**\n * Discount service stub implementation\n */\nexport class DiscountServiceStub {\n  async applyDiscounts(): Promise<never> {\n    throw new AppException('CAMPAIGN_MODULE_NOT_INSTALLED', 501, {\n      message: 'Campaign module is not installed. Please install the campaign module to use this feature.',\n    });\n  }\n\n  async calculateSavings(): Promise<never> {\n    throw new AppException('CAMPAIGN_MODULE_NOT_INSTALLED', 501, {\n      message: 'Campaign module is not installed. Please install the campaign module to use this feature.',\n    });\n  }\n\n  async recordUsage(): Promise<never> {\n    throw new AppException('CAMPAIGN_MODULE_NOT_INSTALLED', 501, {\n      message: 'Campaign module is not installed. Please install the campaign module to use this feature.',\n    });\n  }\n}\n\n/**\n * Check if campaign module is available\n */\nexport function isCampaignModuleAvailable(): boolean {\n  return false;\n}\n\n/**\n * Module metadata\n */\nexport const CAMPAIGN_MODULE_METADATA = {\n  id: 'campaign',\n  name: 'Campaign Module',\n  status: 'stub' as const,\n  version: '0.0.0',\n};\n",
+        "last_modified": "2026-02-01T09:10:53.735255"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:25.826739",
+  "last_updated": "2026-02-01T08:03:25.837042"
+}

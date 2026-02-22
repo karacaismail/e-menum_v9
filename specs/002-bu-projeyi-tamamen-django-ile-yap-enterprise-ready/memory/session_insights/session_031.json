@@ -1,0 +1,195 @@
+{
+  "session_number": 31,
+  "timestamp": "2026-02-14T11:59:32.061566+00:00",
+  "subtasks_completed": [
+    "subtask-5-5"
+  ],
+  "discoveries": {
+    "file_insights": [
+      {
+        "file_path": "e_menum/apps/orders/models.py",
+        "changes_summary": "Added two new model classes: OrderItem and ServiceRequest with comprehensive documentation, fields, properties, and methods",
+        "key_additions": [
+          "OrderItem model with 20+ fields including UUID PK, FK relationships, pricing, status workflow, timestamps, and metadata",
+          "ServiceRequest model with priority system, status workflow, and waiter communication features",
+          "Both models use SoftDeleteMixin and TimeStampedMixin for soft deletes and audit timestamps",
+          "Rich property methods for status checking, formatting, and calculations",
+          "Custom managers using SoftDeleteManager for tenant isolation",
+          "Comprehensive docstrings with usage examples and workflow diagrams"
+        ],
+        "fields_added": [
+          "OrderItem: 19 fields including order FK, product FK, variant FK, quantity, unit_price, total_price, currency, status, modifiers JSON, notes, is_gift, timestamps, cancel_reason, metadata",
+          "ServiceRequest: 14 fields including order FK, table FK, request_type, priority, status, assigned_waiter FK, timestamps, notes, metadata"
+        ],
+        "methods_added": [
+          "OrderItem: calculate_total(), set_status(), start_preparation(), mark_ready(), deliver(), cancel(), archive_after_days(), get_preparation_time()",
+          "ServiceRequest: assign_to_waiter(), complete(), cancel(), resolve(), mark_acknowledged(), reopen()"
+        ],
+        "indexes_created": [
+          "OrderItem: composite index on (order, status), (order, deleted_at); single indexes on product, status",
+          "ServiceRequest: composite indexes on (order, status), (table, status); single indexes on priority, assigned_waiter"
+        ]
+      }
+    ],
+    "patterns_discovered": [
+      {
+        "pattern": "Status Workflow Pattern",
+        "description": "Both models implement explicit state machines with linear progressions and terminal states. OrderItem: PENDING\u2192PREPARING\u2192READY\u2192DELIVERED, with CANCELLED as terminal. ServiceRequest: PENDING\u2192ACKNOWLEDGED\u2192IN_PROGRESS\u2192RESOLVED with CANCELLED as terminal.",
+        "relevance": "Ensures deterministic state transitions and prevents invalid operations (e.g., marking ready from non-preparing state)"
+      },
+      {
+        "pattern": "Tenant Isolation via Foreign Keys",
+        "description": "Both models access organization through parent FK relationships (order.organization). No direct organization_id field, enforcing cascading isolation.",
+        "relevance": "Implements multi-tenancy pattern documented in module docstring; all queries implicitly filtered by organization"
+      },
+      {
+        "pattern": "JSON Snapshot Pattern",
+        "description": "OrderItem captures modifiers and metadata as JSON snapshots at order time rather than maintaining live references. Allows product changes without affecting historical orders.",
+        "relevance": "Decouples order history from product catalog changes; critical for audit trails and repricing protection"
+      },
+      {
+        "pattern": "Dual Manager Pattern",
+        "description": "Both models implement SoftDeleteManager as default and models.Manager as all_objects, providing filtered/unfiltered access.",
+        "relevance": "Supports GDPR-style logical deletes while preserving audit capability"
+      },
+      {
+        "pattern": "Comprehensive Property Methods",
+        "description": "Extensive use of @property decorators for derived values (is_pending, is_ready, formatted_unit_price, display_name, etc.) avoiding code duplication in queries.",
+        "relevance": "Improves API ergonomics and reduces template logic complexity"
+      },
+      {
+        "pattern": "Timestamp-Driven Workflow",
+        "description": "Status transitions automatically populate associated timestamp fields (prepared_at on mark_ready, delivered_at on deliver), creating natural audit trail.",
+        "relevance": "Enables analytics queries on preparation times without separate event tables"
+      }
+    ],
+    "gotchas_discovered": [
+      {
+        "gotcha": "Soft Delete Requirement Enforcement",
+        "description": "Models override delete() method to raise NotImplementedError, forcing use of soft_delete(). Repeated in docstrings and method signatures.",
+        "impact": "Prevents accidental hard deletes that would violate audit requirements; developers must use soft_delete() or all_objects.delete()",
+        "mitigation": "Exception handling with clear error message; inline documentation"
+      },
+      {
+        "gotcha": "Unit Price Capture Timing",
+        "description": "OrderItem.unit_price is captured snapshot at order time, not live reference to Product. If product prices change, historical orders preserve original prices.",
+        "impact": "Developers might expect unit_price to auto-update; requires database migration and recalculation if pricing strategy changes",
+        "mitigation": "Documented in docstring and help_text; calculate_total() method provided for explicit updates"
+      },
+      {
+        "gotcha": "State Transition Validation",
+        "description": "Methods like mark_ready() validate current status and raise ValueError if transition invalid (e.g., can't mark_ready from PENDING). No automatic state coercion.",
+        "impact": "API calls will fail if client doesn't track state correctly; requires proper error handling in views/serializers",
+        "mitigation": "Clear error messages; status properties (is_preparing) provided for client-side checks"
+      },
+      {
+        "gotcha": "Gift Item Pricing",
+        "description": "is_gift flag forces total_price to 0 in calculate_total(), but unit_price and modifiers remain non-zero. Affects inventory/COGS calculations.",
+        "impact": "Gift items show non-zero unit costs but zero total; financial reports must filter on is_gift to properly attribute revenue",
+        "mitigation": "Flag documented with help_text; calculate_total() method shows behavior"
+      },
+      {
+        "gotcha": "Foreign Key Nullability",
+        "description": "Both product and variant are nullable FKs with SET_NULL, allowing historical order references even after product soft-deletion. Schema preserves reference but product data may be unavailable.",
+        "impact": "Queries for deleted product info must check if product is None; property methods fallback to metadata for display",
+        "mitigation": "metadata JSON field stores snapshots; product_name property handles None gracefully"
+      },
+      {
+        "gotcha": "Modifier Cost Calculation Complexity",
+        "description": "modifier_total property iterates and sums modifiers, each supporting both price and quantity fields. calculate_total() multiplies modifier_total by item quantity, creating nested multiplication.",
+        "impact": "Developers might miscalculate: (unit_price * qty) + (modifier_price * qty) vs (unit_price * qty) + modifier_price. Order of operations matters for multi-unit items with modifiers.",
+        "mitigation": "Documented in docstring with explicit formula; property method centralizes calculation"
+      }
+    ],
+    "approach_outcome": {
+      "status": "SUCCESS",
+      "completion_percentage": 100,
+      "objectives_achieved": [
+        "Created OrderItem model with 19 fields, status workflow, and 8+ business logic methods",
+        "Created ServiceRequest model with priority system and 6+ workflow methods",
+        "Implemented soft delete enforcement via SoftDeleteManager and exception handling",
+        "Added multi-field indexes for query optimization (order+status, table+status, product, priority)",
+        "Documented both models with comprehensive docstrings including workflow diagrams and usage examples",
+        "Updated module docstring to reflect completed models instead of TODO items",
+        "Imported required choice enums (OrderItemStatus, ServiceRequestStatus, ServiceRequestType)"
+      ],
+      "code_quality_metrics": {
+        "documentation_coverage": "Comprehensive - each model has 100+ line docstrings with workflow diagrams, critical rules, attributes, and usage examples",
+        "method_count": "14 methods total (8 OrderItem, 6 ServiceRequest)",
+        "property_count": "16 properties (13 OrderItem, 3 ServiceRequest) for derived values and checks",
+        "database_indexes": "8 indexes total (4 OrderItem, 4 ServiceRequest) covering most query patterns",
+        "test_coverage": "Not explicitly addressed in this subtask"
+      },
+      "integration_points": [
+        "OrderItem.order FK cascades to Order model (parent relationship)",
+        "ServiceRequest.order FK cascades to Order model",
+        "ServiceRequest.table FK references Table model",
+        "ServiceRequest.assigned_waiter FK references staff/user model",
+        "Both models inherit from TimeStampedMixin (created_at, updated_at) and SoftDeleteMixin (deleted_at, soft_delete)"
+      ],
+      "design_decisions": [
+        "UUID primary keys chosen for global uniqueness across distributed systems",
+        "JSON fields used for modifiers snapshot (flexibility) and metadata (extensibility)",
+        "Nullable product/variant FKs with SET_NULL to preserve historical data when menu items deleted",
+        "Dual manager pattern to support both filtered (default) and unfiltered (all_objects) queries",
+        "Status workflow enforced through ValueError exceptions rather than silent failures",
+        "Timestamp automation (prepared_at, delivered_at) integrated into set_status() method"
+      ]
+    },
+    "recommendations": [
+      {
+        "area": "Testing Strategy",
+        "recommendation": "Create comprehensive test suites for status transition validation (test all invalid transitions raise ValueError), soft delete enforcement, and modifier cost calculations with edge cases (zero modifiers, multi-unit items, gift items)",
+        "priority": "HIGH",
+        "rationale": "Complex state machines and cost calculations require exhaustive testing; ValueError exceptions need to be verified; soft delete enforcement is critical for data integrity"
+      },
+      {
+        "area": "Migration Planning",
+        "recommendation": "Ensure database migration includes index creation for composite (order, status) and (table, status) queries; consider adding database constraints to enforce status enum values if ORM validation is insufficient",
+        "priority": "HIGH",
+        "rationale": "Indexes are critical for kitchen/waiter query performance; database constraints provide defense-in-depth"
+      },
+      {
+        "area": "API Serializer Design",
+        "recommendation": "Create serializers that expose status properties (is_pending, is_ready) as read-only fields for client-side state checking; use CallableDefaultValidator for status transitions to catch invalid transitions early",
+        "priority": "MEDIUM",
+        "rationale": "Properties provide rich client API; early validation reduces roundtrip errors"
+      },
+      {
+        "area": "Financial Reporting",
+        "recommendation": "Document that revenue reports must exclude is_gift=True items and handle nullable product FKs gracefully; add metadata.product_name fallback to all product references in analytics",
+        "priority": "MEDIUM",
+        "rationale": "Gift flag behavior and soft-deleted products could cause accounting errors if not handled explicitly"
+      },
+      {
+        "area": "Documentation Additions",
+        "recommendation": "Create usage guide with examples of: (1) creating order items with modifiers, (2) transitioning ServiceRequests through workflow, (3) querying items by status/priority for kitchen/waiter displays, (4) handling soft deletes in migrations",
+        "priority": "MEDIUM",
+        "rationale": "Complex models with business logic require developer guidance; examples prevent misuse"
+      },
+      {
+        "area": "Monitoring & Logging",
+        "recommendation": "Add signal handlers to log status transitions (PENDING\u2192PREPARING, READY\u2192DELIVERED) and cancellations with reasons for operational visibility; log soft_delete calls to detect accidental deletions",
+        "priority": "LOW",
+        "rationale": "Status transitions are business-critical events; audit trail enables troubleshooting and compliance"
+      },
+      {
+        "area": "Performance Optimization",
+        "recommendation": "Consider denormalizing frequently-accessed fields (order.organization_id, table.organization_id) to OrderItem/ServiceRequest to avoid subqueries in tenant-filtered queries; profile multi-item order queries with select_related/prefetch_related",
+        "priority": "LOW",
+        "rationale": "Tenant isolation via parent FKs may require join overhead; denormalization could improve query performance at scale"
+      }
+    ],
+    "subtask_id": "subtask-5-5",
+    "session_num": 31,
+    "success": true,
+    "changed_files": [
+      "e_menum/apps/orders/models.py"
+    ]
+  },
+  "what_worked": [
+    "Implemented subtask: subtask-5-5"
+  ],
+  "what_failed": [],
+  "recommendations_for_next_session": []
+}

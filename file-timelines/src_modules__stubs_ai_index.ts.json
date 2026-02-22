@@ -1,0 +1,28 @@
+{
+  "file_path": "src/modules/_stubs/ai/index.ts",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "/**\n * AI Module Stub\n *\n * This is a placeholder module for future AI implementation.\n * Only interfaces and types are exported - no implementation.\n *\n * @module modules/_stubs/ai\n */\n\nimport { AppException } from '@/core/exceptions/app.exception';\n\n// -----------------------------------------------------------------------------\n// Types Export\n// -----------------------------------------------------------------------------\n\nexport {\n  // Enums\n  AIFeatureType,\n  ContentType,\n  SuggestionType,\n  LanguageCode,\n  // Content generation types\n  type GenerationContext,\n  type GeneratedContent,\n  type ContentGenerationRequest,\n  // Image analysis types\n  type ImageAnalysisRequest,\n  type ImageAnalysisResult,\n  // Translation types\n  type TranslationRequest,\n  type TranslationResult,\n  // Suggestion types\n  type AISuggestion,\n  type DemandForecast,\n  // Service interfaces\n  type IAIService,\n  type IContentGeneratorService,\n  // Event payloads\n  type ContentGeneratedEventPayload,\n  type SuggestionCreatedEventPayload,\n  type AnalysisCompletedEventPayload,\n} from '@/modules/_stubs/ai/ai.types';\n\n// -----------------------------------------------------------------------------\n// Stub Implementation\n// -----------------------------------------------------------------------------\n\n/**\n * AI service stub implementation\n */\nexport class AIServiceStub {\n  async generateContent(): Promise<never> {\n    throw new AppException('AI_MODULE_NOT_INSTALLED', 501, {\n      message: 'AI module is not installed. Please install the AI module to use this feature.',\n    });\n  }\n\n  async analyzeImage(): Promise<never> {\n    throw new AppException('AI_MODULE_NOT_INSTALLED', 501, {\n      message: 'AI module is not installed. Please install the AI module to use this feature.',\n    });\n  }\n\n  async translate(): Promise<never> {\n    throw new AppException('AI_MODULE_NOT_INSTALLED', 501, {\n      message: 'AI module is not installed. Please install the AI module to use this feature.',\n    });\n  }\n\n  async getSuggestions(): Promise<never> {\n    throw new AppException('AI_MODULE_NOT_INSTALLED', 501, {\n      message: 'AI module is not installed. Please install the AI module to use this feature.',\n    });\n  }\n\n  async dismissSuggestion(): Promise<never> {\n    throw new AppException('AI_MODULE_NOT_INSTALLED', 501, {\n      message: 'AI module is not installed. Please install the AI module to use this feature.',\n    });\n  }\n\n  async getDemandForecast(): Promise<never> {\n    throw new AppException('AI_MODULE_NOT_INSTALLED', 501, {\n      message: 'AI module is not installed. Please install the AI module to use this feature.',\n    });\n  }\n}\n\n/**\n * Content generator service stub implementation\n */\nexport class ContentGeneratorServiceStub {\n  async generateItemDescription(): Promise<never> {\n    throw new AppException('AI_MODULE_NOT_INSTALLED', 501, {\n      message: 'AI module is not installed. Please install the AI module to use this feature.',\n    });\n  }\n\n  async generateCategoryDescription(): Promise<never> {\n    throw new AppException('AI_MODULE_NOT_INSTALLED', 501, {\n      message: 'AI module is not installed. Please install the AI module to use this feature.',\n    });\n  }\n\n  async generateMenuIntro(): Promise<never> {\n    throw new AppException('AI_MODULE_NOT_INSTALLED', 501, {\n      message: 'AI module is not installed. Please install the AI module to use this feature.',\n    });\n  }\n\n  async generateMarketingCopy(): Promise<never> {\n    throw new AppException('AI_MODULE_NOT_INSTALLED', 501, {\n      message: 'AI module is not installed. Please install the AI module to use this feature.',\n    });\n  }\n}\n\n/**\n * Check if AI module is available\n */\nexport function isAIModuleAvailable(): boolean {\n  return false;\n}\n\n/**\n * Module metadata\n */\nexport const AI_MODULE_METADATA = {\n  id: 'ai',\n  name: 'AI Module',\n  status: 'stub' as const,\n  version: '0.0.0',\n};\n",
+        "last_modified": "2026-02-01T09:10:53.732952"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:25.746746",
+  "last_updated": "2026-02-01T08:03:25.756783"
+}

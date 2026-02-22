@@ -1,0 +1,28 @@
+{
+  "file_path": "themes/admin-theme/theme.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"name\": \"admin-theme\",\n  \"displayName\": \"E-Menum Admin Theme\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Professional admin panel theme for E-Menum platform with dark mode support, WCAG 2.1 AA compliance, and responsive design\",\n  \"author\": \"E-Menum\",\n  \"type\": \"admin\",\n  \"enabled\": true,\n  \"priority\": 100,\n\n  \"layouts\": {\n    \"default\": \"layouts/default.ejs\",\n    \"auth\": \"layouts/auth.ejs\"\n  },\n\n  \"components\": {\n    \"header\": \"components/header.ejs\",\n    \"sidebar\": \"components/sidebar.ejs\",\n    \"footer\": \"components/footer.ejs\"\n  },\n\n  \"partials\": {\n    \"breadcrumb\": \"partials/breadcrumb.ejs\",\n    \"alerts\": \"partials/alerts.ejs\",\n    \"pagination\": \"partials/pagination.ejs\"\n  },\n\n  \"styles\": {\n    \"main\": \"styles/main.css\"\n  },\n\n  \"assets\": {\n    \"logo\": {\n      \"light\": \"/images/logo-light.svg\",\n      \"dark\": \"/images/logo-dark.svg\"\n    },\n    \"favicon\": \"/favicon.ico\"\n  },\n\n  \"features\": {\n    \"darkMode\": true,\n    \"rtlSupport\": false,\n    \"responsive\": true,\n    \"accessibility\": {\n      \"wcagLevel\": \"AA\",\n      \"highContrast\": true,\n      \"reducedMotion\": true\n    }\n  },\n\n  \"navigation\": {\n    \"sidebar\": {\n      \"collapsible\": true,\n      \"defaultCollapsed\": false,\n      \"hoverExpand\": true,\n      \"icons\": \"phosphor\"\n    },\n    \"header\": {\n      \"fixed\": true,\n      \"showSearch\": true,\n      \"showNotifications\": true,\n      \"showUserMenu\": true\n    }\n  },\n\n  \"colors\": {\n    \"primary\": \"#2563eb\",\n    \"primaryLight\": \"#3b82f6\",\n    \"primaryDark\": \"#1d4ed8\",\n    \"secondary\": \"#7c3aed\",\n    \"accent\": \"#f59e0b\"\n  },\n\n  \"breakpoints\": {\n    \"sm\": \"640px\",\n    \"md\": \"768px\",\n    \"lg\": \"1024px\",\n    \"xl\": \"1280px\",\n    \"2xl\": \"1536px\"\n  },\n\n  \"dependencies\": {\n    \"css\": [\"tailwindcss\"],\n    \"js\": [\"alpinejs\"],\n    \"icons\": [\"phosphor-icons\"]\n  }\n}\n",
+        "last_modified": "2026-02-01T09:10:53.778802"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:26.883368",
+  "last_updated": "2026-02-01T08:03:26.893177"
+}

@@ -1,0 +1,28 @@
+{
+  "file_path": "src/modules/_core/module-loader/index.ts",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "/**\n * Module Loader Module Public API\n *\n * Centralized exports for the Module Loader admin module.\n * Import from this file when using module loader functionality\n * from other parts of the application.\n *\n * @module modules/_core/module-loader\n *\n * @example\n * ```typescript\n * import {\n *   ModuleLoaderModule,\n *   ModuleLoaderService,\n *   moduleLoaderRoutes,\n *   type ModuleInfo,\n *   type ModuleActionResponse,\n * } from '@/modules/_core/module-loader';\n * ```\n */\n\n// -----------------------------------------------------------------------------\n// Module Definition\n// -----------------------------------------------------------------------------\n\nexport { ModuleLoaderModule, default } from '@/modules/_core/module-loader/module-loader.module';\nexport type {\n  ModuleLoaderModuleContext,\n  ModuleLoaderModuleHooks,\n} from '@/modules/_core/module-loader/module-loader.module';\n\n// -----------------------------------------------------------------------------\n// Service\n// -----------------------------------------------------------------------------\n\nexport { ModuleLoaderService } from '@/modules/_core/module-loader/module-loader.service';\n\n// -----------------------------------------------------------------------------\n// Controller\n// -----------------------------------------------------------------------------\n\nexport { ModuleLoaderController } from '@/modules/_core/module-loader/module-loader.controller';\n\n// -----------------------------------------------------------------------------\n// Routes\n// -----------------------------------------------------------------------------\n\nexport {\n  moduleLoaderRoutes,\n  buildModuleLoaderApiPath,\n  buildModuleLoaderAdminPath,\n  isProtectedModuleLoaderRoute,\n  moduleLoaderEndpoints,\n  // Status helpers\n  moduleStatusLabels,\n  moduleStatusIcons,\n  moduleStatusColors,\n  getModuleStatusLabel,\n  getModuleStatusIcon,\n  getModuleStatusColor,\n  // Category helpers\n  moduleCategoryLabels,\n  moduleCategoryIcons,\n  moduleCategoryColors,\n  getModuleCategoryLabel,\n  getModuleCategoryIcon,\n  getModuleCategoryColor,\n} from '@/modules/_core/module-loader/module-loader.routes';\nexport type {\n  ModuleLoaderRouteConfig,\n  ModuleLoaderEndpointMetadata,\n} from '@/modules/_core/module-loader/module-loader.routes';\n\n// -----------------------------------------------------------------------------\n// Types\n// -----------------------------------------------------------------------------\n\n// Re-export core types\nexport type {\n  ModuleManifest,\n  ModuleStatus,\n  ModuleCategory,\n  LoadedModule,\n} from '@/modules/_core/module-loader/module-loader.types';\n\n// Module info types\nexport type {\n  ModuleInfo,\n  ModuleSummary,\n} from '@/modules/_core/module-loader/module-loader.types';\n\n// Request types\nexport type {\n  ModuleActivateRequest,\n  ModuleDeactivateRequest,\n  ModuleInstallRequest,\n  ModuleUninstallRequest,\n  ModuleUpgradeRequest,\n} from '@/modules/_core/module-loader/module-loader.types';\n\n// Response types\nexport type {\n  ModuleListResponse,\n  ModuleActionResponse,\n  ModuleStats,\n  DependencyCheckResult,\n  ModuleHealthCheckResult,\n} from '@/modules/_core/module-loader/module-loader.types';\n\n// Query/Filter types\nexport type {\n  ModuleListFilters,\n  ModuleListParams,\n} from '@/modules/_core/module-loader/module-loader.types';\n\n// Event types\nexport type {\n  ModuleActivatedEvent,\n  ModuleDeactivatedEvent,\n  ModuleInstalledEvent,\n  ModuleUninstalledEvent,\n  ModuleUpgradedEvent,\n  ModuleErrorEvent,\n} from '@/modules/_core/module-loader/module-loader.types';\n\n// Hook context types\nexport type {\n  BeforeModuleActivateContext,\n  AfterModuleActivateContext,\n  BeforeModuleDeactivateContext,\n  AfterModuleDeactivateContext,\n} from '@/modules/_core/module-loader/module-loader.types';\n\n// Settings types\nexport type { ModuleLoaderSettings } from '@/modules/_core/module-loader/module-loader.types';\n\n// Type guards\nexport {\n  isValidModuleStatus,\n  isValidModuleCategory,\n  isModuleActive,\n  isModuleCore,\n  hasModuleError,\n} from '@/modules/_core/module-loader/module-loader.types';\n\n// Helper functions\nexport {\n  toModuleInfo,\n  toModuleSummary,\n} from '@/modules/_core/module-loader/module-loader.types';\n",
+        "last_modified": "2026-02-01T09:10:53.706938"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:25.112526",
+  "last_updated": "2026-02-01T08:03:25.125282"
+}

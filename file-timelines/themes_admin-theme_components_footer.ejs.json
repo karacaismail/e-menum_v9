@@ -1,0 +1,28 @@
+{
+  "file_path": "themes/admin-theme/components/footer.ejs",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "<%#\n  Footer Component\n\n  Variables:\n  - version: Application version string\n  - organization: Current organization\n%>\n<footer\n  role=\"contentinfo\"\n  class=\"flex-shrink-0 border-t border-border-color bg-surface-card\"\n>\n  <div class=\"px-4 md:px-6 lg:px-8 py-4\">\n    <div class=\"flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4\">\n      <!-- Copyright and Version -->\n      <div class=\"flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4\">\n        <p class=\"text-sm text-text-muted\">\n          &copy; <%= new Date().getFullYear() %> E-Menum.\n          <%= typeof t === 'function' ? t('common.allRightsReserved') : 'All rights reserved.' %>\n        </p>\n        <% if (locals.version) { %>\n          <span class=\"hidden sm:inline text-text-muted\" aria-hidden=\"true\">&middot;</span>\n          <span class=\"text-xs text-text-muted\">\n            v<%= version %>\n          </span>\n        <% } %>\n      </div>\n\n      <!-- Links -->\n      <nav aria-label=\"<%= typeof t === 'function' ? t('nav.footerNavigation') : 'Footer navigation' %>\">\n        <ul class=\"flex flex-wrap items-center gap-4 text-sm\">\n          <li>\n            <a\n              href=\"/docs\"\n              class=\"text-text-muted hover:text-text-primary transition-colors flex items-center gap-1\"\n              target=\"_blank\"\n              rel=\"noopener noreferrer\"\n            >\n              <i class=\"ph ph-book-open text-base\" aria-hidden=\"true\"></i>\n              <span><%= typeof t === 'function' ? t('nav.documentation') : 'Documentation' %></span>\n              <span class=\"sr-only\">(<%= typeof t === 'function' ? t('common.opensInNewTab') : 'opens in new tab' %>)</span>\n            </a>\n          </li>\n          <li>\n            <a\n              href=\"/admin/help\"\n              class=\"text-text-muted hover:text-text-primary transition-colors flex items-center gap-1\"\n            >\n              <i class=\"ph ph-question text-base\" aria-hidden=\"true\"></i>\n              <span><%= typeof t === 'function' ? t('nav.help') : 'Help' %></span>\n            </a>\n          </li>\n          <li>\n            <a\n              href=\"/changelog\"\n              class=\"text-text-muted hover:text-text-primary transition-colors flex items-center gap-1\"\n            >\n              <i class=\"ph ph-sparkle text-base\" aria-hidden=\"true\"></i>\n              <span><%= typeof t === 'function' ? t('nav.whatsNew') : \"What's New\" %></span>\n            </a>\n          </li>\n          <li>\n            <a\n              href=\"https://status.e-menum.net\"\n              class=\"text-text-muted hover:text-text-primary transition-colors flex items-center gap-1\"\n              target=\"_blank\"\n              rel=\"noopener noreferrer\"\n            >\n              <!-- Status indicator dot -->\n              <span class=\"w-2 h-2 rounded-full bg-green-500\" aria-hidden=\"true\"></span>\n              <span><%= typeof t === 'function' ? t('nav.status') : 'Status' %></span>\n              <span class=\"sr-only\">(<%= typeof t === 'function' ? t('common.allSystemsOperational') : 'All systems operational' %>)</span>\n            </a>\n          </li>\n        </ul>\n      </nav>\n    </div>\n\n    <!-- Additional Info Row (Optional) -->\n    <% if (locals.organization && organization.supportEmail) { %>\n      <div class=\"mt-4 pt-4 border-t border-border-color\">\n        <div class=\"flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-text-muted\">\n          <p>\n            <%= typeof t === 'function' ? t('common.needHelp') : 'Need help?' %>\n            <a\n              href=\"mailto:<%= organization.supportEmail %>\"\n              class=\"text-brand-primary hover:underline ml-1\"\n            >\n              <%= organization.supportEmail %>\n            </a>\n          </p>\n          <p>\n            <%= typeof t === 'function' ? t('common.madeWithLove') : 'Made with' %>\n            <i class=\"ph ph-heart-fill text-red-500 mx-1\" aria-hidden=\"true\"></i>\n            <%= typeof t === 'function' ? t('common.inTurkey') : 'in Turkey' %>\n          </p>\n        </div>\n      </div>\n    <% } %>\n  </div>\n</footer>\n",
+        "last_modified": "2026-02-01T09:10:53.776474"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:26.819261",
+  "last_updated": "2026-02-01T08:03:26.828848"
+}

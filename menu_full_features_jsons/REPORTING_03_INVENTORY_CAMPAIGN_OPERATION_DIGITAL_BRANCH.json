@@ -1,0 +1,1923 @@
+{
+  "metadata": {
+    "document": "E-Menum Reporting Features Part 3",
+    "section": "Inventory, Campaign, Operation, Digital, Branch Reports",
+    "version": "3.0.0"
+  },
+  "FEATURES": {
+    "INVENTORY_REPORTS": [
+      {
+        "feature_key": "report_inventory_status",
+        "feature_id": "RPT-INV-001",
+        "name_tr": "Stok Durum Raporu",
+        "name_en": "Inventory Status Report",
+        "category": "INVENTORY",
+        "subcategory": "status",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Anlık stok durumu ve kritik seviye uyarıları",
+        "description_en": "Real-time inventory status with critical level alerts",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 1,
+        "auto_generate": true,
+        "alert_trigger": "stock_below_threshold",
+        "stock_levels": [
+          {
+            "level": "critical",
+            "threshold": "10%",
+            "color": "#EF4444",
+            "alert": true,
+            "priority": "high"
+          },
+          {
+            "level": "low",
+            "threshold": "25%",
+            "color": "#F97316",
+            "alert": true,
+            "priority": "medium"
+          },
+          {
+            "level": "normal",
+            "threshold": "25-75%",
+            "color": "#22C55E",
+            "alert": false,
+            "priority": "none"
+          },
+          {
+            "level": "high",
+            "threshold": "75-90%",
+            "color": "#3B82F6",
+            "alert": false,
+            "priority": "none"
+          },
+          {
+            "level": "overstock",
+            "threshold": ">90%",
+            "color": "#8B5CF6",
+            "alert": true,
+            "priority": "low"
+          }
+        ],
+        "metrics": [
+          "item_name",
+          "current_quantity",
+          "unit",
+          "min_level",
+          "max_level",
+          "stock_percentage",
+          "last_restock_date",
+          "days_until_empty"
+        ],
+        "views": [
+          "all_items",
+          "critical_only",
+          "by_category",
+          "by_supplier"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P0",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_inventory_forecast",
+        "feature_id": "RPT-INV-002",
+        "name_tr": "Stok Tahmin Raporu",
+        "name_en": "Inventory Forecast Report",
+        "category": "INVENTORY",
+        "subcategory": "forecasting",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Stok tüketim tahmini ve otomatik sipariş önerileri",
+        "description_en": "Stock consumption forecast and auto-reorder suggestions",
+        "ai_model": {
+          "primary": "prophet",
+          "secondary": "claude-haiku"
+        },
+        "credit_cost": 3,
+        "auto_generate": true,
+        "generation_frequency": "daily",
+        "forecast_features": {
+          "consumption_prediction": {
+            "horizons": [7, 14, 30],
+            "confidence_intervals": [80, 95]
+          },
+          "stockout_prediction": {
+            "days_to_stockout": true,
+            "stockout_probability": true
+          },
+          "reorder_suggestions": {
+            "optimal_quantity": true,
+            "optimal_timing": true,
+            "supplier_recommendations": true
+          }
+        },
+        "factors_considered": [
+          "historical_consumption",
+          "seasonality",
+          "day_of_week",
+          "special_events",
+          "menu_changes",
+          "weather_impact"
+        ],
+        "outputs": [
+          "forecast_chart",
+          "reorder_list",
+          "cost_projection",
+          "waste_prediction"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 8
+      },
+      {
+        "feature_key": "report_inventory_waste",
+        "feature_id": "RPT-INV-003",
+        "name_tr": "Fire/Kayıp Raporu",
+        "name_en": "Waste/Shrinkage Report",
+        "category": "INVENTORY",
+        "subcategory": "waste",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Fire, kayıp ve atık analizi ile önleme önerileri",
+        "description_en": "Waste, shrinkage analysis with prevention suggestions",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 3,
+        "auto_generate": false,
+        "waste_categories": [
+          {
+            "category": "spoilage",
+            "name_tr": "Bozulma",
+            "causes": ["expiration", "improper_storage", "quality_issues"]
+          },
+          {
+            "category": "overproduction",
+            "name_tr": "Fazla Üretim",
+            "causes": ["demand_mismatch", "poor_planning"]
+          },
+          {
+            "category": "portion_waste",
+            "name_tr": "Porsiyon Atığı",
+            "causes": ["customer_returns", "plate_waste"]
+          },
+          {
+            "category": "prep_waste",
+            "name_tr": "Hazırlık Atığı",
+            "causes": ["trimming", "peeling", "mistakes"]
+          },
+          {
+            "category": "shrinkage",
+            "name_tr": "Fire/Kayıp",
+            "causes": ["theft", "spillage", "breakage", "unaccounted"]
+          }
+        ],
+        "metrics": [
+          "total_waste_value",
+          "waste_percentage",
+          "waste_by_category",
+          "waste_by_item",
+          "waste_trend",
+          "waste_vs_benchmark"
+        ],
+        "ai_recommendations": [
+          "portion_adjustments",
+          "prep_schedule_optimization",
+          "storage_improvements",
+          "ordering_adjustments",
+          "menu_modifications"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 6
+      },
+      {
+        "feature_key": "report_inventory_turnover",
+        "feature_id": "RPT-INV-004",
+        "name_tr": "Stok Devir Hızı Raporu",
+        "name_en": "Inventory Turnover Report",
+        "category": "INVENTORY",
+        "subcategory": "efficiency",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Stok devir hızı analizi ve optimizasyon",
+        "description_en": "Inventory turnover analysis and optimization",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "turnover_metrics": [
+          {
+            "metric": "turnover_ratio",
+            "name_tr": "Devir Oranı",
+            "formula": "COGS / Average Inventory",
+            "benchmark": "12-24 per year"
+          },
+          {
+            "metric": "days_on_hand",
+            "name_tr": "Elde Tutma Gün",
+            "formula": "365 / Turnover Ratio",
+            "benchmark": "15-30 days"
+          },
+          {
+            "metric": "stock_to_sales_ratio",
+            "name_tr": "Stok/Satış Oranı",
+            "formula": "Inventory Value / Sales"
+          }
+        ],
+        "analysis_dimensions": [
+          "by_item",
+          "by_category",
+          "by_supplier",
+          "trend_over_time"
+        ],
+        "ai_insights": [
+          "slow_moving_items",
+          "fast_moving_items",
+          "reorder_point_adjustments",
+          "par_level_recommendations"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_inventory_cost_analysis",
+        "feature_id": "RPT-INV-005",
+        "name_tr": "Malzeme Maliyet Analizi",
+        "name_en": "Ingredient Cost Analysis",
+        "category": "INVENTORY",
+        "subcategory": "cost",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Malzeme maliyet trendleri ve optimizasyon önerileri",
+        "description_en": "Ingredient cost trends and optimization suggestions",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": false,
+        "cost_metrics": [
+          "total_inventory_value",
+          "cost_by_category",
+          "cost_by_supplier",
+          "price_trend_by_item",
+          "food_cost_percentage",
+          "cost_variance"
+        ],
+        "analysis_features": [
+          "price_history",
+          "supplier_comparison",
+          "substitute_suggestions",
+          "bulk_buying_opportunities",
+          "seasonal_pricing_patterns"
+        ],
+        "ai_recommendations": [
+          "supplier_switch_opportunities",
+          "negotiation_points",
+          "recipe_cost_optimization",
+          "menu_price_adjustments"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 7
+      },
+      {
+        "feature_key": "report_inventory_supplier",
+        "feature_id": "RPT-INV-006",
+        "name_tr": "Tedarikçi Performans Raporu",
+        "name_en": "Supplier Performance Report",
+        "category": "INVENTORY",
+        "subcategory": "supplier",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Tedarikçi performans değerlendirmesi",
+        "description_en": "Supplier performance evaluation",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "supplier_metrics": [
+          "on_time_delivery_rate",
+          "order_accuracy",
+          "quality_rating",
+          "price_competitiveness",
+          "lead_time",
+          "minimum_order_flexibility"
+        ],
+        "scoring": {
+          "total_score": "weighted_average",
+          "weights": {
+            "delivery": 0.25,
+            "accuracy": 0.25,
+            "quality": 0.25,
+            "price": 0.15,
+            "flexibility": 0.10
+          }
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_inventory_purchase_history",
+        "feature_id": "RPT-INV-007",
+        "name_tr": "Satın Alma Geçmişi Raporu",
+        "name_en": "Purchase History Report",
+        "category": "INVENTORY",
+        "subcategory": "purchasing",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Satın alma geçmişi ve trend analizi",
+        "description_en": "Purchase history and trend analysis",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 1,
+        "auto_generate": false,
+        "history_details": [
+          "purchase_date",
+          "supplier",
+          "items",
+          "quantities",
+          "unit_prices",
+          "total_amount",
+          "delivery_date"
+        ],
+        "analysis_features": [
+          "spending_trend",
+          "price_changes",
+          "order_frequency",
+          "seasonal_patterns"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      },
+      {
+        "feature_key": "report_inventory_expiration",
+        "feature_id": "RPT-INV-008",
+        "name_tr": "Son Kullanma Tarihi Raporu",
+        "name_en": "Expiration Date Report",
+        "category": "INVENTORY",
+        "subcategory": "freshness",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Yaklaşan son kullanma tarihleri ve aksiyon listesi",
+        "description_en": "Approaching expiration dates with action list",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 1,
+        "auto_generate": true,
+        "alert_trigger": "expiration_approaching",
+        "alert_windows": [
+          {"days": 1, "priority": "critical", "color": "#EF4444"},
+          {"days": 3, "priority": "high", "color": "#F97316"},
+          {"days": 7, "priority": "medium", "color": "#EAB308"},
+          {"days": 14, "priority": "low", "color": "#22C55E"}
+        ],
+        "actions": [
+          "use_first_list",
+          "discount_candidates",
+          "donation_options",
+          "disposal_schedule"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      }
+    ],
+    "CAMPAIGN_REPORTS": [
+      {
+        "feature_key": "report_campaign_overview",
+        "feature_id": "RPT-CMP-001",
+        "name_tr": "Kampanya Genel Bakış",
+        "name_en": "Campaign Overview",
+        "category": "CAMPAIGN",
+        "subcategory": "general",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Aktif kampanyaların özet performansı",
+        "description_en": "Active campaigns summary performance",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "campaign_types": [
+          "discount",
+          "buy_x_get_y",
+          "happy_hour",
+          "loyalty_multiplier",
+          "free_item",
+          "bundle",
+          "referral"
+        ],
+        "overview_metrics": [
+          "active_campaigns",
+          "total_redemptions",
+          "total_discount_value",
+          "revenue_attributed",
+          "new_customers_acquired"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      },
+      {
+        "feature_key": "report_campaign_roi",
+        "feature_id": "RPT-CMP-002",
+        "name_tr": "Kampanya ROI Raporu",
+        "name_en": "Campaign ROI Report",
+        "category": "CAMPAIGN",
+        "subcategory": "performance",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Kampanya yatırım getirisi ve etkinlik analizi",
+        "description_en": "Campaign return on investment and effectiveness analysis",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": false,
+        "roi_metrics": [
+          {
+            "metric": "campaign_roi",
+            "name_tr": "Kampanya ROI",
+            "formula": "(Attributed Revenue - Discount Cost - Campaign Cost) / Total Campaign Cost * 100",
+            "format": "percentage"
+          },
+          {
+            "metric": "incremental_revenue",
+            "name_tr": "Ek Ciro",
+            "description": "Kampanya olmadan elde edilemeyecek ciro"
+          },
+          {
+            "metric": "discount_to_revenue_ratio",
+            "name_tr": "İndirim/Ciro Oranı"
+          },
+          {
+            "metric": "cost_per_acquisition",
+            "name_tr": "Müşteri Başı Maliyet"
+          },
+          {
+            "metric": "cost_per_redemption",
+            "name_tr": "Kullanım Başı Maliyet"
+          }
+        ],
+        "effectiveness_metrics": [
+          "redemption_rate",
+          "conversion_rate",
+          "average_order_with_campaign",
+          "average_order_without_campaign",
+          "basket_size_impact",
+          "new_vs_returning_usage"
+        ],
+        "ai_insights": [
+          "best_performing_campaigns",
+          "underperforming_campaigns",
+          "optimization_suggestions",
+          "audience_targeting_recommendations"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 7
+      },
+      {
+        "feature_key": "report_campaign_comparison",
+        "feature_id": "RPT-CMP-003",
+        "name_tr": "Kampanya Karşılaştırma Raporu",
+        "name_en": "Campaign Comparison Report",
+        "category": "CAMPAIGN",
+        "subcategory": "comparison",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Kampanyalar arası performans karşılaştırması",
+        "description_en": "Cross-campaign performance comparison",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": false,
+        "comparison_dimensions": [
+          "roi",
+          "redemption_rate",
+          "revenue_impact",
+          "customer_acquisition",
+          "basket_size",
+          "timing_effectiveness"
+        ],
+        "comparison_types": [
+          "campaign_vs_campaign",
+          "campaign_type_comparison",
+          "time_period_comparison",
+          "target_audience_comparison"
+        ],
+        "ai_recommendations": [
+          "winning_campaign_patterns",
+          "optimal_campaign_mix",
+          "budget_allocation_suggestions"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_campaign_attribution",
+        "feature_id": "RPT-CMP-004",
+        "name_tr": "Kampanya Attribution Raporu",
+        "name_en": "Campaign Attribution Report",
+        "category": "CAMPAIGN",
+        "subcategory": "attribution",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Kampanya etkisi attribution modeli",
+        "description_en": "Campaign impact attribution modeling",
+        "ai_model": {
+          "primary": "ml_attribution",
+          "secondary": "claude-sonnet"
+        },
+        "credit_cost": 8,
+        "auto_generate": false,
+        "attribution_models": [
+          {
+            "model": "first_touch",
+            "name_tr": "İlk Temas",
+            "description": "İlk etkileşime tam kredi"
+          },
+          {
+            "model": "last_touch",
+            "name_tr": "Son Temas",
+            "description": "Son etkileşime tam kredi"
+          },
+          {
+            "model": "linear",
+            "name_tr": "Doğrusal",
+            "description": "Tüm temaslara eşit kredi"
+          },
+          {
+            "model": "time_decay",
+            "name_tr": "Zaman Azaltmalı",
+            "description": "Son temaslara daha fazla kredi"
+          },
+          {
+            "model": "data_driven",
+            "name_tr": "Veri Odaklı",
+            "description": "ML tabanlı optimal dağılım"
+          }
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 10
+      },
+      {
+        "feature_key": "report_loyalty_overview",
+        "feature_id": "RPT-CMP-005",
+        "name_tr": "Sadakat Programı Özeti",
+        "name_en": "Loyalty Program Overview",
+        "category": "CAMPAIGN",
+        "subcategory": "loyalty",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Sadakat programı genel performansı",
+        "description_en": "Loyalty program overall performance",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "loyalty_metrics": [
+          "total_members",
+          "active_members",
+          "new_signups",
+          "points_issued",
+          "points_redeemed",
+          "redemption_rate",
+          "member_spend_vs_nonmember",
+          "member_frequency_vs_nonmember"
+        ],
+        "tier_analysis": {
+          "tiers": ["bronze", "silver", "gold", "platinum"],
+          "per_tier_metrics": [
+            "member_count",
+            "avg_spend",
+            "avg_frequency",
+            "upgrade_rate",
+            "churn_rate"
+          ]
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_loyalty_member_analysis",
+        "feature_id": "RPT-CMP-006",
+        "name_tr": "Üye Analiz Raporu",
+        "name_en": "Member Analysis Report",
+        "category": "CAMPAIGN",
+        "subcategory": "loyalty",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Sadakat üyelerinin detaylı davranış analizi",
+        "description_en": "Detailed behavior analysis of loyalty members",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": false,
+        "analysis_features": [
+          "member_journey",
+          "tier_progression",
+          "points_earning_patterns",
+          "redemption_preferences",
+          "engagement_score",
+          "lifetime_value_impact"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 6
+      },
+      {
+        "feature_key": "report_coupon_analysis",
+        "feature_id": "RPT-CMP-007",
+        "name_tr": "Kupon Analiz Raporu",
+        "name_en": "Coupon Analysis Report",
+        "category": "CAMPAIGN",
+        "subcategory": "coupons",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Kupon kullanımı ve performans analizi",
+        "description_en": "Coupon usage and performance analysis",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "coupon_metrics": [
+          "total_issued",
+          "total_redeemed",
+          "redemption_rate",
+          "total_discount_value",
+          "avg_order_with_coupon",
+          "new_customer_coupons",
+          "returning_customer_coupons"
+        ],
+        "fraud_detection": {
+          "enabled": true,
+          "checks": [
+            "duplicate_usage",
+            "expired_usage",
+            "invalid_conditions",
+            "abuse_patterns"
+          ]
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      },
+      {
+        "feature_key": "report_referral_program",
+        "feature_id": "RPT-CMP-008",
+        "name_tr": "Referans Program Raporu",
+        "name_en": "Referral Program Report",
+        "category": "CAMPAIGN",
+        "subcategory": "referral",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Referans programı performansı ve viral katsayısı",
+        "description_en": "Referral program performance and viral coefficient",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "referral_metrics": [
+          "total_referrers",
+          "total_referred",
+          "conversion_rate",
+          "viral_coefficient",
+          "rewards_distributed",
+          "referred_customer_ltv"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      }
+    ],
+    "OPERATION_REPORTS": [
+      {
+        "feature_key": "report_table_utilization",
+        "feature_id": "RPT-OPR-001",
+        "name_tr": "Masa Kullanım Raporu",
+        "name_en": "Table Utilization Report",
+        "category": "OPERATION",
+        "subcategory": "table",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Masa doluluk oranı ve verimlilik analizi",
+        "description_en": "Table occupancy rate and efficiency analysis",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "utilization_metrics": [
+          {
+            "metric": "occupancy_rate",
+            "name_tr": "Doluluk Oranı",
+            "formula": "Occupied Tables / Total Tables * 100",
+            "format": "percentage"
+          },
+          {
+            "metric": "seat_utilization",
+            "name_tr": "Koltuk Kullanımı",
+            "formula": "Seated Guests / Total Seats * 100",
+            "format": "percentage"
+          },
+          {
+            "metric": "revenue_per_seat",
+            "name_tr": "Koltuk Başı Ciro",
+            "format": "currency"
+          },
+          {
+            "metric": "revenue_per_sqm",
+            "name_tr": "m² Başı Ciro",
+            "format": "currency"
+          }
+        ],
+        "time_analysis": {
+          "hourly_heatmap": true,
+          "peak_vs_offpeak": true,
+          "day_of_week_comparison": true
+        },
+        "visualizations": [
+          "floor_plan_heatmap",
+          "utilization_timeline",
+          "table_performance_chart"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 6
+      },
+      {
+        "feature_key": "report_table_turnover",
+        "feature_id": "RPT-OPR-002",
+        "name_tr": "Masa Devir Hızı Raporu",
+        "name_en": "Table Turnover Report",
+        "category": "OPERATION",
+        "subcategory": "table",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Masa başına devir hızı ve optimizasyon",
+        "description_en": "Per-table turnover rate and optimization",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "turnover_metrics": [
+          {
+            "metric": "turns_per_day",
+            "name_tr": "Günlük Devir",
+            "benchmark": "2.5-4.0"
+          },
+          {
+            "metric": "avg_dining_time",
+            "name_tr": "Ortalama Yemek Süresi",
+            "unit": "minutes"
+          },
+          {
+            "metric": "table_wait_time",
+            "name_tr": "Masa Bekleme Süresi",
+            "unit": "minutes"
+          }
+        ],
+        "optimization_insights": [
+          "slow_turning_tables",
+          "optimal_seating_strategy",
+          "reservation_timing"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      },
+      {
+        "feature_key": "report_kitchen_performance",
+        "feature_id": "RPT-OPR-003",
+        "name_tr": "Mutfak Performans Raporu",
+        "name_en": "Kitchen Performance Report",
+        "category": "OPERATION",
+        "subcategory": "kitchen",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Mutfak verimliliği ve darboğaz analizi",
+        "description_en": "Kitchen efficiency and bottleneck analysis",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": false,
+        "kitchen_metrics": [
+          {
+            "metric": "avg_prep_time",
+            "name_tr": "Ortalama Hazırlık Süresi",
+            "unit": "minutes",
+            "breakdown_by": ["item_category", "complexity"]
+          },
+          {
+            "metric": "orders_per_hour",
+            "name_tr": "Saatlik Sipariş Kapasitesi"
+          },
+          {
+            "metric": "ticket_time",
+            "name_tr": "Ticket Süresi",
+            "unit": "minutes"
+          },
+          {
+            "metric": "remake_rate",
+            "name_tr": "Yeniden Yapım Oranı",
+            "format": "percentage"
+          },
+          {
+            "metric": "food_cost_variance",
+            "name_tr": "Food Cost Sapması",
+            "format": "percentage"
+          }
+        ],
+        "bottleneck_analysis": {
+          "station_breakdown": ["grill", "fry", "saute", "cold", "dessert", "expo"],
+          "peak_time_analysis": true,
+          "staff_allocation_review": true
+        },
+        "ai_recommendations": [
+          "prep_schedule_optimization",
+          "station_rebalancing",
+          "menu_timing_adjustments",
+          "staff_deployment"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 8
+      },
+      {
+        "feature_key": "report_service_time",
+        "feature_id": "RPT-OPR-004",
+        "name_tr": "Servis Süre Raporu",
+        "name_en": "Service Time Report",
+        "category": "OPERATION",
+        "subcategory": "service",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Sipariş alımdan servise kadar süre analizi",
+        "description_en": "Order to service time analysis",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "service_stages": [
+          {
+            "stage": "greeting",
+            "name_tr": "Karşılama",
+            "target_seconds": 30
+          },
+          {
+            "stage": "order_taking",
+            "name_tr": "Sipariş Alma",
+            "target_minutes": 3
+          },
+          {
+            "stage": "drink_delivery",
+            "name_tr": "İçecek Servisi",
+            "target_minutes": 3
+          },
+          {
+            "stage": "food_delivery",
+            "name_tr": "Yemek Servisi",
+            "target_minutes": 15
+          },
+          {
+            "stage": "check_back",
+            "name_tr": "Kontrol",
+            "target_minutes": 5
+          },
+          {
+            "stage": "bill_presentation",
+            "name_tr": "Hesap Sunumu",
+            "target_minutes": 2
+          },
+          {
+            "stage": "payment_processing",
+            "name_tr": "Ödeme İşleme",
+            "target_minutes": 2
+          }
+        ],
+        "sla_tracking": true,
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_wait_time",
+        "feature_id": "RPT-OPR-005",
+        "name_tr": "Bekleme Süresi Raporu",
+        "name_en": "Wait Time Report",
+        "category": "OPERATION",
+        "subcategory": "service",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Müşteri bekleme süreleri ve optimizasyon",
+        "description_en": "Customer wait times and optimization",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "wait_categories": [
+          "wait_for_table",
+          "wait_for_menu",
+          "wait_for_order_taking",
+          "wait_for_food",
+          "wait_for_bill"
+        ],
+        "metrics": [
+          "avg_wait_time",
+          "max_wait_time",
+          "wait_time_distribution",
+          "wait_time_by_time_slot",
+          "customer_satisfaction_correlation"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      },
+      {
+        "feature_key": "report_reservation_analysis",
+        "feature_id": "RPT-OPR-006",
+        "name_tr": "Rezervasyon Analizi",
+        "name_en": "Reservation Analysis",
+        "category": "OPERATION",
+        "subcategory": "reservation",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Rezervasyon performansı ve no-show analizi",
+        "description_en": "Reservation performance and no-show analysis",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "reservation_metrics": [
+          "total_reservations",
+          "reservation_conversion_rate",
+          "no_show_rate",
+          "cancellation_rate",
+          "avg_party_size",
+          "lead_time_distribution",
+          "source_breakdown"
+        ],
+        "no_show_analysis": {
+          "patterns": true,
+          "prediction": true,
+          "overbooking_recommendations": true
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_delivery_performance",
+        "feature_id": "RPT-OPR-007",
+        "name_tr": "Teslimat Performans Raporu",
+        "name_en": "Delivery Performance Report",
+        "category": "OPERATION",
+        "subcategory": "delivery",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Teslimat süreleri ve kalite analizi",
+        "description_en": "Delivery times and quality analysis",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "delivery_metrics": [
+          "avg_delivery_time",
+          "on_time_rate",
+          "delivery_accuracy",
+          "customer_rating",
+          "delivery_cost",
+          "orders_per_driver"
+        ],
+        "breakdown_by": [
+          "driver",
+          "zone",
+          "time_of_day",
+          "order_size"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_takeaway_analysis",
+        "feature_id": "RPT-OPR-008",
+        "name_tr": "Paket Servis Analizi",
+        "name_en": "Takeaway Analysis",
+        "category": "OPERATION",
+        "subcategory": "takeaway",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Paket servis performansı ve süre analizi",
+        "description_en": "Takeaway performance and time analysis",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "takeaway_metrics": [
+          "total_takeaway_orders",
+          "takeaway_revenue",
+          "avg_prep_time",
+          "on_time_rate",
+          "packaging_cost"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      },
+      {
+        "feature_key": "report_operational_issues",
+        "feature_id": "RPT-OPR-009",
+        "name_tr": "Operasyonel Sorun Raporu",
+        "name_en": "Operational Issues Report",
+        "category": "OPERATION",
+        "subcategory": "issues",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Operasyonel sorunlar, şikayetler ve çözüm analizi",
+        "description_en": "Operational issues, complaints and resolution analysis",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 3,
+        "auto_generate": false,
+        "issue_categories": [
+          "food_quality",
+          "service_quality",
+          "wait_time",
+          "order_accuracy",
+          "cleanliness",
+          "payment_issues",
+          "system_issues"
+        ],
+        "tracking_features": [
+          "issue_frequency",
+          "resolution_time",
+          "recurring_patterns",
+          "staff_involvement"
+        ],
+        "ai_analysis": {
+          "root_cause": true,
+          "prevention_suggestions": true,
+          "training_recommendations": true
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 6
+      },
+      {
+        "feature_key": "report_equipment_status",
+        "feature_id": "RPT-OPR-010",
+        "name_tr": "Ekipman Durum Raporu",
+        "name_en": "Equipment Status Report",
+        "category": "OPERATION",
+        "subcategory": "equipment",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Ekipman durumu ve bakım takibi",
+        "description_en": "Equipment status and maintenance tracking",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 1,
+        "auto_generate": true,
+        "alert_trigger": "maintenance_due",
+        "tracking_features": [
+          "equipment_inventory",
+          "maintenance_schedule",
+          "downtime_tracking",
+          "repair_history",
+          "replacement_forecast"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      }
+    ],
+    "DIGITAL_REPORTS": [
+      {
+        "feature_key": "report_qr_scan_analytics",
+        "feature_id": "RPT-DIG-001",
+        "name_tr": "QR Tarama Analizi",
+        "name_en": "QR Scan Analytics",
+        "category": "DIGITAL",
+        "subcategory": "qr",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "QR kod tarama istatistikleri ve trendler",
+        "description_en": "QR code scan statistics and trends",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 1,
+        "auto_generate": false,
+        "scan_metrics": [
+          "total_scans",
+          "unique_scans",
+          "scan_to_order_conversion",
+          "scans_by_table",
+          "scans_by_hour",
+          "scans_by_day",
+          "device_breakdown",
+          "repeat_scan_rate"
+        ],
+        "qr_performance": [
+          "fastest_tables",
+          "underperforming_qrs",
+          "replacement_needs"
+        ],
+        "plan_availability": {
+          "free": true,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      },
+      {
+        "feature_key": "report_menu_views",
+        "feature_id": "RPT-DIG-002",
+        "name_tr": "Menü Görüntüleme Raporu",
+        "name_en": "Menu Views Report",
+        "category": "DIGITAL",
+        "subcategory": "menu",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Dijital menü görüntüleme ve kullanıcı davranışı",
+        "description_en": "Digital menu views and user behavior",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 1,
+        "auto_generate": false,
+        "view_metrics": [
+          "total_views",
+          "unique_visitors",
+          "avg_session_duration",
+          "pages_per_session",
+          "category_views",
+          "item_views",
+          "search_queries",
+          "filter_usage"
+        ],
+        "behavior_analysis": [
+          "scroll_depth",
+          "time_on_item",
+          "add_to_cart_rate",
+          "abandonment_points"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_digital_engagement",
+        "feature_id": "RPT-DIG-003",
+        "name_tr": "Dijital Etkileşim Raporu",
+        "name_en": "Digital Engagement Report",
+        "category": "DIGITAL",
+        "subcategory": "engagement",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Müşteri dijital etkileşim analizi",
+        "description_en": "Customer digital engagement analysis",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "engagement_metrics": [
+          "app_downloads",
+          "active_users",
+          "session_frequency",
+          "feature_usage",
+          "notification_engagement",
+          "review_submissions",
+          "social_shares"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      },
+      {
+        "feature_key": "report_website_analytics",
+        "feature_id": "RPT-DIG-004",
+        "name_tr": "Web Sitesi Analitiği",
+        "name_en": "Website Analytics",
+        "category": "DIGITAL",
+        "subcategory": "website",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Web sitesi trafik ve dönüşüm analizi",
+        "description_en": "Website traffic and conversion analysis",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "website_metrics": [
+          "visitors",
+          "page_views",
+          "bounce_rate",
+          "avg_session_duration",
+          "traffic_sources",
+          "conversion_rate",
+          "goal_completions"
+        ],
+        "integration": "google_analytics",
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_ordering_funnel",
+        "feature_id": "RPT-DIG-005",
+        "name_tr": "Sipariş Dönüşüm Hunisi",
+        "name_en": "Ordering Conversion Funnel",
+        "category": "DIGITAL",
+        "subcategory": "conversion",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Dijital sipariş dönüşüm hunisi analizi",
+        "description_en": "Digital ordering conversion funnel analysis",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 3,
+        "auto_generate": false,
+        "funnel_stages": [
+          {
+            "stage": "qr_scan",
+            "name_tr": "QR Tarama"
+          },
+          {
+            "stage": "menu_view",
+            "name_tr": "Menü Görüntüleme"
+          },
+          {
+            "stage": "item_view",
+            "name_tr": "Ürün İnceleme"
+          },
+          {
+            "stage": "add_to_cart",
+            "name_tr": "Sepete Ekleme"
+          },
+          {
+            "stage": "checkout_start",
+            "name_tr": "Ödeme Başlangıcı"
+          },
+          {
+            "stage": "order_complete",
+            "name_tr": "Sipariş Tamamlama"
+          }
+        ],
+        "analysis_features": [
+          "stage_conversion_rates",
+          "drop_off_analysis",
+          "time_between_stages",
+          "device_comparison",
+          "a_b_test_results"
+        ],
+        "ai_recommendations": [
+          "friction_point_identification",
+          "ux_improvements",
+          "personalization_opportunities"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 6
+      },
+      {
+        "feature_key": "report_digital_payments",
+        "feature_id": "RPT-DIG-006",
+        "name_tr": "Dijital Ödeme Raporu",
+        "name_en": "Digital Payments Report",
+        "category": "DIGITAL",
+        "subcategory": "payments",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Dijital ödeme yöntemleri ve performansı",
+        "description_en": "Digital payment methods and performance",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 1,
+        "auto_generate": false,
+        "payment_metrics": [
+          "digital_payment_rate",
+          "payment_method_breakdown",
+          "transaction_success_rate",
+          "avg_transaction_time",
+          "failed_transaction_analysis"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": true,
+          "pro": true,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      }
+    ],
+    "BRANCH_REPORTS": [
+      {
+        "feature_key": "report_branch_comparison",
+        "feature_id": "RPT-BRN-001",
+        "name_tr": "Şube Karşılaştırma Raporu",
+        "name_en": "Branch Comparison Report",
+        "category": "BRANCH",
+        "subcategory": "comparison",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Şubeler arası performans karşılaştırması",
+        "description_en": "Cross-branch performance comparison",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": false,
+        "comparison_metrics": [
+          "revenue",
+          "orders",
+          "avg_order_value",
+          "customer_count",
+          "avg_rating",
+          "staff_efficiency",
+          "food_cost",
+          "labor_cost"
+        ],
+        "comparison_views": [
+          "side_by_side",
+          "ranking",
+          "trend_comparison",
+          "variance_analysis"
+        ],
+        "ai_insights": [
+          "best_practice_identification",
+          "underperforming_areas",
+          "improvement_recommendations"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 7
+      },
+      {
+        "feature_key": "report_branch_ranking",
+        "feature_id": "RPT-BRN-002",
+        "name_tr": "Şube Sıralaması",
+        "name_en": "Branch Ranking",
+        "category": "BRANCH",
+        "subcategory": "ranking",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Şube performans sıralaması ve liderlik tablosu",
+        "description_en": "Branch performance ranking and leaderboard",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "ranking_criteria": [
+          "revenue",
+          "revenue_growth",
+          "customer_satisfaction",
+          "staff_efficiency",
+          "food_cost_control",
+          "overall_score"
+        ],
+        "ranking_periods": [
+          "daily",
+          "weekly",
+          "monthly",
+          "quarterly"
+        ],
+        "gamification": {
+          "badges": true,
+          "achievements": true,
+          "inter_branch_competition": true
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 4
+      },
+      {
+        "feature_key": "report_branch_consolidated",
+        "feature_id": "RPT-BRN-003",
+        "name_tr": "Konsolide Şube Raporu",
+        "name_en": "Consolidated Branch Report",
+        "category": "BRANCH",
+        "subcategory": "consolidated",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Tüm şubelerin birleşik performans özeti",
+        "description_en": "Combined performance summary of all branches",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": false,
+        "consolidated_views": [
+          "total_revenue",
+          "total_orders",
+          "total_customers",
+          "aggregate_ratings",
+          "combined_costs",
+          "overall_profitability"
+        ],
+        "breakdown_options": [
+          "by_region",
+          "by_concept",
+          "by_size",
+          "by_age"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 6
+      },
+      {
+        "feature_key": "report_branch_best_practices",
+        "feature_id": "RPT-BRN-004",
+        "name_tr": "Şube Best Practice Raporu",
+        "name_en": "Branch Best Practices Report",
+        "category": "BRANCH",
+        "subcategory": "best_practices",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "En iyi performans gösteren şubelerden öğrenimler",
+        "description_en": "Learnings from top performing branches",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 8,
+        "auto_generate": false,
+        "analysis_features": [
+          "success_pattern_detection",
+          "operational_differences",
+          "staff_practices",
+          "customer_engagement_tactics",
+          "menu_mix_analysis"
+        ],
+        "ai_recommendations": [
+          "transferable_practices",
+          "implementation_roadmap",
+          "expected_impact"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 8
+      },
+      {
+        "feature_key": "report_branch_individual",
+        "feature_id": "RPT-BRN-005",
+        "name_tr": "Tekil Şube Raporu",
+        "name_en": "Individual Branch Report",
+        "category": "BRANCH",
+        "subcategory": "individual",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Tek şube için detaylı performans raporu",
+        "description_en": "Detailed performance report for single branch",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": false,
+        "report_sections": [
+          "executive_summary",
+          "financial_performance",
+          "operational_metrics",
+          "customer_metrics",
+          "staff_performance",
+          "inventory_status",
+          "ai_recommendations"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P1",
+        "implementation_status": "planned",
+        "estimated_effort_days": 6
+      },
+      {
+        "feature_key": "report_branch_geo_analysis",
+        "feature_id": "RPT-BRN-006",
+        "name_tr": "Coğrafi Analiz Raporu",
+        "name_en": "Geographic Analysis Report",
+        "category": "BRANCH",
+        "subcategory": "geographic",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Bölge bazlı performans ve pazar analizi",
+        "description_en": "Region-based performance and market analysis",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": false,
+        "geo_features": [
+          "heatmap_visualization",
+          "regional_comparison",
+          "demographic_correlation",
+          "market_penetration",
+          "expansion_opportunities"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": false,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 8
+      },
+      {
+        "feature_key": "report_branch_standards_compliance",
+        "feature_id": "RPT-BRN-007",
+        "name_tr": "Standart Uyumluluk Raporu",
+        "name_en": "Standards Compliance Report",
+        "category": "BRANCH",
+        "subcategory": "compliance",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Şube standart ve prosedür uyumluluk takibi",
+        "description_en": "Branch standards and procedure compliance tracking",
+        "ai_model": {
+          "primary": "claude-haiku",
+          "fallback": "gpt-4o-mini"
+        },
+        "credit_cost": 2,
+        "auto_generate": false,
+        "compliance_areas": [
+          "food_safety",
+          "service_standards",
+          "brand_guidelines",
+          "operational_procedures",
+          "hygiene_standards"
+        ],
+        "scoring": {
+          "compliance_score": true,
+          "audit_tracking": true,
+          "corrective_actions": true
+        },
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": true,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 5
+      },
+      {
+        "feature_key": "report_franchise_performance",
+        "feature_id": "RPT-BRN-008",
+        "name_tr": "Franchise Performans Raporu",
+        "name_en": "Franchise Performance Report",
+        "category": "BRANCH",
+        "subcategory": "franchise",
+        "type": "boolean",
+        "default_value": false,
+        "description_tr": "Franchise bazlı performans ve royalty hesabı",
+        "description_en": "Franchise-based performance and royalty calculation",
+        "ai_model": {
+          "primary": "claude-sonnet",
+          "fallback": "gpt-4o"
+        },
+        "credit_cost": 5,
+        "auto_generate": false,
+        "franchise_metrics": [
+          "revenue",
+          "royalty_calculation",
+          "compliance_score",
+          "brand_adherence",
+          "growth_rate"
+        ],
+        "plan_availability": {
+          "free": false,
+          "lite": false,
+          "pro": false,
+          "business": false,
+          "enterprise": true
+        },
+        "priority": "P2",
+        "implementation_status": "planned",
+        "estimated_effort_days": 6
+      }
+    ]
+  }
+}

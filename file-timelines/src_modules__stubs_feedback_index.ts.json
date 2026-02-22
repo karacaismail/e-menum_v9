@@ -1,0 +1,28 @@
+{
+  "file_path": "src/modules/_stubs/feedback/index.ts",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "/**\n * Feedback Module Stub\n *\n * This is a placeholder module for future feedback and survey implementation.\n * Only interfaces and types are exported - no implementation.\n *\n * @module modules/_stubs/feedback\n */\n\nimport { AppException } from '@/core/exceptions/app.exception';\n\n// -----------------------------------------------------------------------------\n// Types Export\n// -----------------------------------------------------------------------------\n\nexport {\n  // Enums\n  FeedbackStatus,\n  FeedbackType,\n  RatingCategory,\n  SurveyStatus,\n  QuestionType,\n  Sentiment,\n  // Entity types\n  type Feedback,\n  type FeedbackRating,\n  type Survey,\n  type SurveyQuestion,\n  type SurveyResponse,\n  type SurveyAnswer,\n  // Request types\n  type SubmitFeedbackRequest,\n  type RespondToFeedbackRequest,\n  type CreateSurveyRequest,\n  type SubmitSurveyResponseRequest,\n  // Response types\n  type FeedbackSummary,\n  type NPSResult,\n  // Service interfaces\n  type IFeedbackService,\n  type ISurveyService,\n  // Event payloads\n  type FeedbackSubmittedEventPayload,\n  type FeedbackRespondedEventPayload,\n  type SurveyCompletedEventPayload,\n} from '@/modules/_stubs/feedback/feedback.types';\n\n// -----------------------------------------------------------------------------\n// Stub Implementation\n// -----------------------------------------------------------------------------\n\n/**\n * Feedback service stub implementation\n */\nexport class FeedbackServiceStub {\n  async submitFeedback(): Promise<never> {\n    throw new AppException('FEEDBACK_MODULE_NOT_INSTALLED', 501, {\n      message: 'Feedback module is not installed. Please install the feedback module to use this feature.',\n    });\n  }\n\n  async getFeedback(): Promise<never> {\n    throw new AppException('FEEDBACK_MODULE_NOT_INSTALLED', 501, {\n      message: 'Feedback module is not installed. Please install the feedback module to use this feature.',\n    });\n  }\n\n  async listFeedback(): Promise<never> {\n    throw new AppException('FEEDBACK_MODULE_NOT_INSTALLED', 501, {\n      message: 'Feedback module is not installed. Please install the feedback module to use this feature.',\n    });\n  }\n\n  async respondToFeedback(): Promise<never> {\n    throw new AppException('FEEDBACK_MODULE_NOT_INSTALLED', 501, {\n      message: 'Feedback module is not installed. Please install the feedback module to use this feature.',\n    });\n  }\n\n  async getFeedbackSummary(): Promise<never> {\n    throw new AppException('FEEDBACK_MODULE_NOT_INSTALLED', 501, {\n      message: 'Feedback module is not installed. Please install the feedback module to use this feature.',\n    });\n  }\n\n  async getPublicReviews(): Promise<never> {\n    throw new AppException('FEEDBACK_MODULE_NOT_INSTALLED', 501, {\n      message: 'Feedback module is not installed. Please install the feedback module to use this feature.',\n    });\n  }\n}\n\n/**\n * Survey service stub implementation\n */\nexport class SurveyServiceStub {\n  async createSurvey(): Promise<never> {\n    throw new AppException('FEEDBACK_MODULE_NOT_INSTALLED', 501, {\n      message: 'Feedback module is not installed. Please install the feedback module to use this feature.',\n    });\n  }\n\n  async getSurvey(): Promise<never> {\n    throw new AppException('FEEDBACK_MODULE_NOT_INSTALLED', 501, {\n      message: 'Feedback module is not installed. Please install the feedback module to use this feature.',\n    });\n  }\n\n  async listSurveys(): Promise<never> {\n    throw new AppException('FEEDBACK_MODULE_NOT_INSTALLED', 501, {\n      message: 'Feedback module is not installed. Please install the feedback module to use this feature.',\n    });\n  }\n\n  async submitResponse(): Promise<never> {\n    throw new AppException('FEEDBACK_MODULE_NOT_INSTALLED', 501, {\n      message: 'Feedback module is not installed. Please install the feedback module to use this feature.',\n    });\n  }\n\n  async getNPSResult(): Promise<never> {\n    throw new AppException('FEEDBACK_MODULE_NOT_INSTALLED', 501, {\n      message: 'Feedback module is not installed. Please install the feedback module to use this feature.',\n    });\n  }\n}\n\n/**\n * Check if feedback module is available\n */\nexport function isFeedbackModuleAvailable(): boolean {\n  return false;\n}\n\n/**\n * Module metadata\n */\nexport const FEEDBACK_MODULE_METADATA = {\n  id: 'feedback',\n  name: 'Feedback Module',\n  status: 'stub' as const,\n  version: '0.0.0',\n};\n",
+        "last_modified": "2026-02-01T09:10:53.736365"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:25.859835",
+  "last_updated": "2026-02-01T08:03:25.869954"
+}

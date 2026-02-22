@@ -1,0 +1,28 @@
+{
+  "file_path": "src/modules/_core/user/index.ts",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "/**\n * User Module Public API\n *\n * Centralized exports for the User module.\n * Import from this file when using user module functionality\n * from other parts of the application.\n *\n * @module modules/_core/user\n *\n * @example\n * ```typescript\n * import {\n *   UserModule,\n *   UserService,\n *   userRoutes,\n *   type User,\n *   type CreateUserRequest,\n * } from '@/modules/_core/user';\n * ```\n */\n\n// -----------------------------------------------------------------------------\n// Module Definition\n// -----------------------------------------------------------------------------\n\nexport { UserModule, default } from '@/modules/_core/user/user.module';\nexport type {\n  UserModuleContext,\n  UserModuleHooks,\n} from '@/modules/_core/user/user.module';\n\n// -----------------------------------------------------------------------------\n// Service\n// -----------------------------------------------------------------------------\n\nexport { UserService } from '@/modules/_core/user/user.service';\n\n// -----------------------------------------------------------------------------\n// Repository\n// -----------------------------------------------------------------------------\n\nexport { UserRepository } from '@/modules/_core/user/user.repository';\nexport type {\n  PaginatedResult,\n  CreateUserData,\n  UpdateUserData,\n} from '@/modules/_core/user/user.repository';\n\n// -----------------------------------------------------------------------------\n// Controller\n// -----------------------------------------------------------------------------\n\nexport { UserController } from '@/modules/_core/user/user.controller';\n\n// -----------------------------------------------------------------------------\n// Routes\n// -----------------------------------------------------------------------------\n\nexport {\n  userRoutes,\n  buildUserApiPath,\n  buildUserAdminPath,\n  isProtectedUserRoute,\n  userEndpoints,\n} from '@/modules/_core/user/user.routes';\nexport type {\n  UserRouteConfig,\n  UserEndpointMetadata,\n} from '@/modules/_core/user/user.routes';\n\n// -----------------------------------------------------------------------------\n// Types\n// -----------------------------------------------------------------------------\n\n// Core entity types\nexport type {\n  User,\n  SafeUser,\n  UserWithRelations,\n  UserRoleInfo,\n} from '@/modules/_core/user/user.types';\n\n// Profile types\nexport type { UserProfile } from '@/modules/_core/user/user.types';\n\n// Request/Response types\nexport type {\n  CreateUserRequest,\n  CreateUserResponse,\n  UpdateUserRequest,\n  UpdateUserResponse,\n  UpdateProfileRequest,\n  UpdateProfileResponse,\n  ChangePasswordRequest,\n  ChangePasswordResponse,\n  ChangeStatusRequest,\n  ChangeStatusResponse,\n  AssignRoleRequest,\n  AssignRoleResponse,\n  RemoveRoleRequest,\n  RemoveRoleResponse,\n  InviteUserRequest,\n  InviteUserResponse,\n  UserSummary,\n} from '@/modules/_core/user/user.types';\n\n// Query/Filter types\nexport type {\n  UserListFilters,\n  UserListParams,\n} from '@/modules/_core/user/user.types';\n\n// Event types\nexport type {\n  UserCreatedEvent,\n  UserUpdatedEvent,\n  UserDeletedEvent,\n  UserStatusChangedEvent,\n  RoleAssignedEvent,\n  RoleRemovedEvent,\n  PasswordChangedEvent,\n  ProfileUpdatedEvent,\n} from '@/modules/_core/user/user.types';\n\n// Hook context types\nexport type {\n  BeforeCreateContext,\n  AfterCreateContext,\n  BeforeUpdateContext,\n  AfterUpdateContext,\n} from '@/modules/_core/user/user.types';\n\n// Module settings types\nexport type { UserModuleSettings } from '@/modules/_core/user/user.types';\n\n// Type guards and helper functions\nexport {\n  isUser,\n  isSafeUser,\n  toSafeUser,\n  toUserProfile,\n} from '@/modules/_core/user/user.types';\n\n// -----------------------------------------------------------------------------\n// Schemas (Zod validation)\n// -----------------------------------------------------------------------------\n\nexport {\n  // Base schemas\n  emailSchema,\n  passwordSchema,\n  nameSchema,\n  phoneSchema,\n  urlSchema,\n  cuidSchema,\n\n  // CRUD schemas\n  createUserSchema,\n  updateUserSchema,\n  updateProfileSchema,\n  changePasswordSchema,\n  changeStatusSchema,\n  assignRoleSchema,\n  removeRoleSchema,\n  inviteUserSchema,\n\n  // Query schemas\n  userListQuerySchema,\n  userIdSchema,\n\n  // Response schemas\n  safeUserResponseSchema,\n  userProfileResponseSchema,\n  userSummarySchema,\n\n  // Module settings schema\n  userModuleSettingsSchema,\n\n  // Utility functions\n  isValidEmail,\n  validatePassword,\n  normalizeName,\n  getFullName,\n  getInitials,\n} from '@/modules/_core/user/user.schema';\n\nexport type {\n  CreateUserInput,\n  UpdateUserInput,\n  UpdateProfileInput,\n  ChangePasswordInput,\n  ChangeStatusInput,\n  AssignRoleInput,\n  RemoveRoleInput,\n  InviteUserInput,\n  UserListQueryInput,\n  UserIdInput,\n  UserModuleSettingsInput,\n} from '@/modules/_core/user/user.schema';\n",
+        "last_modified": "2026-02-01T09:10:53.723309"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:25.496901",
+  "last_updated": "2026-02-01T08:03:25.506834"
+}

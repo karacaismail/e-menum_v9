@@ -1,0 +1,28 @@
+{
+  "file_path": "vitest.config.ts",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "import { defineConfig } from 'vitest/config';\nimport { resolve } from 'path';\n\nexport default defineConfig({\n  test: {\n    // Test environment\n    environment: 'node',\n\n    // Global test setup\n    globals: true,\n\n    // Test file patterns\n    include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],\n    exclude: ['**/node_modules/**', '**/dist/**', '**/coverage/**'],\n\n    // Coverage configuration\n    coverage: {\n      provider: 'v8',\n      reporter: ['text', 'json', 'html'],\n      exclude: [\n        'node_modules/**',\n        'dist/**',\n        '**/*.d.ts',\n        '**/*.spec.ts',\n        '**/*.test.ts',\n        '**/index.ts',\n        'coverage/**',\n        'prisma/**',\n        'scripts/**',\n      ],\n    },\n\n    // Timeout configuration\n    testTimeout: 10000,\n    hookTimeout: 10000,\n\n    // Mock configuration\n    mockReset: true,\n    restoreMocks: true,\n  },\n\n  // Path aliases (must match tsconfig.json)\n  resolve: {\n    alias: {\n      '@': resolve(__dirname, './src'),\n    },\n  },\n});\n",
+        "last_modified": "2026-02-01T09:10:53.785286"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:27.060115",
+  "last_updated": "2026-02-01T08:03:27.069997"
+}

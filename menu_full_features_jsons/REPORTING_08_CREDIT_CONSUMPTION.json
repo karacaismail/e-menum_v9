@@ -1,0 +1,474 @@
+{
+  "metadata": {
+    "document": "E-Menum Reporting Features Part 8",
+    "section": "Complete Credit Consumption Matrix",
+    "version": "3.0.0"
+  },
+  "CREDIT_CONSUMPTION_MATRIX": {
+    "summary": {
+      "total_features": 142,
+      "free_features": 12,
+      "credit_consuming_features": 130,
+      "credit_range": "0-15 credits per action"
+    },
+    "by_category": {
+      "AI_QUERY": {
+        "category_total_features": 10,
+        "features": [
+          {"feature_id": "AI-NLQ-001", "name": "Basic NL Query", "credits": 1, "model": "claude-haiku", "complexity": "simple"},
+          {"feature_id": "AI-NLQ-002", "name": "Comparison Query", "credits": 2, "model": "claude-haiku", "complexity": "medium"},
+          {"feature_id": "AI-NLQ-003", "name": "Analytical Query", "credits": 5, "model": "claude-sonnet", "complexity": "complex"},
+          {"feature_id": "AI-NLQ-004", "name": "Recommendation Query", "credits": 5, "model": "claude-sonnet", "complexity": "complex"},
+          {"feature_id": "AI-NLQ-005", "name": "Forecast Query", "credits": 5, "model": "prophet+haiku", "complexity": "complex"},
+          {"feature_id": "AI-NLQ-006", "name": "Complex Query", "credits": 10, "model": "gpt-4o", "complexity": "very_complex"},
+          {"feature_id": "AI-NLQ-007", "name": "Summary Query", "credits": 2, "model": "claude-haiku", "complexity": "medium"},
+          {"feature_id": "AI-NLQ-008", "name": "Anomaly Query", "credits": 3, "model": "claude-sonnet", "complexity": "medium"},
+          {"feature_id": "AI-NLQ-009", "name": "Trend Query", "credits": 2, "model": "claude-haiku", "complexity": "medium"},
+          {"feature_id": "AI-NLQ-010", "name": "Voice Query", "credits": 3, "model": "whisper+haiku", "complexity": "medium"}
+        ]
+      },
+      "AI_INSIGHTS": {
+        "category_total_features": 8,
+        "features": [
+          {"feature_id": "AI-INS-001", "name": "Auto Daily Insights", "credits": 0, "model": "claude-sonnet", "note": "Included in plan"},
+          {"feature_id": "AI-INS-002", "name": "Anomaly Detection", "credits": 0, "model": "ml_anomaly", "note": "Real-time, included"},
+          {"feature_id": "AI-INS-003", "name": "Trend Detection", "credits": 0, "model": "prophet", "note": "Daily auto, included"},
+          {"feature_id": "AI-INS-004", "name": "Proactive Recommendations", "credits": 3, "model": "claude-sonnet", "note": "Per recommendation set"},
+          {"feature_id": "AI-INS-005", "name": "Smart Alerts", "credits": 0, "model": "ml_classification", "note": "Included in plan"},
+          {"feature_id": "AI-INS-006", "name": "Opportunity Finder", "credits": 5, "model": "claude-sonnet", "note": "Weekly generation"},
+          {"feature_id": "AI-INS-007", "name": "Competitive Intelligence", "credits": 8, "model": "claude-sonnet", "note": "On-demand"},
+          {"feature_id": "AI-INS-008", "name": "Industry Benchmark", "credits": 3, "model": "claude-haiku", "note": "On-demand"}
+        ]
+      },
+      "FORECASTING": {
+        "category_total_features": 8,
+        "features": [
+          {"feature_id": "AI-FOR-001", "name": "Short-term Forecast (7d)", "credits": 3, "model": "prophet+haiku", "horizon": "7 days"},
+          {"feature_id": "AI-FOR-002", "name": "Medium-term Forecast (30d)", "credits": 8, "model": "prophet+sonnet", "horizon": "30 days"},
+          {"feature_id": "AI-FOR-003", "name": "Long-term Forecast (90d)", "credits": 15, "model": "prophet+sonnet", "horizon": "90 days"},
+          {"feature_id": "AI-FOR-004", "name": "Item Demand Forecast", "credits": 5, "model": "prophet", "scope": "Per item"},
+          {"feature_id": "AI-FOR-005", "name": "Staffing Forecast", "credits": 5, "model": "prophet+sonnet", "scope": "Weekly"},
+          {"feature_id": "AI-FOR-006", "name": "Inventory Forecast", "credits": 3, "model": "prophet", "scope": "7-30 days"},
+          {"feature_id": "AI-FOR-007", "name": "Churn Forecast", "credits": 8, "model": "ml_prediction+sonnet", "scope": "Per customer"},
+          {"feature_id": "AI-FOR-008", "name": "Seasonal Forecast", "credits": 5, "model": "prophet+sonnet", "scope": "Quarterly"}
+        ]
+      },
+      "WHATIF_ANALYSIS": {
+        "category_total_features": 6,
+        "features": [
+          {"feature_id": "AI-WIF-001", "name": "Pricing What-If", "credits": 5, "model": "ml_elasticity+sonnet", "scenario": "Price change"},
+          {"feature_id": "AI-WIF-002", "name": "Menu What-If", "credits": 8, "model": "ml_simulation+sonnet", "scenario": "Menu change"},
+          {"feature_id": "AI-WIF-003", "name": "Capacity What-If", "credits": 5, "model": "ml_simulation+sonnet", "scenario": "Capacity change"},
+          {"feature_id": "AI-WIF-004", "name": "Campaign What-If", "credits": 5, "model": "ml_simulation+sonnet", "scenario": "Campaign impact"},
+          {"feature_id": "AI-WIF-005", "name": "Staffing What-If", "credits": 5, "model": "ml_simulation+sonnet", "scenario": "Staff change"},
+          {"feature_id": "AI-WIF-006", "name": "Expansion What-If", "credits": 10, "model": "ml_simulation+sonnet", "scenario": "New branch"}
+        ]
+      },
+      "PERIODIC_REPORTS": {
+        "category_total_features": 12,
+        "features": [
+          {"feature_id": "RPT-PER-001", "name": "Daily Summary", "credits": 0, "model": "claude-haiku", "auto": true},
+          {"feature_id": "RPT-PER-002", "name": "Morning Brief", "credits": 0, "model": "claude-haiku", "auto": true},
+          {"feature_id": "RPT-PER-003", "name": "Evening Recap", "credits": 0, "model": "claude-haiku", "auto": true},
+          {"feature_id": "RPT-PER-004", "name": "Shift Summary", "credits": 1, "model": "claude-haiku", "auto": false},
+          {"feature_id": "RPT-PER-005", "name": "Weekly Trend", "credits": 2, "model": "claude-haiku", "auto": true},
+          {"feature_id": "RPT-PER-006", "name": "Weekly Performance Card", "credits": 2, "model": "claude-haiku", "auto": true},
+          {"feature_id": "RPT-PER-007", "name": "Weekly Staff Ranking", "credits": 2, "model": "claude-haiku", "auto": true},
+          {"feature_id": "RPT-PER-008", "name": "Monthly Analysis", "credits": 5, "model": "claude-sonnet", "auto": true},
+          {"feature_id": "RPT-PER-009", "name": "Monthly Executive", "credits": 5, "model": "claude-sonnet", "auto": true},
+          {"feature_id": "RPT-PER-010", "name": "Quarterly Review", "credits": 10, "model": "claude-sonnet", "auto": true},
+          {"feature_id": "RPT-PER-011", "name": "Yearly Summary", "credits": 15, "model": "claude-sonnet", "auto": true},
+          {"feature_id": "RPT-PER-012", "name": "Custom Period", "credits": 3, "model": "claude-sonnet", "auto": false}
+        ]
+      },
+      "SALES_REPORTS": {
+        "category_total_features": 14,
+        "features": [
+          {"feature_id": "RPT-SAL-001", "name": "Revenue Report", "credits": 1, "model": "claude-haiku"},
+          {"feature_id": "RPT-SAL-002", "name": "Sales Breakdown", "credits": 1, "model": "claude-haiku"},
+          {"feature_id": "RPT-SAL-003", "name": "Sales Comparison", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-SAL-004", "name": "Profit Margin", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-SAL-005", "name": "Payment Analysis", "credits": 1, "model": "claude-haiku"},
+          {"feature_id": "RPT-SAL-006", "name": "Discount Analysis", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-SAL-007", "name": "Hourly Sales", "credits": 1, "model": "claude-haiku"},
+          {"feature_id": "RPT-SAL-008", "name": "Daily Sales", "credits": 1, "model": "claude-haiku"},
+          {"feature_id": "RPT-SAL-009", "name": "Top Sellers", "credits": 1, "model": "claude-haiku"},
+          {"feature_id": "RPT-SAL-010", "name": "Bottom Sellers", "credits": 1, "model": "claude-haiku"},
+          {"feature_id": "RPT-SAL-011", "name": "Target Tracking", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-SAL-012", "name": "Channel Analysis", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-SAL-013", "name": "VAT Summary", "credits": 1, "model": "claude-haiku"},
+          {"feature_id": "RPT-SAL-014", "name": "Cash Flow", "credits": 2, "model": "claude-haiku"}
+        ]
+      },
+      "MENU_REPORTS": {
+        "category_total_features": 12,
+        "features": [
+          {"feature_id": "RPT-MNU-001", "name": "Performance Matrix (BCG)", "credits": 5, "model": "claude-sonnet"},
+          {"feature_id": "RPT-MNU-002", "name": "Item Performance", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-MNU-003", "name": "Category Analysis", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-MNU-004", "name": "Pricing Analysis", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-MNU-005", "name": "Popularity Trend", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-MNU-006", "name": "Pairing Analysis", "credits": 5, "model": "ml_association+sonnet"},
+          {"feature_id": "RPT-MNU-007", "name": "Optimization Suggestions", "credits": 5, "model": "claude-sonnet"},
+          {"feature_id": "RPT-MNU-008", "name": "Menu Engineering", "credits": 5, "model": "claude-sonnet"},
+          {"feature_id": "RPT-MNU-009", "name": "Review Analysis", "credits": 3, "model": "sentiment+haiku"},
+          {"feature_id": "RPT-MNU-010", "name": "Cost Analysis", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-MNU-011", "name": "Modifier Analysis", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-MNU-012", "name": "Availability Report", "credits": 1, "model": "claude-haiku"}
+        ]
+      },
+      "ORDER_REPORTS": {
+        "category_total_features": 10,
+        "features": [
+          {"feature_id": "RPT-ORD-001", "name": "Order Analysis", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-ORD-002", "name": "Time Analysis", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-ORD-003", "name": "Peak Hours", "credits": 3, "model": "prophet+haiku"},
+          {"feature_id": "RPT-ORD-004", "name": "Channel Analysis", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-ORD-005", "name": "Cancellation Report", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-ORD-006", "name": "Modification Report", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-ORD-007", "name": "Void/Refund Report", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-ORD-008", "name": "Fulfillment Report", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-ORD-009", "name": "Special Requests", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-ORD-010", "name": "Basket Analysis", "credits": 5, "model": "ml_association+sonnet"}
+        ]
+      },
+      "CUSTOMER_REPORTS": {
+        "category_total_features": 12,
+        "features": [
+          {"feature_id": "RPT-CUS-001", "name": "Customer Overview", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-CUS-002", "name": "RFM Segmentation", "credits": 8, "model": "ml_clustering+sonnet"},
+          {"feature_id": "RPT-CUS-003", "name": "Lifetime Value (CLV)", "credits": 8, "model": "ml_prediction+sonnet"},
+          {"feature_id": "RPT-CUS-004", "name": "Retention Analysis", "credits": 5, "model": "claude-sonnet"},
+          {"feature_id": "RPT-CUS-005", "name": "Churn Risk", "credits": 8, "model": "ml_prediction+sonnet"},
+          {"feature_id": "RPT-CUS-006", "name": "Feedback Analysis", "credits": 3, "model": "sentiment+haiku"},
+          {"feature_id": "RPT-CUS-007", "name": "Customer Journey", "credits": 5, "model": "claude-sonnet"},
+          {"feature_id": "RPT-CUS-008", "name": "Acquisition Report", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-CUS-009", "name": "Frequency Analysis", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-CUS-010", "name": "Preferences Report", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-CUS-011", "name": "Individual Profile", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-CUS-012", "name": "NPS Analysis", "credits": 3, "model": "sentiment+sonnet"}
+        ]
+      },
+      "STAFF_REPORTS": {
+        "category_total_features": 10,
+        "features": [
+          {"feature_id": "RPT-STF-001", "name": "Staff Overview", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-STF-002", "name": "Performance Scorecard", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-STF-003", "name": "Efficiency Report", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-STF-004", "name": "Shift Analysis", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-STF-005", "name": "Staff Ranking", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-STF-006", "name": "Training Needs", "credits": 5, "model": "claude-sonnet"},
+          {"feature_id": "RPT-STF-007", "name": "Attendance Report", "credits": 1, "model": "claude-haiku"},
+          {"feature_id": "RPT-STF-008", "name": "Labor Cost", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-STF-009", "name": "Individual Dashboard", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-STF-010", "name": "Tips Report", "credits": 1, "model": "claude-haiku"}
+        ]
+      },
+      "INVENTORY_REPORTS": {
+        "category_total_features": 8,
+        "features": [
+          {"feature_id": "RPT-INV-001", "name": "Stock Status", "credits": 1, "model": "claude-haiku"},
+          {"feature_id": "RPT-INV-002", "name": "Stock Forecast", "credits": 3, "model": "prophet+haiku"},
+          {"feature_id": "RPT-INV-003", "name": "Waste Report", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-INV-004", "name": "Turnover Report", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-INV-005", "name": "Cost Analysis", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-INV-006", "name": "Supplier Performance", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-INV-007", "name": "Purchase History", "credits": 1, "model": "claude-haiku"},
+          {"feature_id": "RPT-INV-008", "name": "Expiration Report", "credits": 1, "model": "claude-haiku"}
+        ]
+      },
+      "CAMPAIGN_REPORTS": {
+        "category_total_features": 8,
+        "features": [
+          {"feature_id": "RPT-CMP-001", "name": "Campaign Overview", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-CMP-002", "name": "Campaign ROI", "credits": 5, "model": "claude-sonnet"},
+          {"feature_id": "RPT-CMP-003", "name": "Campaign Comparison", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-CMP-004", "name": "Attribution Analysis", "credits": 8, "model": "ml_attribution+sonnet"},
+          {"feature_id": "RPT-CMP-005", "name": "Loyalty Overview", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-CMP-006", "name": "Loyalty Member Analysis", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-CMP-007", "name": "Coupon Analysis", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-CMP-008", "name": "Referral Program", "credits": 3, "model": "claude-sonnet"}
+        ]
+      },
+      "OPERATION_REPORTS": {
+        "category_total_features": 10,
+        "features": [
+          {"feature_id": "RPT-OPR-001", "name": "Table Utilization", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-OPR-002", "name": "Table Turnover", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-OPR-003", "name": "Kitchen Performance", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-OPR-004", "name": "Service Time", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-OPR-005", "name": "Wait Time", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-OPR-006", "name": "Reservation Analysis", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-OPR-007", "name": "Delivery Performance", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-OPR-008", "name": "Takeaway Analysis", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-OPR-009", "name": "Operational Issues", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-OPR-010", "name": "Equipment Status", "credits": 1, "model": "claude-haiku"}
+        ]
+      },
+      "DIGITAL_REPORTS": {
+        "category_total_features": 6,
+        "features": [
+          {"feature_id": "RPT-DIG-001", "name": "QR Scan Analytics", "credits": 1, "model": "claude-haiku"},
+          {"feature_id": "RPT-DIG-002", "name": "Menu Views", "credits": 1, "model": "claude-haiku"},
+          {"feature_id": "RPT-DIG-003", "name": "Digital Engagement", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-DIG-004", "name": "Website Analytics", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-DIG-005", "name": "Ordering Funnel", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-DIG-006", "name": "Digital Payments", "credits": 2, "model": "claude-haiku"}
+        ]
+      },
+      "BRANCH_REPORTS": {
+        "category_total_features": 8,
+        "features": [
+          {"feature_id": "RPT-BRN-001", "name": "Branch Comparison", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-BRN-002", "name": "Branch Ranking", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "RPT-BRN-003", "name": "Consolidated Report", "credits": 5, "model": "claude-sonnet"},
+          {"feature_id": "RPT-BRN-004", "name": "Best Practices", "credits": 5, "model": "claude-sonnet"},
+          {"feature_id": "RPT-BRN-005", "name": "Individual Branch", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-BRN-006", "name": "Geo Analysis", "credits": 5, "model": "claude-sonnet"},
+          {"feature_id": "RPT-BRN-007", "name": "Standards Compliance", "credits": 3, "model": "claude-sonnet"},
+          {"feature_id": "RPT-BRN-008", "name": "Franchise Performance", "credits": 5, "model": "claude-sonnet"}
+        ]
+      },
+      "PLATFORM_REPORTS": {
+        "category_total_features": 16,
+        "features": [
+          {"feature_id": "RPT-PLT-001", "name": "MRR Dashboard", "credits": 0, "model": "claude-sonnet", "access": "super_admin"},
+          {"feature_id": "RPT-PLT-002", "name": "Churn Analysis", "credits": 0, "model": "ml_prediction+sonnet", "access": "super_admin"},
+          {"feature_id": "RPT-PLT-003", "name": "Lead Pipeline", "credits": 0, "model": "ml_scoring+sonnet", "access": "super_admin"},
+          {"feature_id": "RPT-PLT-004", "name": "Regional Performance", "credits": 0, "model": "claude-haiku", "access": "super_admin"},
+          {"feature_id": "RPT-PLT-005", "name": "Plan Conversion", "credits": 0, "model": "ml_propensity+sonnet", "access": "super_admin"},
+          {"feature_id": "RPT-PLT-006", "name": "AI Credit Usage", "credits": 0, "model": "claude-haiku", "access": "super_admin"},
+          {"feature_id": "RPT-PLT-007", "name": "System Health", "credits": 0, "model": "n/a", "access": "super_admin"},
+          {"feature_id": "RPT-PLT-008", "name": "Competitor Benchmark", "credits": 0, "model": "claude-sonnet", "access": "super_admin"},
+          {"feature_id": "RPT-PLT-009", "name": "NPS Satisfaction", "credits": 0, "model": "sentiment+sonnet", "access": "super_admin"},
+          {"feature_id": "RPT-PLT-010", "name": "Financial Projection", "credits": 0, "model": "prophet+sonnet", "access": "super_admin"},
+          {"feature_id": "RPT-PLT-011", "name": "Usage Analytics", "credits": 0, "model": "claude-haiku", "access": "super_admin"},
+          {"feature_id": "RPT-PLT-012", "name": "Support Analytics", "credits": 0, "model": "claude-haiku", "access": "super_admin"},
+          {"feature_id": "RPT-PLT-013", "name": "Cohort Analysis", "credits": 0, "model": "claude-sonnet", "access": "super_admin"},
+          {"feature_id": "RPT-PLT-014", "name": "Onboarding Analytics", "credits": 0, "model": "claude-haiku", "access": "super_admin"},
+          {"feature_id": "RPT-PLT-015", "name": "Sales Performance", "credits": 0, "model": "claude-haiku", "access": "super_admin"},
+          {"feature_id": "RPT-PLT-016", "name": "API Analytics", "credits": 0, "model": "claude-haiku", "access": "super_admin"}
+        ]
+      },
+      "EXPORT": {
+        "category_total_features": 4,
+        "features": [
+          {"feature_id": "EXP-001", "name": "PDF Export with AI Summary", "credits": 2, "model": "claude-haiku"},
+          {"feature_id": "EXP-002", "name": "Excel Export", "credits": 0, "model": "n/a"},
+          {"feature_id": "EXP-003", "name": "CSV Export", "credits": 0, "model": "n/a"},
+          {"feature_id": "EXP-004", "name": "JSON Export", "credits": 0, "model": "n/a"}
+        ]
+      },
+      "DASHBOARD": {
+        "category_total_features": 3,
+        "features": [
+          {"feature_id": "DSH-001", "name": "Basic Dashboard", "credits": 0, "model": "n/a"},
+          {"feature_id": "DSH-002", "name": "Realtime Dashboard", "credits": 0, "model": "n/a"},
+          {"feature_id": "DSH-003", "name": "Custom Dashboard", "credits": 0, "model": "n/a"}
+        ]
+      }
+    }
+  },
+  "CREDIT_CALCULATION_RULES": {
+    "base_rules": [
+      {
+        "rule_id": "CALC-001",
+        "name": "Model Tier Multiplier",
+        "description": "Model tier'ına göre kredi çarpanı",
+        "tiers": {
+          "haiku": 1.0,
+          "sonnet": 5.0,
+          "gpt-4o": 8.0,
+          "gpt-4o-mini": 0.8,
+          "prophet": 3.0,
+          "ml_models": 2.5
+        }
+      },
+      {
+        "rule_id": "CALC-002",
+        "name": "Complexity Multiplier",
+        "description": "Sorgu/rapor karmaşıklığına göre çarpan",
+        "complexity_levels": {
+          "simple": 1.0,
+          "medium": 1.5,
+          "complex": 2.0,
+          "very_complex": 3.0
+        }
+      },
+      {
+        "rule_id": "CALC-003",
+        "name": "Data Volume Adjustment",
+        "description": "İşlenen veri hacmine göre ayarlama",
+        "thresholds": {
+          "small": {"records": 1000, "multiplier": 1.0},
+          "medium": {"records": 10000, "multiplier": 1.2},
+          "large": {"records": 100000, "multiplier": 1.5},
+          "xlarge": {"records": 1000000, "multiplier": 2.0}
+        }
+      },
+      {
+        "rule_id": "CALC-004",
+        "name": "Scheduled Report Discount",
+        "description": "Zamanlanmış raporlar için indirim",
+        "discount_rate": 0.5,
+        "applies_to": ["preset_reports", "custom_reports"]
+      },
+      {
+        "rule_id": "CALC-005",
+        "name": "Cache Hit No Charge",
+        "description": "Cache'den dönen sonuçlar için kredi yok",
+        "credit_cost": 0
+      }
+    ],
+    "special_rules": [
+      {
+        "rule_id": "SPEC-001",
+        "name": "Free Plan Limits",
+        "description": "Ücretsiz plan günlük limitleri",
+        "daily_limit": 2,
+        "allowed_features": ["basic_nl_query", "qr_analytics"]
+      },
+      {
+        "rule_id": "SPEC-002",
+        "name": "Auto-generated Included",
+        "description": "Otomatik üretilen içgörüler plan dahilinde",
+        "applies_to": ["daily_insights", "anomaly_alerts", "trend_detection"],
+        "credit_cost": 0
+      },
+      {
+        "rule_id": "SPEC-003",
+        "name": "Platform Reports Free",
+        "description": "Super admin platform raporları ücretsiz",
+        "applies_to": "platform_category",
+        "credit_cost": 0
+      },
+      {
+        "rule_id": "SPEC-004",
+        "name": "Export No AI",
+        "description": "AI özeti olmayan export'lar ücretsiz",
+        "applies_to": ["excel", "csv", "json"],
+        "credit_cost": 0
+      }
+    ]
+  },
+  "MONTHLY_CREDIT_ESTIMATES": {
+    "description": "Tipik kullanım senaryoları için aylık kredi tahmini",
+    "scenarios": {
+      "light_user": {
+        "description": "Hafif kullanım - Küçük cafe",
+        "daily_usage": {
+          "basic_queries": 2,
+          "comparisons": 1,
+          "summaries": 1
+        },
+        "weekly_usage": {
+          "weekly_trend": 1,
+          "menu_performance": 1
+        },
+        "monthly_usage": {
+          "monthly_analysis": 1
+        },
+        "estimated_monthly_credits": 150,
+        "recommended_plan": "lite"
+      },
+      "moderate_user": {
+        "description": "Orta kullanım - Orta ölçekli restoran",
+        "daily_usage": {
+          "basic_queries": 5,
+          "comparisons": 3,
+          "summaries": 2,
+          "analysis_queries": 1
+        },
+        "weekly_usage": {
+          "weekly_reports": 3,
+          "forecasting": 1,
+          "menu_analysis": 1
+        },
+        "monthly_usage": {
+          "monthly_analysis": 1,
+          "customer_segmentation": 1,
+          "staff_performance": 1
+        },
+        "estimated_monthly_credits": 600,
+        "recommended_plan": "pro"
+      },
+      "heavy_user": {
+        "description": "Yoğun kullanım - Çok şubeli işletme",
+        "daily_usage": {
+          "basic_queries": 15,
+          "comparisons": 10,
+          "analysis_queries": 5,
+          "recommendations": 3
+        },
+        "weekly_usage": {
+          "weekly_reports": 5,
+          "forecasting": 3,
+          "whatif_analysis": 2,
+          "branch_comparisons": 2
+        },
+        "monthly_usage": {
+          "monthly_analysis": 2,
+          "quarterly_review": 0.33,
+          "customer_analytics": 3,
+          "strategic_planning": 1
+        },
+        "estimated_monthly_credits": 3500,
+        "recommended_plan": "business"
+      },
+      "enterprise_user": {
+        "description": "Kurumsal kullanım - Zincir restoran",
+        "daily_usage": {
+          "all_query_types": 50,
+          "real_time_analytics": "unlimited"
+        },
+        "weekly_usage": {
+          "all_reports": "unlimited",
+          "advanced_analytics": "unlimited"
+        },
+        "monthly_usage": {
+          "strategic_planning": "unlimited",
+          "custom_analysis": "unlimited"
+        },
+        "estimated_monthly_credits": 15000,
+        "recommended_plan": "enterprise"
+      }
+    }
+  },
+  "OVERAGE_PRICING": {
+    "description": "Aylık kredi aşımı fiyatlandırması",
+    "pricing_tiers": {
+      "lite": {
+        "price_per_credit": 0.50,
+        "currency": "TRY",
+        "min_purchase": 50,
+        "max_overage_credits": 200
+      },
+      "pro": {
+        "price_per_credit": 0.40,
+        "currency": "TRY",
+        "min_purchase": 100,
+        "max_overage_credits": 1000
+      },
+      "business": {
+        "price_per_credit": 0.30,
+        "currency": "TRY",
+        "min_purchase": 500,
+        "max_overage_credits": 5000
+      },
+      "enterprise": {
+        "price_per_credit": 0.20,
+        "currency": "TRY",
+        "min_purchase": 1000,
+        "max_overage_credits": "unlimited"
+      }
+    },
+    "bulk_discount": {
+      "enabled": true,
+      "tiers": [
+        {"credits": 1000, "discount": 0.10},
+        {"credits": 5000, "discount": 0.20},
+        {"credits": 10000, "discount": 0.30}
+      ]
+    }
+  }
+}

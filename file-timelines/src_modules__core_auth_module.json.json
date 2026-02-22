@@ -1,0 +1,28 @@
+{
+  "file_path": "src/modules/_core/auth/module.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"$schema\": \"https://e-menum.net/schemas/module-v1.json\",\n  \"id\": \"auth\",\n  \"name\": \"Authentication Module\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Core authentication module providing JWT-based authentication, session management, password handling, and token lifecycle management\",\n\n  \"type\": \"core\",\n  \"category\": \"system\",\n\n  \"author\": {\n    \"name\": \"E-Menum Team\",\n    \"email\": \"dev@e-menum.net\"\n  },\n\n  \"compatibility\": {\n    \"platform\": \">=1.0.0\",\n    \"node\": \">=20.0.0\"\n  },\n\n  \"dependencies\": {\n    \"modules\": [],\n    \"optional\": []\n  },\n\n  \"provides\": {\n    \"routes\": true,\n    \"events\": [\n      \"auth.login\",\n      \"auth.logout\",\n      \"auth.token.refresh\",\n      \"auth.password.reset.requested\",\n      \"auth.password.reset.completed\",\n      \"auth.email.verification.requested\",\n      \"auth.email.verification.completed\",\n      \"auth.session.created\",\n      \"auth.session.revoked\",\n      \"auth.session.revoked.all\"\n    ],\n    \"hooks\": [\n      \"beforeLogin\",\n      \"afterLogin\",\n      \"beforeLogout\",\n      \"afterLogout\",\n      \"beforeTokenRefresh\",\n      \"afterTokenRefresh\",\n      \"beforePasswordReset\",\n      \"afterPasswordReset\"\n    ],\n    \"permissions\": [\n      \"auth:login\",\n      \"auth:logout\",\n      \"auth:refresh\",\n      \"auth:verify\",\n      \"auth:password.reset\",\n      \"auth:session.view\",\n      \"auth:session.revoke\"\n    ],\n    \"services\": [\n      \"AuthService\"\n    ]\n  },\n\n  \"requires\": {\n    \"permissions\": [],\n    \"events\": []\n  },\n\n  \"tier\": {\n    \"minimum\": \"free\",\n    \"features\": {\n      \"free\": [\"basic_auth\", \"password_reset\", \"email_verification\"],\n      \"starter\": [\"session_management\", \"multi_device\"],\n      \"professional\": [\"2fa_totp\", \"audit_logging\"],\n      \"business\": [\"sso_saml\", \"ip_restrictions\"],\n      \"enterprise\": [\"custom_auth_providers\", \"advanced_security\"]\n    }\n  },\n\n  \"lifecycle\": {\n    \"install\": \"lifecycle/install.ts\",\n    \"uninstall\": \"lifecycle/uninstall.ts\",\n    \"activate\": \"lifecycle/activate.ts\",\n    \"deactivate\": \"lifecycle/deactivate.ts\",\n    \"upgrade\": \"lifecycle/upgrade.ts\"\n  },\n\n  \"admin\": {\n    \"menu\": {\n      \"label\": \"Authentication\",\n      \"icon\": \"ph-key\",\n      \"route\": \"/admin/auth\",\n      \"order\": 5,\n      \"hidden\": true\n    }\n  },\n\n  \"settings\": {\n    \"schema\": \"settings.schema.json\",\n    \"defaults\": {\n      \"accessTokenExpiry\": \"15m\",\n      \"refreshTokenExpiry\": \"7d\",\n      \"passwordMinLength\": 8,\n      \"passwordRequireUppercase\": true,\n      \"passwordRequireLowercase\": true,\n      \"passwordRequireNumber\": true,\n      \"passwordRequireSpecial\": false,\n      \"maxLoginAttempts\": 10,\n      \"lockoutDuration\": 1800,\n      \"sessionMaxCount\": 5,\n      \"enableEmailVerification\": true,\n      \"enablePasswordReset\": true\n    }\n  }\n}\n",
+        "last_modified": "2026-02-01T09:10:53.697985"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:24.884951",
+  "last_updated": "2026-02-01T08:03:24.894753"
+}

@@ -1,0 +1,28 @@
+{
+  "file_path": "src/modules/_stubs/integration/module.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"$schema\": \"https://e-menum.net/schemas/module-v1.json\",\n  \"id\": \"integration\",\n  \"name\": \"Integration Module\",\n  \"version\": \"0.0.0\",\n  \"status\": \"stub\",\n  \"description\": \"\u00dc\u00e7\u00fcnc\u00fc parti entegrasyonlar\u0131 - API y\u00f6netimi, webhook ve harici servis ba\u011flant\u0131lar\u0131\",\n\n  \"type\": \"feature\",\n  \"category\": \"integration\",\n\n  \"author\": {\n    \"name\": \"E-Menum Team\",\n    \"email\": \"dev@e-menum.net\"\n  },\n\n  \"compatibility\": {\n    \"platform\": \">=1.0.0\",\n    \"node\": \">=20.0.0\"\n  },\n\n  \"dependencies\": {\n    \"modules\": [\"auth\", \"organization\"],\n    \"optional\": [\"notification\"]\n  },\n\n  \"provides\": {\n    \"services\": [\"IIntegrationService\", \"IWebhookService\", \"IApiKeyService\"],\n    \"events\": [\n      \"integration.connected\",\n      \"integration.disconnected\",\n      \"webhook.triggered\",\n      \"webhook.failed\",\n      \"api_key.created\",\n      \"api_key.revoked\"\n    ],\n    \"permissions\": [\n      \"integration:view\",\n      \"integration:configure\",\n      \"webhook:manage\",\n      \"api_key:create\",\n      \"api_key:revoke\"\n    ]\n  },\n\n  \"tier\": {\n    \"minimum\": \"professional\",\n    \"features\": {\n      \"professional\": [\"basic_webhooks\", \"api_keys\"],\n      \"business\": [\"basic_webhooks\", \"api_keys\", \"custom_integrations\", \"data_sync\"],\n      \"enterprise\": [\"basic_webhooks\", \"api_keys\", \"custom_integrations\", \"data_sync\", \"enterprise_connectors\", \"custom_development\"]\n    }\n  },\n\n  \"plannedFeatures\": [\n    \"API key management\",\n    \"Webhook management\",\n    \"Third-party app connectors\",\n    \"OAuth integrations\",\n    \"Data export/import\",\n    \"Zapier integration\",\n    \"Custom API development\",\n    \"Rate limiting\",\n    \"Usage analytics\"\n  ],\n\n  \"estimatedRelease\": \"Q4 2026\"\n}\n",
+        "last_modified": "2026-02-01T09:10:53.737908"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:25.901424",
+  "last_updated": "2026-02-01T08:03:25.910881"
+}

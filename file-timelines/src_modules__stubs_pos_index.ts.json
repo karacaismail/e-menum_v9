@@ -1,0 +1,28 @@
+{
+  "file_path": "src/modules/_stubs/pos/index.ts",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "/**\n * POS Module Stub\n *\n * This is a placeholder module for future POS integration implementation.\n * Only interfaces and types are exported - no implementation.\n *\n * @module modules/_stubs/pos\n */\n\nimport { AppException } from '@/core/exceptions/app.exception';\n\n// -----------------------------------------------------------------------------\n// Types Export\n// -----------------------------------------------------------------------------\n\nexport {\n  // Enums\n  PosProvider,\n  PosConnectionStatus,\n  SyncDirection,\n  SyncEntityType,\n  SyncStatus,\n  // Entity types\n  type PosConnection,\n  type PosConfig,\n  type PosSyncRecord,\n  type PosOrder,\n  type PosOrderItem,\n  type MenuMapping,\n  // Request types\n  type CreatePosConnectionRequest,\n  type UpdatePosConnectionRequest,\n  type SyncRequest,\n  type CreateMenuMappingRequest,\n  // Response types\n  type PosConnectionTestResult,\n  type PosSyncResult,\n  type PosStats,\n  // Service interfaces\n  type IPosService,\n  type IPosIntegrationService,\n  // Event payloads\n  type PosConnectedEventPayload,\n  type PosDisconnectedEventPayload,\n  type PosOrderSyncedEventPayload,\n  type PosSyncFailedEventPayload,\n} from '@/modules/_stubs/pos/pos.types';\n\n// -----------------------------------------------------------------------------\n// Stub Implementation\n// -----------------------------------------------------------------------------\n\n/**\n * POS service stub implementation\n */\nexport class PosServiceStub {\n  async createConnection(): Promise<never> {\n    throw new AppException('POS_MODULE_NOT_INSTALLED', 501, {\n      message: 'POS module is not installed. Please install the POS module to use this feature.',\n    });\n  }\n\n  async getConnection(): Promise<never> {\n    throw new AppException('POS_MODULE_NOT_INSTALLED', 501, {\n      message: 'POS module is not installed. Please install the POS module to use this feature.',\n    });\n  }\n\n  async listConnections(): Promise<never> {\n    throw new AppException('POS_MODULE_NOT_INSTALLED', 501, {\n      message: 'POS module is not installed. Please install the POS module to use this feature.',\n    });\n  }\n\n  async updateConnection(): Promise<never> {\n    throw new AppException('POS_MODULE_NOT_INSTALLED', 501, {\n      message: 'POS module is not installed. Please install the POS module to use this feature.',\n    });\n  }\n\n  async deleteConnection(): Promise<never> {\n    throw new AppException('POS_MODULE_NOT_INSTALLED', 501, {\n      message: 'POS module is not installed. Please install the POS module to use this feature.',\n    });\n  }\n\n  async testConnection(): Promise<never> {\n    throw new AppException('POS_MODULE_NOT_INSTALLED', 501, {\n      message: 'POS module is not installed. Please install the POS module to use this feature.',\n    });\n  }\n\n  async getStats(): Promise<never> {\n    throw new AppException('POS_MODULE_NOT_INSTALLED', 501, {\n      message: 'POS module is not installed. Please install the POS module to use this feature.',\n    });\n  }\n}\n\n/**\n * POS integration service stub implementation\n */\nexport class PosIntegrationServiceStub {\n  async sync(): Promise<never> {\n    throw new AppException('POS_MODULE_NOT_INSTALLED', 501, {\n      message: 'POS module is not installed. Please install the POS module to use this feature.',\n    });\n  }\n\n  async getSyncHistory(): Promise<never> {\n    throw new AppException('POS_MODULE_NOT_INSTALLED', 501, {\n      message: 'POS module is not installed. Please install the POS module to use this feature.',\n    });\n  }\n\n  async sendOrderToPOS(): Promise<never> {\n    throw new AppException('POS_MODULE_NOT_INSTALLED', 501, {\n      message: 'POS module is not installed. Please install the POS module to use this feature.',\n    });\n  }\n\n  async getOrderFromPOS(): Promise<never> {\n    throw new AppException('POS_MODULE_NOT_INSTALLED', 501, {\n      message: 'POS module is not installed. Please install the POS module to use this feature.',\n    });\n  }\n\n  async createMenuMapping(): Promise<never> {\n    throw new AppException('POS_MODULE_NOT_INSTALLED', 501, {\n      message: 'POS module is not installed. Please install the POS module to use this feature.',\n    });\n  }\n\n  async listMenuMappings(): Promise<never> {\n    throw new AppException('POS_MODULE_NOT_INSTALLED', 501, {\n      message: 'POS module is not installed. Please install the POS module to use this feature.',\n    });\n  }\n\n  async autoMapMenuItems(): Promise<never> {\n    throw new AppException('POS_MODULE_NOT_INSTALLED', 501, {\n      message: 'POS module is not installed. Please install the POS module to use this feature.',\n    });\n  }\n}\n\n/**\n * Check if POS module is available\n */\nexport function isPosModuleAvailable(): boolean {\n  return false;\n}\n\n/**\n * Module metadata\n */\nexport const POS_MODULE_METADATA = {\n  id: 'pos',\n  name: 'POS Module',\n  status: 'stub' as const,\n  version: '0.0.0',\n};\n",
+        "last_modified": "2026-02-01T09:10:53.743812"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:26.042540",
+  "last_updated": "2026-02-01T08:03:26.052515"
+}

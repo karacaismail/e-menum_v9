@@ -1,0 +1,177 @@
+{
+  "sourceType": "manual",
+  "model": "opus",
+  "thinkingLevel": "ultrathink",
+  "isAutoProfile": false,
+  "phaseModels": {
+    "spec": "opus",
+    "planning": "opus",
+    "coding": "opus",
+    "qa": "opus"
+  },
+  "phaseThinking": {
+    "spec": "ultrathink",
+    "planning": "ultrathink",
+    "coding": "ultrathink",
+    "qa": "ultrathink"
+  },
+  "referencedFiles": [
+    {
+      "id": "fb7c9254-a143-46ea-9713-79ff452d0209",
+      "path": "CONSTRAINTS.md",
+      "name": "CONSTRAINTS.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "31e769c5-3a34-4d9a-b5f0-7c14b06f714b",
+      "path": "MVP_SCOPE.md",
+      "name": "MVP_SCOPE.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "e02444cd-904e-4fcf-a52e-759255af6b3f",
+      "path": "MODULE_SYSTEM.md",
+      "name": "MODULE_SYSTEM.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "9f689292-7086-46ec-a334-b005b6c8d59f",
+      "path": "MODULE_DEVELOPMENT_GUIDE.md",
+      "name": "MODULE_DEVELOPMENT_GUIDE.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "cdf2c8e6-86b8-492d-a440-c0e468626ae3",
+      "path": "OPERATIONS_GUIDE.md",
+      "name": "OPERATIONS_GUIDE.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "c2b6615e-9c09-45f1-8bd2-e090dc166c94",
+      "path": "CLAUDE.md",
+      "name": "CLAUDE.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "4e7522e4-8117-4b4a-8e19-7447abf14fcf",
+      "path": "PROJECT_CONTEXT.md",
+      "name": "PROJECT_CONTEXT.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "adbad07d-e5c9-4a69-a48e-ebe211a8cef7",
+      "path": "GLOSSARY.md",
+      "name": "GLOSSARY.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "abd0b7ce-7a5d-462f-ab17-2416728286e5",
+      "path": "SYSTEM_DESIGN.md",
+      "name": "SYSTEM_DESIGN.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "c330be16-33d1-4cbb-b1f4-2421cc7a2fbd",
+      "path": "DATABASE_SCHEMA.md",
+      "name": "DATABASE_SCHEMA.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "b6864b8b-e6b5-4b8e-8e3d-c13d0228ef27",
+      "path": "API_CONTRACTS.md",
+      "name": "API_CONTRACTS.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "fe88a820-7480-4a12-9eb6-97b3681e7d7e",
+      "path": "SECURITY_MODEL.md",
+      "name": "SECURITY_MODEL.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "1d1957cf-76b2-4c02-8073-3e1dbad0979a",
+      "path": "CODING_STANDARDS.md",
+      "name": "CODING_STANDARDS.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "57178ed0-c704-4d9b-97f4-ccafb4fa3820",
+      "path": "TESTING_STRATEGY.md",
+      "name": "TESTING_STRATEGY.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "f0106312-01d9-4bdb-8c8f-4193c4108134",
+      "path": "COMPONENT_PATTERNS.md",
+      "name": "COMPONENT_PATTERNS.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "e104aef5-a4b7-409e-98c3-8a266092f4a1",
+      "path": "BUSINESS_RULES.md",
+      "name": "BUSINESS_RULES.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "ac451711-b65c-4931-81ee-533b725cdfa8",
+      "path": "DESIGN_SYSTEM_PHILOSOPHY.md",
+      "name": "DESIGN_SYSTEM_PHILOSOPHY.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "cc931858-8b4c-468c-9e8f-5a6e0c2f4865",
+      "path": "PERSONA_USER_FLOWS.md",
+      "name": "PERSONA_USER_FLOWS.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "179f4ebb-1e34-4518-b771-7f6d460539e1",
+      "path": "FRONTEND_ARCHITECTURE.md",
+      "name": "FRONTEND_ARCHITECTURE.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "10bcb92d-9cff-4a83-843e-256eab9d0927",
+      "path": "specs/001-menu-module/spec.md",
+      "name": "specs/001-menu-module/spec.md",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "480b9920-4bfe-42ef-8c3e-02a51d6be645",
+      "path": "specs/001-menu-module/requirements.json",
+      "name": "specs/001-menu-module/requirements.json",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    },
+    {
+      "id": "39fe3e8c-ea64-48b8-83d8-5780cfc365ac",
+      "path": "specs/001-menu-module/context.json",
+      "name": "specs/001-menu-module/context.json",
+      "isDirectory": false,
+      "addedAt": "2026-01-31T21:39:56.069Z"
+    }
+  ],
+  "baseBranch": "main",
+  "attachedImages": [],
+  "requireReviewBeforeCoding": false
+}

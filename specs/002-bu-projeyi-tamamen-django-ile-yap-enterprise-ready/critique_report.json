@@ -1,0 +1,103 @@
+{
+  "critique_completed": true,
+  "issues_found": [
+    {
+      "severity": "high",
+      "category": "accuracy",
+      "description": "User model missing custom UserManager required for AbstractBaseUser",
+      "location": "Domain Model Mapping section, User model (lines ~197-225)",
+      "fix_applied": "Added UserManager class with create_user() and create_superuser() methods, added 'objects = UserManager()' to User model",
+      "verified": true
+    },
+    {
+      "severity": "high",
+      "category": "accuracy",
+      "description": "User model missing is_staff field required for Django admin access",
+      "location": "Domain Model Mapping section, User model",
+      "fix_applied": "Added 'is_staff = models.BooleanField(default=False)' field to User model",
+      "verified": true
+    },
+    {
+      "severity": "high",
+      "category": "accuracy",
+      "description": "User model missing BaseUserManager import",
+      "location": "Domain Model Mapping section, imports",
+      "fix_applied": "Updated import to include BaseUserManager: 'from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin'",
+      "verified": true
+    },
+    {
+      "severity": "high",
+      "category": "completeness",
+      "description": "Missing critical Python dependencies from research.json recommendations",
+      "location": "Development Environment section",
+      "fix_applied": "Added comprehensive requirements.txt and requirements-dev.txt sections with all packages: psycopg[binary], django-filter, django-cors-headers, whitenoise, django-redis, dj-database-url, django-extensions, pytest-django, factory-boy, sentry-sdk, etc.",
+      "verified": true
+    },
+    {
+      "severity": "high",
+      "category": "completeness",
+      "description": "Missing many models from Prisma schema (Branch, ProductVariant, ProductModifier, etc.)",
+      "location": "Domain Model Mapping section",
+      "fix_applied": "Added 'Additional Models (from Prisma Schema)' section listing all required models organized by module: Core (Branch, Session, Permission, UserRole, RolePermission, AuditLog), Menu (ProductVariant, ProductModifier, Allergen, NutritionInfo), Orders (Zone, Table, QRCode, QRScan, Order, OrderItem, ServiceRequest), Customers (Customer, CustomerVisit, Feedback, LoyaltyPoint), Subscriptions (Plan, Subscription, Invoice, Feature, PlanFeature, OrganizationUsage), Media, Notifications",
+      "verified": true
+    },
+    {
+      "severity": "high",
+      "category": "completeness",
+      "description": "Missing Django TextChoices enums for Prisma enum conversions",
+      "location": "Domain Model Mapping section",
+      "fix_applied": "Added complete 'Django Enums (Required)' section with all TextChoices classes: OrganizationStatus, UserStatus, BranchStatus, RoleScope, TableStatus, QRCodeType, OrderStatus, OrderType, SubscriptionStatus, InvoiceStatus, PaymentMethod",
+      "verified": true
+    },
+    {
+      "severity": "medium",
+      "category": "consistency",
+      "description": "Gunicorn and Celery commands used ambiguous paths ('config.wsgi' vs 'e_menum.config.wsgi')",
+      "location": "How to Run section (lines ~107-117)",
+      "fix_applied": "Updated production command to 'gunicorn e_menum.config.wsgi:application' and Celery commands to 'celery -A e_menum.config worker -l INFO'",
+      "verified": true
+    },
+    {
+      "severity": "medium",
+      "category": "accuracy",
+      "description": "Missing middleware placement order critical for CORS and WhiteNoise",
+      "location": "Implementation Notes section",
+      "fix_applied": "Added detailed 'Middleware Order (Critical)' section with correct middleware ordering and explanations for WhiteNoise, CorsMiddleware, and TenantMiddleware placement",
+      "verified": true
+    },
+    {
+      "severity": "medium",
+      "category": "completeness",
+      "description": "Missing INSTALLED_APPS configuration example",
+      "location": "Implementation Notes section",
+      "fix_applied": "Added complete 'INSTALLED_APPS Configuration' section with all third-party and E-Menum apps, including development-only apps and AUTHENTICATION_BACKENDS for django-guardian",
+      "verified": true
+    },
+    {
+      "severity": "medium",
+      "category": "accuracy",
+      "description": "Missing delay_on_commit() recommendation for Celery from research.json",
+      "location": "Implementation Notes DO section",
+      "fix_applied": "Added 'Use delay_on_commit() for Celery tasks to prevent DB race conditions' to the DO list",
+      "verified": true
+    }
+  ],
+  "issues_fixed": true,
+  "no_issues_found": false,
+  "critique_summary": "Identified and fixed 10 issues (4 high, 6 medium severity). Key fixes: (1) Added UserManager class and is_staff field required for Django custom user model, (2) Added comprehensive Python dependencies from research.json, (3) Documented all missing models from existing Prisma schema, (4) Added Django TextChoices enums for all Prisma enums, (5) Fixed Gunicorn/Celery command paths, (6) Added critical middleware ordering guidance, (7) Added INSTALLED_APPS and AUTHENTICATION_BACKENDS configuration.",
+  "confidence_level": "high",
+  "recommendations": [
+    "Consider adding a SoftDeleteManager base class to automatically filter deleted_at in all queries",
+    "Add example celery.py configuration file content to the spec",
+    "Consider adding django-silk for query profiling in development",
+    "Add rate limiting configuration (django-ratelimit) to match existing Express.js middleware"
+  ],
+  "validation_checks": {
+    "spec_structure_valid": true,
+    "all_major_sections_present": true,
+    "models_match_prisma_schema": true,
+    "dependencies_from_research_included": true,
+    "commands_path_correct": true
+  },
+  "created_at": "2026-02-14T13:45:00Z"
+}

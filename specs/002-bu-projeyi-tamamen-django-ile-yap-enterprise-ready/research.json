@@ -1,0 +1,844 @@
+{
+  "integrations_researched": [
+    {
+      "name": "Django",
+      "type": "framework",
+      "verified_package": {
+        "name": "Django",
+        "install_command": "pip install Django>=5.0",
+        "version": "5.0+ (5.2 available)",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "from django.conf import settings",
+          "from django.db import models",
+          "from django.views import View",
+          "from django.http import JsonResponse"
+        ],
+        "initialization": "django-admin startproject project_name",
+        "key_functions": [
+          "manage.py runserver",
+          "manage.py migrate",
+          "manage.py collectstatic"
+        ],
+        "verified_against": "https://docs.djangoproject.com/en/5.0/"
+      },
+      "configuration": {
+        "env_vars": ["DJANGO_SETTINGS_MODULE", "SECRET_KEY", "DEBUG", "ALLOWED_HOSTS"],
+        "config_files": ["settings.py", "urls.py", "wsgi.py", "asgi.py"],
+        "dependencies": []
+      },
+      "infrastructure": {
+        "requires_docker": false,
+        "python_version": "3.10, 3.11, 3.12"
+      },
+      "gotchas": [
+        "Django 5.0+ requires Python 3.10+",
+        "Django 5.0 supports MySQL 8.0.11+ only",
+        "Database-computed default values are new in 5.0",
+        "GeneratedField for computed columns added in 5.0"
+      ],
+      "new_features_5_0": [
+        "Database-computed default values",
+        "GeneratedField for computed columns",
+        "Field group templates for forms",
+        "Facet filters in admin",
+        "Simplified choices declaration",
+        "Async connection handling improvements"
+      ],
+      "research_sources": [
+        "https://docs.djangoproject.com/en/5.0/releases/5.0/",
+        "https://www.djangoproject.com/weblog/2023/dec/04/django-50-released/"
+      ]
+    },
+    {
+      "name": "Django REST Framework",
+      "type": "library",
+      "verified_package": {
+        "name": "djangorestframework",
+        "install_command": "pip install djangorestframework>=3.15",
+        "version": "3.15+ (3.16 available)",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "from rest_framework import viewsets, serializers, permissions",
+          "from rest_framework.decorators import api_view",
+          "from rest_framework.response import Response"
+        ],
+        "initialization": "Add 'rest_framework' to INSTALLED_APPS",
+        "key_functions": [
+          "serializers.ModelSerializer",
+          "viewsets.ModelViewSet",
+          "permissions.IsAuthenticated",
+          "routers.DefaultRouter()"
+        ],
+        "verified_against": "https://www.django-rest-framework.org/"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": ["REST_FRAMEWORK settings dict in settings.py"],
+        "dependencies": ["Django>=3.0"]
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "Requires Django 3.0+ minimum",
+        "ModelSerializer now generates validators for UniqueConstraint in 3.15",
+        "pytz dependency removed in favor of Python's zoneinfo",
+        "Quoted phrase searches supported - validation error on null-character"
+      ],
+      "research_sources": [
+        "https://www.django-rest-framework.org/community/release-notes/",
+        "https://pypi.org/project/djangorestframework/"
+      ]
+    },
+    {
+      "name": "djangorestframework-simplejwt",
+      "type": "library",
+      "verified_package": {
+        "name": "djangorestframework-simplejwt",
+        "install_command": "pip install djangorestframework-simplejwt",
+        "version": "latest stable",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView",
+          "from rest_framework_simplejwt.authentication import JWTAuthentication"
+        ],
+        "initialization": "Add 'rest_framework_simplejwt' to INSTALLED_APPS, configure REST_FRAMEWORK DEFAULT_AUTHENTICATION_CLASSES",
+        "key_functions": [
+          "TokenObtainPairView.as_view()",
+          "TokenRefreshView.as_view()",
+          "TokenVerifyView.as_view()"
+        ],
+        "verified_against": "https://django-rest-framework-simplejwt.readthedocs.io/"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": ["SIMPLE_JWT settings dict in settings.py"],
+        "dependencies": ["djangorestframework", "PyJWT"]
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "Provides token blacklist app for logout functionality",
+        "JWT validation is stateless - no database required for validation",
+        "Access and refresh tokens have separate expiration settings"
+      ],
+      "url_patterns": [
+        "path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair')",
+        "path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh')"
+      ],
+      "research_sources": [
+        "https://django-rest-framework-simplejwt.readthedocs.io/en/latest/getting_started.html",
+        "https://github.com/jazzband/djangorestframework-simplejwt"
+      ]
+    },
+    {
+      "name": "Celery",
+      "type": "library",
+      "verified_package": {
+        "name": "celery",
+        "install_command": "pip install celery[redis]>=5.4",
+        "version": "5.4+ (5.5.3+ available)",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "from celery import Celery",
+          "from celery import shared_task"
+        ],
+        "initialization": "Create celery.py in project root: app = Celery('project_name')",
+        "key_functions": [
+          "@shared_task decorator",
+          "app.config_from_object('django.conf:settings')",
+          "task.delay()",
+          "task.delay_on_commit()"
+        ],
+        "verified_against": "https://docs.celeryq.dev/en/v5.4.0/django/index.html"
+      },
+      "configuration": {
+        "env_vars": ["CELERY_BROKER_URL", "CELERY_RESULT_BACKEND"],
+        "config_files": ["celery.py", "settings.py (CELERY_* prefixed settings)"],
+        "dependencies": ["redis", "kombu"]
+      },
+      "infrastructure": {
+        "requires_docker": false,
+        "requires_redis": true,
+        "worker_command": "celery -A project_name worker -l INFO"
+      },
+      "gotchas": [
+        "All settings must be uppercase with CELERY_ prefix",
+        "DjangoTask with delay_on_commit() wraps call into on_commit hook (Celery 5.4+)",
+        "Solves race condition where tasks execute before DB transaction commits",
+        "Need separate worker process alongside Django"
+      ],
+      "research_sources": [
+        "https://docs.celeryq.dev/en/v5.4.0/django/index.html",
+        "https://docs.celeryq.dev/en/latest/django/first-steps-with-django.html"
+      ]
+    },
+    {
+      "name": "django-environ",
+      "type": "library",
+      "verified_package": {
+        "name": "django-environ",
+        "install_command": "pip install django-environ",
+        "version": "0.12.0+",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "import environ"
+        ],
+        "initialization": "env = environ.Env(DEBUG=(bool, False))",
+        "key_functions": [
+          "env('DATABASE_URL')",
+          "env.db()",
+          "env.bool('DEBUG', default=False)",
+          "environ.Env.read_env()"
+        ],
+        "verified_against": "https://django-environ.readthedocs.io/"
+      },
+      "configuration": {
+        "env_vars": ["DATABASE_URL", "SECRET_KEY", "DEBUG", "ALLOWED_HOSTS"],
+        "config_files": [".env", "settings.py"],
+        "dependencies": []
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "Supports 12-factor methodology for configuration",
+        "Connection strings expressed as URLs",
+        "FileAwareEnv for Docker-style file based config variables",
+        "Supports Django 2.2 through 5.1",
+        "Requires Python 3.9+"
+      ],
+      "research_sources": [
+        "https://github.com/joke2k/django-environ",
+        "https://pypi.org/project/django-environ/"
+      ]
+    },
+    {
+      "name": "Gunicorn",
+      "type": "server",
+      "verified_package": {
+        "name": "gunicorn",
+        "install_command": "pip install gunicorn",
+        "version": "latest stable",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [],
+        "initialization": "gunicorn project_name.wsgi:application --bind 0.0.0.0:8000",
+        "key_functions": [
+          "--workers N",
+          "--bind host:port",
+          "--timeout seconds",
+          "--worker-class sync|gevent|eventlet"
+        ],
+        "verified_against": "https://docs.djangoproject.com/en/5.2/howto/deployment/wsgi/gunicorn/"
+      },
+      "configuration": {
+        "env_vars": ["GUNICORN_CMD_ARGS"],
+        "config_files": ["gunicorn.conf.py"],
+        "dependencies": []
+      },
+      "infrastructure": {
+        "requires_docker": false,
+        "requires_nginx": true,
+        "recommended_workers": "2-3 workers per dyno/container"
+      },
+      "gotchas": [
+        "Pure-Python WSGI HTTP server for UNIX",
+        "Run behind Nginx as reverse proxy in production",
+        "Worker count depends on memory footprint - typically 2-3 for Django",
+        "Can bind to Unix socket for Nginx communication",
+        "Use systemd service file for production process management"
+      ],
+      "research_sources": [
+        "https://docs.djangoproject.com/en/5.2/howto/deployment/wsgi/gunicorn/",
+        "https://gunicorn.org/"
+      ]
+    },
+    {
+      "name": "django-guardian",
+      "type": "library",
+      "verified_package": {
+        "name": "django-guardian",
+        "install_command": "pip install django-guardian",
+        "version": "latest stable",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "from guardian.shortcuts import assign_perm, get_objects_for_user",
+          "from guardian.mixins import PermissionRequiredMixin"
+        ],
+        "initialization": "Add 'guardian' to INSTALLED_APPS, add ObjectPermissionBackend to AUTHENTICATION_BACKENDS",
+        "key_functions": [
+          "assign_perm('app.permission', user, obj)",
+          "get_objects_for_user(user, 'app.permission')",
+          "user.has_perm('app.permission', obj)"
+        ],
+        "verified_against": "https://django-guardian.readthedocs.io/"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": ["settings.py AUTHENTICATION_BACKENDS"],
+        "dependencies": []
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "Implements object-level permissions for Django",
+        "Uses Django's foundation for object-level permissions",
+        "Creates additional permission tables in database",
+        "Good for RBAC/ABAC implementations",
+        "Alternative: django-rules for rule-based permissions"
+      ],
+      "comparison_with_casl": {
+        "similarity": "Both provide object-level permissions",
+        "difference": "django-guardian uses database storage, CASL is in-memory evaluation"
+      },
+      "research_sources": [
+        "https://django-guardian.readthedocs.io/",
+        "https://www.permit.io/blog/django-authorization-an-implementation-guide"
+      ]
+    },
+    {
+      "name": "django-allauth",
+      "type": "library",
+      "verified_package": {
+        "name": "django-allauth",
+        "install_command": "pip install django-allauth[socialaccount]",
+        "version": "65.3.1+ (2024)",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "from allauth.account.forms import LoginForm, SignupForm",
+          "from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter"
+        ],
+        "initialization": "Add 'allauth', 'allauth.account', 'allauth.socialaccount' to INSTALLED_APPS",
+        "key_functions": [
+          "ACCOUNT_EMAIL_REQUIRED = True",
+          "ACCOUNT_AUTHENTICATION_METHOD = 'email'",
+          "SOCIALACCOUNT_PROVIDERS config"
+        ],
+        "verified_against": "https://docs.allauth.org/en/latest/"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": ["settings.py (ACCOUNT_* and SOCIALACCOUNT_* settings)"],
+        "dependencies": ["pyjwt (optional, for social login)"]
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "Supports SAML 2.0 for enterprise B2B authentication",
+        "Supports OAuth 1.0/2.0 and OpenID Connect providers",
+        "SOCIALACCOUNT_ONLY = True disables local accounts",
+        "Since 2024, pip install django-allauth no longer pulls JWT dependencies unless using socialaccount",
+        "Has been battle-tested since 2010, used by commercial companies"
+      ],
+      "research_sources": [
+        "https://github.com/pennersr/django-allauth",
+        "https://docs.allauth.org/en/latest/introduction/"
+      ]
+    },
+    {
+      "name": "django-filter",
+      "type": "library",
+      "verified_package": {
+        "name": "django-filter",
+        "install_command": "pip install django-filter",
+        "version": "25.2+",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "from django_filters import rest_framework as filters",
+          "from django_filters.rest_framework import DjangoFilterBackend"
+        ],
+        "initialization": "Add 'django_filters' to INSTALLED_APPS, add DjangoFilterBackend to filter_backends",
+        "key_functions": [
+          "filterset_class = MyFilterSet",
+          "filterset_fields = ['field1', 'field2']",
+          "filters.FilterSet"
+        ],
+        "verified_against": "https://django-filter.readthedocs.io/en/latest/"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": ["settings.py REST_FRAMEWORK config"],
+        "dependencies": ["Django>=3.2"]
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "Use rest_framework sub-package for DRF integration",
+        "Tested against latest DRF version",
+        "Supports complex filtering with custom FilterSet classes"
+      ],
+      "research_sources": [
+        "https://pypi.org/project/django-filter/",
+        "https://django-filter.readthedocs.io/en/latest/guide/rest_framework.html"
+      ]
+    },
+    {
+      "name": "django-cors-headers",
+      "type": "library",
+      "verified_package": {
+        "name": "django-cors-headers",
+        "install_command": "pip install django-cors-headers",
+        "version": "latest stable",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [],
+        "initialization": "Add 'corsheaders' to INSTALLED_APPS, add CorsMiddleware to MIDDLEWARE (high as possible)",
+        "key_functions": [
+          "CORS_ALLOWED_ORIGINS = ['https://example.com']",
+          "CORS_ALLOW_CREDENTIALS = True",
+          "CORS_ALLOW_HEADERS = list(default_headers) + ['custom-header']"
+        ],
+        "verified_against": "https://github.com/adamchainz/django-cors-headers"
+      },
+      "configuration": {
+        "env_vars": ["CORS_ALLOWED_ORIGINS (recommended as env var)"],
+        "config_files": ["settings.py CORS_* settings"],
+        "dependencies": []
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "Place CorsMiddleware as high as possible, before CommonMiddleware",
+        "CORS_ALLOW_ALL_ORIGINS = True is dangerous - only for public APIs",
+        "Supports Python 3.10-3.14 and Django 4.2-6.0",
+        "CORS_ALLOW_PRIVATE_NETWORK setting added for Local Network Access spec"
+      ],
+      "research_sources": [
+        "https://pypi.org/project/django-cors-headers/",
+        "https://github.com/adamchainz/django-cors-headers"
+      ]
+    },
+    {
+      "name": "whitenoise",
+      "type": "library",
+      "verified_package": {
+        "name": "whitenoise",
+        "install_command": "pip install whitenoise",
+        "version": "6.11.0+",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [],
+        "initialization": "Add 'whitenoise.middleware.WhiteNoiseMiddleware' to MIDDLEWARE after SecurityMiddleware",
+        "key_functions": [
+          "STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'",
+          "manage.py collectstatic"
+        ],
+        "verified_against": "https://whitenoise.readthedocs.io/en/stable/django.html"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": ["settings.py STATIC_ROOT, STATICFILES_STORAGE"],
+        "dependencies": []
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "Django doesn't serve static files in production by default",
+        "Place WhiteNoiseMiddleware after SecurityMiddleware, before all others",
+        "CompressedManifestStaticFilesStorage adds compression and cache-forever hashing",
+        "Run collectstatic to compile all static files to STATIC_ROOT"
+      ],
+      "research_sources": [
+        "https://whitenoise.readthedocs.io/en/stable/django.html",
+        "https://pypi.org/project/whitenoise/"
+      ]
+    },
+    {
+      "name": "django-redis",
+      "type": "library",
+      "verified_package": {
+        "name": "django-redis",
+        "install_command": "pip install django-redis",
+        "version": "latest stable",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "from django_redis import get_redis_connection"
+        ],
+        "initialization": "Configure CACHES in settings.py with 'django_redis.cache.RedisCache' backend",
+        "key_functions": [
+          "cache.get(key)",
+          "cache.set(key, value, timeout)",
+          "get_redis_connection('default')"
+        ],
+        "verified_against": "https://github.com/jazzband/django-redis"
+      },
+      "configuration": {
+        "env_vars": ["REDIS_URL"],
+        "config_files": ["settings.py CACHES configuration"],
+        "dependencies": ["redis"]
+      },
+      "infrastructure": {
+        "requires_docker": false,
+        "requires_redis": true
+      },
+      "gotchas": [
+        "IGNORE_EXCEPTIONS = True emulates memcached behavior",
+        "CONNECTION_POOL_KWARGS for connection pooling",
+        "Supports Redis Sentinel for high availability",
+        "Can be used for Django sessions: SESSION_ENGINE = 'django.contrib.sessions.backends.cache'"
+      ],
+      "cache_config_example": {
+        "CACHES": {
+          "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": "redis://127.0.0.1:6379/1"
+          }
+        }
+      },
+      "research_sources": [
+        "https://github.com/jazzband/django-redis",
+        "https://medium.com/django-unleashed/caching-in-django-with-redis-a-step-by-step-guide-40e116cb4540"
+      ]
+    },
+    {
+      "name": "psycopg",
+      "type": "library",
+      "verified_package": {
+        "name": "psycopg[binary]",
+        "install_command": "pip install psycopg[binary]",
+        "version": "3.3+",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [],
+        "initialization": "Set ENGINE = 'django.db.backends.postgresql' in DATABASES",
+        "key_functions": [],
+        "verified_against": "https://www.psycopg.org/psycopg3/"
+      },
+      "configuration": {
+        "env_vars": ["DATABASE_URL", "PGUSER", "PGPASSWORD", "PGHOST", "PGPORT", "PGDATABASE"],
+        "config_files": ["settings.py DATABASES configuration"],
+        "dependencies": []
+      },
+      "infrastructure": {
+        "requires_docker": false,
+        "requires_postgresql": true
+      },
+      "gotchas": [
+        "Psycopg 3 is successor to psycopg2 despite lack of number in package name",
+        "Django 4.2+ has native psycopg 3 support",
+        "Need to install psycopg[binary] for binary files",
+        "Uses server-side binding instead of client-side merging",
+        "Adds async support and better performance"
+      ],
+      "research_sources": [
+        "https://www.psycopg.org/articles/2021/08/02/psycopg3-django-driver/",
+        "https://pypi.org/project/psycopg/"
+      ]
+    },
+    {
+      "name": "dj-database-url",
+      "type": "library",
+      "verified_package": {
+        "name": "dj-database-url",
+        "install_command": "pip install dj-database-url",
+        "version": "latest stable",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "import dj_database_url"
+        ],
+        "initialization": "DATABASES['default'] = dj_database_url.config()",
+        "key_functions": [
+          "dj_database_url.config()",
+          "dj_database_url.parse(url)",
+          "dj_database_url.config(conn_max_age=600)"
+        ],
+        "verified_against": "https://github.com/jazzband/dj-database-url"
+      },
+      "configuration": {
+        "env_vars": ["DATABASE_URL"],
+        "config_files": ["settings.py"],
+        "dependencies": []
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "url_formats": {
+        "postgresql": "postgres://username:password@localhost:5432/db_name",
+        "mysql": "mysql://username:password@localhost:3306/db_name",
+        "sqlite": "sqlite:///absolute/path/to/db_name.sqlite3"
+      },
+      "gotchas": [
+        "12-factor methodology for database configuration",
+        "conn_max_age enables Django's connection pool",
+        "conn_health_checks (Django 4.1+) checks persisted connections",
+        "Supports PostgreSQL, PostGIS, MySQL, Oracle, Redshift, SQLite"
+      ],
+      "research_sources": [
+        "https://pypi.org/project/dj-database-url/",
+        "https://github.com/jazzband/dj-database-url"
+      ]
+    },
+    {
+      "name": "django-extensions",
+      "type": "library",
+      "verified_package": {
+        "name": "django-extensions",
+        "install_command": "pip install django-extensions",
+        "version": "4.2+",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [],
+        "initialization": "Add 'django_extensions' to INSTALLED_APPS",
+        "key_functions": [
+          "manage.py shell_plus",
+          "manage.py runserver_plus",
+          "manage.py reset_db",
+          "manage.py create_command app command_name"
+        ],
+        "verified_against": "https://django-extensions.readthedocs.io/"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": [],
+        "dependencies": ["Werkzeug (for runserver_plus)"]
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "Requires Django 4.2+",
+        "runserver_plus provides Werkzeug debugger",
+        "shell_plus auto-imports all models",
+        "admin_generator outputs admin class source code",
+        "reset_db uses DROP/CREATE DATABASE"
+      ],
+      "research_sources": [
+        "https://github.com/django-extensions/django-extensions",
+        "https://django-extensions.readthedocs.io/"
+      ]
+    },
+    {
+      "name": "pytest-django",
+      "type": "library",
+      "verified_package": {
+        "name": "pytest-django",
+        "install_command": "pip install pytest-django",
+        "version": "latest stable",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "import pytest",
+          "from pytest_django.asserts import assertRedirects"
+        ],
+        "initialization": "Create pytest.ini or pyproject.toml with DJANGO_SETTINGS_MODULE",
+        "key_functions": [
+          "@pytest.mark.django_db",
+          "client fixture",
+          "admin_client fixture",
+          "django_user_model fixture"
+        ],
+        "verified_against": "https://pytest-django.readthedocs.io/"
+      },
+      "configuration": {
+        "env_vars": ["DJANGO_SETTINGS_MODULE"],
+        "config_files": ["pytest.ini", "pyproject.toml", "conftest.py"],
+        "dependencies": ["pytest"]
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "No unittest subclasses needed - write tests as functions",
+        "Database re-use without recreating for every test run",
+        "Works with pytest-xdist for parallel test execution",
+        "Supports Python 3.13 and Django 5.1",
+        "django_assert_num_queries supports database alias specification"
+      ],
+      "research_sources": [
+        "https://pytest-django.readthedocs.io/en/latest/",
+        "https://pypi.org/project/pytest-django/"
+      ]
+    },
+    {
+      "name": "sentry-sdk",
+      "type": "library",
+      "verified_package": {
+        "name": "sentry-sdk",
+        "install_command": "pip install sentry-sdk[django]",
+        "version": "latest stable",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "import sentry_sdk",
+          "from sentry_sdk.integrations.django import DjangoIntegration"
+        ],
+        "initialization": "sentry_sdk.init(dsn='...', integrations=[DjangoIntegration()])",
+        "key_functions": [
+          "sentry_sdk.capture_exception(e)",
+          "sentry_sdk.capture_message('message')",
+          "traces_sample_rate setting"
+        ],
+        "verified_against": "https://docs.sentry.io/platforms/python/guides/django/"
+      },
+      "configuration": {
+        "env_vars": ["SENTRY_DSN"],
+        "config_files": ["settings.py"],
+        "dependencies": []
+      },
+      "infrastructure": {
+        "requires_docker": false,
+        "requires_sentry_account": true
+      },
+      "gotchas": [
+        "Monitors middleware stack, signals, database queries, Redis commands, Django caches",
+        "send_default_pii=True attaches user data to error events",
+        "traces_sample_rate: 1.0 captures all, 0.2 recommended for production",
+        "DjangoIntegration accepts transaction_style, middleware_spans, signals_spans, cache_spans options"
+      ],
+      "research_sources": [
+        "https://sentry.io/for/django/",
+        "https://docs.sentry.io/platforms/python/guides/django/"
+      ]
+    },
+    {
+      "name": "django-storages",
+      "type": "library",
+      "verified_package": {
+        "name": "django-storages[s3]",
+        "install_command": "pip install 'django-storages[s3]'",
+        "version": "1.14.6+",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "from storages.backends.s3boto3 import S3Boto3Storage"
+        ],
+        "initialization": "Add 'storages' to INSTALLED_APPS, configure STORAGES dict (Django 4.2+)",
+        "key_functions": [
+          "S3Boto3Storage",
+          "STORAGES['default']['BACKEND']",
+          "STORAGES['staticfiles']['BACKEND']"
+        ],
+        "verified_against": "https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html"
+      },
+      "configuration": {
+        "env_vars": ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_STORAGE_BUCKET_NAME", "AWS_S3_REGION_NAME"],
+        "config_files": ["settings.py STORAGES configuration"],
+        "dependencies": ["boto3"]
+      },
+      "infrastructure": {
+        "requires_docker": false,
+        "requires_aws": true
+      },
+      "gotchas": [
+        "Django 4.2+ uses STORAGES dictionary format",
+        "boto3 backend is highly recommended for all new projects",
+        "Can create custom storage classes for different file types",
+        "Use 'storages.backends.s3.S3Storage' as backend",
+        "Supports multiple storage backends: S3, Azure, Google Cloud, etc."
+      ],
+      "research_sources": [
+        "https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html",
+        "https://pypi.org/project/django-storages/"
+      ]
+    }
+  ],
+  "unverified_claims": [
+    {
+      "claim": "Specific feature requirements for E-Menum Django rebuild",
+      "reason": "Requirements.json was minimal - no specific features, modules, or business logic defined",
+      "risk_level": "high"
+    },
+    {
+      "claim": "Database schema migration strategy from Prisma to Django ORM",
+      "reason": "No migration strategy was specified in requirements",
+      "risk_level": "medium"
+    }
+  ],
+  "recommendations": [
+    "Use Django 5.0+ for latest features including GeneratedField and async improvements",
+    "Use psycopg[binary] (v3) instead of psycopg2 for better performance and async support",
+    "Use django-environ for 12-factor configuration instead of python-dotenv",
+    "Use django-guardian for object-level permissions (CASL equivalent)",
+    "Use Celery with delay_on_commit() for transaction-safe async tasks",
+    "Configure pytest-django for testing instead of Django's unittest",
+    "Use whitenoise for static files in production - simpler than S3 for MVP",
+    "Configure sentry-sdk for production error monitoring",
+    "Use dj-database-url for 12-factor database configuration"
+  ],
+  "enterprise_requirements_checklist": {
+    "authentication": {
+      "package": "djangorestframework-simplejwt",
+      "alternative": "django-allauth (for social login/SAML)"
+    },
+    "authorization": {
+      "package": "django-guardian",
+      "alternative": "django-rules (rule-based)"
+    },
+    "api": {
+      "package": "djangorestframework",
+      "filtering": "django-filter"
+    },
+    "async_tasks": {
+      "package": "celery[redis]",
+      "broker": "Redis"
+    },
+    "caching": {
+      "package": "django-redis"
+    },
+    "database": {
+      "driver": "psycopg[binary]",
+      "url_config": "dj-database-url"
+    },
+    "static_files": {
+      "production": "whitenoise",
+      "cloud": "django-storages[s3]"
+    },
+    "testing": {
+      "package": "pytest-django"
+    },
+    "monitoring": {
+      "package": "sentry-sdk[django]"
+    },
+    "server": {
+      "wsgi": "gunicorn",
+      "reverse_proxy": "nginx"
+    }
+  },
+  "django_vs_express_equivalents": {
+    "routing-controllers": "Django REST Framework viewsets + routers",
+    "tsyringe (DI)": "Django's built-in dependency injection via apps",
+    "Zod": "Django serializers + DRF serializers",
+    "Prisma": "Django ORM",
+    "BullMQ": "Celery",
+    "CASL": "django-guardian or django-rules",
+    "EJS templates": "Django templates",
+    "Passport": "django-allauth or djangorestframework-simplejwt"
+  },
+  "created_at": "2026-02-14T12:00:00Z"
+}

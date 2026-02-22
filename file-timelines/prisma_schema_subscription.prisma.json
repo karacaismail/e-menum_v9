@@ -1,0 +1,28 @@
+{
+  "file_path": "prisma/schema/subscription.prisma",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "// =============================================================================\n// E-Menum - Subscription Prisma Schema\n// =============================================================================\n// This file contains subscription-related entities: Plan, Subscription, Invoice.\n// All models follow the patterns defined in DATABASE_SCHEMA.md.\n// =============================================================================\n\n// =============================================================================\n// PLAN\n// =============================================================================\n// Plan represents subscription tiers available for organizations.\n// 5 tiers: Free, Starter, Professional, Business, Enterprise.\n\nmodel Plan {\n  id              String   @id @default(cuid())\n  name            String   @unique\n  displayName     String\n  description     String?\n  monthlyPrice    Decimal  @db.Decimal(10, 2)\n  annualPrice     Decimal  @db.Decimal(10, 2)\n  currency        String   @default(\"TRY\")\n  features        Json     @default(\"[]\")\n  limits          Json     @default(\"{}\")\n  isActive        Boolean  @default(true)\n  sortOrder       Int      @default(0)\n  createdAt       DateTime @default(now())\n  updatedAt       DateTime @updatedAt\n\n  // Relations\n  organizations   Organization[]\n  subscriptions   Subscription[]\n\n  // Indexes\n  @@index([isActive, sortOrder])\n  @@map(\"plans\")\n}\n\n// =============================================================================\n// SUBSCRIPTION\n// =============================================================================\n// Subscription links organizations to plans with billing details.\n// Tracks subscription lifecycle, trial periods, and payment status.\n\nmodel Subscription {\n  id                  String             @id @default(cuid())\n  organizationId      String             @unique\n  planId              String\n  status              SubscriptionStatus @default(TRIALING)\n  currentPeriodStart  DateTime\n  currentPeriodEnd    DateTime\n  cancelAtPeriodEnd   Boolean            @default(false)\n  cancelledAt         DateTime?\n  trialStart          DateTime?\n  trialEnd            DateTime?\n  paymentMethod       PaymentMethod?\n  lastPaymentAt       DateTime?\n  nextPaymentAt       DateTime?\n  metadata            Json               @default(\"{}\")\n  createdAt           DateTime           @default(now())\n  updatedAt           DateTime           @updatedAt\n\n  // Relations\n  organization Organization @relation(fields: [organizationId], references: [id])\n  plan         Plan         @relation(fields: [planId], references: [id])\n  invoices     Invoice[]\n\n  // Indexes\n  @@index([status])\n  @@index([planId])\n  @@index([currentPeriodEnd])\n  @@map(\"subscriptions\")\n}\n\n// =============================================================================\n// INVOICE\n// =============================================================================\n// Invoice tracks billing records for subscriptions.\n// Supports recurring charges, one-time charges, and refunds.\n\nmodel Invoice {\n  id              String        @id @default(cuid())\n  subscriptionId  String\n  invoiceNumber   String        @unique\n  status          InvoiceStatus @default(DRAFT)\n  subtotal        Decimal       @db.Decimal(10, 2)\n  taxAmount       Decimal       @db.Decimal(10, 2)\n  totalAmount     Decimal       @db.Decimal(10, 2)\n  currency        String        @default(\"TRY\")\n  dueDate         DateTime\n  paidAt          DateTime?\n  paymentMethod   PaymentMethod?\n  description     String?\n  lineItems       Json          @default(\"[]\")\n  metadata        Json          @default(\"{}\")\n  createdAt       DateTime      @default(now())\n  updatedAt       DateTime      @updatedAt\n\n  // Relations\n  subscription Subscription @relation(fields: [subscriptionId], references: [id])\n\n  // Indexes\n  @@index([subscriptionId, status])\n  @@index([status, dueDate])\n  @@index([createdAt])\n  @@map(\"invoices\")\n}\n",
+        "last_modified": "2026-02-01T09:10:53.674682"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:24.375281",
+  "last_updated": "2026-02-01T08:03:24.385019"
+}

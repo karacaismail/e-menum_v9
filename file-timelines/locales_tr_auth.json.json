@@ -1,0 +1,28 @@
+{
+  "file_path": "locales/tr/auth.json",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "{\n  \"login\": {\n    \"title\": \"Giri\u015f Yap\",\n    \"subtitle\": \"Hesab\u0131n\u0131za giri\u015f yap\u0131n\",\n    \"email\": \"E-posta Adresi\",\n    \"emailPlaceholder\": \"ornek@email.com\",\n    \"password\": \"\u015eifre\",\n    \"passwordPlaceholder\": \"\u015eifrenizi giriniz\",\n    \"rememberMe\": \"Beni hat\u0131rla\",\n    \"forgotPassword\": \"\u015eifremi unuttum\",\n    \"submit\": \"Giri\u015f Yap\",\n    \"submitting\": \"Giri\u015f yap\u0131l\u0131yor...\",\n    \"noAccount\": \"Hesab\u0131n\u0131z yok mu?\",\n    \"register\": \"Kay\u0131t olun\"\n  },\n  \"register\": {\n    \"title\": \"Kay\u0131t Ol\",\n    \"subtitle\": \"Yeni bir hesap olu\u015fturun\",\n    \"name\": \"Ad Soyad\",\n    \"namePlaceholder\": \"Ad\u0131n\u0131z Soyad\u0131n\u0131z\",\n    \"email\": \"E-posta Adresi\",\n    \"emailPlaceholder\": \"ornek@email.com\",\n    \"password\": \"\u015eifre\",\n    \"passwordPlaceholder\": \"En az 8 karakter\",\n    \"confirmPassword\": \"\u015eifre Tekrar\u0131\",\n    \"confirmPasswordPlaceholder\": \"\u015eifrenizi tekrar giriniz\",\n    \"organizationName\": \"\u0130\u015fletme Ad\u0131\",\n    \"organizationPlaceholder\": \"\u0130\u015fletmenizin ad\u0131\",\n    \"terms\": \"Kullan\u0131m ko\u015fullar\u0131n\u0131 ve gizlilik politikas\u0131n\u0131 kabul ediyorum\",\n    \"submit\": \"Kay\u0131t Ol\",\n    \"submitting\": \"Kay\u0131t yap\u0131l\u0131yor...\",\n    \"hasAccount\": \"Zaten hesab\u0131n\u0131z var m\u0131?\",\n    \"login\": \"Giri\u015f yap\u0131n\"\n  },\n  \"forgotPassword\": {\n    \"title\": \"\u015eifremi Unuttum\",\n    \"subtitle\": \"\u015eifre s\u0131f\u0131rlama ba\u011flant\u0131s\u0131 i\u00e7in e-posta adresinizi girin\",\n    \"email\": \"E-posta Adresi\",\n    \"emailPlaceholder\": \"ornek@email.com\",\n    \"submit\": \"S\u0131f\u0131rlama Ba\u011flant\u0131s\u0131 G\u00f6nder\",\n    \"submitting\": \"G\u00f6nderiliyor...\",\n    \"backToLogin\": \"Giri\u015f sayfas\u0131na d\u00f6n\",\n    \"success\": \"\u015eifre s\u0131f\u0131rlama ba\u011flant\u0131s\u0131 e-posta adresinize g\u00f6nderildi\",\n    \"checkInbox\": \"L\u00fctfen gelen kutunuzu kontrol edin\"\n  },\n  \"resetPassword\": {\n    \"title\": \"\u015eifre S\u0131f\u0131rla\",\n    \"subtitle\": \"Yeni \u015fifrenizi belirleyin\",\n    \"newPassword\": \"Yeni \u015eifre\",\n    \"newPasswordPlaceholder\": \"En az 8 karakter\",\n    \"confirmPassword\": \"\u015eifre Tekrar\u0131\",\n    \"confirmPasswordPlaceholder\": \"Yeni \u015fifrenizi tekrar giriniz\",\n    \"submit\": \"\u015eifreyi S\u0131f\u0131rla\",\n    \"submitting\": \"S\u0131f\u0131rlan\u0131yor...\",\n    \"success\": \"\u015eifreniz ba\u015far\u0131yla s\u0131f\u0131rland\u0131\",\n    \"loginNow\": \"\u015eimdi giri\u015f yapabilirsiniz\"\n  },\n  \"verifyEmail\": {\n    \"title\": \"E-posta Do\u011frulama\",\n    \"subtitle\": \"E-posta adresinizi do\u011frulay\u0131n\",\n    \"sent\": \"Do\u011frulama ba\u011flant\u0131s\u0131 g\u00f6nderildi\",\n    \"checkInbox\": \"L\u00fctfen gelen kutunuzu kontrol edin ve ba\u011flant\u0131ya t\u0131klay\u0131n\",\n    \"resend\": \"Tekrar G\u00f6nder\",\n    \"resending\": \"G\u00f6nderiliyor...\",\n    \"success\": \"E-posta adresiniz ba\u015far\u0131yla do\u011fruland\u0131\",\n    \"expired\": \"Do\u011frulama ba\u011flant\u0131s\u0131n\u0131n s\u00fcresi dolmu\u015f\",\n    \"invalid\": \"Ge\u00e7ersiz do\u011frulama ba\u011flant\u0131s\u0131\"\n  },\n  \"logout\": {\n    \"title\": \"\u00c7\u0131k\u0131\u015f Yap\",\n    \"confirm\": \"\u00c7\u0131k\u0131\u015f yapmak istedi\u011finizden emin misiniz?\",\n    \"success\": \"Ba\u015far\u0131yla \u00e7\u0131k\u0131\u015f yap\u0131ld\u0131\"\n  },\n  \"session\": {\n    \"expired\": \"Oturumunuzun s\u00fcresi doldu. L\u00fctfen tekrar giri\u015f yap\u0131n.\",\n    \"invalid\": \"Ge\u00e7ersiz oturum. L\u00fctfen tekrar giri\u015f yap\u0131n.\"\n  },\n  \"twoFactor\": {\n    \"title\": \"\u0130ki Fakt\u00f6rl\u00fc Do\u011frulama\",\n    \"subtitle\": \"G\u00fcvenlik kodunuzu girin\",\n    \"code\": \"Do\u011frulama Kodu\",\n    \"codePlaceholder\": \"6 haneli kod\",\n    \"submit\": \"Do\u011frula\",\n    \"submitting\": \"Do\u011frulan\u0131yor...\",\n    \"useBackup\": \"Yedek kod kullan\",\n    \"resend\": \"Kodu tekrar g\u00f6nder\"\n  },\n  \"inviteAccept\": {\n    \"title\": \"Davetiye\",\n    \"subtitle\": \"{{organization}} organizasyonuna davet edildiniz\",\n    \"accept\": \"Daveti Kabul Et\",\n    \"decline\": \"Reddet\",\n    \"expired\": \"Davet ba\u011flant\u0131s\u0131n\u0131n s\u00fcresi dolmu\u015f\",\n    \"invalid\": \"Ge\u00e7ersiz davet ba\u011flant\u0131s\u0131\"\n  }\n}\n",
+        "last_modified": "2026-02-01T09:10:53.670154"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:24.240071",
+  "last_updated": "2026-02-01T08:03:24.249971"
+}

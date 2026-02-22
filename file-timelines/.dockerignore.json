@@ -1,0 +1,28 @@
+{
+  "file_path": ".dockerignore",
+  "main_branch_history": [],
+  "task_views": {
+    "001-create": {
+      "task_id": "001-create",
+      "branch_point": {
+        "commit_hash": "e2c14236dedadbadc7b19d123890e3f98e7316c0",
+        "content": "",
+        "timestamp": "2026-02-01T08:03:23.990755"
+      },
+      "worktree_state": {
+        "content": "# ============================================\n# E-Menum Docker Ignore\n# ============================================\n# Files excluded from Docker build context\n# ============================================\n\n# --------------------------------------------\n# Git\n# --------------------------------------------\n.git\n.gitignore\n.gitattributes\n\n# --------------------------------------------\n# Dependencies (will be installed fresh)\n# --------------------------------------------\nnode_modules\n\n# --------------------------------------------\n# Build outputs\n# --------------------------------------------\ndist\nbuild\nout\n*.tsbuildinfo\n\n# --------------------------------------------\n# Environment files\n# --------------------------------------------\n.env\n.env.local\n.env.*.local\n# NOTE: .env.example is included for reference\n\n# --------------------------------------------\n# Logs\n# --------------------------------------------\nlogs\n*.log\nnpm-debug.log*\nyarn-debug.log*\nyarn-error.log*\n\n# --------------------------------------------\n# Testing\n# --------------------------------------------\ncoverage\n.nyc_output\n*.lcov\n**/__tests__\n**/*.spec.ts\n**/*.test.ts\nvitest.config.ts\nvitest.*.config.ts\n\n# --------------------------------------------\n# IDE & Editors\n# --------------------------------------------\n.idea\n.vscode\n*.swp\n*.swo\n*~\n.project\n.classpath\n*.sublime-workspace\n*.sublime-project\n\n# --------------------------------------------\n# OS generated files\n# --------------------------------------------\n.DS_Store\n.DS_Store?\n._*\n.Spotlight-V100\n.Trashes\nThumbs.db\ndesktop.ini\n\n# --------------------------------------------\n# Documentation (optional - uncomment to exclude)\n# --------------------------------------------\n# *.md\n# !README.md\n\n# --------------------------------------------\n# Development files\n# --------------------------------------------\n.editorconfig\n.prettierrc\n.eslintrc.json\neslint.config.js\nprettier.config.js\n\n# --------------------------------------------\n# Auto-Claude\n# --------------------------------------------\n.auto-claude\n.auto-claude-*\n.claude_settings.json\n\n# --------------------------------------------\n# Uploads (runtime only)\n# --------------------------------------------\nuploads\npublic/uploads\n\n# --------------------------------------------\n# Temporary files\n# --------------------------------------------\ntmp\ntemp\n.tmp\n.cache\n.turbo\n\n# --------------------------------------------\n# Docker files (no recursion needed)\n# --------------------------------------------\nDockerfile*\ndocker-compose*\n.docker\n\n# --------------------------------------------\n# Secrets & Credentials\n# --------------------------------------------\n*.pem\n*.key\n*.crt\ncredentials.json\nservice-account.json\nsecrets\n\n# --------------------------------------------\n# Specification & Documentation files\n# --------------------------------------------\nAPI_CONTRACTS.md\nBUSINESS_RULES.md\nCLAUDE.md\nCODING_STANDARDS.md\nCOMPONENT_PATTERNS.md\nCONSTRAINTS.md\nDATABASE_SCHEMA.md\nDESIGN_SYSTEM_PHILOSOPHY.md\nFRONTEND_ARCHITECTURE.md\nGLOSSARY.md\nMASTER_PROMPT.md\nMODULE_DEVELOPMENT_GUIDE.md\nMODULE_SYSTEM.md\nMVP_SCOPE.md\nPERSONA_USER_FLOWS.md\nPROJECT_CONTEXT.md\nSECURITY_MODEL.md\nSYSTEM_DESIGN.md\nTESTING_STRATEGY.md\nspec.md\nrequirements.json\ncontext.json\n",
+        "last_modified": "2026-02-01T09:10:53.663528"
+      },
+      "task_intent": {
+        "title": "001-create",
+        "description": "",
+        "from_plan": false
+      },
+      "commits_behind_main": 1,
+      "status": "active",
+      "merged_at": null
+    }
+  },
+  "created_at": "2026-02-01T08:03:24.055404",
+  "last_updated": "2026-02-01T08:03:24.067436"
+}
