@@ -1,0 +1,35 @@
+/* =============================================================================
+   Theme Admin - Enhanced Color Input Styles
+   Makes Django's default text inputs for color fields more visual
+   ============================================================================= */
+
+/* Color field inputs - add color swatch preview next to text input */
+.field-primary_color .vTextField,
+.field-secondary_color .vTextField,
+.field-background_color .vTextField,
+.field-text_color .vTextField,
+.field-accent_color .vTextField {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    padding-left: 36px;
+    background-repeat: no-repeat;
+    background-position: 8px center;
+    background-size: 20px 20px;
+}
+
+/* Add inline color swatch via JS - inject color picker behavior */
+.field-primary_color,
+.field-secondary_color,
+.field-background_color,
+.field-text_color,
+.field-accent_color {
+    position: relative;
+}
+
+/* Settings field help text - layout settings documentation */
+.field-settings .help {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-muted, #94a3b8);
+}

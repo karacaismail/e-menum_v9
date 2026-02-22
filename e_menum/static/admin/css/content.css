@@ -325,14 +325,19 @@ select[size] option:checked {
     min-width: 160px;
     width: 100%;
     max-width: 100%;
-    z-index: 1;
 }
 
-/* When dropdown is open, raise z-index above everything */
-.custom-select:has(.custom-select-dropdown[style*="display: block"]),
-.custom-select:has(.custom-select-dropdown:not([style*="display: none"])) {
+/* When dropdown is open, raise z-index above everything.
+   Parent .form-row is elevated via JS in the Alpine customSelect open()/close(). */
+.custom-select--open {
     z-index: 9998;
 }
+
+/* NOTE: Previous :has() rules for fieldset/module/form-row stacking context
+   elevation have been REMOVED. They created new stacking contexts on parent
+   elements which could trap position:fixed dropdowns. The dropdown now uses
+   position:fixed + z-index:99999 (set via JS) to escape all stacking contexts
+   without needing parent elevation. */
 
 /* When inside related-widget-wrapper, don't take full width */
 .related-widget-wrapper .custom-select {
@@ -419,6 +424,24 @@ select[size] option:checked {
     overflow-y: auto;
     max-height: 240px;
     padding: 4px;
+}
+
+/* Optgroup label inside custom select */
+.custom-select-group-label {
+    padding: 8px 14px 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted, #64748b);
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    margin-top: 4px;
+    user-select: none;
+    pointer-events: none;
+}
+.custom-select-group-label:first-child {
+    border-top: none;
+    margin-top: 0;
 }
 
 /* Scrollbar styling */
@@ -1522,11 +1545,36 @@ ul.messagelist li.info {
 #login-form input[type="text"],
 #login-form input[type="password"] {
     width: 100%;
+    box-sizing: border-box;
 }
 
 #login-form input[type="submit"] {
     width: 100%;
     padding: 12px;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 8px;
+}
+
+#login-form input[type="submit"]:hover {
+    background: var(--accent-light);
+}
+
+#login-form .form-row {
+    margin-bottom: 16px;
+}
+
+#login-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: var(--text-primary);
 }
 
 /* Sorted column indicator */
@@ -1582,6 +1630,32 @@ br.clear {
 
 .content-title-bar .object-tools {
     margin: 0;
+}
+
+/* Storefront button in title bar */
+.storefront-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    background: linear-gradient(135deg, #6366f1, #818cf8);
+    color: #fff !important;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.storefront-btn:hover {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    transform: translateY(-1px);
+}
+
+.storefront-btn i {
+    font-size: 16px;
 }
 
 

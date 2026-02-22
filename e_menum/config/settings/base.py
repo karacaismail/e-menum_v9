@@ -132,9 +132,14 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    # django-filer & easy-thumbnails for self-hosted media management
+    'filer',
+    'easy_thumbnails',
+    'django.contrib.sites',  # Required by django-filer
     # 'django_filters',  # Uncomment when django-filter is installed
     # 'corsheaders',  # Uncomment when django-cors-headers is installed
     # 'guardian',  # Uncomment when django-guardian is installed
+    'impersonate',  # User impersonation for superadmin
 ]
 
 # E-Menum Local apps (ordered by dependency)
@@ -147,10 +152,15 @@ LOCAL_APPS = [
     'apps.media.apps.MediaConfig',
     'apps.notifications.apps.NotificationsConfig',
     'apps.analytics.apps.AnalyticsConfig',
+    'apps.reporting.apps.ReportingConfig',
+    'apps.inventory.apps.InventoryConfig',
+    'apps.campaigns.apps.CampaignsConfig',
     'apps.ai.apps.AiConfig',
 ]
 
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + [
+    'django.forms',  # Required for FORM_RENDERER = TemplatesSetting
+]
 
 
 # =============================================================================
@@ -168,6 +178,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'impersonate.middleware.ImpersonateMiddleware',  # User impersonation
     # TenantMiddleware will be added after core app is created
     # 'shared.middleware.tenant.TenantMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -205,10 +216,15 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
+                'shared.context_processors.admin_sidebar_permissions',
             ],
         },
     },
 ]
+
+# Use project's TEMPLATES configuration for form widget rendering
+# This allows custom widget templates in templates/admin/widgets/ to be found
+FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 
 
 # =============================================================================
@@ -543,6 +559,69 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
 
 
 # =============================================================================
+# DJANGO-FILER CONFIGURATION
+# =============================================================================
+
+# Required by django.contrib.sites (used by filer)
+SITE_ID = 1
+
+# Filer canonical URL
+FILER_CANONICAL_URL = 'media/'
+
+# Filer storage configuration
+FILER_STORAGES = {
+    'public': {
+        'main': {
+            'ENGINE': 'django.core.files.storage.FileSystemStorage',
+            'OPTIONS': {
+                'location': str(BASE_DIR / 'media' / 'filer'),
+                'base_url': '/media/filer/',
+            },
+            'UPLOAD_TO': 'shared.utils.media.filer_upload_path',
+        },
+        'thumbnails': {
+            'ENGINE': 'django.core.files.storage.FileSystemStorage',
+            'OPTIONS': {
+                'location': str(BASE_DIR / 'media' / 'filer_thumbnails'),
+                'base_url': '/media/filer_thumbnails/',
+            },
+        },
+    },
+}
+
+# Easy-thumbnails processors
+THUMBNAIL_PROCESSORS = (
+    'easy_thumbnails.processors.colorspace',
+    'easy_thumbnails.processors.autocrop',
+    'easy_thumbnails.processors.scale_and_crop',
+    'easy_thumbnails.processors.filters',
+)
+
+# Allowed MIME types for uploads
+FILER_MIME_TYPE_WHITELIST = [
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'image/webp',
+    'image/svg+xml',
+    'video/mp4',
+    'video/webm',
+    'application/pdf',
+]
+
+# Thumbnail aliases
+THUMBNAIL_ALIASES = {
+    '': {
+        'menu_thumb': {'size': (400, 300), 'crop': True, 'quality': 85},
+        'menu_large': {'size': (800, 600), 'crop': True, 'quality': 90},
+        'category_icon': {'size': (200, 200), 'crop': True, 'quality': 85},
+        'logo_small': {'size': (100, 100), 'crop': False, 'quality': 90},
+        'logo_large': {'size': (400, 400), 'crop': False, 'quality': 90},
+    },
+}
+
+
+# =============================================================================
 # DEFAULT PRIMARY KEY
 # =============================================================================
 
@@ -555,6 +634,34 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Guardian configuration for object-level permissions
 ANONYMOUS_USER_NAME = None  # Disable anonymous user
+
+
+# =============================================================================
+# DJANGO IMPERSONATE (User Impersonation)
+# =============================================================================
+
+IMPERSONATE = {
+    # Only superusers and staff users can impersonate
+    'REQUIRE_SUPERUSER': False,
+    # Custom function to check who can impersonate
+    'CUSTOM_ALLOW': 'shared.utils.impersonate.can_impersonate',
+    # Custom function to check who can be impersonated
+    'CUSTOM_USER_QUERYSET': 'shared.utils.impersonate.get_impersonatable_users',
+    # Redirect after impersonation starts/stops
+    'REDIRECT_URL': '/admin/',
+    # Disable impersonation of superusers (security)
+    'ALLOW_SUPERUSER': False,
+    # Max session duration in seconds (1 hour)
+    'MAX_DURATION': 3600,
+    # URI to redirect to after stopping impersonation
+    'REDIRECT_FIELD_NAME': 'next',
+    # Override default URI_EXCLUSIONS which blocks /admin/ paths.
+    # We WANT impersonation to work inside admin panel.
+    # Only exclude impersonate's own stop URL to prevent loops.
+    'URI_EXCLUSIONS': (),
+    # Admin panel behaviour while impersonating
+    'ADMIN_READ_ONLY': True,  # Impersonated user sees admin as read-only
+}
 
 
 # =============================================================================
@@ -714,6 +821,15 @@ EMENUM_PLAN_LIMITS = {
         'ai_credits': -1,
     },
 }
+
+# =============================================================================
+# AI CONTENT GENERATION
+# =============================================================================
+# Provider: 'openai' or 'anthropic' (set via environment variable)
+AI_PROVIDER = os.environ.get('AI_PROVIDER', 'openai')
+AI_API_KEY = os.environ.get('AI_API_KEY', os.environ.get('OPENAI_API_KEY', ''))
+AI_MODEL = os.environ.get('AI_MODEL', 'gpt-4o-mini')
+# When no API key is set, the service uses mock responses for development.
 
 # Session settings
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 7  # 1 week

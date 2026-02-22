@@ -1,0 +1,255 @@
+{% load i18n %}
+{# Custom description fieldset with inline AI Generate button #}
+{# Uses Alpine.js inline x-data (no separate component registration needed) #}
+<fieldset class="module aligned {{ fieldset.classes }}"
+         x-data="{
+            loading: false,
+            successMsg: '',
+            errorMsg: '',
+
+            async generate() {
+                const nameInput = document.querySelector('#id_name');
+                if (!nameInput || !nameInput.value.trim()) {
+                    this.errorMsg = '{{ _("Please enter a product name first.")|escapejs }}';
+                    return;
+                }
+
+                const productName = nameInput.value.trim();
+
+                const descField = document.querySelector('#id_description');
+                const shortDescField = document.querySelector('#id_short_description');
+                const hasExisting = (descField && descField.value.trim()) || (shortDescField && shortDescField.value.trim());
+
+                if (hasExisting) {
+                    if (!confirm('{{ _("Existing descriptions will be overwritten. Continue?")|escapejs }}')) {
+                        return;
+                    }
+                }
+
+                // Get category text from the custom select or raw select
+                let category = '';
+                const catWrapper = document.querySelector('.field-category .custom-select-value, [name=category] option:checked');
+                if (catWrapper) category = catWrapper.textContent.trim();
+                if (!category || category === '---------') {
+                    const catSelect = document.querySelector('#id_category');
+                    if (catSelect && catSelect.selectedIndex > 0) {
+                        category = catSelect.options[catSelect.selectedIndex].textContent.trim();
+                    }
+                }
+
+                // Also grab short_description as AI input seed
+                const shortDesc = shortDescField ? shortDescField.value.trim() : '';
+
+                this.loading = true;
+                this.errorMsg = '';
+                this.successMsg = '';
+
+                try {
+                    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                    const body = {
+                        product_name: productName,
+                        category: category,
+                        language: 'tr',
+                    };
+
+                    // If user typed a short_description, send it as a keyword seed
+                    if (shortDesc) {
+                        body.keywords = shortDesc.split(/[,;]+/).map(s => s.trim()).filter(Boolean);
+                    }
+
+                    {% if product_id %}
+                    body.product_id = '{{ product_id }}';
+                    {% endif %}
+
+                    const response = await fetch('/api/v1/ai/generate-description/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken,
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify(body),
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success && result.data) {
+                        if (result.data.description && descField) {
+                            descField.value = result.data.description;
+                            descField.dispatchEvent(new Event('input', { bubbles: true }));
+                        }
+                        if (result.data.short_description && shortDescField) {
+                            shortDescField.value = result.data.short_description;
+                            shortDescField.dispatchEvent(new Event('input', { bubbles: true }));
+                        }
+
+                        const credits = result.data.credits_used || 0;
+                        this.successMsg = '{{ _("Description generated successfully!")|escapejs }} (' + credits + ' {{ _("credits")|escapejs }})';
+                        setTimeout(() => { this.successMsg = ''; }, 5000);
+                    } else {
+                        this.errorMsg = (result.error && result.error.message) || '{{ _("Generation failed. Please try again.")|escapejs }}';
+                    }
+                } catch (err) {
+                    console.error('AI Generate error:', err);
+                    this.errorMsg = '{{ _("Network error. Please check your connection.")|escapejs }}';
+                } finally {
+                    this.loading = false;
+                }
+            }
+         }">
+
+    {% if fieldset.name %}
+    <h2 style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+        <span>{{ fieldset.name }}</span>
+        <button type="button"
+                class="ai-generate-btn"
+                @click="generate()"
+                :disabled="loading">
+            <span x-show="!loading" style="display: inline-flex; align-items: center; gap: 6px;">
+                <i class="ph ph-sparkle"></i>
+                {% trans 'AI Generate' %}
+            </span>
+            <span x-show="loading" x-cloak style="display: inline-flex; align-items: center; gap: 6px;">
+                <i class="ph ph-circle-notch ai-spin"></i>
+                {% trans 'Generating...' %}
+            </span>
+        </button>
+    </h2>
+    {% endif %}
+
+    {# AI Status Messages #}
+    <div x-show="successMsg" x-cloak
+         class="ai-message ai-message--success"
+         x-transition>
+        <i class="ph ph-check-circle"></i>
+        <span x-text="successMsg"></span>
+        <button type="button" @click="successMsg = ''" class="ai-message-close">
+            <i class="ph ph-x"></i>
+        </button>
+    </div>
+
+    <div x-show="errorMsg" x-cloak
+         class="ai-message ai-message--error"
+         x-transition>
+        <i class="ph ph-warning-circle"></i>
+        <span x-text="errorMsg"></span>
+        <button type="button" @click="errorMsg = ''" class="ai-message-close">
+            <i class="ph ph-x"></i>
+        </button>
+    </div>
+
+    {# Standard Django fieldset fields #}
+    {% for line in fieldset %}
+        <div class="form-row{% if line.fields|length == 1 and line.fields.0.is_checkbox %} checkbox-row{% endif %}{% if line.errors %} errors{% endif %}{% if not line.has_visible_field %} hidden{% endif %}">
+            {% for field in line %}
+                <div{% if not line.fields|length == 1 %} class="fieldBox{% if field.field.name %} field-{{ field.field.name }}{% endif %}{% if not field.is_readonly and field.errors %} errors{% endif %}{% if field.field.is_hidden %} hidden{% endif %}"{% elif field.is_checkbox %} class="checkbox-row"{% endif %}>
+                    {% if not line.fields|length == 1 and not field.is_readonly %}{{ field.errors }}{% endif %}
+                    {% if field.is_checkbox %}
+                        {{ field.field }}{{ field.label_tag }}
+                    {% else %}
+                        {{ field.label_tag }}
+                        {% if field.is_readonly %}
+                            <div class="readonly">{{ field.contents }}</div>
+                        {% else %}
+                            {{ field.field }}
+                        {% endif %}
+                    {% endif %}
+                    {% if field.field.help_text %}
+                        <div class="help">{{ field.field.help_text|safe }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    {# Help text under the description area #}
+    <div class="form-row" style="padding: 8px 20px; border-top: 1px solid rgba(255,255,255,0.03);">
+        <div class="help" style="font-size: 11px; color: #64748b;">
+            <i class="ph ph-info" style="margin-right: 4px;"></i>
+            {% trans 'Tip: Enter a short description or keywords first, then click AI Generate to create a full description.' %}
+        </div>
+    </div>
+</fieldset>
+
+<style>
+    /* AI Generate Button */
+    .ai-generate-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 16px;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+        letter-spacing: 0.3px;
+    }
+
+    .ai-generate-btn:hover:not(:disabled) {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        transform: translateY(-1px);
+    }
+
+    .ai-generate-btn:active:not(:disabled) {
+        transform: translateY(0);
+    }
+
+    .ai-generate-btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+    /* Spinning animation */
+    @keyframes ai-spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    .ai-spin {
+        animation: ai-spin 1s linear infinite;
+    }
+
+    /* AI Messages */
+    .ai-message {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        margin: 8px 12px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .ai-message--success {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+        color: #22c55e;
+    }
+
+    .ai-message--error {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+
+    .ai-message-close {
+        margin-left: auto;
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        opacity: 0.6;
+        padding: 2px;
+        font-size: 14px;
+    }
+    .ai-message-close:hover {
+        opacity: 1;
+    }
+</style>

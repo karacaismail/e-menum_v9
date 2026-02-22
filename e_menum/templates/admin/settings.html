@@ -1,0 +1,167 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans 'Settings' %} | E-Menum Admin{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs" aria-label="{% trans 'Breadcrumb' %}">
+    <a href="{% url 'admin:index' %}">
+        <i class="ph ph-house"></i>
+        {% trans 'Home' %}
+    </a>
+    <span class="breadcrumb-sep"><i class="ph ph-caret-right"></i></span>
+    <span class="breadcrumb-current">{% trans 'Settings' %}</span>
+</nav>
+{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    {# Page Header #}
+    <div class="dashboard-welcome">
+        <div class="welcome-text">
+            <h1><i class="ph ph-gear-six"></i> {% trans 'Platform Settings' %}</h1>
+            <p>{% trans 'Manage platform configuration, integrations, and preferences.' %}</p>
+        </div>
+    </div>
+
+    {# Settings Cards Grid #}
+    <div class="dashboard-grid">
+
+        {# ── AI Services ── #}
+        {% if user.is_superuser %}
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2><i class="ph ph-brain"></i> {% trans 'AI Services' %}</h2>
+            </div>
+            <div class="card-body">
+                <div class="quick-access-grid">
+                    <a href="{% url 'admin:ai_aiproviderconfig_changelist' %}" class="quick-access-item">
+                        <div class="qa-icon" style="background: rgba(99, 102, 241, 0.1); color: #818cf8;">
+                            <i class="ph ph-robot"></i>
+                        </div>
+                        <div class="qa-info">
+                            <span class="qa-name">{% trans 'AI Providers' %}</span>
+                            <span class="qa-app">{% trans 'Configure text & image generation providers, API keys, and models' %}</span>
+                        </div>
+                    </a>
+                    <a href="{% url 'admin:ai_aigeneration_changelist' %}" class="quick-access-item">
+                        <div class="qa-icon" style="background: rgba(14, 165, 233, 0.1); color: #38bdf8;">
+                            <i class="ph ph-clock-counter-clockwise"></i>
+                        </div>
+                        <div class="qa-info">
+                            <span class="qa-name">{% trans 'Generation History' %}</span>
+                            <span class="qa-app">{% trans 'View AI generation logs, credits used, and status' %}</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# ── Account & Security ── #}
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2><i class="ph ph-shield-check"></i> {% trans 'Account & Security' %}</h2>
+            </div>
+            <div class="card-body">
+                <div class="quick-access-grid">
+                    <a href="{% url 'admin:password_change' %}" class="quick-access-item">
+                        <div class="qa-icon" style="background: rgba(245, 158, 11, 0.1); color: #fbbf24;">
+                            <i class="ph ph-key"></i>
+                        </div>
+                        <div class="qa-info">
+                            <span class="qa-name">{% trans 'Change Password' %}</span>
+                            <span class="qa-app">{% trans 'Update your admin account password' %}</span>
+                        </div>
+                    </a>
+                    {% if user.is_superuser %}
+                    <a href="{% url 'admin-permission-matrix' %}" class="quick-access-item">
+                        <div class="qa-icon" style="background: rgba(139, 92, 246, 0.1); color: #a78bfa;">
+                            <i class="ph ph-table"></i>
+                        </div>
+                        <div class="qa-info">
+                            <span class="qa-name">{% trans 'Permission Matrix' %}</span>
+                            <span class="qa-app">{% trans 'View and manage role-permission assignments' %}</span>
+                        </div>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# ── Subscription & Billing ── #}
+        {% if user.is_superuser %}
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2><i class="ph ph-credit-card"></i> {% trans 'Subscription & Billing' %}</h2>
+            </div>
+            <div class="card-body">
+                <div class="quick-access-grid">
+                    <a href="{% url 'admin:subscriptions_plan_changelist' %}" class="quick-access-item">
+                        <div class="qa-icon" style="background: rgba(34, 197, 94, 0.1); color: #4ade80;">
+                            <i class="ph ph-crown"></i>
+                        </div>
+                        <div class="qa-info">
+                            <span class="qa-name">{% trans 'Plans' %}</span>
+                            <span class="qa-app">{% trans 'Manage subscription plans, pricing, and features' %}</span>
+                        </div>
+                    </a>
+                    <a href="{% url 'admin:subscriptions_subscription_changelist' %}" class="quick-access-item">
+                        <div class="qa-icon" style="background: rgba(6, 182, 212, 0.1); color: #22d3ee;">
+                            <i class="ph ph-receipt"></i>
+                        </div>
+                        <div class="qa-info">
+                            <span class="qa-name">{% trans 'Subscriptions' %}</span>
+                            <span class="qa-app">{% trans 'View active subscriptions and billing history' %}</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# ── Platform ── #}
+        {% if user.is_superuser %}
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2><i class="ph ph-wrench"></i> {% trans 'Platform' %}</h2>
+            </div>
+            <div class="card-body">
+                <div class="quick-access-grid">
+                    <a href="{% url 'admin:core_organization_changelist' %}" class="quick-access-item">
+                        <div class="qa-icon" style="background: rgba(236, 72, 153, 0.1); color: #f472b6;">
+                            <i class="ph ph-buildings"></i>
+                        </div>
+                        <div class="qa-info">
+                            <span class="qa-name">{% trans 'Organizations' %}</span>
+                            <span class="qa-app">{% trans 'Manage tenant organizations and their settings' %}</span>
+                        </div>
+                    </a>
+                    <a href="{% url 'admin:core_user_changelist' %}" class="quick-access-item">
+                        <div class="qa-icon" style="background: rgba(59, 130, 246, 0.1); color: #60a5fa;">
+                            <i class="ph ph-users-three"></i>
+                        </div>
+                        <div class="qa-info">
+                            <span class="qa-name">{% trans 'Users' %}</span>
+                            <span class="qa-app">{% trans 'Manage platform users, roles, and access' %}</span>
+                        </div>
+                    </a>
+                    <a href="{% url 'admin-reports' %}" class="quick-access-item">
+                        <div class="qa-icon" style="background: rgba(251, 146, 60, 0.1); color: #fb923c;">
+                            <i class="ph ph-chart-bar"></i>
+                        </div>
+                        <div class="qa-info">
+                            <span class="qa-name">{% trans 'Reports' %}</span>
+                            <span class="qa-app">{% trans 'Analytics, audit logs, and business metrics' %}</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

@@ -16,6 +16,7 @@ Usage:
 """
 
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class FeedbackType(models.TextChoices):
@@ -105,3 +106,48 @@ class VisitSource(models.TextChoices):
     ORDER = 'ORDER', 'Order'
     CHECK_IN = 'CHECK_IN', 'Check-in'
     STAFF = 'STAFF', 'Staff Entry'
+
+
+class PreferenceType(models.TextChoices):
+    """
+    Type values for customer preferences.
+
+    - DIETARY: Dietary preferences (vegetarian, vegan, etc.)
+    - ALLERGEN: Allergen information (nuts, gluten, etc.)
+    - SEATING: Seating preferences (window, outdoor, etc.)
+    - PAYMENT: Payment preferences (cash, card, etc.)
+    - COMMUNICATION: Communication preferences (email, SMS, etc.)
+    """
+    DIETARY = 'DIETARY', _('Dietary')
+    ALLERGEN = 'ALLERGEN', _('Allergen')
+    SEATING = 'SEATING', _('Seating')
+    PAYMENT = 'PAYMENT', _('Payment')
+    COMMUNICATION = 'COMMUNICATION', _('Communication')
+
+
+class NPSCategory(models.TextChoices):
+    """
+    NPS (Net Promoter Score) categories based on score.
+
+    - PROMOTER: Score 9-10, loyal enthusiasts
+    - PASSIVE: Score 7-8, satisfied but unenthusiastic
+    - DETRACTOR: Score 0-6, unhappy customers
+    """
+    PROMOTER = 'PROMOTER', _('Promoter')
+    PASSIVE = 'PASSIVE', _('Passive')
+    DETRACTOR = 'DETRACTOR', _('Detractor')
+
+
+class NPSChannel(models.TextChoices):
+    """
+    Channel through which NPS survey was collected.
+
+    - QR: Survey collected via QR code
+    - EMAIL: Survey collected via email
+    - SMS: Survey collected via SMS
+    - IN_APP: Survey collected via in-app prompt
+    """
+    QR = 'QR', _('QR Code')
+    EMAIL = 'EMAIL', _('Email')
+    SMS = 'SMS', _('SMS')
+    IN_APP = 'IN_APP', _('In App')

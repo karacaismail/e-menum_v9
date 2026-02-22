@@ -31,7 +31,9 @@ from apps.core.choices import (
     OrganizationStatus,
     PermissionAction,
     RoleScope,
+    ScheduleStatus,
     SessionStatus,
+    ShiftType,
     UserStatus,
 )
 
@@ -1629,3 +1631,335 @@ class AuditLog(models.Model):
             user_agent=user_agent,
             metadata=metadata or {}
         )
+
+
+class Shift(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    Shift model - defines shift templates for staff scheduling.
+
+    Each shift has a name, type, and time range. Organizations can define
+    multiple shifts (e.g., morning, evening) for scheduling their staff.
+
+    Critical Rules:
+    - EVERY query MUST filter by organization (multi-tenant isolation)
+    - Use soft_delete() - never call delete() directly
+
+    Attributes:
+        id: UUID primary key
+        organization: FK to Organization (tenant isolation)
+        name: Display name of the shift (e.g., 'Morning Shift')
+        shift_type: Type of shift (MORNING, AFTERNOON, EVENING, NIGHT, CUSTOM)
+        start_time: When the shift starts
+        end_time: When the shift ends
+        is_active: Whether this shift is currently active
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        related_name='shifts',
+        verbose_name=_('Organization'),
+        help_text=_('Organization this shift belongs to')
+    )
+
+    name = models.CharField(
+        max_length=100,
+        verbose_name=_('Name'),
+        help_text=_('Display name of the shift')
+    )
+
+    shift_type = models.CharField(
+        max_length=20,
+        choices=ShiftType.choices,
+        verbose_name=_('Shift type'),
+        help_text=_('Type of shift')
+    )
+
+    start_time = models.TimeField(
+        verbose_name=_('Start time'),
+        help_text=_('When the shift starts')
+    )
+
+    end_time = models.TimeField(
+        verbose_name=_('End time'),
+        help_text=_('When the shift ends')
+    )
+
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name=_('Is active'),
+        help_text=_('Whether this shift is currently active')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'shifts'
+        verbose_name = _('Shift')
+        verbose_name_plural = _('Shifts')
+        ordering = ['start_time']
+        indexes = [
+            models.Index(fields=['organization', 'deleted_at'], name='shift_org_deleted_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.organization.name})"
+
+    def __repr__(self) -> str:
+        return f"<Shift(id={self.id}, name='{self.name}', type={self.shift_type})>"
+
+
+class StaffSchedule(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    StaffSchedule model - assigns staff members to shifts on specific dates.
+
+    Tracks scheduled shifts as well as actual check-in/check-out times
+    for attendance management and reporting.
+
+    Critical Rules:
+    - EVERY query MUST filter by organization (multi-tenant isolation)
+    - Use soft_delete() - never call delete() directly
+    - A user can only be assigned to one shift per date (unique_together)
+
+    Attributes:
+        id: UUID primary key
+        organization: FK to Organization (tenant isolation)
+        user: FK to User (staff member)
+        shift: FK to Shift
+        date: The date of the scheduled shift
+        actual_start: Actual check-in time (null until checked in)
+        actual_end: Actual check-out time (null until checked out)
+        status: Schedule status (SCHEDULED, CHECKED_IN, CHECKED_OUT, ABSENT, LATE)
+        notes: Optional notes about the schedule entry
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        related_name='staff_schedules',
+        verbose_name=_('Organization'),
+        help_text=_('Organization this schedule belongs to')
+    )
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='schedules',
+        verbose_name=_('User'),
+        help_text=_('Staff member assigned to this shift')
+    )
+
+    shift = models.ForeignKey(
+        Shift,
+        on_delete=models.CASCADE,
+        related_name='schedules',
+        verbose_name=_('Shift'),
+        help_text=_('Shift assigned to the staff member')
+    )
+
+    date = models.DateField(
+        verbose_name=_('Date'),
+        help_text=_('Date of the scheduled shift')
+    )
+
+    actual_start = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_('Actual start'),
+        help_text=_('Actual check-in time')
+    )
+
+    actual_end = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_('Actual end'),
+        help_text=_('Actual check-out time')
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=ScheduleStatus.choices,
+        default=ScheduleStatus.SCHEDULED,
+        db_index=True,
+        verbose_name=_('Status'),
+        help_text=_('Current status of the schedule entry')
+    )
+
+    notes = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name=_('Notes'),
+        help_text=_('Optional notes about the schedule entry')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'staff_schedules'
+        verbose_name = _('Staff Schedule')
+        verbose_name_plural = _('Staff Schedules')
+        ordering = ['-date']
+        unique_together = [['user', 'date', 'shift']]
+        indexes = [
+            models.Index(fields=['organization', 'deleted_at'], name='schedule_org_deleted_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.user.email} - {self.shift.name} on {self.date}"
+
+    def __repr__(self) -> str:
+        return f"<StaffSchedule(id={self.id}, user='{self.user.email}', date={self.date})>"
+
+
+class StaffMetric(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    StaffMetric model - daily performance metrics for staff members.
+
+    Aggregates key performance indicators for each staff member per day,
+    including orders handled, revenue generated, service time, and ratings.
+
+    Critical Rules:
+    - EVERY query MUST filter by organization (multi-tenant isolation)
+    - Use soft_delete() - never call delete() directly
+    - One record per user per date (unique_together)
+
+    Attributes:
+        id: UUID primary key
+        organization: FK to Organization (tenant isolation)
+        user: FK to User (staff member)
+        date: The date these metrics are for
+        orders_handled: Number of orders handled
+        revenue_generated: Total revenue generated
+        avg_order_value: Average order value
+        avg_service_time_seconds: Average service time in seconds
+        customer_rating_avg: Average customer rating
+        rating_count: Number of ratings received
+        upsell_count: Number of successful upsells
+        tips_amount: Total tips received
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        related_name='staff_metrics',
+        verbose_name=_('Organization'),
+        help_text=_('Organization this metric belongs to')
+    )
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='staff_metrics',
+        verbose_name=_('User'),
+        help_text=_('Staff member these metrics are for')
+    )
+
+    date = models.DateField(
+        verbose_name=_('Date'),
+        help_text=_('Date these metrics are for')
+    )
+
+    orders_handled = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_('Orders handled'),
+        help_text=_('Number of orders handled')
+    )
+
+    revenue_generated = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        verbose_name=_('Revenue generated'),
+        help_text=_('Total revenue generated')
+    )
+
+    avg_order_value = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        verbose_name=_('Average order value'),
+        help_text=_('Average value per order')
+    )
+
+    avg_service_time_seconds = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_('Average service time (seconds)'),
+        help_text=_('Average service time in seconds')
+    )
+
+    customer_rating_avg = models.DecimalField(
+        max_digits=3,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name=_('Customer rating average'),
+        help_text=_('Average customer rating')
+    )
+
+    rating_count = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_('Rating count'),
+        help_text=_('Number of ratings received')
+    )
+
+    upsell_count = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_('Upsell count'),
+        help_text=_('Number of successful upsells')
+    )
+
+    tips_amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        verbose_name=_('Tips amount'),
+        help_text=_('Total tips received')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'staff_metrics'
+        verbose_name = _('Staff Metric')
+        verbose_name_plural = _('Staff Metrics')
+        ordering = ['-date']
+        unique_together = [['user', 'date']]
+        indexes = [
+            models.Index(fields=['organization', 'deleted_at'], name='staffmetric_org_deleted_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"Metrics for {self.user.email} on {self.date}"
+
+    def __repr__(self) -> str:
+        return f"<StaffMetric(id={self.id}, user='{self.user.email}', date={self.date})>"

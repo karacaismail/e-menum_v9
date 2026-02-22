@@ -27,6 +27,7 @@ from apps.orders.models import (
     Table,
     Zone,
 )
+from shared.permissions.admin_permission_mixin import EMenumPermissionMixin
 
 
 class SoftDeleteAdminMixin:
@@ -104,7 +105,7 @@ class QRCodeInline(admin.TabularInline):
 
 
 @admin.register(Zone)
-class ZoneAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
+class ZoneAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
     """
     Admin interface for Zone management.
 
@@ -244,7 +245,7 @@ class ZoneAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(Table)
-class TableAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
+class TableAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
     """
     Admin interface for Table management.
 
@@ -408,7 +409,7 @@ class TableAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(QRCode)
-class QRCodeAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
+class QRCodeAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
     """
     Admin interface for QRCode management.
 
@@ -551,7 +552,7 @@ class QRCodeAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(QRScan)
-class QRScanAdmin(admin.ModelAdmin):
+class QRScanAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     """
     Admin interface for QRScan analytics (read-only).
 
@@ -663,7 +664,7 @@ class QRScanAdmin(admin.ModelAdmin):
 
 
 @admin.register(Order)
-class OrderAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
+class OrderAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
     """
     Admin interface for Order management.
 
@@ -840,10 +841,11 @@ class OrderAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
             'GBP': '£',
         }
         symbol = currency_symbols.get(obj.currency, obj.currency)
+        formatted = f'{obj.total_amount:,.2f}'
         return format_html(
-            '<span style="font-weight: bold; color: #28a745;">{}{:,.2f}</span>',
+            '<span style="font-weight: bold; color: #28a745;">{}{}</span>',
             symbol,
-            obj.total_amount
+            formatted
         )
     total_display.short_description = _('Total')
     total_display.admin_order_field = 'total_amount'
@@ -948,7 +950,7 @@ class OrderAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(OrderItem)
-class OrderItemAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
+class OrderItemAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
     """
     Admin interface for OrderItem management.
 
@@ -1132,7 +1134,7 @@ class OrderItemAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(ServiceRequest)
-class ServiceRequestAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
+class ServiceRequestAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
     """
     Admin interface for ServiceRequest management.
 

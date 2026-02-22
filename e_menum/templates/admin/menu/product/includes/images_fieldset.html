@@ -1,0 +1,78 @@
+{% load i18n %}
+{# Custom images fieldset with AI Image Generate button (coming soon) #}
+<fieldset class="module aligned {{ fieldset.classes }}">
+
+    {% if fieldset.name %}
+    <h2 style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+        <span>{{ fieldset.name }}</span>
+        <button type="button"
+                class="ai-generate-btn ai-generate-btn--disabled"
+                disabled
+                title="{% trans 'AI Image generation coming soon' %}">
+            <span style="display: inline-flex; align-items: center; gap: 6px;">
+                <i class="ph ph-image"></i>
+                {% trans 'AI Image' %}
+            </span>
+            <span class="ai-coming-soon-badge">{% trans 'Soon' %}</span>
+        </button>
+    </h2>
+    {% endif %}
+
+    {# Standard Django fieldset fields #}
+    {% for line in fieldset %}
+        <div class="form-row{% if line.fields|length == 1 and line.fields.0.is_checkbox %} checkbox-row{% endif %}{% if line.errors %} errors{% endif %}{% if not line.has_visible_field %} hidden{% endif %}">
+            {% for field in line %}
+                <div{% if not line.fields|length == 1 %} class="fieldBox{% if field.field.name %} field-{{ field.field.name }}{% endif %}{% if not field.is_readonly and field.errors %} errors{% endif %}{% if field.field.is_hidden %} hidden{% endif %}"{% elif field.is_checkbox %} class="checkbox-row"{% endif %}>
+                    {% if not line.fields|length == 1 and not field.is_readonly %}{{ field.errors }}{% endif %}
+                    {% if field.is_checkbox %}
+                        {{ field.field }}{{ field.label_tag }}
+                    {% else %}
+                        {{ field.label_tag }}
+                        {% if field.is_readonly %}
+                            <div class="readonly">{{ field.contents }}</div>
+                        {% else %}
+                            {{ field.field }}
+                        {% endif %}
+                    {% endif %}
+                    {% if field.field.help_text %}
+                        <div class="help">{{ field.field.help_text|safe }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    {# Help text under images #}
+    <div class="form-row" style="padding: 8px 20px; border-top: 1px solid rgba(255,255,255,0.03);">
+        <div class="help" style="font-size: 11px; color: #64748b;">
+            <i class="ph ph-info" style="margin-right: 4px;"></i>
+            {% trans 'AI Image generation requires product name, description, and category to be filled first.' %}
+        </div>
+    </div>
+</fieldset>
+
+<style>
+    .ai-generate-btn--disabled {
+        background: rgba(100, 116, 139, 0.2) !important;
+        color: #64748b !important;
+        cursor: not-allowed !important;
+        position: relative;
+    }
+    .ai-generate-btn--disabled:hover {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+    .ai-coming-soon-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 1px 6px;
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+        border-radius: 4px;
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-left: 4px;
+    }
+</style>

@@ -9,14 +9,48 @@ All admin classes implement multi-tenant filtering where applicable.
 """
 
 from django.contrib import admin
+from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from apps.media.models import Media, MediaFolder
+from shared.permissions.admin_permission_mixin import EMenumPermissionMixin
+
+
+class MediaInline(admin.TabularInline):
+    """Inline to show media files inside a folder."""
+    model = Media
+    extra = 0
+    fields = ['thumbnail_preview', 'name', 'media_type', 'status', 'file_size_display']
+    readonly_fields = ['thumbnail_preview', 'name', 'media_type', 'status', 'file_size_display']
+    show_change_link = True
+    max_num = 0  # Don't allow adding from inline
+    can_delete = False
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(deleted_at__isnull=True)[:10]
+
+    @admin.display(description=_('Preview'))
+    def thumbnail_preview(self, obj):
+        if obj.url and obj.is_image:
+            return format_html(
+                '<img src="{}" style="max-height: 32px; max-width: 48px; '
+                'object-fit: cover; border-radius: 4px;" />',
+                obj.thumbnail_url or obj.url
+            )
+        icon = {'VIDEO': 'ph-film-strip', 'DOCUMENT': 'ph-file-text', 'AUDIO': 'ph-music-note'}.get(obj.media_type, 'ph-file')
+        return format_html(
+            '<i class="ph {}" style="font-size: 24px; color: #818cf8;"></i>', icon
+        )
+
+    @admin.display(description=_('Size'))
+    def file_size_display(self, obj):
+        return obj.human_readable_size
 
 
 @admin.register(MediaFolder)
-class MediaFolderAdmin(admin.ModelAdmin):
+class MediaFolderAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     """Admin interface for MediaFolder management."""
 
     list_display = [
@@ -54,6 +88,8 @@ class MediaFolderAdmin(admin.ModelAdmin):
         }),
     )
 
+    inlines = [MediaInline]
+
     def get_queryset(self, request):
         """Filter out soft-deleted folders."""
         qs = super().get_queryset(request)
@@ -62,7 +98,14 @@ class MediaFolderAdmin(admin.ModelAdmin):
     @admin.display(description=_('Media Count'))
     def media_count(self, obj):
         """Display the number of media files in this folder."""
-        return obj.media_count
+        count = obj.media_count
+        if count > 0:
+            url = reverse('admin:media_media_changelist') + f'?folder__id__exact={obj.pk}'
+            return format_html(
+                '<a href="{}" style="color: #818cf8; font-weight: 600;">{}</a>',
+                url, count
+            )
+        return format_html('<span style="color: #6c757d;">0</span>')
 
     @admin.display(description=_('Subfolders'))
     def children_count(self, obj):
@@ -71,8 +114,10 @@ class MediaFolderAdmin(admin.ModelAdmin):
 
 
 @admin.register(Media)
-class MediaAdmin(admin.ModelAdmin):
+class MediaAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     """Admin interface for Media management."""
+
+    change_list_template = 'admin/media/media/change_list.html'
 
     list_display = [
         'thumbnail_preview', 'name', 'organization', 'folder',

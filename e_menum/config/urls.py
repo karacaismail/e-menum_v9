@@ -48,6 +48,9 @@ from apps.core.urls import router as core_router
 # Import public menu SSR views
 from apps.menu.public_views import PublicMenuView, PublicMenuDetailView
 
+# Import admin upload view
+from shared.views.admin_upload import admin_upload_view
+
 
 # =============================================================================
 # HEALTH CHECK & UTILITY VIEWS
@@ -89,6 +92,97 @@ def admin_reports(request):
     return render(request, 'admin/reports.html', context)
 
 
+@staff_member_required
+def admin_settings(request):
+    """
+    Settings hub page — central place for platform configuration.
+
+    Shows categorised cards linking to AI providers, password change,
+    permission matrix, subscription plans, and other settings.
+    """
+    context = {
+        'title': 'Settings',
+        'is_nav_sidebar_enabled': False,
+        'has_permission': True,
+    }
+    return render(request, 'admin/settings.html', context)
+
+
+@staff_member_required
+def permission_matrix(request):
+    """
+    Permission Matrix admin page — cross-role permission comparison.
+
+    Shows a grid of all permissions (rows) vs all roles (columns),
+    with visual indicators for granted, conditional (ABAC), or no access.
+    Supports filtering by role scope (platform/organization/all).
+    """
+    from collections import OrderedDict
+    from apps.core.models import Permission, Role, RolePermission
+
+    # Scope filter
+    scope_filter = request.GET.get('scope', 'all')
+
+    # Fetch roles
+    roles_qs = Role.objects.all().order_by('scope', 'name')
+    if scope_filter == 'platform':
+        roles_qs = roles_qs.filter(scope='PLATFORM')
+    elif scope_filter == 'organization':
+        roles_qs = roles_qs.filter(scope='ORGANIZATION')
+
+    roles = list(roles_qs)
+
+    # Fetch all permissions grouped by resource
+    permissions = Permission.objects.all().order_by('resource', 'action')
+
+    # Build role-permission lookup: {(role_id, perm_id): has_conditions}
+    role_perm_map = {}
+    for rp in RolePermission.objects.all().select_related('permission'):
+        has_conditions = bool(rp.conditions)
+        role_perm_map[(str(rp.role_id), str(rp.permission_id))] = has_conditions
+
+    # Build matrix: {resource: [perm_data, ...]}
+    matrix = OrderedDict()
+    for perm in permissions:
+        if perm.resource not in matrix:
+            matrix[perm.resource] = []
+
+        # Check each role for this permission
+        role_checks = []
+        for role in roles:
+            key = (str(role.id), str(perm.id))
+            if key in role_perm_map:
+                if role_perm_map[key]:
+                    role_checks.append('conditional')
+                else:
+                    role_checks.append('yes')
+            else:
+                role_checks.append('no')
+
+        matrix[perm.resource].append({
+            'code': perm.code,
+            'action': perm.action,
+            'action_lower': perm.action.lower(),
+            'description': perm.description or '',
+            'role_checks': role_checks,
+        })
+
+    context = {
+        'title': 'Permission Matrix',
+        'roles': roles,
+        'matrix': matrix,
+        'scope_filter': scope_filter,
+        'col_count': len(roles) + 1,
+        'total_roles': len(roles),
+        'total_permissions': permissions.count(),
+        'total_resources': len(matrix),
+        'total_assignments': len(role_perm_map),
+        'is_nav_sidebar_enabled': False,
+        'has_permission': True,
+    }
+    return render(request, 'admin/permission_matrix.html', context)
+
+
 def api_root(request):
     """
     API root endpoint providing information about available endpoints.
@@ -123,6 +217,23 @@ def api_root(request):
                 'invoices': '/api/v1/invoices/',
                 'plan_features': '/api/v1/plan-features/',
                 'usage': '/api/v1/usage/',
+                # Reporting module
+                'report_catalog': '/api/v1/reports/catalog/',
+                'report_run': '/api/v1/reports/run/',
+                'report_executions': '/api/v1/reports/executions/',
+                'report_schedules': '/api/v1/reports/schedules/',
+                'report_favorites': '/api/v1/reports/favorites/',
+                'dashboard_metrics': '/api/v1/dashboard/metrics/',
+                # Inventory module
+                'inventory_items': '/api/v1/inventory/items/',
+                'stock_movements': '/api/v1/inventory/movements/',
+                'suppliers': '/api/v1/inventory/suppliers/',
+                'purchase_orders': '/api/v1/inventory/purchase-orders/',
+                'recipes': '/api/v1/inventory/recipes/',
+                # Campaigns module
+                'campaigns': '/api/v1/campaigns/',
+                'coupons': '/api/v1/coupons/',
+                'referrals': '/api/v1/referrals/',
             }
         }
     })
@@ -183,14 +294,34 @@ api_v1_patterns = [
     path('', include(('apps.customers.urls', 'customers'), namespace='customers')),
 
     # -------------------------------------------------------------------------
+    # Reporting Module
+    # -------------------------------------------------------------------------
+    # reports/catalog/, reports/run/, reports/executions/, reports/schedules/,
+    # reports/favorites/, dashboard/metrics/
+    path('', include(('apps.reporting.urls', 'reporting'), namespace='reporting')),
+
+    # -------------------------------------------------------------------------
+    # Inventory Module
+    # -------------------------------------------------------------------------
+    # inventory/items/, inventory/movements/, inventory/suppliers/,
+    # inventory/purchase-orders/, inventory/recipes/
+    path('', include(('apps.inventory.urls', 'inventory'), namespace='inventory')),
+
+    # -------------------------------------------------------------------------
+    # Campaigns Module
+    # -------------------------------------------------------------------------
+    # campaigns/, coupons/, referrals/
+    path('', include(('apps.campaigns.urls', 'campaigns'), namespace='campaigns')),
+
+    # -------------------------------------------------------------------------
     # Analytics Module (STUB - not yet implemented)
     # -------------------------------------------------------------------------
     # path('', include(('apps.analytics.urls', 'analytics'), namespace='analytics')),
 
     # -------------------------------------------------------------------------
-    # AI Module (STUB - not yet implemented)
+    # AI Module
     # -------------------------------------------------------------------------
-    # path('', include(('apps.ai.urls', 'ai'), namespace='ai')),
+    path('ai/', include(('apps.ai.urls', 'ai'), namespace='ai')),
 ]
 
 
@@ -207,7 +338,17 @@ urlpatterns = [
     # -------------------------------------------------------------------------
     # Custom Admin Pages (must be BEFORE admin/ catch-all)
     # -------------------------------------------------------------------------
+    path('admin/settings/', admin_settings, name='admin-settings'),
     path('admin/reports/', admin_reports, name='admin-reports'),
+    path('admin/permission-matrix/', permission_matrix, name='admin-permission-matrix'),
+
+    # Admin AJAX upload endpoint for image upload widgets
+    path('admin/api/upload/', admin_upload_view, name='admin-upload'),
+
+    # -------------------------------------------------------------------------
+    # User Impersonation (django-impersonate)
+    # -------------------------------------------------------------------------
+    path('impersonate/', include('impersonate.urls')),
 
     # -------------------------------------------------------------------------
     # Django Admin

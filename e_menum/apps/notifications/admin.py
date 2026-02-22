@@ -13,10 +13,11 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.notifications.choices import NotificationPriority, NotificationStatus
 from apps.notifications.models import Notification
+from shared.permissions.admin_permission_mixin import EMenumPermissionMixin
 
 
 @admin.register(Notification)
-class NotificationAdmin(admin.ModelAdmin):
+class NotificationAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     """Admin interface for Notification management."""
 
     list_display = [

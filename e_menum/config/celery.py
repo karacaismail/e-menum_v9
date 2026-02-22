@@ -41,24 +41,71 @@ app.autodiscover_tasks()
 # =============================================================================
 
 app.conf.beat_schedule = {
-    # Analytics aggregation - runs hourly
+    # =========================================================================
+    # Analytics Aggregation Tasks
+    # =========================================================================
+
+    # Hourly sales aggregation - runs every hour at minute 5
     'aggregate-hourly-analytics': {
         'task': 'apps.analytics.tasks.aggregate_hourly_analytics',
-        'schedule': crontab(minute=5),  # At minute 5 of every hour
+        'schedule': crontab(minute=5),
         'options': {'queue': 'analytics'},
     },
 
-    # Daily summary generation - runs at 2 AM Istanbul time
+    # Daily sales aggregation - runs at 02:00 UTC
     'generate-daily-summary': {
         'task': 'apps.analytics.tasks.generate_daily_summary',
         'schedule': crontab(hour=2, minute=0),
         'options': {'queue': 'analytics'},
     },
 
-    # Subscription expiry check - runs at 3 AM
+    # Product performance aggregation (daily) - runs at 02:30 UTC
+    'aggregate-product-performance': {
+        'task': 'apps.analytics.tasks.aggregate_product_performance',
+        'schedule': crontab(hour=2, minute=30),
+        'options': {'queue': 'analytics'},
+    },
+
+    # Customer metrics aggregation - runs at 03:00 UTC
+    'aggregate-customer-metrics': {
+        'task': 'apps.analytics.tasks.aggregate_customer_metrics',
+        'schedule': crontab(hour=3, minute=0),
+        'options': {'queue': 'analytics'},
+    },
+
+    # Dashboard KPI metrics - runs at 03:30 UTC
+    'aggregate-dashboard-metrics': {
+        'task': 'apps.analytics.tasks.aggregate_dashboard_metrics',
+        'schedule': crontab(hour=3, minute=30),
+        'options': {'queue': 'analytics'},
+    },
+
+    # Weekly product performance - runs Mondays at 04:00 UTC
+    'aggregate-weekly-performance': {
+        'task': 'apps.analytics.tasks.aggregate_weekly_performance',
+        'schedule': crontab(hour=4, minute=0, day_of_week=1),
+        'options': {'queue': 'analytics'},
+    },
+
+    # =========================================================================
+    # Reporting Tasks
+    # =========================================================================
+
+    # Process scheduled reports - runs every 5 minutes
+    'process-scheduled-reports': {
+        'task': 'apps.reporting.tasks.process_scheduled_reports',
+        'schedule': crontab(minute='*/5'),
+        'options': {'queue': 'reporting'},
+    },
+
+    # =========================================================================
+    # System Maintenance Tasks
+    # =========================================================================
+
+    # Subscription expiry check - runs at 5 AM
     'check-subscription-expiry': {
         'task': 'apps.subscriptions.tasks.check_expiring_subscriptions',
-        'schedule': crontab(hour=3, minute=0),
+        'schedule': crontab(hour=5, minute=0),
         'options': {'queue': 'subscriptions'},
     },
 
@@ -69,17 +116,17 @@ app.conf.beat_schedule = {
         'options': {'queue': 'notifications'},
     },
 
-    # Cleanup old sessions - runs daily at 4 AM
+    # Cleanup old sessions - runs daily at 6 AM
     'cleanup-expired-sessions': {
         'task': 'apps.core.tasks.cleanup_expired_sessions',
-        'schedule': crontab(hour=4, minute=0),
+        'schedule': crontab(hour=6, minute=0),
         'options': {'queue': 'maintenance'},
     },
 
     # Cleanup soft-deleted records older than 30 days - runs weekly
     'cleanup-soft-deleted': {
         'task': 'apps.core.tasks.cleanup_soft_deleted_records',
-        'schedule': crontab(hour=5, minute=0, day_of_week=0),
+        'schedule': crontab(hour=6, minute=30, day_of_week=0),
         'options': {'queue': 'maintenance'},
     },
 }
@@ -95,6 +142,9 @@ app.conf.task_routes = {
 
     # Analytics tasks (can be lower priority)
     'apps.analytics.tasks.*': {'queue': 'analytics'},
+
+    # Reporting tasks (report generation, exports)
+    'apps.reporting.tasks.*': {'queue': 'reporting'},
 
     # Notification tasks (email, push, etc.)
     'apps.notifications.tasks.*': {'queue': 'notifications'},

@@ -1,0 +1,14 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block field_sets %}
+{% for fieldset in adminform %}
+    {% if fieldset.name == "Description" and not add %}
+        {% include "admin/menu/product/includes/description_fieldset.html" with fieldset=fieldset %}
+    {% elif fieldset.name == "Images" and not add %}
+        {% include "admin/menu/product/includes/images_fieldset.html" with fieldset=fieldset %}
+    {% else %}
+        {% include "admin/includes/fieldset.html" %}
+    {% endif %}
+{% endfor %}
+{% endblock %}

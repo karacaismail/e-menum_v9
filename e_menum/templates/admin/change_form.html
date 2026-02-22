@@ -46,6 +46,12 @@
         {% endif %}
     </h1>
     <div class="title-actions">
+        {% if storefront_url %}
+        <a href="{{ storefront_url }}" target="_blank" class="storefront-btn" title="{% trans 'View Storefront' %}">
+            <i class="ph ph-storefront"></i>
+            <span>{% trans 'View Storefront' %}</span>
+        </a>
+        {% endif %}
         {% block object-tools %}
             {% change_form_object_tools %}
         {% endblock %}

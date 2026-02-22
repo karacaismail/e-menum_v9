@@ -88,6 +88,7 @@ from apps.orders.serializers import (
     ServiceRequestCreateSerializer,
     ServiceRequestUpdateSerializer,
 )
+from shared.permissions.plan_enforcement import PlanEnforcementMixin
 from shared.views.base import (
     BaseTenantViewSet,
     BaseTenantReadOnlyViewSet,
@@ -387,7 +388,7 @@ class TableViewSet(BaseTenantViewSet):
 # QR CODE VIEWSET
 # =============================================================================
 
-class QRCodeViewSet(BaseTenantViewSet):
+class QRCodeViewSet(PlanEnforcementMixin, BaseTenantViewSet):
     """
     ViewSet for QR code management.
 
@@ -416,10 +417,17 @@ class QRCodeViewSet(BaseTenantViewSet):
         - Requires authentication
         - Requires organization membership
         - Requires qr_code.view, qr_code.create, qr_code.update, qr_code.delete permissions
+
+    Plan Enforcement:
+        - Create action checks 'max_qr_codes' limit from subscription plan
     """
 
     queryset = QRCode.objects.all()
     permission_resource = 'qr_code'
+
+    # Plan enforcement: limit QR code creation per plan
+    plan_limit_key = 'max_qr_codes'
+    plan_limit_model = QRCode
 
     def get_serializer_class(self):
         """Return the appropriate serializer based on action."""

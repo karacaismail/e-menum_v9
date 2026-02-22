@@ -16,6 +16,7 @@ Usage:
 """
 
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class TableStatus(models.TextChoices):
@@ -79,6 +80,7 @@ class OrderType(models.TextChoices):
     DINE_IN = 'DINE_IN', 'Dine In'
     TAKEAWAY = 'TAKEAWAY', 'Takeaway'
     DELIVERY = 'DELIVERY', 'Delivery'
+    ONLINE = 'ONLINE', _('Online')
 
 
 class OrderItemStatus(models.TextChoices):
@@ -165,3 +167,71 @@ class PaymentMethod(models.TextChoices):
     ONLINE = 'ONLINE', 'Online'
     WALLET = 'WALLET', 'Wallet'
     OTHER = 'OTHER', 'Other'
+
+
+class DiscountType(models.TextChoices):
+    """
+    Type values for Discount.
+
+    - PERCENTAGE: Percentage-based discount
+    - FIXED_AMOUNT: Fixed monetary amount discount
+    - BUY_X_GET_Y: Buy X get Y free promotion
+    - LOYALTY: Loyalty program discount
+    - COUPON: Coupon code discount
+    - STAFF: Staff discount
+    - HAPPY_HOUR: Happy hour time-based discount
+    """
+    PERCENTAGE = 'PERCENTAGE', _('Percentage')
+    FIXED_AMOUNT = 'FIXED_AMOUNT', _('Fixed Amount')
+    BUY_X_GET_Y = 'BUY_X_GET_Y', _('Buy X Get Y')
+    LOYALTY = 'LOYALTY', _('Loyalty')
+    COUPON = 'COUPON', _('Coupon')
+    STAFF = 'STAFF', _('Staff')
+    HAPPY_HOUR = 'HAPPY_HOUR', _('Happy Hour')
+
+
+class RefundType(models.TextChoices):
+    """
+    Type values for Refund.
+
+    - FULL: Full order refund
+    - PARTIAL: Partial amount refund
+    - ITEM: Individual item refund
+    """
+    FULL = 'FULL', _('Full Refund')
+    PARTIAL = 'PARTIAL', _('Partial Refund')
+    ITEM = 'ITEM', _('Item Refund')
+
+
+class RefundStatus(models.TextChoices):
+    """
+    Status values for Refund lifecycle.
+
+    - PENDING: Refund requested, awaiting approval
+    - APPROVED: Refund approved by manager
+    - PROCESSED: Refund has been processed/paid
+    - REJECTED: Refund request was rejected
+    """
+    PENDING = 'PENDING', _('Pending')
+    APPROVED = 'APPROVED', _('Approved')
+    PROCESSED = 'PROCESSED', _('Processed')
+    REJECTED = 'REJECTED', _('Rejected')
+
+
+class ReservationStatus(models.TextChoices):
+    """
+    Status values for Reservation lifecycle.
+
+    - PENDING: Reservation requested, awaiting confirmation
+    - CONFIRMED: Reservation confirmed by staff
+    - SEATED: Guest has arrived and is seated
+    - COMPLETED: Reservation completed (guest left)
+    - NO_SHOW: Guest did not show up
+    - CANCELLED: Reservation was cancelled
+    """
+    PENDING = 'PENDING', _('Pending')
+    CONFIRMED = 'CONFIRMED', _('Confirmed')
+    SEATED = 'SEATED', _('Seated')
+    COMPLETED = 'COMPLETED', _('Completed')
+    NO_SHOW = 'NO_SHOW', _('No Show')
+    CANCELLED = 'CANCELLED', _('Cancelled')

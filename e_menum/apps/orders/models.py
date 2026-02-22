@@ -31,12 +31,16 @@ from apps.core.models import (
 )
 from apps.menu.models import Menu
 from apps.orders.choices import (
+    DiscountType,
     OrderItemStatus,
     OrderStatus,
     OrderType,
     PaymentMethod,
     PaymentStatus,
     QRCodeType,
+    RefundStatus,
+    RefundType,
+    ReservationStatus,
     ServiceRequestStatus,
     ServiceRequestType,
     TableStatus,
@@ -1598,6 +1602,14 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
         help_text=_('Total discount applied')
     )
 
+    refund_amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        verbose_name=_('Refund amount'),
+        help_text=_('Total refund amount')
+    )
+
     tip_amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -2986,3 +2998,412 @@ class ServiceRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         self.metadata[key] = value
         self.save(update_fields=['metadata', 'updated_at'])
+
+
+class Discount(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    Discount model - represents discounts applied to orders.
+
+    Discounts can be percentage-based, fixed amount, loyalty rewards,
+    coupon codes, staff discounts, or happy hour promotions. Each discount
+    tracks who applied it and the calculated applied amount.
+
+    Critical Rules:
+    - EVERY query MUST filter by organization (multi-tenant isolation)
+    - Use soft_delete() - never call delete() directly
+
+    Attributes:
+        id: UUID primary key (ensures global uniqueness)
+        organization: FK to parent Organization (tenant isolation)
+        order: FK to Order this discount is applied to
+        discount_type: Type of discount (PERCENTAGE, FIXED_AMOUNT, etc.)
+        value: Discount value (percentage or fixed amount)
+        applied_amount: Actual monetary amount applied
+        code: Optional coupon/promo code
+        reason: Optional reason for applying the discount
+        applied_by: FK to User who applied the discount
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        related_name='discounts',
+        verbose_name=_('Organization'),
+        help_text=_('Organization this discount belongs to')
+    )
+
+    order = models.ForeignKey(
+        'orders.Order',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='discounts',
+        verbose_name=_('Order'),
+        help_text=_('Order this discount is applied to')
+    )
+
+    discount_type = models.CharField(
+        max_length=20,
+        choices=DiscountType.choices,
+        db_index=True,
+        verbose_name=_('Discount type'),
+        help_text=_('Type of discount applied')
+    )
+
+    value = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name=_('Value'),
+        help_text=_('Discount value (percentage or fixed amount)')
+    )
+
+    applied_amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name=_('Applied amount'),
+        help_text=_('Actual monetary amount applied to the order')
+    )
+
+    code = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        verbose_name=_('Code'),
+        help_text=_('Coupon or promo code used')
+    )
+
+    reason = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name=_('Reason'),
+        help_text=_('Reason for applying the discount')
+    )
+
+    applied_by = models.ForeignKey(
+        'core.User',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='applied_discounts',
+        verbose_name=_('Applied by'),
+        help_text=_('Staff member who applied this discount')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'order_discounts'
+        verbose_name = _('Discount')
+        verbose_name_plural = _('Discounts')
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['organization', 'discount_type'], name='disc_org_type_idx'),
+            models.Index(fields=['organization', 'deleted_at'], name='disc_org_deleted_idx'),
+            models.Index(fields=['organization', 'order'], name='disc_org_order_idx'),
+            models.Index(fields=['organization', 'code'], name='disc_org_code_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.get_discount_type_display()} - {self.applied_amount}"
+
+    def __repr__(self) -> str:
+        return f"<Discount(id={self.id}, type={self.discount_type}, amount={self.applied_amount})>"
+
+
+class Refund(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    Refund model - represents refunds for orders or order items.
+
+    Refunds track the return of money to customers, including the type
+    (full, partial, or item-level), amount, reason, approval status,
+    and who processed it.
+
+    Status Workflow:
+    PENDING -> APPROVED -> PROCESSED
+              -> REJECTED
+
+    Critical Rules:
+    - EVERY query MUST filter by organization (multi-tenant isolation)
+    - Use soft_delete() - never call delete() directly
+
+    Attributes:
+        id: UUID primary key (ensures global uniqueness)
+        organization: FK to parent Organization (tenant isolation)
+        order: FK to Order being refunded
+        order_item: Optional FK to specific OrderItem being refunded
+        refund_type: Type of refund (FULL, PARTIAL, ITEM)
+        amount: Refund monetary amount
+        reason: Reason for the refund
+        status: Current refund status (PENDING, APPROVED, PROCESSED, REJECTED)
+        processed_by: FK to User who processed the refund
+        processed_at: Timestamp when refund was processed
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        related_name='refunds',
+        verbose_name=_('Organization'),
+        help_text=_('Organization this refund belongs to')
+    )
+
+    order = models.ForeignKey(
+        'orders.Order',
+        on_delete=models.CASCADE,
+        related_name='refunds',
+        verbose_name=_('Order'),
+        help_text=_('Order being refunded')
+    )
+
+    order_item = models.ForeignKey(
+        'orders.OrderItem',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='refunds',
+        verbose_name=_('Order item'),
+        help_text=_('Specific order item being refunded (for item-level refunds)')
+    )
+
+    refund_type = models.CharField(
+        max_length=20,
+        choices=RefundType.choices,
+        db_index=True,
+        verbose_name=_('Refund type'),
+        help_text=_('Type of refund (full, partial, or item)')
+    )
+
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name=_('Amount'),
+        help_text=_('Refund monetary amount')
+    )
+
+    reason = models.TextField(
+        verbose_name=_('Reason'),
+        help_text=_('Reason for the refund')
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=RefundStatus.choices,
+        default=RefundStatus.PENDING,
+        db_index=True,
+        verbose_name=_('Status'),
+        help_text=_('Current refund status')
+    )
+
+    processed_by = models.ForeignKey(
+        'core.User',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='processed_refunds',
+        verbose_name=_('Processed by'),
+        help_text=_('Staff member who processed this refund')
+    )
+
+    processed_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_('Processed at'),
+        help_text=_('Timestamp when refund was processed')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'order_refunds'
+        verbose_name = _('Refund')
+        verbose_name_plural = _('Refunds')
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['organization', 'status'], name='refund_org_status_idx'),
+            models.Index(fields=['organization', 'deleted_at'], name='refund_org_deleted_idx'),
+            models.Index(fields=['organization', 'order'], name='refund_org_order_idx'),
+            models.Index(fields=['organization', 'refund_type'], name='refund_org_type_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"Refund {self.get_refund_type_display()} - {self.amount} ({self.status})"
+
+    def __repr__(self) -> str:
+        return f"<Refund(id={self.id}, type={self.refund_type}, amount={self.amount}, status={self.status})>"
+
+
+class Reservation(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    Reservation model - represents table reservations for guests.
+
+    Reservations allow customers to book tables in advance, specifying
+    the date, time, guest count, and preferred seating area. Staff can
+    manage the reservation lifecycle from pending through completion.
+
+    Status Workflow:
+    PENDING -> CONFIRMED -> SEATED -> COMPLETED
+                         -> NO_SHOW
+              -> CANCELLED
+
+    Critical Rules:
+    - EVERY query MUST filter by organization (multi-tenant isolation)
+    - Use soft_delete() - never call delete() directly
+
+    Attributes:
+        id: UUID primary key (ensures global uniqueness)
+        organization: FK to parent Organization (tenant isolation)
+        customer: Optional FK to registered Customer
+        table: Optional FK to assigned Table
+        zone: Optional FK to preferred Zone
+        guest_name: Name of the guest making the reservation
+        guest_phone: Phone number of the guest
+        guest_count: Number of guests expected
+        reservation_date: Date of the reservation
+        reservation_time: Time of the reservation
+        duration_minutes: Expected duration in minutes
+        status: Current reservation status
+        notes: Optional staff/customer notes
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        related_name='reservations',
+        verbose_name=_('Organization'),
+        help_text=_('Organization this reservation belongs to')
+    )
+
+    customer = models.ForeignKey(
+        'customers.Customer',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='reservations',
+        verbose_name=_('Customer'),
+        help_text=_('Registered customer who made this reservation')
+    )
+
+    table = models.ForeignKey(
+        'orders.Table',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='reservations',
+        verbose_name=_('Table'),
+        help_text=_('Table assigned to this reservation')
+    )
+
+    zone = models.ForeignKey(
+        'orders.Zone',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='reservations',
+        verbose_name=_('Zone'),
+        help_text=_('Preferred zone/section for this reservation')
+    )
+
+    guest_name = models.CharField(
+        max_length=200,
+        verbose_name=_('Guest name'),
+        help_text=_('Name of the guest making the reservation')
+    )
+
+    guest_phone = models.CharField(
+        max_length=20,
+        verbose_name=_('Guest phone'),
+        help_text=_('Phone number of the guest')
+    )
+
+    guest_count = models.PositiveIntegerField(
+        verbose_name=_('Guest count'),
+        help_text=_('Number of guests expected')
+    )
+
+    reservation_date = models.DateField(
+        verbose_name=_('Reservation date'),
+        help_text=_('Date of the reservation')
+    )
+
+    reservation_time = models.TimeField(
+        verbose_name=_('Reservation time'),
+        help_text=_('Time of the reservation')
+    )
+
+    duration_minutes = models.PositiveIntegerField(
+        default=90,
+        verbose_name=_('Duration (minutes)'),
+        help_text=_('Expected duration of the reservation in minutes')
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=ReservationStatus.choices,
+        default=ReservationStatus.PENDING,
+        db_index=True,
+        verbose_name=_('Status'),
+        help_text=_('Current reservation status')
+    )
+
+    notes = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name=_('Notes'),
+        help_text=_('Additional notes about the reservation')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'order_reservations'
+        verbose_name = _('Reservation')
+        verbose_name_plural = _('Reservations')
+        ordering = ['reservation_date', 'reservation_time']
+        indexes = [
+            models.Index(fields=['organization', 'status'], name='resv_org_status_idx'),
+            models.Index(fields=['organization', 'deleted_at'], name='resv_org_deleted_idx'),
+            models.Index(fields=['organization', 'reservation_date'], name='resv_org_date_idx'),
+            models.Index(fields=['organization', 'reservation_date', 'status'], name='resv_org_date_status_idx'),
+            models.Index(fields=['organization', 'table'], name='resv_org_table_idx'),
+            models.Index(fields=['organization', 'zone'], name='resv_org_zone_idx'),
+            models.Index(fields=['organization', 'guest_phone'], name='resv_org_phone_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"Reservation {self.guest_name} - {self.reservation_date} {self.reservation_time}"
+
+    def __repr__(self) -> str:
+        return (
+            f"<Reservation(id={self.id}, guest='{self.guest_name}', "
+            f"date={self.reservation_date}, time={self.reservation_time}, status={self.status})>"
+        )

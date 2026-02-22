@@ -296,9 +296,15 @@
     left: 10px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--text-dim);
+    color: var(--text-muted);
     font-size: 14px;
     pointer-events: none;
+    transition: color var(--transition-fast);
+}
+
+.sidebar-search:focus ~ .sidebar-search-icon,
+.sidebar-search-wrapper:focus-within .sidebar-search-icon {
+    color: var(--accent-light);
 }
 
 .sidebar-search {
@@ -362,10 +368,11 @@
 
 .sidebar-nav a i {
     font-size: 17px;
-    opacity: 0.7;
+    color: var(--text-muted);
     flex-shrink: 0;
     width: 20px;
     text-align: center;
+    transition: color var(--transition-fast);
 }
 
 .sidebar-nav a:hover {
@@ -374,7 +381,7 @@
 }
 
 .sidebar-nav a:hover i {
-    opacity: 1;
+    color: var(--text-secondary);
 }
 
 .sidebar-nav a.active {
@@ -384,7 +391,6 @@
 }
 
 .sidebar-nav a.active i {
-    opacity: 1;
     color: var(--accent-light);
 }
 
@@ -395,13 +401,13 @@
     align-items: center;
     gap: 8px;
     padding: 32px 16px;
-    color: var(--text-dim);
+    color: var(--text-muted);
     font-size: 13px;
 }
 
 .sidebar-empty i {
     font-size: 24px;
-    opacity: 0.5;
+    color: var(--text-dim);
 }
 
 /* Sidebar Footer */
@@ -662,6 +668,59 @@
     width: calc(100% - var(--rail-width));
 }
 
+/* ═══════════════════════════════════════════════════════════
+   NO SIDEBAR (Login page / unauthenticated)
+   ═══════════════════════════════════════════════════════════ */
+
+.admin-layout.no-sidebar .content-area {
+    margin-left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.admin-layout.no-sidebar .content-topbar {
+    display: none;
+}
+
+.admin-layout.no-sidebar .admin-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.admin-layout.no-sidebar #content {
+    max-width: 420px;
+    width: 100%;
+    background: var(--sidebar-bg);
+    border-radius: 12px;
+    padding: 40px 36px;
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.admin-layout.no-sidebar .page-title {
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 1.5rem;
+}
+
+/* Login page brand header */
+.admin-layout.no-sidebar #content::before {
+    content: 'E-Menum';
+    display: block;
+    text-align: center;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
 
 /* ═══════════════════════════════════════════════════════════
    BOXED LAYOUT MODE
@@ -836,9 +895,10 @@
 
 .mobile-menu-link i {
     font-size: 18px;
-    opacity: 0.7;
+    color: var(--text-muted);
     width: 22px;
     text-align: center;
+    transition: color 0.12s ease;
 }
 
 .mobile-menu-link:hover,
@@ -852,7 +912,7 @@
 }
 
 .mobile-menu-link.active i {
-    opacity: 1;
+    color: var(--accent-light);
 }
 
 /* Mobile menu transitions */

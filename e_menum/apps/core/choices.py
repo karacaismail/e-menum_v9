@@ -16,6 +16,7 @@ Usage:
 """
 
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class OrganizationStatus(models.TextChoices):
@@ -146,3 +147,37 @@ class PermissionAction(models.TextChoices):
     PUBLISH = 'publish', 'Publish'
     EXPORT = 'export', 'Export'
     IMPORT = 'import', 'Import'
+
+
+class ShiftType(models.TextChoices):
+    """
+    Type values for staff shifts.
+
+    - MORNING: Morning shift
+    - AFTERNOON: Afternoon shift
+    - EVENING: Evening shift
+    - NIGHT: Night shift
+    - CUSTOM: Custom/flexible shift
+    """
+    MORNING = 'MORNING', _('Morning')
+    AFTERNOON = 'AFTERNOON', _('Afternoon')
+    EVENING = 'EVENING', _('Evening')
+    NIGHT = 'NIGHT', _('Night')
+    CUSTOM = 'CUSTOM', _('Custom')
+
+
+class ScheduleStatus(models.TextChoices):
+    """
+    Status values for staff schedule entries.
+
+    - SCHEDULED: Staff is scheduled for this shift
+    - CHECKED_IN: Staff has checked in for the shift
+    - CHECKED_OUT: Staff has checked out after the shift
+    - ABSENT: Staff was absent for the shift
+    - LATE: Staff arrived late for the shift
+    """
+    SCHEDULED = 'SCHEDULED', _('Scheduled')
+    CHECKED_IN = 'CHECKED_IN', _('Checked In')
+    CHECKED_OUT = 'CHECKED_OUT', _('Checked Out')
+    ABSENT = 'ABSENT', _('Absent')
+    LATE = 'LATE', _('Late')

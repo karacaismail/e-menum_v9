@@ -21,6 +21,9 @@ django-environ>=0.12
 # Permissions
 django-guardian>=2.4
 
+# User Impersonation
+django-impersonate>=1.9
+
 # Async Tasks
 celery[redis]>=5.4,<6.0
 

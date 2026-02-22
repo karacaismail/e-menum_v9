@@ -286,6 +286,16 @@ class Theme(TimeStampedMixin, SoftDeleteMixin, models.Model):
         self.is_default = True
         self.save(update_fields=['is_default', 'updated_at'])
 
+    @property
+    def primary_color_rgb(self) -> str:
+        """Convert primary hex color to RGB string for CSS rgba() usage."""
+        hex_color = self.primary_color.lstrip('#')
+        try:
+            r, g, b = int(hex_color[0:2], 16), int(hex_color[2:4], 16), int(hex_color[4:6], 16)
+            return f"{r}, {g}, {b}"
+        except (ValueError, IndexError):
+            return "59, 130, 246"  # Default blue
+
     def get_css_variables(self) -> dict:
         """
         Get CSS custom properties dictionary for the theme.
@@ -673,6 +683,14 @@ class Category(TimeStampedMixin, SoftDeleteMixin, models.Model):
         help_text=_('URL to category image')
     )
 
+    icon = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name=_('Icon'),
+        help_text=_('Phosphor icon class (e.g., ph-fill ph-knife, ph-fill ph-hamburger)')
+    )
+
     is_active = models.BooleanField(
         default=True,
         db_index=True,
@@ -1014,6 +1032,27 @@ class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
         default=0,
         verbose_name=_('Spicy level'),
         help_text=_('Spiciness level 0-5 (0=not spicy, 5=very spicy)')
+    )
+
+    # Menu-v3 integration fields
+    discount_percentage = models.PositiveSmallIntegerField(
+        default=0,
+        verbose_name=_('Discount percentage'),
+        help_text=_('Discount percentage 0-100 (e.g., 10 means 10% off)')
+    )
+
+    rating = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        default=0,
+        verbose_name=_('Rating'),
+        help_text=_('Average customer rating 0.0-5.0')
+    )
+
+    review_count = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_('Review count'),
+        help_text=_('Number of customer reviews/ratings')
     )
 
     tags = models.JSONField(

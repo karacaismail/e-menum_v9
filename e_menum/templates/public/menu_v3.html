@@ -1,0 +1,742 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }}</title>
+    <meta name="description" content="{{ page_description }}">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/fill/style.css">
+
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Menu-v3 CSS -->
+    <link rel="stylesheet" href="{% static 'public/menu/css/variables.css' %}">
+    <link rel="stylesheet" href="{% static 'public/menu/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'public/menu/css/animations.css' %}">
+    <link rel="stylesheet" href="{% static 'public/menu/css/header.css' %}">
+    <link rel="stylesheet" href="{% static 'public/menu/css/filters.css' %}">
+    <link rel="stylesheet" href="{% static 'public/menu/css/products.css' %}">
+    <link rel="stylesheet" href="{% static 'public/menu/css/modal.css' %}">
+    <link rel="stylesheet" href="{% static 'public/menu/css/cart.css' %}">
+    <link rel="stylesheet" href="{% static 'public/menu/css/responsive.css' %}">
+
+    {% if theme %}
+    <!-- Theme Override -->
+    <style>
+        :root {
+            --primary: {{ theme.primary_color }};
+            --primary-rgb: {{ theme.primary_color_rgb }};
+            --secondary: {{ theme.secondary_color }};
+            {% if theme.accent_color %}--accent: {{ theme.accent_color }};{% endif %}
+            {% if theme.background_color %}--bg-color: {{ theme.background_color }};{% endif %}
+            {% if theme.text_color %}--text-color: {{ theme.text_color }};{% endif %}
+            {% with border_radius=theme.settings.border_radius %}{% if border_radius %}
+            --radius-md: {{ border_radius }}px;
+            --radius-lg: {{ border_radius|add:4 }}px;
+            --radius-xl: {{ border_radius|add:8 }}px;
+            {% endif %}{% endwith %}
+        }
+    </style>
+    {% endif %}
+</head>
+<body x-data="menuApp()" :class="{ 'dark-mode': darkMode, 'boxed-layout': layout === 'boxed' }" :style="customStyles">
+
+    <!-- Background Effects -->
+    <div class="bg-effects">
+        <div class="bg-gradient"></div>
+        <div class="bg-pattern"></div>
+        <div class="floating-shapes">
+            <span></span><span></span><span></span><span></span><span></span>
+        </div>
+    </div>
+
+    <!-- Promo Banner (dynamic — admin-managed via Organization/Menu settings) -->
+    <div class="promo-banner" x-show="showPromoBanner && promoBannerEnabled" x-transition>
+        <div class="promo-content">
+            <i class="ph-fill ph-gift"></i>
+            <span>
+                <template x-if="promoBannerHighlight">
+                    <strong x-text="promoBannerHighlight"></strong>
+                </template>
+                <span x-text="promoBannerMessage"></span>
+            </span>
+        </div>
+        <button class="promo-close" @click="showPromoBanner = false">
+            <i class="ph ph-x"></i>
+        </button>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header" :class="{ 'scrolled': scrolled }">
+        <div class="header-wrapper">
+            <!-- Logo -->
+            <a href="#" class="logo">
+                <div class="logo-icon"><i class="ph-fill ph-chef-hat"></i></div>
+                <div class="logo-text">
+                    <h1>{{ organization.name }}</h1>
+                    <span>{{ menu.description|default:"Dijital Menu" }}</span>
+                </div>
+            </a>
+
+            <!-- Search -->
+            <div class="search-container" :class="{ 'focused': searchFocused }">
+                <div class="search-wrapper">
+                    <input type="text" class="search-input" placeholder="Yemek ara..."
+                           x-model="searchQuery"
+                           @focus="searchFocused = true"
+                           @blur="setTimeout(() => searchFocused = false, 200)">
+                    <i class="ph ph-magnifying-glass search-icon"></i>
+                    <button class="voice-search"><i class="ph ph-microphone"></i></button>
+                </div>
+
+                <!-- Search Dropdown -->
+                <div class="search-dropdown" x-show="searchFocused" x-transition>
+                    <template x-if="searchQuery.length > 0">
+                        <div class="dropdown-section">
+                            <h4>Sonuclar</h4>
+                            <template x-for="product in getSearchResults().slice(0, 5)" :key="product.id">
+                                <a href="#" class="search-result" @click.prevent="openProductModal(product)">
+                                    <img :src="product.image" :alt="product.name" class="result-image" x-show="product.image">
+                                    <div class="result-info">
+                                        <h5 x-text="product.name"></h5>
+                                        <p x-text="formatPrice(getDiscountedPrice(product))"></p>
+                                    </div>
+                                </a>
+                            </template>
+                        </div>
+                    </template>
+                    <template x-if="searchQuery.length === 0">
+                        <div>
+                            <div class="dropdown-section">
+                                <h4>Son Aramalar</h4>
+                                <template x-for="term in recentSearches" :key="term">
+                                    <a href="#" class="recent-item" @click.prevent="searchQuery = term">
+                                        <i class="ph ph-clock-counter-clockwise"></i>
+                                        <span x-text="term"></span>
+                                    </a>
+                                </template>
+                            </div>
+                            <div class="dropdown-section">
+                                <h4>Populer Aramalar</h4>
+                                <div class="popular-tags">
+                                    <button class="popular-tag" @click="searchQuery = 'Kebap'">Kebap</button>
+                                    <button class="popular-tag" @click="searchQuery = 'Pizza'">Pizza</button>
+                                    <button class="popular-tag" @click="searchQuery = 'Burger'">Burger</button>
+                                    <button class="popular-tag" @click="searchQuery = 'Vegan'">Vegan</button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <div class="delivery-indicator">
+                    <i class="ph-fill ph-map-pin"></i>
+                    <span x-text="deliveryTime"></span>
+                </div>
+
+                <button class="header-btn" :class="{ 'active': darkMode }" @click="darkMode = !darkMode" title="Tema">
+                    <i :class="darkMode ? 'ph-fill ph-sun' : 'ph-fill ph-moon'"></i>
+                </button>
+
+                <button class="header-btn" :class="{ 'active': showFavoritesOnly }" @click="showFavoritesOnly = !showFavoritesOnly" title="Favoriler">
+                    <i class="ph-fill ph-heart"></i>
+                    <span class="btn-badge" x-show="favorites.length > 0" x-text="favorites.length"></span>
+                </button>
+
+                <button class="cart-button" @click="cartOpen = true">
+                    <div class="cart-icon-wrapper">
+                        <i class="ph-fill ph-shopping-bag"></i>
+                        <span class="cart-badge" x-show="cartItemCount > 0" x-text="cartItemCount"></span>
+                    </div>
+                    <div class="cart-summary" x-show="cartSubtotal > 0">
+                        <span>Sepetim</span>
+                        <strong x-text="formatPrice(cartSubtotal)"></strong>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Category Navigation -->
+    <nav class="category-nav">
+        <div class="category-nav-wrapper">
+            <div class="categories-scroll">
+                <button class="category-chip" :class="{ 'active': activeCategory === 'all' }" @click="activeCategory = 'all'">
+                    <i class="ph-fill ph-squares-four"></i>
+                    <span>Tumu</span>
+                </button>
+                <template x-for="cat in categories" :key="cat.id">
+                    <button class="category-chip" :class="{ 'active': activeCategory === cat.id }" @click="scrollToCategory(cat.id)">
+                        <i :class="cat.icon"></i>
+                        <span x-text="cat.name"></span>
+                        <span class="chip-count" x-text="getCategoryCount(cat.id)"></span>
+                    </button>
+                </template>
+            </div>
+
+            <div class="nav-actions">
+                <div class="filter-pills">
+                    <button class="filter-pill" :class="{ 'active': quickFilters.popular }" @click="quickFilters.popular = !quickFilters.popular">
+                        <i class="ph-fill ph-fire"></i> Populer
+                    </button>
+                    <button class="filter-pill" :class="{ 'active': quickFilters.discount }" @click="quickFilters.discount = !quickFilters.discount">
+                        <i class="ph-fill ph-percent"></i> Indirimli
+                    </button>
+                    <button class="filter-pill" :class="{ 'active': quickFilters.vegan }" @click="quickFilters.vegan = !quickFilters.vegan">
+                        <i class="ph-fill ph-leaf"></i> Vegan
+                    </button>
+                </div>
+
+                <div class="sort-dropdown" :class="{ 'open': sortBy !== 'default' }">
+                    <button class="sort-btn" @click="$refs.sortMenu.classList.toggle('show')">
+                        <i class="ph ph-sort-ascending"></i>
+                        <span x-text="getSortLabel()"></span>
+                        <i class="ph ph-caret-down"></i>
+                    </button>
+                    <div class="sort-menu" x-ref="sortMenu" x-show="false" @click.away="$refs.sortMenu.classList.remove('show')" x-transition>
+                        <button class="sort-option" :class="{ 'active': sortBy === 'default' }" @click="sortBy = 'default'; $refs.sortMenu.classList.remove('show')">
+                            <i class="ph ph-list"></i> Varsayilan
+                        </button>
+                        <button class="sort-option" :class="{ 'active': sortBy === 'price-low' }" @click="sortBy = 'price-low'; $refs.sortMenu.classList.remove('show')">
+                            <i class="ph ph-arrow-down"></i> Fiyat: Dusuk
+                        </button>
+                        <button class="sort-option" :class="{ 'active': sortBy === 'price-high' }" @click="sortBy = 'price-high'; $refs.sortMenu.classList.remove('show')">
+                            <i class="ph ph-arrow-up"></i> Fiyat: Yuksek
+                        </button>
+                        <button class="sort-option" :class="{ 'active': sortBy === 'rating' }" @click="sortBy = 'rating'; $refs.sortMenu.classList.remove('show')">
+                            <i class="ph ph-star"></i> Puan
+                        </button>
+                        <button class="sort-option" :class="{ 'active': sortBy === 'popular' }" @click="sortBy = 'popular'; $refs.sortMenu.classList.remove('show')">
+                            <i class="ph ph-fire"></i> Populer
+                        </button>
+                        <button class="sort-option" :class="{ 'active': sortBy === 'newest' }" @click="sortBy = 'newest'; $refs.sortMenu.classList.remove('show')">
+                            <i class="ph ph-sparkle"></i> En Yeni
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Sidebar Filters -->
+        <aside class="sidebar-filters" :class="{ 'collapsed': sidebarCollapsed }">
+            <div class="sidebar-header">
+                <h3 class="sidebar-title"><i class="ph-fill ph-funnel"></i> Filtreler</h3>
+                <button class="sidebar-toggle" @click="sidebarCollapsed = !sidebarCollapsed">
+                    <i class="ph ph-caret-left"></i>
+                </button>
+            </div>
+            <div class="sidebar-body">
+                <!-- Price Range -->
+                <div class="filter-group">
+                    <h4>Fiyat Araligi</h4>
+                    <div class="price-range">
+                        <div class="range-inputs">
+                            <div class="range-field">
+                                <label>Min</label>
+                                <input type="number" x-model.number="priceRange.min" min="0" max="500">
+                            </div>
+                            <span class="range-separator">-</span>
+                            <div class="range-field">
+                                <label>Max</label>
+                                <input type="number" x-model.number="priceRange.max" min="0" max="500">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rating -->
+                <div class="filter-group">
+                    <h4>Minimum Puan</h4>
+                    <div class="rating-options">
+                        <template x-for="rating in [4.5, 4, 3.5, 3]" :key="rating">
+                            <button class="rating-option" :class="{ 'active': minRating === rating }" @click="minRating = minRating === rating ? 0 : rating">
+                                <div class="rating-stars">
+                                    <template x-for="i in 5" :key="i">
+                                        <i :class="i <= Math.floor(rating) ? 'ph-fill ph-star' : (i - 0.5 <= rating ? 'ph-fill ph-star-half' : 'ph ph-star empty')"></i>
+                                    </template>
+                                </div>
+                                <span class="rating-label" x-text="rating + ' ve uzeri'"></span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Dietary -->
+                <div class="filter-group">
+                    <h4>Diyet Tercihleri</h4>
+                    <div class="dietary-options">
+                        <button class="dietary-option" :class="{ 'active': dietaryFilters.vegan }" @click="dietaryFilters.vegan = !dietaryFilters.vegan">
+                            <div class="custom-checkbox"><i class="ph ph-check" x-show="dietaryFilters.vegan"></i></div>
+                            <span class="checkbox-label">Vegan</span>
+                        </button>
+                        <button class="dietary-option" :class="{ 'active': dietaryFilters.vegetarian }" @click="dietaryFilters.vegetarian = !dietaryFilters.vegetarian">
+                            <div class="custom-checkbox"><i class="ph ph-check" x-show="dietaryFilters.vegetarian"></i></div>
+                            <span class="checkbox-label">Vejetaryen</span>
+                        </button>
+                        <button class="dietary-option" :class="{ 'active': dietaryFilters.glutenFree }" @click="dietaryFilters.glutenFree = !dietaryFilters.glutenFree">
+                            <div class="custom-checkbox"><i class="ph ph-check" x-show="dietaryFilters.glutenFree"></i></div>
+                            <span class="checkbox-label">Glutensiz</span>
+                        </button>
+                        <button class="dietary-option" :class="{ 'active': dietaryFilters.spicy }" @click="dietaryFilters.spicy = !dietaryFilters.spicy">
+                            <div class="custom-checkbox"><i class="ph ph-check" x-show="dietaryFilters.spicy"></i></div>
+                            <span class="checkbox-label">Acili</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Allergens -->
+                <div class="filter-group">
+                    <h4>Alerjen Haric Tut</h4>
+                    <div class="allergen-chips">
+                        <template x-for="allergen in allergens" :key="allergen.id">
+                            <button class="allergen-chip" :class="{ 'active': excludedAllergens.includes(allergen.id) }" @click="toggleAllergen(allergen.id)" x-text="allergen.name"></button>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Prep Time -->
+                <div class="filter-group">
+                    <h4>Hazirlik Suresi</h4>
+                    <div class="prep-time-chips">
+                        <button class="prep-chip" :class="{ 'active': maxPrepTime === 10 }" @click="maxPrepTime = maxPrepTime === 10 ? 999 : 10">
+                            <i class="ph ph-timer"></i> &lt;10 dk
+                        </button>
+                        <button class="prep-chip" :class="{ 'active': maxPrepTime === 15 }" @click="maxPrepTime = maxPrepTime === 15 ? 999 : 15">
+                            <i class="ph ph-timer"></i> &lt;15 dk
+                        </button>
+                        <button class="prep-chip" :class="{ 'active': maxPrepTime === 20 }" @click="maxPrepTime = maxPrepTime === 20 ? 999 : 20">
+                            <i class="ph ph-timer"></i> &lt;20 dk
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Clear Filters -->
+                <button class="clear-filters-btn" @click="clearAllFilters" x-show="hasActiveFilters()">
+                    <i class="ph ph-x"></i> Filtreleri Temizle
+                </button>
+            </div>
+        </aside>
+
+        <!-- Products Area -->
+        <div class="products-area">
+            <!-- Results Header -->
+            <div class="results-header">
+                <div class="results-info">
+                    <h2 x-text="getResultsTitle()"></h2>
+                    <p><span x-text="getTotalFilteredCount()"></span> urun bulundu</p>
+                </div>
+                <div class="view-options">
+                    <label class="toggle-label">
+                        <span>Fotograflar</span>
+                        <button class="toggle-switch" :class="{ 'active': showPhotos }" @click="showPhotos = !showPhotos">
+                            <span class="toggle-knob"></span>
+                        </button>
+                    </label>
+                    <div class="grid-switcher">
+                        <button class="grid-btn" :class="{ 'active': gridColumns === 2 }" @click="gridColumns = 2">2</button>
+                        <button class="grid-btn" :class="{ 'active': gridColumns === 3 }" @click="gridColumns = 3">3</button>
+                        <button class="grid-btn" :class="{ 'active': gridColumns === 4 }" @click="gridColumns = 4">4</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Sections -->
+            <template x-for="cat in categories" :key="cat.id">
+                <section class="menu-section" :id="'section-' + cat.id" x-show="shouldShowCategory(cat.id)">
+                    <div class="section-header">
+                        <div class="section-icon"><i :class="cat.icon"></i></div>
+                        <div class="section-info">
+                            <h2 x-text="cat.name"></h2>
+                            <p x-text="cat.description"></p>
+                        </div>
+                        <div class="section-count"><strong x-text="getFilteredProducts(cat.id).length"></strong> urun</div>
+                    </div>
+                    <div class="products-grid" :style="'--columns: ' + gridColumns">
+                        <template x-for="(product, index) in getFilteredProducts(cat.id)" :key="product.id">
+                            <article class="product-card" :class="{ 'in-cart': isInCart(product.id), 'compact': gridColumns >= 4 }" :style="'--index: ' + index">
+                                <div class="card-image" x-show="showPhotos">
+                                    <img :src="product.image" :alt="product.name" loading="lazy" x-show="product.image">
+                                    <div class="image-placeholder" x-show="!product.image">
+                                        <i class="ph ph-fork-knife"></i>
+                                    </div>
+                                    <div class="card-badges">
+                                        <span class="badge badge-popular" x-show="product.popular">Populer</span>
+                                        <span class="badge badge-new" x-show="product.isNew">Yeni</span>
+                                        <span class="badge badge-discount" x-show="product.discount > 0" x-text="'%' + product.discount"></span>
+                                        <span class="badge badge-spicy" x-show="product.spicy">Acili</span>
+                                        <span class="badge badge-vegan" x-show="product.vegan">Vegan</span>
+                                    </div>
+                                    <button class="favorite-btn" :class="{ 'active': favorites.includes(product.id) }" @click.stop="toggleFavorite(product.id)">
+                                        <i :class="favorites.includes(product.id) ? 'ph-fill ph-heart' : 'ph ph-heart'"></i>
+                                    </button>
+                                    <button class="quick-view-btn" @click="openProductModal(product)">
+                                        <i class="ph ph-eye"></i> Detay
+                                    </button>
+                                </div>
+                                <div class="card-content">
+                                    <div class="card-header">
+                                        <h3 class="card-title" x-text="product.name"></h3>
+                                        <div class="card-rating">
+                                            <i class="ph-fill ph-star"></i>
+                                            <span x-text="product.rating"></span>
+                                        </div>
+                                    </div>
+                                    <p class="card-description" x-text="product.description"></p>
+                                    <div class="card-meta">
+                                        <span><i class="ph ph-timer"></i> <span x-text="product.prepTime + ' dk'"></span></span>
+                                        <span><i class="ph ph-fire"></i> <span x-text="product.calories + ' kcal'"></span></span>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="card-price">
+                                            <span class="current" x-text="formatPrice(getDiscountedPrice(product))"></span>
+                                            <span class="original" x-show="product.discount > 0" x-text="formatPrice(product.price)"></span>
+                                        </div>
+                                        <template x-if="!isInCart(product.id)">
+                                            <button class="add-to-cart-btn" @click="openProductModal(product)">
+                                                <i class="ph-fill ph-plus"></i>
+                                                <span>Ekle</span>
+                                            </button>
+                                        </template>
+                                        <template x-if="isInCart(product.id)">
+                                            <div class="qty-controls">
+                                                <button class="qty-btn" @click="decrementCartItem(product.id)"><i class="ph ph-minus"></i></button>
+                                                <span x-text="getCartQuantity(product.id)"></span>
+                                                <button class="qty-btn" @click="incrementCartItem(product.id)"><i class="ph ph-plus"></i></button>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </article>
+                        </template>
+                    </div>
+                </section>
+            </template>
+
+            <!-- Empty State -->
+            <div class="global-empty" x-show="getTotalFilteredCount() === 0">
+                <div class="empty-illustration"><i class="ph ph-magnifying-glass"></i></div>
+                <h3>Sonuc Bulunamadi</h3>
+                <p>Arama kriterlerinize uygun urun bulunamadi.</p>
+                <button class="primary-btn" @click="clearAllFilters">
+                    <i class="ph ph-arrow-counter-clockwise"></i> Filtreleri Temizle
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Product Modal -->
+    <div class="modal-overlay" :class="{ 'active': modalOpen }" @click.self="modalOpen = false; document.body.style.overflow = ''">
+        <div class="product-modal" x-show="selectedProduct" x-transition>
+            <button class="modal-close" @click="modalOpen = false; document.body.style.overflow = ''">
+                <i class="ph ph-x"></i>
+            </button>
+            <div class="modal-image">
+                <img :src="selectedProduct?.image" :alt="selectedProduct?.name" x-show="selectedProduct?.image">
+                <div class="image-placeholder" x-show="!selectedProduct?.image" style="height:280px">
+                    <i class="ph ph-fork-knife"></i>
+                </div>
+                <div class="modal-badges">
+                    <span class="badge badge-popular" x-show="selectedProduct?.popular">Populer</span>
+                    <span class="badge badge-discount" x-show="selectedProduct?.discount > 0" x-text="'%' + selectedProduct?.discount"></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-header">
+                    <div class="modal-title-area">
+                        <h2 x-text="selectedProduct?.name"></h2>
+                        <div class="modal-rating">
+                            <i class="ph-fill ph-star"></i>
+                            <span x-text="selectedProduct?.rating"></span>
+                            <span class="reviews" x-text="'(' + selectedProduct?.reviews + ' degerlendirme)'"></span>
+                        </div>
+                    </div>
+                    <div class="modal-price">
+                        <span class="current" x-text="formatPrice(getDiscountedPrice(selectedProduct || {}))"></span>
+                        <span class="original" x-show="selectedProduct?.discount > 0" x-text="formatPrice(selectedProduct?.price)"></span>
+                    </div>
+                </div>
+                <p class="modal-description" x-text="selectedProduct?.description"></p>
+
+                <div class="modal-info-cards">
+                    <div class="info-card">
+                        <i class="ph ph-timer"></i>
+                        <span x-text="selectedProduct?.prepTime + ' dk'"></span>
+                        <small>Hazirlik</small>
+                    </div>
+                    <div class="info-card">
+                        <i class="ph ph-fire"></i>
+                        <span x-text="selectedProduct?.calories"></span>
+                        <small>Kalori</small>
+                    </div>
+                    <div class="info-card">
+                        <i class="ph ph-star"></i>
+                        <span x-text="selectedProduct?.rating"></span>
+                        <small>Puan</small>
+                    </div>
+                </div>
+
+                <!-- Size Options -->
+                <div class="option-section" x-show="selectedProduct?.sizes?.length > 1">
+                    <div class="option-header">
+                        <h4>Boyut Secin</h4>
+                        <span class="required">Zorunlu</span>
+                    </div>
+                    <div class="size-options">
+                        <template x-for="size in selectedProduct?.sizes" :key="size.name">
+                            <button class="size-option" :class="{ 'selected': modalOptions.size === size.name }" @click="modalOptions.size = size.name">
+                                <span class="size-name" x-text="size.name"></span>
+                                <span class="size-price" x-text="size.price > 0 ? '+' + formatPrice(size.price) : 'Standart'"></span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Extras -->
+                <div class="option-section" x-show="selectedProduct?.extras?.length > 0">
+                    <div class="option-header">
+                        <h4>Ekstralar</h4>
+                        <span class="optional">Opsiyonel</span>
+                    </div>
+                    <div class="extras-list">
+                        <template x-for="extra in selectedProduct?.extras" :key="extra.name">
+                            <button class="extra-item" :class="{ 'selected': modalOptions.extras.includes(extra.name) }" @click="toggleExtra(extra.name)">
+                                <div class="extra-check"><i class="ph ph-check"></i></div>
+                                <span class="extra-name" x-text="extra.name"></span>
+                                <span class="extra-price" x-text="'+' + formatPrice(extra.price)"></span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Sauces -->
+                <div class="option-section" x-show="selectedProduct?.sauces?.length > 0">
+                    <div class="option-header">
+                        <h4>Sos Secimi</h4>
+                        <span class="free">Ucretsiz</span>
+                    </div>
+                    <div class="sauce-chips">
+                        <template x-for="sauce in selectedProduct?.sauces" :key="sauce">
+                            <button class="sauce-chip" :class="{ 'selected': modalOptions.sauces.includes(sauce) }" @click="toggleSauce(sauce)">
+                                <i class="ph-fill ph-check" x-show="modalOptions.sauces.includes(sauce)"></i>
+                                <span x-text="sauce"></span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div class="option-section">
+                    <div class="option-header">
+                        <h4>Notlar</h4>
+                        <span class="optional">Opsiyonel</span>
+                    </div>
+                    <textarea class="notes-input" rows="2" placeholder="Ozel isteklerinizi yazin..." x-model="modalOptions.notes"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="quantity-control">
+                    <button @click="modalOptions.quantity > 1 && modalOptions.quantity--"><i class="ph ph-minus"></i></button>
+                    <span x-text="modalOptions.quantity"></span>
+                    <button @click="modalOptions.quantity++"><i class="ph ph-plus"></i></button>
+                </div>
+                <button class="add-to-cart-main" @click="addToCart()">
+                    <i class="ph-fill ph-shopping-bag"></i>
+                    <span>Sepete Ekle</span>
+                    <span class="btn-total" x-text="formatPrice(getModalTotal() * modalOptions.quantity)"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" :class="{ 'active': cartOpen }" @click="cartOpen = false"></div>
+    <aside class="cart-sidebar" :class="{ 'active': cartOpen }">
+        <div class="cart-header">
+            <div class="cart-title">
+                <i class="ph-fill ph-shopping-bag"></i>
+                <h3>Sepetim</h3>
+                <span class="item-count" x-text="cartItemCount + ' urun'"></span>
+            </div>
+            <button class="cart-close" @click="cartOpen = false"><i class="ph ph-x"></i></button>
+        </div>
+
+        <!-- Delivery Progress -->
+        <div class="delivery-progress" x-show="cartSubtotal > 0 && cartSubtotal < freeDeliveryThreshold">
+            <div class="progress-text">
+                <i class="ph-fill ph-truck"></i>
+                <span>Ucretsiz teslimat icin <strong x-text="formatPrice(freeDeliveryThreshold - cartSubtotal)"></strong> daha ekleyin</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" :style="'width: ' + Math.min((cartSubtotal / freeDeliveryThreshold) * 100, 100) + '%'"></div>
+            </div>
+        </div>
+        <div class="free-delivery-badge" x-show="cartSubtotal >= freeDeliveryThreshold">
+            <i class="ph-fill ph-check-circle"></i>
+            <span>Ucretsiz Teslimat Kazandiniz!</span>
+        </div>
+
+        <!-- Cart Items -->
+        <div class="cart-items">
+            <template x-if="cartItems.length === 0">
+                <div class="cart-empty">
+                    <div class="empty-icon"><i class="ph ph-shopping-bag"></i></div>
+                    <h4>Sepetiniz Bos</h4>
+                    <p>Lezzetli yemeklerimizi kesfedin!</p>
+                    <button class="explore-btn" @click="cartOpen = false">
+                        <i class="ph ph-arrow-left"></i> Menuyu Incele
+                    </button>
+                </div>
+            </template>
+            <template x-for="item in cartItems" :key="item.cartId">
+                <div class="cart-item">
+                    <div class="item-image">
+                        <img :src="item.image" :alt="item.name" x-show="item.image">
+                    </div>
+                    <div class="item-details">
+                        <h4 x-text="item.name"></h4>
+                        <p class="item-options" x-text="formatItemOptions(item)"></p>
+                        <div class="item-bottom">
+                            <span class="item-price" x-text="formatPrice(item.totalPrice * item.quantity)"></span>
+                            <div class="item-qty">
+                                <button @click="updateItemQty(item.cartId, -1)"><i class="ph ph-minus"></i></button>
+                                <span x-text="item.quantity"></span>
+                                <button @click="updateItemQty(item.cartId, 1)"><i class="ph ph-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="item-remove" @click="removeItem(item.cartId)"><i class="ph ph-trash"></i></button>
+                </div>
+            </template>
+        </div>
+
+        <!-- Coupon -->
+        <div class="coupon-section" x-show="cartItems.length > 0">
+            <template x-if="!appliedCoupon">
+                <div class="coupon-input">
+                    <i class="ph ph-ticket"></i>
+                    <input type="text" placeholder="Kupon kodu" x-model="couponCode" @keyup.enter="applyCoupon()">
+                    <button @click="applyCoupon()">Uygula</button>
+                </div>
+            </template>
+            <template x-if="appliedCoupon">
+                <div class="coupon-applied">
+                    <i class="ph-fill ph-check-circle"></i>
+                    <span x-text="appliedCoupon"></span>
+                    <button @click="removeCoupon()"><i class="ph ph-x"></i></button>
+                </div>
+            </template>
+        </div>
+
+        <!-- Cart Summary -->
+        <div class="cart-summary" x-show="cartItems.length > 0">
+            <div class="summary-row">
+                <span>Ara Toplam</span>
+                <span x-text="formatPrice(cartSubtotal)"></span>
+            </div>
+            <div class="summary-row" x-show="couponDiscount > 0">
+                <span>Indirim</span>
+                <span class="discount" x-text="'-' + formatPrice(couponDiscount)"></span>
+            </div>
+            <div class="summary-row">
+                <span>Teslimat</span>
+                <span x-text="cartSubtotal >= freeDeliveryThreshold ? 'Ucretsiz' : formatPrice(deliveryFee)"></span>
+            </div>
+            <div class="summary-row">
+                <span x-text="'KDV (%' + taxPercent + ')'"></span>
+                <span x-text="formatPrice(taxAmount)"></span>
+            </div>
+            <div class="summary-row total">
+                <span>Toplam</span>
+                <span x-text="formatPrice(cartTotal)"></span>
+            </div>
+        </div>
+
+        <!-- Payment Methods -->
+        <div class="payment-methods" x-show="cartItems.length > 0">
+            <h4>Odeme Yontemi</h4>
+            <div class="payment-options">
+                <button class="payment-option" :class="{ 'selected': paymentMethod === 'card' }" @click="paymentMethod = 'card'">
+                    <i class="ph ph-credit-card"></i>
+                    <span>Kart</span>
+                </button>
+                <button class="payment-option" :class="{ 'selected': paymentMethod === 'cash' }" @click="paymentMethod = 'cash'">
+                    <i class="ph ph-money"></i>
+                    <span>Nakit</span>
+                </button>
+                <button class="payment-option" :class="{ 'selected': paymentMethod === 'ticket' }" @click="paymentMethod = 'ticket'">
+                    <i class="ph ph-ticket"></i>
+                    <span>Yemek Karti</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Checkout Button -->
+        <div class="cart-footer" x-show="cartItems.length > 0">
+            <button class="checkout-btn">
+                <i class="ph-fill ph-lock"></i>
+                <span>Odemeye Gec</span>
+                <span class="checkout-total" x-text="formatPrice(cartTotal)"></span>
+            </button>
+            <div class="secure-note">
+                <i class="ph-fill ph-shield-check"></i>
+                <span>256-bit SSL ile guvenli odeme</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Toast Container -->
+    <div class="toast-container">
+        <template x-for="toast in toasts" :key="toast.id">
+            <div class="toast" :class="'toast-' + toast.type">
+                <i :class="toast.icon"></i>
+                <span x-text="toast.message"></span>
+                <button @click="removeToast(toast.id)"><i class="ph ph-x"></i></button>
+            </div>
+        </template>
+    </div>
+
+    <!-- Scroll to Top -->
+    <button class="scroll-top" :class="{ 'visible': scrolled }" @click="scrollToTop()">
+        <i class="ph ph-arrow-up"></i>
+    </button>
+
+    <!-- SEO: Server-rendered content (hidden, for crawlers) -->
+    <div class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;">
+        <h1>{{ organization.name }} - {{ menu.name }}</h1>
+        {% for item in categories_with_products %}
+        <section>
+            <h2>{{ item.category.name }}</h2>
+            {% for product in item.products %}
+            <article>
+                <h3>{{ product.name }}</h3>
+                <p>{{ product.description }}</p>
+                <span>{{ product.formatted_price }}</span>
+            </article>
+            {% endfor %}
+        </section>
+        {% endfor %}
+    </div>
+
+    <!-- Django-injected JSON data for Alpine.js -->
+    <script>
+        window.__MENU_DATA__ = {{ menu_data_json|safe }};
+    </script>
+    <script src="{% static 'public/menu/js/menu-app.js' %}"></script>
+</body>
+</html>

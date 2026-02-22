@@ -16,6 +16,7 @@ Critical Rules:
 
 import uuid
 
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -32,6 +33,9 @@ from apps.customers.choices import (
     FeedbackStatus,
     FeedbackType,
     LoyaltyPointType,
+    NPSCategory,
+    NPSChannel,
+    PreferenceType,
     VisitSource,
 )
 
@@ -221,6 +225,15 @@ class Customer(TimeStampedMixin, SoftDeleteMixin, models.Model):
         verbose_name=_('Marketing consent at'),
         help_text=_('When marketing consent was given')
     )
+
+    # RFM Segmentation fields
+    rfm_segment = models.CharField(max_length=50, null=True, blank=True, verbose_name=_('RFM Segment'))
+    rfm_recency_score = models.IntegerField(null=True, blank=True, verbose_name=_('RFM Recency Score'))
+    rfm_frequency_score = models.IntegerField(null=True, blank=True, verbose_name=_('RFM Frequency Score'))
+    rfm_monetary_score = models.IntegerField(null=True, blank=True, verbose_name=_('RFM Monetary Score'))
+    lifetime_value = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True, verbose_name=_('Lifetime Value'))
+    churn_risk_score = models.DecimalField(max_digits=5, decimal_places=4, null=True, blank=True, verbose_name=_('Churn Risk Score'))
+    last_visit_date = models.DateField(null=True, blank=True, verbose_name=_('Last Visit Date'))
 
     # Managers
     objects = SoftDeleteManager()  # Default: excludes soft-deleted
@@ -874,3 +887,216 @@ class LoyaltyPoint(TimeStampedMixin, models.Model):
     def absolute_points(self) -> int:
         """Return the absolute value of points."""
         return abs(self.points)
+
+
+class CustomerPreference(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    CustomerPreference model - stores individual customer preferences.
+
+    Preferences can be manually set or auto-detected by the system.
+    Each preference has a type, key, and value (e.g., type=DIETARY, key='vegetarian', value='true').
+
+    Critical Rules:
+    - EVERY query MUST filter by organization (multi-tenant isolation)
+    - Use soft_delete() - never call delete() directly
+
+    Attributes:
+        id: UUID primary key
+        organization: FK to Organization (tenant isolation)
+        customer: FK to Customer
+        preference_type: Category of preference (DIETARY, ALLERGEN, SEATING, etc.)
+        key: Preference key identifier (e.g., 'vegetarian', 'window_seat')
+        value: Preference value (e.g., 'true', 'always')
+        auto_detected: Whether this preference was automatically detected
+        confidence: Confidence score for auto-detected preferences (0-1)
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        related_name='customer_preferences',
+        verbose_name=_('Organization'),
+        help_text=_('Organization this preference belongs to')
+    )
+
+    customer = models.ForeignKey(
+        'Customer',
+        on_delete=models.CASCADE,
+        related_name='preferences',
+        verbose_name=_('Customer'),
+        help_text=_('Customer this preference belongs to')
+    )
+
+    preference_type = models.CharField(
+        max_length=20,
+        choices=PreferenceType.choices,
+        verbose_name=_('Preference type'),
+        help_text=_('Category of preference')
+    )
+
+    key = models.CharField(
+        max_length=100,
+        verbose_name=_('Key'),
+        help_text=_("Preference key identifier (e.g., 'vegetarian', 'window_seat')")
+    )
+
+    value = models.CharField(
+        max_length=255,
+        verbose_name=_('Value'),
+        help_text=_("Preference value (e.g., 'true', 'always')")
+    )
+
+    auto_detected = models.BooleanField(
+        default=False,
+        verbose_name=_('Auto detected'),
+        help_text=_('Whether this preference was automatically detected')
+    )
+
+    confidence = models.DecimalField(
+        max_digits=5,
+        decimal_places=4,
+        null=True,
+        blank=True,
+        verbose_name=_('Confidence'),
+        help_text=_('Confidence score for auto-detected preferences (0-1)')
+    )
+
+    # Managers
+    objects = SoftDeleteManager()  # Default: excludes soft-deleted
+    all_objects = models.Manager()  # Includes ALL records
+
+    class Meta:
+        db_table = 'customer_preferences'
+        verbose_name = _('Customer Preference')
+        verbose_name_plural = _('Customer Preferences')
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['organization', 'deleted_at'], name='custpref_org_deleted_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.customer.display_name} - {self.preference_type}: {self.key}={self.value}"
+
+    def __repr__(self) -> str:
+        return f"<CustomerPreference(id={self.id}, type='{self.preference_type}', key='{self.key}')>"
+
+
+class NPSSurvey(TimeStampedMixin, models.Model):
+    """
+    NPSSurvey model - captures Net Promoter Score survey responses.
+
+    NPS surveys are immutable once submitted. The category (Promoter, Passive,
+    Detractor) is auto-calculated based on the score:
+    - 9-10: Promoter
+    - 7-8: Passive
+    - 0-6: Detractor
+
+    Critical Rules:
+    - EVERY query MUST filter by organization (multi-tenant isolation)
+    - Survey data is immutable - NO soft delete, NO updates
+    - Category is auto-calculated from score
+
+    Attributes:
+        id: UUID primary key
+        organization: FK to Organization (tenant isolation)
+        customer: Optional FK to Customer (can be anonymous)
+        order_id: Optional UUID reference to Order (not FK to avoid circular)
+        score: NPS score (0-10)
+        comment: Optional free-text comment
+        category: Auto-calculated NPS category (PROMOTER, PASSIVE, DETRACTOR)
+        channel: Channel through which survey was collected
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)')
+    )
+
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        related_name='nps_surveys',
+        verbose_name=_('Organization'),
+        help_text=_('Organization this survey belongs to')
+    )
+
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='nps_surveys',
+        verbose_name=_('Customer'),
+        help_text=_('Customer who submitted this survey (null for anonymous)')
+    )
+
+    order_id = models.UUIDField(
+        null=True,
+        blank=True,
+        verbose_name=_('Order ID'),
+        help_text=_('Order this survey is about (if applicable)')
+    )
+
+    score = models.IntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(10)],
+        verbose_name=_('Score'),
+        help_text=_('NPS score (0-10)')
+    )
+
+    comment = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name=_('Comment'),
+        help_text=_('Optional free-text comment')
+    )
+
+    category = models.CharField(
+        max_length=20,
+        choices=NPSCategory.choices,
+        verbose_name=_('Category'),
+        help_text=_('NPS category (auto-calculated from score)')
+    )
+
+    channel = models.CharField(
+        max_length=20,
+        choices=NPSChannel.choices,
+        verbose_name=_('Channel'),
+        help_text=_('Channel through which survey was collected')
+    )
+
+    class Meta:
+        db_table = 'nps_surveys'
+        verbose_name = _('NPS Survey')
+        verbose_name_plural = _('NPS Surveys')
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['organization', 'created_at'], name='nps_org_created_idx'),
+        ]
+
+    def __str__(self) -> str:
+        customer_name = self.customer.display_name if self.customer else 'Anonymous'
+        return f"NPS {self.score}/10 from {customer_name} ({self.category})"
+
+    def __repr__(self) -> str:
+        return f"<NPSSurvey(id={self.id}, score={self.score}, category='{self.category}')>"
+
+    def save(self, *args, **kwargs):
+        """Auto-calculate NPS category from score before saving."""
+        if self.score >= 9:
+            self.category = NPSCategory.PROMOTER
+        elif self.score >= 7:
+            self.category = NPSCategory.PASSIVE
+        else:
+            self.category = NPSCategory.DETRACTOR
+        super().save(*args, **kwargs)

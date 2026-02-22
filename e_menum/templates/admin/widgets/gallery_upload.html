@@ -1,0 +1,276 @@
+{% load i18n %}
+<div class="gallery-upload-widget"
+     x-data="galleryUploadWidget('{{ widget.name }}', {{ widget.json_value|safe }}, '{{ widget.subfolder|default:"gallery" }}')"
+     x-ref="container">
+
+    {# Hidden JSON input that Django form reads #}
+    <input type="hidden"
+           name="{{ widget.name }}"
+           x-ref="jsonInput"
+           :value="JSON.stringify(images)"
+           id="{{ widget.attrs.id }}">
+
+    {# Gallery Grid #}
+    <div class="gallery-grid" x-show="images.length > 0">
+        <template x-for="(img, index) in images" :key="index">
+            <div class="gallery-item">
+                <img :src="img" alt="" @error="$event.target.src = ''">
+                <div class="gallery-item-overlay">
+                    <button type="button"
+                            class="gallery-item-delete"
+                            @click="removeImage(index)"
+                            title="{% trans 'Remove' %}">
+                        <i class="ph ph-trash"></i>
+                    </button>
+                    <span class="gallery-item-index" x-text="index + 1"></span>
+                </div>
+            </div>
+        </template>
+
+        {# Add More Card #}
+        <div class="gallery-item gallery-add-card"
+             @click="$refs.galleryFileInput.click()">
+            <i class="ph ph-plus"></i>
+            <span>{% trans 'Add' %}</span>
+        </div>
+    </div>
+
+    {# Empty State / Drop Zone #}
+    <div class="gallery-dropzone"
+         x-show="images.length === 0 && !uploading"
+         @dragover.prevent="dragover = true"
+         @dragleave.prevent="dragover = false"
+         @drop.prevent="handleDrop($event)"
+         :class="{ 'dragover': dragover }"
+         @click="$refs.galleryFileInput.click()">
+        <i class="ph ph-images dropzone-icon"></i>
+        <span class="dropzone-title">{% trans 'Drop images here or click to browse' %}</span>
+        <span class="dropzone-subtitle">{% trans 'Multiple files allowed - JPEG, PNG, WebP, GIF' %}</span>
+    </div>
+
+    {# Drag & Drop overlay when gallery has images #}
+    <div class="gallery-drop-overlay"
+         x-show="images.length > 0"
+         @dragover.prevent="dragover = true"
+         @dragleave.prevent="dragover = false"
+         @drop.prevent="handleDrop($event)"
+         :class="{ 'dragover': dragover }">
+    </div>
+
+    {# Upload Progress Area #}
+    <div class="gallery-upload-progress" x-show="uploading">
+        <template x-for="(task, idx) in uploadTasks" :key="idx">
+            <div class="gallery-upload-item">
+                <i class="ph ph-spinner upload-spinner"></i>
+                <span class="upload-task-name" x-text="task.name"></span>
+                <div class="upload-progress-bar" style="flex: 1;">
+                    <div class="upload-progress-fill" :style="'width: ' + task.progress + '%'"></div>
+                </div>
+                <span class="upload-progress-percent" x-text="task.progress + '%'" style="min-width: 36px; text-align: right;"></span>
+            </div>
+        </template>
+    </div>
+
+    {# Error Display #}
+    <div class="upload-error" x-show="error" x-cloak>
+        <i class="ph ph-warning-circle"></i>
+        <span x-text="error"></span>
+        <button type="button" @click="error = ''" class="upload-error-close">
+            <i class="ph ph-x"></i>
+        </button>
+    </div>
+
+    {# Actions Row #}
+    <div class="gallery-actions">
+        <button type="button"
+                class="btn-gallery-action"
+                @click="$refs.galleryFileInput.click()">
+            <i class="ph ph-upload"></i>
+            {% trans 'Upload Images' %}
+        </button>
+        <button type="button"
+                class="btn-gallery-action btn-gallery-url"
+                @click="showUrlInput = !showUrlInput">
+            <i class="ph ph-link"></i>
+            {% trans 'Add URL' %}
+        </button>
+        <span class="gallery-count" x-show="images.length > 0">
+            <span x-text="images.length"></span> {% trans 'image(s)' %}
+        </span>
+    </div>
+
+    {# Manual URL Input #}
+    <div class="gallery-url-input" x-show="showUrlInput" x-transition>
+        <div class="url-input-row">
+            <input type="url"
+                   class="url-text-input"
+                   x-ref="galleryUrlInput"
+                   placeholder="https://example.com/image.jpg"
+                   @keydown.enter.prevent="addUrlManually()">
+            <button type="button"
+                    class="btn-url-apply"
+                    @click="addUrlManually()">
+                <i class="ph ph-plus"></i>
+                {% trans 'Add' %}
+            </button>
+        </div>
+    </div>
+
+    {# Hidden multi-file input #}
+    <input type="file"
+           x-ref="galleryFileInput"
+           accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+           multiple
+           @change="handleFileSelect($event)"
+           style="display: none;">
+</div>
+
+<script>
+if (!window._galleryUploadWidgetRegistered) {
+    window._galleryUploadWidgetRegistered = true;
+
+    document.addEventListener('alpine:init', function() {
+        Alpine.data('galleryUploadWidget', function(fieldName, initialImages, subfolder) {
+            return {
+                images: Array.isArray(initialImages) ? [...initialImages] : [],
+                dragover: false,
+                uploading: false,
+                uploadTasks: [],
+                error: '',
+                showUrlInput: false,
+
+                handleDrop(event) {
+                    this.dragover = false;
+                    const files = Array.from(event.dataTransfer.files).filter(function(f) {
+                        return f.type.startsWith('image/');
+                    });
+                    if (files.length > 0) {
+                        this.uploadFiles(files);
+                    }
+                },
+
+                handleFileSelect(event) {
+                    const files = Array.from(event.target.files);
+                    if (files.length > 0) {
+                        this.uploadFiles(files);
+                    }
+                    event.target.value = '';
+                },
+
+                async uploadFiles(files) {
+                    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
+                    const maxSize = 10 * 1024 * 1024;
+
+                    // Validate all files first
+                    const validFiles = [];
+                    for (const file of files) {
+                        if (!allowedTypes.includes(file.type)) {
+                            this.error = file.name + ': Invalid file type.';
+                            continue;
+                        }
+                        if (file.size > maxSize) {
+                            this.error = file.name + ': File too large (max 10MB).';
+                            continue;
+                        }
+                        validFiles.push(file);
+                    }
+
+                    if (validFiles.length === 0) return;
+
+                    this.error = '';
+                    this.uploading = true;
+                    this.uploadTasks = validFiles.map(function(f) {
+                        return { name: f.name, progress: 0 };
+                    });
+
+                    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value
+                        || this._getCookie('csrftoken');
+
+                    // Upload all files concurrently
+                    const promises = validFiles.map((file, idx) => {
+                        return this._uploadSingle(file, idx, csrfToken, subfolder);
+                    });
+
+                    const results = await Promise.allSettled(promises);
+
+                    for (const result of results) {
+                        if (result.status === 'fulfilled' && result.value) {
+                            this.images.push(result.value);
+                        }
+                    }
+
+                    this.uploading = false;
+                    this.uploadTasks = [];
+                },
+
+                _uploadSingle(file, taskIndex, csrfToken, subfolder) {
+                    const self = this;
+                    return new Promise(function(resolve, reject) {
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        formData.append('subfolder', subfolder || 'gallery');
+
+                        const xhr = new XMLHttpRequest();
+
+                        xhr.upload.addEventListener('progress', function(e) {
+                            if (e.lengthComputable && self.uploadTasks[taskIndex]) {
+                                self.uploadTasks[taskIndex].progress = Math.round((e.loaded / e.total) * 100);
+                            }
+                        });
+
+                        xhr.onload = function() {
+                            if (xhr.status >= 200 && xhr.status < 300) {
+                                try {
+                                    const data = JSON.parse(xhr.responseText);
+                                    if (data.success) {
+                                        resolve(data.url);
+                                    } else {
+                                        self.error = file.name + ': ' + (data.error || 'Upload failed');
+                                        resolve(null);
+                                    }
+                                } catch(e) {
+                                    resolve(null);
+                                }
+                            } else {
+                                self.error = file.name + ': Upload failed (' + xhr.status + ')';
+                                resolve(null);
+                            }
+                        };
+
+                        xhr.onerror = function() {
+                            self.error = file.name + ': Network error';
+                            resolve(null);
+                        };
+
+                        xhr.open('POST', '/admin/api/upload/');
+                        if (csrfToken) {
+                            xhr.setRequestHeader('X-CSRFToken', csrfToken);
+                        }
+                        xhr.send(formData);
+                    });
+                },
+
+                removeImage(index) {
+                    this.images.splice(index, 1);
+                },
+
+                addUrlManually() {
+                    const input = this.$refs.galleryUrlInput;
+                    const url = (input?.value || '').trim();
+                    if (url) {
+                        this.images.push(url);
+                        input.value = '';
+                    }
+                },
+
+                _getCookie(name) {
+                    const value = '; ' + document.cookie;
+                    const parts = value.split('; ' + name + '=');
+                    if (parts.length === 2) return parts.pop().split(';').shift();
+                    return '';
+                }
+            };
+        });
+    });
+}
+</script>

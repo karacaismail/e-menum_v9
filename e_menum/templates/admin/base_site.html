@@ -7,6 +7,7 @@
 {{ block.super }}
 <link rel="stylesheet" href="{% static 'admin/css/sidebar.css' %}">
 <link rel="stylesheet" href="{% static 'admin/css/content.css' %}">
+<link rel="stylesheet" href="{% static 'admin/css/image-upload-widget.css' %}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
 <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -16,8 +17,63 @@
 {% block bodyclass %}admin-layout-body{% endblock %}
 
 {% block body %}
-<div class="admin-layout" x-data="adminSidebar()" :class="{ 'collapsed': collapsed, 'layout-boxed': layoutMode === 'boxed' }">
+<div class="admin-layout {% if not user.is_authenticated %}no-sidebar{% endif %}" {% if user.is_authenticated %}x-data="adminSidebar()" :class="{ 'collapsed': collapsed, 'layout-boxed': layoutMode === 'boxed' }"{% endif %}>
 
+    {# ═══════════════════════════════════════════ #}
+    {# IMPERSONATION BANNER                        #}
+    {# ═══════════════════════════════════════════ #}
+    {% if user.is_impersonate %}
+    <div class="impersonate-banner" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 9999;
+        background: linear-gradient(90deg, #f59e0b, #d97706);
+        color: #1c1917;
+        padding: 8px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        font-size: 13px;
+        font-weight: 600;
+        font-family: 'Inter', -apple-system, sans-serif;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    ">
+        <i class="ph ph-warning-circle" style="font-size: 18px;"></i>
+        <span>
+            Impersonating: <strong>{{ user.email }}</strong>
+            {% if user.organization %} ({{ user.organization.name }}){% endif %}
+        </span>
+        <a href="/impersonate/stop/"
+           style="
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                padding: 4px 14px;
+                background: rgba(0,0,0,0.15);
+                color: #1c1917;
+                border: 1px solid rgba(0,0,0,0.2);
+                border-radius: 4px;
+                font-size: 12px;
+                font-weight: 600;
+                text-decoration: none;
+                margin-left: 8px;
+           ">
+            <i class="ph ph-sign-out" style="font-size: 14px;"></i>
+            Stop Impersonating
+        </a>
+    </div>
+    <style>
+        /* Offset everything down when impersonation banner is active */
+        .admin-layout { padding-top: 42px; }
+        .rail-sidebar { top: 42px; height: calc(100vh - 42px); }
+        .accordion-sidebar { top: 42px; height: calc(100vh - 42px); }
+    </style>
+    {% endif %}
+
+    {% if user.is_authenticated %}
     {# ═══════════════════════════════════════════ #}
     {# RAIL SIDEBAR (64px - leftmost icon bar)     #}
     {# ═══════════════════════════════════════════ #}
@@ -33,32 +89,42 @@
                 <span class="rail-tooltip">Dashboard</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'core' }"
-                @click="setGroup('core')" title="Core">
+                @click="setGroup('core')" title="Core" x-show="hasGroupItems('core')">
                 <i class="ph ph-shield-check"></i>
                 <span class="rail-tooltip">Core</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'customers' }"
-                @click="setGroup('customers')" title="Customers">
+                @click="setGroup('customers')" title="Customers" x-show="hasGroupItems('customers')">
                 <i class="ph ph-users-three"></i>
                 <span class="rail-tooltip">Customers</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'menu' }"
-                @click="setGroup('menu')" title="Menu Management">
+                @click="setGroup('menu')" title="Menu Management" x-show="hasGroupItems('menu')">
                 <i class="ph ph-fork-knife"></i>
                 <span class="rail-tooltip">Menu</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'orders' }"
-                @click="setGroup('orders')" title="Order Management">
+                @click="setGroup('orders')" title="Order Management" x-show="hasGroupItems('orders')">
                 <i class="ph ph-receipt"></i>
                 <span class="rail-tooltip">Orders</span>
             </button>
+            <button class="rail-item" :class="{ 'active': activeGroup === 'subscriptions' }"
+                @click="setGroup('subscriptions')" title="Subscriptions" x-show="hasGroupItems('subscriptions')">
+                <i class="ph ph-credit-card"></i>
+                <span class="rail-tooltip">Subscriptions</span>
+            </button>
+            <button class="rail-item" :class="{ 'active': activeGroup === 'ai' }"
+                @click="setGroup('ai')" title="AI Services" x-show="hasGroupItems('ai')">
+                <i class="ph ph-sparkle"></i>
+                <span class="rail-tooltip">AI</span>
+            </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'media' }"
-                @click="setGroup('media')" title="Media">
+                @click="setGroup('media')" title="Media" x-show="hasGroupItems('media')">
                 <i class="ph ph-image"></i>
                 <span class="rail-tooltip">Media</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'reports' }"
-                @click="setGroup('reports')" title="Reports">
+                @click="setGroup('reports')" title="Reports" x-show="hasGroupItems('reports')">
                 <i class="ph ph-chart-bar"></i>
                 <span class="rail-tooltip">Reports</span>
             </button>
@@ -74,17 +140,20 @@
                 <i class="ph" :class="layoutMode === 'wide' ? 'ph-arrows-in-simple' : 'ph-arrows-out-simple'"></i>
                 <span class="rail-tooltip" x-text="layoutMode === 'wide' ? 'Boxed Layout' : 'Wide Layout'"></span>
             </button>
-            <a href="{% url 'admin:password_change' %}" class="rail-item" title="{% trans 'Settings' %}">
+            <a href="{% url 'admin-settings' %}" class="rail-item" title="{% trans 'Settings' %}">
                 <i class="ph ph-gear"></i>
                 <span class="rail-tooltip">{% trans 'Settings' %}</span>
             </a>
             <div class="rail-user-avatar" title="{{ user.get_username }}">
                 <span>{{ user.get_username|truncatechars:1 }}</span>
             </div>
-            <a href="{% url 'admin:logout' %}" class="rail-item rail-item--danger" title="{% trans 'Log out' %}">
-                <i class="ph ph-sign-out"></i>
-                <span class="rail-tooltip">{% trans 'Log out' %}</span>
-            </a>
+            <form method="post" action="{% url 'admin:logout' %}" style="margin:0;padding:0;">
+                {% csrf_token %}
+                <button type="submit" class="rail-item rail-item--danger" title="{% trans 'Log out' %}">
+                    <i class="ph ph-sign-out"></i>
+                    <span class="rail-tooltip">{% trans 'Log out' %}</span>
+                </button>
+            </form>
         </div>
     </aside>
 
@@ -135,6 +204,7 @@
             </div>
         </div>
     </aside>
+    {% endif %}
 
     {# ═══════════════════════════════════════════ #}
     {# CONTENT AREA (remaining space)              #}
@@ -155,12 +225,14 @@
             </nav>
             {% endblock %}
 
+            {% if user.is_authenticated %}
             <div class="topbar-actions">
                 <a href="/" class="topbar-btn" target="_blank" title="{% trans 'View site' %}">
                     <i class="ph ph-arrow-square-out"></i>
                     <span>{% trans 'View site' %}</span>
                 </a>
             </div>
+            {% endif %}
         </div>
 
         {# Messages #}
@@ -212,6 +284,7 @@
         {% endblock %}
     </main>
 
+    {% if user.is_authenticated %}
     {# Mobile bottom navigation bar #}
     <nav class="mobile-nav" x-data="mobileNav()">
         <a href="{% url 'admin:index' %}" class="mobile-nav-item" :class="{ 'active': isActive('/admin/', true) }">
@@ -222,14 +295,17 @@
             <i class="ph" :class="menuOpen ? 'ph-x' : 'ph-list'"></i>
             <span>Menu</span>
         </button>
-        <a href="{% url 'admin:password_change' %}" class="mobile-nav-item" :class="{ 'active': isActive('/password_change/') }">
+        <a href="{% url 'admin-settings' %}" class="mobile-nav-item" :class="{ 'active': isActive('/settings/') }">
             <i class="ph ph-gear"></i>
             <span>{% trans 'Settings' %}</span>
         </a>
-        <a href="{% url 'admin:logout' %}" class="mobile-nav-item mobile-nav-item--danger">
-            <i class="ph ph-sign-out"></i>
-            <span>{% trans 'Log out' %}</span>
-        </a>
+        <form method="post" action="{% url 'admin:logout' %}" style="margin:0;padding:0;display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="mobile-nav-item mobile-nav-item--danger">
+                <i class="ph ph-sign-out"></i>
+                <span>{% trans 'Log out' %}</span>
+            </button>
+        </form>
 
         {# Slide-up menu panel #}
         <div class="mobile-menu-panel" x-show="menuOpen" x-transition:enter="mmenu-enter"
@@ -257,10 +333,15 @@
         </div>
         <div class="mobile-menu-overlay" x-show="menuOpen" @click="menuOpen = false" x-transition.opacity></div>
     </nav>
+    {% endif %}
 
 </div>
 
 <script>
+// Permission-filtered admin URLs from Django context processor
+var _allowedAdminUrls = {{ allowed_admin_urls_json|default:"[]"|safe }};
+var _allAllowed = (_allowedAdminUrls.length === 1 && _allowedAdminUrls[0] === '__all__');
+
 function adminSidebar() {
     const path = window.location.pathname;
     let initialGroup = 'dashboard';
@@ -269,11 +350,14 @@ function adminSidebar() {
     else if (path.includes('/customers/')) initialGroup = 'customers';
     else if (path.includes('/menu/')) initialGroup = 'menu';
     else if (path.includes('/orders/')) initialGroup = 'orders';
+    else if (path.includes('/subscriptions/')) initialGroup = 'subscriptions';
     else if (path.includes('/media/')) initialGroup = 'media';
     else if (path.includes('/reports/')) initialGroup = 'reports';
+    else if (path.includes('/ai/')) initialGroup = 'ai';
     else if (path.includes('/notifications/')) initialGroup = 'core';
-    else if (path.includes('/subscriptions/')) initialGroup = 'core';
     else if (path.includes('/auth/')) initialGroup = 'core';
+    else if (path.includes('/permission-matrix')) initialGroup = 'core';
+    else if (path.includes('/settings')) initialGroup = 'dashboard';
 
     return {
         activeGroup: initialGroup,
@@ -315,6 +399,7 @@ function adminSidebar() {
                     { label: 'Permissions', url: '/admin/core/permission/', icon: 'key' },
                     { label: 'Role Permissions', url: '/admin/core/rolepermission/', icon: 'lock-key' },
                     { label: 'User Roles', url: '/admin/core/userrole/', icon: 'user-gear' },
+                    { label: 'Permission Matrix', url: '/admin/permission-matrix/', icon: 'grid-four' },
                     { label: 'Sessions', url: '/admin/core/session/', icon: 'fingerprint' },
                     { label: 'Audit Logs', url: '/admin/core/auditlog/', icon: 'clipboard-text' },
                 ]
@@ -354,6 +439,24 @@ function adminSidebar() {
                     { label: 'Service Requests', url: '/admin/orders/servicerequest/', icon: 'bell-ringing' },
                 ]
             },
+            subscriptions: {
+                label: 'Subscriptions',
+                items: [
+                    { label: 'Plans', url: '/admin/subscriptions/plan/', icon: 'credit-card' },
+                    { label: 'Features', url: '/admin/subscriptions/feature/', icon: 'toggle-right' },
+                    { label: 'Plan Features', url: '/admin/subscriptions/planfeature/', icon: 'link' },
+                    { label: 'Subscriptions', url: '/admin/subscriptions/subscription/', icon: 'repeat' },
+                    { label: 'Invoices', url: '/admin/subscriptions/invoice/', icon: 'receipt' },
+                    { label: 'Usage Tracking', url: '/admin/subscriptions/organizationusage/', icon: 'chart-line-up' },
+                ]
+            },
+            ai: {
+                label: 'AI Services',
+                items: [
+                    { label: 'Provider Settings', url: '/admin/ai/aiproviderconfig/', icon: 'gear-six' },
+                    { label: 'Generation History', url: '/admin/ai/aigeneration/', icon: 'sparkle' },
+                ]
+            },
             media: {
                 label: 'Media',
                 items: [
@@ -372,8 +475,25 @@ function adminSidebar() {
             }
         },
 
+        // Check if a URL is allowed for the current (possibly impersonated) user
+        isUrlAllowed(url) {
+            if (_allAllowed) return true;
+            // Dashboard, settings, and non-model URLs are always allowed for staff
+            if (url === '/admin/' || url.includes('/settings') || url.includes('/reports/') || url.includes('/permission-matrix/')) return true;
+            return _allowedAdminUrls.indexOf(url) !== -1;
+        },
+
+        // Check if a group has any visible items
+        hasGroupItems(groupKey) {
+            if (_allAllowed) return true;
+            var items = this.groups[groupKey]?.items || [];
+            return items.some(item => this.isUrlAllowed(item.url));
+        },
+
         get filteredItems() {
-            return this.groups[this.activeGroup]?.items || [];
+            var items = this.groups[this.activeGroup]?.items || [];
+            if (_allAllowed) return items;
+            return items.filter(item => this.isUrlAllowed(item.url));
         },
 
         matchesFilter(label) {
@@ -432,6 +552,7 @@ function initCustomSelects() {
         var wrapper = document.createElement('div');
         wrapper.className = 'custom-select';
         wrapper.setAttribute('x-data', 'customSelect');
+        wrapper.setAttribute('x-bind:class', "{ 'custom-select--open': isOpen }");
         wrapper.setAttribute('x-on:keydown.escape.window', 'close()');
         wrapper.setAttribute('x-on:click.outside', 'close()');
 
@@ -473,8 +594,8 @@ function initCustomSelects() {
         optionsList.className = 'custom-select-options';
         optionsList.setAttribute('role', 'listbox');
 
-        // Build options from the original select
-        Array.from(sel.options).forEach(function(opt, idx) {
+        // Build options from the original select (with optgroup support)
+        function buildOption(opt, idx) {
             var optEl = document.createElement('div');
             optEl.className = 'custom-select-option';
             optEl.setAttribute('role', 'option');
@@ -495,8 +616,35 @@ function initCustomSelects() {
 
             optEl.appendChild(checkMark);
             optEl.appendChild(label);
-            optionsList.appendChild(optEl);
-        });
+            return optEl;
+        }
+
+        // Walk children: handle <option> and <optgroup> elements
+        var hasOptgroups = sel.querySelector('optgroup');
+        if (hasOptgroups) {
+            var optIdx = 0;
+            Array.from(sel.children).forEach(function(child) {
+                if (child.tagName === 'OPTGROUP') {
+                    // Render group header
+                    var groupLabel = document.createElement('div');
+                    groupLabel.className = 'custom-select-group-label';
+                    groupLabel.textContent = child.label;
+                    optionsList.appendChild(groupLabel);
+                    // Render group options
+                    Array.from(child.children).forEach(function(opt) {
+                        optionsList.appendChild(buildOption(opt, optIdx));
+                        optIdx++;
+                    });
+                } else if (child.tagName === 'OPTION') {
+                    optionsList.appendChild(buildOption(child, optIdx));
+                    optIdx++;
+                }
+            });
+        } else {
+            Array.from(sel.options).forEach(function(opt, idx) {
+                optionsList.appendChild(buildOption(opt, idx));
+            });
+        }
 
         dropdown.appendChild(optionsList);
 
@@ -530,11 +678,42 @@ document.addEventListener('alpine:init', function() {
             open() {
                 this.isOpen = true;
                 this.focusedIndex = this.selectedIndex;
+
+                // Use position:fixed on the dropdown to escape ALL stacking contexts.
+                // This guarantees the dropdown paints above sibling fieldsets.
+                if (window.innerWidth > 768) {
+                    var dd = this.$el.querySelector('.custom-select-dropdown');
+                    var trigger = this.$el.querySelector('.custom-select-trigger');
+                    if (dd && trigger) {
+                        var rect = trigger.getBoundingClientRect();
+                        dd.style.position = 'fixed';
+                        dd.style.top = (rect.bottom + 4) + 'px';
+                        dd.style.left = rect.left + 'px';
+                        dd.style.width = rect.width + 'px';
+                        dd.style.right = 'auto';
+                        dd.style.minWidth = rect.width + 'px';
+                        dd.style.zIndex = '99999';
+                    }
+                }
+
                 var overlay = document.getElementById('custom-select-overlay');
                 if (overlay && window.innerWidth <= 768) overlay.classList.add('active');
             },
             close() {
                 this.isOpen = false;
+
+                // Reset dropdown positioning back to default (absolute)
+                var dd = this.$el.querySelector('.custom-select-dropdown');
+                if (dd) {
+                    dd.style.position = '';
+                    dd.style.top = '';
+                    dd.style.left = '';
+                    dd.style.width = '';
+                    dd.style.right = '';
+                    dd.style.minWidth = '';
+                    dd.style.zIndex = '';
+                }
+
                 var overlay = document.getElementById('custom-select-overlay');
                 if (overlay) overlay.classList.remove('active');
             },

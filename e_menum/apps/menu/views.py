@@ -82,6 +82,7 @@ from apps.menu.serializers import (
     AllergenListSerializer,
     AllergenDetailSerializer,
 )
+from shared.permissions.plan_enforcement import PlanEnforcementMixin
 from shared.views.base import (
     BaseTenantViewSet,
     BaseReadOnlyViewSet,
@@ -180,7 +181,7 @@ class ThemeViewSet(BaseTenantViewSet):
 # MENU VIEWSET
 # =============================================================================
 
-class MenuViewSet(BaseTenantViewSet):
+class MenuViewSet(PlanEnforcementMixin, BaseTenantViewSet):
     """
     ViewSet for menu management.
 
@@ -206,10 +207,17 @@ class MenuViewSet(BaseTenantViewSet):
         - Requires authentication
         - Requires organization membership
         - Requires menu.view, menu.create, menu.update, menu.delete permissions
+
+    Plan Enforcement:
+        - Create action checks 'max_menus' limit from subscription plan
     """
 
     queryset = Menu.objects.all()
     permission_resource = 'menu'
+
+    # Plan enforcement: limit menu creation per plan
+    plan_limit_key = 'max_menus'
+    plan_limit_model = Menu
 
     def get_serializer_class(self):
         """Return the appropriate serializer based on action."""
@@ -320,7 +328,7 @@ class MenuViewSet(BaseTenantViewSet):
 # CATEGORY VIEWSET
 # =============================================================================
 
-class CategoryViewSet(BaseTenantViewSet):
+class CategoryViewSet(PlanEnforcementMixin, BaseTenantViewSet):
     """
     ViewSet for category management.
 
@@ -345,10 +353,17 @@ class CategoryViewSet(BaseTenantViewSet):
         - Requires authentication
         - Requires organization membership
         - Requires category.view, category.create, category.update, category.delete permissions
+
+    Plan Enforcement:
+        - Create action checks 'max_categories' limit from subscription plan
     """
 
     queryset = Category.objects.all()
     permission_resource = 'category'
+
+    # Plan enforcement: limit category creation per plan
+    plan_limit_key = 'max_categories'
+    plan_limit_model = Category
 
     def get_serializer_class(self):
         """Return the appropriate serializer based on action."""
@@ -399,7 +414,7 @@ class CategoryViewSet(BaseTenantViewSet):
 # PRODUCT VIEWSET
 # =============================================================================
 
-class ProductViewSet(BaseTenantViewSet):
+class ProductViewSet(PlanEnforcementMixin, BaseTenantViewSet):
     """
     ViewSet for product management.
 
@@ -430,10 +445,17 @@ class ProductViewSet(BaseTenantViewSet):
         - Requires authentication
         - Requires organization membership
         - Requires product.view, product.create, product.update, product.delete permissions
+
+    Plan Enforcement:
+        - Create action checks 'max_products' limit from subscription plan
     """
 
     queryset = Product.objects.all()
     permission_resource = 'product'
+
+    # Plan enforcement: limit product creation per plan
+    plan_limit_key = 'max_products'
+    plan_limit_model = Product
 
     def get_serializer_class(self):
         """Return the appropriate serializer based on action."""

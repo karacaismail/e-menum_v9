@@ -15,10 +15,11 @@ from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from apps.customers.models import Customer, CustomerVisit, Feedback, LoyaltyPoint
+from shared.permissions.admin_permission_mixin import EMenumPermissionMixin
 
 
 @admin.register(Customer)
-class CustomerAdmin(admin.ModelAdmin):
+class CustomerAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     """Admin interface for Customer management."""
 
     list_display = [
@@ -75,7 +76,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
 
 @admin.register(CustomerVisit)
-class CustomerVisitAdmin(admin.ModelAdmin):
+class CustomerVisitAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     """Admin interface for CustomerVisit management."""
 
     list_display = [
@@ -110,7 +111,7 @@ class CustomerVisitAdmin(admin.ModelAdmin):
 
 
 @admin.register(Feedback)
-class FeedbackAdmin(admin.ModelAdmin):
+class FeedbackAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     """Admin interface for Feedback management."""
 
     list_display = [
@@ -179,7 +180,7 @@ class FeedbackAdmin(admin.ModelAdmin):
 
 
 @admin.register(LoyaltyPoint)
-class LoyaltyPointAdmin(admin.ModelAdmin):
+class LoyaltyPointAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     """Admin interface for LoyaltyPoint management."""
 
     list_display = [

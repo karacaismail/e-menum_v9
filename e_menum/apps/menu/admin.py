@@ -20,6 +20,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
+from apps.menu.forms import CategoryAdminForm, ProductAdminForm
 from apps.menu.models import (
     Allergen,
     Category,
@@ -31,6 +32,7 @@ from apps.menu.models import (
     ProductVariant,
     Theme,
 )
+from shared.permissions.admin_permission_mixin import EMenumPermissionMixin
 
 
 class SoftDeleteAdminMixin:
@@ -133,13 +135,14 @@ class ProductAllergenInline(admin.TabularInline):
 
 
 @admin.register(Theme)
-class ThemeAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
+class ThemeAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
     """
     Admin interface for Theme management.
 
     Provides comprehensive management of menu themes including:
-    - Color customization
+    - Color customization (with visual color picker)
     - Typography settings
+    - Layout settings (grid columns, border radius, layout mode, dark mode)
     - Custom CSS
     - Default theme selection
 
@@ -150,13 +153,14 @@ class ThemeAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
         'name',
         'organization',
         'color_preview',
+        'layout_info',
         'is_default',
         'is_active',
         'created_at',
     ]
     list_filter = ['is_default', 'is_active', 'organization', 'created_at']
     search_fields = ['name', 'slug', 'organization__name']
-    readonly_fields = ['id', 'created_at', 'updated_at', 'deleted_at']
+    readonly_fields = ['id', 'created_at', 'updated_at', 'deleted_at', 'color_picker_preview']
     ordering = ['-is_default', 'name']
     date_hierarchy = 'created_at'
     list_per_page = 25
@@ -169,22 +173,28 @@ class ThemeAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
         }),
         (_('Colors'), {
             'fields': (
+                'color_picker_preview',
                 'primary_color',
                 'secondary_color',
                 'background_color',
                 'text_color',
                 'accent_color',
             ),
-            'description': _('Theme color settings (hex format)')
+            'description': _('Theme color settings (hex format). Use the color swatches or type hex values.')
         }),
         (_('Typography'), {
             'fields': ('font_family', 'heading_font_family'),
         }),
-        (_('Layout'), {
-            'fields': ('logo_position',),
+        (_('Layout & Display'), {
+            'fields': ('logo_position', 'settings'),
+            'description': _(
+                'Layout settings. Use the "settings" JSON field for: '
+                '"layout" (wide/boxed), "grid_columns" (2/3/4/6), '
+                '"border_radius" (0-24), "dark_mode" (true/false)'
+            ),
         }),
         (_('Advanced'), {
-            'fields': ('custom_css', 'settings'),
+            'fields': ('custom_css',),
             'classes': ('collapse',),
             'description': _('Advanced customization options')
         }),
@@ -197,23 +207,90 @@ class ThemeAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
         }),
     )
 
+    class Media:
+        css = {
+            'all': ('admin/css/theme-admin.css',),
+        }
+
     def color_preview(self, obj):
         """Display color swatches for the theme."""
         return format_html(
-            '<span style="display: inline-block; width: 20px; height: 20px; '
-            'background-color: {}; border: 1px solid #ccc; margin-right: 4px;" '
-            'title="Primary"></span>'
-            '<span style="display: inline-block; width: 20px; height: 20px; '
-            'background-color: {}; border: 1px solid #ccc; margin-right: 4px;" '
-            'title="Secondary"></span>'
-            '<span style="display: inline-block; width: 20px; height: 20px; '
-            'background-color: {}; border: 1px solid #ccc;" '
-            'title="Background"></span>',
+            '<span style="display: inline-flex; gap: 3px;">'
+            '<span style="display: inline-block; width: 18px; height: 18px; '
+            'background-color: {}; border: 1px solid rgba(255,255,255,0.1); '
+            'border-radius: 4px;" title="Primary"></span>'
+            '<span style="display: inline-block; width: 18px; height: 18px; '
+            'background-color: {}; border: 1px solid rgba(255,255,255,0.1); '
+            'border-radius: 4px;" title="Secondary"></span>'
+            '<span style="display: inline-block; width: 18px; height: 18px; '
+            'background-color: {}; border: 1px solid rgba(255,255,255,0.1); '
+            'border-radius: 4px;" title="Background"></span>'
+            '</span>',
             obj.primary_color,
             obj.secondary_color,
             obj.background_color
         )
     color_preview.short_description = _('Colors')
+
+    def layout_info(self, obj):
+        """Display layout settings summary."""
+        settings = obj.settings or {}
+        layout = settings.get('layout', 'wide')
+        grid = settings.get('grid_columns', 3)
+        radius = settings.get('border_radius', 12)
+        dark = settings.get('dark_mode', False)
+        parts = [f'{layout}']
+        if grid != 3:
+            parts.append(f'{grid}col')
+        if radius != 12:
+            parts.append(f'r{radius}')
+        if dark:
+            parts.append('dark')
+        return format_html(
+            '<span style="font-size: 11px; color: #94a3b8;">{}</span>',
+            ' · '.join(parts)
+        )
+    layout_info.short_description = _('Layout')
+
+    def color_picker_preview(self, obj):
+        """Display visual color picker preview with current colors."""
+        primary = obj.primary_color if obj.pk else '#3B82F6'
+        secondary = obj.secondary_color if obj.pk else '#10B981'
+        accent = obj.accent_color if obj.pk else ''
+        bg = obj.background_color if obj.pk else '#FFFFFF'
+        text = obj.text_color if obj.pk else '#1F2937'
+
+        return format_html(
+            '<div style="display: flex; gap: 12px; align-items: center; '
+            'padding: 12px 16px; background: rgba(0,0,0,0.2); '
+            'border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">'
+            '<div style="text-align: center;">'
+            '<div style="width: 40px; height: 40px; background: {}; '
+            'border-radius: 8px; border: 2px solid rgba(255,255,255,0.1);"></div>'
+            '<span style="font-size: 10px; color: #94a3b8; margin-top: 4px; display: block;">Primary</span>'
+            '</div>'
+            '<div style="text-align: center;">'
+            '<div style="width: 40px; height: 40px; background: {}; '
+            'border-radius: 8px; border: 2px solid rgba(255,255,255,0.1);"></div>'
+            '<span style="font-size: 10px; color: #94a3b8; margin-top: 4px; display: block;">Secondary</span>'
+            '</div>'
+            '<div style="text-align: center;">'
+            '<div style="width: 40px; height: 40px; background: {}; '
+            'border-radius: 8px; border: 2px solid rgba(255,255,255,0.1);"></div>'
+            '<span style="font-size: 10px; color: #94a3b8; margin-top: 4px; display: block;">Background</span>'
+            '</div>'
+            '<div style="text-align: center;">'
+            '<div style="width: 40px; height: 40px; background: {}; '
+            'border-radius: 8px; border: 2px solid rgba(255,255,255,0.1);"></div>'
+            '<span style="font-size: 10px; color: #94a3b8; margin-top: 4px; display: block;">Text</span>'
+            '</div>'
+            '</div>',
+            primary,
+            secondary,
+            bg,
+            text
+        )
+    color_picker_preview.short_description = _('Color Preview')
 
     actions = ['set_as_default', 'activate_themes', 'deactivate_themes']
 
@@ -260,7 +337,7 @@ class ThemeAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(Menu)
-class MenuAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
+class MenuAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
     """
     Admin interface for Menu management.
 
@@ -280,6 +357,7 @@ class MenuAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
         'is_default',
         'category_count',
         'theme',
+        'storefront_link',
         'created_at',
     ]
     list_filter = ['is_published', 'is_default', 'organization', 'created_at']
@@ -340,6 +418,31 @@ class MenuAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
         )
     category_count.short_description = _('Categories')
 
+    def storefront_link(self, obj):
+        """Display link to the menu's public storefront page."""
+        if obj.is_published:
+            url = f'/m/{obj.slug}/'
+            return format_html(
+                '<a href="{}" target="_blank" style="display: inline-flex; align-items: center; '
+                'gap: 4px; color: #818cf8; text-decoration: none; font-weight: 500;" '
+                'title="Open storefront">'
+                '<i class="ph ph-storefront" style="font-size: 16px;"></i> '
+                '<span style="font-size: 12px;">View</span></a>',
+                url
+            )
+        return format_html(
+            '<span style="color: #6c757d; font-size: 12px;">Draft</span>'
+        )
+    storefront_link.short_description = _('Storefront')
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        """Add storefront URL to change form context."""
+        extra_context = extra_context or {}
+        obj = self.get_object(request, object_id)
+        if obj and obj.is_published:
+            extra_context['storefront_url'] = f'/m/{obj.slug}/'
+        return super().change_view(request, object_id, form_url, extra_context)
+
     actions = ['publish_menus', 'unpublish_menus', 'set_as_default']
 
     @admin.action(description=_('Publish selected menus'))
@@ -387,7 +490,7 @@ class MenuAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(Category)
-class CategoryAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
+class CategoryAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
     """
     Admin interface for Category management.
 
@@ -399,6 +502,8 @@ class CategoryAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
 
     Note: Soft-deleted categories are hidden by default.
     """
+
+    form = CategoryAdminForm
 
     list_display = [
         'name',
@@ -429,7 +534,7 @@ class CategoryAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
             'description': _('Optional parent category for nested structure')
         }),
         (_('Display'), {
-            'fields': ('image', 'is_active', 'sort_order'),
+            'fields': ('image', 'icon', 'is_active', 'sort_order'),
         }),
         (_('Timestamps'), {
             'fields': ('created_at', 'updated_at', 'deleted_at'),
@@ -490,7 +595,7 @@ class CategoryAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(Product)
-class ProductAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
+class ProductAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
     """
     Admin interface for Product management.
 
@@ -499,9 +604,13 @@ class ProductAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
     - Featured and chef recommended flags
     - Variants, modifiers, and allergens via inlines
     - Tag management
+    - Inline AI description generation
 
     Note: Soft-deleted products are hidden by default.
     """
+
+    form = ProductAdminForm
+    change_form_template = 'admin/menu/product/change_form.html'
 
     list_display = [
         'name',
@@ -547,17 +656,16 @@ class ProductAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
             'fields': ('short_description', 'description'),
         }),
         (_('Pricing'), {
-            'fields': ('base_price', 'currency'),
+            'fields': ('base_price', 'currency', 'discount_percentage'),
         }),
         (_('Images'), {
             'fields': ('image', 'gallery'),
-            'classes': ('collapse',),
         }),
         (_('Availability & Status'), {
             'fields': ('is_active', 'is_available', 'is_featured', 'is_chef_recommended'),
         }),
         (_('Attributes'), {
-            'fields': ('preparation_time', 'calories', 'spicy_level', 'tags'),
+            'fields': ('preparation_time', 'calories', 'spicy_level', 'rating', 'review_count', 'tags'),
             'classes': ('collapse',),
         }),
         (_('Display'), {
@@ -600,11 +708,28 @@ class ProductAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
     availability_badge.short_description = _('Availability')
     availability_badge.admin_order_field = 'is_available'
 
+    def changeform_view(self, request, object_id=None, form_url='', extra_context=None):
+        """Add product context for AI generate button in change form."""
+        extra_context = extra_context or {}
+        if object_id:
+            obj = self.get_object(request, object_id)
+            if obj:
+                extra_context['product_name'] = obj.name
+                extra_context['product_category'] = obj.category.name if obj.category else ''
+                extra_context['product_id'] = str(obj.pk)
+                org = obj.organization or (
+                    obj.category.menu.organization
+                    if obj.category and obj.category.menu else None
+                )
+                extra_context['org_id'] = str(org.pk) if org else ''
+        return super().changeform_view(request, object_id, form_url, extra_context)
+
     actions = [
         'make_available',
         'make_unavailable',
         'toggle_featured',
         'toggle_chef_recommended',
+        'ai_generate_descriptions',
     ]
 
     @admin.action(description=_('Mark as available'))
@@ -649,6 +774,62 @@ class ProductAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
             }
         )
 
+    @admin.action(description=_('🤖 AI: Generate descriptions'))
+    def ai_generate_descriptions(self, request, queryset):
+        """Bulk action to generate AI descriptions for selected products."""
+        from apps.ai.services import AIContentService
+        from shared.permissions.plan_enforcement import FeatureNotAvailable, PlanLimitExceeded
+
+        service = AIContentService()
+        success_count = 0
+        error_count = 0
+
+        for product in queryset:
+            org = product.organization or (
+                product.category.menu.organization if product.category and product.category.menu else None
+            )
+            if not org:
+                error_count += 1
+                continue
+
+            try:
+                result = service.generate_description(
+                    organization=org,
+                    user=request.user,
+                    product_name=product.name,
+                    category=product.category.name if product.category else '',
+                    language='tr',
+                    product=product,
+                )
+                # Apply generated description
+                if result.get('description') and not product.description:
+                    product.description = result['description']
+                if result.get('short_description') and not product.short_description:
+                    product.short_description = result['short_description']
+                product.save(update_fields=['description', 'short_description', 'updated_at'])
+                success_count += 1
+            except FeatureNotAvailable:
+                self.message_user(
+                    request,
+                    _('AI content generation is not available on your plan. Please upgrade.'),
+                    level='error',
+                )
+                return
+            except PlanLimitExceeded:
+                self.message_user(
+                    request,
+                    _('AI credit limit reached. %d product(s) generated before limit.') % success_count,
+                    level='warning',
+                )
+                return
+            except Exception as e:
+                error_count += 1
+
+        msg = _('AI descriptions generated for %(success)d product(s).') % {'success': success_count}
+        if error_count:
+            msg += _(' %(errors)d failed.') % {'errors': error_count}
+        self.message_user(request, msg, level='success' if error_count == 0 else 'warning')
+
 
 # =============================================================================
 # Allergen Admin (Platform-level)
@@ -656,7 +837,7 @@ class ProductAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(Allergen)
-class AllergenAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
+class AllergenAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
     """
     Admin interface for Allergen management.
 
@@ -745,7 +926,7 @@ class AllergenAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(ProductVariant)
-class ProductVariantAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
+class ProductVariantAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
     """Admin interface for ProductVariant management."""
 
     list_display = [
@@ -795,7 +976,7 @@ class ProductVariantAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(ProductModifier)
-class ProductModifierAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
+class ProductModifierAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
     """Admin interface for ProductModifier management."""
 
     list_display = [
@@ -846,7 +1027,7 @@ class ProductModifierAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(ProductAllergen)
-class ProductAllergenAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
+class ProductAllergenAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
     """Admin interface for ProductAllergen (junction table) management."""
 
     list_display = [
@@ -901,7 +1082,7 @@ class ProductAllergenAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(NutritionInfo)
-class NutritionInfoAdmin(SoftDeleteAdminMixin, admin.ModelAdmin):
+class NutritionInfoAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
     """Admin interface for NutritionInfo management."""
 
     list_display = [
