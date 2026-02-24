@@ -1,0 +1,66 @@
+{% extends "layouts/base.html" %}
+{% load static i18n seo_tags %}
+
+{% comment %}
+   MARKETING MASTER LAYOUT — Slim wrapper
+   Design System: Teal-olive primary (#1A6B5A) + Amber accent (#F5A623)
+
+   Partials:
+   - _topbar.html     → Announcement bar + utility links (included in _header.html)
+   - _header.html     → Sticky header + mega menu + mobile menu
+   - _mega_menu.html  → Desktop mega menu navigation (included in _header.html)
+   - _footer.html     → 4-layer enterprise footer (newsletter, links, trust, copyright)
+   - _cookie_banner.html → GDPR cookie consent
+{% endcomment %}
+
+{% block html_class %}scroll-smooth{% endblock %}
+
+{% block body_class %}min-h-screen bg-white dark:bg-gray-950{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'website/css/marketing.css' %}">
+{# Plus Jakarta Sans for headings + JetBrains Mono for code #}
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+{% endblock %}
+
+
+{% block header %}
+{% include "website/partials/_header.html" %}
+{% endblock %}
+
+
+{% block main_class %}flex-grow pt-16 lg:pt-20{% endblock %}
+
+
+{% block footer %}
+{% include "website/partials/_footer.html" %}
+{% endblock %}
+
+
+{% block extra_js %}
+{{ block.super }}
+<script src="{% static 'website/js/marketing.js' %}?v=2"></script>
+
+{# WhatsApp Floating Button #}
+<div class="fixed bottom-6 right-6 z-40"
+     x-data="{ show: false }"
+     x-init="setTimeout(() => show = true, 2000)"
+>
+    <a
+        x-show="show"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 scale-75"
+        x-transition:enter-end="opacity-100 scale-100"
+        href="https://wa.me/{{ marketing.whatsapp_number }}?text={{ marketing.whatsapp_message|urlencode }}"
+        target="_blank"
+        rel="noopener"
+        class="flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110"
+        aria-label="{% trans 'WhatsApp ile iletisime gec' %}"
+    >
+        <i class="ph ph-whatsapp-logo text-3xl"></i>
+    </a>
+</div>
+
+{# Cookie Consent Banner #}
+{% include "website/partials/_cookie_banner.html" %}
+{% endblock %}

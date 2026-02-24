@@ -84,49 +84,70 @@
 
         <nav class="rail-nav">
             <button class="rail-item" :class="{ 'active': activeGroup === 'dashboard' }"
-                @click="setGroup('dashboard')" title="Dashboard">
-                <i class="ph ph-squares-four"></i>
-                <span class="rail-tooltip">Dashboard</span>
+                @click="setGroup('dashboard')" title="Panel">
+                <span class="rail-item-icon"><i class="ph-bold ph-squares-four"></i></span>
+                <span class="rail-item-label">Panel</span>
+                <span class="rail-tooltip">Panel</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'core' }"
                 @click="setGroup('core')" title="Core" x-show="hasGroupItems('core')">
-                <i class="ph ph-shield-check"></i>
+                <span class="rail-item-icon"><i class="ph-bold ph-shield-check"></i></span>
+                <span class="rail-item-label">Core</span>
                 <span class="rail-tooltip">Core</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'customers' }"
-                @click="setGroup('customers')" title="Customers" x-show="hasGroupItems('customers')">
-                <i class="ph ph-users-three"></i>
-                <span class="rail-tooltip">Customers</span>
+                @click="setGroup('customers')" title="Müşteriler" x-show="hasGroupItems('customers')">
+                <span class="rail-item-icon"><i class="ph-bold ph-users-three"></i></span>
+                <span class="rail-item-label">Müşteriler</span>
+                <span class="rail-tooltip">Müşteriler</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'menu' }"
-                @click="setGroup('menu')" title="Menu Management" x-show="hasGroupItems('menu')">
-                <i class="ph ph-fork-knife"></i>
-                <span class="rail-tooltip">Menu</span>
+                @click="setGroup('menu')" title="Menü" x-show="hasGroupItems('menu')">
+                <span class="rail-item-icon"><i class="ph-bold ph-fork-knife"></i></span>
+                <span class="rail-item-label">Menü</span>
+                <span class="rail-tooltip">Menü</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'orders' }"
-                @click="setGroup('orders')" title="Order Management" x-show="hasGroupItems('orders')">
-                <i class="ph ph-receipt"></i>
-                <span class="rail-tooltip">Orders</span>
+                @click="setGroup('orders')" title="Siparişler" x-show="hasGroupItems('orders')">
+                <span class="rail-item-icon"><i class="ph-bold ph-receipt"></i></span>
+                <span class="rail-item-label">Siparişler</span>
+                <span class="rail-tooltip">Siparişler</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'subscriptions' }"
-                @click="setGroup('subscriptions')" title="Subscriptions" x-show="hasGroupItems('subscriptions')">
-                <i class="ph ph-credit-card"></i>
-                <span class="rail-tooltip">Subscriptions</span>
+                @click="setGroup('subscriptions')" title="Abonelik" x-show="hasGroupItems('subscriptions')">
+                <span class="rail-item-icon"><i class="ph-bold ph-credit-card"></i></span>
+                <span class="rail-item-label">Abonelik</span>
+                <span class="rail-tooltip">Abonelik</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'ai' }"
-                @click="setGroup('ai')" title="AI Services" x-show="hasGroupItems('ai')">
-                <i class="ph ph-sparkle"></i>
-                <span class="rail-tooltip">AI</span>
+                @click="setGroup('ai')" title="AI & API" x-show="hasGroupItems('ai')">
+                <span class="rail-item-icon"><i class="ph-bold ph-sparkle"></i></span>
+                <span class="rail-item-label">AI & API</span>
+                <span class="rail-tooltip">AI & API</span>
+            </button>
+            <button class="rail-item" :class="{ 'active': activeGroup === 'website' }"
+                @click="setGroup('website')" title="CMS" x-show="hasGroupItems('website')">
+                <span class="rail-item-icon"><i class="ph-bold ph-layout"></i></span>
+                <span class="rail-item-label">CMS</span>
+                <span class="rail-tooltip">CMS</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'media' }"
-                @click="setGroup('media')" title="Media" x-show="hasGroupItems('media')">
-                <i class="ph ph-image"></i>
-                <span class="rail-tooltip">Media</span>
+                @click="setGroup('media')" title="Medya" x-show="hasGroupItems('media')">
+                <span class="rail-item-icon"><i class="ph-bold ph-images"></i></span>
+                <span class="rail-item-label">Medya</span>
+                <span class="rail-tooltip">Medya</span>
+            </button>
+            <button class="rail-item" :class="{ 'active': activeGroup === 'seo' }"
+                @click="setGroup('seo')" title="SEO" x-show="hasGroupItems('seo')">
+                <span class="rail-item-icon"><i class="ph-bold ph-magnifying-glass"></i></span>
+                <span class="rail-item-label">SEO</span>
+                <span class="rail-tooltip">SEO</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'reports' }"
-                @click="setGroup('reports')" title="Reports" x-show="hasGroupItems('reports')">
-                <i class="ph ph-chart-bar"></i>
-                <span class="rail-tooltip">Reports</span>
+                @click="setGroup('reports')" title="Raporlar" x-show="hasGroupItems('reports')">
+                <span class="rail-item-icon"><i class="ph-bold ph-chart-bar"></i></span>
+                <span class="rail-item-label">Raporlar</span>
+                <span class="rail-tooltip">Raporlar</span>
             </button>
         </nav>
 
@@ -351,7 +372,9 @@ function adminSidebar() {
     else if (path.includes('/menu/')) initialGroup = 'menu';
     else if (path.includes('/orders/')) initialGroup = 'orders';
     else if (path.includes('/subscriptions/')) initialGroup = 'subscriptions';
+    else if (path.includes('/website/')) initialGroup = 'website';
     else if (path.includes('/media/')) initialGroup = 'media';
+    else if (path.includes('/seo-dashboard') || path.includes('/shield-dashboard') || path.includes('/seo/') || path.includes('/seo_shield/')) initialGroup = 'seo';
     else if (path.includes('/reports/')) initialGroup = 'reports';
     else if (path.includes('/ai/')) initialGroup = 'ai';
     else if (path.includes('/notifications/')) initialGroup = 'core';
@@ -464,6 +487,48 @@ function adminSidebar() {
                     { label: 'Media Folders', url: '/admin/media/mediafolder/', icon: 'folder' },
                 ]
             },
+            website: {
+                label: 'Website CMS',
+                items: [
+                    { label: 'Site Settings', url: '/admin/website/sitesettings/', icon: 'gear' },
+                    { label: 'Page Heroes', url: '/admin/website/pagehero/', icon: 'image' },
+                    { label: 'Home Sections', url: '/admin/website/homesection/', icon: 'layout' },
+                    { label: 'Navigation Links', url: '/admin/website/navigationlink/', icon: 'list' },
+                    { label: 'Feature Categories', url: '/admin/website/featurecategory/', icon: 'grid-four' },
+                    { label: 'Testimonials', url: '/admin/website/testimonial/', icon: 'quotes' },
+                    { label: 'Trust Badges', url: '/admin/website/trustbadge/', icon: 'shield-check' },
+                    { label: 'Trust Locations', url: '/admin/website/trustlocation/', icon: 'map-pin' },
+                    { label: 'Team Members', url: '/admin/website/teammember/', icon: 'users' },
+                    { label: 'Company Values', url: '/admin/website/companyvalue/', icon: 'heart' },
+                    { label: 'Company Stats', url: '/admin/website/companystat/', icon: 'chart-line-up' },
+                    { label: 'FAQ', url: '/admin/website/faq/', icon: 'question' },
+                    { label: 'Blog Posts', url: '/admin/website/blogpost/', icon: 'article' },
+                    { label: 'Legal Pages', url: '/admin/website/legalpage/', icon: 'file-text' },
+                    { label: 'Plan Display Features', url: '/admin/website/plandisplayfeature/', icon: 'list-checks' },
+                    { label: 'Contact Submissions', url: '/admin/website/contactsubmission/', icon: 'envelope' },
+                    { label: 'Demo Requests', url: '/admin/website/demorequest/', icon: 'phone' },
+                    { label: 'Newsletter Subscribers', url: '/admin/website/newslettersubscriber/', icon: 'newspaper' },
+                ]
+            },
+            seo: {
+                label: 'SEO & Shield',
+                items: [
+                    { label: 'SEO Dashboard', url: '/admin/seo-dashboard/', icon: 'chart-line-up' },
+                    { label: 'Shield Dashboard', url: '/admin/shield-dashboard/', icon: 'shield-warning' },
+                    { label: 'Redirects', url: '/admin/seo/redirect/', icon: 'arrows-split' },
+                    { label: '404 Logs', url: '/admin/seo/notfound404log/', icon: 'warning' },
+                    { label: 'Broken Links', url: '/admin/seo/brokenlink/', icon: 'link-break' },
+                    { label: 'Crawl Reports', url: '/admin/seo/crawlreport/', icon: 'magnifying-glass' },
+                    { label: 'TXT Files', url: '/admin/seo/txtfileconfig/', icon: 'file-text' },
+                    { label: 'Author Profiles', url: '/admin/seo/authorprofile/', icon: 'user-circle' },
+                    { label: 'pSEO Templates', url: '/admin/seo/pseotemplate/', icon: 'files' },
+                    { label: 'pSEO Pages', url: '/admin/seo/pseopage/', icon: 'globe' },
+                    { label: 'Bot Whitelist', url: '/admin/seo_shield/botwhitelist/', icon: 'robot' },
+                    { label: 'IP Risk Scores', url: '/admin/seo_shield/ipriskscore/', icon: 'globe' },
+                    { label: 'Rule Sets', url: '/admin/seo_shield/ruleset/', icon: 'list-checks' },
+                    { label: 'Block Logs', url: '/admin/seo_shield/blocklog/', icon: 'shield-slash' },
+                ]
+            },
             reports: {
                 label: 'Reports',
                 items: [
@@ -479,7 +544,7 @@ function adminSidebar() {
         isUrlAllowed(url) {
             if (_allAllowed) return true;
             // Dashboard, settings, and non-model URLs are always allowed for staff
-            if (url === '/admin/' || url.includes('/settings') || url.includes('/reports/') || url.includes('/permission-matrix/')) return true;
+            if (url === '/admin/' || url.includes('/settings') || url.includes('/reports/') || url.includes('/permission-matrix/') || url.includes('/seo-dashboard') || url.includes('/shield-dashboard')) return true;
             return _allowedAdminUrls.indexOf(url) !== -1;
         },
 
@@ -831,6 +896,20 @@ function mobileNav() {
                 items: [
                     { label: 'Customers', url: '/admin/customers/customer/', icon: 'user' },
                     { label: 'Feedbacks', url: '/admin/customers/feedback/', icon: 'chat-dots' }
+                ]
+            },
+            website: {
+                label: 'Website CMS',
+                items: [
+                    { label: 'Site Settings', url: '/admin/website/sitesettings/', icon: 'gear' },
+                    { label: 'Page Heroes', url: '/admin/website/pagehero/', icon: 'image' },
+                    { label: 'Home Sections', url: '/admin/website/homesection/', icon: 'layout' },
+                    { label: 'Blog Posts', url: '/admin/website/blogpost/', icon: 'article' },
+                    { label: 'Legal Pages', url: '/admin/website/legalpage/', icon: 'file-text' },
+                    { label: 'Navigation', url: '/admin/website/navigationlink/', icon: 'list' },
+                    { label: 'FAQ', url: '/admin/website/faq/', icon: 'question' },
+                    { label: 'Testimonials', url: '/admin/website/testimonial/', icon: 'quotes' },
+                    { label: 'Team Members', url: '/admin/website/teammember/', icon: 'users' }
                 ]
             }
         },

@@ -1,0 +1,23 @@
+{% comment %}
+  Breadcrumb Navigation Template
+  Renders an accessible breadcrumb trail with Tailwind CSS styling.
+
+  Context:
+    crumbs - list of (name, url) tuples representing the breadcrumb path
+{% endcomment %}
+{% if crumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="flex items-center space-x-2 text-sm text-gray-500">
+    {% for name, url in crumbs %}
+    <li>
+      {% if not forloop.last %}
+        <a href="{{ url }}" class="hover:text-primary-600 transition-colors">{{ name }}</a>
+        <span class="mx-1 text-gray-400">/</span>
+      {% else %}
+        <span class="text-gray-900 font-medium" aria-current="page">{{ name }}</span>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ol>
+</nav>
+{% endif %}

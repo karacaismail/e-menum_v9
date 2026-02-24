@@ -1,0 +1,42 @@
+{% extends "layouts/marketing.html" %}
+{% load static i18n %}
+
+{% block page_title %}{% trans "Gizlilik Politikasi" %}{% endblock %}
+{% block meta_description %}{% trans "E-Menum gizlilik politikasi. Kisisel verilerinizin nasil toplandigi, islendigi ve korunduÄu hakkinda bilgi." %}{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
+
+{% block content %}
+
+<section class="py-24 lg:py-32 bg-white dark:bg-gray-950">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="heading-sans text-3xl sm:text-4xl text-gray-900 dark:text-white mb-8">
+            {% trans "Gizlilik Politikasi" %}
+        </h1>
+        <p class="text-sm text-gray-500 dark:text-gray-300 mb-8">{% trans "Son guncelleme: 22 Subat 2026" %}</p>
+
+        <div class="prose prose-lg dark:prose-invert max-w-none space-y-8 text-gray-700 dark:text-gray-300">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "1. Toplanan Veriler" %}</h2>
+            <p>{% trans "E-Menum platformunu kullandiginizda asagidaki verileri toplayabiliriz: ad, soyad, e-posta adresi, telefon numarasi, isletme bilgileri, kullanim istatistikleri ve cihaz bilgileri." %}</p>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "2. Verilerin Kullanim Amaci" %}</h2>
+            <p>{% trans "Toplanan veriler hizmetlerimizi sunmak, iyilestirmek, guvenligini saglamak ve yasal yukumluluklerimizi yerine getirmek amaciyla kullanilir." %}</p>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "3. Verilerin Paylasilmasi" %}</h2>
+            <p>{% trans "Kisisel verileriniz, yasal zorunluluklar disinda ucuncu taraflarla paylasilmaz. Hizmet saglayicilarimiz ile yalnizca hizmet sunumu icin gerekli olan minimum veri paylasilir." %}</p>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "4. Veri Guvenligi" %}</h2>
+            <p>{% trans "Verileriniz SSL/TLS sifrelemesi, guclu parola politikalari ve duzenli guvenlik denetimleri ile korunur. Sunucularimiz Avrupa merkezli veri merkezlerinde barindirilmaktadir." %}</p>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "5. Cerezler" %}</h2>
+            <p>{% trans "Platformumuz, kullanici deneyimini iyilestirmek icin cerezler kullanir. Cerez tercihlerinizi tarayici ayarlarinizdan yonetebilirsiniz." %}</p>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "6. Haklariniz" %}</h2>
+            <p>{% trans "KVKK kapsaminda kisisel verilerinize erisim, duzeltme, silme ve tasima haklarina sahipsiniz. Bu haklarinizi kullanmak icin info@e-menum.com adresinden bize ulasabilirsiniz." %}</p>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "7. Iletisim" %}</h2>
+            <p>{% trans "Gizlilik politikamiz hakkinda sorulariniz icin info@e-menum.com adresinden bize ulasabilirsiniz." %}</p>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

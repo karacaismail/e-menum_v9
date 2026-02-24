@@ -118,12 +118,14 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # Django built-in apps
 DJANGO_APPS = [
+    'modeltranslation',  # MUST be before django.contrib.admin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
 ]
 
 # Third-party apps
@@ -156,6 +158,10 @@ LOCAL_APPS = [
     'apps.inventory.apps.InventoryConfig',
     'apps.campaigns.apps.CampaignsConfig',
     'apps.ai.apps.AiConfig',
+    'apps.website.apps.WebsiteConfig',
+    'apps.seo.apps.SEOConfig',
+    'apps.seo_shield.apps.SEOShieldConfig',
+    'apps.dashboard.apps.DashboardConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + [
@@ -173,6 +179,11 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     # 'whitenoise.middleware.WhiteNoiseMiddleware',  # Uncomment when whitenoise installed
     # 'corsheaders.middleware.CorsMiddleware',  # Uncomment when corsheaders installed
+    # SEO Shield — must be early to block bad requests before session/auth
+    'apps.seo_shield.middleware.SEOShieldMiddleware',
+    # SEO Middleware — redirect, canonical domain, headers
+    'apps.seo.middleware.CanonicalDomainMiddleware',
+    'apps.seo.middleware.RedirectMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',  # i18n support
     'django.middleware.common.CommonMiddleware',
@@ -183,6 +194,8 @@ MIDDLEWARE = [
     # 'shared.middleware.tenant.TenantMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.seo.middleware.SEOHeadersMiddleware',  # Must be late to modify responses
+    'apps.seo.middleware.Track404Middleware',  # Must be last to catch 404 after all other middleware
 ]
 
 
@@ -217,6 +230,8 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
                 'shared.context_processors.admin_sidebar_permissions',
+                'apps.website.context_processors.marketing_context',
+                'apps.seo.context_processors.seo_context',
             ],
         },
     },
@@ -520,15 +535,27 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# Available languages (Turkish and English per spec requirements)
+# Available languages — 5 languages
 LANGUAGES = [
-    ('tr', _('Türkçe')),
+    ('tr', _('Turkce')),
     ('en', _('English')),
+    ('ar', _('Arabic')),
+    ('ru', _('Russian')),
+    ('de', _('Deutsch')),
 ]
 
 LOCALE_PATHS = [
     BASE_DIR / 'locale',
 ]
+
+# =============================================================================
+# DJANGO-MODELTRANSLATION
+# =============================================================================
+
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'tr'
+MODELTRANSLATION_LANGUAGES = ('tr', 'en', 'ar', 'ru', 'de')
+MODELTRANSLATION_FALLBACK_LANGUAGES = {'default': ('tr', 'en')}
+MODELTRANSLATION_PREPOPULATE_LANGUAGE = 'tr'
 
 
 # =============================================================================
@@ -841,3 +868,28 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SAMESITE = 'Lax'
+
+
+# =============================================================================
+# SEO MODULE SETTINGS
+# =============================================================================
+
+SEO_SITE_NAME = 'E-Menum'
+SEO_DEFAULT_TITLE = 'E-Menum - Akilli QR Menu Platformu'
+SEO_DEFAULT_DESCRIPTION = 'Restoran ve kafeler icin yapay zeka destekli dijital menu platformu.'
+SEO_DEFAULT_OG_IMAGE = ''
+SEO_CANONICAL_DOMAIN = os.environ.get('SEO_CANONICAL_DOMAIN', '')  # e.g. 'e-menum.com'
+SEO_GTM_CONTAINER_ID = os.environ.get('SEO_GTM_CONTAINER_ID', '')  # e.g. 'GTM-XXXXXX'
+
+
+# =============================================================================
+# SEO SHIELD SETTINGS
+# =============================================================================
+
+SHIELD_ENABLED = env.bool('SHIELD_ENABLED', default=True)
+SHIELD_RATE_LIMIT_WINDOW = env.int('SHIELD_RATE_LIMIT_WINDOW', default=60)  # seconds
+SHIELD_RATE_LIMIT_MAX_REQUESTS = env.int('SHIELD_RATE_LIMIT_MAX_REQUESTS', default=60)
+SHIELD_THRESHOLD_LOG = env.int('SHIELD_THRESHOLD_LOG', default=30)
+SHIELD_THRESHOLD_CHALLENGE = env.int('SHIELD_THRESHOLD_CHALLENGE', default=60)
+SHIELD_THRESHOLD_BLOCK = env.int('SHIELD_THRESHOLD_BLOCK', default=80)
+SHIELD_WHITELIST_IPS = env.list('SHIELD_WHITELIST_IPS', default=['127.0.0.1', '::1'])

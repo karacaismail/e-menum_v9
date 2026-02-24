@@ -36,8 +36,10 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.conf.urls.i18n import i18n_patterns
 from django.http import JsonResponse
-from django.views.generic import RedirectView
+from django.utils import timezone
+# RedirectView no longer needed — root now served by website app
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 
@@ -90,6 +92,139 @@ def admin_reports(request):
         'has_permission': True,
     }
     return render(request, 'admin/reports.html', context)
+
+
+@staff_member_required
+def admin_seo_dashboard(request):
+    """
+    SEO Dashboard — overview of 404s, broken links, redirects, and crawl reports.
+    """
+    from datetime import timedelta
+    from django.db.models import Sum, Max, Avg
+    from apps.seo.models import BrokenLink, CrawlReport, NotFound404Log, Redirect
+
+    now = timezone.now()
+    today = now.date()
+    thirty_days_ago = today - timedelta(days=30)
+
+    # Stats
+    total_redirects = Redirect.objects.filter(
+        is_active=True, deleted_at__isnull=True
+    ).count()
+    total_broken_links = BrokenLink.objects.filter(is_resolved=False).count()
+    today_404s = NotFound404Log.objects.filter(date=today).aggregate(
+        total=Sum('hit_count')
+    )['total'] or 0
+
+    # Average SEO score from BlogPosts
+    avg_seo_score = None
+    try:
+        from apps.website.models import BlogPost
+        result = BlogPost.objects.filter(
+            deleted_at__isnull=True
+        ).aggregate(avg=Avg('seo_score'))
+        if result['avg'] is not None:
+            avg_seo_score = round(result['avg'])
+    except (ImportError, Exception):
+        pass
+
+    # Top 404 paths (last 30 days, aggregated by path)
+    from django.db.models import Max as DbMax
+    top_404s = (
+        NotFound404Log.objects.filter(date__gte=thirty_days_ago)
+        .values('path')
+        .annotate(total_hits=Sum('hit_count'), last_date=Max('date'))
+        .order_by('-total_hits')[:10]
+    )
+
+    # Recent unresolved broken links
+    recent_broken_links = BrokenLink.objects.filter(
+        is_resolved=False
+    ).order_by('-first_detected')[:10]
+
+    # Last crawl report
+    last_crawl = CrawlReport.objects.first()
+
+    context = {
+        'title': 'SEO Dashboard',
+        'total_redirects': total_redirects,
+        'total_broken_links': total_broken_links,
+        'today_404s': today_404s,
+        'avg_seo_score': avg_seo_score,
+        'top_404s': top_404s,
+        'recent_broken_links': recent_broken_links,
+        'last_crawl': last_crawl,
+        'is_nav_sidebar_enabled': False,
+        'has_permission': True,
+    }
+    return render(request, 'admin/seo_dashboard.html', context)
+
+
+@staff_member_required
+def admin_shield_dashboard(request):
+    """
+    Shield Dashboard — overview of blocked requests, threats, and IP reputation.
+    """
+    from datetime import timedelta
+    from django.db.models import Count
+
+    now = timezone.now()
+    today = now.date()
+
+    try:
+        from apps.seo_shield.models import BlockLog, IPRiskScore
+
+        # Stats
+        blocked_today = BlockLog.objects.filter(
+            created_at__date=today
+        ).count()
+        blocked_7d = BlockLog.objects.filter(
+            created_at__gte=now - timedelta(days=7)
+        ).count()
+        blocked_30d = BlockLog.objects.filter(
+            created_at__gte=now - timedelta(days=30)
+        ).count()
+        high_risk_ips = IPRiskScore.objects.filter(
+            risk_score__gt=60,
+            is_blacklisted=False,
+        ).count()
+
+        # Top block reasons (last 30 days)
+        top_reasons = (
+            BlockLog.objects.filter(created_at__gte=now - timedelta(days=30))
+            .values('reason')
+            .annotate(count=Count('id'))
+            .order_by('-count')[:10]
+        )
+
+        # Top blocked IPs (last 7 days)
+        top_blocked_ips = (
+            BlockLog.objects.filter(created_at__gte=now - timedelta(days=7))
+            .values('ip_address', 'country_code')
+            .annotate(count=Count('id'))
+            .order_by('-count')[:10]
+        )
+
+        # Recent block logs
+        recent_logs = BlockLog.objects.order_by('-created_at')[:20]
+
+    except (ImportError, Exception):
+        blocked_today = blocked_7d = blocked_30d = high_risk_ips = 0
+        top_reasons = top_blocked_ips = recent_logs = []
+
+    context = {
+        'title': 'Shield Dashboard',
+        'blocked_today': blocked_today,
+        'blocked_7d': blocked_7d,
+        'blocked_30d': blocked_30d,
+        'high_risk_ips': high_risk_ips,
+        'top_reasons': top_reasons,
+        'top_blocked_ips': top_blocked_ips,
+        'recent_logs': recent_logs,
+        'is_nav_sidebar_enabled': False,
+        'has_permission': True,
+    }
+    return render(request, 'admin/shield_dashboard.html', context)
 
 
 @staff_member_required
@@ -331,9 +466,14 @@ api_v1_patterns = [
 
 urlpatterns = [
     # -------------------------------------------------------------------------
-    # Root redirect → Admin Dashboard
+    # SEO URLs (robots.txt, sitemap.xml, etc.) — must be before i18n/admin
     # -------------------------------------------------------------------------
-    path('', RedirectView.as_view(url='/admin/', permanent=False), name='root-redirect'),
+    path('', include('apps.seo.urls')),
+
+    # -------------------------------------------------------------------------
+    # Language switching view (non-prefixed)
+    # -------------------------------------------------------------------------
+    path('i18n/', include('django.conf.urls.i18n')),
 
     # -------------------------------------------------------------------------
     # Custom Admin Pages (must be BEFORE admin/ catch-all)
@@ -341,9 +481,16 @@ urlpatterns = [
     path('admin/settings/', admin_settings, name='admin-settings'),
     path('admin/reports/', admin_reports, name='admin-reports'),
     path('admin/permission-matrix/', permission_matrix, name='admin-permission-matrix'),
+    path('admin/seo-dashboard/', admin_seo_dashboard, name='admin-seo-dashboard'),
+    path('admin/shield-dashboard/', admin_shield_dashboard, name='admin-shield-dashboard'),
 
     # Admin AJAX upload endpoint for image upload widgets
     path('admin/api/upload/', admin_upload_view, name='admin-upload'),
+
+    # -------------------------------------------------------------------------
+    # Dashboard App (mainboard + API endpoints)
+    # -------------------------------------------------------------------------
+    path('admin/', include(('apps.dashboard.urls', 'dashboard'), namespace='dashboard')),
 
     # -------------------------------------------------------------------------
     # User Impersonation (django-impersonate)
@@ -395,6 +542,15 @@ urlpatterns = [
     # path('api/v1/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # path('api/v1/auth/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 ]
+
+# =============================================================================
+# I18N URL PATTERNS — Language-prefixed website URLs
+# =============================================================================
+# Website marketing pages with language prefix: /tr/, /en/, /ar/, /uk/, /fa/
+urlpatterns += i18n_patterns(
+    path('', include(('apps.website.urls', 'website'), namespace='website')),
+    prefix_default_language=True,
+)
 
 
 # =============================================================================

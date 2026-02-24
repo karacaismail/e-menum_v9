@@ -1,0 +1,82 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Yatırımcı İlişkileri" %} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="hero-gradient hero-gradient-investor pattern-dots">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24 text-center">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-500/10 text-primary-400 text-sm font-semibold mb-6">
+            <i class="ph ph-chart-pie-slice"></i>
+            {% trans "Yatırımcı İlişkileri" %}
+        </span>
+        <h1 class="heading-display text-4xl lg:text-5xl text-white mb-6">
+            {% if page_data %}{{ page_data.title }}{% else %}{% trans "Yatırımcı İlişkileri" %}{% endif %}
+        </h1>
+        {% if page_data and page_data.subtitle %}
+        <p class="text-lg text-gray-300 max-w-2xl mx-auto">{{ page_data.subtitle }}</p>
+        {% endif %}
+    </div>
+</section>
+
+{# Overview #}
+{% if page_data and page_data.overview_content %}
+<section class="py-16 lg:py-24 bg-white dark:bg-gray-950">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="prose prose-lg dark:prose-invert max-w-none">{{ page_data.overview_content|safe }}</div>
+    </div>
+</section>
+{% endif %}
+
+{# Financial Highlights #}
+{% if financials %}
+<section class="py-16 lg:py-20 bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="heading-sans text-2xl text-gray-900 dark:text-white mb-8 text-center">{% trans "Finansal Özet" %}</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {% for fin in financials %}
+            <div class="bg-white dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800 p-5 text-center">
+                <div class="text-xs text-gray-500 mb-1">{{ fin.period }} · {{ fin.metric_name }}</div>
+                <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ fin.metric_value }}</div>
+                {% if fin.change_pct %}
+                <div class="text-sm mt-1 {% if fin.change_pct > 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                    {% if fin.change_pct > 0 %}<i class="ph ph-trend-up"></i>{% else %}<i class="ph ph-trend-down"></i>{% endif %}
+                    {{ fin.change_pct }}%
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# Presentations #}
+{% if presentations %}
+<section class="py-16 lg:py-20 bg-white dark:bg-gray-950">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="heading-sans text-2xl text-gray-900 dark:text-white mb-8">{% trans "Sunumlar" %}</h2>
+        <div class="space-y-3">
+            {% for pres in presentations %}
+            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900 rounded-xl">
+                <div class="flex items-center gap-3">
+                    <i class="ph ph-presentation-chart text-xl text-primary-500"></i>
+                    <div>
+                        <div class="font-semibold text-gray-900 dark:text-white text-sm">{{ pres.title }}</div>
+                        <div class="text-xs text-gray-500">{{ pres.presentation_date|date:"d F Y" }}</div>
+                    </div>
+                </div>
+                {% if pres.file %}
+                <a href="{{ pres.file.url }}" class="text-sm font-semibold text-primary-600 hover:text-primary-700 inline-flex items-center gap-1" download>
+                    <i class="ph ph-download"></i> {% trans "İndir" %}
+                </a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% include "website/partials/_cta_banner.html" %}
+{% endblock %}

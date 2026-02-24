@@ -1,0 +1,28 @@
+{# Command Palette (Cmd+K) Modal #}
+<div id="commandPalette" class="cmd-palette-overlay" style="display:none;">
+    <div class="cmd-palette-backdrop"></div>
+    <div class="cmd-palette-box">
+        <div class="cmd-palette-input-wrap">
+            <i class="ph ph-magnifying-glass cmd-palette-search-icon"></i>
+            <input type="text"
+                   id="cmdPaletteInput"
+                   class="cmd-palette-input"
+                   placeholder="Ara... (organizasyon, kullanıcı, menü)"
+                   autocomplete="off"
+                   spellcheck="false">
+            <kbd class="cmd-palette-kbd">ESC</kbd>
+        </div>
+        <div class="cmd-palette-separator"></div>
+        <div id="cmdPaletteResults" class="cmd-palette-results">
+            <div class="cmd-palette-empty">
+                <i class="ph ph-magnifying-glass"></i>
+                <span>Aramak için en az 2 karakter yazın</span>
+            </div>
+        </div>
+        <div class="cmd-palette-footer">
+            <span><kbd>↑↓</kbd> Gezin</span>
+            <span><kbd>↵</kbd> Aç</span>
+            <span><kbd>ESC</kbd> Kapat</span>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,242 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans 'Shield Dashboard' %} | E-Menum Admin{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs" aria-label="{% trans 'Breadcrumb' %}">
+    <a href="{% url 'admin:index' %}">
+        <i class="ph ph-house"></i>
+        {% trans 'Home' %}
+    </a>
+    <span class="breadcrumb-sep"><i class="ph ph-caret-right"></i></span>
+    <span class="breadcrumb-current">{% trans 'Shield Dashboard' %}</span>
+</nav>
+{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    {# Page Header #}
+    <div class="dashboard-welcome">
+        <div class="welcome-text">
+            <h1><i class="ph ph-shield-warning"></i> {% trans 'Shield Dashboard' %}</h1>
+            <p>{% trans 'Monitor threats, blocked requests, IP reputation, and security rules.' %}</p>
+        </div>
+    </div>
+
+    {# Quick Stats #}
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="ph ph-shield-slash"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-label">{% trans 'Blocked Today' %}</span>
+                <span class="stat-value">{{ blocked_today|default:"0" }}</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="ph ph-calendar"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-label">{% trans 'Blocked (7d)' %}</span>
+                <span class="stat-value">{{ blocked_7d|default:"0" }}</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="ph ph-calendar-blank"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-label">{% trans 'Blocked (30d)' %}</span>
+                <span class="stat-value">{{ blocked_30d|default:"0" }}</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="ph ph-skull"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-label">{% trans 'High Risk IPs' %}</span>
+                <span class="stat-value">{{ high_risk_ips|default:"0" }}</span>
+            </div>
+        </div>
+    </div>
+
+    {# Dashboard Grid #}
+    <div class="dashboard-grid">
+
+        {# ── Top Block Reasons ── #}
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2><i class="ph ph-funnel"></i> {% trans 'Top Block Reasons' %} <span style="font-size:12px;color:#6b7280;font-weight:400;">(30d)</span></h2>
+            </div>
+            <div class="card-body">
+                {% if top_reasons %}
+                <div style="padding:4px 0;">
+                    {% for reason in top_reasons %}
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;{% if not forloop.last %}border-bottom:1px solid rgba(255,255,255,0.04);{% endif %}">
+                        <span style="color:#e2e8f0;font-size:12px;font-weight:500;">
+                            <code style="background:rgba(139,92,246,0.08);color:#a78bfa;padding:2px 6px;border-radius:3px;font-size:10px;">{{ reason.reason }}</code>
+                        </span>
+                        <span style="color:#f59e0b;font-weight:700;font-size:13px;">{{ reason.count }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state" style="padding:24px;">
+                    <i class="ph ph-shield-check" style="font-size:32px;color:#22c55e;opacity:0.5;"></i>
+                    <p style="margin:8px 0 0;color:#6b7280;">{% trans 'No blocks in the last 30 days.' %}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# ── Top Blocked IPs ── #}
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2><i class="ph ph-globe"></i> {% trans 'Top Blocked IPs' %} <span style="font-size:12px;color:#6b7280;font-weight:400;">(7d)</span></h2>
+            </div>
+            <div class="card-body">
+                {% if top_blocked_ips %}
+                <div style="overflow-x:auto;">
+                    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                        <thead>
+                            <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                                <th style="text-align:left;padding:6px 8px;color:#6b7280;font-weight:600;font-size:10px;">{% trans 'IP' %}</th>
+                                <th style="text-align:right;padding:6px 8px;color:#6b7280;font-weight:600;font-size:10px;">{% trans 'Count' %}</th>
+                                <th style="text-align:left;padding:6px 8px;color:#6b7280;font-weight:600;font-size:10px;">{% trans 'Country' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ip_data in top_blocked_ips %}
+                            <tr style="border-bottom:1px solid rgba(255,255,255,0.03);">
+                                <td style="padding:6px 8px;">
+                                    <code style="background:rgba(239,68,68,0.08);color:#fca5a5;padding:1px 6px;border-radius:3px;font-size:11px;">{{ ip_data.ip_address }}</code>
+                                </td>
+                                <td style="text-align:right;padding:6px 8px;color:#f59e0b;font-weight:700;">{{ ip_data.count }}</td>
+                                <td style="padding:6px 8px;color:#94a3b8;font-size:11px;">{{ ip_data.country_code|default:"—" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state" style="padding:24px;">
+                    <i class="ph ph-shield-check" style="font-size:32px;color:#22c55e;opacity:0.5;"></i>
+                    <p style="margin:8px 0 0;color:#6b7280;">{% trans 'No blocked IPs in the last 7 days.' %}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# ── Recent Block Logs ── #}
+        <div class="dashboard-card dashboard-card--wide">
+            <div class="card-header">
+                <h2><i class="ph ph-list-bullets"></i> {% trans 'Recent Block Logs' %}</h2>
+            </div>
+            <div class="card-body">
+                {% if recent_logs %}
+                <div style="overflow-x:auto;">
+                    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                        <thead>
+                            <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                                <th style="text-align:left;padding:6px 8px;color:#6b7280;font-weight:600;font-size:10px;">{% trans 'IP' %}</th>
+                                <th style="text-align:left;padding:6px 8px;color:#6b7280;font-weight:600;font-size:10px;">{% trans 'Path' %}</th>
+                                <th style="text-align:left;padding:6px 8px;color:#6b7280;font-weight:600;font-size:10px;">{% trans 'Reason' %}</th>
+                                <th style="text-align:left;padding:6px 8px;color:#6b7280;font-weight:600;font-size:10px;">{% trans 'Action' %}</th>
+                                <th style="text-align:left;padding:6px 8px;color:#6b7280;font-weight:600;font-size:10px;">{% trans 'Time' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in recent_logs %}
+                            <tr style="border-bottom:1px solid rgba(255,255,255,0.03);">
+                                <td style="padding:6px 8px;">
+                                    <code style="color:#fca5a5;font-size:11px;">{{ log.ip_address }}</code>
+                                </td>
+                                <td style="padding:6px 8px;color:#94a3b8;font-size:11px;">{{ log.path|truncatechars:30 }}</td>
+                                <td style="padding:6px 8px;">
+                                    <code style="background:rgba(139,92,246,0.08);color:#a78bfa;padding:1px 6px;border-radius:3px;font-size:10px;">{{ log.reason }}</code>
+                                </td>
+                                <td style="padding:6px 8px;">
+                                    <span style="padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600;
+                                        {% if log.action_taken == 'blocked' %}background:rgba(239,68,68,0.12);color:#ef4444;
+                                        {% elif log.action_taken == 'throttled' %}background:rgba(245,158,11,0.12);color:#f59e0b;
+                                        {% elif log.action_taken == 'challenged' %}background:rgba(59,130,246,0.12);color:#3b82f6;
+                                        {% else %}background:rgba(107,114,128,0.12);color:#6b7280;{% endif %}">
+                                        {{ log.action_taken }}
+                                    </span>
+                                </td>
+                                <td style="padding:6px 8px;color:#94a3b8;font-size:11px;">{{ log.created_at|date:"M d, H:i" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div style="padding:8px;text-align:right;">
+                    <a href="{% url 'admin:seo_shield_blocklog_changelist' %}" style="color:#3b82f6;font-size:11px;text-decoration:none;">
+                        {% trans 'View all logs' %} <i class="ph ph-arrow-right"></i>
+                    </a>
+                </div>
+                {% else %}
+                <div class="empty-state" style="padding:24px;">
+                    <i class="ph ph-shield-check" style="font-size:32px;color:#22c55e;opacity:0.5;"></i>
+                    <p style="margin:8px 0 0;color:#6b7280;">{% trans 'No recent block logs.' %}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# ── Quick Access ── #}
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2><i class="ph ph-lightning"></i> {% trans 'Quick Access' %}</h2>
+            </div>
+            <div class="card-body">
+                <div class="quick-access-grid">
+                    <a href="{% url 'admin:seo_shield_botwhitelist_changelist' %}" class="quick-access-item">
+                        <div class="qa-icon" style="background:rgba(34,197,94,0.1);color:#4ade80;">
+                            <i class="ph ph-robot"></i>
+                        </div>
+                        <div class="qa-info">
+                            <span class="qa-name">{% trans 'Bot Whitelist' %}</span>
+                            <span class="qa-app">{% trans 'Manage verified bots' %}</span>
+                        </div>
+                    </a>
+                    <a href="{% url 'admin:seo_shield_ipriskscore_changelist' %}" class="quick-access-item">
+                        <div class="qa-icon" style="background:rgba(239,68,68,0.1);color:#f87171;">
+                            <i class="ph ph-globe"></i>
+                        </div>
+                        <div class="qa-info">
+                            <span class="qa-name">{% trans 'IP Risk' %}</span>
+                            <span class="qa-app">{% trans 'IP reputation scores' %}</span>
+                        </div>
+                    </a>
+                    <a href="{% url 'admin:seo_shield_ruleset_changelist' %}" class="quick-access-item">
+                        <div class="qa-icon" style="background:rgba(139,92,246,0.1);color:#a78bfa;">
+                            <i class="ph ph-list-checks"></i>
+                        </div>
+                        <div class="qa-info">
+                            <span class="qa-name">{% trans 'Rule Sets' %}</span>
+                            <span class="qa-app">{% trans 'Security rules' %}</span>
+                        </div>
+                    </a>
+                    <a href="{% url 'admin:seo_shield_blocklog_changelist' %}" class="quick-access-item">
+                        <div class="qa-icon" style="background:rgba(245,158,11,0.1);color:#fbbf24;">
+                            <i class="ph ph-list-bullets"></i>
+                        </div>
+                        <div class="qa-info">
+                            <span class="qa-name">{% trans 'Block Logs' %}</span>
+                            <span class="qa-app">{% trans 'All block events' %}</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

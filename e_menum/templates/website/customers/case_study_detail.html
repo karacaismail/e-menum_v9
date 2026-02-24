@@ -1,0 +1,88 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{{ case_study.title }} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="hero-gradient hero-gradient-customers pattern-dots">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24">
+        <div class="max-w-3xl">
+            {% if case_study.company_logo %}
+            <img src="{{ case_study.company_logo.url }}" alt="{{ case_study.company_name }}" class="h-12 object-contain mb-6" loading="lazy">
+            {% endif %}
+            <h1 class="heading-display text-4xl lg:text-5xl text-white mb-4">{{ case_study.title }}</h1>
+            <p class="text-lg text-gray-300">{{ case_study.company_name }}</p>
+        </div>
+    </div>
+</section>
+
+<section class="py-16 lg:py-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {# Stats row #}
+        {% if case_study.stat_1_value %}
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-12 p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl">
+            <div class="text-center">
+                <div class="text-3xl font-bold text-primary-600">{{ case_study.stat_1_value }}</div>
+                <div class="text-sm text-gray-500 mt-1">{{ case_study.stat_1_label }}</div>
+            </div>
+            {% if case_study.stat_2_value %}
+            <div class="text-center">
+                <div class="text-3xl font-bold text-primary-600">{{ case_study.stat_2_value }}</div>
+                <div class="text-sm text-gray-500 mt-1">{{ case_study.stat_2_label }}</div>
+            </div>
+            {% endif %}
+            {% if case_study.stat_3_value %}
+            <div class="text-center">
+                <div class="text-3xl font-bold text-primary-600">{{ case_study.stat_3_value }}</div>
+                <div class="text-sm text-gray-500 mt-1">{{ case_study.stat_3_label }}</div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {# Challenge #}
+        {% if case_study.challenge %}
+        <div class="mb-10">
+            <h2 class="heading-sans text-xl text-gray-900 dark:text-white mb-4">
+                <i class="ph ph-warning-circle text-amber-500 mr-2"></i>{% trans "Sorun" %}
+            </h2>
+            <div class="prose dark:prose-invert max-w-none">{{ case_study.challenge|safe }}</div>
+        </div>
+        {% endif %}
+
+        {# Solution #}
+        {% if case_study.solution %}
+        <div class="mb-10">
+            <h2 class="heading-sans text-xl text-gray-900 dark:text-white mb-4">
+                <i class="ph ph-lightbulb text-primary-500 mr-2"></i>{% trans "Çözüm" %}
+            </h2>
+            <div class="prose dark:prose-invert max-w-none">{{ case_study.solution|safe }}</div>
+        </div>
+        {% endif %}
+
+        {# Results #}
+        {% if case_study.results %}
+        <div class="mb-10">
+            <h2 class="heading-sans text-xl text-gray-900 dark:text-white mb-4">
+                <i class="ph ph-chart-line-up text-green-500 mr-2"></i>{% trans "Sonuçlar" %}
+            </h2>
+            <div class="prose dark:prose-invert max-w-none">{{ case_study.results|safe }}</div>
+        </div>
+        {% endif %}
+
+        {# Quote #}
+        {% if case_study.quote %}
+        <blockquote class="border-l-4 border-primary-500 pl-6 py-4 my-10 bg-primary-50/50 dark:bg-primary-900/10 rounded-r-xl">
+            <p class="text-lg text-gray-700 dark:text-gray-300 italic">"{{ case_study.quote }}"</p>
+            {% if case_study.quote_author %}
+            <footer class="mt-3 text-sm text-gray-500">
+                — {{ case_study.quote_author }}{% if case_study.quote_role %}, {{ case_study.quote_role }}{% endif %}
+            </footer>
+            {% endif %}
+        </blockquote>
+        {% endif %}
+    </div>
+</section>
+
+{% include "website/partials/_cta_banner.html" %}
+{% endblock %}

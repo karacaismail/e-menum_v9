@@ -1,0 +1,38 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Marka Kaynakları" %} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="hero-gradient hero-gradient-press pattern-dots">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24 text-center">
+        <h1 class="heading-display text-4xl lg:text-5xl text-white mb-6">{% trans "Marka Kaynakları" %}</h1>
+        <p class="text-lg text-gray-300">{% trans "E-Menum logolarını, renk paletini ve marka kılavuzunu indirin." %}</p>
+    </div>
+</section>
+
+<section class="py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for asset in assets %}
+            <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <i class="ph {% if asset.file_type == 'logo' %}ph-image{% elif asset.file_type == 'document' %}ph-file-doc{% else %}ph-file{% endif %} text-2xl text-primary-500"></i>
+                    <h3 class="font-bold text-gray-900 dark:text-white">{{ asset.title }}</h3>
+                </div>
+                {% if asset.description %}<p class="text-sm text-gray-500 mb-4">{{ asset.description }}</p>{% endif %}
+                {% if asset.file %}
+                <a href="{{ asset.file.url }}" class="inline-flex items-center gap-2 text-sm font-semibold text-primary-600 hover:text-primary-700" download>
+                    <i class="ph ph-download"></i> {% trans "İndir" %}
+                </a>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-12 text-gray-500">
+                <p>{% trans "Henüz marka kaynağı eklenmemiş." %}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -38,6 +38,7 @@ from apps.subscriptions.models import (
     PlanFeature,
     Subscription,
 )
+from apps.website.models import PlanDisplayFeature
 from shared.permissions.admin_permission_mixin import EMenumPermissionMixin
 
 
@@ -109,6 +110,21 @@ class PlanFeatureInline(admin.TabularInline):
 
     def get_queryset(self, request):
         return super().get_queryset(request).select_related('feature')
+
+
+class PlanDisplayFeatureInline(admin.TabularInline):
+    """
+    Inline editor for PlanDisplayFeature (marketing bullet points on pricing cards).
+
+    These are the user-facing feature descriptions shown on the pricing page,
+    separate from the technical PlanFeature junction table.
+    """
+    model = PlanDisplayFeature
+    extra = 1
+    fields = ['text', 'is_highlighted', 'sort_order', 'is_active']
+    ordering = ['sort_order']
+    verbose_name = _('Display Feature (Pricing Card)')
+    verbose_name_plural = _('Display Features (Pricing Card)')
 
 
 class SubscriptionInvoiceInline(admin.TabularInline):
@@ -391,7 +407,7 @@ class PlanAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     ordering = ['sort_order', 'price_monthly']
     list_per_page = 20
     list_editable = ['sort_order']
-    inlines = [PlanFeatureInline]
+    inlines = [PlanFeatureInline, PlanDisplayFeatureInline]
 
     fieldsets = (
         (None, {

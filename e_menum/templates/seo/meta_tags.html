@@ -1,0 +1,37 @@
+{% comment %}
+  SEO Meta Tags Template
+  Rendered by the {% seo_meta obj %} inclusion tag.
+
+  Context variables (all optional):
+    meta_title, meta_description, meta_keywords
+    og_title, og_description, og_image, og_type, og_url
+    twitter_card, twitter_title, twitter_description, twitter_image
+    canonical_url, robots
+{% endcomment %}
+
+{# Page title #}
+{% if meta_title %}<title>{{ meta_title }}</title>{% endif %}
+
+{# Standard meta tags #}
+{% if meta_description %}<meta name="description" content="{{ meta_description }}">{% endif %}
+{% if meta_keywords %}<meta name="keywords" content="{{ meta_keywords }}">{% endif %}
+
+{# Open Graph #}
+{% if og_title %}<meta property="og:title" content="{{ og_title }}">{% endif %}
+{% if og_description %}<meta property="og:description" content="{{ og_description }}">{% endif %}
+{% if og_image %}<meta property="og:image" content="{{ og_image }}">{% endif %}
+{% if og_type %}<meta property="og:type" content="{{ og_type }}">{% endif %}
+{% if og_url %}<meta property="og:url" content="{{ og_url }}">{% endif %}
+<meta property="og:site_name" content="{{ site_name|default:'E-Menum' }}">
+
+{# Twitter Card #}
+{% if twitter_card %}<meta name="twitter:card" content="{{ twitter_card }}">{% endif %}
+{% if twitter_title %}<meta name="twitter:title" content="{{ twitter_title }}">{% endif %}
+{% if twitter_description %}<meta name="twitter:description" content="{{ twitter_description }}">{% endif %}
+{% if twitter_image %}<meta name="twitter:image" content="{{ twitter_image }}">{% endif %}
+
+{# Canonical URL #}
+{% if canonical_url %}<link rel="canonical" href="{{ canonical_url }}">{% endif %}
+
+{# Robots directives #}
+{% if robots %}<meta name="robots" content="{{ robots }}">{% endif %}

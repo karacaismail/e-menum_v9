@@ -1,0 +1,46 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Partner Programı" %} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="hero-gradient hero-gradient-partners pattern-dots">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24 text-center">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-500/10 text-primary-400 text-sm font-semibold mb-6">
+            <i class="ph ph-handshake"></i>
+            {% trans "Partner Programı" %}
+        </span>
+        <h1 class="heading-display text-4xl lg:text-5xl text-white mb-6">
+            {% if hero %}{{ hero.title }}{% else %}{% trans "Birlikte Büyüyelim" %}{% endif %}
+        </h1>
+        <p class="text-lg text-gray-300 max-w-2xl mx-auto">
+            {% if hero %}{{ hero.subtitle }}{% else %}{% trans "E-Menum partner programına katılarak gelir elde edin ve müşterilerinize değer katın." %}{% endif %}
+        </p>
+    </div>
+</section>
+
+<section class="py-16 lg:py-24 bg-white dark:bg-gray-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for program in programs %}
+            <a href="{% url 'website:partner_detail' slug=program.slug %}" class="group bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 card-hover elevation-1 text-center">
+                <div class="flex items-center justify-center w-16 h-16 mx-auto mb-5 rounded-2xl bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 group-hover:bg-primary-100 transition-colors">
+                    <i class="ph {{ program.icon|default:'ph-handshake' }} text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-primary-600 transition-colors mb-3">{{ program.title }}</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ program.description|truncatewords:20 }}</p>
+                <span class="inline-flex items-center gap-1 text-sm font-semibold text-primary-600 dark:text-primary-400">
+                    {% trans "Detaylar" %} <i class="ph ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </span>
+            </a>
+            {% empty %}
+            <div class="col-span-full text-center py-12 text-gray-500">
+                <p>{% trans "Partner programları yakında duyurulacak." %}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% include "website/partials/_cta_banner.html" %}
+{% endblock %}

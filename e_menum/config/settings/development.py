@@ -80,13 +80,17 @@ CSRF_COOKIE_SECURE = False
 
 
 # =============================================================================
+# INTERNAL IPS (required for debug context processor → Tailwind CDN in dev)
+# =============================================================================
+
+INTERNAL_IPS = ['127.0.0.1', 'localhost']
+
 # DEBUG TOOLBAR (Optional)
 # =============================================================================
 
 # Uncomment when django-debug-toolbar is installed
 # INSTALLED_APPS += ['debug_toolbar']  # noqa: F405
 # MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')  # noqa: F405
-# INTERNAL_IPS = ['127.0.0.1', 'localhost']
 
 
 # =============================================================================

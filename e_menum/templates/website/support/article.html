@@ -1,0 +1,38 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{{ article.title }} — {% trans "Destek" %} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="flex flex-wrap items-center gap-2 text-sm text-gray-500 mb-4">
+            <a href="{% url 'website:support' %}" class="hover:text-primary-600 transition-colors">{% trans "Destek" %}</a>
+            <i class="ph ph-caret-right text-xs"></i>
+            <a href="{% url 'website:help_category' slug=article.category.slug %}" class="hover:text-primary-600 transition-colors">{{ article.category.name }}</a>
+            <i class="ph ph-caret-right text-xs"></i>
+            <span class="text-gray-900 dark:text-white font-medium">{{ article.title }}</span>
+        </div>
+        <h1 class="heading-sans text-3xl text-gray-900 dark:text-white">{{ article.title }}</h1>
+    </div>
+</section>
+
+<section class="py-12 lg:py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="prose prose-lg dark:prose-invert max-w-none">{{ article.content|safe }}</div>
+
+        {# Helpful? #}
+        <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 text-center">
+            <p class="text-sm text-gray-500 mb-3">{% trans "Bu makale yardımcı oldu mu?" %}</p>
+            <div class="flex items-center justify-center gap-3">
+                <button class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-green-50 hover:text-green-600 hover:border-green-300 dark:hover:bg-green-900/10 dark:hover:text-green-400 transition-colors">
+                    <i class="ph ph-thumbs-up"></i> {% trans "Evet" %}
+                </button>
+                <button class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-300 dark:hover:bg-red-900/10 dark:hover:text-red-400 transition-colors">
+                    <i class="ph ph-thumbs-down"></i> {% trans "Hayır" %}
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% load i18n %}
+{% comment %}============================================================================
+   TRUST BAR — Location-based social proof + trust badges
+
+   Context:
+   - trust_locations (queryset from view)
+   - trust_badges (queryset from view)
+
+   Usage:
+   {% include "website/partials/_trust_bar.html" %}
+   ============================================================================{% endcomment %}
+
+<section class="py-12 bg-gray-50 dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {# Location-based trust signals #}
+        {% if trust_locations %}
+        <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mb-8">
+            {% for loc in trust_locations %}
+            <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                <i class="ph ph-map-pin text-primary-500"></i>
+                {{ loc.text }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {# Trust badges #}
+        {% if trust_badges %}
+        <div class="flex flex-wrap items-center justify-center gap-6 mb-8">
+            {% for badge in trust_badges %}
+            <div class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <i class="ph {{ badge.icon }} text-lg text-green-500"></i>
+                <span class="text-xs font-medium text-gray-700 dark:text-gray-300">{{ badge.label }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {# Marquee logos #}
+        <div class="logo-marquee overflow-hidden">
+            <div class="flex items-center space-x-16 animate-marquee">
+                {% for i in "123456789012" %}
+                <div class="flex-shrink-0 h-8 w-28 bg-gray-300/50 dark:bg-gray-700/50 rounded-lg flex items-center justify-center">
+                    <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">{% trans "Isletme" %} {{ forloop.counter }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>

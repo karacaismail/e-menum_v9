@@ -88,6 +88,24 @@ app.conf.beat_schedule = {
     },
 
     # =========================================================================
+    # Dashboard Tasks
+    # =========================================================================
+
+    # Generate dashboard insights - runs daily at 06:00 UTC
+    'generate-dashboard-insights': {
+        'task': 'apps.dashboard.tasks.generate_dashboard_insights',
+        'schedule': crontab(hour=6, minute=0),
+        'options': {'queue': 'analytics'},
+    },
+
+    # Warm dashboard KPI cache - runs every 5 minutes
+    'warm-kpi-cache': {
+        'task': 'apps.dashboard.tasks.warm_kpi_cache',
+        'schedule': crontab(minute='*/5'),
+        'options': {'queue': 'analytics'},
+    },
+
+    # =========================================================================
     # Reporting Tasks
     # =========================================================================
 

@@ -1,0 +1,62 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "ROI Hesaplayıcı" %} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="hero-gradient hero-gradient-customers pattern-dots">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24 text-center">
+        <h1 class="heading-display text-4xl lg:text-5xl text-white mb-6">{% trans "ROI Hesaplayıcı" %}</h1>
+        <p class="text-lg text-gray-300 max-w-2xl mx-auto">{% trans "E-Menum'un işletmenize sağlayacağı yatırım getirisini hesaplayın." %}</p>
+    </div>
+</section>
+
+<section class="py-16 lg:py-24">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8 elevation-2"
+             x-data="{
+                 tables: 20,
+                 avgOrder: 150,
+                 ordersPerDay: 80,
+                 get monthlySaving() {
+                     return Math.round(this.tables * this.ordersPerDay * 0.15 * 30);
+                 },
+                 get yearlyROI() {
+                     return Math.round(this.monthlySaving * 12);
+                 }
+             }"
+        >
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-900 dark:text-white mb-2">{% trans "Masa Sayısı" %}</label>
+                    <input type="range" x-model="tables" min="1" max="200" class="w-full accent-primary-600">
+                    <div class="text-right text-sm text-gray-500 mt-1"><span x-text="tables"></span> {% trans "masa" %}</div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-900 dark:text-white mb-2">{% trans "Ortalama Sipariş Tutarı (₺)" %}</label>
+                    <input type="range" x-model="avgOrder" min="50" max="1000" step="10" class="w-full accent-primary-600">
+                    <div class="text-right text-sm text-gray-500 mt-1">₺<span x-text="avgOrder"></span></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-900 dark:text-white mb-2">{% trans "Günlük Sipariş" %}</label>
+                    <input type="range" x-model="ordersPerDay" min="10" max="500" class="w-full accent-primary-600">
+                    <div class="text-right text-sm text-gray-500 mt-1"><span x-text="ordersPerDay"></span> {% trans "sipariş/gün" %}</div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800 grid grid-cols-2 gap-6">
+                <div class="text-center p-4 bg-primary-50 dark:bg-primary-900/10 rounded-xl">
+                    <div class="text-3xl font-bold text-primary-600" x-text="'₺' + monthlySaving.toLocaleString('tr-TR')"></div>
+                    <div class="text-sm text-gray-500 mt-1">{% trans "Aylık Tasarruf" %}</div>
+                </div>
+                <div class="text-center p-4 bg-amber-50 dark:bg-amber-900/10 rounded-xl">
+                    <div class="text-3xl font-bold text-amber-600" x-text="'₺' + yearlyROI.toLocaleString('tr-TR')"></div>
+                    <div class="text-sm text-gray-500 mt-1">{% trans "Yıllık ROI" %}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% include "website/partials/_cta_banner.html" %}
+{% endblock %}

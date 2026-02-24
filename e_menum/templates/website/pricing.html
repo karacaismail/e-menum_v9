@@ -1,0 +1,67 @@
+{% extends "layouts/marketing.html" %}
+{% load static i18n %}
+
+{% block page_title %}{% if hero %}{{ hero.title }}{% else %}{% trans "Fiyatlandirma" %}{% endif %}{% endblock %}
+{% block meta_description %}{% trans "E-Menum fiyatlandirma planlari. Ucretsiz baslatin, isletmeniz buyudukce yükseltin. 14 gun ucretsiz deneme." %}{% endblock %}
+
+{% block content %}
+
+{# Hero #}
+{% include "website/partials/_hero.html" %}
+
+{# Pricing Cards #}
+{% include "website/partials/_pricing_cards.html" %}
+
+{# Feature Comparison Matrix #}
+{% if comparison_matrix and plans %}
+<section class="py-16 lg:py-24 bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="heading-sans text-3xl text-gray-900 dark:text-white mb-4">
+                {% trans "Detayli Karsilastirma" %}
+            </h2>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b border-gray-200 dark:border-gray-800">
+                        <th class="text-left py-4 px-4 font-semibold text-gray-900 dark:text-white">{% trans "Ozellik" %}</th>
+                        {% for plan in plans %}
+                        <th class="text-center py-4 px-3 font-semibold {% if plan.highlight_text %}text-primary-600 dark:text-primary-400{% else %}text-gray-900 dark:text-white{% endif %}">
+                            {{ plan.name }}
+                        </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                    {% for row in comparison_matrix %}
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                        <td class="py-3 px-4 text-gray-700 dark:text-gray-300">{{ row.feature.name }}</td>
+                        {% for val in row.values %}
+                        <td class="py-3 px-3 text-center">
+                            {% if val.value %}
+                                <span class="text-gray-600 dark:text-gray-300">{{ val.value }}</span>
+                            {% elif val.is_enabled %}
+                                <i class="ph ph-check text-green-500"></i>
+                            {% else %}
+                                <i class="ph ph-x text-gray-400"></i>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# FAQ #}
+{% include "website/partials/_faq_accordion.html" %}
+
+{# CTA #}
+{% include "website/partials/_cta_banner.html" with title="14 Gun Ucretsiz Deneyin" subtitle="Kredi karti gerekmez. Istediginiz zaman iptal edin. 2 dakikada kurulum." button_text="14 Gun Ucretsiz Basla" button_url="website:demo" secondary_text="Canli Demo Izle" secondary_url="website:demo" %}
+
+{% endblock %}

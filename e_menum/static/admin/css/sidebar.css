@@ -32,7 +32,7 @@
     --info: #3b82f6;
 
     /* Sizes */
-    --rail-width: 64px;
+    --rail-width: 72px;
     --sidebar-width: 248px;
     --total-sidebar: calc(var(--rail-width) + var(--sidebar-width));
 
@@ -119,22 +119,25 @@
     flex-direction: column;
     align-items: center;
     gap: 2px;
-    padding: 12px 0;
+    padding: 8px 0;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .rail-item {
-    width: 42px;
-    height: 42px;
+    width: 60px;
+    min-height: 56px;
     border-radius: 10px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 3px;
+    padding: 8px 4px 6px;
     color: var(--text-muted);
     background: transparent;
     border: none;
     cursor: pointer;
-    font-size: 20px;
     transition: all var(--transition-fast);
     position: relative;
     text-decoration: none;
@@ -153,11 +156,45 @@
 .rail-item.active::before {
     content: '';
     position: absolute;
-    left: -11px;
+    left: -6px;
+    top: 50%;
+    transform: translateY(-50%);
     width: 3px;
-    height: 18px;
+    height: 24px;
     background: var(--accent);
-    border-radius: 0 2px 2px 0;
+    border-radius: 0 3px 3px 0;
+}
+
+/* Rail Item Icon */
+.rail-item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.rail-item-icon i {
+    font-size: 22px;
+    line-height: 1;
+}
+
+/* Rail Item Label */
+.rail-item-label {
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60px;
+    letter-spacing: 0.01em;
+}
+
+.rail-item.active .rail-item-label {
+    font-weight: 600;
 }
 
 .rail-item--danger {
@@ -168,7 +205,20 @@
     background: rgba(239, 68, 68, 0.1);
 }
 
-/* Rail Tooltips */
+/* Rail footer items (settings, logout) — keep icon-only style */
+.rail-footer .rail-item {
+    width: 42px;
+    min-height: 42px;
+    flex-direction: row;
+    gap: 0;
+    padding: 0;
+}
+
+.rail-footer .rail-item-label {
+    display: none;
+}
+
+/* Rail Tooltips — hidden when label is visible, shown in collapse mode */
 .rail-tooltip {
     display: none;
     position: absolute;
@@ -188,8 +238,23 @@
     border: 1px solid var(--border);
 }
 
-.rail-item:hover .rail-tooltip {
+/* Show tooltips only in collapsed mode when labels are hidden */
+.collapsed .rail-item:hover .rail-tooltip {
     display: block;
+}
+
+/* Responsive: collapse rail at < 1024px */
+@media (max-width: 1024px) {
+    :root {
+        --rail-width: 60px;
+    }
+    .rail-item {
+        width: 48px;
+        min-height: 48px;
+    }
+    .rail-item-label {
+        font-size: 9px;
+    }
 }
 
 /* Rail Footer */

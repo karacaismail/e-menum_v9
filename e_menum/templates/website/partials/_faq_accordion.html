@@ -1,0 +1,43 @@
+{% load i18n %}
+{% comment %}============================================================================
+   FAQ ACCORDION — Question/Answer list from database
+
+   Context:
+   - faqs (queryset from view)
+
+   Usage:
+   {% include "website/partials/_faq_accordion.html" %}
+   ============================================================================{% endcomment %}
+
+{% if faqs %}
+<section class="py-16 lg:py-24 bg-white dark:bg-gray-950">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="heading-sans text-3xl sm:text-4xl text-gray-900 dark:text-white mb-4">
+                {% trans "Sikca Sorulan Sorular" %}
+            </h2>
+            <p class="text-lg text-gray-600 dark:text-gray-300">
+                {% trans "Merak ettiginiz sorularin cevaplari burada." %}
+            </p>
+        </div>
+
+        <div class="space-y-4" x-data="{ openItem: null }">
+            {% for faq in faqs %}
+            <div class="border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden">
+                <button
+                    @click="openItem = openItem === {{ forloop.counter }} ? null : {{ forloop.counter }}"
+                    class="w-full flex items-center justify-between px-6 py-4 text-left bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-950"
+                    :aria-expanded="openItem === {{ forloop.counter }}"
+                >
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ faq.question }}</span>
+                    <i class="ph ph-caret-down text-gray-400 transition-transform" :class="openItem === {{ forloop.counter }} && 'rotate-180'"></i>
+                </button>
+                <div x-show="openItem === {{ forloop.counter }}" x-collapse x-cloak class="px-6 pb-4 text-gray-600 dark:text-gray-300 leading-relaxed">
+                    {{ faq.answer }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}

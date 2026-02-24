@@ -1,0 +1,28 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{{ release.title }} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="hero-gradient hero-gradient-press pattern-dots">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24">
+        <div class="max-w-3xl">
+            <div class="text-sm text-gray-400 mb-4">{{ release.published_at|date:"d F Y" }}</div>
+            <h1 class="heading-display text-4xl lg:text-5xl text-white">{{ release.title }}</h1>
+        </div>
+    </div>
+</section>
+
+<section class="py-16 lg:py-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="prose prose-lg dark:prose-invert max-w-none">{{ release.content|safe }}</div>
+        {% if release.source_url %}
+        <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800">
+            <a href="{{ release.source_url }}" target="_blank" rel="noopener" class="text-sm text-primary-600 hover:underline inline-flex items-center gap-1">
+                <i class="ph ph-arrow-square-out"></i> {% trans "Orijinal kaynak" %}
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

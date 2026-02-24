@@ -1,0 +1,100 @@
+{% load i18n static %}
+{% comment %}============================================================================
+   HERO SECTION — Reusable hero banner
+
+   Usage (with hero object from DB — preferred):
+   {% include "website/partials/_hero.html" %}
+
+   Or with explicit parameters (backward compat):
+   {% include "website/partials/_hero.html" with title="Ana Baslik" gradient_class="hero-gradient-pricing" %}
+   ============================================================================{% endcomment %}
+
+{% firstof hero.gradient_class gradient_class "hero-gradient" as hero_gradient %}
+<section class="{{ hero_gradient }} pattern-dots relative overflow-hidden -mt-16 lg:-mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 lg:pt-40 pb-20 lg:pb-32 relative z-10">
+        {% firstof hero.show_hero_image show_hero_image "" as show_image %}
+        <div class="{% if show_image %}grid lg:grid-cols-2 gap-12 items-center{% else %}text-center max-w-4xl mx-auto{% endif %}">
+
+            {# Text Content #}
+            <div class="{% if not show_image %}text-center{% endif %}">
+                {% firstof hero.badge_text badge_text "" as hero_badge %}
+                {% if hero_badge %}
+                <div class="inline-flex items-center px-4 py-1.5 mb-6 text-xs font-bold text-emerald-300 bg-emerald-500/10 border border-emerald-500/25 rounded-full tracking-wide uppercase">
+                    <i class="ph ph-star-four mr-1.5"></i>
+                    {{ hero_badge }}
+                </div>
+                {% endif %}
+
+                {% firstof hero.title title "" as hero_title %}
+                <h1 class="heading-display text-4xl sm:text-5xl lg:text-6xl text-white mb-6 text-balance">
+                    {{ hero_title }}
+                </h1>
+
+                {% firstof hero.subtitle subtitle "" as hero_subtitle %}
+                {% if hero_subtitle %}
+                <p class="text-lg sm:text-xl text-gray-300 mb-8 leading-relaxed {% if not show_image %}max-w-2xl mx-auto{% else %}max-w-lg{% endif %}">
+                    {{ hero_subtitle }}
+                </p>
+                {% endif %}
+
+                {% firstof hero.cta_primary_text cta_primary_text marketing.cta_primary_text "" as cta1 %}
+                {% firstof hero.cta_primary_url cta_primary_url marketing.cta_primary_url "website:demo" as cta1_url %}
+                {% firstof hero.cta_secondary_text cta_secondary_text marketing.cta_secondary_text "" as cta2 %}
+                {% firstof hero.cta_secondary_url cta_secondary_url marketing.cta_secondary_url "website:features" as cta2_url %}
+                {% if cta1 or cta2 %}
+                <div class="flex flex-col sm:flex-row gap-4 {% if not show_image %}justify-center{% endif %}">
+                    {% if cta1 %}
+                    <a href="{% url cta1_url %}"
+                       class="btn btn-primary btn-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                    >
+                        {{ cta1 }}
+                        <i class="ph ph-arrow-right ml-2"></i>
+                    </a>
+                    {% endif %}
+                    {% if cta2 %}
+                    <a href="{% url cta2_url %}"
+                       class="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white border-2 border-white/40 hover:border-white/80 rounded-xl transition-all hover:bg-white/10 bg-white/[0.06]"
+                    >
+                        {{ cta2 }}
+                    </a>
+                    {% endif %}
+                </div>
+                {% firstof hero.trust_text trust_text marketing.cta_trust_text "" as hero_trust %}
+                {% if hero_trust %}
+                <p class="mt-4 text-sm text-gray-400 {% if not show_image %}text-center{% endif %}">
+                    <i class="ph ph-shield-check mr-1 text-emerald-400"></i>{{ hero_trust }}
+                </p>
+                {% endif %}
+                {% endif %}
+            </div>
+
+            {# Hero Image (optional) #}
+            {% if show_image %}
+            <div class="hidden lg:block relative" data-reveal>
+                <div class="relative animate-float">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 shadow-2xl border border-white/10">
+                        <div class="bg-gray-900 rounded-xl overflow-hidden aspect-[4/3]">
+                            <div class="w-full h-full flex items-center justify-center text-gray-600">
+                                <div class="text-center">
+                                    <i class="ph ph-device-tablet text-6xl mb-2 text-primary-400"></i>
+                                    <p class="text-sm text-gray-400">{% trans "Platform Onizleme" %}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {# Decorative Elements #}
+                    <div class="absolute -top-4 -right-4 w-20 h-20 bg-primary-500/20 rounded-full blur-2xl"></div>
+                    <div class="absolute -bottom-6 -left-6 w-28 h-28 bg-secondary-500/20 rounded-full blur-2xl"></div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Bottom Wave #}
+    <div class="absolute bottom-0 left-0 right-0">
+        <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+            <path d="M0 80V40C240 0 480 0 720 40C960 80 1200 80 1440 40V80H0Z" fill="currentColor" class="text-white dark:text-gray-950"/>
+        </svg>
+    </div>
+</section>

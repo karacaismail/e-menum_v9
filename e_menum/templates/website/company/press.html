@@ -1,0 +1,70 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Basın" %} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="hero-gradient hero-gradient-press pattern-dots">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24 text-center">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-500/10 text-primary-400 text-sm font-semibold mb-6">
+            <i class="ph ph-newspaper"></i>
+            {% trans "Basın Odası" %}
+        </span>
+        <h1 class="heading-display text-4xl lg:text-5xl text-white mb-6">
+            {% if hero %}{{ hero.title }}{% else %}{% trans "Basın ve Medya" %}{% endif %}
+        </h1>
+    </div>
+</section>
+
+{# Press Releases #}
+<section class="py-16 lg:py-24 bg-white dark:bg-gray-950">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="heading-sans text-2xl text-gray-900 dark:text-white mb-8">{% trans "Basın Bültenleri" %}</h2>
+        <div class="space-y-4">
+            {% for release in releases %}
+            <a href="{% url 'website:press_detail' slug=release.slug %}" class="group flex items-start gap-4 p-5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl card-hover">
+                <div class="shrink-0 w-16 text-center">
+                    <div class="text-2xl font-bold text-primary-600">{{ release.published_at|date:"d" }}</div>
+                    <div class="text-xs text-gray-500 uppercase">{{ release.published_at|date:"M Y" }}</div>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="text-base font-bold text-gray-900 dark:text-white group-hover:text-primary-600 transition-colors">{{ release.title }}</h3>
+                    <p class="text-sm text-gray-500 mt-1 line-clamp-2">{{ release.excerpt }}</p>
+                </div>
+            </a>
+            {% empty %}
+            <p class="text-center text-gray-500 py-8">{% trans "Henüz basın bülteni yayınlanmamış." %}</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# Milestones Timeline #}
+{% if milestones %}
+<section class="py-16 lg:py-24 bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="heading-sans text-2xl text-gray-900 dark:text-white mb-8 text-center">{% trans "Kilometre Taşları" %}</h2>
+        <div class="space-y-6">
+            {% for ms in milestones %}
+            <div class="flex gap-4">
+                <div class="shrink-0 w-20 text-right">
+                    <span class="text-sm font-bold text-primary-600">{{ ms.year }}{% if ms.quarter %} Q{{ ms.quarter }}{% endif %}</span>
+                </div>
+                <div class="relative pb-6 border-l-2 border-primary-200 dark:border-primary-800 pl-6">
+                    <div class="absolute -left-2 top-1 w-4 h-4 rounded-full bg-primary-500 border-2 border-white dark:border-gray-900"></div>
+                    <h3 class="text-base font-bold text-gray-900 dark:text-white">{{ ms.title }}</h3>
+                    {% if ms.description %}<p class="text-sm text-gray-500 mt-1">{{ ms.description }}</p>{% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<div class="text-center py-8">
+    <a href="{% url 'website:brand_assets' %}" class="btn btn-outline">
+        <i class="ph ph-palette mr-2"></i>{% trans "Marka Kaynakları" %}
+    </a>
+</div>
+{% endblock %}

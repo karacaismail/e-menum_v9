@@ -1,0 +1,51 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Kariyer" %} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="hero-gradient hero-gradient-careers pattern-dots">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24 text-center">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-500/10 text-primary-400 text-sm font-semibold mb-6">
+            <i class="ph ph-briefcase"></i>
+            {% trans "Kariyer" %}
+        </span>
+        <h1 class="heading-display text-4xl lg:text-5xl text-white mb-6">
+            {% if hero %}{{ hero.title }}{% else %}{% trans "Geleceği Birlikte İnşa Edelim" %}{% endif %}
+        </h1>
+        <p class="text-lg text-gray-300 max-w-2xl mx-auto">
+            {% if hero %}{{ hero.subtitle }}{% else %}{% trans "E-Menum ekibine katılın ve F&B sektörünün dijital dönüşümüne öncülük edin." %}{% endif %}
+        </p>
+    </div>
+</section>
+
+<section class="py-16 lg:py-24 bg-white dark:bg-gray-950">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="space-y-4">
+            {% for pos in positions %}
+            <a href="{% url 'website:career_detail' slug=pos.slug %}" class="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl card-hover">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                        {{ pos.title }}
+                    </h3>
+                    <div class="flex flex-wrap items-center gap-3 mt-2 text-sm text-gray-500 dark:text-gray-400">
+                        <span class="inline-flex items-center gap-1"><i class="ph ph-buildings"></i> {{ pos.department }}</span>
+                        <span class="inline-flex items-center gap-1"><i class="ph ph-map-pin"></i> {{ pos.location }}</span>
+                        <span class="inline-flex items-center gap-1"><i class="ph ph-clock"></i> {{ pos.get_employment_type_display }}</span>
+                    </div>
+                </div>
+                <i class="ph ph-arrow-right text-xl text-gray-400 group-hover:text-primary-500 group-hover:translate-x-1 transition-all shrink-0"></i>
+            </a>
+            {% empty %}
+            <div class="text-center py-16 text-gray-500 dark:text-gray-400">
+                <i class="ph ph-briefcase text-4xl mb-4"></i>
+                <h3 class="text-lg font-semibold mb-2">{% trans "Şu an açık pozisyon yok" %}</h3>
+                <p class="text-sm">{% trans "Yeni fırsatlardan haberdar olmak için bültenimize abone olun." %}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% include "website/partials/_cta_banner.html" %}
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{{ webinar.title }} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="hero-gradient hero-gradient-resources pattern-dots">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24">
+        <div class="max-w-3xl">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 text-purple-400 text-sm font-semibold mb-6">
+                <i class="ph ph-video-camera"></i>
+                {% trans "Webinar" %}
+            </span>
+            <h1 class="heading-display text-4xl lg:text-5xl text-white mb-6">{{ webinar.title }}</h1>
+            <div class="flex items-center gap-4 text-gray-300">
+                {% if webinar.speaker %}<span><i class="ph ph-user mr-1"></i>{{ webinar.speaker }}</span>{% endif %}
+                <span><i class="ph ph-calendar mr-1"></i>{{ webinar.event_date|date:"d F Y" }}</span>
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold {% if webinar.status == 'upcoming' %}bg-green-500/20 text-green-400{% elif webinar.status == 'live' %}bg-red-500/20 text-red-400{% else %}bg-gray-500/20 text-gray-400{% endif %}">
+                    {{ webinar.get_status_display }}
+                </span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-16 lg:py-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% if webinar.video_url %}
+        <div class="aspect-video rounded-2xl overflow-hidden mb-10 bg-gray-900">
+            <iframe src="{{ webinar.video_url }}" class="w-full h-full" allowfullscreen loading="lazy"></iframe>
+        </div>
+        {% endif %}
+        <div class="prose prose-lg dark:prose-invert max-w-none">
+            {{ webinar.description|safe }}
+        </div>
+    </div>
+</section>
+
+{% include "website/partials/_cta_banner.html" %}
+{% endblock %}

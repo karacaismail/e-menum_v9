@@ -1,0 +1,36 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{{ report.title }} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="hero-gradient hero-gradient-resources pattern-dots">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24">
+        <div class="max-w-3xl">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/10 text-red-400 text-sm font-semibold mb-6">
+                <i class="ph ph-file-pdf"></i>
+                {% trans "Sektör Raporu" %}
+            </span>
+            <h1 class="heading-display text-4xl lg:text-5xl text-white mb-6">{{ report.title }}</h1>
+            <p class="text-lg text-gray-300">{{ report.excerpt }}</p>
+        </div>
+    </div>
+</section>
+
+<section class="py-16 lg:py-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="prose prose-lg dark:prose-invert max-w-none">
+            {{ report.content|safe }}
+        </div>
+        {% if report.file %}
+        <div class="mt-12 p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl text-center">
+            <i class="ph ph-file-pdf text-4xl text-red-500 mb-3"></i>
+            <p class="text-sm text-gray-500 mb-4">{% trans "Raporu indirmek için aşağıdaki butona tıklayın." %}</p>
+            <a href="{{ report.file.url }}" class="btn btn-primary" download>
+                <i class="ph ph-download mr-2"></i>{% trans "Raporu İndir" %}
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

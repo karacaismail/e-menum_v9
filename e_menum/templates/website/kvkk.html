@@ -1,0 +1,58 @@
+{% extends "layouts/marketing.html" %}
+{% load static i18n %}
+
+{% block page_title %}{% trans "KVKK Aydinlatma Metni" %}{% endblock %}
+{% block meta_description %}{% trans "E-Menum KVKK aydinlatma metni. 6698 sayili Kisisel Verilerin Korunmasi Kanunu kapsaminda aydinlatma yükumlulugumuzu yerine getiriyoruz." %}{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
+
+{% block content %}
+
+<section class="py-24 lg:py-32 bg-white dark:bg-gray-950">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="heading-sans text-3xl sm:text-4xl text-gray-900 dark:text-white mb-8">
+            {% trans "KVKK Aydinlatma Metni" %}
+        </h1>
+        <p class="text-sm text-gray-500 dark:text-gray-300 mb-8">{% trans "Son guncelleme: 22 Subat 2026" %}</p>
+
+        <div class="prose prose-lg dark:prose-invert max-w-none space-y-8 text-gray-700 dark:text-gray-300">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "1. Veri Sorumlusu" %}</h2>
+            <p>{% trans "6698 sayili Kisisel Verilerin Korunmasi Kanunu (KVKK) uyarinca, kisisel verileriniz veri sorumlusu sifatiyla E-Menum tarafindan asagida aciklanan amaclar kapsaminda islenebilecektir." %}</p>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "2. Islenen Kisisel Veriler" %}</h2>
+            <p>{% trans "Kimlik bilgileri (ad, soyad), iletisim bilgileri (e-posta, telefon), isletme bilgileri, kullanim verileri ve cihaz bilgileri islenebilir." %}</p>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "3. Veri Isleme Amaclar" %}</h2>
+            <ul>
+                <li>{% trans "Hizmetlerimizin sunulmasi ve iyilestirilmesi" %}</li>
+                <li>{% trans "Kullanici hesaplarinin yonetimi" %}</li>
+                <li>{% trans "Faturalandirma ve odeme islemleri" %}</li>
+                <li>{% trans "Teknik destek ve musteri hizmetleri" %}</li>
+                <li>{% trans "Yasal yukumluluklerin yerine getirilmesi" %}</li>
+                <li>{% trans "Istatistiksel analiz ve raporlama" %}</li>
+            </ul>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "4. Veri Aktarimi" %}</h2>
+            <p>{% trans "Kisisel verileriniz, yasal zorunluluklar disinda ucuncu taraflara aktarilmaz. Hizmet saglanmasi icin gerekli oldugu durumlarda, yurt ici ve yurt disindaki is ortaklarina ve hizmet saglayicilarina aktarilabilir." %}</p>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "5. Veri Saklama Suresi" %}</h2>
+            <p>{% trans "Kisisel verileriniz, isleme amacinin gerektirdigi sure boyunca ve yasal muhafaza surelerince saklanir. Sure bitiminde veriler silinir, yok edilir veya anonim hale getirilir." %}</p>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "6. KVKK Kapsamindaki Haklariniz" %}</h2>
+            <p>{% trans "KVKK'nin 11. maddesi kapsaminda asagidaki haklara sahipsiniz:" %}</p>
+            <ul>
+                <li>{% trans "Kisisel verilerinizin islenip islenmedigini ogrenme" %}</li>
+                <li>{% trans "Islenmisse buna iliskin bilgi talep etme" %}</li>
+                <li>{% trans "Isleme amacini ve amacina uygun kullanilip kullanilmadigini ogrenme" %}</li>
+                <li>{% trans "Yurt icinde veya yurt disinda aktarildigi ucuncu kisileri bilme" %}</li>
+                <li>{% trans "Eksik veya yanlis islenmisse duzeltilmesini isteme" %}</li>
+                <li>{% trans "KVKK'nin 7. maddesindeki sartlar cercevesinde silinmesini veya yok edilmesini isteme" %}</li>
+                <li>{% trans "Islenme amacini asan veya kanuna aykiri islenmesi sebebiyle zarara ugramaniz halinde zararin giderilmesini talep etme" %}</li>
+            </ul>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "7. Basvuru" %}</h2>
+            <p>{% trans "KVKK kapsamindaki taleplerinizi info@e-menum.com adresine yazili olarak iletebilirsiniz. Basvurunuz en gec 30 gun icinde degerlendirilecektir." %}</p>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

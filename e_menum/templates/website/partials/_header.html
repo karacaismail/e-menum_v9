@@ -1,0 +1,208 @@
+{% load i18n %}
+
+<header
+    class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+    x-data="{ scrolled: false, mobileOpen: false, openDropdown: null }"
+    x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 20 })"
+    :class="scrolled ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-md shadow-lg' : 'bg-gray-950/80 backdrop-blur-sm'"
+    role="banner"
+    @mouseleave="openDropdown = null"
+>
+    {# Topbar #}
+    {% include "website/partials/_topbar.html" %}
+
+    {# Main header bar #}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16 lg:h-20">
+
+            {# Logo #}
+            <a href="{% url 'website:home' %}" class="flex items-center gap-2 group" aria-label="E-Menum Ana Sayfa">
+                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-primary-600 text-white">
+                    <i class="ph ph-fork-knife text-xl"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight font-heading"
+                      :class="scrolled ? 'text-gray-900 dark:text-white' : 'text-white'"
+                >
+                    E-Menum
+                </span>
+            </a>
+
+            {# Desktop Navigation — Mega Menu #}
+            <nav class="hidden lg:flex items-center gap-1" aria-label="{% trans 'Ana navigasyon' %}">
+                {% include "website/partials/_mega_menu.html" %}
+            </nav>
+
+            {# Desktop CTA + Utilities #}
+            <div class="hidden lg:flex items-center gap-3">
+                {# Language Switcher Dropdown #}
+                <div class="relative" x-data="{ langOpen: false }" @click.away="langOpen = false">
+                    <button
+                        @click="langOpen = !langOpen"
+                        class="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-lg transition-colors"
+                        :class="scrolled
+                            ? 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+                            : 'text-white hover:bg-white/10'"
+                    >
+                        <i class="ph ph-globe text-base"></i>
+                        {{ LANGUAGE_CODE|upper }}
+                        <i class="ph ph-caret-down text-xs transition-transform" :class="langOpen ? 'rotate-180' : ''"></i>
+                    </button>
+                    <div
+                        x-show="langOpen"
+                        x-transition
+                        x-cloak
+                        class="absolute top-full right-0 mt-1 w-48 bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden z-50"
+                    >
+                        <div class="p-1.5">
+                            {% get_available_languages as available_languages %}
+                            {% for lang_code, lang_name in available_languages %}
+                            <form method="post" action="{% url 'set_language' %}" class="block">
+                                {% csrf_token %}
+                                <input type="hidden" name="language" value="{{ lang_code }}">
+                                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                <button type="submit"
+                                    class="flex items-center gap-2.5 w-full px-3 py-2 text-sm rounded-lg transition-colors {% if lang_code == LANGUAGE_CODE %}bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 font-semibold{% else %}text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800{% endif %}"
+                                >
+                                    <span class="w-6 text-center font-mono text-xs uppercase">{{ lang_code }}</span>
+                                    <span>{{ lang_name }}</span>
+                                    {% if lang_code == LANGUAGE_CODE %}<i class="ph ph-check ml-auto text-primary-500"></i>{% endif %}
+                                </button>
+                            </form>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                {# Dark/Light mode toggle #}
+                <button
+                    @click="darkMode = !darkMode"
+                    class="p-2 rounded-lg transition-colors"
+                    :class="scrolled ? 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800' : 'text-white hover:bg-white/10'"
+                    :aria-label="darkMode ? '{% trans 'Açık temaya geç' %}' : '{% trans 'Koyu temaya geç' %}'"
+                >
+                    <i class="ph ph-sun text-lg" x-show="darkMode" x-cloak></i>
+                    <i class="ph ph-moon text-lg" x-show="!darkMode"></i>
+                </button>
+
+                {# Login #}
+                <a href="{{ marketing.login_url }}"
+                   class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
+                   :class="scrolled
+                       ? 'text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400'
+                       : 'text-white hover:text-white/80'"
+                >
+                    {% trans "Giriş Yap" %}
+                </a>
+
+                {# Primary CTA #}
+                <a href="{% url 'website:demo' %}"
+                   class="btn btn-primary btn-sm shadow-md hover:shadow-lg"
+                >
+                    {{ marketing.cta_primary_text }}
+                </a>
+            </div>
+
+            {# Mobile Hamburger #}
+            <button
+                @click="mobileOpen = !mobileOpen"
+                class="lg:hidden p-2 rounded-lg transition-colors"
+                :class="scrolled ? 'text-gray-900 dark:text-white' : 'text-white'"
+                :aria-expanded="mobileOpen"
+                aria-label="{% trans 'Menü' %}"
+            >
+                <i class="ph ph-list text-2xl" x-show="!mobileOpen"></i>
+                <i class="ph ph-x text-2xl" x-show="mobileOpen" x-cloak></i>
+            </button>
+        </div>
+    </div>
+
+    {# Mobile Menu Panel #}
+    <div
+        x-show="mobileOpen"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 -translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 -translate-y-2"
+        x-cloak
+        class="lg:hidden bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 shadow-xl max-h-[80vh] overflow-y-auto"
+    >
+        <nav class="max-w-7xl mx-auto px-4 py-4 space-y-1" aria-label="{% trans 'Mobil navigasyon' %}">
+            {% for item in marketing.mega_menu %}
+                {% if item.is_mega %}
+                {# Mobile accordion for mega menu items #}
+                <div x-data="{ open: false }">
+                    <button
+                        @click="open = !open"
+                        class="flex items-center justify-between w-full px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-lg"
+                    >
+                        <span class="flex items-center gap-2">
+                            {% if item.icon %}<i class="ph {{ item.icon }} text-lg text-primary-500"></i>{% endif %}
+                            {{ item.label }}
+                        </span>
+                        <i class="ph ph-caret-down text-sm transition-transform" :class="open ? 'rotate-180' : ''"></i>
+                    </button>
+                    <div x-show="open" x-collapse x-cloak class="pl-4 space-y-1 mt-1">
+                        {% for child in item.children %}
+                        <a href="{% url child.url %}"
+                           class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-lg"
+                           @click="mobileOpen = false"
+                        >
+                            <i class="ph {{ child.icon }} text-lg text-primary-500 dark:text-primary-400"></i>
+                            {{ child.label }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% else %}
+                <a href="{% url item.url %}"
+                   class="block px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-lg"
+                   @click="mobileOpen = false"
+                >
+                    {{ item.label }}
+                </a>
+                {% endif %}
+            {% endfor %}
+            <hr class="my-3 border-gray-200 dark:border-gray-800">
+
+            {# Mobile language selector #}
+            <div class="px-4 py-2">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{% trans "Dil" %}</p>
+                <div class="flex flex-wrap gap-2">
+                    {% get_available_languages as mobile_languages %}
+                    {% for lang_code, lang_name in mobile_languages %}
+                    <form method="post" action="{% url 'set_language' %}" class="inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="language" value="{{ lang_code }}">
+                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                        <button type="submit"
+                            class="px-3 py-1.5 text-sm rounded-lg {% if lang_code == LANGUAGE_CODE %}bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 font-semibold{% else %}text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %}"
+                        >
+                            {{ lang_code|upper }}
+                        </button>
+                    </form>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <hr class="my-3 border-gray-200 dark:border-gray-800">
+
+            <a href="{{ marketing.login_url }}"
+               class="block px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-lg"
+            >
+                {% trans "Giriş Yap" %}
+            </a>
+            <a href="{% url 'website:demo' %}"
+               class="block px-4 py-3 text-base font-semibold text-center text-white bg-primary-600 hover:bg-primary-700 rounded-lg"
+            >
+                {{ marketing.cta_primary_text }}
+            </a>
+            <a href="tel:{{ marketing.phone }}"
+               class="block px-4 py-3 text-sm text-center text-gray-500 dark:text-gray-400"
+            >
+                <i class="ph ph-phone mr-1"></i>{{ marketing.phone }}
+            </a>
+        </nav>
+    </div>
+</header>
