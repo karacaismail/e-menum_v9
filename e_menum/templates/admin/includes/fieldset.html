@@ -1,0 +1,50 @@
+{% comment %}
+Custom fieldset template for Django admin.
+Used by product change_form and other admin templates that need custom fieldset rendering.
+Falls back to Django's default behavior.
+{% endcomment %}
+<fieldset class="module aligned {{ fieldset.classes }}">
+  {% if fieldset.name %}
+    <h2>{{ fieldset.name }}</h2>
+  {% endif %}
+  {% if fieldset.description %}
+    <div class="description">{{ fieldset.description|safe }}</div>
+  {% endif %}
+  {% for line in fieldset %}
+    <div class="form-row{% if line.fields|length_is:'1' and line.fields.0.field.name %} field-{{ line.fields.0.field.name }}{% endif %}{% if not line.has_visible_field %} hidden{% endif %}{% for field in line %}{% if field.field.errors %} errors{% endif %}{% endfor %}">
+      {% if line.fields|length_is:'1' %}
+        {% for field in line %}
+          <div{% if not line.fields.0.field.is_hidden %} class="flex-container"{% endif %}>
+            {% if not line.fields.0.field.is_hidden %}
+              {{ field.errors }}
+              <div>
+                {{ field.label_tag }}
+                {% if field.is_checkbox %}
+                  {{ field.field }}
+                {% endif %}
+              </div>
+            {% endif %}
+            {% if not field.is_checkbox %}
+              {{ field.field }}
+            {% endif %}
+            {% if field.field.help_text %}
+              <div class="help">{{ field.field.help_text|safe }}</div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% else %}
+        {% for field in line %}
+          {{ field.errors }}
+          {% if field.is_checkbox %}
+            {{ field.field }}{{ field.label_tag }}
+          {% else %}
+            {{ field.label_tag }}{{ field.field }}
+          {% endif %}
+          {% if field.field.help_text %}
+            <div class="help">{{ field.field.help_text|safe }}</div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </div>
+  {% endfor %}
+</fieldset>

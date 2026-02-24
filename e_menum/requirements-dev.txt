@@ -5,22 +5,32 @@
 
 # Testing
 pytest>=8.0
-pytest-django>=4.7
-pytest-cov>=4.1
+pytest-django>=4.8
+pytest-cov>=5.0
+pytest-xdist>=3.5
 factory-boy>=3.3
+faker>=22.0
 
 # Development Tools
 django-extensions>=3.2
 werkzeug>=3.0
+ipython>=8.20
+ipdb>=0.13
 
 # Code Quality
 black>=24.0
 ruff>=0.2
+flake8>=7.0
+isort>=5.13
 mypy>=1.8
 django-stubs>=4.2
 
 # Debugging
-django-debug-toolbar>=4.2
+django-debug-toolbar>=4.3
 
 # Monitoring (Optional - Production)
 sentry-sdk[django]>=1.40
+
+# Documentation
+sphinx>=7.2
+sphinx-rtd-theme>=2.0

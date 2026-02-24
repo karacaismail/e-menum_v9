@@ -26,9 +26,17 @@ django-impersonate>=1.9
 
 # Async Tasks
 celery[redis]>=5.4,<6.0
+django-celery-beat>=2.7
 
 # Caching
 django-redis>=5.4
+
+# Media Management
+django-filer>=3.0
+easy-thumbnails>=2.8
+
+# Model Translation
+django-modeltranslation>=0.18
 
 # Static Files (Production)
 whitenoise>=6.6

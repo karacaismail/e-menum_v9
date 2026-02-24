@@ -138,9 +138,10 @@ THIRD_PARTY_APPS = [
     'filer',
     'easy_thumbnails',
     'django.contrib.sites',  # Required by django-filer
-    # 'django_filters',  # Uncomment when django-filter is installed
-    # 'corsheaders',  # Uncomment when django-cors-headers is installed
-    # 'guardian',  # Uncomment when django-guardian is installed
+    'django_filters',
+    'corsheaders',
+    'guardian',
+    'django_celery_beat',
     'impersonate',  # User impersonation for superadmin
 ]
 
@@ -177,8 +178,8 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + [
 # See spec.md for detailed ordering requirements
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # 'whitenoise.middleware.WhiteNoiseMiddleware',  # Uncomment when whitenoise installed
-    # 'corsheaders.middleware.CorsMiddleware',  # Uncomment when corsheaders installed
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     # SEO Shield — must be early to block bad requests before session/auth
     'apps.seo_shield.middleware.SEOShieldMiddleware',
     # SEO Middleware — redirect, canonical domain, headers
@@ -288,7 +289,7 @@ AUTH_USER_MODEL = 'core.User'
 # Authentication backends (including django-guardian for object-level permissions)
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    # 'guardian.backends.ObjectPermissionBackend',  # Uncomment when guardian installed
+    'guardian.backends.ObjectPermissionBackend',
 ]
 
 # Password validation
@@ -569,8 +570,7 @@ STATICFILES_DIRS = [
 ]
 
 # WhiteNoise for serving static files
-# Note: Uncomment when whitenoise is installed
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # =============================================================================
