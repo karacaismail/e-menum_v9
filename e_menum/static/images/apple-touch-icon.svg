@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" fill="none">
+  <!-- Apple Touch Icon: 180x180, rounded by iOS automatically -->
+  <rect width="180" height="180" fill="#1A6B5A"/>
+  <!-- QR pattern corners -->
+  <rect x="20" y="20" width="40" height="40" rx="6" fill="white"/>
+  <rect x="24" y="24" width="32" height="32" rx="4" fill="#1A6B5A"/>
+  <rect x="30" y="30" width="20" height="20" rx="2" fill="white"/>
+  <rect x="35" y="35" width="10" height="10" rx="1" fill="#1A6B5A"/>
+
+  <rect x="120" y="20" width="40" height="40" rx="6" fill="white"/>
+  <rect x="124" y="24" width="32" height="32" rx="4" fill="#1A6B5A"/>
+  <rect x="130" y="30" width="20" height="20" rx="2" fill="white"/>
+  <rect x="135" y="35" width="10" height="10" rx="1" fill="#1A6B5A"/>
+
+  <rect x="20" y="120" width="40" height="40" rx="6" fill="white"/>
+  <rect x="24" y="124" width="32" height="32" rx="4" fill="#1A6B5A"/>
+  <rect x="30" y="130" width="20" height="20" rx="2" fill="white"/>
+  <rect x="35" y="135" width="10" height="10" rx="1" fill="#1A6B5A"/>
+
+  <!-- Center: E letter -->
+  <text x="90" y="105" font-family="'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" font-weight="800" font-size="60" fill="white" text-anchor="middle">E</text>
+
+  <!-- Accent dots bottom-right -->
+  <rect x="125" y="125" width="15" height="15" rx="2" fill="#F5A623"/>
+  <rect x="145" y="125" width="10" height="10" rx="1.5" fill="#F5A623" opacity="0.7"/>
+  <rect x="125" y="145" width="10" height="10" rx="1.5" fill="#F5A623" opacity="0.7"/>
+  <rect x="145" y="145" width="12" height="12" rx="1.5" fill="#F5A623" opacity="0.5"/>
+</svg>

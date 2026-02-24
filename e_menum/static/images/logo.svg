@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" fill="none">
+  <!-- E-Menum Logo: QR Menu + Fork/Knife motif -->
+  <!-- Icon: QR code frame with fork-knife inside -->
+  <g transform="translate(0,2)">
+    <!-- QR frame outer -->
+    <rect x="2" y="2" width="56" height="56" rx="8" fill="#1A6B5A"/>
+    <!-- QR frame inner cutout -->
+    <rect x="6" y="6" width="48" height="48" rx="5" fill="white"/>
+    <!-- QR pattern dots (top-left corner) -->
+    <rect x="10" y="10" width="14" height="14" rx="2" fill="#1A6B5A"/>
+    <rect x="12" y="12" width="10" height="10" rx="1.5" fill="white"/>
+    <rect x="14" y="14" width="6" height="6" rx="1" fill="#1A6B5A"/>
+    <!-- QR pattern dots (top-right corner) -->
+    <rect x="36" y="10" width="14" height="14" rx="2" fill="#1A6B5A"/>
+    <rect x="38" y="12" width="10" height="10" rx="1.5" fill="white"/>
+    <rect x="40" y="14" width="6" height="6" rx="1" fill="#1A6B5A"/>
+    <!-- QR pattern dots (bottom-left corner) -->
+    <rect x="10" y="36" width="14" height="14" rx="2" fill="#1A6B5A"/>
+    <rect x="12" y="38" width="10" height="10" rx="1.5" fill="white"/>
+    <rect x="14" y="40" width="6" height="6" rx="1" fill="#1A6B5A"/>
+    <!-- Fork/Knife center motif -->
+    <!-- Fork -->
+    <path d="M27 28 L27 42" stroke="#1A6B5A" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M24 28 L24 34 Q24 36 27 36" stroke="#1A6B5A" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+    <path d="M30 28 L30 34 Q30 36 27 36" stroke="#1A6B5A" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+    <path d="M27 28 L27 34" stroke="#1A6B5A" stroke-width="1.2" stroke-linecap="round"/>
+    <!-- Knife -->
+    <path d="M35 28 L35 42" stroke="#F5A623" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M35 28 Q38 30 38 34 L35 36" stroke="#F5A623" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+    <!-- Small QR dots -->
+    <rect x="28" y="10" width="3" height="3" rx="0.5" fill="#1A6B5A" opacity="0.5"/>
+    <rect x="10" y="28" width="3" height="3" rx="0.5" fill="#1A6B5A" opacity="0.5"/>
+    <rect x="47" y="28" width="3" height="3" rx="0.5" fill="#1A6B5A" opacity="0.5"/>
+    <rect x="36" y="47" width="3" height="3" rx="0.5" fill="#F5A623" opacity="0.6"/>
+    <rect x="42" y="42" width="3" height="3" rx="0.5" fill="#1A6B5A" opacity="0.5"/>
+    <rect x="47" y="47" width="3" height="3" rx="0.5" fill="#F5A623" opacity="0.6"/>
+    <rect x="42" y="36" width="3" height="3" rx="0.5" fill="#1A6B5A" opacity="0.4"/>
+  </g>
+  <!-- Wordmark -->
+  <g transform="translate(72, 14)">
+    <!-- "E" with accent bar -->
+    <text font-family="'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" font-weight="800" font-size="34" fill="#1A6B5A" letter-spacing="-0.02em">
+      <tspan>E</tspan>
+    </text>
+    <!-- Dash -->
+    <text x="22" font-family="'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" font-weight="800" font-size="34" fill="#F5A623" letter-spacing="-0.02em">
+      <tspan>-</tspan>
+    </text>
+    <!-- "Menum" -->
+    <text x="34" font-family="'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" font-weight="800" font-size="34" fill="#1A6B5A" letter-spacing="-0.02em">
+      <tspan>Menum</tspan>
+    </text>
+  </g>
+  <!-- Tagline -->
+  <text x="72" y="54" font-family="'Inter', system-ui, sans-serif" font-weight="400" font-size="10.5" fill="#4A4A68" letter-spacing="0.04em">
+    Akilli menuler, veri odakli kararlar
+  </text>
+</svg>

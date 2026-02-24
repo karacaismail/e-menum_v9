@@ -1,0 +1,92 @@
+/*
+ * E-Menum Admin Base Styles
+ * Extends Django admin with custom branding and dark theme overrides.
+ * Brand colors: Primary #1A6B5A, Accent #F5A623, Dark BG #111827
+ */
+
+/* ---- Root Variables ---- */
+:root {
+  --emenum-primary: #1A6B5A;
+  --emenum-primary-dark: #0f5c4b;
+  --emenum-accent: #F5A623;
+  --emenum-bg-dark: #111827;
+  --emenum-bg-surface: #1a1f2e;
+  --emenum-bg-card: #1e2533;
+  --emenum-text-primary: #f1f5f9;
+  --emenum-text-secondary: #94a3b8;
+  --emenum-text-muted: #64748b;
+  --emenum-border: rgba(255, 255, 255, 0.06);
+  --emenum-accent-indigo: #6366f1;
+  --emenum-radius: 8px;
+}
+
+/* ---- Admin Branding ---- */
+#header {
+  background: var(--emenum-bg-dark) !important;
+  border-bottom: 1px solid var(--emenum-border);
+}
+
+#header a:link, #header a:visited {
+  color: var(--emenum-text-primary);
+}
+
+#branding h1 {
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* ---- Module Headers ---- */
+.module h2, .module caption {
+  background: var(--emenum-primary) !important;
+  color: white;
+  font-weight: 600;
+  border-radius: var(--emenum-radius) var(--emenum-radius) 0 0;
+}
+
+/* ---- Links ---- */
+a:link, a:visited {
+  color: var(--emenum-accent-indigo);
+}
+
+a:hover {
+  color: #818cf8;
+}
+
+/* ---- Buttons ---- */
+.button, input[type=submit], .submit-row input {
+  background: var(--emenum-primary) !important;
+  border: none;
+  border-radius: var(--emenum-radius);
+  font-weight: 600;
+  padding: 8px 16px;
+  transition: background 150ms ease;
+}
+
+.button:hover, input[type=submit]:hover {
+  background: var(--emenum-primary-dark) !important;
+}
+
+.button.default {
+  background: var(--emenum-accent) !important;
+  color: #0F1923;
+}
+
+/* ---- Dashboard ---- */
+.dashboard #content {
+  max-width: 1400px;
+}
+
+/* ---- Breadcrumbs ---- */
+div.breadcrumbs {
+  background: var(--emenum-bg-surface);
+  border-bottom: 1px solid var(--emenum-border);
+  color: var(--emenum-text-secondary);
+}
+
+/* ---- Footer ---- */
+#footer {
+  border-top: 1px solid var(--emenum-border);
+  color: var(--emenum-text-muted);
+  font-size: 0.75rem;
+}

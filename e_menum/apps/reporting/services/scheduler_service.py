@@ -227,14 +227,35 @@ class SchedulerService:
             logger.warning('No email addresses for delivery: %s', execution.id)
             return
 
-        # TODO: Implement email delivery via notifications app
-        # from apps.notifications.services import EmailService
-        # email_service = EmailService()
-        # email_service.send_report_email(execution, emails)
-        logger.info(
-            'Report email delivery queued: %s to %s',
-            execution.id, ', '.join(emails),
+        from django.core.mail import send_mail
+        from django.conf import settings
+
+        subject = f'E-Menum Rapor: {execution.report.name if hasattr(execution, "report") and execution.report else "Rapor"}'
+        message = (
+            f'Raporunuz hazir.\n\n'
+            f'Rapor ID: {execution.id}\n'
+            f'Durum: {execution.status}\n'
+            f'Tamamlanma: {execution.finished_at}\n\n'
+            f'Sonuclari goruntulemek icin panele giris yapin.'
         )
+
+        try:
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=emails,
+                fail_silently=False,
+            )
+            logger.info(
+                'Report email delivered: %s to %s',
+                execution.id, ', '.join(emails),
+            )
+        except Exception as e:
+            logger.error(
+                'Report email delivery failed: %s - %s',
+                execution.id, str(e),
+            )
 
     def _deliver_push(self, execution):
         """
@@ -243,8 +264,31 @@ class SchedulerService:
         Args:
             execution: ReportExecution instance
         """
-        # TODO: Implement push notification
-        logger.info('Report push notification: %s', execution.id)
+        from apps.notifications.models import Notification
+
+        schedule = execution.schedule if hasattr(execution, 'schedule') else None
+        if not schedule or not schedule.organization:
+            logger.warning('No organization for push notification: %s', execution.id)
+            return
+
+        # Create in-app notification for all active users of the organization
+        users = schedule.organization.users.filter(
+            is_active=True,
+            deleted_at__isnull=True,
+        )
+        for user in users:
+            Notification.objects.create(
+                organization=schedule.organization,
+                user=user,
+                notification_type='SYSTEM',
+                title=f'Rapor hazir: {schedule.report.name if hasattr(schedule, "report") and schedule.report else "Rapor"}',
+                message='Zamanlanmis raporunuz tamamlandi. Sonuclari goruntulemek icin tiklayiniz.',
+                priority='NORMAL',
+                channel='IN_APP',
+                status='PENDING',
+                action_url=f'/admin/reporting/reportexecution/{execution.id}/change/',
+            )
+        logger.info('Report push notification created: %s', execution.id)
 
     def _deliver_webhook(self, execution, webhook_url: str):
         """
@@ -258,10 +302,32 @@ class SchedulerService:
             logger.warning('No webhook URL for delivery: %s', execution.id)
             return
 
-        # TODO: Implement webhook delivery
-        # import requests
-        # requests.post(webhook_url, json=execution.result_data, timeout=30)
-        logger.info(
-            'Report webhook delivery queued: %s to %s',
-            execution.id, webhook_url,
-        )
+        import json
+        from urllib.request import urlopen, Request
+        from urllib.error import URLError
+
+        payload = {
+            'event': 'report.completed',
+            'execution_id': str(execution.id),
+            'status': execution.status,
+            'finished_at': execution.finished_at.isoformat() if execution.finished_at else None,
+            'result_summary': execution.result_data.get('summary', {}) if execution.result_data else {},
+        }
+
+        try:
+            req = Request(
+                webhook_url,
+                data=json.dumps(payload).encode('utf-8'),
+                headers={'Content-Type': 'application/json'},
+                method='POST',
+            )
+            with urlopen(req, timeout=30) as response:
+                logger.info(
+                    'Report webhook delivered: %s to %s (status %d)',
+                    execution.id, webhook_url, response.status,
+                )
+        except (URLError, Exception) as e:
+            logger.error(
+                'Report webhook delivery failed: %s to %s - %s',
+                execution.id, webhook_url, str(e),
+            )

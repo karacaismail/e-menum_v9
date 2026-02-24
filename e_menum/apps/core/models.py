@@ -220,19 +220,25 @@ class Organization(TimeStampedMixin, SoftDeleteMixin, models.Model):
         help_text=_('Organization lifecycle status')
     )
 
-    # TODO: Add plan FK when subscriptions app is created (subtask-6-*)
-    # This FK will be added in migration 0002_add_organization_plan.py
-    # after subscriptions.Plan model exists
-    #
-    # plan = models.ForeignKey(
-    #     'subscriptions.Plan',
-    #     on_delete=models.SET_NULL,
-    #     null=True,
-    #     blank=True,
-    #     related_name='organizations',
-    #     verbose_name=_('Plan'),
-    #     help_text=_('Current subscription plan')
-    # )
+    plan = models.ForeignKey(
+        'subscriptions.Plan',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='organizations',
+        verbose_name=_('Plan'),
+        help_text=_('Current subscription plan')
+    )
+
+    subscription = models.OneToOneField(
+        'subscriptions.Subscription',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='organization_link',
+        verbose_name=_('Subscription'),
+        help_text=_('Active subscription for this organization')
+    )
 
     trial_ends_at = models.DateTimeField(
         null=True,

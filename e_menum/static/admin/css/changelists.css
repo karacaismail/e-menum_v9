@@ -1,0 +1,92 @@
+/*
+ * E-Menum Admin Changelist Styles
+ * Custom styling for Django admin list views.
+ */
+
+/* ---- Table Styles ---- */
+#changelist table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#changelist table thead th {
+  background: var(--emenum-bg-surface, #1a1f2e);
+  color: var(--emenum-text-secondary, #94a3b8);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--emenum-border, rgba(255,255,255,0.06));
+}
+
+#changelist table tbody td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--emenum-border, rgba(255,255,255,0.06));
+  font-size: 0.875rem;
+}
+
+#changelist table tbody tr:hover td {
+  background: rgba(99, 102, 241, 0.04);
+}
+
+/* ---- Filter Sidebar ---- */
+#changelist-filter {
+  border-radius: 8px;
+  padding: 16px;
+}
+
+#changelist-filter h2 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+#changelist-filter h3 {
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+#changelist-filter ul li {
+  padding: 4px 0;
+}
+
+#changelist-filter ul li.selected a {
+  color: var(--emenum-accent-indigo, #6366f1);
+  font-weight: 600;
+}
+
+/* ---- Search Bar ---- */
+#changelist-search {
+  margin-bottom: 16px;
+}
+
+#changelist-search input[type="text"] {
+  border-radius: 9999px;
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  border: 1px solid var(--emenum-border, #e5e7eb);
+  min-width: 300px;
+}
+
+/* ---- Pagination ---- */
+.paginator {
+  font-size: 0.875rem;
+  padding: 12px 0;
+}
+
+/* ---- Actions Bar ---- */
+.actions {
+  padding: 8px 0;
+}
+
+.actions select {
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.875rem;
+}
