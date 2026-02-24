@@ -1,0 +1,45 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{{ solution.title }} — E-Menum{% endblock %}
+
+{% block content %}
+{# Hero #}
+<section class="hero-gradient hero-gradient-solutions pattern-dots">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24">
+        <div class="max-w-3xl">
+            {% if solution.sector %}
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-500/10 text-primary-400 text-sm font-semibold mb-6">
+                <i class="ph {{ solution.sector.icon|default:'ph-buildings' }}"></i>
+                {{ solution.sector.name }}
+            </span>
+            {% endif %}
+            <h1 class="heading-display text-4xl lg:text-5xl text-white mb-6">{{ solution.title }}</h1>
+            <p class="text-lg text-gray-300 leading-relaxed">{{ solution.subtitle }}</p>
+        </div>
+    </div>
+</section>
+
+{# Content #}
+<section class="py-16 lg:py-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="prose prose-lg dark:prose-invert max-w-none">
+            {{ solution.content|safe }}
+        </div>
+
+        {% if solution.key_benefits %}
+        <div class="mt-12 p-8 bg-primary-50 dark:bg-primary-900/10 rounded-2xl border border-primary-100 dark:border-primary-800/30">
+            <h2 class="heading-sans text-xl text-gray-900 dark:text-white mb-4">
+                <i class="ph ph-check-circle text-primary-600 mr-2"></i>
+                {% trans "Temel Faydalar" %}
+            </h2>
+            <div class="prose dark:prose-invert max-w-none">
+                {{ solution.key_benefits|safe }}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{% include "website/partials/_cta_banner.html" %}
+{% endblock %}

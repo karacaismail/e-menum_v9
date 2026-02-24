@@ -1,0 +1,49 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{{ program.title }} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="hero-gradient hero-gradient-partners pattern-dots">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24">
+        <div class="max-w-3xl">
+            <h1 class="heading-display text-4xl lg:text-5xl text-white mb-6">{{ program.title }}</h1>
+            <p class="text-lg text-gray-300">{{ program.description }}</p>
+        </div>
+    </div>
+</section>
+
+{# Tiers #}
+{% if program.tiers.all %}
+<section class="py-16 lg:py-24 bg-white dark:bg-gray-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="heading-sans text-2xl text-gray-900 dark:text-white mb-8 text-center">{% trans "Katılım Seviyeleri" %}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for tier in program.tiers.all %}
+            <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{{ tier.name }}</h3>
+                {% if tier.commission_pct %}<div class="text-sm text-primary-600 font-semibold mb-3">{% trans "Komisyon" %}: %{{ tier.commission_pct }}</div>{% endif %}
+                {% if tier.description %}<p class="text-sm text-gray-500 mb-4">{{ tier.description }}</p>{% endif %}
+                {% if tier.benefits.all %}
+                <ul class="space-y-2">
+                    {% for benefit in tier.benefits.all %}
+                    <li class="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
+                        <i class="ph ph-check-circle text-green-500 shrink-0 mt-0.5"></i>
+                        {{ benefit.text }}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<div class="text-center py-12">
+    <a href="{% url 'website:contact' %}" class="btn btn-primary btn-lg">
+        <i class="ph ph-paper-plane-tilt mr-2"></i>{% trans "Partner Başvurusu" %}
+    </a>
+</div>
+{% endblock %}

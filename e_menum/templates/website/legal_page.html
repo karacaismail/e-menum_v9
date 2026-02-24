@@ -1,0 +1,39 @@
+{% extends "layouts/marketing.html" %}
+{% load static i18n %}
+
+{% block page_title %}{{ legal.title }}{% endblock %}
+{% block meta_description %}{{ legal.meta_description|default:legal.title }}{% endblock %}
+
+{% block content %}
+
+{# Legal Page Content #}
+<section class="py-16 lg:py-24 bg-white dark:bg-gray-950">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {# Page Header #}
+        <header class="mb-12 text-center">
+            <h1 class="heading-sans text-3xl lg:text-4xl text-gray-900 dark:text-white mb-4">
+                {{ legal.title }}
+            </h1>
+            {% if legal.last_updated_display %}
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+                {% trans "Son guncelleme:" %} {{ legal.last_updated_display }}
+            </p>
+            {% endif %}
+        </header>
+
+        {# Legal Content (HTML from admin) #}
+        <div class="prose prose-lg dark:prose-invert mx-auto max-w-none">
+            {{ legal.content|safe }}
+        </div>
+
+        {# Back to Home #}
+        <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 text-center">
+            <a href="{% url 'website:home' %}" class="inline-flex items-center gap-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
+                <i class="ph ph-arrow-left"></i> {% trans "Ana Sayfa" %}
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

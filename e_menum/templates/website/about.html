@@ -1,0 +1,97 @@
+{% extends "layouts/marketing.html" %}
+{% load static i18n %}
+
+{% block page_title %}{% if hero %}{{ hero.title }}{% else %}{% trans "Hakkimizda" %}{% endif %}{% endblock %}
+{% block meta_description %}{% trans "E-Menum - Turkiye'nin yapay zeka destekli dijital menu platformu. Misyonumuz, ekibimiz ve degerlerimiz." %}{% endblock %}
+
+{% block content %}
+
+{# Hero #}
+{% include "website/partials/_hero.html" %}
+
+{# Story Section #}
+<section class="py-16 lg:py-24 bg-white dark:bg-gray-950">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16" data-reveal>
+            <h2 class="heading-sans text-3xl text-gray-900 dark:text-white mb-6">
+                {% trans "Hikayemiz" %}
+            </h2>
+            <div class="prose prose-lg dark:prose-invert mx-auto text-gray-600 dark:text-gray-300 leading-relaxed space-y-4">
+                <p>
+                    {% trans "E-Menum, restoran ve kafe sahiplerinin dijital menulere gecis surecinde yasadiklari zorluklar gozetilerek kurulmustur. Basili menulerin pahali, guncellenmesi zor ve hijyenik olarak riskli oldugunu gorduk." %}
+                </p>
+                <p>
+                    {% trans "Yapay zeka teknolojisini gastronomi sektoruyle birlestirerek, isletmelerin sadece dijital menu degil, veri odakli kararlar alabilecekleri bir platform gelistirdik." %}
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Company Stats — from database #}
+{% if company_stats %}
+<section class="py-16 bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 lg:grid-cols-{{ company_stats|length|default:'4' }} gap-8">
+            {% for stat in company_stats %}
+            <div class="text-center" data-reveal>
+                <div class="text-4xl font-bold text-primary-600 dark:text-primary-400 mb-2">{{ stat.value }}</div>
+                <p class="text-sm text-gray-600 dark:text-gray-300">{{ stat.label }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# Team Section — from database #}
+{% if team_members %}
+<section class="py-16 lg:py-24 bg-white dark:bg-gray-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12" data-reveal>
+            <h2 class="heading-sans text-3xl text-gray-900 dark:text-white mb-4">
+                {% trans "Ekibimiz" %}
+            </h2>
+            <p class="text-lg text-gray-600 dark:text-gray-300">
+                {% trans "Gastronomi ve teknoloji tutkunlari." %}
+            </p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-{{ team_members|length|default:'5' }} gap-8">
+            {% for member in team_members %}
+            <div class="text-center" data-reveal>
+                <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-{{ member.avatar_color|default:'primary' }}-100 dark:bg-{{ member.avatar_color|default:'primary' }}-900/50 flex items-center justify-center">
+                    <span class="text-2xl font-bold text-{{ member.avatar_color|default:'primary' }}-600 dark:text-{{ member.avatar_color|default:'primary' }}-400">{{ member.initials }}</span>
+                </div>
+                <h3 class="font-semibold text-gray-900 dark:text-white">{{ member.name }}</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-300">{{ member.title }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# Values — from database #}
+{% if company_values %}
+<section class="py-16 lg:py-24 bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12" data-reveal>
+            <h2 class="heading-sans text-3xl text-gray-900 dark:text-white mb-4">
+                {% trans "Degerlerimiz" %}
+            </h2>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-{{ company_values|length|default:'4' }} gap-6">
+            {% for value in company_values %}
+            {% include "website/partials/_feature_card.html" with icon=value.icon title=value.title description=value.description color=value.color %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# CTA #}
+{% include "website/partials/_cta_banner.html" with title="Ekibimizle Tanisin" subtitle="Demo talep edin, platformumuzu birlikte kesfedelim. 14 gun ucretsiz." button_text="14 Gun Ucretsiz Basla" button_url="website:demo" secondary_text="Canli Demo Izle" secondary_url="website:demo" %}
+
+{% endblock %}

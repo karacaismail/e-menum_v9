@@ -1,0 +1,7773 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: E-Menum 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-23 12:03+0300\n"
+"PO-Revision-Date: 2026-02-23 12:03+0300\n"
+"Last-Translator: E-Menum Team <info@e-menum.com>\n"
+"Language-Team: English <info@e-menum.com>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+msgid "Input"
+msgstr "Input"
+
+msgid "Output"
+msgstr "Output"
+
+msgid "Cost"
+msgstr "Cost"
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Timestamps"
+msgstr "Timestamps"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Organization"
+msgstr "Organization"
+
+msgid "User"
+msgstr "User"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Credits"
+msgstr "Credits"
+
+msgid "Model"
+msgstr "Model"
+
+msgid "Provider"
+msgstr "Provider"
+
+msgid "Credentials"
+msgstr "Credentials"
+
+msgid "API credentials are encrypted at rest."
+msgstr "API credentials are encrypted at rest."
+
+msgid "Model Configuration"
+msgstr "Model Configuration"
+
+msgid "Category"
+msgstr "Category"
+
+msgid "Not configured"
+msgstr "Not configured"
+
+msgid "API Key"
+msgstr "API Key"
+
+msgid "Active"
+msgstr "Active"
+
+msgid "Default"
+msgstr "Default"
+
+msgid "Enter API key..."
+msgstr "Enter API key..."
+
+msgid ""
+"Enter the API key for this provider. Leave blank to keep the existing key "
+"unchanged."
+msgstr ""
+"Enter the API key for this provider. Leave blank to keep the existing key "
+"unchanged."
+
+#, python-format
+msgid ""
+"Existing key is stored (%(masked)s). Enter a new key to replace it, or leave "
+"blank to keep."
+msgstr ""
+"Existing key is stored (%(masked)s). Enter a new key to replace it, or leave "
+"blank to keep."
+
+msgid "--- Select Provider ---"
+msgstr "--- Select Provider ---"
+
+msgid "Text Generation"
+msgstr "Text Generation"
+
+msgid "Image Generation"
+msgstr "Image Generation"
+
+msgid "Product Description"
+msgstr "Product Description"
+
+msgid "Short Description"
+msgstr "Short Description"
+
+msgid "Name Suggestion"
+msgstr "Name Suggestion"
+
+msgid "SEO Text"
+msgstr "SEO Text"
+
+msgid "Translation"
+msgstr "Translation"
+
+msgid "Image Search"
+msgstr "Image Search"
+
+msgid "Improve Text"
+msgstr "Improve Text"
+
+msgid "Pending"
+msgstr "Pending"
+
+msgid "Processing"
+msgstr "Processing"
+
+msgid "Completed"
+msgstr "Completed"
+
+msgid "Failed"
+msgstr "Failed"
+
+msgid "Cancelled"
+msgstr "Cancelled"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "Requested by"
+msgstr "Requested by"
+
+msgid "Input text"
+msgstr "Input text"
+
+msgid "Original text or prompt sent to AI"
+msgstr "Original text or prompt sent to AI"
+
+msgid "Input context"
+msgstr "Input context"
+
+msgid "Additional context: product name, category, cuisine, etc."
+msgstr "Additional context: product name, category, cuisine, etc."
+
+msgid "Output text"
+msgstr "Output text"
+
+msgid "Generated text from AI"
+msgstr "Generated text from AI"
+
+msgid "Output data"
+msgstr "Output data"
+
+msgid "Structured output (alternatives, images, translations)"
+msgstr "Structured output (alternatives, images, translations)"
+
+msgid "Credits used"
+msgstr "Credits used"
+
+msgid "AI model"
+msgstr "AI model"
+
+msgid "e.g., gpt-4o-mini, claude-3-haiku"
+msgstr "e.g., gpt-4o-mini, claude-3-haiku"
+
+msgid "Input tokens"
+msgstr "Input tokens"
+
+msgid "Output tokens"
+msgstr "Output tokens"
+
+msgid "Product"
+msgstr "Product"
+
+msgid "AI Generation"
+msgstr "AI Generation"
+
+msgid "AI Generations"
+msgstr "AI Generations"
+
+msgid "OpenAI (GPT)"
+msgstr "OpenAI (GPT)"
+
+msgid "Anthropic (Claude)"
+msgstr "Anthropic (Claude)"
+
+msgid "Google (Gemini)"
+msgstr "Google (Gemini)"
+
+msgid "OpenAI (DALL-E)"
+msgstr "OpenAI (DALL-E)"
+
+msgid "Stability AI"
+msgstr "Stability AI"
+
+msgid "Leonardo AI"
+msgstr "Leonardo AI"
+
+msgid "Midjourney"
+msgstr "Midjourney"
+
+msgid "Runway"
+msgstr "Runway"
+
+msgid "Adobe Firefly"
+msgstr "Adobe Firefly"
+
+msgid "Display Name"
+msgstr "Display Name"
+
+msgid "Human-readable name (e.g., \"OpenAI Production\")"
+msgstr "Human-readable name (e.g., \"OpenAI Production\")"
+
+msgid "Provider identifier"
+msgstr "Provider identifier"
+
+msgid "API Key (encrypted)"
+msgstr "API Key (encrypted)"
+
+msgid "Encrypted API key stored at rest"
+msgstr "Encrypted API key stored at rest"
+
+msgid "Default Model"
+msgstr "Default Model"
+
+msgid "Default model name (e.g., gpt-4o-mini, claude-3-haiku)"
+msgstr "Default model name (e.g., gpt-4o-mini, claude-3-haiku)"
+
+msgid "API Base URL"
+msgstr "API Base URL"
+
+msgid "Custom API endpoint (leave blank for default)"
+msgstr "Custom API endpoint (leave blank for default)"
+
+msgid "Default Provider"
+msgstr "Default Provider"
+
+msgid "Use this provider as the default for its category"
+msgstr "Use this provider as the default for its category"
+
+msgid "Priority"
+msgstr "Priority"
+
+msgid "Lower number = higher priority for fallback"
+msgstr "Lower number = higher priority for fallback"
+
+msgid "Additional Settings"
+msgstr "Additional Settings"
+
+msgid "Provider-specific settings (temperature, max_tokens, etc.)"
+msgstr "Provider-specific settings (temperature, max_tokens, etc.)"
+
+msgid "AI Provider Configuration"
+msgstr "AI Provider Configuration"
+
+msgid "AI Provider Configurations"
+msgstr "AI Provider Configurations"
+
+msgid "Inactive"
+msgstr "Inactive"
+
+msgid "Revenue"
+msgstr "Revenue"
+
+msgid "Orders"
+msgstr "Orders"
+
+msgid "Customers"
+msgstr "Customers"
+
+msgid "Average Order Value"
+msgstr "Average Order Value"
+
+msgid "Rating"
+msgstr "Rating"
+
+msgid "New Customers"
+msgstr "New Customers"
+
+msgid "Returning Customers"
+msgstr "Returning Customers"
+
+msgid "Items Sold"
+msgstr "Items Sold"
+
+msgid "Daily"
+msgstr "Daily"
+
+msgid "Weekly"
+msgstr "Weekly"
+
+msgid "Monthly"
+msgstr "Monthly"
+
+msgid "Quarterly"
+msgstr "Quarterly"
+
+msgid "Yearly"
+msgstr "Yearly"
+
+msgid "Hourly"
+msgstr "Hourly"
+
+msgid "Metric type"
+msgstr "Metric type"
+
+msgid "Period type"
+msgstr "Period type"
+
+msgid "Period start"
+msgstr "Period start"
+
+msgid "Period end"
+msgstr "Period end"
+
+msgid "Value"
+msgstr "Value"
+
+msgid "Previous value"
+msgstr "Previous value"
+
+msgid "Change percent"
+msgstr "Change percent"
+
+msgid "Metadata"
+msgstr "Metadata"
+
+msgid "Dashboard Metric"
+msgstr "Dashboard Metric"
+
+msgid "Dashboard Metrics"
+msgstr "Dashboard Metrics"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Hour"
+msgstr "Hour"
+
+msgid "Hour of day (0-23) for hourly granularity"
+msgstr "Hour of day (0-23) for hourly granularity"
+
+msgid "Granularity"
+msgstr "Granularity"
+
+msgid "Gross revenue"
+msgstr "Gross revenue"
+
+msgid "Net revenue"
+msgstr "Net revenue"
+
+msgid "Order count"
+msgstr "Order count"
+
+msgid "Item count"
+msgstr "Item count"
+
+msgid "Average order value"
+msgstr "Average order value"
+
+msgid "Customer count"
+msgstr "Customer count"
+
+msgid "New customer count"
+msgstr "New customer count"
+
+msgid "Payment breakdown"
+msgstr "Payment breakdown"
+
+msgid "Breakdown by payment method: {cash: X, card: Y, ...}"
+msgstr "Breakdown by payment method: {cash: X, card: Y, ...}"
+
+msgid "Channel breakdown"
+msgstr "Channel breakdown"
+
+msgid "Breakdown by order type: {dine_in: X, takeaway: Y, ...}"
+msgstr "Breakdown by order type: {dine_in: X, takeaway: Y, ...}"
+
+msgid "Category breakdown"
+msgstr "Category breakdown"
+
+msgid "Breakdown by category: {cat_id: {revenue: X, qty: Y}, ...}"
+msgstr "Breakdown by category: {cat_id: {revenue: X, qty: Y}, ...}"
+
+msgid "Sales Aggregation"
+msgstr "Sales Aggregation"
+
+msgid "Sales Aggregations"
+msgstr "Sales Aggregations"
+
+msgid "Quantity sold"
+msgstr "Quantity sold"
+
+msgid "Profit margin (%)"
+msgstr "Profit margin (%)"
+
+msgid "Sales mix (%)"
+msgstr "Sales mix (%)"
+
+msgid "Average rating"
+msgstr "Average rating"
+
+msgid "Review count"
+msgstr "Review count"
+
+msgid "Return count"
+msgstr "Return count"
+
+msgid "View count"
+msgstr "View count"
+
+msgid "Product Performance"
+msgstr "Product Performance"
+
+msgid "Product Performances"
+msgstr "Product Performances"
+
+msgid "Total customers"
+msgstr "Total customers"
+
+msgid "New customers"
+msgstr "New customers"
+
+msgid "Returning customers"
+msgstr "Returning customers"
+
+msgid "Churn count"
+msgstr "Churn count"
+
+msgid "Average visit frequency"
+msgstr "Average visit frequency"
+
+msgid "Average lifetime value"
+msgstr "Average lifetime value"
+
+msgid "NPS score"
+msgstr "NPS score"
+
+msgid "Customer Metric"
+msgstr "Customer Metric"
+
+msgid "Customer Metrics"
+msgstr "Customer Metrics"
+
+msgid "Discount"
+msgstr "Discount"
+
+msgid "Buy One Get One"
+msgstr "Buy One Get One"
+
+msgid "Free Item"
+msgstr "Free Item"
+
+msgid "Bundle Deal"
+msgstr "Bundle Deal"
+
+msgid "Loyalty Reward"
+msgstr "Loyalty Reward"
+
+msgid "Seasonal Promotion"
+msgstr "Seasonal Promotion"
+
+msgid "Flash Sale"
+msgstr "Flash Sale"
+
+msgid "Referral Program"
+msgstr "Referral Program"
+
+msgid "Draft"
+msgstr "Draft"
+
+msgid "Paused"
+msgstr "Paused"
+
+msgid "Percentage"
+msgstr "Percentage"
+
+msgid "Fixed Amount"
+msgstr "Fixed Amount"
+
+msgid "Entire Order"
+msgstr "Entire Order"
+
+msgid "Specific Product"
+msgstr "Specific Product"
+
+msgid "Product Category"
+msgstr "Product Category"
+
+msgid "Used"
+msgstr "Used"
+
+msgid "Expired"
+msgstr "Expired"
+
+msgid "Unique identifier (UUID)"
+msgstr "Unique identifier (UUID)"
+
+msgid "Organization this campaign belongs to"
+msgstr "Organization this campaign belongs to"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Campaign name"
+msgstr "Campaign name"
+
+msgid "Campaign type"
+msgstr "Campaign type"
+
+msgid "Type of marketing campaign"
+msgstr "Type of marketing campaign"
+
+msgid "Current campaign status"
+msgstr "Current campaign status"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Campaign description"
+msgstr "Campaign description"
+
+msgid "Start date"
+msgstr "Start date"
+
+msgid "When the campaign starts"
+msgstr "When the campaign starts"
+
+msgid "End date"
+msgstr "End date"
+
+msgid "When the campaign ends"
+msgstr "When the campaign ends"
+
+msgid "Budget"
+msgstr "Budget"
+
+msgid "Total campaign budget"
+msgstr "Total campaign budget"
+
+msgid "Spent amount"
+msgstr "Spent amount"
+
+msgid "Total amount spent/discounted so far"
+msgstr "Total amount spent/discounted so far"
+
+msgid "Target audience"
+msgstr "Target audience"
+
+msgid "Targeting criteria (JSON)"
+msgstr "Targeting criteria (JSON)"
+
+msgid "Discount value"
+msgstr "Discount value"
+
+msgid "Discount amount or percentage"
+msgstr "Discount amount or percentage"
+
+msgid "Discount type"
+msgstr "Discount type"
+
+msgid "How the discount is calculated"
+msgstr "How the discount is calculated"
+
+msgid "Minimum order amount"
+msgstr "Minimum order amount"
+
+msgid "Minimum order amount to qualify"
+msgstr "Minimum order amount to qualify"
+
+msgid "Maximum discount amount"
+msgstr "Maximum discount amount"
+
+msgid "Cap on the discount amount (for percentage discounts)"
+msgstr "Cap on the discount amount (for percentage discounts)"
+
+msgid "Usage limit"
+msgstr "Usage limit"
+
+msgid "Maximum number of times this campaign can be used (0 = unlimited)"
+msgstr "Maximum number of times this campaign can be used (0 = unlimited)"
+
+msgid "Usage count"
+msgstr "Usage count"
+
+msgid "Number of times this campaign has been used"
+msgstr "Number of times this campaign has been used"
+
+msgid "Is active"
+msgstr "Is active"
+
+msgid "Whether this campaign is enabled"
+msgstr "Whether this campaign is enabled"
+
+msgid "Created by"
+msgstr "Created by"
+
+msgid "User who created this campaign"
+msgstr "User who created this campaign"
+
+msgid "Campaign"
+msgstr "Campaign"
+
+msgid "Campaigns"
+msgstr "Campaigns"
+
+msgid "Organization this coupon belongs to"
+msgstr "Organization this coupon belongs to"
+
+msgid "Campaign this coupon is linked to (optional)"
+msgstr "Campaign this coupon is linked to (optional)"
+
+msgid "Coupon code"
+msgstr "Coupon code"
+
+msgid "Unique coupon code within the organization"
+msgstr "Unique coupon code within the organization"
+
+msgid "Minimum order amount to apply coupon"
+msgstr "Minimum order amount to apply coupon"
+
+msgid "Maximum uses"
+msgstr "Maximum uses"
+
+msgid "Maximum number of times this coupon can be used"
+msgstr "Maximum number of times this coupon can be used"
+
+msgid "Used count"
+msgstr "Used count"
+
+msgid "Number of times this coupon has been redeemed"
+msgstr "Number of times this coupon has been redeemed"
+
+msgid "Valid from"
+msgstr "Valid from"
+
+msgid "When the coupon becomes valid"
+msgstr "When the coupon becomes valid"
+
+msgid "Valid until"
+msgstr "Valid until"
+
+msgid "When the coupon expires"
+msgstr "When the coupon expires"
+
+msgid "Whether this coupon is currently active"
+msgstr "Whether this coupon is currently active"
+
+msgid "Coupon"
+msgstr "Coupon"
+
+msgid "Coupons"
+msgstr "Coupons"
+
+msgid "Organization this usage belongs to"
+msgstr "Organization this usage belongs to"
+
+msgid "The coupon that was redeemed"
+msgstr "The coupon that was redeemed"
+
+msgid "Order"
+msgstr "Order"
+
+msgid "The order where the coupon was applied"
+msgstr "The order where the coupon was applied"
+
+msgid "Customer"
+msgstr "Customer"
+
+msgid "The customer who redeemed the coupon"
+msgstr "The customer who redeemed the coupon"
+
+msgid "Discount applied"
+msgstr "Discount applied"
+
+msgid "Actual discount amount applied to the order"
+msgstr "Actual discount amount applied to the order"
+
+msgid "Used at"
+msgstr "Used at"
+
+msgid "When the coupon was redeemed"
+msgstr "When the coupon was redeemed"
+
+msgid "Coupon Usage"
+msgstr "Coupon Usage"
+
+msgid "Coupon Usages"
+msgstr "Coupon Usages"
+
+msgid "Organization this referral belongs to"
+msgstr "Organization this referral belongs to"
+
+msgid "Referrer"
+msgstr "Referrer"
+
+msgid "Customer who made the referral"
+msgstr "Customer who made the referral"
+
+msgid "Referred"
+msgstr "Referred"
+
+msgid "Customer who was referred"
+msgstr "Customer who was referred"
+
+msgid "Referral code"
+msgstr "Referral code"
+
+msgid "Unique referral code used"
+msgstr "Unique referral code used"
+
+msgid "Reward type"
+msgstr "Reward type"
+
+msgid "How the referral reward is calculated"
+msgstr "How the referral reward is calculated"
+
+msgid "Reward value"
+msgstr "Reward value"
+
+msgid "Value of the referral reward"
+msgstr "Value of the referral reward"
+
+msgid "Is completed"
+msgstr "Is completed"
+
+msgid "Whether the referral reward has been fulfilled"
+msgstr "Whether the referral reward has been fulfilled"
+
+msgid "Completed at"
+msgstr "Completed at"
+
+msgid "When the referral was completed"
+msgstr "When the referral was completed"
+
+msgid "Referral"
+msgstr "Referral"
+
+msgid "Referrals"
+msgstr "Referrals"
+
+msgid "Basic organization information"
+msgstr "Basic organization information"
+
+msgid "Contact Information"
+msgstr "Contact Information"
+
+msgid "Status & Subscription"
+msgstr "Status & Subscription"
+
+msgid "Organization lifecycle and subscription status"
+msgstr "Organization lifecycle and subscription status"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgid "Organization-specific configuration (JSON)"
+msgstr "Organization-specific configuration (JSON)"
+
+msgid "Trial"
+msgstr "Trial"
+
+msgid "Storefront"
+msgstr "Storefront"
+
+msgid "Suspend selected organizations"
+msgstr "Suspend selected organizations"
+
+#, python-format
+msgid "%(count)d organization(s) have been suspended."
+msgstr "%(count)d organization(s) have been suspended."
+
+msgid "Activate selected organizations"
+msgstr "Activate selected organizations"
+
+#, python-format
+msgid "%(count)d organization(s) have been activated."
+msgstr "%(count)d organization(s) have been activated."
+
+msgid "Role Assignment"
+msgstr "Role Assignment"
+
+msgid "Role Assignments"
+msgstr "Role Assignments"
+
+msgid "Personal Information"
+msgstr "Personal Information"
+
+msgid "Tenant membership and account status"
+msgstr "Tenant membership and account status"
+
+msgid "Permissions"
+msgstr "Permissions"
+
+msgid "Important Dates"
+msgstr "Important Dates"
+
+msgid "Full Name"
+msgstr "Full Name"
+
+msgid "Roles"
+msgstr "Roles"
+
+msgid "Impersonate"
+msgstr "Impersonate"
+
+msgid "Suspend selected users"
+msgstr "Suspend selected users"
+
+#, python-format
+msgid "%(count)d user(s) have been suspended."
+msgstr "%(count)d user(s) have been suspended."
+
+msgid "Activate selected users"
+msgstr "Activate selected users"
+
+#, python-format
+msgid "%(count)d user(s) have been activated."
+msgstr "%(count)d user(s) have been activated."
+
+msgid "Mark email as verified"
+msgstr "Mark email as verified"
+
+#, python-format
+msgid "%(count)d user(s) email verified."
+msgstr "%(count)d user(s) email verified."
+
+msgid "Address"
+msgstr "Address"
+
+msgid "Contact"
+msgstr "Contact"
+
+msgid "Location"
+msgstr "Location"
+
+msgid "Configuration"
+msgstr "Configuration"
+
+msgid "Permission"
+msgstr "Permission"
+
+msgid "Scope"
+msgstr "Scope"
+
+msgid "Platform roles apply system-wide. Organization roles are tenant-scoped."
+msgstr "Platform roles apply system-wide. Organization roles are tenant-scoped."
+
+msgid "Permission Matrix"
+msgstr "Permission Matrix"
+
+msgid ""
+"Visual overview of all permissions assigned to this role, grouped by "
+"resource. Use the inline form below to add or remove permissions."
+msgstr ""
+"Visual overview of all permissions assigned to this role, grouped by "
+"resource. Use the inline form below to add or remove permissions."
+
+msgid "Assigned Users"
+msgstr "Assigned Users"
+
+msgid "Users currently assigned to this role."
+msgstr "Users currently assigned to this role."
+
+msgid "Users"
+msgstr "Users"
+
+msgid "System"
+msgstr "System"
+
+msgid "Duplicate selected roles (without users)"
+msgstr "Duplicate selected roles (without users)"
+
+#, python-format
+msgid "%(count)d role(s) have been duplicated."
+msgstr "%(count)d role(s) have been duplicated."
+
+msgid "Used By Roles"
+msgstr "Used By Roles"
+
+msgid "Roles that have this permission assigned."
+msgstr "Roles that have this permission assigned."
+
+msgid "Permission Code"
+msgstr "Permission Code"
+
+msgid "Resource"
+msgstr "Resource"
+
+msgid "Action"
+msgstr "Action"
+
+msgid "Used By"
+msgstr "Used By"
+
+msgid "Token Details"
+msgstr "Token Details"
+
+msgid "Client Information"
+msgstr "Client Information"
+
+msgid "Revocation"
+msgstr "Revocation"
+
+msgid "Revoke selected sessions"
+msgstr "Revoke selected sessions"
+
+#, python-format
+msgid "%(count)d session(s) have been revoked."
+msgstr "%(count)d session(s) have been revoked."
+
+msgid "Select a user and assign a role."
+msgstr "Select a user and assign a role."
+
+msgid ""
+"Organization scope is required for organization roles. Branch further "
+"restricts access to a specific location."
+msgstr ""
+"Organization scope is required for organization roles. Branch further "
+"restricts access to a specific location."
+
+msgid "Administration"
+msgstr "Administration"
+
+msgid ""
+"Set an expiration date for temporary role assignments. Leave blank for "
+"permanent assignments."
+msgstr ""
+"Set an expiration date for temporary role assignments. Leave blank for "
+"permanent assignments."
+
+msgid "Role"
+msgstr "Role"
+
+msgid "Granted By"
+msgstr "Granted By"
+
+msgid "Expires"
+msgstr "Expires"
+
+msgid "Revoke selected role assignments (set expired)"
+msgstr "Revoke selected role assignments (set expired)"
+
+#, python-format
+msgid "%(count)d role assignment(s) have been revoked."
+msgstr "%(count)d role assignment(s) have been revoked."
+
+msgid "Conditions"
+msgstr "Conditions"
+
+msgid ""
+"CASL-like conditions for fine-grained access control (JSON). Example: "
+"{\"organization_id\": \"${user.organization_id}\"} restricts access to the "
+"user's own organization data."
+msgstr ""
+"CASL-like conditions for fine-grained access control (JSON). Example: "
+"{\"organization_id\": \"${user.organization_id}\"} restricts access to the "
+"user's own organization data."
+
+msgid "Action Details"
+msgstr "Action Details"
+
+msgid "Context"
+msgstr "Context"
+
+msgid "Data Changes"
+msgstr "Data Changes"
+
+msgid "Morning"
+msgstr "Morning"
+
+msgid "Afternoon"
+msgstr "Afternoon"
+
+msgid "Evening"
+msgstr "Evening"
+
+msgid "Night"
+msgstr "Night"
+
+msgid "Custom"
+msgstr "Custom"
+
+msgid "Scheduled"
+msgstr "Scheduled"
+
+msgid "Checked In"
+msgstr "Checked In"
+
+msgid "Checked Out"
+msgstr "Checked Out"
+
+msgid "Absent"
+msgstr "Absent"
+
+msgid "Late"
+msgstr "Late"
+
+msgid "Deleted at"
+msgstr "Deleted at"
+
+msgid "Timestamp when record was soft-deleted (null = active)"
+msgstr "Timestamp when record was soft-deleted (null = active)"
+
+msgid "Created at"
+msgstr "Created at"
+
+msgid "Timestamp when record was created"
+msgstr "Timestamp when record was created"
+
+msgid "Updated at"
+msgstr "Updated at"
+
+msgid "Timestamp when record was last updated"
+msgstr "Timestamp when record was last updated"
+
+msgid "Display name of the organization"
+msgstr "Display name of the organization"
+
+msgid "Slug"
+msgstr "Slug"
+
+msgid "URL-friendly unique identifier"
+msgstr "URL-friendly unique identifier"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Primary contact email for the organization"
+msgstr "Primary contact email for the organization"
+
+msgid "Phone"
+msgstr "Phone"
+
+msgid "Contact phone number"
+msgstr "Contact phone number"
+
+msgid "Logo URL"
+msgstr "Logo URL"
+
+msgid "URL to organization logo image"
+msgstr "URL to organization logo image"
+
+msgid "Organization-specific settings (JSON)"
+msgstr "Organization-specific settings (JSON)"
+
+msgid "Organization lifecycle status"
+msgstr "Organization lifecycle status"
+
+msgid "Trial ends at"
+msgstr "Trial ends at"
+
+msgid "When trial period ends (null if not on trial)"
+msgstr "When trial period ends (null if not on trial)"
+
+msgid "Organizations"
+msgstr "Organizations"
+
+msgid "The Email field must be set"
+msgstr "The Email field must be set"
+
+msgid "Superuser must have is_staff=True."
+msgstr "Superuser must have is_staff=True."
+
+msgid "Superuser must have is_superuser=True."
+msgstr "Superuser must have is_superuser=True."
+
+msgid "Email address (used as username for authentication)"
+msgstr "Email address (used as username for authentication)"
+
+msgid "First name"
+msgstr "First name"
+
+msgid "User's first name"
+msgstr "User's first name"
+
+msgid "Last name"
+msgstr "Last name"
+
+msgid "User's last name"
+msgstr "User's last name"
+
+msgid "Avatar URL"
+msgstr "Avatar URL"
+
+msgid "URL to user's avatar image"
+msgstr "URL to user's avatar image"
+
+msgid "User account status"
+msgstr "User account status"
+
+msgid "Staff status"
+msgstr "Staff status"
+
+msgid "Designates whether the user can log into Django admin."
+msgstr "Designates whether the user can log into Django admin."
+
+msgid "Email verified at"
+msgstr "Email verified at"
+
+msgid "Timestamp when email was verified (null if not verified)"
+msgstr "Timestamp when email was verified (null if not verified)"
+
+msgid "Last login at"
+msgstr "Last login at"
+
+msgid "Timestamp of last successful login"
+msgstr "Timestamp of last successful login"
+
+msgid "Organization this user belongs to (null for platform users)"
+msgstr "Organization this user belongs to (null for platform users)"
+
+msgid "Organization this branch belongs to"
+msgstr "Organization this branch belongs to"
+
+msgid "Display name of the branch"
+msgstr "Display name of the branch"
+
+msgid "URL-friendly identifier (unique within organization)"
+msgstr "URL-friendly identifier (unique within organization)"
+
+msgid "Full street address"
+msgstr "Full street address"
+
+msgid "City"
+msgstr "City"
+
+msgid "City name"
+msgstr "City name"
+
+msgid "District"
+msgstr "District"
+
+msgid "District or neighborhood"
+msgstr "District or neighborhood"
+
+msgid "Postal code"
+msgstr "Postal code"
+
+msgid "Postal or ZIP code"
+msgstr "Postal or ZIP code"
+
+msgid "Country"
+msgstr "Country"
+
+msgid "Country code (ISO 3166-1 alpha-2)"
+msgstr "Country code (ISO 3166-1 alpha-2)"
+
+msgid "Branch contact phone number"
+msgstr "Branch contact phone number"
+
+msgid "Branch contact email"
+msgstr "Branch contact email"
+
+msgid "Latitude"
+msgstr "Latitude"
+
+msgid "GPS latitude coordinate"
+msgstr "GPS latitude coordinate"
+
+msgid "Longitude"
+msgstr "Longitude"
+
+msgid "GPS longitude coordinate"
+msgstr "GPS longitude coordinate"
+
+msgid "Timezone"
+msgstr "Timezone"
+
+msgid "Branch timezone (IANA format)"
+msgstr "Branch timezone (IANA format)"
+
+msgid "Branch-specific settings (JSON)"
+msgstr "Branch-specific settings (JSON)"
+
+msgid "Operating hours"
+msgstr "Operating hours"
+
+msgid "Daily operating hours (JSON)"
+msgstr "Daily operating hours (JSON)"
+
+msgid "Branch lifecycle status"
+msgstr "Branch lifecycle status"
+
+msgid "Is main branch"
+msgstr "Is main branch"
+
+msgid "Whether this is the main/headquarters branch"
+msgstr "Whether this is the main/headquarters branch"
+
+msgid "Branch"
+msgstr "Branch"
+
+msgid "Branches"
+msgstr "Branches"
+
+msgid "Internal role identifier (lowercase, underscore-separated)"
+msgstr "Internal role identifier (lowercase, underscore-separated)"
+
+msgid "Display name"
+msgstr "Display name"
+
+msgid "Human-readable role name"
+msgstr "Human-readable role name"
+
+msgid "Detailed description of the role and its capabilities"
+msgstr "Detailed description of the role and its capabilities"
+
+msgid "Role scope (PLATFORM or ORGANIZATION)"
+msgstr "Role scope (PLATFORM or ORGANIZATION)"
+
+msgid "Is system role"
+msgstr "Is system role"
+
+msgid "System roles are predefined and cannot be modified"
+msgstr "System roles are predefined and cannot be modified"
+
+msgid "Organization for org-scoped roles (null for platform roles)"
+msgstr "Organization for org-scoped roles (null for platform roles)"
+
+msgid "Permissions granted to this role"
+msgstr "Permissions granted to this role"
+
+msgid "Resource name (e.g., menu, order, user)"
+msgstr "Resource name (e.g., menu, order, user)"
+
+msgid "Action type (view, create, update, delete, etc.)"
+msgstr "Action type (view, create, update, delete, etc.)"
+
+msgid "Human-readable description of the permission"
+msgstr "Human-readable description of the permission"
+
+msgid "Is system permission"
+msgstr "Is system permission"
+
+msgid "System permissions are predefined and cannot be deleted"
+msgstr "System permissions are predefined and cannot be deleted"
+
+msgid "User who owns this session"
+msgstr "User who owns this session"
+
+msgid "Refresh token"
+msgstr "Refresh token"
+
+msgid "Hashed refresh token"
+msgstr "Hashed refresh token"
+
+msgid "User agent"
+msgstr "User agent"
+
+msgid "Browser/client user agent string"
+msgstr "Browser/client user agent string"
+
+msgid "IP address"
+msgstr "IP address"
+
+msgid "Client IP address"
+msgstr "Client IP address"
+
+msgid "Expires at"
+msgstr "Expires at"
+
+msgid "When the session/refresh token expires"
+msgstr "When the session/refresh token expires"
+
+msgid "Session status"
+msgstr "Session status"
+
+msgid "Revoked at"
+msgstr "Revoked at"
+
+msgid "When the session was revoked"
+msgstr "When the session was revoked"
+
+msgid "Revoke reason"
+msgstr "Revoke reason"
+
+msgid "Reason for session revocation"
+msgstr "Reason for session revocation"
+
+msgid "Session"
+msgstr "Session"
+
+msgid "Sessions"
+msgstr "Sessions"
+
+msgid "User who has this role"
+msgstr "User who has this role"
+
+msgid "Role assigned to the user"
+msgstr "Role assigned to the user"
+
+msgid "Organization scope for this role assignment"
+msgstr "Organization scope for this role assignment"
+
+msgid "Optional branch-level restriction"
+msgstr "Optional branch-level restriction"
+
+msgid "Granted by"
+msgstr "Granted by"
+
+msgid "User who granted this role"
+msgstr "User who granted this role"
+
+msgid "Optional expiration for temporary role assignments"
+msgstr "Optional expiration for temporary role assignments"
+
+msgid "User Role"
+msgstr "User Role"
+
+msgid "User Roles"
+msgstr "User Roles"
+
+msgid "Role that has this permission"
+msgstr "Role that has this permission"
+
+msgid "Permission granted to the role"
+msgstr "Permission granted to the role"
+
+msgid "CASL-like conditions for fine-grained access control"
+msgstr "CASL-like conditions for fine-grained access control"
+
+msgid "Role Permission"
+msgstr "Role Permission"
+
+msgid "Role Permissions"
+msgstr "Role Permissions"
+
+msgid ""
+"Organization context for this audit log (null for platform-level actions)"
+msgstr ""
+"Organization context for this audit log (null for platform-level actions)"
+
+msgid "User who performed the action (null for system actions)"
+msgstr "User who performed the action (null for system actions)"
+
+msgid "Type of action performed"
+msgstr "Type of action performed"
+
+msgid "Resource type affected (e.g., menu, order, user)"
+msgstr "Resource type affected (e.g., menu, order, user)"
+
+msgid "Resource ID"
+msgstr "Resource ID"
+
+msgid "ID of the affected resource"
+msgstr "ID of the affected resource"
+
+msgid "Human-readable description of the action"
+msgstr "Human-readable description of the action"
+
+msgid "Old values"
+msgstr "Old values"
+
+msgid "JSON snapshot of values before the change"
+msgstr "JSON snapshot of values before the change"
+
+msgid "New values"
+msgstr "New values"
+
+msgid "JSON snapshot of values after the change"
+msgstr "JSON snapshot of values after the change"
+
+msgid "Client user agent string"
+msgstr "Client user agent string"
+
+msgid "Additional context data (JSON)"
+msgstr "Additional context data (JSON)"
+
+msgid "Timestamp when the action occurred"
+msgstr "Timestamp when the action occurred"
+
+msgid "Audit Log"
+msgstr "Audit Log"
+
+msgid "Audit Logs"
+msgstr "Audit Logs"
+
+msgid "Organization this shift belongs to"
+msgstr "Organization this shift belongs to"
+
+msgid "Display name of the shift"
+msgstr "Display name of the shift"
+
+msgid "Shift type"
+msgstr "Shift type"
+
+msgid "Type of shift"
+msgstr "Type of shift"
+
+msgid "Start time"
+msgstr "Start time"
+
+msgid "When the shift starts"
+msgstr "When the shift starts"
+
+msgid "End time"
+msgstr "End time"
+
+msgid "When the shift ends"
+msgstr "When the shift ends"
+
+msgid "Whether this shift is currently active"
+msgstr "Whether this shift is currently active"
+
+msgid "Shift"
+msgstr "Shift"
+
+msgid "Shifts"
+msgstr "Shifts"
+
+msgid "Organization this schedule belongs to"
+msgstr "Organization this schedule belongs to"
+
+msgid "Staff member assigned to this shift"
+msgstr "Staff member assigned to this shift"
+
+msgid "Shift assigned to the staff member"
+msgstr "Shift assigned to the staff member"
+
+msgid "Date of the scheduled shift"
+msgstr "Date of the scheduled shift"
+
+msgid "Actual start"
+msgstr "Actual start"
+
+msgid "Actual check-in time"
+msgstr "Actual check-in time"
+
+msgid "Actual end"
+msgstr "Actual end"
+
+msgid "Actual check-out time"
+msgstr "Actual check-out time"
+
+msgid "Current status of the schedule entry"
+msgstr "Current status of the schedule entry"
+
+msgid "Notes"
+msgstr "Notes"
+
+msgid "Optional notes about the schedule entry"
+msgstr "Optional notes about the schedule entry"
+
+msgid "Staff Schedule"
+msgstr "Staff Schedule"
+
+msgid "Staff Schedules"
+msgstr "Staff Schedules"
+
+msgid "Organization this metric belongs to"
+msgstr "Organization this metric belongs to"
+
+msgid "Staff member these metrics are for"
+msgstr "Staff member these metrics are for"
+
+msgid "Date these metrics are for"
+msgstr "Date these metrics are for"
+
+msgid "Orders handled"
+msgstr "Orders handled"
+
+msgid "Number of orders handled"
+msgstr "Number of orders handled"
+
+msgid "Revenue generated"
+msgstr "Revenue generated"
+
+msgid "Total revenue generated"
+msgstr "Total revenue generated"
+
+msgid "Average value per order"
+msgstr "Average value per order"
+
+msgid "Average service time (seconds)"
+msgstr "Average service time (seconds)"
+
+msgid "Average service time in seconds"
+msgstr "Average service time in seconds"
+
+msgid "Customer rating average"
+msgstr "Customer rating average"
+
+msgid "Average customer rating"
+msgstr "Average customer rating"
+
+msgid "Rating count"
+msgstr "Rating count"
+
+msgid "Number of ratings received"
+msgstr "Number of ratings received"
+
+msgid "Upsell count"
+msgstr "Upsell count"
+
+msgid "Number of successful upsells"
+msgstr "Number of successful upsells"
+
+msgid "Tips amount"
+msgstr "Tips amount"
+
+msgid "Total tips received"
+msgstr "Total tips received"
+
+msgid "Staff Metric"
+msgstr "Staff Metric"
+
+msgid "Staff Metrics"
+msgstr "Staff Metrics"
+
+msgid "An organization with this slug already exists."
+msgstr "An organization with this slug already exists."
+
+msgid "Password (minimum 12 characters)"
+msgstr "Password (minimum 12 characters)"
+
+msgid "Confirm password"
+msgstr "Confirm password"
+
+msgid "Role ID to assign to the user"
+msgstr "Role ID to assign to the user"
+
+msgid "A user with this email already exists."
+msgstr "A user with this email already exists."
+
+msgid "Passwords do not match."
+msgstr "Passwords do not match."
+
+msgid "You cannot suspend your own account."
+msgstr "You cannot suspend your own account."
+
+msgid "User email address"
+msgstr "User email address"
+
+msgid "User password"
+msgstr "User password"
+
+msgid "No account found with this email address."
+msgstr "No account found with this email address."
+
+msgid "This account has been deleted."
+msgstr "This account has been deleted."
+
+msgid "This account has been suspended. Please contact support."
+msgstr "This account has been suspended. Please contact support."
+
+msgid "Please complete your registration first."
+msgstr "Please complete your registration first."
+
+msgid "Invalid password."
+msgstr "Invalid password."
+
+msgid "Your organization has been suspended. Please contact support."
+msgstr "Your organization has been suspended. Please contact support."
+
+msgid "Your organization has been deleted."
+msgstr "Your organization has been deleted."
+
+msgid "JWT access token"
+msgstr "JWT access token"
+
+msgid "JWT refresh token"
+msgstr "JWT refresh token"
+
+msgid "Authenticated user details"
+msgstr "Authenticated user details"
+
+msgid "User organization (if any)"
+msgstr "User organization (if any)"
+
+msgid "JWT refresh token to invalidate"
+msgstr "JWT refresh token to invalidate"
+
+msgid "Refresh token is required."
+msgstr "Refresh token is required."
+
+msgid "Invalid or expired refresh token."
+msgstr "Invalid or expired refresh token."
+
+msgid "Current password"
+msgstr "Current password"
+
+msgid "New password (minimum 12 characters)"
+msgstr "New password (minimum 12 characters)"
+
+msgid "Confirm new password"
+msgstr "Confirm new password"
+
+msgid "Current password is incorrect."
+msgstr "Current password is incorrect."
+
+msgid "New password must be different from current password."
+msgstr "New password must be different from current password."
+
+msgid "Invalid credentials"
+msgstr "Invalid credentials"
+
+msgid "Invalid request"
+msgstr "Invalid request"
+
+msgid "Successfully logged out"
+msgstr "Successfully logged out"
+
+msgid "Invalid or expired refresh token"
+msgstr "Invalid or expired refresh token"
+
+msgid "Refresh token has expired"
+msgstr "Refresh token has expired"
+
+msgid "Token is required"
+msgstr "Token is required"
+
+msgid "Invalid data"
+msgstr "Invalid data"
+
+msgid "Password changed successfully. Please log in again."
+msgstr "Password changed successfully. Please log in again."
+
+msgid "Session not found"
+msgstr "Session not found"
+
+msgid "Session revoked successfully"
+msgstr "Session revoked successfully"
+
+msgid "All sessions revoked"
+msgstr "All sessions revoked"
+
+msgid "You cannot delete your own account."
+msgstr "You cannot delete your own account."
+
+msgid "Preferences"
+msgstr "Preferences"
+
+msgid "Loyalty & Stats"
+msgstr "Loyalty & Stats"
+
+msgid "Marketing"
+msgstr "Marketing"
+
+msgid "Visit Details"
+msgstr "Visit Details"
+
+msgid "Device Information"
+msgstr "Device Information"
+
+msgid "Feedback"
+msgstr "Feedback"
+
+msgid "Status & Response"
+msgstr "Status & Response"
+
+msgid "Anonymous"
+msgstr "Anonymous"
+
+msgid "Transaction"
+msgstr "Transaction"
+
+msgid "Expiration"
+msgstr "Expiration"
+
+msgid "Points"
+msgstr "Points"
+
+msgid "Dietary"
+msgstr "Dietary"
+
+msgid "Allergen"
+msgstr "Allergen"
+
+msgid "Seating"
+msgstr "Seating"
+
+msgid "Payment"
+msgstr "Payment"
+
+msgid "Communication"
+msgstr "Communication"
+
+msgid "Promoter"
+msgstr "Promoter"
+
+msgid "Passive"
+msgstr "Passive"
+
+msgid "Detractor"
+msgstr "Detractor"
+
+msgid "QR Code"
+msgstr "QR Code"
+
+msgid "SMS"
+msgstr "SMS"
+
+msgid "In App"
+msgstr "In App"
+
+msgid "Organization this customer belongs to"
+msgstr "Organization this customer belongs to"
+
+msgid "Customer's display name"
+msgstr "Customer's display name"
+
+msgid "Customer's email address (unique per organization)"
+msgstr "Customer's email address (unique per organization)"
+
+msgid "Customer's phone number"
+msgstr "Customer's phone number"
+
+msgid "URL to customer's profile image"
+msgstr "URL to customer's profile image"
+
+msgid "Language preference"
+msgstr "Language preference"
+
+msgid "Preferred language code (e.g., 'tr', 'en')"
+msgstr "Preferred language code (e.g., 'tr', 'en')"
+
+msgid "Source"
+msgstr "Source"
+
+msgid "How the customer was acquired"
+msgstr "How the customer was acquired"
+
+msgid "Staff notes about the customer"
+msgstr "Staff notes about the customer"
+
+msgid "Customer preferences and settings (JSON)"
+msgstr "Customer preferences and settings (JSON)"
+
+msgid "Total orders"
+msgstr "Total orders"
+
+msgid "Total number of orders placed"
+msgstr "Total number of orders placed"
+
+msgid "Total spent"
+msgstr "Total spent"
+
+msgid "Total amount spent (denormalized)"
+msgstr "Total amount spent (denormalized)"
+
+msgid "Loyalty points balance"
+msgstr "Loyalty points balance"
+
+msgid "Current loyalty points balance"
+msgstr "Current loyalty points balance"
+
+msgid "First visit at"
+msgstr "First visit at"
+
+msgid "Date and time of first visit"
+msgstr "Date and time of first visit"
+
+msgid "Last visit at"
+msgstr "Last visit at"
+
+msgid "Date and time of most recent visit"
+msgstr "Date and time of most recent visit"
+
+msgid "Marketing consent"
+msgstr "Marketing consent"
+
+msgid "Whether customer consented to receive marketing communications"
+msgstr "Whether customer consented to receive marketing communications"
+
+msgid "Marketing consent at"
+msgstr "Marketing consent at"
+
+msgid "When marketing consent was given"
+msgstr "When marketing consent was given"
+
+msgid "RFM Segment"
+msgstr "RFM Segment"
+
+msgid "RFM Recency Score"
+msgstr "RFM Recency Score"
+
+msgid "RFM Frequency Score"
+msgstr "RFM Frequency Score"
+
+msgid "RFM Monetary Score"
+msgstr "RFM Monetary Score"
+
+msgid "Lifetime Value"
+msgstr "Lifetime Value"
+
+msgid "Churn Risk Score"
+msgstr "Churn Risk Score"
+
+msgid "Last Visit Date"
+msgstr "Last Visit Date"
+
+msgid "Organization this visit belongs to"
+msgstr "Organization this visit belongs to"
+
+msgid "Customer who made this visit"
+msgstr "Customer who made this visit"
+
+msgid "Branch where the visit occurred"
+msgstr "Branch where the visit occurred"
+
+msgid "Visited at"
+msgstr "Visited at"
+
+msgid "When the visit occurred"
+msgstr "When the visit occurred"
+
+msgid "How the visit was recorded"
+msgstr "How the visit was recorded"
+
+msgid "Table ID"
+msgstr "Table ID"
+
+msgid "Table where customer was seated (if applicable)"
+msgstr "Table where customer was seated (if applicable)"
+
+msgid "Order ID"
+msgstr "Order ID"
+
+msgid "Order placed during this visit (if applicable)"
+msgstr "Order placed during this visit (if applicable)"
+
+msgid "Device info"
+msgstr "Device info"
+
+msgid "Device and browser information (JSON)"
+msgstr "Device and browser information (JSON)"
+
+msgid "Duration (minutes)"
+msgstr "Duration (minutes)"
+
+msgid "How long the customer stayed (estimated)"
+msgstr "How long the customer stayed (estimated)"
+
+msgid "Customer Visit"
+msgstr "Customer Visit"
+
+msgid "Customer Visits"
+msgstr "Customer Visits"
+
+msgid "Organization this feedback belongs to"
+msgstr "Organization this feedback belongs to"
+
+msgid "Customer who gave this feedback (null for anonymous)"
+msgstr "Customer who gave this feedback (null for anonymous)"
+
+msgid "Order this feedback is about (if applicable)"
+msgstr "Order this feedback is about (if applicable)"
+
+msgid "Feedback type"
+msgstr "Feedback type"
+
+msgid "Category of feedback"
+msgstr "Category of feedback"
+
+msgid "Rating on a 1-5 scale"
+msgstr "Rating on a 1-5 scale"
+
+msgid "Comment"
+msgstr "Comment"
+
+msgid "Customer feedback comment"
+msgstr "Customer feedback comment"
+
+msgid "Processing status of the feedback"
+msgstr "Processing status of the feedback"
+
+msgid "Staff response"
+msgstr "Staff response"
+
+msgid "Response from staff to the feedback"
+msgstr "Response from staff to the feedback"
+
+msgid "Responded by"
+msgstr "Responded by"
+
+msgid "User who responded to this feedback"
+msgstr "User who responded to this feedback"
+
+msgid "Responded at"
+msgstr "Responded at"
+
+msgid "When the response was made"
+msgstr "When the response was made"
+
+msgid "Is public"
+msgstr "Is public"
+
+msgid "Whether this feedback can be shown publicly"
+msgstr "Whether this feedback can be shown publicly"
+
+msgid "Additional metadata (JSON)"
+msgstr "Additional metadata (JSON)"
+
+msgid "Feedbacks"
+msgstr "Feedbacks"
+
+msgid "Organization this transaction belongs to"
+msgstr "Organization this transaction belongs to"
+
+msgid "Customer this transaction is for"
+msgstr "Customer this transaction is for"
+
+msgid "Transaction type"
+msgstr "Transaction type"
+
+msgid "Type of loyalty point transaction"
+msgstr "Type of loyalty point transaction"
+
+msgid "Number of points (positive for credit, negative for debit)"
+msgstr "Number of points (positive for credit, negative for debit)"
+
+msgid "Balance after"
+msgstr "Balance after"
+
+msgid "Customer's points balance after this transaction"
+msgstr "Customer's points balance after this transaction"
+
+msgid "Order associated with this transaction (if applicable)"
+msgstr "Order associated with this transaction (if applicable)"
+
+msgid "Human-readable description of the transaction"
+msgstr "Human-readable description of the transaction"
+
+msgid "When these points expire (null = never)"
+msgstr "When these points expire (null = never)"
+
+msgid "Additional transaction data (JSON)"
+msgstr "Additional transaction data (JSON)"
+
+msgid "Loyalty Point"
+msgstr "Loyalty Point"
+
+msgid "Loyalty Points"
+msgstr "Loyalty Points"
+
+msgid "Organization this preference belongs to"
+msgstr "Organization this preference belongs to"
+
+msgid "Customer this preference belongs to"
+msgstr "Customer this preference belongs to"
+
+msgid "Preference type"
+msgstr "Preference type"
+
+msgid "Category of preference"
+msgstr "Category of preference"
+
+msgid "Key"
+msgstr "Key"
+
+msgid "Preference key identifier (e.g., 'vegetarian', 'window_seat')"
+msgstr "Preference key identifier (e.g., 'vegetarian', 'window_seat')"
+
+msgid "Preference value (e.g., 'true', 'always')"
+msgstr "Preference value (e.g., 'true', 'always')"
+
+msgid "Auto detected"
+msgstr "Auto detected"
+
+msgid "Whether this preference was automatically detected"
+msgstr "Whether this preference was automatically detected"
+
+msgid "Confidence"
+msgstr "Confidence"
+
+msgid "Confidence score for auto-detected preferences (0-1)"
+msgstr "Confidence score for auto-detected preferences (0-1)"
+
+msgid "Customer Preference"
+msgstr "Customer Preference"
+
+msgid "Customer Preferences"
+msgstr "Customer Preferences"
+
+msgid "Organization this survey belongs to"
+msgstr "Organization this survey belongs to"
+
+msgid "Customer who submitted this survey (null for anonymous)"
+msgstr "Customer who submitted this survey (null for anonymous)"
+
+msgid "Order this survey is about (if applicable)"
+msgstr "Order this survey is about (if applicable)"
+
+msgid "Score"
+msgstr "Score"
+
+msgid "NPS score (0-10)"
+msgstr "NPS score (0-10)"
+
+msgid "Optional free-text comment"
+msgstr "Optional free-text comment"
+
+msgid "NPS category (auto-calculated from score)"
+msgstr "NPS category (auto-calculated from score)"
+
+msgid "Channel"
+msgstr "Channel"
+
+msgid "Channel through which survey was collected"
+msgstr "Channel through which survey was collected"
+
+msgid "NPS Survey"
+msgstr "NPS Survey"
+
+msgid "NPS Surveys"
+msgstr "NPS Surveys"
+
+msgid "A customer with this email already exists."
+msgstr "A customer with this email already exists."
+
+msgid "Rating must be between 1 and 5."
+msgstr "Rating must be between 1 and 5."
+
+msgid "Staff response to the feedback"
+msgstr "Staff response to the feedback"
+
+msgid "Response added successfully"
+msgstr "Response added successfully"
+
+msgid "Feedback is now public"
+msgstr "Feedback is now public"
+
+msgid "Feedback archived"
+msgstr "Feedback archived"
+
+msgid "Purchase"
+msgstr "Purchase"
+
+msgid "Sale"
+msgstr "Sale"
+
+msgid "Waste"
+msgstr "Waste"
+
+msgid "Adjustment"
+msgstr "Adjustment"
+
+msgid "Transfer"
+msgstr "Transfer"
+
+msgid "Return"
+msgstr "Return"
+
+msgid "Critical"
+msgstr "Critical"
+
+msgid "Low"
+msgstr "Low"
+
+msgid "Normal"
+msgstr "Normal"
+
+msgid "Excess"
+msgstr "Excess"
+
+msgid "Kilogram"
+msgstr "Kilogram"
+
+msgid "Gram"
+msgstr "Gram"
+
+msgid "Liter"
+msgstr "Liter"
+
+msgid "Milliliter"
+msgstr "Milliliter"
+
+msgid "Piece"
+msgstr "Piece"
+
+msgid "Pack"
+msgstr "Pack"
+
+msgid "Box"
+msgstr "Box"
+
+msgid "Submitted"
+msgstr "Submitted"
+
+msgid "Approved"
+msgstr "Approved"
+
+msgid "Received"
+msgstr "Received"
+
+msgid "Organization this supplier belongs to"
+msgstr "Organization this supplier belongs to"
+
+msgid "Supplier company name"
+msgstr "Supplier company name"
+
+msgid "Contact person"
+msgstr "Contact person"
+
+msgid "Primary contact person at the supplier"
+msgstr "Primary contact person at the supplier"
+
+msgid "Supplier contact email"
+msgstr "Supplier contact email"
+
+msgid "Supplier contact phone"
+msgstr "Supplier contact phone"
+
+msgid "Supplier full address"
+msgstr "Supplier full address"
+
+msgid "Tax ID"
+msgstr "Tax ID"
+
+msgid "Supplier tax identification number"
+msgstr "Supplier tax identification number"
+
+msgid "Whether this supplier is currently active"
+msgstr "Whether this supplier is currently active"
+
+msgid "Supplier rating from 1 to 5"
+msgstr "Supplier rating from 1 to 5"
+
+msgid "Additional notes about the supplier"
+msgstr "Additional notes about the supplier"
+
+msgid "Supplier"
+msgstr "Supplier"
+
+msgid "Suppliers"
+msgstr "Suppliers"
+
+msgid "Organization this inventory item belongs to"
+msgstr "Organization this inventory item belongs to"
+
+msgid "Name of the inventory item"
+msgstr "Name of the inventory item"
+
+msgid "SKU"
+msgstr "SKU"
+
+msgid "Stock Keeping Unit code"
+msgstr "Stock Keeping Unit code"
+
+msgid "Item category (e.g., Dairy, Produce, Meat)"
+msgstr "Item category (e.g., Dairy, Produce, Meat)"
+
+msgid "Unit type"
+msgstr "Unit type"
+
+msgid "Unit of measurement for this item"
+msgstr "Unit of measurement for this item"
+
+msgid "Current stock"
+msgstr "Current stock"
+
+msgid "Current stock quantity in the specified unit"
+msgstr "Current stock quantity in the specified unit"
+
+msgid "Minimum stock level"
+msgstr "Minimum stock level"
+
+msgid "Minimum stock threshold before alert"
+msgstr "Minimum stock threshold before alert"
+
+msgid "Maximum stock level"
+msgstr "Maximum stock level"
+
+msgid "Maximum recommended stock level"
+msgstr "Maximum recommended stock level"
+
+msgid "Cost per unit"
+msgstr "Cost per unit"
+
+msgid "Cost per unit in the base currency"
+msgstr "Cost per unit in the base currency"
+
+msgid "Primary supplier for this item"
+msgstr "Primary supplier for this item"
+
+msgid "Whether this inventory item is actively tracked"
+msgstr "Whether this inventory item is actively tracked"
+
+msgid "Inventory Item"
+msgstr "Inventory Item"
+
+msgid "Inventory Items"
+msgstr "Inventory Items"
+
+msgid "Organization this movement belongs to"
+msgstr "Organization this movement belongs to"
+
+msgid "Inventory item"
+msgstr "Inventory item"
+
+msgid "The inventory item affected by this movement"
+msgstr "The inventory item affected by this movement"
+
+msgid "Movement type"
+msgstr "Movement type"
+
+msgid "Type of stock movement"
+msgstr "Type of stock movement"
+
+msgid "Quantity"
+msgstr "Quantity"
+
+msgid "Quantity moved (positive for additions, negative for removals)"
+msgstr "Quantity moved (positive for additions, negative for removals)"
+
+msgid "Unit cost"
+msgstr "Unit cost"
+
+msgid "Cost per unit at the time of movement"
+msgstr "Cost per unit at the time of movement"
+
+msgid "Total cost"
+msgstr "Total cost"
+
+msgid "Total cost of this movement"
+msgstr "Total cost of this movement"
+
+msgid "Reference number"
+msgstr "Reference number"
+
+msgid "External reference number (invoice, PO, etc.)"
+msgstr "External reference number (invoice, PO, etc.)"
+
+msgid "Additional notes about this movement"
+msgstr "Additional notes about this movement"
+
+msgid "User who created this movement"
+msgstr "User who created this movement"
+
+msgid "Stock Movement"
+msgstr "Stock Movement"
+
+msgid "Stock Movements"
+msgstr "Stock Movements"
+
+msgid "Organization this purchase order belongs to"
+msgstr "Organization this purchase order belongs to"
+
+msgid "Supplier for this purchase order"
+msgstr "Supplier for this purchase order"
+
+msgid "Order number"
+msgstr "Order number"
+
+msgid "Unique order reference number"
+msgstr "Unique order reference number"
+
+msgid "Current status of the purchase order"
+msgstr "Current status of the purchase order"
+
+msgid "Order date"
+msgstr "Order date"
+
+msgid "Date the order was placed"
+msgstr "Date the order was placed"
+
+msgid "Expected delivery"
+msgstr "Expected delivery"
+
+msgid "Expected delivery date"
+msgstr "Expected delivery date"
+
+msgid "Actual delivery"
+msgstr "Actual delivery"
+
+msgid "Actual delivery date"
+msgstr "Actual delivery date"
+
+msgid "Subtotal"
+msgstr "Subtotal"
+
+msgid "Total before tax"
+msgstr "Total before tax"
+
+msgid "Tax amount"
+msgstr "Tax amount"
+
+msgid "Total tax amount"
+msgstr "Total tax amount"
+
+msgid "Total amount"
+msgstr "Total amount"
+
+msgid "Total order amount including tax"
+msgstr "Total order amount including tax"
+
+msgid "Additional notes for this purchase order"
+msgstr "Additional notes for this purchase order"
+
+msgid "User who created this purchase order"
+msgstr "User who created this purchase order"
+
+msgid "Approved by"
+msgstr "Approved by"
+
+msgid "User who approved this purchase order"
+msgstr "User who approved this purchase order"
+
+msgid "Purchase Order"
+msgstr "Purchase Order"
+
+msgid "Purchase Orders"
+msgstr "Purchase Orders"
+
+msgid "Purchase order"
+msgstr "Purchase order"
+
+msgid "Parent purchase order"
+msgstr "Parent purchase order"
+
+msgid "The inventory item being ordered"
+msgstr "The inventory item being ordered"
+
+msgid "Quantity ordered"
+msgstr "Quantity ordered"
+
+msgid "Quantity ordered from supplier"
+msgstr "Quantity ordered from supplier"
+
+msgid "Quantity received"
+msgstr "Quantity received"
+
+msgid "Quantity actually received"
+msgstr "Quantity actually received"
+
+msgid "Total line item cost"
+msgstr "Total line item cost"
+
+msgid "Purchase Order Item"
+msgstr "Purchase Order Item"
+
+msgid "Purchase Order Items"
+msgstr "Purchase Order Items"
+
+msgid "Organization this recipe belongs to"
+msgstr "Organization this recipe belongs to"
+
+msgid "Menu product this recipe produces"
+msgstr "Menu product this recipe produces"
+
+msgid "Recipe name"
+msgstr "Recipe name"
+
+msgid "Recipe description or preparation instructions"
+msgstr "Recipe description or preparation instructions"
+
+msgid "Yield quantity"
+msgstr "Yield quantity"
+
+msgid "Number of portions/units this recipe produces"
+msgstr "Number of portions/units this recipe produces"
+
+msgid "Yield unit"
+msgstr "Yield unit"
+
+msgid "Unit of measurement for the yield"
+msgstr "Unit of measurement for the yield"
+
+msgid "Preparation time (minutes)"
+msgstr "Preparation time (minutes)"
+
+msgid "Estimated preparation time in minutes"
+msgstr "Estimated preparation time in minutes"
+
+msgid "Whether this recipe is currently in use"
+msgstr "Whether this recipe is currently in use"
+
+msgid "Recipe"
+msgstr "Recipe"
+
+msgid "Recipes"
+msgstr "Recipes"
+
+msgid "Parent recipe"
+msgstr "Parent recipe"
+
+msgid "The inventory item used as ingredient"
+msgstr "The inventory item used as ingredient"
+
+msgid "Quantity required"
+msgstr "Quantity required"
+
+msgid "Amount of this ingredient required per recipe yield"
+msgstr "Amount of this ingredient required per recipe yield"
+
+msgid "Unit of measurement for this ingredient"
+msgstr "Unit of measurement for this ingredient"
+
+msgid "Waste percentage"
+msgstr "Waste percentage"
+
+msgid "Expected waste percentage (0-100)"
+msgstr "Expected waste percentage (0-100)"
+
+msgid "Recipe Ingredient"
+msgstr "Recipe Ingredient"
+
+msgid "Recipe Ingredients"
+msgstr "Recipe Ingredients"
+
+msgid "Preview"
+msgstr "Preview"
+
+msgid "Size"
+msgstr "Size"
+
+msgid "Details"
+msgstr "Details"
+
+msgid "Statistics"
+msgstr "Statistics"
+
+msgid "Media Count"
+msgstr "Media Count"
+
+msgid "Subfolders"
+msgstr "Subfolders"
+
+msgid "File Information"
+msgstr "File Information"
+
+msgid "URLs"
+msgstr "URLs"
+
+msgid "Dimensions & Size"
+msgstr "Dimensions & Size"
+
+msgid "SEO & Accessibility"
+msgstr "SEO & Accessibility"
+
+msgid "Usage Statistics"
+msgstr "Usage Statistics"
+
+msgid "Dimensions"
+msgstr "Dimensions"
+
+msgid "Organization this folder belongs to"
+msgstr "Organization this folder belongs to"
+
+msgid "Parent folder"
+msgstr "Parent folder"
+
+msgid "Parent folder for nesting (null = root folder)"
+msgstr "Parent folder for nesting (null = root folder)"
+
+msgid "Display name of the folder"
+msgstr "Display name of the folder"
+
+msgid "URL-friendly identifier (unique within parent)"
+msgstr "URL-friendly identifier (unique within parent)"
+
+msgid "Optional folder description"
+msgstr "Optional folder description"
+
+msgid "Whether folder contents are publicly accessible"
+msgstr "Whether folder contents are publicly accessible"
+
+msgid "Sort order"
+msgstr "Sort order"
+
+msgid "Display order within parent folder"
+msgstr "Display order within parent folder"
+
+msgid "Custom folder attributes (JSON)"
+msgstr "Custom folder attributes (JSON)"
+
+msgid "Media Folder"
+msgstr "Media Folder"
+
+msgid "Media Folders"
+msgstr "Media Folders"
+
+msgid "Organization this media belongs to"
+msgstr "Organization this media belongs to"
+
+msgid "Folder"
+msgstr "Folder"
+
+msgid "Folder containing this media (null = root/unfiled)"
+msgstr "Folder containing this media (null = root/unfiled)"
+
+msgid "Uploaded by"
+msgstr "Uploaded by"
+
+msgid "User who uploaded this media"
+msgstr "User who uploaded this media"
+
+msgid "Display name of the media"
+msgstr "Display name of the media"
+
+msgid "Original filename"
+msgstr "Original filename"
+
+msgid "Original filename when uploaded"
+msgstr "Original filename when uploaded"
+
+msgid "File path"
+msgstr "File path"
+
+msgid "Path or key to the stored file"
+msgstr "Path or key to the stored file"
+
+msgid "URL"
+msgstr "URL"
+
+msgid "Public URL to access the file"
+msgstr "Public URL to access the file"
+
+msgid "Storage"
+msgstr "Storage"
+
+msgid "Storage backend used"
+msgstr "Storage backend used"
+
+msgid "Media type"
+msgstr "Media type"
+
+msgid "Type of media file"
+msgstr "Type of media file"
+
+msgid "Processing status"
+msgstr "Processing status"
+
+msgid "MIME type"
+msgstr "MIME type"
+
+msgid "MIME type of the file (e.g., image/jpeg)"
+msgstr "MIME type of the file (e.g., image/jpeg)"
+
+msgid "File size"
+msgstr "File size"
+
+msgid "File size in bytes"
+msgstr "File size in bytes"
+
+msgid "Width"
+msgstr "Width"
+
+msgid "Width in pixels (for images/videos)"
+msgstr "Width in pixels (for images/videos)"
+
+msgid "Height"
+msgstr "Height"
+
+msgid "Height in pixels (for images/videos)"
+msgstr "Height in pixels (for images/videos)"
+
+msgid "Duration"
+msgstr "Duration"
+
+msgid "Duration in seconds (for videos/audio)"
+msgstr "Duration in seconds (for videos/audio)"
+
+msgid "Thumbnail URL"
+msgstr "Thumbnail URL"
+
+msgid "URL to thumbnail image"
+msgstr "URL to thumbnail image"
+
+msgid "Alt text"
+msgstr "Alt text"
+
+msgid "Alt text for accessibility (required for images)"
+msgstr "Alt text for accessibility (required for images)"
+
+msgid "Title"
+msgstr "Title"
+
+msgid "Title for SEO purposes"
+msgstr "Title for SEO purposes"
+
+msgid "Caption"
+msgstr "Caption"
+
+msgid "Caption or description of the media"
+msgstr "Caption or description of the media"
+
+msgid "Whether media is publicly accessible without authentication"
+msgstr "Whether media is publicly accessible without authentication"
+
+msgid "Additional file metadata (EXIF, custom fields, etc.)"
+msgstr "Additional file metadata (EXIF, custom fields, etc.)"
+
+msgid "Number of times this media is used in content"
+msgstr "Number of times this media is used in content"
+
+msgid "Last used at"
+msgstr "Last used at"
+
+msgid "When this media was last used in content"
+msgstr "When this media was last used in content"
+
+msgid "Media"
+msgstr "Media"
+
+msgid "Basic theme information"
+msgstr "Basic theme information"
+
+msgid "Colors"
+msgstr "Colors"
+
+msgid ""
+"Theme color settings (hex format). Use the color swatches or type hex values."
+msgstr ""
+"Theme color settings (hex format). Use the color swatches or type hex values."
+
+msgid "Typography"
+msgstr "Typography"
+
+msgid "Layout & Display"
+msgstr "Layout & Display"
+
+msgid ""
+"Layout settings. Use the \"settings\" JSON field for: \"layout\" (wide/"
+"boxed), \"grid_columns\" (2/3/4/6), \"border_radius\" (0-24), \"dark_mode\" "
+"(true/false)"
+msgstr ""
+"Layout settings. Use the \"settings\" JSON field for: \"layout\" (wide/"
+"boxed), \"grid_columns\" (2/3/4/6), \"border_radius\" (0-24), \"dark_mode\" "
+"(true/false)"
+
+msgid "Advanced"
+msgstr "Advanced"
+
+msgid "Advanced customization options"
+msgstr "Advanced customization options"
+
+msgid "Layout"
+msgstr "Layout"
+
+msgid "Color Preview"
+msgstr "Color Preview"
+
+msgid "Set as default theme"
+msgstr "Set as default theme"
+
+msgid "Please select only one theme to set as default."
+msgstr "Please select only one theme to set as default."
+
+#, python-format
+msgid "%(name)s has been set as default."
+msgstr "%(name)s has been set as default."
+
+msgid "Activate selected themes"
+msgstr "Activate selected themes"
+
+#, python-format
+msgid "%(count)d theme(s) have been activated."
+msgstr "%(count)d theme(s) have been activated."
+
+msgid "Deactivate selected themes"
+msgstr "Deactivate selected themes"
+
+#, python-format
+msgid "%(count)d theme(s) have been deactivated."
+msgstr "%(count)d theme(s) have been deactivated."
+
+msgid "Basic menu information"
+msgstr "Basic menu information"
+
+msgid "Publication"
+msgstr "Publication"
+
+msgid "Control menu visibility and default status"
+msgstr "Control menu visibility and default status"
+
+msgid "Styling"
+msgstr "Styling"
+
+msgid "Published"
+msgstr "Published"
+
+msgid "Categories"
+msgstr "Categories"
+
+msgid "Publish selected menus"
+msgstr "Publish selected menus"
+
+#, python-format
+msgid "%(count)d menu(s) have been published."
+msgstr "%(count)d menu(s) have been published."
+
+msgid "Unpublish selected menus"
+msgstr "Unpublish selected menus"
+
+#, python-format
+msgid "%(count)d menu(s) have been unpublished."
+msgstr "%(count)d menu(s) have been unpublished."
+
+msgid "Set as default menu"
+msgstr "Set as default menu"
+
+msgid "Please select only one menu to set as default."
+msgstr "Please select only one menu to set as default."
+
+msgid "Basic category information"
+msgstr "Basic category information"
+
+msgid "Hierarchy"
+msgstr "Hierarchy"
+
+msgid "Optional parent category for nested structure"
+msgstr "Optional parent category for nested structure"
+
+msgid "Display"
+msgstr "Display"
+
+msgid "Products"
+msgstr "Products"
+
+msgid "Activate selected categories"
+msgstr "Activate selected categories"
+
+#, python-format
+msgid "%(count)d category(ies) have been activated."
+msgstr "%(count)d category(ies) have been activated."
+
+msgid "Deactivate selected categories"
+msgstr "Deactivate selected categories"
+
+#, python-format
+msgid "%(count)d category(ies) have been deactivated."
+msgstr "%(count)d category(ies) have been deactivated."
+
+msgid "Basic product information"
+msgstr "Basic product information"
+
+msgid "Pricing"
+msgstr "Pricing"
+
+msgid "Images"
+msgstr "Images"
+
+msgid "Availability & Status"
+msgstr "Availability & Status"
+
+msgid "Attributes"
+msgstr "Attributes"
+
+msgid "Price"
+msgstr "Price"
+
+msgid "Available"
+msgstr "Available"
+
+msgid "Out of Stock"
+msgstr "Out of Stock"
+
+msgid "Availability"
+msgstr "Availability"
+
+msgid "Mark as available"
+msgstr "Mark as available"
+
+#, python-format
+msgid "%(count)d product(s) have been marked as available."
+msgstr "%(count)d product(s) have been marked as available."
+
+msgid "Mark as out of stock"
+msgstr "Mark as out of stock"
+
+#, python-format
+msgid "%(count)d product(s) have been marked as out of stock."
+msgstr "%(count)d product(s) have been marked as out of stock."
+
+msgid "Toggle featured status"
+msgstr "Toggle featured status"
+
+#, python-format
+msgid "Featured status has been toggled for %(count)d product(s)."
+msgstr "Featured status has been toggled for %(count)d product(s)."
+
+msgid "Toggle chef recommended"
+msgstr "Toggle chef recommended"
+
+#, python-format
+msgid "Chef recommended status has been toggled for %(count)d product(s)."
+msgstr "Chef recommended status has been toggled for %(count)d product(s)."
+
+msgid "🤖 AI: Generate descriptions"
+msgstr "🤖 AI: Generate descriptions"
+
+msgid "AI content generation is not available on your plan. Please upgrade."
+msgstr "AI content generation is not available on your plan. Please upgrade."
+
+#, python-format
+msgid "AI credit limit reached. %d product(s) generated before limit."
+msgstr "AI credit limit reached. %d product(s) generated before limit."
+
+#, python-format
+msgid "AI descriptions generated for %(success)d product(s)."
+msgstr "AI descriptions generated for %(success)d product(s)."
+
+#, python-format
+msgid " %(errors)d failed."
+msgstr " %(errors)d failed."
+
+msgid "Basic allergen information"
+msgstr "Basic allergen information"
+
+msgid "Code"
+msgstr "Code"
+
+msgid "Icon"
+msgstr "Icon"
+
+msgid "Activate selected allergens"
+msgstr "Activate selected allergens"
+
+#, python-format
+msgid "%(count)d allergen(s) have been activated."
+msgstr "%(count)d allergen(s) have been activated."
+
+msgid "Deactivate selected allergens"
+msgstr "Deactivate selected allergens"
+
+#, python-format
+msgid "%(count)d allergen(s) have been deactivated."
+msgstr "%(count)d allergen(s) have been deactivated."
+
+msgid "Pricing & Availability"
+msgstr "Pricing & Availability"
+
+msgid "Pricing & Behavior"
+msgstr "Pricing & Behavior"
+
+msgid "Severity"
+msgstr "Severity"
+
+msgid "Serving Information"
+msgstr "Serving Information"
+
+msgid "Energy"
+msgstr "Energy"
+
+msgid "Macronutrients"
+msgstr "Macronutrients"
+
+msgid "Micronutrients"
+msgstr "Micronutrients"
+
+msgid "Vitamins"
+msgstr "Vitamins"
+
+msgid "Custom Nutrients"
+msgstr "Custom Nutrients"
+
+msgid "Macros"
+msgstr "Macros"
+
+msgid "Left"
+msgstr "Left"
+
+msgid "Center"
+msgstr "Center"
+
+msgid "Right"
+msgstr "Right"
+
+msgid "Organization this theme belongs to"
+msgstr "Organization this theme belongs to"
+
+msgid "Display name of the theme"
+msgstr "Display name of the theme"
+
+msgid "Optional description of the theme"
+msgstr "Optional description of the theme"
+
+msgid "Primary color"
+msgstr "Primary color"
+
+msgid "Primary brand color (hex format, e.g., #3B82F6)"
+msgstr "Primary brand color (hex format, e.g., #3B82F6)"
+
+msgid "Secondary color"
+msgstr "Secondary color"
+
+msgid "Secondary accent color (hex format)"
+msgstr "Secondary accent color (hex format)"
+
+msgid "Background color"
+msgstr "Background color"
+
+msgid "Page background color (hex format)"
+msgstr "Page background color (hex format)"
+
+msgid "Text color"
+msgstr "Text color"
+
+msgid "Primary text color (hex format)"
+msgstr "Primary text color (hex format)"
+
+msgid "Accent color"
+msgstr "Accent color"
+
+msgid "Optional accent color for highlights (hex format)"
+msgstr "Optional accent color for highlights (hex format)"
+
+msgid "Font family"
+msgstr "Font family"
+
+msgid "Primary font family (e.g., Inter, Roboto, Open Sans)"
+msgstr "Primary font family (e.g., Inter, Roboto, Open Sans)"
+
+msgid "Heading font family"
+msgstr "Heading font family"
+
+msgid "Optional separate font for headings"
+msgstr "Optional separate font for headings"
+
+msgid "Logo position"
+msgstr "Logo position"
+
+msgid "Position of logo in menu header"
+msgstr "Position of logo in menu header"
+
+msgid "Custom CSS"
+msgstr "Custom CSS"
+
+msgid "Custom CSS for advanced theme styling"
+msgstr "Custom CSS for advanced theme styling"
+
+msgid "Additional theme settings (JSON)"
+msgstr "Additional theme settings (JSON)"
+
+msgid "Is default"
+msgstr "Is default"
+
+msgid "Whether this is the default theme for the organization"
+msgstr "Whether this is the default theme for the organization"
+
+msgid "Whether the theme is available for use"
+msgstr "Whether the theme is available for use"
+
+msgid "Theme"
+msgstr "Theme"
+
+msgid "Themes"
+msgstr "Themes"
+
+msgid "Organization this menu belongs to"
+msgstr "Organization this menu belongs to"
+
+msgid "Display name of the menu"
+msgstr "Display name of the menu"
+
+msgid "Optional description of the menu"
+msgstr "Optional description of the menu"
+
+msgid "Is published"
+msgstr "Is published"
+
+msgid "Whether the menu is visible to customers"
+msgstr "Whether the menu is visible to customers"
+
+msgid "Published at"
+msgstr "Published at"
+
+msgid "Timestamp when the menu was published"
+msgstr "Timestamp when the menu was published"
+
+msgid "Whether this is the default menu for the organization"
+msgstr "Whether this is the default menu for the organization"
+
+msgid "Optional theme for styling customization"
+msgstr "Optional theme for styling customization"
+
+msgid "Additional menu settings (JSON)"
+msgstr "Additional menu settings (JSON)"
+
+msgid "Display order for menus (lower numbers appear first)"
+msgstr "Display order for menus (lower numbers appear first)"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "Menus"
+msgstr "Menus"
+
+msgid "Organization this category belongs to"
+msgstr "Organization this category belongs to"
+
+msgid "Menu this category belongs to"
+msgstr "Menu this category belongs to"
+
+msgid "Parent category"
+msgstr "Parent category"
+
+msgid "Parent category for nested structure (null for root categories)"
+msgstr "Parent category for nested structure (null for root categories)"
+
+msgid "Display name of the category"
+msgstr "Display name of the category"
+
+msgid "URL-friendly identifier (unique within menu)"
+msgstr "URL-friendly identifier (unique within menu)"
+
+msgid "Optional description of the category"
+msgstr "Optional description of the category"
+
+msgid "Image URL"
+msgstr "Image URL"
+
+msgid "URL to category image"
+msgstr "URL to category image"
+
+msgid "Phosphor icon class (e.g., ph-fill ph-knife, ph-fill ph-hamburger)"
+msgstr "Phosphor icon class (e.g., ph-fill ph-knife, ph-fill ph-hamburger)"
+
+msgid "Whether the category is visible/active"
+msgstr "Whether the category is visible/active"
+
+msgid "Display order within parent category/menu (lower numbers appear first)"
+msgstr "Display order within parent category/menu (lower numbers appear first)"
+
+msgid "Organization this product belongs to"
+msgstr "Organization this product belongs to"
+
+msgid "Category this product belongs to"
+msgstr "Category this product belongs to"
+
+msgid "Display name of the product"
+msgstr "Display name of the product"
+
+msgid "URL-friendly identifier (unique within category)"
+msgstr "URL-friendly identifier (unique within category)"
+
+msgid "Full product description"
+msgstr "Full product description"
+
+msgid "Short description"
+msgstr "Short description"
+
+msgid "Brief description for listings (max 100 chars)"
+msgstr "Brief description for listings (max 100 chars)"
+
+msgid "Base price"
+msgstr "Base price"
+
+msgid "Base price in the default currency"
+msgstr "Base price in the default currency"
+
+msgid "Currency"
+msgstr "Currency"
+
+msgid "Currency code (e.g., TRY, USD, EUR)"
+msgstr "Currency code (e.g., TRY, USD, EUR)"
+
+msgid "Main product image URL"
+msgstr "Main product image URL"
+
+msgid "Gallery"
+msgstr "Gallery"
+
+msgid "Array of additional image URLs"
+msgstr "Array of additional image URLs"
+
+msgid "Whether the product is visible on the menu"
+msgstr "Whether the product is visible on the menu"
+
+msgid "Is available"
+msgstr "Is available"
+
+msgid "Whether the product is in stock/available for ordering"
+msgstr "Whether the product is in stock/available for ordering"
+
+msgid "Is featured"
+msgstr "Is featured"
+
+msgid "Whether to highlight this product on the menu"
+msgstr "Whether to highlight this product on the menu"
+
+msgid "Is chef recommended"
+msgstr "Is chef recommended"
+
+msgid "Special chef recommendation flag"
+msgstr "Special chef recommendation flag"
+
+msgid "Preparation time"
+msgstr "Preparation time"
+
+msgid "Calories"
+msgstr "Calories"
+
+msgid "Calorie count (kcal)"
+msgstr "Calorie count (kcal)"
+
+msgid "Spicy level"
+msgstr "Spicy level"
+
+msgid "Spiciness level 0-5 (0=not spicy, 5=very spicy)"
+msgstr "Spiciness level 0-5 (0=not spicy, 5=very spicy)"
+
+msgid "Discount percentage"
+msgstr "Discount percentage"
+
+msgid "Discount percentage 0-100 (e.g., 10 means 10% off)"
+msgstr "Discount percentage 0-100 (e.g., 10 means 10% off)"
+
+msgid "Average customer rating 0.0-5.0"
+msgstr "Average customer rating 0.0-5.0"
+
+msgid "Number of customer reviews/ratings"
+msgstr "Number of customer reviews/ratings"
+
+msgid "Tags"
+msgstr "Tags"
+
+msgid "Array of tags for filtering (e.g., vegetarian, vegan, gluten-free)"
+msgstr "Array of tags for filtering (e.g., vegetarian, vegan, gluten-free)"
+
+msgid "Display order within category (lower numbers appear first)"
+msgstr "Display order within category (lower numbers appear first)"
+
+msgid "Not spicy"
+msgstr "Not spicy"
+
+msgid "Product this variant belongs to"
+msgstr "Product this variant belongs to"
+
+msgid "Display name of the variant (e.g., Small, Large, Regular)"
+msgstr "Display name of the variant (e.g., Small, Large, Regular)"
+
+msgid "Price for this variant"
+msgstr "Price for this variant"
+
+msgid "Whether this is the default selected variant"
+msgstr "Whether this is the default selected variant"
+
+msgid "Whether the variant is in stock/available"
+msgstr "Whether the variant is in stock/available"
+
+msgid "Display order within the product (lower numbers appear first)"
+msgstr "Display order within the product (lower numbers appear first)"
+
+msgid "Product Variant"
+msgstr "Product Variant"
+
+msgid "Product Variants"
+msgstr "Product Variants"
+
+msgid "Product this modifier belongs to"
+msgstr "Product this modifier belongs to"
+
+msgid "Display name of the modifier (e.g., Extra Cheese, No Onion)"
+msgstr "Display name of the modifier (e.g., Extra Cheese, No Onion)"
+
+msgid "Additional cost for this modifier (can be 0 for free mods)"
+msgstr "Additional cost for this modifier (can be 0 for free mods)"
+
+msgid "Whether this modifier is pre-selected by default"
+msgstr "Whether this modifier is pre-selected by default"
+
+msgid "Is required"
+msgstr "Is required"
+
+msgid "Whether the customer must select this modifier"
+msgstr "Whether the customer must select this modifier"
+
+msgid "Max quantity"
+msgstr "Max quantity"
+
+msgid "Maximum times this modifier can be added to the order"
+msgstr "Maximum times this modifier can be added to the order"
+
+msgid "Product Modifier"
+msgstr "Product Modifier"
+
+msgid "Product Modifiers"
+msgstr "Product Modifiers"
+
+msgid "Free"
+msgstr "Free"
+
+msgid "Contains"
+msgstr "Contains"
+
+msgid "May Contain"
+msgstr "May Contain"
+
+msgid "Traces"
+msgstr "Traces"
+
+msgid "Display name of the allergen (e.g., Gluten, Nuts, Dairy)"
+msgstr "Display name of the allergen (e.g., Gluten, Nuts, Dairy)"
+
+msgid "URL-friendly identifier (globally unique)"
+msgstr "URL-friendly identifier (globally unique)"
+
+msgid "Short code for the allergen (e.g., GLU, NUT, DAI)"
+msgstr "Short code for the allergen (e.g., GLU, NUT, DAI)"
+
+msgid "Icon URL"
+msgstr "Icon URL"
+
+msgid "URL to allergen icon/image"
+msgstr "URL to allergen icon/image"
+
+msgid "Detailed description of the allergen and its sources"
+msgstr "Detailed description of the allergen and its sources"
+
+msgid "Display order for consistent listing (lower numbers appear first)"
+msgstr "Display order for consistent listing (lower numbers appear first)"
+
+msgid "Whether the allergen is available for selection"
+msgstr "Whether the allergen is available for selection"
+
+msgid "Allergens"
+msgstr "Allergens"
+
+msgid "Product this allergen association belongs to"
+msgstr "Product this allergen association belongs to"
+
+msgid "The allergen associated with this product"
+msgstr "The allergen associated with this product"
+
+msgid "Level of allergen presence (contains/may_contain/traces)"
+msgstr "Level of allergen presence (contains/may_contain/traces)"
+
+msgid "Optional additional notes about this allergen in the product"
+msgstr "Optional additional notes about this allergen in the product"
+
+msgid "Product Allergen"
+msgstr "Product Allergen"
+
+msgid "Product Allergens"
+msgstr "Product Allergens"
+
+msgid "Product this nutrition info belongs to"
+msgstr "Product this nutrition info belongs to"
+
+msgid "Serving size"
+msgstr "Serving size"
+
+msgid ""
+"Description of serving size (e.g., \"100g\", \"1 portion\", \"1 slice\")"
+msgstr ""
+"Description of serving size (e.g., \"100g\", \"1 portion\", \"1 slice\")"
+
+msgid "Serving size (grams)"
+msgstr "Serving size (grams)"
+
+msgid "Numeric serving size in grams for calculations"
+msgstr "Numeric serving size in grams for calculations"
+
+msgid "Energy in kcal per serving"
+msgstr "Energy in kcal per serving"
+
+msgid "Protein"
+msgstr "Protein"
+
+msgid "Protein in grams per serving"
+msgstr "Protein in grams per serving"
+
+msgid "Carbohydrates"
+msgstr "Carbohydrates"
+
+msgid "Total carbohydrates in grams per serving"
+msgstr "Total carbohydrates in grams per serving"
+
+msgid "Sugar"
+msgstr "Sugar"
+
+msgid "Sugar content in grams per serving"
+msgstr "Sugar content in grams per serving"
+
+msgid "Fiber"
+msgstr "Fiber"
+
+msgid "Dietary fiber in grams per serving"
+msgstr "Dietary fiber in grams per serving"
+
+msgid "Fat"
+msgstr "Fat"
+
+msgid "Total fat in grams per serving"
+msgstr "Total fat in grams per serving"
+
+msgid "Saturated fat"
+msgstr "Saturated fat"
+
+msgid "Saturated fat in grams per serving"
+msgstr "Saturated fat in grams per serving"
+
+msgid "Trans fat"
+msgstr "Trans fat"
+
+msgid "Trans fat in grams per serving"
+msgstr "Trans fat in grams per serving"
+
+msgid "Cholesterol"
+msgstr "Cholesterol"
+
+msgid "Cholesterol in mg per serving"
+msgstr "Cholesterol in mg per serving"
+
+msgid "Sodium"
+msgstr "Sodium"
+
+msgid "Sodium in mg per serving"
+msgstr "Sodium in mg per serving"
+
+msgid "Potassium"
+msgstr "Potassium"
+
+msgid "Potassium in mg per serving"
+msgstr "Potassium in mg per serving"
+
+msgid "Calcium"
+msgstr "Calcium"
+
+msgid "Calcium in mg per serving"
+msgstr "Calcium in mg per serving"
+
+msgid "Iron"
+msgstr "Iron"
+
+msgid "Iron in mg per serving"
+msgstr "Iron in mg per serving"
+
+msgid "Vitamin A"
+msgstr "Vitamin A"
+
+msgid "Vitamin A in IU or mcg per serving"
+msgstr "Vitamin A in IU or mcg per serving"
+
+msgid "Vitamin C"
+msgstr "Vitamin C"
+
+msgid "Vitamin C in mg per serving"
+msgstr "Vitamin C in mg per serving"
+
+msgid "Custom nutrients"
+msgstr "Custom nutrients"
+
+msgid "Additional nutrients not covered by standard fields (JSON)"
+msgstr "Additional nutrients not covered by standard fields (JSON)"
+
+msgid "Nutrition Info"
+msgstr "Nutrition Info"
+
+msgid "Menu not found"
+msgstr "Menu not found"
+
+msgid "Product not found"
+msgstr "Product not found"
+
+msgid "Number of menus using this theme"
+msgstr "Number of menus using this theme"
+
+msgid "A theme with this slug already exists."
+msgstr "A theme with this slug already exists."
+
+msgid "Number of categories in this menu"
+msgstr "Number of categories in this menu"
+
+msgid "Theme UUID to associate with this menu"
+msgstr "Theme UUID to associate with this menu"
+
+msgid "A menu with this slug already exists."
+msgstr "A menu with this slug already exists."
+
+msgid "Theme not found."
+msgstr "Theme not found."
+
+msgid "Number of products in this category"
+msgstr "Number of products in this category"
+
+msgid "Menu UUID this category belongs to"
+msgstr "Menu UUID this category belongs to"
+
+msgid "Parent category UUID for nested structure"
+msgstr "Parent category UUID for nested structure"
+
+msgid "Menu not found."
+msgstr "Menu not found."
+
+msgid "Organization context required."
+msgstr "Organization context required."
+
+msgid "Parent category not found."
+msgstr "Parent category not found."
+
+msgid "Parent category must belong to the same menu."
+msgstr "Parent category must belong to the same menu."
+
+msgid "A category with this slug already exists in this menu."
+msgstr "A category with this slug already exists in this menu."
+
+msgid "Cannot set category as its own parent."
+msgstr "Cannot set category as its own parent."
+
+msgid "Allergen UUID"
+msgstr "Allergen UUID"
+
+msgid "Category UUID this product belongs to"
+msgstr "Category UUID this product belongs to"
+
+msgid "Category not found."
+msgstr "Category not found."
+
+msgid "A product with this slug already exists in this category."
+msgstr "A product with this slug already exists in this category."
+
+msgid "Theme set as default"
+msgstr "Theme set as default"
+
+msgid "Menu published"
+msgstr "Menu published"
+
+msgid "Menu unpublished"
+msgstr "Menu unpublished"
+
+msgid "Menu set as default"
+msgstr "Menu set as default"
+
+msgid "Notification Content"
+msgstr "Notification Content"
+
+msgid "Classification"
+msgstr "Classification"
+
+msgid "Timing"
+msgstr "Timing"
+
+msgid "Data"
+msgstr "Data"
+
+msgid "Mark selected notifications as read"
+msgstr "Mark selected notifications as read"
+
+msgid "Mark selected notifications as sent"
+msgstr "Mark selected notifications as sent"
+
+msgid "Archive selected notifications"
+msgstr "Archive selected notifications"
+
+msgid "Organization this notification belongs to"
+msgstr "Organization this notification belongs to"
+
+msgid "User who is the recipient of this notification"
+msgstr "User who is the recipient of this notification"
+
+msgid "Notification type"
+msgstr "Notification type"
+
+msgid "Category of the notification"
+msgstr "Category of the notification"
+
+msgid "Current delivery/read status of the notification"
+msgstr "Current delivery/read status of the notification"
+
+msgid "Priority level for ordering and urgency"
+msgstr "Priority level for ordering and urgency"
+
+msgid "Delivery channel for the notification"
+msgstr "Delivery channel for the notification"
+
+msgid "Short title or subject for the notification"
+msgstr "Short title or subject for the notification"
+
+msgid "Message"
+msgstr "Message"
+
+msgid "Full notification message content"
+msgstr "Full notification message content"
+
+msgid "Additional context data (order_id, urls, etc.)"
+msgstr "Additional context data (order_id, urls, etc.)"
+
+msgid "Read at"
+msgstr "Read at"
+
+msgid "When the notification was read/viewed by the user"
+msgstr "When the notification was read/viewed by the user"
+
+msgid "Sent at"
+msgstr "Sent at"
+
+msgid "When the notification was sent to the delivery channel"
+msgstr "When the notification was sent to the delivery channel"
+
+msgid "Delivered at"
+msgstr "Delivered at"
+
+msgid "When the notification was confirmed delivered"
+msgstr "When the notification was confirmed delivered"
+
+msgid "Scheduled for"
+msgstr "Scheduled for"
+
+msgid "Optional scheduled delivery time (null for immediate)"
+msgstr "Optional scheduled delivery time (null for immediate)"
+
+msgid "Optional expiration time after which notification is hidden"
+msgstr "Optional expiration time after which notification is hidden"
+
+msgid "Action URL"
+msgstr "Action URL"
+
+msgid "Optional URL for click-through action"
+msgstr "Optional URL for click-through action"
+
+msgid "Optional image URL for rich notifications"
+msgstr "Optional image URL for rich notifications"
+
+msgid "Additional metadata for tracking and analytics"
+msgstr "Additional metadata for tracking and analytics"
+
+msgid "Notification"
+msgstr "Notification"
+
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "Notification marked as read"
+msgstr "Notification marked as read"
+
+msgid "Organization context required"
+msgstr "Organization context required"
+
+msgid "All notifications marked as read"
+msgstr "All notifications marked as read"
+
+msgid "Notification archived"
+msgstr "Notification archived"
+
+msgid "Basic zone information"
+msgstr "Basic zone information"
+
+msgid "Appearance"
+msgstr "Appearance"
+
+msgid "Visual identification for the zone"
+msgstr "Visual identification for the zone"
+
+msgid "Capacity & Characteristics"
+msgstr "Capacity & Characteristics"
+
+msgid "Status & Order"
+msgstr "Status & Order"
+
+msgid "Color"
+msgstr "Color"
+
+msgid "Tables"
+msgstr "Tables"
+
+msgid "Outdoor"
+msgstr "Outdoor"
+
+msgid "Smoking"
+msgstr "Smoking"
+
+msgid "Reservable"
+msgstr "Reservable"
+
+msgid "Flags"
+msgstr "Flags"
+
+msgid "Activate selected zones"
+msgstr "Activate selected zones"
+
+#, python-format
+msgid "%(count)d zone(s) have been activated."
+msgstr "%(count)d zone(s) have been activated."
+
+msgid "Deactivate selected zones"
+msgstr "Deactivate selected zones"
+
+#, python-format
+msgid "%(count)d zone(s) have been deactivated."
+msgstr "%(count)d zone(s) have been deactivated."
+
+msgid "Basic table information"
+msgstr "Basic table information"
+
+msgid "Capacity"
+msgstr "Capacity"
+
+msgid "Floor Plan"
+msgstr "Floor Plan"
+
+msgid "Position and shape for floor plan visualization"
+msgstr "Position and shape for floor plan visualization"
+
+msgid "VIP"
+msgstr "VIP"
+
+msgid "Set as available"
+msgstr "Set as available"
+
+#, python-format
+msgid "%(count)d table(s) have been set to available."
+msgstr "%(count)d table(s) have been set to available."
+
+msgid "Set as occupied"
+msgstr "Set as occupied"
+
+#, python-format
+msgid "%(count)d table(s) have been set to occupied."
+msgstr "%(count)d table(s) have been set to occupied."
+
+msgid "Set as reserved"
+msgstr "Set as reserved"
+
+#, python-format
+msgid "%(count)d table(s) have been set to reserved."
+msgstr "%(count)d table(s) have been set to reserved."
+
+msgid "Activate selected tables"
+msgstr "Activate selected tables"
+
+#, python-format
+msgid "%(count)d table(s) have been activated."
+msgstr "%(count)d table(s) have been activated."
+
+msgid "Deactivate selected tables"
+msgstr "Deactivate selected tables"
+
+#, python-format
+msgid "%(count)d table(s) have been deactivated."
+msgstr "%(count)d table(s) have been deactivated."
+
+msgid "Basic QR code information"
+msgstr "Basic QR code information"
+
+msgid "Type & Links"
+msgstr "Type & Links"
+
+msgid "QR code type and linked entities"
+msgstr "QR code type and linked entities"
+
+msgid "Analytics"
+msgstr "Analytics"
+
+msgid "QR code scan statistics (read-only)"
+msgstr "QR code scan statistics (read-only)"
+
+msgid "Settings & Metadata"
+msgstr "Settings & Metadata"
+
+msgid "Scans (Total/Unique)"
+msgstr "Scans (Total/Unique)"
+
+msgid "Activate selected QR codes"
+msgstr "Activate selected QR codes"
+
+#, python-format
+msgid "%(count)d QR code(s) have been activated."
+msgstr "%(count)d QR code(s) have been activated."
+
+msgid "Deactivate selected QR codes"
+msgstr "Deactivate selected QR codes"
+
+#, python-format
+msgid "%(count)d QR code(s) have been deactivated."
+msgstr "%(count)d QR code(s) have been deactivated."
+
+msgid "Network"
+msgstr "Network"
+
+msgid "Tracking"
+msgstr "Tracking"
+
+msgid "Unknown"
+msgstr "Unknown"
+
+msgid "Device"
+msgstr "Device"
+
+msgid "Order identification"
+msgstr "Order identification"
+
+msgid "Customer & Table"
+msgstr "Customer & Table"
+
+msgid "Financial"
+msgstr "Financial"
+
+msgid "Delivery"
+msgstr "Delivery"
+
+msgid "Staff"
+msgstr "Staff"
+
+msgid "Workflow Timestamps"
+msgstr "Workflow Timestamps"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Items"
+msgstr "Items"
+
+msgid "Confirm selected orders"
+msgstr "Confirm selected orders"
+
+#, python-format
+msgid "%(count)d order(s) have been confirmed."
+msgstr "%(count)d order(s) have been confirmed."
+
+msgid "Start preparing selected orders"
+msgstr "Start preparing selected orders"
+
+#, python-format
+msgid "%(count)d order(s) have started preparation."
+msgstr "%(count)d order(s) have started preparation."
+
+msgid "Mark selected orders as ready"
+msgstr "Mark selected orders as ready"
+
+#, python-format
+msgid "%(count)d order(s) have been marked as ready."
+msgstr "%(count)d order(s) have been marked as ready."
+
+msgid "Mark selected orders as completed"
+msgstr "Mark selected orders as completed"
+
+#, python-format
+msgid "%(count)d order(s) have been completed."
+msgstr "%(count)d order(s) have been completed."
+
+msgid "Cancel selected orders"
+msgstr "Cancel selected orders"
+
+#, python-format
+msgid "%(count)d order(s) have been cancelled."
+msgstr "%(count)d order(s) have been cancelled."
+
+msgid "Quantity & Pricing"
+msgstr "Quantity & Pricing"
+
+msgid "Modifiers & Notes"
+msgstr "Modifiers & Notes"
+
+msgid "Gift"
+msgstr "Gift"
+
+msgid "Start preparing selected items"
+msgstr "Start preparing selected items"
+
+#, python-format
+msgid "%(count)d item(s) have started preparation."
+msgstr "%(count)d item(s) have started preparation."
+
+msgid "Mark selected items as ready"
+msgstr "Mark selected items as ready"
+
+#, python-format
+msgid "%(count)d item(s) have been marked as ready."
+msgstr "%(count)d item(s) have been marked as ready."
+
+msgid "Mark selected items as delivered"
+msgstr "Mark selected items as delivered"
+
+#, python-format
+msgid "%(count)d item(s) have been marked as delivered."
+msgstr "%(count)d item(s) have been marked as delivered."
+
+msgid "Cancel selected items"
+msgstr "Cancel selected items"
+
+#, python-format
+msgid "%(count)d item(s) have been cancelled."
+msgstr "%(count)d item(s) have been cancelled."
+
+msgid "Request Details"
+msgstr "Request Details"
+
+msgid "Assignment"
+msgstr "Assignment"
+
+msgid "Urgent"
+msgstr "Urgent"
+
+msgid "High"
+msgstr "High"
+
+msgid "Very Low"
+msgstr "Very Low"
+
+msgid "sec"
+msgstr "sec"
+
+msgid "min"
+msgstr "min"
+
+msgid "hr"
+msgstr "hr"
+
+msgid "Response Time"
+msgstr "Response Time"
+
+msgid "Acknowledge selected requests"
+msgstr "Acknowledge selected requests"
+
+#, python-format
+msgid "%(count)d request(s) have been acknowledged."
+msgstr "%(count)d request(s) have been acknowledged."
+
+msgid "Complete selected requests"
+msgstr "Complete selected requests"
+
+#, python-format
+msgid "%(count)d request(s) have been completed."
+msgstr "%(count)d request(s) have been completed."
+
+msgid "Cancel selected requests"
+msgstr "Cancel selected requests"
+
+#, python-format
+msgid "%(count)d request(s) have been cancelled."
+msgstr "%(count)d request(s) have been cancelled."
+
+msgid "Online"
+msgstr "Online"
+
+msgid "Buy X Get Y"
+msgstr "Buy X Get Y"
+
+msgid "Loyalty"
+msgstr "Loyalty"
+
+msgid "Happy Hour"
+msgstr "Happy Hour"
+
+msgid "Full Refund"
+msgstr "Full Refund"
+
+msgid "Partial Refund"
+msgstr "Partial Refund"
+
+msgid "Item Refund"
+msgstr "Item Refund"
+
+msgid "Processed"
+msgstr "Processed"
+
+msgid "Rejected"
+msgstr "Rejected"
+
+msgid "Confirmed"
+msgstr "Confirmed"
+
+msgid "Seated"
+msgstr "Seated"
+
+msgid "No Show"
+msgstr "No Show"
+
+msgid "Organization this zone belongs to"
+msgstr "Organization this zone belongs to"
+
+msgid "Branch this zone belongs to (optional for single-location)"
+msgstr "Branch this zone belongs to (optional for single-location)"
+
+msgid "Display name of the zone (e.g., Garden, VIP Section)"
+msgstr "Display name of the zone (e.g., Garden, VIP Section)"
+
+msgid "Optional description of the zone and its characteristics"
+msgstr "Optional description of the zone and its characteristics"
+
+msgid "Hex color code for visual identification (e.g., #3B82F6)"
+msgstr "Hex color code for visual identification (e.g., #3B82F6)"
+
+msgid "Icon name or URL for zone representation in UI"
+msgstr "Icon name or URL for zone representation in UI"
+
+msgid "Maximum number of guests the zone can accommodate"
+msgstr "Maximum number of guests the zone can accommodate"
+
+msgid "Whether the zone is available for seating"
+msgstr "Whether the zone is available for seating"
+
+msgid "Is smoking allowed"
+msgstr "Is smoking allowed"
+
+msgid "Whether smoking is permitted in this zone"
+msgstr "Whether smoking is permitted in this zone"
+
+msgid "Is outdoor"
+msgstr "Is outdoor"
+
+msgid "Whether the zone is located outdoors"
+msgstr "Whether the zone is located outdoors"
+
+msgid "Is reservable"
+msgstr "Is reservable"
+
+msgid "Whether tables in this zone can be reserved"
+msgstr "Whether tables in this zone can be reserved"
+
+msgid "Display order for zones (lower numbers appear first)"
+msgstr "Display order for zones (lower numbers appear first)"
+
+msgid "Zone-specific settings (JSON)"
+msgstr "Zone-specific settings (JSON)"
+
+msgid "Zone"
+msgstr "Zone"
+
+msgid "Zones"
+msgstr "Zones"
+
+msgid "Organization this table belongs to"
+msgstr "Organization this table belongs to"
+
+msgid "Zone/section this table belongs to"
+msgstr "Zone/section this table belongs to"
+
+msgid "Branch this table belongs to (optional for single-location)"
+msgstr "Branch this table belongs to (optional for single-location)"
+
+msgid "Display name/number of the table (e.g., \"Table 1\", \"A-12\")"
+msgstr "Display name/number of the table (e.g., \"Table 1\", \"A-12\")"
+
+msgid "Number"
+msgstr "Number"
+
+msgid "Numeric table number for ordering and quick reference"
+msgstr "Numeric table number for ordering and quick reference"
+
+msgid "Maximum number of guests the table can seat"
+msgstr "Maximum number of guests the table can seat"
+
+msgid "Minimum capacity"
+msgstr "Minimum capacity"
+
+msgid "Minimum number of guests required for reservation"
+msgstr "Minimum number of guests required for reservation"
+
+msgid "Current table status (available, occupied, reserved)"
+msgstr "Current table status (available, occupied, reserved)"
+
+msgid ""
+"Whether the table is available for use (can be disabled for maintenance)"
+msgstr ""
+"Whether the table is available for use (can be disabled for maintenance)"
+
+msgid "Is VIP"
+msgstr "Is VIP"
+
+msgid "Whether this is a VIP/premium table"
+msgstr "Whether this is a VIP/premium table"
+
+msgid "Position X"
+msgstr "Position X"
+
+msgid "X coordinate for floor plan visualization"
+msgstr "X coordinate for floor plan visualization"
+
+msgid "Position Y"
+msgstr "Position Y"
+
+msgid "Y coordinate for floor plan visualization"
+msgstr "Y coordinate for floor plan visualization"
+
+msgid "Shape"
+msgstr "Shape"
+
+msgid "Table shape for visualization (round, square, rectangle)"
+msgstr "Table shape for visualization (round, square, rectangle)"
+
+msgid "Display order within the zone (lower numbers appear first)"
+msgstr "Display order within the zone (lower numbers appear first)"
+
+msgid ""
+"Staff notes about the table (e.g., \"near window\", \"wheelchair "
+"accessible\")"
+msgstr ""
+"Staff notes about the table (e.g., \"near window\", \"wheelchair "
+"accessible\")"
+
+msgid "Table-specific settings (JSON)"
+msgstr "Table-specific settings (JSON)"
+
+msgid "Table"
+msgstr "Table"
+
+msgid "Organization this QR code belongs to"
+msgstr "Organization this QR code belongs to"
+
+msgid "Branch this QR code belongs to (optional for single-location)"
+msgstr "Branch this QR code belongs to (optional for single-location)"
+
+msgid "Menu this QR code links to (for MENU type)"
+msgstr "Menu this QR code links to (for MENU type)"
+
+msgid "Table this QR code is associated with (for TABLE type)"
+msgstr "Table this QR code is associated with (for TABLE type)"
+
+msgid "Type of QR code (MENU, TABLE, CAMPAIGN)"
+msgstr "Type of QR code (MENU, TABLE, CAMPAIGN)"
+
+msgid "Unique code/slug for the QR code URL (unique within organization)"
+msgstr "Unique code/slug for the QR code URL (unique within organization)"
+
+msgid "Display name for the QR code"
+msgstr "Display name for the QR code"
+
+msgid "Optional description of the QR code purpose"
+msgstr "Optional description of the QR code purpose"
+
+msgid "Short URL"
+msgstr "Short URL"
+
+msgid "Generated short URL for QR scanning"
+msgstr "Generated short URL for QR scanning"
+
+msgid "QR image URL"
+msgstr "QR image URL"
+
+msgid "URL to the generated QR code image"
+msgstr "URL to the generated QR code image"
+
+msgid "Redirect URL"
+msgstr "Redirect URL"
+
+msgid "Custom redirect URL (overrides default behavior)"
+msgstr "Custom redirect URL (overrides default behavior)"
+
+msgid "Whether the QR code is active and scannable"
+msgstr "Whether the QR code is active and scannable"
+
+msgid "Optional expiration date for the QR code"
+msgstr "Optional expiration date for the QR code"
+
+msgid "Scan count"
+msgstr "Scan count"
+
+msgid "Total number of scans (cached counter)"
+msgstr "Total number of scans (cached counter)"
+
+msgid "Unique scan count"
+msgstr "Unique scan count"
+
+msgid "Number of unique device scans (cached counter)"
+msgstr "Number of unique device scans (cached counter)"
+
+msgid "Last scanned at"
+msgstr "Last scanned at"
+
+msgid "Timestamp of the most recent scan"
+msgstr "Timestamp of the most recent scan"
+
+msgid "QR code-specific settings (JSON)"
+msgstr "QR code-specific settings (JSON)"
+
+msgid "Custom metadata (campaign info, tracking params, etc.)"
+msgstr "Custom metadata (campaign info, tracking params, etc.)"
+
+msgid "QR Codes"
+msgstr "QR Codes"
+
+msgid "QR code that was scanned"
+msgstr "QR code that was scanned"
+
+msgid "Organization this scan belongs to (denormalized)"
+msgstr "Organization this scan belongs to (denormalized)"
+
+msgid "Scanned at"
+msgstr "Scanned at"
+
+msgid "Timestamp when the scan occurred"
+msgstr "Timestamp when the scan occurred"
+
+msgid "IP address of the scanner"
+msgstr "IP address of the scanner"
+
+msgid "Full user agent string"
+msgstr "Full user agent string"
+
+msgid "Session ID"
+msgstr "Session ID"
+
+msgid "Session identifier for tracking unique visits"
+msgstr "Session identifier for tracking unique visits"
+
+msgid "Device type"
+msgstr "Device type"
+
+msgid "Device type (mobile, tablet, desktop)"
+msgstr "Device type (mobile, tablet, desktop)"
+
+msgid "Browser"
+msgstr "Browser"
+
+msgid "Browser name (e.g., Chrome, Safari, Firefox)"
+msgstr "Browser name (e.g., Chrome, Safari, Firefox)"
+
+msgid "Operating system"
+msgstr "Operating system"
+
+msgid "Operating system (e.g., iOS, Android, Windows)"
+msgstr "Operating system (e.g., iOS, Android, Windows)"
+
+msgid "Two-letter country code (ISO 3166-1 alpha-2)"
+msgstr "Two-letter country code (ISO 3166-1 alpha-2)"
+
+msgid "City from IP geolocation"
+msgstr "City from IP geolocation"
+
+msgid "Region"
+msgstr "Region"
+
+msgid "Region/state from IP geolocation"
+msgstr "Region/state from IP geolocation"
+
+msgid "Latitude coordinate from geolocation"
+msgstr "Latitude coordinate from geolocation"
+
+msgid "Longitude coordinate from geolocation"
+msgstr "Longitude coordinate from geolocation"
+
+msgid "Referer"
+msgstr "Referer"
+
+msgid "HTTP referer header"
+msgstr "HTTP referer header"
+
+msgid "Is unique"
+msgstr "Is unique"
+
+msgid "Whether this was a unique visit (first from this device/session)"
+msgstr "Whether this was a unique visit (first from this device/session)"
+
+msgid "Customer who scanned (if logged in)"
+msgstr "Customer who scanned (if logged in)"
+
+msgid "Additional tracking data (UTM params, custom fields, etc.)"
+msgstr "Additional tracking data (UTM params, custom fields, etc.)"
+
+msgid "QR Scan"
+msgstr "QR Scan"
+
+msgid "QR Scans"
+msgstr "QR Scans"
+
+msgid "Organization this order belongs to"
+msgstr "Organization this order belongs to"
+
+msgid "Branch this order belongs to (optional for single-location)"
+msgstr "Branch this order belongs to (optional for single-location)"
+
+msgid "Table associated with this order (for dine-in)"
+msgstr "Table associated with this order (for dine-in)"
+
+msgid "Customer who placed this order (if registered)"
+msgstr "Customer who placed this order (if registered)"
+
+msgid "Human-readable order number (e.g., ORD-2024-0001)"
+msgstr "Human-readable order number (e.g., ORD-2024-0001)"
+
+msgid "Current order status"
+msgstr "Current order status"
+
+msgid "Order type (dine-in, takeaway, delivery)"
+msgstr "Order type (dine-in, takeaway, delivery)"
+
+msgid "Payment status"
+msgstr "Payment status"
+
+msgid "Current payment status"
+msgstr "Current payment status"
+
+msgid "Payment method"
+msgstr "Payment method"
+
+msgid "Payment method used"
+msgstr "Payment method used"
+
+msgid "Sum of all items before tax and discount"
+msgstr "Sum of all items before tax and discount"
+
+msgid "Discount amount"
+msgstr "Discount amount"
+
+msgid "Total discount applied"
+msgstr "Total discount applied"
+
+msgid "Refund amount"
+msgstr "Refund amount"
+
+msgid "Total refund amount"
+msgstr "Total refund amount"
+
+msgid "Tip amount"
+msgstr "Tip amount"
+
+msgid "Tip/gratuity amount"
+msgstr "Tip/gratuity amount"
+
+msgid "Final total (subtotal + tax - discount + tip)"
+msgstr "Final total (subtotal + tax - discount + tip)"
+
+msgid "Currency code (ISO 4217)"
+msgstr "Currency code (ISO 4217)"
+
+msgid "Guest count"
+msgstr "Guest count"
+
+msgid "Number of guests (for dine-in orders)"
+msgstr "Number of guests (for dine-in orders)"
+
+msgid "Staff/kitchen notes about the order"
+msgstr "Staff/kitchen notes about the order"
+
+msgid "Special instructions"
+msgstr "Special instructions"
+
+msgid "Customer special instructions or requests"
+msgstr "Customer special instructions or requests"
+
+msgid "Customer info"
+msgstr "Customer info"
+
+msgid "Guest customer details: name, phone, email"
+msgstr "Guest customer details: name, phone, email"
+
+msgid "Delivery address"
+msgstr "Delivery address"
+
+msgid "Delivery address details: street, city, postal_code, etc."
+msgstr "Delivery address details: street, city, postal_code, etc."
+
+msgid "Placed at"
+msgstr "Placed at"
+
+msgid "Timestamp when order was placed"
+msgstr "Timestamp when order was placed"
+
+msgid "Confirmed at"
+msgstr "Confirmed at"
+
+msgid "Timestamp when order was confirmed by staff"
+msgstr "Timestamp when order was confirmed by staff"
+
+msgid "Preparing at"
+msgstr "Preparing at"
+
+msgid "Timestamp when order preparation started"
+msgstr "Timestamp when order preparation started"
+
+msgid "Ready at"
+msgstr "Ready at"
+
+msgid "Timestamp when order was ready"
+msgstr "Timestamp when order was ready"
+
+msgid "Timestamp when order was delivered to customer"
+msgstr "Timestamp when order was delivered to customer"
+
+msgid "Timestamp when order was completed"
+msgstr "Timestamp when order was completed"
+
+msgid "Cancelled at"
+msgstr "Cancelled at"
+
+msgid "Timestamp when order was cancelled"
+msgstr "Timestamp when order was cancelled"
+
+msgid "Cancel reason"
+msgstr "Cancel reason"
+
+msgid "Reason for order cancellation"
+msgstr "Reason for order cancellation"
+
+msgid "Placed by"
+msgstr "Placed by"
+
+msgid "Staff member who placed the order"
+msgstr "Staff member who placed the order"
+
+msgid "Assigned to"
+msgstr "Assigned to"
+
+msgid "Staff member assigned to handle this order"
+msgstr "Staff member assigned to handle this order"
+
+msgid "Additional order data (source, promo codes, etc.)"
+msgstr "Additional order data (source, promo codes, etc.)"
+
+msgid "Guest"
+msgstr "Guest"
+
+msgid "Order this item belongs to"
+msgstr "Order this item belongs to"
+
+msgid "Product ordered (reference, may be soft-deleted)"
+msgstr "Product ordered (reference, may be soft-deleted)"
+
+msgid "Variant"
+msgstr "Variant"
+
+msgid "Product variant selected (e.g., Large, Small)"
+msgstr "Product variant selected (e.g., Large, Small)"
+
+msgid "Number of items ordered"
+msgstr "Number of items ordered"
+
+msgid "Unit price"
+msgstr "Unit price"
+
+msgid "Price per unit at time of order (captured, not referenced)"
+msgstr "Price per unit at time of order (captured, not referenced)"
+
+msgid "Total price"
+msgstr "Total price"
+
+msgid "Total price (unit_price * quantity + modifier costs)"
+msgstr "Total price (unit_price * quantity + modifier costs)"
+
+msgid "Current item status"
+msgstr "Current item status"
+
+msgid "Modifiers"
+msgstr "Modifiers"
+
+msgid "JSON snapshot of selected modifiers with prices at order time"
+msgstr "JSON snapshot of selected modifiers with prices at order time"
+
+msgid "Customer notes/special instructions for this item"
+msgstr "Customer notes/special instructions for this item"
+
+msgid "Is gift"
+msgstr "Is gift"
+
+msgid "Whether this item is a complimentary gift (zero charge)"
+msgstr "Whether this item is a complimentary gift (zero charge)"
+
+msgid "Prepared at"
+msgstr "Prepared at"
+
+msgid "Timestamp when item preparation completed"
+msgstr "Timestamp when item preparation completed"
+
+msgid "Timestamp when item was delivered to customer"
+msgstr "Timestamp when item was delivered to customer"
+
+msgid "Timestamp when item was cancelled"
+msgstr "Timestamp when item was cancelled"
+
+msgid "Reason for item cancellation"
+msgstr "Reason for item cancellation"
+
+msgid "Additional item data (JSON)"
+msgstr "Additional item data (JSON)"
+
+msgid "Order Item"
+msgstr "Order Item"
+
+msgid "Order Items"
+msgstr "Order Items"
+
+msgid "Unknown Product"
+msgstr "Unknown Product"
+
+msgid "Organization this request belongs to"
+msgstr "Organization this request belongs to"
+
+msgid "Branch this request belongs to (optional for single-location)"
+msgstr "Branch this request belongs to (optional for single-location)"
+
+msgid "Table making this request"
+msgstr "Table making this request"
+
+msgid "Related order (if applicable)"
+msgstr "Related order (if applicable)"
+
+msgid "Customer who made this request (if logged in)"
+msgstr "Customer who made this request (if logged in)"
+
+msgid "Type of service request"
+msgstr "Type of service request"
+
+msgid "Current request status"
+msgstr "Current request status"
+
+msgid "Optional customer message or notes"
+msgstr "Optional customer message or notes"
+
+msgid "Priority level 1-5 (1 is highest priority)"
+msgstr "Priority level 1-5 (1 is highest priority)"
+
+msgid "Staff member assigned to handle this request"
+msgstr "Staff member assigned to handle this request"
+
+msgid "Acknowledged at"
+msgstr "Acknowledged at"
+
+msgid "Timestamp when request was acknowledged by staff"
+msgstr "Timestamp when request was acknowledged by staff"
+
+msgid "Timestamp when request was completed"
+msgstr "Timestamp when request was completed"
+
+msgid "Timestamp when request was cancelled"
+msgstr "Timestamp when request was cancelled"
+
+msgid "Reason for request cancellation"
+msgstr "Reason for request cancellation"
+
+msgid "Response time"
+msgstr "Response time"
+
+msgid "Time to first response in seconds"
+msgstr "Time to first response in seconds"
+
+msgid "Additional request data (JSON)"
+msgstr "Additional request data (JSON)"
+
+msgid "Service Request"
+msgstr "Service Request"
+
+msgid "Service Requests"
+msgstr "Service Requests"
+
+msgid "Just now"
+msgstr "Just now"
+
+#, python-format
+msgid "%(minutes)d min ago"
+msgstr "%(minutes)d min ago"
+
+#, python-format
+msgid "%(hours)d hr ago"
+msgstr "%(hours)d hr ago"
+
+msgid "Organization this discount belongs to"
+msgstr "Organization this discount belongs to"
+
+msgid "Order this discount is applied to"
+msgstr "Order this discount is applied to"
+
+msgid "Type of discount applied"
+msgstr "Type of discount applied"
+
+msgid "Discount value (percentage or fixed amount)"
+msgstr "Discount value (percentage or fixed amount)"
+
+msgid "Applied amount"
+msgstr "Applied amount"
+
+msgid "Actual monetary amount applied to the order"
+msgstr "Actual monetary amount applied to the order"
+
+msgid "Coupon or promo code used"
+msgstr "Coupon or promo code used"
+
+msgid "Reason"
+msgstr "Reason"
+
+msgid "Reason for applying the discount"
+msgstr "Reason for applying the discount"
+
+msgid "Applied by"
+msgstr "Applied by"
+
+msgid "Staff member who applied this discount"
+msgstr "Staff member who applied this discount"
+
+msgid "Discounts"
+msgstr "Discounts"
+
+msgid "Organization this refund belongs to"
+msgstr "Organization this refund belongs to"
+
+msgid "Order being refunded"
+msgstr "Order being refunded"
+
+msgid "Order item"
+msgstr "Order item"
+
+msgid "Specific order item being refunded (for item-level refunds)"
+msgstr "Specific order item being refunded (for item-level refunds)"
+
+msgid "Refund type"
+msgstr "Refund type"
+
+msgid "Type of refund (full, partial, or item)"
+msgstr "Type of refund (full, partial, or item)"
+
+msgid "Amount"
+msgstr "Amount"
+
+msgid "Refund monetary amount"
+msgstr "Refund monetary amount"
+
+msgid "Reason for the refund"
+msgstr "Reason for the refund"
+
+msgid "Current refund status"
+msgstr "Current refund status"
+
+msgid "Processed by"
+msgstr "Processed by"
+
+msgid "Staff member who processed this refund"
+msgstr "Staff member who processed this refund"
+
+msgid "Processed at"
+msgstr "Processed at"
+
+msgid "Timestamp when refund was processed"
+msgstr "Timestamp when refund was processed"
+
+msgid "Refund"
+msgstr "Refund"
+
+msgid "Refunds"
+msgstr "Refunds"
+
+msgid "Organization this reservation belongs to"
+msgstr "Organization this reservation belongs to"
+
+msgid "Registered customer who made this reservation"
+msgstr "Registered customer who made this reservation"
+
+msgid "Table assigned to this reservation"
+msgstr "Table assigned to this reservation"
+
+msgid "Preferred zone/section for this reservation"
+msgstr "Preferred zone/section for this reservation"
+
+msgid "Guest name"
+msgstr "Guest name"
+
+msgid "Name of the guest making the reservation"
+msgstr "Name of the guest making the reservation"
+
+msgid "Guest phone"
+msgstr "Guest phone"
+
+msgid "Phone number of the guest"
+msgstr "Phone number of the guest"
+
+msgid "Number of guests expected"
+msgstr "Number of guests expected"
+
+msgid "Reservation date"
+msgstr "Reservation date"
+
+msgid "Date of the reservation"
+msgstr "Date of the reservation"
+
+msgid "Reservation time"
+msgstr "Reservation time"
+
+msgid "Time of the reservation"
+msgstr "Time of the reservation"
+
+msgid "Expected duration of the reservation in minutes"
+msgstr "Expected duration of the reservation in minutes"
+
+msgid "Current reservation status"
+msgstr "Current reservation status"
+
+msgid "Additional notes about the reservation"
+msgstr "Additional notes about the reservation"
+
+msgid "Reservation"
+msgstr "Reservation"
+
+msgid "Reservations"
+msgstr "Reservations"
+
+msgid "Number of tables in this zone"
+msgstr "Number of tables in this zone"
+
+msgid "Number of available tables in this zone"
+msgstr "Number of available tables in this zone"
+
+msgid "A zone with this slug already exists."
+msgstr "A zone with this slug already exists."
+
+msgid "Zone UUID this table belongs to"
+msgstr "Zone UUID this table belongs to"
+
+msgid "Active orders at this table"
+msgstr "Active orders at this table"
+
+msgid "Zone not found."
+msgstr "Zone not found."
+
+msgid "A table with this slug already exists."
+msgstr "A table with this slug already exists."
+
+msgid "Menu UUID to link this QR code to"
+msgstr "Menu UUID to link this QR code to"
+
+msgid "Table UUID to link this QR code to"
+msgstr "Table UUID to link this QR code to"
+
+msgid "A QR code with this code already exists."
+msgstr "A QR code with this code already exists."
+
+msgid "Table not found."
+msgstr "Table not found."
+
+msgid "Table is required for TABLE type QR codes."
+msgstr "Table is required for TABLE type QR codes."
+
+msgid "Deleted Product"
+msgstr "Deleted Product"
+
+msgid "Table UUID for dine-in orders"
+msgstr "Table UUID for dine-in orders"
+
+msgid "List of order items to create with the order"
+msgstr "List of order items to create with the order"
+
+msgid "An order with this number already exists."
+msgstr "An order with this number already exists."
+
+msgid "Table is required for dine-in orders."
+msgstr "Table is required for dine-in orders."
+
+msgid "Delivery address is required for delivery orders."
+msgstr "Delivery address is required for delivery orders."
+
+msgid "Table UUID for the service request"
+msgstr "Table UUID for the service request"
+
+msgid "Zone activated"
+msgstr "Zone activated"
+
+msgid "Zone deactivated"
+msgstr "Zone deactivated"
+
+msgid "Table set as available"
+msgstr "Table set as available"
+
+msgid "Table set as occupied"
+msgstr "Table set as occupied"
+
+msgid "Table set as reserved"
+msgstr "Table set as reserved"
+
+msgid "Table activated"
+msgstr "Table activated"
+
+msgid "Table deactivated"
+msgstr "Table deactivated"
+
+msgid "QR code activated"
+msgstr "QR code activated"
+
+msgid "QR code deactivated"
+msgstr "QR code deactivated"
+
+msgid "Order confirmed"
+msgstr "Order confirmed"
+
+msgid "Order preparation started"
+msgstr "Order preparation started"
+
+msgid "Order marked as ready"
+msgstr "Order marked as ready"
+
+msgid "Order delivered"
+msgstr "Order delivered"
+
+msgid "Order completed"
+msgstr "Order completed"
+
+msgid "Order cancelled"
+msgstr "Order cancelled"
+
+msgid "Order marked as paid"
+msgstr "Order marked as paid"
+
+msgid "Service request is not pending"
+msgstr "Service request is not pending"
+
+msgid "Service request acknowledged"
+msgstr "Service request acknowledged"
+
+msgid "Service request cannot be completed"
+msgstr "Service request cannot be completed"
+
+msgid "Service request completed"
+msgstr "Service request completed"
+
+msgid "Reporting"
+msgstr "Reporting"
+
+msgid "Sales"
+msgstr "Sales"
+
+msgid "Operations"
+msgstr "Operations"
+
+msgid "Digital"
+msgstr "Digital"
+
+msgid "Periodic"
+msgstr "Periodic"
+
+msgid "Inventory"
+msgstr "Inventory"
+
+msgid "Platform"
+msgstr "Platform"
+
+msgid "AI Insights"
+msgstr "AI Insights"
+
+msgid "AI Query"
+msgstr "AI Query"
+
+msgid "Forecasting"
+msgstr "Forecasting"
+
+msgid "Bi-weekly"
+msgstr "Bi-weekly"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Push Notification"
+msgstr "Push Notification"
+
+msgid "Webhook"
+msgstr "Webhook"
+
+msgid "JSON"
+msgstr "JSON"
+
+msgid "PDF"
+msgstr "PDF"
+
+msgid "Excel"
+msgstr "Excel"
+
+msgid "CSV"
+msgstr "CSV"
+
+msgid "Claude Haiku"
+msgstr "Claude Haiku"
+
+msgid "Claude Sonnet"
+msgstr "Claude Sonnet"
+
+msgid "Claude Opus"
+msgstr "Claude Opus"
+
+msgid "No AI"
+msgstr "No AI"
+
+msgid "Starter"
+msgstr "Starter"
+
+msgid "Professional"
+msgstr "Professional"
+
+msgid "Business"
+msgstr "Business"
+
+msgid "Enterprise"
+msgstr "Enterprise"
+
+msgid "P0 - Critical"
+msgstr "P0 - Critical"
+
+msgid "P1 - High"
+msgstr "P1 - High"
+
+msgid "P2 - Medium"
+msgstr "P2 - Medium"
+
+msgid "P3 - Low"
+msgstr "P3 - Low"
+
+msgid "Unique feature key, e.g., RPT-SAL-001"
+msgstr "Unique feature key, e.g., RPT-SAL-001"
+
+msgid "Human-readable report name"
+msgstr "Human-readable report name"
+
+msgid "Report description"
+msgstr "Report description"
+
+msgid "Report category"
+msgstr "Report category"
+
+msgid "Implementation priority"
+msgstr "Implementation priority"
+
+msgid "AI model used for this report"
+msgstr "AI model used for this report"
+
+msgid "Credit cost per execution"
+msgstr "Credit cost per execution"
+
+msgid "Minimum plan required to access this report"
+msgstr "Minimum plan required to access this report"
+
+msgid "Default parameters for this report"
+msgstr "Default parameters for this report"
+
+msgid "Supported export formats, e.g., [\"PDF\", \"EXCEL\", \"CSV\"]"
+msgstr "Supported export formats, e.g., [\"PDF\", \"EXCEL\", \"CSV\"]"
+
+msgid "Supported grouping dimensions"
+msgstr "Supported grouping dimensions"
+
+msgid "Dotted path to handler class"
+msgstr "Dotted path to handler class"
+
+msgid "Whether this report is available"
+msgstr "Whether this report is available"
+
+msgid "Whether this report can be scheduled"
+msgstr "Whether this report can be scheduled"
+
+msgid "Whether this report requires AI processing"
+msgstr "Whether this report requires AI processing"
+
+msgid "Report Definition"
+msgstr "Report Definition"
+
+msgid "Report Definitions"
+msgstr "Report Definitions"
+
+msgid "Organization that requested this report"
+msgstr "Organization that requested this report"
+
+msgid "The report definition being executed"
+msgstr "The report definition being executed"
+
+msgid "User who requested the report"
+msgstr "User who requested the report"
+
+msgid "Current execution status"
+msgstr "Current execution status"
+
+msgid "Parameters used for this execution"
+msgstr "Parameters used for this execution"
+
+msgid "Report result data (JSON)"
+msgstr "Report result data (JSON)"
+
+msgid "Error message if execution failed"
+msgstr "Error message if execution failed"
+
+msgid "When processing started"
+msgstr "When processing started"
+
+msgid "When processing completed"
+msgstr "When processing completed"
+
+msgid "Execution duration in milliseconds"
+msgstr "Execution duration in milliseconds"
+
+msgid "Credits consumed for this execution"
+msgstr "Credits consumed for this execution"
+
+msgid "AI model actually used (may differ from definition)"
+msgstr "AI model actually used (may differ from definition)"
+
+msgid "AI tokens consumed"
+msgstr "AI tokens consumed"
+
+msgid "Export format if exported"
+msgstr "Export format if exported"
+
+msgid "URL to exported file"
+msgstr "URL to exported file"
+
+msgid "Schedule that triggered this execution (if scheduled)"
+msgstr "Schedule that triggered this execution (if scheduled)"
+
+msgid "Celery task ID for tracking"
+msgstr "Celery task ID for tracking"
+
+msgid "Report Execution"
+msgstr "Report Execution"
+
+msgid "Report Executions"
+msgstr "Report Executions"
+
+msgid "Organization that owns this schedule"
+msgstr "Organization that owns this schedule"
+
+msgid "The report to generate"
+msgstr "The report to generate"
+
+msgid "User who created the schedule"
+msgstr "User who created the schedule"
+
+msgid "Schedule name"
+msgstr "Schedule name"
+
+msgid "How often to generate the report"
+msgstr "How often to generate the report"
+
+msgid "Time of day to generate (local timezone)"
+msgstr "Time of day to generate (local timezone)"
+
+msgid "Day of week for weekly schedules (0=Monday, 6=Sunday)"
+msgstr "Day of week for weekly schedules (0=Monday, 6=Sunday)"
+
+msgid "Day of month for monthly schedules (1-28)"
+msgstr "Day of month for monthly schedules (1-28)"
+
+msgid "Report parameters to use"
+msgstr "Report parameters to use"
+
+msgid "Delivery channels: [\"DASHBOARD\", \"EMAIL\", \"PUSH\", \"WEBHOOK\"]"
+msgstr "Delivery channels: [\"DASHBOARD\", \"EMAIL\", \"PUSH\", \"WEBHOOK\"]"
+
+msgid "Email addresses for EMAIL delivery"
+msgstr "Email addresses for EMAIL delivery"
+
+msgid "Webhook URL for WEBHOOK delivery"
+msgstr "Webhook URL for WEBHOOK delivery"
+
+msgid "Export format for delivery"
+msgstr "Export format for delivery"
+
+msgid "Whether this schedule is active"
+msgstr "Whether this schedule is active"
+
+msgid "Next scheduled run time"
+msgstr "Next scheduled run time"
+
+msgid "When the schedule was last executed"
+msgstr "When the schedule was last executed"
+
+msgid "Number of times this schedule has run"
+msgstr "Number of times this schedule has run"
+
+msgid "Number of consecutive failures"
+msgstr "Number of consecutive failures"
+
+msgid "Max consecutive failures before auto-disable"
+msgstr "Max consecutive failures before auto-disable"
+
+msgid "Report Schedule"
+msgstr "Report Schedule"
+
+msgid "Report Schedules"
+msgstr "Report Schedules"
+
+msgid "Organization context"
+msgstr "Organization context"
+
+msgid "User who favorited this report"
+msgstr "User who favorited this report"
+
+msgid "The favorited report"
+msgstr "The favorited report"
+
+msgid "Custom name for this favorite"
+msgstr "Custom name for this favorite"
+
+msgid "Saved parameters for quick access"
+msgstr "Saved parameters for quick access"
+
+msgid "Display order in favorites list"
+msgstr "Display order in favorites list"
+
+msgid "Report Favorite"
+msgstr "Report Favorite"
+
+msgid "Report Favorites"
+msgstr "Report Favorites"
+
+msgid "Organization that owns this session"
+msgstr "Organization that owns this session"
+
+msgid "User who initiated this conversation"
+msgstr "User who initiated this conversation"
+
+msgid "Session title (auto-generated or user-defined)"
+msgstr "Session title (auto-generated or user-defined)"
+
+msgid "Accumulated context from conversation turns"
+msgstr "Accumulated context from conversation turns"
+
+msgid "Whether this session is still active"
+msgstr "Whether this session is still active"
+
+msgid "Timestamp of the last message in this session"
+msgstr "Timestamp of the last message in this session"
+
+msgid "Conversation Session"
+msgstr "Conversation Session"
+
+msgid "Conversation Sessions"
+msgstr "Conversation Sessions"
+
+msgid "Assistant"
+msgstr "Assistant"
+
+msgid "Parent conversation session"
+msgstr "Parent conversation session"
+
+msgid "Message role: user, assistant, or system"
+msgstr "Message role: user, assistant, or system"
+
+msgid "Message text content"
+msgstr "Message text content"
+
+msgid "Additional message metadata (intent, confidence, etc.)"
+msgstr "Additional message metadata (intent, confidence, etc.)"
+
+msgid "Associated report data returned with this message"
+msgstr "Associated report data returned with this message"
+
+msgid "Conversation Message"
+msgstr "Conversation Message"
+
+msgid "Conversation Messages"
+msgstr "Conversation Messages"
+
+msgid "Organization this balance belongs to"
+msgstr "Organization this balance belongs to"
+
+msgid "Total credits ever purchased/granted"
+msgstr "Total credits ever purchased/granted"
+
+msgid "Total credits consumed"
+msgstr "Total credits consumed"
+
+msgid "Credits currently reserved for in-progress operations"
+msgstr "Credits currently reserved for in-progress operations"
+
+msgid "Credit Balance"
+msgstr "Credit Balance"
+
+msgid "Credit Balances"
+msgstr "Credit Balances"
+
+msgid "Consume"
+msgstr "Consume"
+
+msgid "Bonus"
+msgstr "Bonus"
+
+msgid "Expire"
+msgstr "Expire"
+
+msgid "Type of credit transaction"
+msgstr "Type of credit transaction"
+
+msgid "Credit amount (positive=addition, negative=consumption)"
+msgstr "Credit amount (positive=addition, negative=consumption)"
+
+msgid "Available balance after this transaction"
+msgstr "Available balance after this transaction"
+
+msgid "Reference type (e.g., report_execution, subscription)"
+msgstr "Reference type (e.g., report_execution, subscription)"
+
+msgid "UUID of the referenced entity"
+msgstr "UUID of the referenced entity"
+
+msgid "User who initiated this transaction"
+msgstr "User who initiated this transaction"
+
+msgid "Credit Transaction"
+msgstr "Credit Transaction"
+
+msgid "Credit Transactions"
+msgstr "Credit Transactions"
+
+msgid "Metric identifier (e.g., avg_order_value, daily_revenue)"
+msgstr "Metric identifier (e.g., avg_order_value, daily_revenue)"
+
+msgid "Business category (e.g., cafe, restaurant, fast_food)"
+msgstr "Business category (e.g., cafe, restaurant, fast_food)"
+
+msgid "Geographic region (ISO country code or city)"
+msgstr "Geographic region (ISO country code or city)"
+
+msgid "Period granularity"
+msgstr "Period granularity"
+
+msgid "Start date of the benchmark period"
+msgstr "Start date of the benchmark period"
+
+msgid "Benchmark mean/average value"
+msgstr "Benchmark mean/average value"
+
+msgid "Number of organizations in this benchmark"
+msgstr "Number of organizations in this benchmark"
+
+msgid "25th percentile value"
+msgstr "25th percentile value"
+
+msgid "50th percentile (median) value"
+msgstr "50th percentile (median) value"
+
+msgid "75th percentile value"
+msgstr "75th percentile value"
+
+msgid "90th percentile value"
+msgstr "90th percentile value"
+
+msgid "Industry Benchmark"
+msgstr "Industry Benchmark"
+
+msgid "Industry Benchmarks"
+msgstr "Industry Benchmarks"
+
+msgid "Whether a handler is registered for this report"
+msgstr "Whether a handler is registered for this report"
+
+msgid "Report feature key (e.g., RPT-SAL-001)"
+msgstr "Report feature key (e.g., RPT-SAL-001)"
+
+msgid "Report parameters"
+msgstr "Report parameters"
+
+msgid "Export format"
+msgstr "Export format"
+
+msgid "Whether to execute asynchronously"
+msgstr "Whether to execute asynchronously"
+
+msgid "Display Feature (Pricing Card)"
+msgstr "Display Feature (Pricing Card)"
+
+msgid "Display Features (Pricing Card)"
+msgstr "Display Features (Pricing Card)"
+
+msgid "Usage"
+msgstr "Usage"
+
+msgid "Type & Configuration"
+msgstr "Type & Configuration"
+
+msgid "Used By Plans"
+msgstr "Used By Plans"
+
+msgid "Plans"
+msgstr "Plans"
+
+msgid "Plans using this feature"
+msgstr "Plans using this feature"
+
+msgid "Limits"
+msgstr "Limits"
+
+msgid ""
+"JSON format: {\"max_menus\": 3, \"max_products\": 200, \"max_qr_codes\": 10, "
+"\"max_users\": 5, \"max_branches\": 1, \"storage_mb\": 500, "
+"\"ai_credits_monthly\": 100}. Use -1 for unlimited."
+msgstr ""
+"JSON format: {\"max_menus\": 3, \"max_products\": 200, \"max_qr_codes\": 10, "
+"\"max_users\": 5, \"max_branches\": 1, \"storage_mb\": 500, "
+"\"ai_credits_monthly\": 100}. Use -1 for unlimited."
+
+msgid "Feature Flags"
+msgstr "Feature Flags"
+
+msgid ""
+"JSON format: {\"ai_content_generation\": true, \"analytics_basic\": true, "
+"\"custom_domain\": false, \"api_access\": false, ...}"
+msgstr ""
+"JSON format: {\"ai_content_generation\": true, \"analytics_basic\": true, "
+"\"custom_domain\": false, \"api_access\": false, ...}"
+
+msgid "Display & Status"
+msgstr "Display & Status"
+
+msgid "Pricing Card Preview"
+msgstr "Pricing Card Preview"
+
+msgid "Tier"
+msgstr "Tier"
+
+msgid "Subscribers"
+msgstr "Subscribers"
+
+msgid "Features"
+msgstr "Features"
+
+msgid "Limits (visual)"
+msgstr "Limits (visual)"
+
+msgid "Feature Flags (visual)"
+msgstr "Feature Flags (visual)"
+
+msgid "Activate selected plans"
+msgstr "Activate selected plans"
+
+#, python-format
+msgid "%d plan(s) activated."
+msgstr "%d plan(s) activated."
+
+msgid "Deactivate selected plans"
+msgstr "Deactivate selected plans"
+
+#, python-format
+msgid "%d plan(s) deactivated."
+msgstr "%d plan(s) deactivated."
+
+msgid "Set as default plan"
+msgstr "Set as default plan"
+
+msgid "Please select exactly one plan."
+msgstr "Please select exactly one plan."
+
+#, python-format
+msgid "\"%s\" is now the default plan."
+msgstr "\"%s\" is now the default plan."
+
+msgid "Duplicate selected plan"
+msgstr "Duplicate selected plan"
+
+#, python-format
+msgid "%d plan(s) duplicated."
+msgstr "%d plan(s) duplicated."
+
+msgid "Plan"
+msgstr "Plan"
+
+msgid "Feature"
+msgstr "Feature"
+
+msgid "Subscription Health"
+msgstr "Subscription Health"
+
+msgid "Billing"
+msgstr "Billing"
+
+msgid "Billing Period"
+msgstr "Billing Period"
+
+msgid "Cancellation"
+msgstr "Cancellation"
+
+msgid "External Payment"
+msgstr "External Payment"
+
+msgid "Period"
+msgstr "Period"
+
+msgid "Health"
+msgstr "Health"
+
+msgid "Usage Summary"
+msgstr "Usage Summary"
+
+msgid "Activate selected subscriptions"
+msgstr "Activate selected subscriptions"
+
+#, python-format
+msgid "%d subscription(s) activated."
+msgstr "%d subscription(s) activated."
+
+msgid "Suspend selected subscriptions"
+msgstr "Suspend selected subscriptions"
+
+#, python-format
+msgid "%d subscription(s) suspended."
+msgstr "%d subscription(s) suspended."
+
+msgid "Expire selected subscriptions"
+msgstr "Expire selected subscriptions"
+
+#, python-format
+msgid "%d subscription(s) expired."
+msgstr "%d subscription(s) expired."
+
+msgid "Invoice Summary"
+msgstr "Invoice Summary"
+
+msgid "Amounts"
+msgstr "Amounts"
+
+msgid "Dates"
+msgstr "Dates"
+
+msgid "#"
+msgstr "#"
+
+msgid "Due Date"
+msgstr "Due Date"
+
+msgid "Paid"
+msgstr "Paid"
+
+msgid "Summary"
+msgstr "Summary"
+
+msgid "Mark as paid"
+msgstr "Mark as paid"
+
+#, python-format
+msgid "%d invoice(s) marked as paid."
+msgstr "%d invoice(s) marked as paid."
+
+msgid "Void selected invoices"
+msgstr "Void selected invoices"
+
+#, python-format
+msgid "%d invoice(s) voided."
+msgstr "%d invoice(s) voided."
+
+msgid "Finalize (draft → pending)"
+msgstr "Finalize (draft → pending)"
+
+#, python-format
+msgid "%d invoice(s) finalized."
+msgstr "%d invoice(s) finalized."
+
+msgid "Reset usage counters to 0"
+msgstr "Reset usage counters to 0"
+
+#, python-format
+msgid "%d usage record(s) reset."
+msgstr "%d usage record(s) reset."
+
+msgid "Unique identifier code for feature lookup (e.g., max_menus, ai_enabled)"
+msgstr "Unique identifier code for feature lookup (e.g., max_menus, ai_enabled)"
+
+msgid "Human-readable display name for the feature"
+msgstr "Human-readable display name for the feature"
+
+msgid "Detailed description of what this feature provides"
+msgstr "Detailed description of what this feature provides"
+
+msgid "Feature type"
+msgstr "Feature type"
+
+msgid "Type of feature: BOOLEAN (on/off), LIMIT (max count), USAGE (metered)"
+msgstr "Type of feature: BOOLEAN (on/off), LIMIT (max count), USAGE (metered)"
+
+msgid "Default value"
+msgstr "Default value"
+
+msgid "Default value for the feature (JSON format)"
+msgstr "Default value for the feature (JSON format)"
+
+msgid "Category for grouping features (e.g., menus, orders, ai, analytics)"
+msgstr "Category for grouping features (e.g., menus, orders, ai, analytics)"
+
+msgid "Whether the feature is currently available"
+msgstr "Whether the feature is currently available"
+
+msgid "Additional metadata for the feature (JSON)"
+msgstr "Additional metadata for the feature (JSON)"
+
+msgid "Display name of the plan (e.g., Starter, Professional)"
+msgstr "Display name of the plan (e.g., Starter, Professional)"
+
+msgid "Plan tier level (FREE, STARTER, GROWTH, etc.)"
+msgstr "Plan tier level (FREE, STARTER, GROWTH, etc.)"
+
+msgid "Detailed description of the plan and its features"
+msgstr "Detailed description of the plan and its features"
+
+msgid "Brief tagline for the plan (shown on pricing cards)"
+msgstr "Brief tagline for the plan (shown on pricing cards)"
+
+msgid "Monthly price"
+msgstr "Monthly price"
+
+msgid "Monthly subscription price"
+msgstr "Monthly subscription price"
+
+msgid "Yearly price"
+msgstr "Yearly price"
+
+msgid "Yearly subscription price (typically with discount)"
+msgstr "Yearly subscription price (typically with discount)"
+
+msgid "Currency code for pricing (e.g., TRY, USD, EUR)"
+msgstr "Currency code for pricing (e.g., TRY, USD, EUR)"
+
+msgid ""
+"Plan limits as JSON (e.g., {\"max_menus\": 3, \"max_products\": 200, "
+"\"max_qr_codes\": 10, \"max_users\": 5, \"storage_mb\": 500})"
+msgstr ""
+"Plan limits as JSON (e.g., {\"max_menus\": 3, \"max_products\": 200, "
+"\"max_qr_codes\": 10, \"max_users\": 5, \"storage_mb\": 500})"
+
+msgid "Feature flags"
+msgstr "Feature flags"
+
+msgid ""
+"Boolean feature flags as JSON (e.g., {\"ai_enabled\": true, "
+"\"custom_domain\": false, \"api_access\": false})"
+msgstr ""
+"Boolean feature flags as JSON (e.g., {\"ai_enabled\": true, "
+"\"custom_domain\": false, \"api_access\": false})"
+
+msgid "Trial days"
+msgstr "Trial days"
+
+msgid "Number of trial days for this plan (0 for no trial)"
+msgstr "Number of trial days for this plan (0 for no trial)"
+
+msgid "Whether the plan is available for subscription"
+msgstr "Whether the plan is available for subscription"
+
+msgid "Whether this is the default plan for new organizations"
+msgstr "Whether this is the default plan for new organizations"
+
+msgid "Whether the plan is visible on the public pricing page"
+msgstr "Whether the plan is visible on the public pricing page"
+
+msgid "Is custom"
+msgstr "Is custom"
+
+msgid "Whether this is a custom enterprise plan"
+msgstr "Whether this is a custom enterprise plan"
+
+msgid "Highlight text"
+msgstr "Highlight text"
+
+msgid "Optional badge text (e.g., \"Most Popular\", \"Best Value\")"
+msgstr "Optional badge text (e.g., \"Most Popular\", \"Best Value\")"
+
+msgid "Display order on pricing page (lower numbers appear first)"
+msgstr "Display order on pricing page (lower numbers appear first)"
+
+msgid "Additional plan metadata (JSON)"
+msgstr "Additional plan metadata (JSON)"
+
+msgid "Organization this subscription belongs to"
+msgstr "Organization this subscription belongs to"
+
+msgid "Subscription plan"
+msgstr "Subscription plan"
+
+msgid "Current subscription status"
+msgstr "Current subscription status"
+
+msgid "Billing period"
+msgstr "Billing period"
+
+msgid "Billing cycle (MONTHLY or YEARLY)"
+msgstr "Billing cycle (MONTHLY or YEARLY)"
+
+msgid "How the subscription is paid"
+msgstr "How the subscription is paid"
+
+msgid "Current price"
+msgstr "Current price"
+
+msgid "Locked-in price at subscription time"
+msgstr "Locked-in price at subscription time"
+
+msgid "When the trial period ends (null if no trial)"
+msgstr "When the trial period ends (null if no trial)"
+
+msgid "Current period start"
+msgstr "Current period start"
+
+msgid "Start of the current billing period"
+msgstr "Start of the current billing period"
+
+msgid "Current period end"
+msgstr "Current period end"
+
+msgid "End of the current billing period"
+msgstr "End of the current billing period"
+
+msgid "Next billing date"
+msgstr "Next billing date"
+
+msgid "When next payment will be charged"
+msgstr "When next payment will be charged"
+
+msgid "When cancellation was requested"
+msgstr "When cancellation was requested"
+
+msgid "User-provided reason for cancellation"
+msgstr "User-provided reason for cancellation"
+
+msgid "Cancel at period end"
+msgstr "Cancel at period end"
+
+msgid "If true, subscription will cancel at end of current period"
+msgstr "If true, subscription will cancel at end of current period"
+
+msgid "External subscription ID"
+msgstr "External subscription ID"
+
+msgid "Subscription ID from payment provider (e.g., Iyzico)"
+msgstr "Subscription ID from payment provider (e.g., Iyzico)"
+
+msgid "External customer ID"
+msgstr "External customer ID"
+
+msgid "Customer ID from payment provider"
+msgstr "Customer ID from payment provider"
+
+msgid "Payment details"
+msgstr "Payment details"
+
+msgid ""
+"Masked payment method details (e.g., {\"last4\": \"4242\", \"brand\": "
+"\"visa\"})"
+msgstr ""
+"Masked payment method details (e.g., {\"last4\": \"4242\", \"brand\": "
+"\"visa\"})"
+
+msgid "Additional subscription metadata (JSON)"
+msgstr "Additional subscription metadata (JSON)"
+
+msgid "Subscription"
+msgstr "Subscription"
+
+msgid "Subscriptions"
+msgstr "Subscriptions"
+
+msgid "Organization this invoice belongs to"
+msgstr "Organization this invoice belongs to"
+
+msgid "Related subscription (null for one-time purchases)"
+msgstr "Related subscription (null for one-time purchases)"
+
+msgid "Invoice number"
+msgstr "Invoice number"
+
+msgid "Unique invoice number within organization"
+msgstr "Unique invoice number within organization"
+
+msgid "Current invoice status"
+msgstr "Current invoice status"
+
+msgid "Amount before tax"
+msgstr "Amount before tax"
+
+msgid "Total amount due"
+msgstr "Total amount due"
+
+msgid "Amount paid"
+msgstr "Amount paid"
+
+msgid "Amount actually paid"
+msgstr "Amount actually paid"
+
+msgid "Amount refunded"
+msgstr "Amount refunded"
+
+msgid "Currency code for this invoice"
+msgstr "Currency code for this invoice"
+
+msgid "Due date"
+msgstr "Due date"
+
+msgid "When payment is due"
+msgstr "When payment is due"
+
+msgid "Paid at"
+msgstr "Paid at"
+
+msgid "When payment was received"
+msgstr "When payment was received"
+
+msgid "Start of billing period covered"
+msgstr "Start of billing period covered"
+
+msgid "End of billing period covered"
+msgstr "End of billing period covered"
+
+msgid "Invoice description or memo"
+msgstr "Invoice description or memo"
+
+msgid "Line items"
+msgstr "Line items"
+
+msgid "Array of line items: [{description, quantity, unit_price, amount}]"
+msgstr "Array of line items: [{description, quantity, unit_price, amount}]"
+
+msgid "Billing address"
+msgstr "Billing address"
+
+msgid "Billing address details (JSON)"
+msgstr "Billing address details (JSON)"
+
+msgid "External invoice ID"
+msgstr "External invoice ID"
+
+msgid "Invoice ID from payment provider"
+msgstr "Invoice ID from payment provider"
+
+msgid "External payment ID"
+msgstr "External payment ID"
+
+msgid "Payment transaction ID from provider"
+msgstr "Payment transaction ID from provider"
+
+msgid "Masked payment method details"
+msgstr "Masked payment method details"
+
+msgid "PDF URL"
+msgstr "PDF URL"
+
+msgid "URL to generated PDF invoice"
+msgstr "URL to generated PDF invoice"
+
+msgid "Additional invoice metadata (JSON)"
+msgstr "Additional invoice metadata (JSON)"
+
+msgid "Invoice"
+msgstr "Invoice"
+
+msgid "Invoices"
+msgstr "Invoices"
+
+msgid "Plan that includes this feature"
+msgstr "Plan that includes this feature"
+
+msgid "Feature included in the plan"
+msgstr "Feature included in the plan"
+
+msgid ""
+"Plan-specific feature configuration (JSON). For LIMIT: {\"limit\": 10}, for "
+"BOOLEAN: {\"enabled\": true}, for USAGE: {\"credits\": 100, "
+"\"reset_period\": \"monthly\"}"
+msgstr ""
+"Plan-specific feature configuration (JSON). For LIMIT: {\"limit\": 10}, for "
+"BOOLEAN: {\"enabled\": true}, for USAGE: {\"credits\": 100, "
+"\"reset_period\": \"monthly\"}"
+
+msgid "Is enabled"
+msgstr "Is enabled"
+
+msgid "Whether this feature is enabled for this plan"
+msgstr "Whether this feature is enabled for this plan"
+
+msgid "Display order within plan (lower numbers appear first)"
+msgstr "Display order within plan (lower numbers appear first)"
+
+msgid "Additional metadata for this plan-feature relationship (JSON)"
+msgstr "Additional metadata for this plan-feature relationship (JSON)"
+
+msgid "Plan Feature"
+msgstr "Plan Feature"
+
+msgid "Plan Features"
+msgstr "Plan Features"
+
+msgid "Feature being tracked"
+msgstr "Feature being tracked"
+
+msgid "Current usage"
+msgstr "Current usage"
+
+msgid "Current usage count for this period"
+msgstr "Current usage count for this period"
+
+msgid "Limit from plan (-1 = unlimited)"
+msgstr "Limit from plan (-1 = unlimited)"
+
+msgid "Start of current tracking period"
+msgstr "Start of current tracking period"
+
+msgid "End of current tracking period"
+msgstr "End of current tracking period"
+
+msgid "Last reset at"
+msgstr "Last reset at"
+
+msgid "When usage was last reset"
+msgstr "When usage was last reset"
+
+msgid "Last usage at"
+msgstr "Last usage at"
+
+msgid "When usage was last recorded"
+msgstr "When usage was last recorded"
+
+msgid "Additional usage metadata (e.g., usage breakdown, history)"
+msgstr "Additional usage metadata (e.g., usage breakdown, history)"
+
+msgid "Organization Usage"
+msgstr "Organization Usage"
+
+msgid "A feature with this code already exists."
+msgstr "A feature with this code already exists."
+
+msgid "Number of active subscriptions using this plan"
+msgstr "Number of active subscriptions using this plan"
+
+msgid "A plan with this slug already exists."
+msgstr "A plan with this slug already exists."
+
+msgid "Plan UUID to associate with this subscription"
+msgstr "Plan UUID to associate with this subscription"
+
+msgid "Plan UUID for this subscription"
+msgstr "Plan UUID for this subscription"
+
+msgid "Plan not found or not active."
+msgstr "Plan not found or not active."
+
+msgid "Organization already has an active subscription."
+msgstr "Organization already has an active subscription."
+
+msgid "Reason for cancellation"
+msgstr "Reason for cancellation"
+
+msgid "If true, cancel at end of current period. If false, cancel immediately."
+msgstr "If true, cancel at end of current period. If false, cancel immediately."
+
+msgid "New plan UUID"
+msgstr "New plan UUID"
+
+msgid "Whether to prorate the change"
+msgstr "Whether to prorate the change"
+
+msgid "Subscription UUID for this invoice"
+msgstr "Subscription UUID for this invoice"
+
+msgid "Auto-generate invoice number"
+msgstr "Auto-generate invoice number"
+
+msgid "Subscription not found."
+msgstr "Subscription not found."
+
+msgid "External payment transaction ID"
+msgstr "External payment transaction ID"
+
+msgid "Amount paid (defaults to total)"
+msgstr "Amount paid (defaults to total)"
+
+msgid "Amount to refund (defaults to full amount)"
+msgstr "Amount to refund (defaults to full amount)"
+
+msgid "Reason for refund"
+msgstr "Reason for refund"
+
+msgid "Plan UUID"
+msgstr "Plan UUID"
+
+msgid "Feature UUID"
+msgstr "Feature UUID"
+
+msgid "Plan not found."
+msgstr "Plan not found."
+
+msgid "Feature not found."
+msgstr "Feature not found."
+
+msgid "This feature is already linked to this plan."
+msgstr "This feature is already linked to this plan."
+
+msgid "Feature UUID to track usage for"
+msgstr "Feature UUID to track usage for"
+
+msgid "Plan set as default"
+msgstr "Plan set as default"
+
+msgid "The \"with\" parameter is required"
+msgstr "The \"with\" parameter is required"
+
+msgid "Comparison plan not found"
+msgstr "Comparison plan not found"
+
+msgid "Subscription cancelled"
+msgstr "Subscription cancelled"
+
+msgid "Only cancelled or suspended subscriptions can be reactivated"
+msgstr "Only cancelled or suspended subscriptions can be reactivated"
+
+msgid "Subscription reactivated"
+msgstr "Subscription reactivated"
+
+msgid "Plan changed successfully"
+msgstr "Plan changed successfully"
+
+msgid "Only draft invoices can be finalized"
+msgstr "Only draft invoices can be finalized"
+
+msgid "Invoice finalized"
+msgstr "Invoice finalized"
+
+msgid "Only pending or draft invoices can be marked as paid"
+msgstr "Only pending or draft invoices can be marked as paid"
+
+msgid "Invoice marked as paid"
+msgstr "Invoice marked as paid"
+
+msgid "Paid invoices cannot be voided. Use refund instead."
+msgstr "Paid invoices cannot be voided. Use refund instead."
+
+msgid "Invoice voided"
+msgstr "Invoice voided"
+
+msgid "Only paid invoices can be refunded"
+msgstr "Only paid invoices can be refunded"
+
+msgid "Invoice refunded"
+msgstr "Invoice refunded"
+
+msgid "Konu"
+msgstr "Subject"
+
+msgid "Okundu"
+msgstr "Read"
+
+msgid "Secilenleri okundu isaretle"
+msgstr "Mark selected as read"
+
+msgid "Secilenleri okunmadi isaretle"
+msgstr "Mark selected as unread"
+
+msgid "Iletisim Bilgileri"
+msgstr "Contact Information"
+
+msgid "Isletme Bilgileri"
+msgstr "Business Information"
+
+msgid "Durum Takibi"
+msgstr "Status Tracking"
+
+msgid "Sistem"
+msgstr "System"
+
+msgid "Durum"
+msgstr "Status"
+
+msgid "Iletisime gecildi olarak isaretle"
+msgstr "Mark as contacted"
+
+msgid "Demo yapildi olarak isaretle"
+msgstr "Mark as demo completed"
+
+msgid "Musteri oldu olarak isaretle"
+msgstr "Mark as converted to customer"
+
+msgid "Sirket Bilgileri"
+msgstr "Company Information"
+
+msgid "Iletisim"
+msgstr "Contact"
+
+msgid "Sosyal Medya"
+msgstr "Social Media"
+
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+msgid "CTA Varsayilanlari"
+msgstr "CTA Defaults"
+
+msgid "Diger"
+msgstr "Other"
+
+msgid "Sayfa & Icerik"
+msgstr "Page & Content"
+
+msgid "CTA Ozellestirme"
+msgstr "CTA Customization"
+
+msgid "Bos birakilirsa Site Ayarlari'ndaki varsayilanlar kullanilir."
+msgstr "If left blank, defaults from Site Settings will be used."
+
+msgid "Gorunum"
+msgstr "Appearance"
+
+msgid "Sayfa"
+msgstr "Page"
+
+msgid "Baslik"
+msgstr "Title"
+
+msgid "Icerik"
+msgstr "Content"
+
+msgid "Istatistik Sayac"
+msgstr "Statistics Counter"
+
+msgid "Sadece \"Istatistik Sayac\" tipi icin"
+msgstr "Sadece \"Istatistik Sayac\" tipi icin"
+
+msgid "Nasil Calisir"
+msgstr "How It Works"
+
+msgid "Sadece \"Nasil Calisir\" tipi icin"
+msgstr "Sadece \"Nasil Calisir\" tipi icin"
+
+msgid "Problem / Cozum"
+msgstr "Problem / Solution"
+
+msgid "Sadece \"Problem / Cozum\" tipi icin"
+msgstr "Sadece \"Problem / Cozum\" tipi icin"
+
+msgid "Tip"
+msgstr "Type"
+
+msgid "Badge"
+msgstr "Badge"
+
+msgid "Madde Sayisi"
+msgstr "Item Count"
+
+msgid "Yazar"
+msgstr "Author"
+
+msgid "Isletme"
+msgstr "Business"
+
+msgid "Yorum"
+msgstr "Comment"
+
+msgid "Puan"
+msgstr "Rating"
+
+msgid "Soru"
+msgstr "Question"
+
+msgid ""
+"HTML icerik desteklenir. Basliklar icin <h3>, paragraflar icin <p>, listeler "
+"icin <ul><li> kullanin."
+msgstr "HTML content is supported. Use <h3> for headings, <p> for paragraphs, <ul><li> for lists."
+
+msgid "Meta"
+msgstr "Meta"
+
+msgid "Yayin"
+msgstr "Publication"
+
+msgid "Secilenleri yayinla"
+msgstr "Publish selected"
+
+msgid "Secilenleri arsivle"
+msgstr "Archive selected"
+
+msgid "Metin"
+msgstr "Text"
+
+msgid "Link"
+msgstr "Link"
+
+msgid "Hiyerarsi"
+msgstr "Hierarchy"
+
+msgid "Header dropdown'lar icin ust linki secin."
+msgstr "Select the parent link for header dropdowns."
+
+msgid "Konum"
+msgstr "Location"
+
+msgid "Ust Link"
+msgstr "Parent Link"
+
+msgid "Website & Marketing"
+msgstr "Website & Marketing"
+
+msgid "QR Menunuz, Isletmenizin Dijital Vitrini"
+msgstr "Your QR Menu, Your Business's Digital Showcase"
+
+msgid "Restoran ve kafeler icin yapay zeka destekli dijital menu platformu."
+msgstr "AI-powered digital menu platform for restaurants and cafes."
+
+msgid "Istanbul, Turkiye"
+msgstr "Istanbul, Turkey"
+
+msgid "Merhaba! E-Menum hakkinda bilgi almak istiyorum."
+msgstr "Hello! I would like to learn more about E-Menum."
+
+msgid "14 Gun Ucretsiz Basla"
+msgstr "Start 14-Day Free Trial"
+
+msgid "Demo Iste"
+msgstr "Request Demo"
+
+msgid "Kredi karti gerekmez · 2 dakikada kurulum"
+msgstr "No credit card required · Setup in 2 minutes"
+
+msgid "Adiniz Soyadiniz"
+msgstr "Your Full Name"
+
+msgid "ornek@email.com"
+msgstr "example@email.com"
+
+msgid "0555 123 4567"
+msgstr "0555 123 4567"
+
+msgid "Mesajinizi yazin..."
+msgstr "Write your message..."
+
+msgid "Spam algilandi."
+msgstr "Spam detected."
+
+msgid "Isletme adi"
+msgstr "Business name"
+
+msgid "Eklemek istediginiz bir not var mi?"
+msgstr "Would you like to add a note?"
+
+msgid "E-posta adresiniz"
+msgstr "Your email address"
+
+msgid "created at"
+msgstr "created at"
+
+msgid "updated at"
+msgstr "updated at"
+
+msgid "deleted at"
+msgstr "deleted at"
+
+msgid "Genel Bilgi"
+msgstr "General Information"
+
+msgid "Satis"
+msgstr "Sales"
+
+msgid "Teknik Destek"
+msgstr "Technical Support"
+
+msgid "Is Birligi"
+msgstr "Partnership"
+
+msgid "Basin & Medya"
+msgstr "Press & Media"
+
+msgid "ad soyad"
+msgstr "full name"
+
+msgid "e-posta"
+msgstr "email"
+
+msgid "telefon"
+msgstr "phone"
+
+msgid "konu"
+msgstr "subject"
+
+msgid "mesaj"
+msgstr "message"
+
+msgid "okundu"
+msgstr "read"
+
+msgid "Iletisim Formu"
+msgstr "Contact Form"
+
+msgid "Iletisim Formlari"
+msgstr "Contact Forms"
+
+msgid "Restoran"
+msgstr "Restaurant"
+
+msgid "Lokanta / Ev Yemekleri"
+msgstr "Eatery / Home Cooking"
+
+msgid "Fine Dining"
+msgstr "Fine Dining"
+
+msgid "Meyhane / Balik Restoran"
+msgstr "Tavern / Seafood Restaurant"
+
+msgid "Steakhouse / Izgara"
+msgstr "Steakhouse / Grill"
+
+msgid "Fast Food"
+msgstr "Fast Food"
+
+msgid "Kebapci / Pideci / Lahmacuncu"
+msgstr "Kebab / Pide / Lahmacun Shop"
+
+msgid "Donerci / Cigerci"
+msgstr "Doner / Liver Shop"
+
+msgid "Borekci / Mantici"
+msgstr "Borek / Manti Shop"
+
+msgid "Pastane / Firincilik"
+msgstr "Bakery / Pastry Shop"
+
+msgid "Kafe / Kahve Dukkani"
+msgstr "Cafe / Coffee Shop"
+
+msgid "Nargile Kafe"
+msgstr "Hookah Cafe"
+
+msgid "Pub / Bar / Biraevi"
+msgstr "Pub / Bar / Brewery"
+
+msgid "Smoothie / Juice Bar"
+msgstr "Smoothie / Juice Bar"
+
+msgid "Beach Club / Havuz Bar"
+msgstr "Beach Club / Pool Bar"
+
+msgid "Otel / Tatil Koyu"
+msgstr "Hotel / Resort"
+
+msgid "Zincir Isletme"
+msgstr "Chain Business"
+
+msgid "Franchise"
+msgstr "Franchise"
+
+msgid "Catering / Toplu Yemek"
+msgstr "Catering / Mass Catering"
+
+msgid "Kantin / Yemekhane"
+msgstr "Canteen / Cafeteria"
+
+msgid "Food Court"
+msgstr "Food Court"
+
+msgid "Beklemede"
+msgstr "Pending"
+
+msgid "Iletisime Gecildi"
+msgstr "Contacted"
+
+msgid "Demo Yapildi"
+msgstr "Demo Completed"
+
+msgid "Musteri Oldu"
+msgstr "Converted to Customer"
+
+msgid "Vazgecti"
+msgstr "Declined"
+
+msgid "isletme adi"
+msgstr "business name"
+
+msgid "isletme tipi"
+msgstr "business type"
+
+msgid "sube sayisi"
+msgstr "branch count"
+
+msgid "durum"
+msgstr "status"
+
+msgid "admin notlari"
+msgstr "admin notes"
+
+msgid "Demo Talebi"
+msgstr "Demo Request"
+
+msgid "Demo Talepleri"
+msgstr "Demo Requests"
+
+msgid "aktif"
+msgstr "active"
+
+msgid "dil"
+msgstr "language"
+
+msgid "Bulten Abonesi"
+msgstr "Newsletter Subscriber"
+
+msgid "Bulten Aboneleri"
+msgstr "Newsletter Subscribers"
+
+msgid "sirket adi"
+msgstr "company name"
+
+msgid "slogan"
+msgstr "slogan"
+
+msgid "aciklama"
+msgstr "description"
+
+msgid "adres"
+msgstr "address"
+
+msgid "Instagram"
+msgstr "Instagram"
+
+msgid "Twitter / X"
+msgstr "Twitter / X"
+
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+msgid "YouTube"
+msgstr "YouTube"
+
+msgid "WhatsApp numara"
+msgstr "WhatsApp number"
+
+msgid "WhatsApp mesaj"
+msgstr "WhatsApp message"
+
+msgid "birincil CTA metni"
+msgstr "primary CTA text"
+
+msgid "ikincil CTA metni"
+msgstr "secondary CTA text"
+
+msgid "guven metni"
+msgstr "trust text"
+
+msgid "birincil CTA URL"
+msgstr "primary CTA URL"
+
+msgid "ikincil CTA URL"
+msgstr "secondary CTA URL"
+
+msgid "giris URL"
+msgstr "login URL"
+
+msgid "Site Ayarlari"
+msgstr "Site Settings"
+
+msgid "Ana Sayfa"
+msgstr "Home Page"
+
+msgid "Ozellikler"
+msgstr "Features"
+
+msgid "Fiyatlandirma"
+msgstr "Pricing"
+
+msgid "Hakkimizda"
+msgstr "About Us"
+
+msgid "Demo"
+msgstr "Demo"
+
+msgid "Blog"
+msgstr "Blog"
+
+msgid "sayfa"
+msgstr "page"
+
+msgid "baslik"
+msgstr "title"
+
+msgid "alt baslik"
+msgstr "subtitle"
+
+msgid "badge metni"
+msgstr "badge text"
+
+msgid "gradient sinifi"
+msgstr "gradient class"
+
+msgid "birincil CTA"
+msgstr "primary CTA"
+
+msgid "ikincil CTA"
+msgstr "secondary CTA"
+
+msgid "hero gorsel goster"
+msgstr "show hero image"
+
+msgid "Sayfa Hero"
+msgstr "Page Hero"
+
+msgid "Sayfa Hero'lari"
+msgstr "Page Heroes"
+
+msgid "Ozellik Karti"
+msgstr "Feature Card"
+
+msgid "Problem"
+msgstr "Problem"
+
+msgid "Cozum"
+msgstr "Solution"
+
+msgid "Fark"
+msgstr "Difference"
+
+msgid "bolum tipi"
+msgstr "section type"
+
+msgid "ikon"
+msgstr "icon"
+
+msgid "Phosphor icon sinifi (ornek: ph-qr-code)"
+msgstr "Phosphor icon class (e.g., ph-qr-code)"
+
+msgid "renk"
+msgstr "color"
+
+msgid "Tailwind renk adi (ornek: primary, green, red)"
+msgstr "Tailwind color name (e.g., primary, green, red)"
+
+msgid "istatistik degeri"
+msgstr "statistic value"
+
+msgid "Ornek: 350.000+"
+msgstr "Example: 350,000+"
+
+msgid "istatistik eki"
+msgstr "statistic suffix"
+
+msgid "Ornek: +, %, x"
+msgstr "Example: +, %, x"
+
+msgid "adim numarasi"
+msgstr "step number"
+
+msgid "kart varyanti"
+msgstr "card variant"
+
+msgid "siralama"
+msgstr "sort order"
+
+msgid "Ana Sayfa Bolumu"
+msgstr "Homepage Section"
+
+msgid "Ana Sayfa Bolumleri"
+msgstr "Homepage Sections"
+
+msgid "badge rengi"
+msgstr "badge color"
+
+msgid "gorsel alt metni"
+msgstr "image alt text"
+
+msgid "ters duzenleme"
+msgstr "reverse layout"
+
+msgid "Ozellik Kategorisi"
+msgstr "Feature Category"
+
+msgid "Ozellik Kategorileri"
+msgstr "Feature Categories"
+
+msgid "kategori"
+msgstr "category"
+
+msgid "metin"
+msgstr "text"
+
+msgid "Ozellik Maddesi"
+msgstr "Feature Item"
+
+msgid "Ozellik Maddeleri"
+msgstr "Feature Items"
+
+msgid "yazar adi"
+msgstr "author name"
+
+msgid "bas harfler"
+msgstr "initials"
+
+msgid "rol / isletme"
+msgstr "role / business"
+
+msgid "konum"
+msgstr "location"
+
+msgid "isletme tipi etiketi"
+msgstr "business type label"
+
+msgid "avatar rengi"
+msgstr "avatar color"
+
+msgid "yorum"
+msgstr "comment"
+
+msgid "puan"
+msgstr "rating"
+
+msgid "1-5 arasi"
+msgstr "1-5 range"
+
+msgid "Musteri Yorumu"
+msgstr "Customer Review"
+
+msgid "Musteri Yorumlari"
+msgstr "Customer Reviews"
+
+msgid "etiket"
+msgstr "label"
+
+msgid "Phosphor icon sinifi"
+msgstr "Phosphor icon class"
+
+msgid "Guven Rozeti"
+msgstr "Trust Badge"
+
+msgid "Guven Rozetleri"
+msgstr "Trust Badges"
+
+msgid "Guven Lokasyon"
+msgstr "Trust Location"
+
+msgid "Guven Lokasyonlari"
+msgstr "Trust Locations"
+
+msgid "Her Ikisi"
+msgstr "Both"
+
+msgid "soru"
+msgstr "question"
+
+msgid "cevap"
+msgstr "answer"
+
+msgid "SSS"
+msgstr "FAQ"
+
+msgid "SSS (Sikca Sorulan Sorular)"
+msgstr "FAQ (Frequently Asked Questions)"
+
+msgid "unvan"
+msgstr "title"
+
+msgid "Ekip Uyesi"
+msgstr "Team Member"
+
+msgid "Ekip Uyeleri"
+msgstr "Team Members"
+
+msgid "Sirket Degeri"
+msgstr "Company Value"
+
+msgid "Sirket Degerleri"
+msgstr "Company Values"
+
+msgid "deger"
+msgstr "value"
+
+msgid "Sirket Istatistigi"
+msgstr "Company Statistic"
+
+msgid "Sirket Istatistikleri"
+msgstr "Company Statistics"
+
+msgid "Gizlilik Politikasi"
+msgstr "Privacy Policy"
+
+msgid "Kullanim Sartlari"
+msgstr "Terms of Service"
+
+msgid "KVKK Aydinlatma"
+msgstr "KVKK Disclosure"
+
+msgid "icerik"
+msgstr "content"
+
+msgid "HTML icerik desteklenir"
+msgstr "HTML content is supported"
+
+msgid "son guncelleme (gorunum)"
+msgstr "last updated (display)"
+
+msgid "Sayfada gosterilecek tarih metni"
+msgstr "Date text to display on the page"
+
+msgid "meta aciklama"
+msgstr "meta description"
+
+msgid "Yasal Sayfa"
+msgstr "Legal Page"
+
+msgid "Yasal Sayfalar"
+msgstr "Legal Pages"
+
+msgid "Taslak"
+msgstr "Draft"
+
+msgid "Yayinda"
+msgstr "Published"
+
+msgid "Arsivlenmis"
+msgstr "Archived"
+
+msgid "slug"
+msgstr "slug"
+
+msgid "ozet"
+msgstr "summary"
+
+msgid "Kart onizlemesinde gosterilir"
+msgstr "Displayed in card preview"
+
+msgid "yazar"
+msgstr "author"
+
+msgid "yayin tarihi"
+msgstr "publication date"
+
+msgid "one cikan"
+msgstr "featured"
+
+msgid "Blog Yazisi"
+msgstr "Blog Post"
+
+msgid "Blog Yazilari"
+msgstr "Blog Posts"
+
+msgid "plan"
+msgstr "plan"
+
+msgid "vurgulu"
+msgstr "highlighted"
+
+msgid "Kalin yazi ile gosterilir"
+msgstr "Displayed in bold text"
+
+msgid "Plan Gosterim Ozelligi"
+msgstr "Plan Display Feature"
+
+msgid "Plan Gosterim Ozellikleri"
+msgstr "Plan Display Features"
+
+msgid "Header"
+msgstr "Header"
+
+msgid "Footer — Urun"
+msgstr "Footer — Product"
+
+msgid "Footer — Cozumler"
+msgstr "Footer — Solutions"
+
+msgid "Footer — Sirket"
+msgstr "Footer — Company"
+
+msgid "Footer — Destek"
+msgstr "Footer — Support"
+
+msgid "Footer — Yasal"
+msgstr "Footer — Legal"
+
+msgid "Django URL adi (ornek: website:features) veya /tam/yol/"
+msgstr "Django URL name (e.g., website:features) or /full/path/"
+
+msgid "Dropdown aciklama metni"
+msgstr "Dropdown description text"
+
+msgid "ust link"
+msgstr "parent link"
+
+msgid "Dropdown ustune bagli alt linkler icin"
+msgstr "For sub-links under a dropdown parent"
+
+msgid "Navigasyon Linki"
+msgstr "Navigation Link"
+
+msgid "Navigasyon Linkleri"
+msgstr "Navigation Links"
+
+#, python-format
+msgid "[E-Menum] Yeni Iletisim Formu: %(name)s — %(topic)s"
+msgstr "[E-Menum] New Contact Form: %(name)s — %(topic)s"
+
+#, python-format
+msgid ""
+"Yeni iletisim formu gonderildi.\n"
+"\n"
+"Ad Soyad: %(name)s\n"
+"E-posta: %(email)s\n"
+"Telefon: %(phone)s\n"
+"Konu: %(subject)s\n"
+"Mesaj:\n"
+"%(message)s\n"
+"\n"
+"Tarih: %(date)s\n"
+"Admin panelden goruntuleyebilirsiniz."
+msgstr "New contact form submitted.\n\nFull Name: %(name)s\nEmail: %(email)s\nPhone: %(phone)s\nSubject: %(subject)s\nMessage:\n%(message)s\n\nDate: %(date)s\nYou can view it from the admin panel."
+
+#, python-format
+msgid "[E-Menum] Yeni Demo Talebi: %(business)s (%(type)s)"
+msgstr "[E-Menum] New Demo Request: %(business)s (%(type)s)"
+
+#, python-format
+msgid ""
+"Yeni demo talebi alindi.\n"
+"\n"
+"Ad Soyad: %(name)s\n"
+"Isletme: %(business)s\n"
+"E-posta: %(email)s\n"
+"Telefon: %(phone)s\n"
+"Isletme Tipi: %(type)s\n"
+"Sube Sayisi: %(branches)d\n"
+"Mesaj: %(message)s\n"
+"\n"
+"Tarih: %(date)s\n"
+"Admin panelden durum takibini yapabilirsiniz."
+msgstr "New demo request received.\n\nFull Name: %(name)s\nBusiness: %(business)s\nEmail: %(email)s\nPhone: %(phone)s\nBusiness Type: %(type)s\nBranch Count: %(branches)d\nMessage: %(message)s\n\nDate: %(date)s\nYou can track the status from the admin panel."
+
+msgid "ozellikler/"
+msgstr "features/"
+
+msgid "fiyatlandirma/"
+msgstr "pricing/"
+
+msgid "hakkimizda/"
+msgstr "about/"
+
+msgid "blog/"
+msgstr "blog/"
+
+msgid "iletisim/"
+msgstr "contact/"
+
+msgid "demo/"
+msgstr "demo/"
+
+msgid "gizlilik/"
+msgstr "privacy/"
+
+msgid "kullanim-sartlari/"
+msgstr "terms/"
+
+msgid "kvkk/"
+msgstr "kvkk/"
+
+msgid "Mesajiniz basariyla gonderildi. En kisa surede size donecegiz."
+msgstr "Your message has been sent successfully. We will get back to you as soon as possible."
+
+msgid "Lutfen formdaki hatalari duzeltiniz."
+msgstr "Please correct the errors in the form."
+
+msgid ""
+"Demo talebiniz alinmistir. Ekibimiz en kisa surede sizinle iletisime "
+"gececektir."
+msgstr "Your demo request has been received. Our team will contact you as soon as possible."
+
+msgid "Bultenimize basariyla abone oldunuz!"
+msgstr "You have successfully subscribed to our newsletter!"
+
+msgid "Bu e-posta adresi zaten abone."
+msgstr "This email address is already subscribed."
+
+msgid "Gecerli bir e-posta adresi giriniz."
+msgstr "Please enter a valid email address."
+
+msgid "Turkce"
+msgstr "Turkish"
+
+msgid "English"
+msgstr "English"
+
+msgid "Arabic"
+msgstr "Arabic"
+
+msgid "Ukrainian"
+msgstr "Ukrainian"
+
+msgid "Persian"
+msgstr "Persian"
+
+msgid "Organization context is required for this request"
+msgstr "Organization context is required for this request"
+
+msgid "Organization context is required"
+msgstr "Organization context is required"
+
+msgid "Plan limit exceeded. Please upgrade your subscription."
+msgstr "Plan limit exceeded. Please upgrade your subscription."
+
+#, python-format
+msgid ""
+"You have reached the %(label)s limit for your plan (%(current)d/%(limit)d). "
+"Please upgrade to add more."
+msgstr ""
+"You have reached the %(label)s limit for your plan (%(current)d/%(limit)d). "
+"Please upgrade to add more."
+
+msgid "This feature is not available on your current plan."
+msgstr "This feature is not available on your current plan."
+
+#, python-format
+msgid ""
+"%(label)s is not available on your current plan. Please upgrade to access "
+"this feature."
+msgstr ""
+"%(label)s is not available on your current plan. Please upgrade to access "
+"this feature."
+
+#, python-format
+msgid "The feature \"%(feature)s\" is not available on your current plan."
+msgstr "The feature \"%(feature)s\" is not available on your current plan."
+
+#, python-format
+msgid ""
+"You have reached the %(label)s limit (%(current)d/%(limit)d) for your plan. "
+"Please upgrade to create more."
+msgstr ""
+"You have reached the %(label)s limit (%(current)d/%(limit)d) for your plan. "
+"Please upgrade to create more."
+
+msgid "Whether this record has been soft-deleted"
+msgstr "Whether this record has been soft-deleted"
+
+msgid "Organization UUID"
+msgstr "Organization UUID"
+
+msgid "This resource does not belong to your organization."
+msgstr "This resource does not belong to your organization."
+
+msgid "Whether the request was successful"
+msgstr "Whether the request was successful"
+
+msgid "The response data"
+msgstr "The response data"
+
+msgid "The list of items"
+msgstr "The list of items"
+
+msgid "Pagination metadata"
+msgstr "Pagination metadata"
+
+msgid "Machine-readable error code"
+msgstr "Machine-readable error code"
+
+msgid "Human-readable error message"
+msgstr "Human-readable error message"
+
+msgid "Additional error details (validation errors, etc.)"
+msgstr "Additional error details (validation errors, etc.)"
+
+msgid "Always false for error responses"
+msgstr "Always false for error responses"
+
+msgid "Error details"
+msgstr "Error details"
+
+msgid "List of UUIDs to operate on (max 100)"
+msgstr "List of UUIDs to operate on (max 100)"
+
+msgid "Number of items successfully affected"
+msgstr "Number of items successfully affected"
+
+msgid "List of IDs that failed (if any)"
+msgstr "List of IDs that failed (if any)"
+
+msgid "An error occurred"
+msgstr "An error occurred"
+
+msgid "Authentication failed"
+msgstr "Authentication failed"
+
+msgid "Permission denied"
+msgstr "Permission denied"
+
+msgid "Resource not found"
+msgstr "Resource not found"
+
+msgid "Not found"
+msgstr "Not found"
+
+msgid "Validation error"
+msgstr "Validation error"
+
+#, python-brace-format
+msgid "Rate limit exceeded. Try again in {} seconds."
+msgstr "Rate limit exceeded. Try again in {} seconds."
+
+msgid "Invalid request format"
+msgstr "Invalid request format"
+
+msgid "Resource created successfully"
+msgstr "Resource created successfully"
+
+msgid "Resource deleted successfully"
+msgstr "Resource deleted successfully"
+
+msgid "Cannot update resource from different organization"
+msgstr "Cannot update resource from different organization"
+
+msgid "Log out"
+msgstr "Log out"
+
+msgid "Search menu..."
+msgstr "Search menu..."
+
+msgid "No results"
+msgstr "No results"
+
+msgid "Administrator"
+msgstr "Administrator"
+
+msgid "Breadcrumb"
+msgstr "Breadcrumb"
+
+msgid "Home"
+msgstr "Home"
+
+msgid "View site"
+msgstr "View site"
+
+msgid "All rights reserved."
+msgstr "All rights reserved."
+
+msgid "Navigation"
+msgstr "Navigation"
+
+#, python-format
+msgid "Add %(name)s"
+msgstr "Add %(name)s"
+
+msgid "View Storefront"
+msgstr "View Storefront"
+
+msgid "Please correct the error below."
+msgstr "Please correct the error below."
+
+msgid "Please correct the errors below."
+msgstr "Please correct the errors below."
+
+msgid "Filter"
+msgstr "Filter"
+
+msgid "Clear all filters"
+msgstr "Clear all filters"
+
+msgid "Welcome back"
+msgstr "Welcome back"
+
+msgid "Here is what is happening with your platform today."
+msgstr "Here is what is happening with your platform today."
+
+msgid "models"
+msgstr "models"
+
+msgid "Manage"
+msgstr "Manage"
+
+msgid "Quick Access"
+msgstr "Quick Access"
+
+msgid "Add"
+msgstr "Add"
+
+msgid "Recent Actions"
+msgstr "Recent Actions"
+
+msgid "No recent actions."
+msgstr "No recent actions."
+
+msgid "ago"
+msgstr "ago"
+
+msgid "Please enter a product name first."
+msgstr "Please enter a product name first."
+
+msgid "Existing descriptions will be overwritten. Continue?"
+msgstr "Existing descriptions will be overwritten. Continue?"
+
+msgid "Description generated successfully!"
+msgstr "Description generated successfully!"
+
+msgid "credits"
+msgstr "credits"
+
+msgid "Generation failed. Please try again."
+msgstr "Generation failed. Please try again."
+
+msgid "Network error. Please check your connection."
+msgstr "Network error. Please check your connection."
+
+msgid "AI Generate"
+msgstr "AI Generate"
+
+msgid "Generating..."
+msgstr "Generating..."
+
+msgid ""
+"Tip: Enter a short description or keywords first, then click AI Generate to "
+"create a full description."
+msgstr ""
+"Tip: Enter a short description or keywords first, then click AI Generate to "
+"create a full description."
+
+msgid "AI Image generation coming soon"
+msgstr "AI Image generation coming soon"
+
+msgid "AI Image"
+msgstr "AI Image"
+
+msgid "Soon"
+msgstr "Soon"
+
+msgid ""
+"AI Image generation requires product name, description, and category to be "
+"filled first."
+msgstr ""
+"AI Image generation requires product name, description, and category to be "
+"filled first."
+
+msgid ""
+"Cross-role permission comparison. Shows which roles have which permissions "
+"across all resources."
+msgstr ""
+"Cross-role permission comparison. Shows which roles have which permissions "
+"across all resources."
+
+msgid "Resources"
+msgstr "Resources"
+
+msgid "Assignments"
+msgstr "Assignments"
+
+msgid "All Roles"
+msgstr "All Roles"
+
+msgid "Scroll horizontally to see all roles"
+msgstr "Scroll horizontally to see all roles"
+
+msgid "Granted"
+msgstr "Granted"
+
+msgid "Conditional (ABAC)"
+msgstr "Conditional (ABAC)"
+
+msgid "Full Access"
+msgstr "Full Access"
+
+msgid "Conditional (ABAC rules apply)"
+msgstr "Conditional (ABAC rules apply)"
+
+msgid "No Access"
+msgstr "No Access"
+
+msgid "Reports"
+msgstr "Reports"
+
+msgid "Reports & Analytics"
+msgstr "Reports & Analytics"
+
+msgid "Monitor your business performance and track key metrics."
+msgstr "Monitor your business performance and track key metrics."
+
+msgid "Total Users"
+msgstr "Total Users"
+
+msgid "Active Menus"
+msgstr "Active Menus"
+
+msgid "Available Reports"
+msgstr "Available Reports"
+
+msgid "System activity and changes"
+msgstr "System activity and changes"
+
+msgid "User Activity"
+msgstr "User Activity"
+
+msgid "User sessions and logins"
+msgstr "User sessions and logins"
+
+msgid "Order History"
+msgstr "Order History"
+
+msgid "All orders and transactions"
+msgstr "All orders and transactions"
+
+msgid "Product Catalog"
+msgstr "Product Catalog"
+
+msgid "Menu items and pricing"
+msgstr "Menu items and pricing"
+
+msgid "Coming Soon"
+msgstr "Coming Soon"
+
+msgid "Advanced Analytics"
+msgstr "Advanced Analytics"
+
+msgid ""
+"Revenue tracking, customer insights, menu performance, and AI-powered "
+"recommendations will be available in a future update."
+msgstr ""
+"Revenue tracking, customer insights, menu performance, and AI-powered "
+"recommendations will be available in a future update."
+
+msgid "Platform Settings"
+msgstr "Platform Settings"
+
+msgid "Manage platform configuration, integrations, and preferences."
+msgstr "Manage platform configuration, integrations, and preferences."
+
+msgid "AI Services"
+msgstr "AI Services"
+
+msgid "AI Providers"
+msgstr "AI Providers"
+
+msgid "Configure text & image generation providers, API keys, and models"
+msgstr "Configure text & image generation providers, API keys, and models"
+
+msgid "Generation History"
+msgstr "Generation History"
+
+msgid "View AI generation logs, credits used, and status"
+msgstr "View AI generation logs, credits used, and status"
+
+msgid "Account & Security"
+msgstr "Account & Security"
+
+msgid "Change Password"
+msgstr "Change Password"
+
+msgid "Update your admin account password"
+msgstr "Update your admin account password"
+
+msgid "View and manage role-permission assignments"
+msgstr "View and manage role-permission assignments"
+
+msgid "Subscription & Billing"
+msgstr "Subscription & Billing"
+
+msgid "Manage subscription plans, pricing, and features"
+msgstr "Manage subscription plans, pricing, and features"
+
+msgid "View active subscriptions and billing history"
+msgstr "View active subscriptions and billing history"
+
+msgid "Manage tenant organizations and their settings"
+msgstr "Manage tenant organizations and their settings"
+
+msgid "Manage platform users, roles, and access"
+msgstr "Manage platform users, roles, and access"
+
+msgid "Analytics, audit logs, and business metrics"
+msgstr "Analytics, audit logs, and business metrics"
+
+msgid "Remove"
+msgstr "Remove"
+
+msgid "Drop images here or click to browse"
+msgstr "Drop images here or click to browse"
+
+msgid "Multiple files allowed - JPEG, PNG, WebP, GIF"
+msgstr "Multiple files allowed - JPEG, PNG, WebP, GIF"
+
+msgid "Upload Images"
+msgstr "Upload Images"
+
+msgid "Add URL"
+msgstr "Add URL"
+
+msgid "image(s)"
+msgstr "image(s)"
+
+msgid "Image could not be loaded"
+msgstr "Image could not be loaded"
+
+msgid "Change image"
+msgstr "Change image"
+
+msgid "Change"
+msgstr "Change"
+
+msgid "Remove image"
+msgstr "Remove image"
+
+msgid "Drop image here or click to browse"
+msgstr "Drop image here or click to browse"
+
+msgid "JPEG, PNG, WebP, GIF - Max 10MB"
+msgstr "JPEG, PNG, WebP, GIF - Max 10MB"
+
+msgid "Uploading..."
+msgstr "Uploading..."
+
+msgid "Hide URL input"
+msgstr "Hide URL input"
+
+msgid "Or enter URL manually"
+msgstr "Or enter URL manually"
+
+msgid "Close sidebar"
+msgstr "Close sidebar"
+
+msgid "Main Navigation"
+msgstr "Main Navigation"
+
+msgid "All Menus"
+msgstr "All Menus"
+
+msgid "Tables & QR"
+msgstr "Tables & QR"
+
+msgid "Logout"
+msgstr "Logout"
+
+msgid "Open sidebar"
+msgstr "Open sidebar"
+
+msgid "Search..."
+msgstr "Search..."
+
+msgid "Toggle dark mode"
+msgstr "Toggle dark mode"
+
+msgid "Change language"
+msgstr "Change language"
+
+msgid "E-Menum - Enterprise QR Menu SaaS Platform for restaurants and cafes"
+msgstr "E-Menum - Enterprise QR Menu SaaS Platform for restaurants and cafes"
+
+msgid "Skip to main content"
+msgstr "Skip to main content"
+
+msgid "Close"
+msgstr "Close"
+
+msgid "Ana navigasyon"
+msgstr "Main navigation"
+
+msgid "Acik temaya gec"
+msgstr "Switch to light theme"
+
+msgid "Koyu temaya gec"
+msgstr "Switch to dark theme"
+
+msgid "Giris Yap"
+msgstr "Sign In"
+
+msgid "Mobil navigasyon"
+msgstr "Mobile navigation"
+
+msgid "Urun"
+msgstr "Product"
+
+msgid "Cozumler"
+msgstr "Solutions"
+
+msgid "Sirket"
+msgstr "Company"
+
+msgid "Destek"
+msgstr "Support"
+
+msgid "Bir hata olustu. Lutfen tekrar deneyin."
+msgstr "An error occurred. Please try again."
+
+msgid "Bulten"
+msgstr "Newsletter"
+
+msgid "Yeniliklerden ve kampanyalardan haberdar olun."
+msgstr "Stay informed about updates and promotions."
+
+msgid "Abone Ol"
+msgstr "Subscribe"
+
+msgid "Tum haklari saklidir."
+msgstr "All rights reserved."
+
+msgid "WhatsApp ile iletisime gec"
+msgstr "Contact via WhatsApp"
+
+msgid "View cart"
+msgstr "View cart"
+
+msgid "Call waiter"
+msgstr "Call waiter"
+
+msgid "Menu categories"
+msgstr "Menu categories"
+
+msgid "items"
+msgstr "items"
+
+msgid "Your Order"
+msgstr "Your Order"
+
+msgid "Your cart is empty"
+msgstr "Your cart is empty"
+
+msgid "Place Order"
+msgstr "Place Order"
+
+msgid "Call Waiter"
+msgstr "Call Waiter"
+
+msgid "A waiter will come to your table shortly."
+msgstr "A waiter will come to your table shortly."
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Confirm"
+msgstr "Confirm"
+
+msgid "Sending..."
+msgstr "Sending..."
+
+msgid "Request Sent!"
+msgstr "Request Sent!"
+
+msgid "A waiter has been notified and will arrive soon."
+msgstr "A waiter has been notified and will arrive soon."
+
+msgid "Powered by"
+msgstr "Powered by"
+
+#, python-format
+msgid ""
+"Digital menu for %(name)s. Browse our menu, view prices, and place orders "
+"directly from your phone."
+msgstr ""
+"Digital menu for %(name)s. Browse our menu, view prices, and place orders "
+"directly from your phone."
+
+msgid "Featured items"
+msgstr "Featured items"
+
+msgid "Chef's Recommendations"
+msgstr "Chef's Recommendations"
+
+msgid "Chef's Pick"
+msgstr "Chef's Pick"
+
+msgid "Sold Out"
+msgstr "Sold Out"
+
+msgid "Chef Recommended"
+msgstr "Chef Recommended"
+
+msgid "Featured"
+msgstr "Featured"
+
+msgid "from"
+msgstr "from"
+
+msgid "Add to cart"
+msgstr "Add to cart"
+
+msgid "No products in this category"
+msgstr "No products in this category"
+
+msgid "Menu Coming Soon"
+msgstr "Menu Coming Soon"
+
+msgid "We're updating our menu. Please check back later."
+msgstr "We're updating our menu. Please check back later."
+
+msgid "Allergen Information"
+msgstr "Allergen Information"
+
+msgid ""
+"Our food may contain allergens. Please inform our staff of any allergies "
+"before ordering. Full allergen information is available upon request."
+msgstr ""
+"Our food may contain allergens. Please inform our staff of any allergies "
+"before ordering. Full allergen information is available upon request."
+
+msgid "Added to cart"
+msgstr "Added to cart"
+
+msgid "Failed to add item"
+msgstr "Failed to add item"
+
+msgid "Back to menu"
+msgstr "Back to menu"
+
+msgid "Currently Unavailable"
+msgstr "Currently Unavailable"
+
+msgid "Spicy"
+msgstr "Spicy"
+
+msgid "kcal"
+msgstr "kcal"
+
+msgid "Select Size"
+msgstr "Select Size"
+
+msgid "Unavailable"
+msgstr "Unavailable"
+
+msgid "Extras & Customizations"
+msgstr "Extras & Customizations"
+
+msgid "Required"
+msgstr "Required"
+
+msgid "Nutrition Facts"
+msgstr "Nutrition Facts"
+
+msgid "Per serving"
+msgstr "Per serving"
+
+msgid "Carbs"
+msgstr "Carbs"
+
+msgid "This item is currently unavailable"
+msgstr "This item is currently unavailable"
+
+msgid "Online ordering is not available for this menu"
+msgstr "Online ordering is not available for this menu"
+
+msgid ""
+"E-Menum - Turkiye'nin yapay zeka destekli dijital menu platformu. "
+"Misyonumuz, ekibimiz ve degerlerimiz."
+msgstr "E-Menum - Turkey's AI-powered digital menu platform. Our mission, team, and values."
+
+msgid "Hikayemiz"
+msgstr "Our Story"
+
+msgid ""
+"E-Menum, restoran ve kafe sahiplerinin dijital menulere gecis surecinde "
+"yasadiklari zorluklar gozetilerek kurulmustur. Basili menulerin pahali, "
+"guncellenmesi zor ve hijyenik olarak riskli oldugunu gorduk."
+msgstr "E-Menum was founded with an understanding of the challenges restaurant and cafe owners face when transitioning to digital menus. We saw that printed menus are expensive, difficult to update, and pose hygiene risks."
+
+msgid ""
+"Yapay zeka teknolojisini gastronomi sektoruyle birlestirerek, isletmelerin "
+"sadece dijital menu degil, veri odakli kararlar alabilecekleri bir platform "
+"gelistirdik."
+msgstr "By combining artificial intelligence technology with the gastronomy sector, we developed a platform where businesses can not only create digital menus but also make data-driven decisions."
+
+msgid "Ekibimiz"
+msgstr "Our Team"
+
+msgid "Gastronomi ve teknoloji tutkunlari."
+msgstr "Passionate about gastronomy and technology."
+
+msgid "Degerlerimiz"
+msgstr "Our Values"
+
+msgid ""
+"E-Menum Blog - Dijital menu, restoran yonetimi, gastronomi trendleri ve "
+"teknoloji haberleri."
+msgstr "E-Menum Blog - Digital menu, restaurant management, gastronomy trends, and technology news."
+
+msgid "Sayfalama"
+msgstr "Pagination"
+
+msgid "Onceki"
+msgstr "Previous"
+
+msgid "Sonraki"
+msgstr "Next"
+
+msgid "Yakinda"
+msgstr "Coming Soon"
+
+msgid "Iceriklerimiz Hazirlaniyor"
+msgstr "Our Content Is Being Prepared"
+
+msgid ""
+"Blog yazilarimiz yakinda yayinda olacak. Bultenimize abone olarak haberdar "
+"olun."
+msgstr "Our blog posts will be published soon. Subscribe to our newsletter to stay informed."
+
+msgid "Tum Yazilar"
+msgstr "All Posts"
+
+msgid ""
+"E-Menum ile iletisime gecin. Sorularinizi yanitlayalim, isletmenize en uygun "
+"cozumu birlikte bulalim."
+msgstr "Get in touch with E-Menum. Let us answer your questions and find the best solution for your business together."
+
+msgid "Adres"
+msgstr "Address"
+
+msgid "Telefon"
+msgstr "Phone"
+
+msgid "E-posta"
+msgstr "Email"
+
+msgid "Mesaj Gonderin"
+msgstr "Send a Message"
+
+msgid "Mesaj Gonder"
+msgstr "Send Message"
+
+msgid ""
+"E-Menum platformunu canli gorun. Ucretsiz demo talep edin, ekibimiz sizinle "
+"iletisime gecsin."
+msgstr "See the E-Menum platform live. Request a free demo and let our team get in touch with you."
+
+msgid "Demo Talep Formu"
+msgstr "Demo Request Form"
+
+msgid "Demo Talep Et"
+msgstr "Request Demo"
+
+msgid "Bilgileriniz guvenle saklanir ve ucuncu taraflarla paylasilmaz."
+msgstr "Your information is stored securely and is not shared with third parties."
+
+msgid "Demo'da Neler Goreceksiniz?"
+msgstr "What Will You See in the Demo?"
+
+msgid "Canli Platform Turu"
+msgstr "Live Platform Tour"
+
+msgid "Admin paneli, menu olusturma ve QR kod surecini canli gorun."
+msgstr "See the admin panel, menu creation, and QR code process live."
+
+msgid "Sektorunuze Ozel Cozum"
+msgstr "Solution Tailored to Your Industry"
+
+msgid "Isletme tipinize ozel ozellikleri ve kullanim senaryolarini inceleyin."
+msgstr "Explore features and usage scenarios specific to your business type."
+
+msgid "ROI Hesaplama"
+msgstr "ROI Calculation"
+
+msgid ""
+"E-Menum'un isletmenize saglayacagi tasarrufu ve gelir artisini hesaplayin."
+msgstr "Calculate the savings and revenue growth E-Menum will bring to your business."
+
+msgid "Plan Danismanligi"
+msgstr "Plan Consultation"
+
+msgid ""
+"Sube sayiniza ve ihtiyaclariniza gore en uygun plani birlikte belirleyelim."
+msgstr "Let's determine the most suitable plan together based on your branch count and needs."
+
+msgid "SSL Guvenli"
+msgstr "SSL Secure"
+
+msgid "KVKK Uyumlu"
+msgstr "KVKK Compliant"
+
+msgid "7/24 Destek"
+msgstr "24/7 Support"
+
+msgid ""
+"E-Menum'un 50'den fazla ozelligi. QR menu, siparis yonetimi, AI icerik "
+"uretimi, analitik, coklu sube yonetimi ve daha fazlasi."
+msgstr "Over 50 features from E-Menum. QR menu, order management, AI content generation, analytics, multi-branch management, and more."
+
+msgid ""
+"E-Menum - Restoran ve kafeler icin yapay zeka destekli dijital menu "
+"platformu. QR menu, siparis yonetimi, analitik ve daha fazlasi."
+msgstr "E-Menum - AI-powered digital menu platform for restaurants and cafes. QR menu, order management, analytics, and more."
+
+msgid "Neden Dijital Menu?"
+msgstr "Why Digital Menu?"
+
+msgid "Basili menulerin sorunlarina modern cozum."
+msgstr "A modern solution to the problems of printed menus."
+
+msgid "Tek Platformda Her Sey"
+msgstr "Everything in One Platform"
+
+msgid "50'den fazla ozellikle isletmenizi dijitallestirin."
+msgstr "Digitize your business with over 50 features."
+
+msgid "Tum Ozellikleri Gor"
+msgstr "View All Features"
+
+msgid "Nasil Calisir?"
+msgstr "How Does It Work?"
+
+msgid "3 basit adimda dijital menunuzu olusturun."
+msgstr "Create your digital menu in 3 simple steps."
+
+msgid "Isletmenize Uygun Plan"
+msgstr "The Right Plan for Your Business"
+
+msgid "Ucretsiz baslayin, buyudukce yukseltin."
+msgstr "Start for free, upgrade as you grow."
+
+msgid "ay"
+msgstr "mo"
+
+msgid "Ozel"
+msgstr "Custom"
+
+#, python-format
+msgid "%(days)s Gun Dene"
+msgstr "Try %(days)s Days Free"
+
+msgid "Basla"
+msgstr "Start"
+
+msgid "Tum Planlari Karsilastir"
+msgstr "Compare All Plans"
+
+msgid "KVKK Aydinlatma Metni"
+msgstr "KVKK Disclosure Notice"
+
+msgid ""
+"E-Menum KVKK aydinlatma metni. 6698 sayili Kisisel Verilerin Korunmasi "
+"Kanunu kapsaminda aydinlatma yükumlulugumuzu yerine getiriyoruz."
+msgstr "E-Menum KVKK disclosure notice. We fulfill our disclosure obligation under the Personal Data Protection Law No. 6698."
+
+msgid "Son guncelleme: 22 Subat 2026"
+msgstr "Last updated: February 22, 2026"
+
+msgid "1. Veri Sorumlusu"
+msgstr "1. Data Controller"
+
+msgid ""
+"6698 sayili Kisisel Verilerin Korunmasi Kanunu (KVKK) uyarinca, kisisel "
+"verileriniz veri sorumlusu sifatiyla E-Menum tarafindan asagida aciklanan "
+"amaclar kapsaminda islenebilecektir."
+msgstr "In accordance with the Personal Data Protection Law (KVKK) No. 6698, your personal data may be processed by E-Menum as the data controller for the purposes described below."
+
+msgid "2. Islenen Kisisel Veriler"
+msgstr "2. Processed Personal Data"
+
+msgid ""
+"Kimlik bilgileri (ad, soyad), iletisim bilgileri (e-posta, telefon), isletme "
+"bilgileri, kullanim verileri ve cihaz bilgileri islenebilir."
+msgstr "Identity information (name, surname), contact information (email, phone), business information, usage data, and device information may be processed."
+
+msgid "3. Veri Isleme Amaclar"
+msgstr "3. Data Processing Purposes"
+
+msgid "Hizmetlerimizin sunulmasi ve iyilestirilmesi"
+msgstr "Provision and improvement of our services"
+
+msgid "Kullanici hesaplarinin yonetimi"
+msgstr "Management of user accounts"
+
+msgid "Faturalandirma ve odeme islemleri"
+msgstr "Billing and payment processing"
+
+msgid "Teknik destek ve musteri hizmetleri"
+msgstr "Technical support and customer services"
+
+msgid "Yasal yukumluluklerin yerine getirilmesi"
+msgstr "Fulfillment of legal obligations"
+
+msgid "Istatistiksel analiz ve raporlama"
+msgstr "Statistical analysis and reporting"
+
+msgid "4. Veri Aktarimi"
+msgstr "4. Data Transfer"
+
+msgid ""
+"Kisisel verileriniz, yasal zorunluluklar disinda ucuncu taraflara "
+"aktarilmaz. Hizmet saglanmasi icin gerekli oldugu durumlarda, yurt ici ve "
+"yurt disindaki is ortaklarina ve hizmet saglayicilarina aktarilabilir."
+msgstr "Your personal data will not be transferred to third parties except for legal obligations. When necessary for service provision, it may be transferred to domestic and international business partners and service providers."
+
+msgid "5. Veri Saklama Suresi"
+msgstr "5. Data Retention Period"
+
+msgid ""
+"Kisisel verileriniz, isleme amacinin gerektirdigi sure boyunca ve yasal "
+"muhafaza surelerince saklanir. Sure bitiminde veriler silinir, yok edilir "
+"veya anonim hale getirilir."
+msgstr "Your personal data is stored for the duration required by the processing purpose and legal retention periods. At the end of the period, data is deleted, destroyed, or anonymized."
+
+msgid "6. KVKK Kapsamindaki Haklariniz"
+msgstr "6. Your Rights Under KVKK"
+
+msgid "KVKK'nin 11. maddesi kapsaminda asagidaki haklara sahipsiniz:"
+msgstr "You have the following rights under Article 11 of KVKK:"
+
+msgid "Kisisel verilerinizin islenip islenmedigini ogrenme"
+msgstr "Learning whether your personal data is being processed"
+
+msgid "Islenmisse buna iliskin bilgi talep etme"
+msgstr "Requesting information regarding the processing"
+
+msgid "Isleme amacini ve amacina uygun kullanilip kullanilmadigini ogrenme"
+msgstr "Learning the purpose of processing and whether data is used accordingly"
+
+msgid "Yurt icinde veya yurt disinda aktarildigi ucuncu kisileri bilme"
+msgstr "Knowing the third parties to whom data is transferred domestically or abroad"
+
+msgid "Eksik veya yanlis islenmisse duzeltilmesini isteme"
+msgstr "Requesting correction if data is incomplete or inaccurate"
+
+msgid ""
+"KVKK'nin 7. maddesindeki sartlar cercevesinde silinmesini veya yok "
+"edilmesini isteme"
+msgstr "Requesting deletion or destruction within the framework of the conditions in Article 7 of KVKK"
+
+msgid ""
+"Islenme amacini asan veya kanuna aykiri islenmesi sebebiyle zarara ugramaniz "
+"halinde zararin giderilmesini talep etme"
+msgstr "Requesting compensation for damages arising from processing that exceeds its purpose or is contrary to law"
+
+msgid "7. Basvuru"
+msgstr "7. Application"
+
+msgid ""
+"KVKK kapsamindaki taleplerinizi info@e-menum.com adresine yazili olarak "
+"iletebilirsiniz. Basvurunuz en gec 30 gun icinde degerlendirilecektir."
+msgstr "You can submit your requests under KVKK in writing to info@e-menum.com. Your application will be evaluated within 30 days at the latest."
+
+msgid "Son guncelleme:"
+msgstr "Last updated:"
+
+msgid "Sikca Sorulan Sorular"
+msgstr "Frequently Asked Questions"
+
+msgid "Merak ettiginiz sorularin cevaplari burada."
+msgstr "Find answers to your questions here."
+
+msgid "Platform Onizleme"
+msgstr "Platform Preview"
+
+msgid "Aylik"
+msgstr "Monthly"
+
+msgid "Yillik faturalandirma"
+msgstr "Annual billing"
+
+msgid "Yillik"
+msgstr "Yearly"
+
+msgid "0"
+msgstr "0"
+
+msgid "yil/12"
+msgstr "yr/12"
+
+msgid "Bize Ulasin"
+msgstr "Contact Us"
+
+msgid "Ucretsiz Basla"
+msgstr "Start Free"
+
+msgid "14 Gun Deneyin"
+msgstr "Try 14 Days Free"
+
+msgid "Musterilerimiz Ne Diyor?"
+msgstr "What Our Customers Say?"
+
+msgid "Binlerce isletme E-Menum ile dijital donusumunu tamamladi."
+msgstr "Thousands of businesses completed their digital transformation with E-Menum."
+
+msgid ""
+"E-Menum fiyatlandirma planlari. Ucretsiz baslatin, isletmeniz buyudukce "
+"yükseltin. 14 gun ucretsiz deneme."
+msgstr "E-Menum pricing plans. Start for free, upgrade as your business grows. 14-day free trial."
+
+msgid "Detayli Karsilastirma"
+msgstr "Detailed Comparison"
+
+msgid "Ozellik"
+msgstr "Feature"
+
+msgid ""
+"E-Menum gizlilik politikasi. Kisisel verilerinizin nasil toplandigi, "
+"islendigi ve korunduÄu hakkinda bilgi."
+msgstr "E-Menum privacy policy. Information about how your personal data is collected, processed, and protected."
+
+msgid "1. Toplanan Veriler"
+msgstr "1. Collected Data"
+
+msgid ""
+"E-Menum platformunu kullandiginizda asagidaki verileri toplayabiliriz: ad, "
+"soyad, e-posta adresi, telefon numarasi, isletme bilgileri, kullanim "
+"istatistikleri ve cihaz bilgileri."
+msgstr "When you use the E-Menum platform, we may collect the following data: name, surname, email address, phone number, business information, usage statistics, and device information."
+
+msgid "2. Verilerin Kullanim Amaci"
+msgstr "2. Purpose of Data Use"
+
+msgid ""
+"Toplanan veriler hizmetlerimizi sunmak, iyilestirmek, guvenligini saglamak "
+"ve yasal yukumluluklerimizi yerine getirmek amaciyla kullanilir."
+msgstr "Collected data is used to provide, improve, and secure our services and to fulfill our legal obligations."
+
+msgid "3. Verilerin Paylasilmasi"
+msgstr "3. Data Sharing"
+
+msgid ""
+"Kisisel verileriniz, yasal zorunluluklar disinda ucuncu taraflarla "
+"paylasilmaz. Hizmet saglayicilarimiz ile yalnizca hizmet sunumu icin gerekli "
+"olan minimum veri paylasilir."
+msgstr "Your personal data is not shared with third parties except for legal obligations. Only the minimum data necessary for service provision is shared with our service providers."
+
+msgid "4. Veri Guvenligi"
+msgstr "4. Data Security"
+
+msgid ""
+"Verileriniz SSL/TLS sifrelemesi, guclu parola politikalari ve duzenli "
+"guvenlik denetimleri ile korunur. Sunucularimiz Avrupa merkezli veri "
+"merkezlerinde barindirilmaktadir."
+msgstr "Your data is protected with SSL/TLS encryption, strong password policies, and regular security audits. Our servers are hosted in European-based data centers."
+
+msgid "5. Cerezler"
+msgstr "5. Cookies"
+
+msgid ""
+"Platformumuz, kullanici deneyimini iyilestirmek icin cerezler kullanir. "
+"Cerez tercihlerinizi tarayici ayarlarinizdan yonetebilirsiniz."
+msgstr "Our platform uses cookies to improve user experience. You can manage your cookie preferences from your browser settings."
+
+msgid "6. Haklariniz"
+msgstr "6. Your Rights"
+
+msgid ""
+"KVKK kapsaminda kisisel verilerinize erisim, duzeltme, silme ve tasima "
+"haklarina sahipsiniz. Bu haklarinizi kullanmak icin info@e-menum.com "
+"adresinden bize ulasabilirsiniz."
+msgstr "Under KVKK, you have the right to access, correct, delete, and port your personal data. To exercise these rights, you can contact us at info@e-menum.com."
+
+msgid "7. Iletisim"
+msgstr "7. Contact"
+
+msgid ""
+"Gizlilik politikamiz hakkinda sorulariniz icin info@e-menum.com adresinden "
+"bize ulasabilirsiniz."
+msgstr "For questions about our privacy policy, you can contact us at info@e-menum.com."
+
+msgid "E-Menum kullanim sartlari ve kosullari."
+msgstr "E-Menum terms and conditions of use."
+
+msgid "1. Hizmet Tanimi"
+msgstr "1. Service Definition"
+
+msgid ""
+"E-Menum, isletmelere dijital menu, siparis yonetimi ve analitik hizmetleri "
+"sunan bir SaaS platformudur. Bu sartlar platformun kullanimine iliskin "
+"kosullari duzenler."
+msgstr "E-Menum is a SaaS platform that provides digital menu, order management, and analytics services to businesses. These terms govern the conditions of use of the platform."
+
+msgid "2. Hesap Olusturma"
+msgstr "2. Account Creation"
+
+msgid ""
+"Platformu kullanmak icin bir hesap olusturmaniz gerekir. Hesap "
+"bilgilerinizin dogrulugu ve guvenliginden siz sorumlusunuz."
+msgstr "You need to create an account to use the platform. You are responsible for the accuracy and security of your account information."
+
+msgid "3. Abonelik ve Odeme"
+msgstr "3. Subscription and Payment"
+
+msgid ""
+"Ucretli planlar aylik veya yillik faturalandirilir. Plan degisiklikleri bir "
+"sonraki fatura donemine yansir. 14 gunluk ucretsiz deneme suresi sonunda "
+"otomatik faturalandirma baslar."
+msgstr "Paid plans are billed monthly or yearly. Plan changes are reflected in the next billing period. Automatic billing starts at the end of the 14-day free trial period."
+
+msgid "4. Kabul Edilebilir Kullanim"
+msgstr "4. Acceptable Use"
+
+msgid ""
+"Platformu yalnizca yasal amaclarla kullanabilirsiniz. Zararli yazilim, spam "
+"veya yetkisiz erisim girisimleri yasaktir."
+msgstr "You may only use the platform for lawful purposes. Malicious software, spam, or unauthorized access attempts are prohibited."
+
+msgid "5. Fikri Mulkiyet"
+msgstr "5. Intellectual Property"
+
+msgid ""
+"E-Menum platformu, yazilimi, tasarimi ve icerikleri E-Menum'a aittir. "
+"Kullanicilar tarafindan yuklenen icerikler (menu, gorseller) kullanicinin "
+"mulkiyetindedir."
+msgstr "The E-Menum platform, software, design, and content belong to E-Menum. Content uploaded by users (menus, images) remains the property of the user."
+
+msgid "6. Hizmet Duzeydi"
+msgstr "6. Service Level"
+
+#, python-format
+msgid ""
+"E-Menum, %%99.9 uptime hedefi ile hizmet vermektedir. Planli bakimlar "
+"onceden bildirilir."
+msgstr "E-Menum operates with a %%99.9 uptime target. Planned maintenance is announced in advance."
+
+msgid "7. Sorumluluk Sinirlamasi"
+msgstr "7. Limitation of Liability"
+
+msgid ""
+"E-Menum, platformun kullanimindan kaynaklanan dolayli zararlardan sorumlu "
+"tutulamaz. Sorumlulugumuz odenen abonelik bedeli ile sinirlidir."
+msgstr "E-Menum cannot be held responsible for indirect damages arising from the use of the platform. Our liability is limited to the subscription fee paid."
+
+msgid "8. Iletisim"
+msgstr "8. Contact"
+
+msgid ""
+"Kullanim sartlari hakkinda sorulariniz icin info@e-menum.com adresinden bize "
+"ulasabilirsiniz."
+msgstr "For questions about the terms of use, you can contact us at info@e-menum.com."

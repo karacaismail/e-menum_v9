@@ -1,0 +1,7721 @@
+# Ukrainian translations for E-Menum.
+# Copyright (C) 2026 E-Menum
+# This file is distributed under the same license as the E-Menum package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: E-Menum 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-23 12:03+0300\n"
+"PO-Revision-Date: 2026-02-23 12:00+0300\n"
+"Last-Translator: E-Menum Team\n"
+"Language-Team: Ukrainian\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != "
+"11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
+"100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
+"(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+msgid "Input"
+msgstr "Вхідні дані"
+
+msgid "Output"
+msgstr "Вихідні дані"
+
+msgid "Cost"
+msgstr "Вартість"
+
+msgid "Error"
+msgstr "Помилка"
+
+msgid "Timestamps"
+msgstr "Часові мітки"
+
+msgid "Type"
+msgstr "Тип"
+
+msgid "Organization"
+msgstr "Організація"
+
+msgid "User"
+msgstr "Користувач"
+
+msgid "Status"
+msgstr "Статус"
+
+msgid "Credits"
+msgstr "Кредити"
+
+msgid "Model"
+msgstr "Модель"
+
+msgid "Provider"
+msgstr "Провайдер"
+
+msgid "Credentials"
+msgstr "Облікові дані"
+
+msgid "API credentials are encrypted at rest."
+msgstr "API облікові дані зашифровані при зберіганні."
+
+msgid "Model Configuration"
+msgstr "Конфігурація моделі"
+
+msgid "Category"
+msgstr "Категорія"
+
+msgid "Not configured"
+msgstr "Не налаштовано"
+
+msgid "API Key"
+msgstr "API ключ"
+
+msgid "Active"
+msgstr "Активний"
+
+msgid "Default"
+msgstr "За замовчуванням"
+
+msgid "Enter API key..."
+msgstr "Введіть API ключ..."
+
+msgid ""
+"Enter the API key for this provider. Leave blank to keep the existing key "
+"unchanged."
+msgstr "Введіть API-ключ для цього провайдера. Залиште порожнім, щоб зберегти існуючий ключ."
+
+#, python-format
+msgid ""
+"Existing key is stored (%(masked)s). Enter a new key to replace it, or leave "
+"blank to keep."
+msgstr "Існуючий ключ збережено (%(masked)s). Введіть новий ключ для заміни або залиште порожнім."
+
+msgid "--- Select Provider ---"
+msgstr "--- Оберіть провайдера ---"
+
+msgid "Text Generation"
+msgstr "Генерація тексту"
+
+msgid "Image Generation"
+msgstr "Генерація зображень"
+
+msgid "Product Description"
+msgstr "Опис продукту"
+
+msgid "Short Description"
+msgstr "Короткий опис"
+
+msgid "Name Suggestion"
+msgstr "Пропозиція назви"
+
+msgid "SEO Text"
+msgstr "SEO текст"
+
+msgid "Translation"
+msgstr "Переклад"
+
+msgid "Image Search"
+msgstr "Пошук зображень"
+
+msgid "Improve Text"
+msgstr "Покращити текст"
+
+msgid "Pending"
+msgstr "Очікує"
+
+msgid "Processing"
+msgstr "Обробка"
+
+msgid "Completed"
+msgstr "Завершено"
+
+msgid "Failed"
+msgstr "Помилка"
+
+msgid "Cancelled"
+msgstr "Скасовано"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "Requested by"
+msgstr "Запитано"
+
+msgid "Input text"
+msgstr "Вхідний текст"
+
+msgid "Original text or prompt sent to AI"
+msgstr "Оригінальний текст або запит, надісланий до ШІ"
+
+msgid "Input context"
+msgstr "Вхідний контекст"
+
+msgid "Additional context: product name, category, cuisine, etc."
+msgstr "Додатковий контекст: назва продукту, категорія, кухня тощо."
+
+msgid "Output text"
+msgstr "Вихідний текст"
+
+msgid "Generated text from AI"
+msgstr "Згенерований текст від ШІ"
+
+msgid "Output data"
+msgstr "Вихідні дані"
+
+msgid "Structured output (alternatives, images, translations)"
+msgstr "Структуровані дані (альтернативи, зображення, переклади)"
+
+msgid "Credits used"
+msgstr "Використані кредити"
+
+msgid "AI model"
+msgstr "Модель ШІ"
+
+msgid "e.g., gpt-4o-mini, claude-3-haiku"
+msgstr "напр., gpt-4o-mini, claude-3-haiku"
+
+msgid "Input tokens"
+msgstr "Вхідні токени"
+
+msgid "Output tokens"
+msgstr "Вихідні токени"
+
+msgid "Product"
+msgstr "Продукт"
+
+msgid "AI Generation"
+msgstr "Генерація ШІ"
+
+msgid "AI Generations"
+msgstr "Генерації ШІ"
+
+msgid "OpenAI (GPT)"
+msgstr "OpenAI (GPT)"
+
+msgid "Anthropic (Claude)"
+msgstr "Anthropic (Claude)"
+
+msgid "Google (Gemini)"
+msgstr "Google (Gemini)"
+
+msgid "OpenAI (DALL-E)"
+msgstr "OpenAI (DALL-E)"
+
+msgid "Stability AI"
+msgstr "Stability AI"
+
+msgid "Leonardo AI"
+msgstr "Leonardo AI"
+
+msgid "Midjourney"
+msgstr "Midjourney"
+
+msgid "Runway"
+msgstr "Runway"
+
+msgid "Adobe Firefly"
+msgstr "Adobe Firefly"
+
+msgid "Display Name"
+msgstr "Відображувана назва"
+
+msgid "Human-readable name (e.g., \"OpenAI Production\")"
+msgstr "Зрозуміла назва (напр., \"OpenAI Production\")"
+
+msgid "Provider identifier"
+msgstr "Ідентифікатор провайдера"
+
+msgid "API Key (encrypted)"
+msgstr "API ключ (зашифровано)"
+
+msgid "Encrypted API key stored at rest"
+msgstr "Зашифрований API ключ, що зберігається у сховищі"
+
+msgid "Default Model"
+msgstr "Модель за замовчуванням"
+
+msgid "Default model name (e.g., gpt-4o-mini, claude-3-haiku)"
+msgstr "Назва моделі за замовчуванням (напр., gpt-4o-mini, claude-3-haiku)"
+
+msgid "API Base URL"
+msgstr "Базова URL-адреса API"
+
+msgid "Custom API endpoint (leave blank for default)"
+msgstr "Власна кінцева точка API (залиште порожнім для значення за замовчуванням)"
+
+msgid "Default Provider"
+msgstr "Провайдер за замовчуванням"
+
+msgid "Use this provider as the default for its category"
+msgstr "Використовувати цього провайдера за замовчуванням для його категорії"
+
+msgid "Priority"
+msgstr "Пріоритет"
+
+msgid "Lower number = higher priority for fallback"
+msgstr "Менше число = вищий пріоритет для резервного варіанту"
+
+msgid "Additional Settings"
+msgstr "Додаткові налаштування"
+
+msgid "Provider-specific settings (temperature, max_tokens, etc.)"
+msgstr "Налаштування провайдера (temperature, max_tokens тощо)"
+
+msgid "AI Provider Configuration"
+msgstr "Конфігурація провайдера ШІ"
+
+msgid "AI Provider Configurations"
+msgstr "Конфігурації провайдерів ШІ"
+
+msgid "Inactive"
+msgstr "Неактивний"
+
+msgid "Revenue"
+msgstr "Дохід"
+
+msgid "Orders"
+msgstr "Замовлення"
+
+msgid "Customers"
+msgstr "Клієнти"
+
+msgid "Average Order Value"
+msgstr "Середня вартість замовлення"
+
+msgid "Rating"
+msgstr "Рейтинг"
+
+msgid "New Customers"
+msgstr "Нові клієнти"
+
+msgid "Returning Customers"
+msgstr "Постійні клієнти"
+
+msgid "Items Sold"
+msgstr "Продано товарів"
+
+msgid "Daily"
+msgstr "Щоденно"
+
+msgid "Weekly"
+msgstr "Щотижнево"
+
+msgid "Monthly"
+msgstr "Щомісячно"
+
+msgid "Quarterly"
+msgstr "Щоквартально"
+
+msgid "Yearly"
+msgstr "Щорічно"
+
+msgid "Hourly"
+msgstr "Щогодинно"
+
+msgid "Metric type"
+msgstr "Тип метрики"
+
+msgid "Period type"
+msgstr "Тип періоду"
+
+msgid "Period start"
+msgstr "Початок періоду"
+
+msgid "Period end"
+msgstr "Кінець періоду"
+
+msgid "Value"
+msgstr "Значення"
+
+msgid "Previous value"
+msgstr "Попереднє значення"
+
+msgid "Change percent"
+msgstr "Відсоток зміни"
+
+msgid "Metadata"
+msgstr "Метадані"
+
+msgid "Dashboard Metric"
+msgstr "Метрика дашборду"
+
+msgid "Dashboard Metrics"
+msgstr "Метрики дашборду"
+
+msgid "Date"
+msgstr "Дата"
+
+msgid "Hour"
+msgstr "Година"
+
+msgid "Hour of day (0-23) for hourly granularity"
+msgstr "Година доби (0-23) для погодинної деталізації"
+
+msgid "Granularity"
+msgstr "Деталізація"
+
+msgid "Gross revenue"
+msgstr "Валовий дохід"
+
+msgid "Net revenue"
+msgstr "Чистий дохід"
+
+msgid "Order count"
+msgstr "Кількість замовлень"
+
+msgid "Item count"
+msgstr "Кількість товарів"
+
+msgid "Average order value"
+msgstr "Середня вартість замовлення"
+
+msgid "Customer count"
+msgstr "Кількість клієнтів"
+
+msgid "New customer count"
+msgstr "Кількість нових клієнтів"
+
+msgid "Payment breakdown"
+msgstr "Розбивка платежів"
+
+msgid "Breakdown by payment method: {cash: X, card: Y, ...}"
+msgstr "Розбивка за способом оплати: {cash: X, card: Y, ...}"
+
+msgid "Channel breakdown"
+msgstr "Розбивка за каналами"
+
+msgid "Breakdown by order type: {dine_in: X, takeaway: Y, ...}"
+msgstr "Розбивка за типом замовлення: {dine_in: X, takeaway: Y, ...}"
+
+msgid "Category breakdown"
+msgstr "Розбивка за категоріями"
+
+msgid "Breakdown by category: {cat_id: {revenue: X, qty: Y}, ...}"
+msgstr "Розбивка за категорією: {cat_id: {revenue: X, qty: Y}, ...}"
+
+msgid "Sales Aggregation"
+msgstr "Агрегація продажів"
+
+msgid "Sales Aggregations"
+msgstr "Агрегації продажів"
+
+msgid "Quantity sold"
+msgstr "Продана кількість"
+
+msgid "Profit margin (%)"
+msgstr "Маржа прибутку (%)"
+
+msgid "Sales mix (%)"
+msgstr "Мікс продажів (%)"
+
+msgid "Average rating"
+msgstr "Середній рейтинг"
+
+msgid "Review count"
+msgstr "Кількість відгуків"
+
+msgid "Return count"
+msgstr "Кількість повернень"
+
+msgid "View count"
+msgstr "Кількість переглядів"
+
+msgid "Product Performance"
+msgstr "Ефективність продукту"
+
+msgid "Product Performances"
+msgstr "Ефективність продуктів"
+
+msgid "Total customers"
+msgstr "Всього клієнтів"
+
+msgid "New customers"
+msgstr "Нові клієнти"
+
+msgid "Returning customers"
+msgstr "Постійні клієнти"
+
+msgid "Churn count"
+msgstr "Кількість відтоку"
+
+msgid "Average visit frequency"
+msgstr "Середня частота відвідувань"
+
+msgid "Average lifetime value"
+msgstr "Середня довічна вартість"
+
+msgid "NPS score"
+msgstr "Оцінка NPS"
+
+msgid "Customer Metric"
+msgstr "Метрика клієнтів"
+
+msgid "Customer Metrics"
+msgstr "Метрики клієнтів"
+
+msgid "Discount"
+msgstr "Знижка"
+
+msgid "Buy One Get One"
+msgstr "Купи один — отримай один"
+
+msgid "Free Item"
+msgstr "Безкоштовний товар"
+
+msgid "Bundle Deal"
+msgstr "Комплектна пропозиція"
+
+msgid "Loyalty Reward"
+msgstr "Бонус лояльності"
+
+msgid "Seasonal Promotion"
+msgstr "Сезонна акція"
+
+msgid "Flash Sale"
+msgstr "Блискавичний розпродаж"
+
+msgid "Referral Program"
+msgstr "Реферальна програма"
+
+msgid "Draft"
+msgstr "Чернетка"
+
+msgid "Paused"
+msgstr "Призупинено"
+
+msgid "Percentage"
+msgstr "Відсоток"
+
+msgid "Fixed Amount"
+msgstr "Фіксована сума"
+
+msgid "Entire Order"
+msgstr "Все замовлення"
+
+msgid "Specific Product"
+msgstr "Конкретний продукт"
+
+msgid "Product Category"
+msgstr "Категорія продукту"
+
+msgid "Used"
+msgstr "Використано"
+
+msgid "Expired"
+msgstr "Закінчився"
+
+msgid "Unique identifier (UUID)"
+msgstr "Унікальний ідентифікатор (UUID)"
+
+msgid "Organization this campaign belongs to"
+msgstr "Організація, якій належить ця кампанія"
+
+msgid "Name"
+msgstr "Назва"
+
+msgid "Campaign name"
+msgstr "Назва кампанії"
+
+msgid "Campaign type"
+msgstr "Тип кампанії"
+
+msgid "Type of marketing campaign"
+msgstr "Тип маркетингової кампанії"
+
+msgid "Current campaign status"
+msgstr "Поточний статус кампанії"
+
+msgid "Description"
+msgstr "Опис"
+
+msgid "Campaign description"
+msgstr "Опис кампанії"
+
+msgid "Start date"
+msgstr "Дата початку"
+
+msgid "When the campaign starts"
+msgstr "Коли починається кампанія"
+
+msgid "End date"
+msgstr "Дата закінчення"
+
+msgid "When the campaign ends"
+msgstr "Коли закінчується кампанія"
+
+msgid "Budget"
+msgstr "Бюджет"
+
+msgid "Total campaign budget"
+msgstr "Загальний бюджет кампанії"
+
+msgid "Spent amount"
+msgstr "Витрачена сума"
+
+msgid "Total amount spent/discounted so far"
+msgstr "Загальна витрачена/знижена сума на даний момент"
+
+msgid "Target audience"
+msgstr "Цільова аудиторія"
+
+msgid "Targeting criteria (JSON)"
+msgstr "Критерії таргетування (JSON)"
+
+msgid "Discount value"
+msgstr "Розмір знижки"
+
+msgid "Discount amount or percentage"
+msgstr "Сума або відсоток знижки"
+
+msgid "Discount type"
+msgstr "Тип знижки"
+
+msgid "How the discount is calculated"
+msgstr "Як розраховується знижка"
+
+msgid "Minimum order amount"
+msgstr "Мінімальна сума замовлення"
+
+msgid "Minimum order amount to qualify"
+msgstr "Мінімальна сума замовлення для участі"
+
+msgid "Maximum discount amount"
+msgstr "Максимальна сума знижки"
+
+msgid "Cap on the discount amount (for percentage discounts)"
+msgstr "Обмеження суми знижки (для відсоткових знижок)"
+
+msgid "Usage limit"
+msgstr "Ліміт використання"
+
+msgid "Maximum number of times this campaign can be used (0 = unlimited)"
+msgstr "Максимальна кількість використань кампанії (0 = необмежено)"
+
+msgid "Usage count"
+msgstr "Кількість використань"
+
+msgid "Number of times this campaign has been used"
+msgstr "Кількість разів використання кампанії"
+
+msgid "Is active"
+msgstr "Активна"
+
+msgid "Whether this campaign is enabled"
+msgstr "Чи увімкнена ця кампанія"
+
+msgid "Created by"
+msgstr "Створено"
+
+msgid "User who created this campaign"
+msgstr "Користувач, що створив цю кампанію"
+
+msgid "Campaign"
+msgstr "Кампанія"
+
+msgid "Campaigns"
+msgstr "Кампанії"
+
+msgid "Organization this coupon belongs to"
+msgstr "Організація, якій належить цей купон"
+
+msgid "Campaign this coupon is linked to (optional)"
+msgstr "Кампанія, до якої прив'язаний купон (необов'язково)"
+
+msgid "Coupon code"
+msgstr "Код купона"
+
+msgid "Unique coupon code within the organization"
+msgstr "Унікальний код купона в організації"
+
+msgid "Minimum order amount to apply coupon"
+msgstr "Мінімальна сума замовлення для застосування купона"
+
+msgid "Maximum uses"
+msgstr "Максимальна кількість використань"
+
+msgid "Maximum number of times this coupon can be used"
+msgstr "Максимальна кількість використань цього купона"
+
+msgid "Used count"
+msgstr "Кількість використань"
+
+msgid "Number of times this coupon has been redeemed"
+msgstr "Кількість разів активації купона"
+
+msgid "Valid from"
+msgstr "Дійсний з"
+
+msgid "When the coupon becomes valid"
+msgstr "Коли купон стає дійсним"
+
+msgid "Valid until"
+msgstr "Дійсний до"
+
+msgid "When the coupon expires"
+msgstr "Коли закінчується термін дії купона"
+
+msgid "Whether this coupon is currently active"
+msgstr "Чи активний цей купон на даний момент"
+
+msgid "Coupon"
+msgstr "Купон"
+
+msgid "Coupons"
+msgstr "Купони"
+
+msgid "Organization this usage belongs to"
+msgstr "Організація, якій належить це використання"
+
+msgid "The coupon that was redeemed"
+msgstr "Активований купон"
+
+msgid "Order"
+msgstr "Замовлення"
+
+msgid "The order where the coupon was applied"
+msgstr "Замовлення, де було застосовано купон"
+
+msgid "Customer"
+msgstr "Клієнт"
+
+msgid "The customer who redeemed the coupon"
+msgstr "Клієнт, що активував купон"
+
+msgid "Discount applied"
+msgstr "Застосована знижка"
+
+msgid "Actual discount amount applied to the order"
+msgstr "Фактична сума знижки, застосована до замовлення"
+
+msgid "Used at"
+msgstr "Використано о"
+
+msgid "When the coupon was redeemed"
+msgstr "Коли був активований купон"
+
+msgid "Coupon Usage"
+msgstr "Використання купона"
+
+msgid "Coupon Usages"
+msgstr "Використання купонів"
+
+msgid "Organization this referral belongs to"
+msgstr "Організація, якій належить цей реферал"
+
+msgid "Referrer"
+msgstr "Реферер"
+
+msgid "Customer who made the referral"
+msgstr "Клієнт, що зробив реферал"
+
+msgid "Referred"
+msgstr "Запрошений"
+
+msgid "Customer who was referred"
+msgstr "Запрошений клієнт"
+
+msgid "Referral code"
+msgstr "Реферальний код"
+
+msgid "Unique referral code used"
+msgstr "Використаний унікальний реферальний код"
+
+msgid "Reward type"
+msgstr "Тип винагороди"
+
+msgid "How the referral reward is calculated"
+msgstr "Як розраховується реферальна винагорода"
+
+msgid "Reward value"
+msgstr "Розмір винагороди"
+
+msgid "Value of the referral reward"
+msgstr "Розмір реферальної винагороди"
+
+msgid "Is completed"
+msgstr "Завершено"
+
+msgid "Whether the referral reward has been fulfilled"
+msgstr "Чи виконана реферальна винагорода"
+
+msgid "Completed at"
+msgstr "Завершено о"
+
+msgid "When the referral was completed"
+msgstr "Коли реферал було завершено"
+
+msgid "Referral"
+msgstr "Реферал"
+
+msgid "Referrals"
+msgstr "Реферали"
+
+msgid "Basic organization information"
+msgstr "Основна інформація про організацію"
+
+msgid "Contact Information"
+msgstr "Контактна інформація"
+
+msgid "Status & Subscription"
+msgstr "Статус та підписка"
+
+msgid "Organization lifecycle and subscription status"
+msgstr "Життєвий цикл організації та статус підписки"
+
+msgid "Settings"
+msgstr "Налаштування"
+
+msgid "Organization-specific configuration (JSON)"
+msgstr "Конфігурація організації (JSON)"
+
+msgid "Trial"
+msgstr "Пробний період"
+
+msgid "Storefront"
+msgstr "Вітрина"
+
+msgid "Suspend selected organizations"
+msgstr "Призупинити обрані організації"
+
+#, python-format
+msgid "%(count)d organization(s) have been suspended."
+msgstr "%(count)d організацію(ій) призупинено."
+
+msgid "Activate selected organizations"
+msgstr "Активувати обрані організації"
+
+#, python-format
+msgid "%(count)d organization(s) have been activated."
+msgstr "%(count)d організацію(ій) активовано."
+
+msgid "Role Assignment"
+msgstr "Призначення ролі"
+
+msgid "Role Assignments"
+msgstr "Призначення ролей"
+
+msgid "Personal Information"
+msgstr "Персональна інформація"
+
+msgid "Tenant membership and account status"
+msgstr "Членство в організації та статус облікового запису"
+
+msgid "Permissions"
+msgstr "Дозволи"
+
+msgid "Important Dates"
+msgstr "Важливі дати"
+
+msgid "Full Name"
+msgstr "Повне ім'я"
+
+msgid "Roles"
+msgstr "Ролі"
+
+msgid "Impersonate"
+msgstr "Імітувати"
+
+msgid "Suspend selected users"
+msgstr "Призупинити обраних користувачів"
+
+#, python-format
+msgid "%(count)d user(s) have been suspended."
+msgstr "%(count)d користувача(ів) призупинено."
+
+msgid "Activate selected users"
+msgstr "Активувати обраних користувачів"
+
+#, python-format
+msgid "%(count)d user(s) have been activated."
+msgstr "%(count)d користувача(ів) активовано."
+
+msgid "Mark email as verified"
+msgstr "Позначити email як підтверджений"
+
+#, python-format
+msgid "%(count)d user(s) email verified."
+msgstr "%(count)d email користувача(ів) підтверджено."
+
+msgid "Address"
+msgstr "Адреса"
+
+msgid "Contact"
+msgstr "Контакт"
+
+msgid "Location"
+msgstr "Розташування"
+
+msgid "Configuration"
+msgstr "Конфігурація"
+
+msgid "Permission"
+msgstr "Дозвіл"
+
+msgid "Scope"
+msgstr "Область дії"
+
+msgid "Platform roles apply system-wide. Organization roles are tenant-scoped."
+msgstr "Ролі платформи діють на рівні системи. Ролі організації обмежені тенантом."
+
+msgid "Permission Matrix"
+msgstr "Матриця дозволів"
+
+msgid ""
+"Visual overview of all permissions assigned to this role, grouped by "
+"resource. Use the inline form below to add or remove permissions."
+msgstr "Візуальний огляд усіх дозволів, призначених цій ролі, згрупованих за ресурсом. Використовуйте форму нижче для додавання або видалення дозволів."
+
+msgid "Assigned Users"
+msgstr "Призначені користувачі"
+
+msgid "Users currently assigned to this role."
+msgstr "Користувачі, призначені цій ролі."
+
+msgid "Users"
+msgstr "Користувачі"
+
+msgid "System"
+msgstr "Система"
+
+msgid "Duplicate selected roles (without users)"
+msgstr "Дублювати обрані ролі (без користувачів)"
+
+#, python-format
+msgid "%(count)d role(s) have been duplicated."
+msgstr "%(count)d роль(ей) дубльовано."
+
+msgid "Used By Roles"
+msgstr "Використовується ролями"
+
+msgid "Roles that have this permission assigned."
+msgstr "Ролі, яким призначено цей дозвіл."
+
+msgid "Permission Code"
+msgstr "Код дозволу"
+
+msgid "Resource"
+msgstr "Ресурс"
+
+msgid "Action"
+msgstr "Дія"
+
+msgid "Used By"
+msgstr "Використовується"
+
+msgid "Token Details"
+msgstr "Деталі токена"
+
+msgid "Client Information"
+msgstr "Інформація про клієнт"
+
+msgid "Revocation"
+msgstr "Відкликання"
+
+msgid "Revoke selected sessions"
+msgstr "Відкликати обрані сесії"
+
+#, python-format
+msgid "%(count)d session(s) have been revoked."
+msgstr "%(count)d сесію(ій) відкликано."
+
+msgid "Select a user and assign a role."
+msgstr "Оберіть користувача та призначте роль."
+
+msgid ""
+"Organization scope is required for organization roles. Branch further "
+"restricts access to a specific location."
+msgstr "Область організації є обов'язковою для ролей організації. Філія додатково обмежує доступ до конкретного місця."
+
+msgid "Administration"
+msgstr "Адміністрування"
+
+msgid ""
+"Set an expiration date for temporary role assignments. Leave blank for "
+"permanent assignments."
+msgstr "Встановіть дату закінчення для тимчасових призначень ролей. Залиште порожнім для постійних призначень."
+
+msgid "Role"
+msgstr "Роль"
+
+msgid "Granted By"
+msgstr "Надано"
+
+msgid "Expires"
+msgstr "Закінчується"
+
+msgid "Revoke selected role assignments (set expired)"
+msgstr "Відкликати обрані призначення ролей (встановити як закінчені)"
+
+#, python-format
+msgid "%(count)d role assignment(s) have been revoked."
+msgstr "%(count)d призначення(нь) ролей відкликано."
+
+msgid "Conditions"
+msgstr "Умови"
+
+msgid ""
+"CASL-like conditions for fine-grained access control (JSON). Example: "
+"{\"organization_id\": \"${user.organization_id}\"} restricts access to the "
+"user's own organization data."
+msgstr "Умови типу CASL для детального контролю доступу (JSON). Приклад: {\"organization_id\": \"${user.organization_id}\"} обмежує доступ до даних власної організації користувача."
+
+msgid "Action Details"
+msgstr "Деталі дії"
+
+msgid "Context"
+msgstr "Контекст"
+
+msgid "Data Changes"
+msgstr "Зміни даних"
+
+msgid "Morning"
+msgstr "Ранок"
+
+msgid "Afternoon"
+msgstr "День"
+
+msgid "Evening"
+msgstr "Вечір"
+
+msgid "Night"
+msgstr "Ніч"
+
+msgid "Custom"
+msgstr "Користувацький"
+
+msgid "Scheduled"
+msgstr "Заплановано"
+
+msgid "Checked In"
+msgstr "Зареєстровано"
+
+msgid "Checked Out"
+msgstr "Виписано"
+
+msgid "Absent"
+msgstr "Відсутній"
+
+msgid "Late"
+msgstr "Запізнення"
+
+msgid "Deleted at"
+msgstr "Видалено о"
+
+msgid "Timestamp when record was soft-deleted (null = active)"
+msgstr "Час м'якого видалення запису (null = активний)"
+
+msgid "Created at"
+msgstr "Створено о"
+
+msgid "Timestamp when record was created"
+msgstr "Час створення запису"
+
+msgid "Updated at"
+msgstr "Оновлено о"
+
+msgid "Timestamp when record was last updated"
+msgstr "Час останнього оновлення запису"
+
+msgid "Display name of the organization"
+msgstr "Відображувана назва організації"
+
+msgid "Slug"
+msgstr "Slug"
+
+msgid "URL-friendly unique identifier"
+msgstr "URL-сумісний унікальний ідентифікатор"
+
+msgid "Email"
+msgstr "Електронна пошта"
+
+msgid "Primary contact email for the organization"
+msgstr "Основна контактна електронна пошта організації"
+
+msgid "Phone"
+msgstr "Телефон"
+
+msgid "Contact phone number"
+msgstr "Контактний номер телефону"
+
+msgid "Logo URL"
+msgstr "URL логотипу"
+
+msgid "URL to organization logo image"
+msgstr "URL зображення логотипу організації"
+
+msgid "Organization-specific settings (JSON)"
+msgstr "Налаштування організації (JSON)"
+
+msgid "Organization lifecycle status"
+msgstr "Статус життєвого циклу організації"
+
+msgid "Trial ends at"
+msgstr "Пробний період закінчується"
+
+msgid "When trial period ends (null if not on trial)"
+msgstr "Коли закінчується пробний період (null, якщо немає пробного)"
+
+msgid "Organizations"
+msgstr "Організації"
+
+msgid "The Email field must be set"
+msgstr "Поле електронної пошти має бути заповнене"
+
+msgid "Superuser must have is_staff=True."
+msgstr "Суперкористувач повинен мати is_staff=True."
+
+msgid "Superuser must have is_superuser=True."
+msgstr "Суперкористувач повинен мати is_superuser=True."
+
+msgid "Email address (used as username for authentication)"
+msgstr "Електронна адреса (використовується як ім'я користувача для автентифікації)"
+
+msgid "First name"
+msgstr "Ім'я"
+
+msgid "User's first name"
+msgstr "Ім'я користувача"
+
+msgid "Last name"
+msgstr "Прізвище"
+
+msgid "User's last name"
+msgstr "Прізвище користувача"
+
+msgid "Avatar URL"
+msgstr "URL аватара"
+
+msgid "URL to user's avatar image"
+msgstr "URL зображення аватара користувача"
+
+msgid "User account status"
+msgstr "Статус облікового запису"
+
+msgid "Staff status"
+msgstr "Статус персоналу"
+
+msgid "Designates whether the user can log into Django admin."
+msgstr "Визначає, чи може користувач увійти в адмінку Django."
+
+msgid "Email verified at"
+msgstr "Email підтверджено о"
+
+msgid "Timestamp when email was verified (null if not verified)"
+msgstr "Час підтвердження email (null, якщо не підтверджено)"
+
+msgid "Last login at"
+msgstr "Останній вхід о"
+
+msgid "Timestamp of last successful login"
+msgstr "Час останнього успішного входу"
+
+msgid "Organization this user belongs to (null for platform users)"
+msgstr "Організація, якій належить користувач (null для користувачів платформи)"
+
+msgid "Organization this branch belongs to"
+msgstr "Організація, якій належить філія"
+
+msgid "Display name of the branch"
+msgstr "Відображувана назва філії"
+
+msgid "URL-friendly identifier (unique within organization)"
+msgstr "URL-сумісний ідентифікатор (унікальний в організації)"
+
+msgid "Full street address"
+msgstr "Повна вулична адреса"
+
+msgid "City"
+msgstr "Місто"
+
+msgid "City name"
+msgstr "Назва міста"
+
+msgid "District"
+msgstr "Район"
+
+msgid "District or neighborhood"
+msgstr "Район або мікрорайон"
+
+msgid "Postal code"
+msgstr "Поштовий індекс"
+
+msgid "Postal or ZIP code"
+msgstr "Поштовий або ZIP-код"
+
+msgid "Country"
+msgstr "Країна"
+
+msgid "Country code (ISO 3166-1 alpha-2)"
+msgstr "Код країни (ISO 3166-1 alpha-2)"
+
+msgid "Branch contact phone number"
+msgstr "Контактний телефон філії"
+
+msgid "Branch contact email"
+msgstr "Контактна електронна пошта філії"
+
+msgid "Latitude"
+msgstr "Широта"
+
+msgid "GPS latitude coordinate"
+msgstr "GPS координата широти"
+
+msgid "Longitude"
+msgstr "Довгота"
+
+msgid "GPS longitude coordinate"
+msgstr "GPS координата довготи"
+
+msgid "Timezone"
+msgstr "Часовий пояс"
+
+msgid "Branch timezone (IANA format)"
+msgstr "Часовий пояс філії (формат IANA)"
+
+msgid "Branch-specific settings (JSON)"
+msgstr "Налаштування філії (JSON)"
+
+msgid "Operating hours"
+msgstr "Графік роботи"
+
+msgid "Daily operating hours (JSON)"
+msgstr "Щоденний графік роботи (JSON)"
+
+msgid "Branch lifecycle status"
+msgstr "Статус життєвого циклу філії"
+
+msgid "Is main branch"
+msgstr "Головна філія"
+
+msgid "Whether this is the main/headquarters branch"
+msgstr "Чи є ця філія головною/штаб-квартирою"
+
+msgid "Branch"
+msgstr "Філія"
+
+msgid "Branches"
+msgstr "Філії"
+
+msgid "Internal role identifier (lowercase, underscore-separated)"
+msgstr "Внутрішній ідентифікатор ролі (малі літери, розділені підкресленням)"
+
+msgid "Display name"
+msgstr "Відображувана назва"
+
+msgid "Human-readable role name"
+msgstr "Зрозуміла назва ролі"
+
+msgid "Detailed description of the role and its capabilities"
+msgstr "Детальний опис ролі та її можливостей"
+
+msgid "Role scope (PLATFORM or ORGANIZATION)"
+msgstr "Область ролі (PLATFORM або ORGANIZATION)"
+
+msgid "Is system role"
+msgstr "Системна роль"
+
+msgid "System roles are predefined and cannot be modified"
+msgstr "Системні ролі попередньо визначені і не можуть бути змінені"
+
+msgid "Organization for org-scoped roles (null for platform roles)"
+msgstr "Організація для ролей з областю організації (null для ролей платформи)"
+
+msgid "Permissions granted to this role"
+msgstr "Дозволи, надані цій ролі"
+
+msgid "Resource name (e.g., menu, order, user)"
+msgstr "Назва ресурсу (напр., menu, order, user)"
+
+msgid "Action type (view, create, update, delete, etc.)"
+msgstr "Тип дії (view, create, update, delete тощо)"
+
+msgid "Human-readable description of the permission"
+msgstr "Зрозумілий опис дозволу"
+
+msgid "Is system permission"
+msgstr "Системний дозвіл"
+
+msgid "System permissions are predefined and cannot be deleted"
+msgstr "Системні дозволи попередньо визначені і не можуть бути видалені"
+
+msgid "User who owns this session"
+msgstr "Власник цієї сесії"
+
+msgid "Refresh token"
+msgstr "Токен оновлення"
+
+msgid "Hashed refresh token"
+msgstr "Хешований токен оновлення"
+
+msgid "User agent"
+msgstr "User agent"
+
+msgid "Browser/client user agent string"
+msgstr "Рядок user agent браузера/клієнта"
+
+msgid "IP address"
+msgstr "IP-адреса"
+
+msgid "Client IP address"
+msgstr "IP-адреса клієнта"
+
+msgid "Expires at"
+msgstr "Закінчується о"
+
+msgid "When the session/refresh token expires"
+msgstr "Коли закінчується термін дії сесії/токена оновлення"
+
+msgid "Session status"
+msgstr "Статус сесії"
+
+msgid "Revoked at"
+msgstr "Відкликано о"
+
+msgid "When the session was revoked"
+msgstr "Коли сесію було відкликано"
+
+msgid "Revoke reason"
+msgstr "Причина відкликання"
+
+msgid "Reason for session revocation"
+msgstr "Причина відкликання сесії"
+
+msgid "Session"
+msgstr "Сесія"
+
+msgid "Sessions"
+msgstr "Сесії"
+
+msgid "User who has this role"
+msgstr "Користувач, що має цю роль"
+
+msgid "Role assigned to the user"
+msgstr "Роль, призначена користувачу"
+
+msgid "Organization scope for this role assignment"
+msgstr "Область організації для цього призначення ролі"
+
+msgid "Optional branch-level restriction"
+msgstr "Необов'язкове обмеження на рівні філії"
+
+msgid "Granted by"
+msgstr "Надано"
+
+msgid "User who granted this role"
+msgstr "Користувач, який надав цю роль"
+
+msgid "Optional expiration for temporary role assignments"
+msgstr "Необов'язковий термін дії для тимчасових призначень ролей"
+
+msgid "User Role"
+msgstr "Роль користувача"
+
+msgid "User Roles"
+msgstr "Ролі користувачів"
+
+msgid "Role that has this permission"
+msgstr "Роль, що має цей дозвіл"
+
+msgid "Permission granted to the role"
+msgstr "Дозвіл, наданий ролі"
+
+msgid "CASL-like conditions for fine-grained access control"
+msgstr "Умови типу CASL для детального контролю доступу"
+
+msgid "Role Permission"
+msgstr "Дозвіл ролі"
+
+msgid "Role Permissions"
+msgstr "Дозволи ролей"
+
+msgid ""
+"Organization context for this audit log (null for platform-level actions)"
+msgstr "Контекст організації для цього журналу аудиту (null для дій на рівні платформи)"
+
+msgid "User who performed the action (null for system actions)"
+msgstr "Користувач, що виконав дію (null для системних дій)"
+
+msgid "Type of action performed"
+msgstr "Тип виконаної дії"
+
+msgid "Resource type affected (e.g., menu, order, user)"
+msgstr "Тип ресурсу, що зазнав впливу (напр., menu, order, user)"
+
+msgid "Resource ID"
+msgstr "ID ресурсу"
+
+msgid "ID of the affected resource"
+msgstr "ID ресурсу, що зазнав впливу"
+
+msgid "Human-readable description of the action"
+msgstr "Зрозумілий опис дії"
+
+msgid "Old values"
+msgstr "Старі значення"
+
+msgid "JSON snapshot of values before the change"
+msgstr "JSON-знімок значень до зміни"
+
+msgid "New values"
+msgstr "Нові значення"
+
+msgid "JSON snapshot of values after the change"
+msgstr "JSON-знімок значень після зміни"
+
+msgid "Client user agent string"
+msgstr "Рядок user agent клієнта"
+
+msgid "Additional context data (JSON)"
+msgstr "Додаткові контекстні дані (JSON)"
+
+msgid "Timestamp when the action occurred"
+msgstr "Час виконання дії"
+
+msgid "Audit Log"
+msgstr "Журнал аудиту"
+
+msgid "Audit Logs"
+msgstr "Журнали аудиту"
+
+msgid "Organization this shift belongs to"
+msgstr "Організація, якій належить ця зміна"
+
+msgid "Display name of the shift"
+msgstr "Відображувана назва зміни"
+
+msgid "Shift type"
+msgstr "Тип зміни"
+
+msgid "Type of shift"
+msgstr "Тип зміни"
+
+msgid "Start time"
+msgstr "Час початку"
+
+msgid "When the shift starts"
+msgstr "Коли починається зміна"
+
+msgid "End time"
+msgstr "Час закінчення"
+
+msgid "When the shift ends"
+msgstr "Коли закінчується зміна"
+
+msgid "Whether this shift is currently active"
+msgstr "Чи активна ця зміна на даний момент"
+
+msgid "Shift"
+msgstr "Зміна"
+
+msgid "Shifts"
+msgstr "Зміни"
+
+msgid "Organization this schedule belongs to"
+msgstr "Організація, якій належить цей розклад"
+
+msgid "Staff member assigned to this shift"
+msgstr "Співробітник, призначений на цю зміну"
+
+msgid "Shift assigned to the staff member"
+msgstr "Зміна, призначена співробітнику"
+
+msgid "Date of the scheduled shift"
+msgstr "Дата запланованої зміни"
+
+msgid "Actual start"
+msgstr "Фактичний початок"
+
+msgid "Actual check-in time"
+msgstr "Фактичний час реєстрації"
+
+msgid "Actual end"
+msgstr "Фактичне закінчення"
+
+msgid "Actual check-out time"
+msgstr "Фактичний час виходу"
+
+msgid "Current status of the schedule entry"
+msgstr "Поточний статус запису розкладу"
+
+msgid "Notes"
+msgstr "Нотатки"
+
+msgid "Optional notes about the schedule entry"
+msgstr "Необов'язкові нотатки про запис розкладу"
+
+msgid "Staff Schedule"
+msgstr "Розклад персоналу"
+
+msgid "Staff Schedules"
+msgstr "Розклади персоналу"
+
+msgid "Organization this metric belongs to"
+msgstr "Організація, якій належить ця метрика"
+
+msgid "Staff member these metrics are for"
+msgstr "Співробітник, для якого ці метрики"
+
+msgid "Date these metrics are for"
+msgstr "Дата цих метрик"
+
+msgid "Orders handled"
+msgstr "Оброблені замовлення"
+
+msgid "Number of orders handled"
+msgstr "Кількість оброблених замовлень"
+
+msgid "Revenue generated"
+msgstr "Отриманий дохід"
+
+msgid "Total revenue generated"
+msgstr "Загальний отриманий дохід"
+
+msgid "Average value per order"
+msgstr "Середня вартість замовлення"
+
+msgid "Average service time (seconds)"
+msgstr "Середній час обслуговування (секунди)"
+
+msgid "Average service time in seconds"
+msgstr "Середній час обслуговування в секундах"
+
+msgid "Customer rating average"
+msgstr "Середній рейтинг клієнтів"
+
+msgid "Average customer rating"
+msgstr "Середній рейтинг клієнтів"
+
+msgid "Rating count"
+msgstr "Кількість оцінок"
+
+msgid "Number of ratings received"
+msgstr "Кількість отриманих оцінок"
+
+msgid "Upsell count"
+msgstr "Кількість допродажів"
+
+msgid "Number of successful upsells"
+msgstr "Кількість успішних допродажів"
+
+msgid "Tips amount"
+msgstr "Сума чайових"
+
+msgid "Total tips received"
+msgstr "Загальна сума отриманих чайових"
+
+msgid "Staff Metric"
+msgstr "Метрика персоналу"
+
+msgid "Staff Metrics"
+msgstr "Метрики персоналу"
+
+msgid "An organization with this slug already exists."
+msgstr "Організація з таким slug вже існує."
+
+msgid "Password (minimum 12 characters)"
+msgstr "Пароль (мінімум 12 символів)"
+
+msgid "Confirm password"
+msgstr "Підтвердження пароля"
+
+msgid "Role ID to assign to the user"
+msgstr "ID ролі для призначення користувачу"
+
+msgid "A user with this email already exists."
+msgstr "Користувач з такою електронною поштою вже існує."
+
+msgid "Passwords do not match."
+msgstr "Паролі не збігаються."
+
+msgid "You cannot suspend your own account."
+msgstr "Ви не можете призупинити свій обліковий запис."
+
+msgid "User email address"
+msgstr "Електронна адреса користувача"
+
+msgid "User password"
+msgstr "Пароль користувача"
+
+msgid "No account found with this email address."
+msgstr "Обліковий запис з такою електронною поштою не знайдено."
+
+msgid "This account has been deleted."
+msgstr "Цей обліковий запис було видалено."
+
+msgid "This account has been suspended. Please contact support."
+msgstr "Цей обліковий запис призупинено. Зверніться до служби підтримки."
+
+msgid "Please complete your registration first."
+msgstr "Спочатку завершіть реєстрацію."
+
+msgid "Invalid password."
+msgstr "Невірний пароль."
+
+msgid "Your organization has been suspended. Please contact support."
+msgstr "Вашу організацію призупинено. Зверніться до служби підтримки."
+
+msgid "Your organization has been deleted."
+msgstr "Вашу організацію видалено."
+
+msgid "JWT access token"
+msgstr "JWT токен доступу"
+
+msgid "JWT refresh token"
+msgstr "JWT токен оновлення"
+
+msgid "Authenticated user details"
+msgstr "Дані автентифікованого користувача"
+
+msgid "User organization (if any)"
+msgstr "Організація користувача (якщо є)"
+
+msgid "JWT refresh token to invalidate"
+msgstr "JWT токен оновлення для анулювання"
+
+msgid "Refresh token is required."
+msgstr "Токен оновлення обов'язковий."
+
+msgid "Invalid or expired refresh token."
+msgstr "Недійсний або закінчений токен оновлення."
+
+msgid "Current password"
+msgstr "Поточний пароль"
+
+msgid "New password (minimum 12 characters)"
+msgstr "Новий пароль (мінімум 12 символів)"
+
+msgid "Confirm new password"
+msgstr "Підтвердження нового пароля"
+
+msgid "Current password is incorrect."
+msgstr "Поточний пароль невірний."
+
+msgid "New password must be different from current password."
+msgstr "Новий пароль повинен відрізнятися від поточного."
+
+msgid "Invalid credentials"
+msgstr "Невірні облікові дані"
+
+msgid "Invalid request"
+msgstr "Невірний запит"
+
+msgid "Successfully logged out"
+msgstr "Успішний вихід"
+
+msgid "Invalid or expired refresh token"
+msgstr "Недійсний або закінчений токен оновлення"
+
+msgid "Refresh token has expired"
+msgstr "Термін дії токена оновлення закінчився"
+
+msgid "Token is required"
+msgstr "Токен обов'язковий"
+
+msgid "Invalid data"
+msgstr "Невірні дані"
+
+msgid "Password changed successfully. Please log in again."
+msgstr "Пароль успішно змінено. Увійдіть знову."
+
+msgid "Session not found"
+msgstr "Сесію не знайдено"
+
+msgid "Session revoked successfully"
+msgstr "Сесію успішно відкликано"
+
+msgid "All sessions revoked"
+msgstr "Усі сесії відкликано"
+
+msgid "You cannot delete your own account."
+msgstr "Ви не можете видалити свій обліковий запис."
+
+msgid "Preferences"
+msgstr "Налаштування"
+
+msgid "Loyalty & Stats"
+msgstr "Лояльність та статистика"
+
+msgid "Marketing"
+msgstr "Маркетинг"
+
+msgid "Visit Details"
+msgstr "Деталі відвідування"
+
+msgid "Device Information"
+msgstr "Інформація про пристрій"
+
+msgid "Feedback"
+msgstr "Відгук"
+
+msgid "Status & Response"
+msgstr "Статус та відповідь"
+
+msgid "Anonymous"
+msgstr "Анонімний"
+
+msgid "Transaction"
+msgstr "Транзакція"
+
+msgid "Expiration"
+msgstr "Закінчення терміну"
+
+msgid "Points"
+msgstr "Бали"
+
+msgid "Dietary"
+msgstr "Дієтичне"
+
+msgid "Allergen"
+msgstr "Алерген"
+
+msgid "Seating"
+msgstr "Посадка"
+
+msgid "Payment"
+msgstr "Оплата"
+
+msgid "Communication"
+msgstr "Комунікація"
+
+msgid "Promoter"
+msgstr "Промоутер"
+
+msgid "Passive"
+msgstr "Пасивний"
+
+msgid "Detractor"
+msgstr "Критик"
+
+msgid "QR Code"
+msgstr "QR-код"
+
+msgid "SMS"
+msgstr "SMS"
+
+msgid "In App"
+msgstr "В додатку"
+
+msgid "Organization this customer belongs to"
+msgstr "Організація, якій належить цей клієнт"
+
+msgid "Customer's display name"
+msgstr "Відображуване ім'я клієнта"
+
+msgid "Customer's email address (unique per organization)"
+msgstr "Електронна пошта клієнта (унікальна в організації)"
+
+msgid "Customer's phone number"
+msgstr "Номер телефону клієнта"
+
+msgid "URL to customer's profile image"
+msgstr "URL зображення профілю клієнта"
+
+msgid "Language preference"
+msgstr "Мовні переваги"
+
+msgid "Preferred language code (e.g., 'tr', 'en')"
+msgstr "Код бажаної мови (напр., 'tr', 'en')"
+
+msgid "Source"
+msgstr "Джерело"
+
+msgid "How the customer was acquired"
+msgstr "Як було залучено клієнта"
+
+msgid "Staff notes about the customer"
+msgstr "Нотатки персоналу про клієнта"
+
+msgid "Customer preferences and settings (JSON)"
+msgstr "Переваги та налаштування клієнта (JSON)"
+
+msgid "Total orders"
+msgstr "Всього замовлень"
+
+msgid "Total number of orders placed"
+msgstr "Загальна кількість розміщених замовлень"
+
+msgid "Total spent"
+msgstr "Загальна витрачена сума"
+
+msgid "Total amount spent (denormalized)"
+msgstr "Загальна витрачена сума (денормалізовано)"
+
+msgid "Loyalty points balance"
+msgstr "Баланс балів лояльності"
+
+msgid "Current loyalty points balance"
+msgstr "Поточний баланс балів лояльності"
+
+msgid "First visit at"
+msgstr "Перший візит о"
+
+msgid "Date and time of first visit"
+msgstr "Дата та час першого візиту"
+
+msgid "Last visit at"
+msgstr "Останній візит о"
+
+msgid "Date and time of most recent visit"
+msgstr "Дата та час останнього візиту"
+
+msgid "Marketing consent"
+msgstr "Маркетингова згода"
+
+msgid "Whether customer consented to receive marketing communications"
+msgstr "Чи надав клієнт згоду на маркетингові повідомлення"
+
+msgid "Marketing consent at"
+msgstr "Маркетингова згода о"
+
+msgid "When marketing consent was given"
+msgstr "Коли було надано маркетингову згоду"
+
+msgid "RFM Segment"
+msgstr "RFM-сегмент"
+
+msgid "RFM Recency Score"
+msgstr "RFM оцінка давності"
+
+msgid "RFM Frequency Score"
+msgstr "RFM оцінка частоти"
+
+msgid "RFM Monetary Score"
+msgstr "RFM оцінка грошових витрат"
+
+msgid "Lifetime Value"
+msgstr "Довічна вартість"
+
+msgid "Churn Risk Score"
+msgstr "Оцінка ризику відтоку"
+
+msgid "Last Visit Date"
+msgstr "Дата останнього візиту"
+
+msgid "Organization this visit belongs to"
+msgstr "Організація, якій належить цей візит"
+
+msgid "Customer who made this visit"
+msgstr "Клієнт, що здійснив цей візит"
+
+msgid "Branch where the visit occurred"
+msgstr "Філія, де відбувся візит"
+
+msgid "Visited at"
+msgstr "Відвідано о"
+
+msgid "When the visit occurred"
+msgstr "Коли відбувся візит"
+
+msgid "How the visit was recorded"
+msgstr "Як було зареєстровано візит"
+
+msgid "Table ID"
+msgstr "ID столика"
+
+msgid "Table where customer was seated (if applicable)"
+msgstr "Столик, за яким сидів клієнт (якщо застосовно)"
+
+msgid "Order ID"
+msgstr "ID замовлення"
+
+msgid "Order placed during this visit (if applicable)"
+msgstr "Замовлення під час цього візиту (якщо застосовно)"
+
+msgid "Device info"
+msgstr "Інформація про пристрій"
+
+msgid "Device and browser information (JSON)"
+msgstr "Інформація про пристрій та браузер (JSON)"
+
+msgid "Duration (minutes)"
+msgstr "Тривалість (хвилини)"
+
+msgid "How long the customer stayed (estimated)"
+msgstr "Як довго перебував клієнт (оцінка)"
+
+msgid "Customer Visit"
+msgstr "Візит клієнта"
+
+msgid "Customer Visits"
+msgstr "Візити клієнтів"
+
+msgid "Organization this feedback belongs to"
+msgstr "Організація, якій належить цей відгук"
+
+msgid "Customer who gave this feedback (null for anonymous)"
+msgstr "Клієнт, що залишив відгук (null для анонімних)"
+
+msgid "Order this feedback is about (if applicable)"
+msgstr "Замовлення, про яке цей відгук (якщо застосовно)"
+
+msgid "Feedback type"
+msgstr "Тип відгуку"
+
+msgid "Category of feedback"
+msgstr "Категорія відгуку"
+
+msgid "Rating on a 1-5 scale"
+msgstr "Рейтинг за шкалою 1-5"
+
+msgid "Comment"
+msgstr "Коментар"
+
+msgid "Customer feedback comment"
+msgstr "Коментар клієнта"
+
+msgid "Processing status of the feedback"
+msgstr "Статус обробки відгуку"
+
+msgid "Staff response"
+msgstr "Відповідь персоналу"
+
+msgid "Response from staff to the feedback"
+msgstr "Відповідь персоналу на відгук"
+
+msgid "Responded by"
+msgstr "Відповів"
+
+msgid "User who responded to this feedback"
+msgstr "Користувач, що відповів на цей відгук"
+
+msgid "Responded at"
+msgstr "Відповідь о"
+
+msgid "When the response was made"
+msgstr "Коли було надано відповідь"
+
+msgid "Is public"
+msgstr "Публічний"
+
+msgid "Whether this feedback can be shown publicly"
+msgstr "Чи можна показувати цей відгук публічно"
+
+msgid "Additional metadata (JSON)"
+msgstr "Додаткові метадані (JSON)"
+
+msgid "Feedbacks"
+msgstr "Відгуки"
+
+msgid "Organization this transaction belongs to"
+msgstr "Організація, якій належить ця транзакція"
+
+msgid "Customer this transaction is for"
+msgstr "Клієнт цієї транзакції"
+
+msgid "Transaction type"
+msgstr "Тип транзакції"
+
+msgid "Type of loyalty point transaction"
+msgstr "Тип транзакції балів лояльності"
+
+msgid "Number of points (positive for credit, negative for debit)"
+msgstr "Кількість балів (додатне для нарахування, від'ємне для списання)"
+
+msgid "Balance after"
+msgstr "Баланс після"
+
+msgid "Customer's points balance after this transaction"
+msgstr "Баланс балів клієнта після цієї транзакції"
+
+msgid "Order associated with this transaction (if applicable)"
+msgstr "Замовлення, пов'язане з транзакцією (якщо застосовно)"
+
+msgid "Human-readable description of the transaction"
+msgstr "Зрозумілий опис транзакції"
+
+msgid "When these points expire (null = never)"
+msgstr "Коли закінчується термін дії балів (null = ніколи)"
+
+msgid "Additional transaction data (JSON)"
+msgstr "Додаткові дані транзакції (JSON)"
+
+msgid "Loyalty Point"
+msgstr "Бал лояльності"
+
+msgid "Loyalty Points"
+msgstr "Бали лояльності"
+
+msgid "Organization this preference belongs to"
+msgstr "Організація, якій належить ця перевага"
+
+msgid "Customer this preference belongs to"
+msgstr "Клієнт, якому належить ця перевага"
+
+msgid "Preference type"
+msgstr "Тип переваги"
+
+msgid "Category of preference"
+msgstr "Категорія переваги"
+
+msgid "Key"
+msgstr "Ключ"
+
+msgid "Preference key identifier (e.g., 'vegetarian', 'window_seat')"
+msgstr "Ідентифікатор переваги (напр., 'vegetarian', 'window_seat')"
+
+msgid "Preference value (e.g., 'true', 'always')"
+msgstr "Значення переваги (напр., 'true', 'always')"
+
+msgid "Auto detected"
+msgstr "Автовизначено"
+
+msgid "Whether this preference was automatically detected"
+msgstr "Чи була ця перевага визначена автоматично"
+
+msgid "Confidence"
+msgstr "Впевненість"
+
+msgid "Confidence score for auto-detected preferences (0-1)"
+msgstr "Оцінка впевненості для автовизначених переваг (0-1)"
+
+msgid "Customer Preference"
+msgstr "Перевага клієнта"
+
+msgid "Customer Preferences"
+msgstr "Переваги клієнтів"
+
+msgid "Organization this survey belongs to"
+msgstr "Організація, якій належить це опитування"
+
+msgid "Customer who submitted this survey (null for anonymous)"
+msgstr "Клієнт, що пройшов опитування (null для анонімних)"
+
+msgid "Order this survey is about (if applicable)"
+msgstr "Замовлення, про яке це опитування (якщо застосовно)"
+
+msgid "Score"
+msgstr "Оцінка"
+
+msgid "NPS score (0-10)"
+msgstr "Оцінка NPS (0-10)"
+
+msgid "Optional free-text comment"
+msgstr "Необов'язковий текстовий коментар"
+
+msgid "NPS category (auto-calculated from score)"
+msgstr "Категорія NPS (автоматично розрахована з оцінки)"
+
+msgid "Channel"
+msgstr "Канал"
+
+msgid "Channel through which survey was collected"
+msgstr "Канал, через який зібрано опитування"
+
+msgid "NPS Survey"
+msgstr "Опитування NPS"
+
+msgid "NPS Surveys"
+msgstr "Опитування NPS"
+
+msgid "A customer with this email already exists."
+msgstr "Клієнт з такою електронною поштою вже існує."
+
+msgid "Rating must be between 1 and 5."
+msgstr "Рейтинг повинен бути від 1 до 5."
+
+msgid "Staff response to the feedback"
+msgstr "Відповідь персоналу на відгук"
+
+msgid "Response added successfully"
+msgstr "Відповідь успішно додано"
+
+msgid "Feedback is now public"
+msgstr "Відгук тепер публічний"
+
+msgid "Feedback archived"
+msgstr "Відгук заархівовано"
+
+msgid "Purchase"
+msgstr "Закупівля"
+
+msgid "Sale"
+msgstr "Продаж"
+
+msgid "Waste"
+msgstr "Відходи"
+
+msgid "Adjustment"
+msgstr "Коригування"
+
+msgid "Transfer"
+msgstr "Переміщення"
+
+msgid "Return"
+msgstr "Повернення"
+
+msgid "Critical"
+msgstr "Критичний"
+
+msgid "Low"
+msgstr "Низький"
+
+msgid "Normal"
+msgstr "Нормальний"
+
+msgid "Excess"
+msgstr "Надлишок"
+
+msgid "Kilogram"
+msgstr "Кілограм"
+
+msgid "Gram"
+msgstr "Грам"
+
+msgid "Liter"
+msgstr "Літр"
+
+msgid "Milliliter"
+msgstr "Мілілітр"
+
+msgid "Piece"
+msgstr "Штука"
+
+msgid "Pack"
+msgstr "Упаковка"
+
+msgid "Box"
+msgstr "Коробка"
+
+msgid "Submitted"
+msgstr "Подано"
+
+msgid "Approved"
+msgstr "Затверджено"
+
+msgid "Received"
+msgstr "Отримано"
+
+msgid "Organization this supplier belongs to"
+msgstr "Організація, якій належить цей постачальник"
+
+msgid "Supplier company name"
+msgstr "Назва компанії постачальника"
+
+msgid "Contact person"
+msgstr "Контактна особа"
+
+msgid "Primary contact person at the supplier"
+msgstr "Основна контактна особа постачальника"
+
+msgid "Supplier contact email"
+msgstr "Електронна пошта постачальника"
+
+msgid "Supplier contact phone"
+msgstr "Телефон постачальника"
+
+msgid "Supplier full address"
+msgstr "Повна адреса постачальника"
+
+msgid "Tax ID"
+msgstr "Податковий номер"
+
+msgid "Supplier tax identification number"
+msgstr "Податковий ідентифікаційний номер постачальника"
+
+msgid "Whether this supplier is currently active"
+msgstr "Чи активний цей постачальник на даний момент"
+
+msgid "Supplier rating from 1 to 5"
+msgstr "Рейтинг постачальника від 1 до 5"
+
+msgid "Additional notes about the supplier"
+msgstr "Додаткові нотатки про постачальника"
+
+msgid "Supplier"
+msgstr "Постачальник"
+
+msgid "Suppliers"
+msgstr "Постачальники"
+
+msgid "Organization this inventory item belongs to"
+msgstr "Організація, якій належить цей інвентар"
+
+msgid "Name of the inventory item"
+msgstr "Назва інвентарної одиниці"
+
+msgid "SKU"
+msgstr "SKU"
+
+msgid "Stock Keeping Unit code"
+msgstr "Код складської одиниці"
+
+msgid "Item category (e.g., Dairy, Produce, Meat)"
+msgstr "Категорія товару (напр., Молочне, Овочі, М'ясо)"
+
+msgid "Unit type"
+msgstr "Тип одиниці"
+
+msgid "Unit of measurement for this item"
+msgstr "Одиниця виміру для цього товару"
+
+msgid "Current stock"
+msgstr "Поточний залишок"
+
+msgid "Current stock quantity in the specified unit"
+msgstr "Поточна кількість залишку у вказаній одиниці"
+
+msgid "Minimum stock level"
+msgstr "Мінімальний рівень запасів"
+
+msgid "Minimum stock threshold before alert"
+msgstr "Мінімальний поріг запасів до сповіщення"
+
+msgid "Maximum stock level"
+msgstr "Максимальний рівень запасів"
+
+msgid "Maximum recommended stock level"
+msgstr "Максимально рекомендований рівень запасів"
+
+msgid "Cost per unit"
+msgstr "Вартість за одиницю"
+
+msgid "Cost per unit in the base currency"
+msgstr "Вартість за одиницю в базовій валюті"
+
+msgid "Primary supplier for this item"
+msgstr "Основний постачальник цього товару"
+
+msgid "Whether this inventory item is actively tracked"
+msgstr "Чи активно відстежується цей інвентар"
+
+msgid "Inventory Item"
+msgstr "Інвентарна одиниця"
+
+msgid "Inventory Items"
+msgstr "Інвентарні одиниці"
+
+msgid "Organization this movement belongs to"
+msgstr "Організація, якій належить цей рух"
+
+msgid "Inventory item"
+msgstr "Інвентарна одиниця"
+
+msgid "The inventory item affected by this movement"
+msgstr "Інвентарна одиниця, що зазнала впливу цього руху"
+
+msgid "Movement type"
+msgstr "Тип руху"
+
+msgid "Type of stock movement"
+msgstr "Тип руху запасів"
+
+msgid "Quantity"
+msgstr "Кількість"
+
+msgid "Quantity moved (positive for additions, negative for removals)"
+msgstr "Переміщена кількість (додатне для додавання, від'ємне для вилучення)"
+
+msgid "Unit cost"
+msgstr "Вартість одиниці"
+
+msgid "Cost per unit at the time of movement"
+msgstr "Вартість за одиницю на момент руху"
+
+msgid "Total cost"
+msgstr "Загальна вартість"
+
+msgid "Total cost of this movement"
+msgstr "Загальна вартість цього руху"
+
+msgid "Reference number"
+msgstr "Номер посилання"
+
+msgid "External reference number (invoice, PO, etc.)"
+msgstr "Зовнішній номер посилання (рахунок, замовлення тощо)"
+
+msgid "Additional notes about this movement"
+msgstr "Додаткові нотатки про цей рух"
+
+msgid "User who created this movement"
+msgstr "Користувач, що створив цей рух"
+
+msgid "Stock Movement"
+msgstr "Рух запасів"
+
+msgid "Stock Movements"
+msgstr "Рухи запасів"
+
+msgid "Organization this purchase order belongs to"
+msgstr "Організація, якій належить це замовлення на закупівлю"
+
+msgid "Supplier for this purchase order"
+msgstr "Постачальник для цього замовлення"
+
+msgid "Order number"
+msgstr "Номер замовлення"
+
+msgid "Unique order reference number"
+msgstr "Унікальний номер замовлення"
+
+msgid "Current status of the purchase order"
+msgstr "Поточний статус замовлення на закупівлю"
+
+msgid "Order date"
+msgstr "Дата замовлення"
+
+msgid "Date the order was placed"
+msgstr "Дата розміщення замовлення"
+
+msgid "Expected delivery"
+msgstr "Очікувана доставка"
+
+msgid "Expected delivery date"
+msgstr "Очікувана дата доставки"
+
+msgid "Actual delivery"
+msgstr "Фактична доставка"
+
+msgid "Actual delivery date"
+msgstr "Фактична дата доставки"
+
+msgid "Subtotal"
+msgstr "Проміжний підсумок"
+
+msgid "Total before tax"
+msgstr "Підсумок до оподаткування"
+
+msgid "Tax amount"
+msgstr "Сума податку"
+
+msgid "Total tax amount"
+msgstr "Загальна сума податку"
+
+msgid "Total amount"
+msgstr "Загальна сума"
+
+msgid "Total order amount including tax"
+msgstr "Загальна сума замовлення з урахуванням податку"
+
+msgid "Additional notes for this purchase order"
+msgstr "Додаткові нотатки до замовлення на закупівлю"
+
+msgid "User who created this purchase order"
+msgstr "Користувач, що створив це замовлення"
+
+msgid "Approved by"
+msgstr "Затверджено"
+
+msgid "User who approved this purchase order"
+msgstr "Користувач, що затвердив це замовлення"
+
+msgid "Purchase Order"
+msgstr "Замовлення на закупівлю"
+
+msgid "Purchase Orders"
+msgstr "Замовлення на закупівлю"
+
+msgid "Purchase order"
+msgstr "Замовлення на закупівлю"
+
+msgid "Parent purchase order"
+msgstr "Батьківське замовлення на закупівлю"
+
+msgid "The inventory item being ordered"
+msgstr "Замовлена інвентарна одиниця"
+
+msgid "Quantity ordered"
+msgstr "Замовлена кількість"
+
+msgid "Quantity ordered from supplier"
+msgstr "Кількість, замовлена у постачальника"
+
+msgid "Quantity received"
+msgstr "Отримана кількість"
+
+msgid "Quantity actually received"
+msgstr "Фактично отримана кількість"
+
+msgid "Total line item cost"
+msgstr "Загальна вартість позиції"
+
+msgid "Purchase Order Item"
+msgstr "Позиція замовлення на закупівлю"
+
+msgid "Purchase Order Items"
+msgstr "Позиції замовлення на закупівлю"
+
+msgid "Organization this recipe belongs to"
+msgstr "Організація, якій належить цей рецепт"
+
+msgid "Menu product this recipe produces"
+msgstr "Продукт меню, який виробляється за цим рецептом"
+
+msgid "Recipe name"
+msgstr "Назва рецепту"
+
+msgid "Recipe description or preparation instructions"
+msgstr "Опис рецепту або інструкції з приготування"
+
+msgid "Yield quantity"
+msgstr "Кількість порцій"
+
+msgid "Number of portions/units this recipe produces"
+msgstr "Кількість порцій/одиниць, що виробляє цей рецепт"
+
+msgid "Yield unit"
+msgstr "Одиниця виходу"
+
+msgid "Unit of measurement for the yield"
+msgstr "Одиниця виміру для виходу"
+
+msgid "Preparation time (minutes)"
+msgstr "Час приготування (хвилини)"
+
+msgid "Estimated preparation time in minutes"
+msgstr "Орієнтовний час приготування в хвилинах"
+
+msgid "Whether this recipe is currently in use"
+msgstr "Чи використовується цей рецепт на даний момент"
+
+msgid "Recipe"
+msgstr "Рецепт"
+
+msgid "Recipes"
+msgstr "Рецепти"
+
+msgid "Parent recipe"
+msgstr "Батьківський рецепт"
+
+msgid "The inventory item used as ingredient"
+msgstr "Інвентарна одиниця, що використовується як інгредієнт"
+
+msgid "Quantity required"
+msgstr "Необхідна кількість"
+
+msgid "Amount of this ingredient required per recipe yield"
+msgstr "Кількість цього інгредієнту на одну порцію рецепту"
+
+msgid "Unit of measurement for this ingredient"
+msgstr "Одиниця виміру для цього інгредієнту"
+
+msgid "Waste percentage"
+msgstr "Відсоток відходів"
+
+msgid "Expected waste percentage (0-100)"
+msgstr "Очікуваний відсоток відходів (0-100)"
+
+msgid "Recipe Ingredient"
+msgstr "Інгредієнт рецепту"
+
+msgid "Recipe Ingredients"
+msgstr "Інгредієнти рецепту"
+
+msgid "Preview"
+msgstr "Попередній перегляд"
+
+msgid "Size"
+msgstr "Розмір"
+
+msgid "Details"
+msgstr "Деталі"
+
+msgid "Statistics"
+msgstr "Статистика"
+
+msgid "Media Count"
+msgstr "Кількість медіа"
+
+msgid "Subfolders"
+msgstr "Підпапки"
+
+msgid "File Information"
+msgstr "Інформація про файл"
+
+msgid "URLs"
+msgstr "URL-адреси"
+
+msgid "Dimensions & Size"
+msgstr "Розміри та розмір"
+
+msgid "SEO & Accessibility"
+msgstr "SEO та доступність"
+
+msgid "Usage Statistics"
+msgstr "Статистика використання"
+
+msgid "Dimensions"
+msgstr "Розміри"
+
+msgid "Organization this folder belongs to"
+msgstr "Організація, якій належить ця папка"
+
+msgid "Parent folder"
+msgstr "Батьківська папка"
+
+msgid "Parent folder for nesting (null = root folder)"
+msgstr "Батьківська папка для вкладення (null = кореневе)"
+
+msgid "Display name of the folder"
+msgstr "Відображувана назва папки"
+
+msgid "URL-friendly identifier (unique within parent)"
+msgstr "URL-сумісний ідентифікатор (унікальний в батьківській папці)"
+
+msgid "Optional folder description"
+msgstr "Необов'язковий опис папки"
+
+msgid "Whether folder contents are publicly accessible"
+msgstr "Чи доступний вміст папки публічно"
+
+msgid "Sort order"
+msgstr "Порядок сортування"
+
+msgid "Display order within parent folder"
+msgstr "Порядок відображення в батьківській папці"
+
+msgid "Custom folder attributes (JSON)"
+msgstr "Користувацькі атрибути папки (JSON)"
+
+msgid "Media Folder"
+msgstr "Медіа-папка"
+
+msgid "Media Folders"
+msgstr "Медіа-папки"
+
+msgid "Organization this media belongs to"
+msgstr "Організація, якій належить це медіа"
+
+msgid "Folder"
+msgstr "Папка"
+
+msgid "Folder containing this media (null = root/unfiled)"
+msgstr "Папка, що містить це медіа (null = кореневе/без папки)"
+
+msgid "Uploaded by"
+msgstr "Завантажено"
+
+msgid "User who uploaded this media"
+msgstr "Користувач, що завантажив це медіа"
+
+msgid "Display name of the media"
+msgstr "Відображувана назва медіа"
+
+msgid "Original filename"
+msgstr "Оригінальне ім'я файлу"
+
+msgid "Original filename when uploaded"
+msgstr "Оригінальне ім'я файлу при завантаженні"
+
+msgid "File path"
+msgstr "Шлях до файлу"
+
+msgid "Path or key to the stored file"
+msgstr "Шлях або ключ збереженого файлу"
+
+msgid "URL"
+msgstr "URL"
+
+msgid "Public URL to access the file"
+msgstr "Публічна URL-адреса для доступу до файлу"
+
+msgid "Storage"
+msgstr "Сховище"
+
+msgid "Storage backend used"
+msgstr "Використане сховище"
+
+msgid "Media type"
+msgstr "Тип медіа"
+
+msgid "Type of media file"
+msgstr "Тип медіа-файлу"
+
+msgid "Processing status"
+msgstr "Статус обробки"
+
+msgid "MIME type"
+msgstr "MIME-тип"
+
+msgid "MIME type of the file (e.g., image/jpeg)"
+msgstr "MIME-тип файлу (напр., image/jpeg)"
+
+msgid "File size"
+msgstr "Розмір файлу"
+
+msgid "File size in bytes"
+msgstr "Розмір файлу в байтах"
+
+msgid "Width"
+msgstr "Ширина"
+
+msgid "Width in pixels (for images/videos)"
+msgstr "Ширина в пікселях (для зображень/відео)"
+
+msgid "Height"
+msgstr "Висота"
+
+msgid "Height in pixels (for images/videos)"
+msgstr "Висота в пікселях (для зображень/відео)"
+
+msgid "Duration"
+msgstr "Тривалість"
+
+msgid "Duration in seconds (for videos/audio)"
+msgstr "Тривалість у секундах (для відео/аудіо)"
+
+msgid "Thumbnail URL"
+msgstr "URL мініатюри"
+
+msgid "URL to thumbnail image"
+msgstr "URL мініатюри зображення"
+
+msgid "Alt text"
+msgstr "Альтернативний текст"
+
+msgid "Alt text for accessibility (required for images)"
+msgstr "Альтернативний текст для доступності (обов'язковий для зображень)"
+
+msgid "Title"
+msgstr "Назва"
+
+msgid "Title for SEO purposes"
+msgstr "Назва для SEO"
+
+msgid "Caption"
+msgstr "Підпис"
+
+msgid "Caption or description of the media"
+msgstr "Підпис або опис медіа"
+
+msgid "Whether media is publicly accessible without authentication"
+msgstr "Чи доступне медіа публічно без автентифікації"
+
+msgid "Additional file metadata (EXIF, custom fields, etc.)"
+msgstr "Додаткові метадані файлу (EXIF, користувацькі поля тощо)"
+
+msgid "Number of times this media is used in content"
+msgstr "Кількість використань цього медіа у контенті"
+
+msgid "Last used at"
+msgstr "Останнє використання о"
+
+msgid "When this media was last used in content"
+msgstr "Коли це медіа востаннє використовувалось у контенті"
+
+msgid "Media"
+msgstr "Медіа"
+
+msgid "Basic theme information"
+msgstr "Основна інформація про тему"
+
+msgid "Colors"
+msgstr "Кольори"
+
+msgid ""
+"Theme color settings (hex format). Use the color swatches or type hex values."
+msgstr "Налаштування кольорів теми (формат hex). Використовуйте палітру кольорів або введіть значення hex."
+
+msgid "Typography"
+msgstr "Типографіка"
+
+msgid "Layout & Display"
+msgstr "Макет та відображення"
+
+msgid ""
+"Layout settings. Use the \"settings\" JSON field for: \"layout\" (wide/"
+"boxed), \"grid_columns\" (2/3/4/6), \"border_radius\" (0-24), \"dark_mode\" "
+"(true/false)"
+msgstr "Налаштування макету. Використовуйте JSON-поле \"settings\" для: \"layout\" (wide/boxed), \"grid_columns\" (2/3/4/6), \"border_radius\" (0-24), \"dark_mode\" (true/false)"
+
+msgid "Advanced"
+msgstr "Розширені"
+
+msgid "Advanced customization options"
+msgstr "Розширені параметри налаштування"
+
+msgid "Layout"
+msgstr "Макет"
+
+msgid "Color Preview"
+msgstr "Попередній перегляд кольорів"
+
+msgid "Set as default theme"
+msgstr "Встановити як тему за замовчуванням"
+
+msgid "Please select only one theme to set as default."
+msgstr "Оберіть лише одну тему для встановлення за замовчуванням."
+
+#, python-format
+msgid "%(name)s has been set as default."
+msgstr "%(name)s встановлено за замовчуванням."
+
+msgid "Activate selected themes"
+msgstr "Активувати обрані теми"
+
+#, python-format
+msgid "%(count)d theme(s) have been activated."
+msgstr "%(count)d тему(теми) активовано."
+
+msgid "Deactivate selected themes"
+msgstr "Деактивувати обрані теми"
+
+#, python-format
+msgid "%(count)d theme(s) have been deactivated."
+msgstr "%(count)d тему(теми) деактивовано."
+
+msgid "Basic menu information"
+msgstr "Основна інформація про меню"
+
+msgid "Publication"
+msgstr "Публікація"
+
+msgid "Control menu visibility and default status"
+msgstr "Керування видимістю та статусом за замовчуванням меню"
+
+msgid "Styling"
+msgstr "Стилізація"
+
+msgid "Published"
+msgstr "Опубліковано"
+
+msgid "Categories"
+msgstr "Категорії"
+
+msgid "Publish selected menus"
+msgstr "Опублікувати обрані меню"
+
+#, python-format
+msgid "%(count)d menu(s) have been published."
+msgstr "%(count)d меню опубліковано."
+
+msgid "Unpublish selected menus"
+msgstr "Зняти з публікації обрані меню"
+
+#, python-format
+msgid "%(count)d menu(s) have been unpublished."
+msgstr "%(count)d меню знято з публікації."
+
+msgid "Set as default menu"
+msgstr "Встановити як меню за замовчуванням"
+
+msgid "Please select only one menu to set as default."
+msgstr "Оберіть лише одне меню для встановлення за замовчуванням."
+
+msgid "Basic category information"
+msgstr "Основна інформація про категорію"
+
+msgid "Hierarchy"
+msgstr "Ієрархія"
+
+msgid "Optional parent category for nested structure"
+msgstr "Необов'язкова батьківська категорія для вкладеної структури"
+
+msgid "Display"
+msgstr "Відображення"
+
+msgid "Products"
+msgstr "Продукти"
+
+msgid "Activate selected categories"
+msgstr "Активувати обрані категорії"
+
+#, python-format
+msgid "%(count)d category(ies) have been activated."
+msgstr "%(count)d категорію(ій) активовано."
+
+msgid "Deactivate selected categories"
+msgstr "Деактивувати обрані категорії"
+
+#, python-format
+msgid "%(count)d category(ies) have been deactivated."
+msgstr "%(count)d категорію(ій) деактивовано."
+
+msgid "Basic product information"
+msgstr "Основна інформація про продукт"
+
+msgid "Pricing"
+msgstr "Ціноутворення"
+
+msgid "Images"
+msgstr "Зображення"
+
+msgid "Availability & Status"
+msgstr "Наявність та статус"
+
+msgid "Attributes"
+msgstr "Атрибути"
+
+msgid "Price"
+msgstr "Ціна"
+
+msgid "Available"
+msgstr "Доступний"
+
+msgid "Out of Stock"
+msgstr "Немає в наявності"
+
+msgid "Availability"
+msgstr "Наявність"
+
+msgid "Mark as available"
+msgstr "Позначити як доступний"
+
+#, python-format
+msgid "%(count)d product(s) have been marked as available."
+msgstr "%(count)d продукт(ів) позначено як доступні."
+
+msgid "Mark as out of stock"
+msgstr "Позначити як відсутній"
+
+#, python-format
+msgid "%(count)d product(s) have been marked as out of stock."
+msgstr "%(count)d продукт(ів) позначено як відсутні."
+
+msgid "Toggle featured status"
+msgstr "Перемкнути статус рекомендованого"
+
+#, python-format
+msgid "Featured status has been toggled for %(count)d product(s)."
+msgstr "Статус рекомендованого змінено для %(count)d продукт(ів)."
+
+msgid "Toggle chef recommended"
+msgstr "Перемкнути рекомендацію шефа"
+
+#, python-format
+msgid "Chef recommended status has been toggled for %(count)d product(s)."
+msgstr "Статус рекомендації шефа змінено для %(count)d продукт(ів)."
+
+msgid "🤖 AI: Generate descriptions"
+msgstr "🤖 AI: Згенерувати описи"
+
+msgid "AI content generation is not available on your plan. Please upgrade."
+msgstr "Генерація контенту ШІ недоступна на вашому плані. Оновіть підписку."
+
+#, python-format
+msgid "AI credit limit reached. %d product(s) generated before limit."
+msgstr "Ліміт кредитів ШІ вичерпано. %d продукт(ів) згенеровано до ліміту."
+
+#, python-format
+msgid "AI descriptions generated for %(success)d product(s)."
+msgstr "ШІ-описи згенеровано для %(success)d продукт(ів)."
+
+#, python-format
+msgid " %(errors)d failed."
+msgstr " %(errors)d з помилками."
+
+msgid "Basic allergen information"
+msgstr "Основна інформація про алерген"
+
+msgid "Code"
+msgstr "Код"
+
+msgid "Icon"
+msgstr "Іконка"
+
+msgid "Activate selected allergens"
+msgstr "Активувати обрані алергени"
+
+#, python-format
+msgid "%(count)d allergen(s) have been activated."
+msgstr "%(count)d алерген(ів) активовано."
+
+msgid "Deactivate selected allergens"
+msgstr "Деактивувати обрані алергени"
+
+#, python-format
+msgid "%(count)d allergen(s) have been deactivated."
+msgstr "%(count)d алерген(ів) деактивовано."
+
+msgid "Pricing & Availability"
+msgstr "Ціноутворення та наявність"
+
+msgid "Pricing & Behavior"
+msgstr "Ціноутворення та поведінка"
+
+msgid "Severity"
+msgstr "Серйозність"
+
+msgid "Serving Information"
+msgstr "Інформація про порцію"
+
+msgid "Energy"
+msgstr "Енергія"
+
+msgid "Macronutrients"
+msgstr "Макроелементи"
+
+msgid "Micronutrients"
+msgstr "Мікроелементи"
+
+msgid "Vitamins"
+msgstr "Вітаміни"
+
+msgid "Custom Nutrients"
+msgstr "Користувацькі поживні речовини"
+
+msgid "Macros"
+msgstr "Макроси"
+
+msgid "Left"
+msgstr "Ліворуч"
+
+msgid "Center"
+msgstr "Центр"
+
+msgid "Right"
+msgstr "Праворуч"
+
+msgid "Organization this theme belongs to"
+msgstr "Організація, якій належить ця тема"
+
+msgid "Display name of the theme"
+msgstr "Відображувана назва теми"
+
+msgid "Optional description of the theme"
+msgstr "Необов'язковий опис теми"
+
+msgid "Primary color"
+msgstr "Основний колір"
+
+msgid "Primary brand color (hex format, e.g., #3B82F6)"
+msgstr "Основний колір бренду (формат hex, напр., #3B82F6)"
+
+msgid "Secondary color"
+msgstr "Додатковий колір"
+
+msgid "Secondary accent color (hex format)"
+msgstr "Додатковий акцентний колір (формат hex)"
+
+msgid "Background color"
+msgstr "Колір фону"
+
+msgid "Page background color (hex format)"
+msgstr "Колір фону сторінки (формат hex)"
+
+msgid "Text color"
+msgstr "Колір тексту"
+
+msgid "Primary text color (hex format)"
+msgstr "Основний колір тексту (формат hex)"
+
+msgid "Accent color"
+msgstr "Акцентний колір"
+
+msgid "Optional accent color for highlights (hex format)"
+msgstr "Необов'язковий акцентний колір для виділення (формат hex)"
+
+msgid "Font family"
+msgstr "Шрифт"
+
+msgid "Primary font family (e.g., Inter, Roboto, Open Sans)"
+msgstr "Основна сім'я шрифтів (напр., Inter, Roboto, Open Sans)"
+
+msgid "Heading font family"
+msgstr "Шрифт заголовків"
+
+msgid "Optional separate font for headings"
+msgstr "Необов'язковий окремий шрифт для заголовків"
+
+msgid "Logo position"
+msgstr "Позиція логотипу"
+
+msgid "Position of logo in menu header"
+msgstr "Позиція логотипу в заголовку меню"
+
+msgid "Custom CSS"
+msgstr "Користувацький CSS"
+
+msgid "Custom CSS for advanced theme styling"
+msgstr "Користувацький CSS для розширеної стилізації теми"
+
+msgid "Additional theme settings (JSON)"
+msgstr "Додаткові налаштування теми (JSON)"
+
+msgid "Is default"
+msgstr "За замовчуванням"
+
+msgid "Whether this is the default theme for the organization"
+msgstr "Чи є ця тема темою за замовчуванням для організації"
+
+msgid "Whether the theme is available for use"
+msgstr "Чи доступна тема для використання"
+
+msgid "Theme"
+msgstr "Тема"
+
+msgid "Themes"
+msgstr "Теми"
+
+msgid "Organization this menu belongs to"
+msgstr "Організація, якій належить це меню"
+
+msgid "Display name of the menu"
+msgstr "Відображувана назва меню"
+
+msgid "Optional description of the menu"
+msgstr "Необов'язковий опис меню"
+
+msgid "Is published"
+msgstr "Опубліковано"
+
+msgid "Whether the menu is visible to customers"
+msgstr "Чи видиме меню для клієнтів"
+
+msgid "Published at"
+msgstr "Опубліковано о"
+
+msgid "Timestamp when the menu was published"
+msgstr "Час публікації меню"
+
+msgid "Whether this is the default menu for the organization"
+msgstr "Чи є це меню за замовчуванням для організації"
+
+msgid "Optional theme for styling customization"
+msgstr "Необов'язкова тема для налаштування стилів"
+
+msgid "Additional menu settings (JSON)"
+msgstr "Додаткові налаштування меню (JSON)"
+
+msgid "Display order for menus (lower numbers appear first)"
+msgstr "Порядок відображення меню (менші числа першими)"
+
+msgid "Menu"
+msgstr "Меню"
+
+msgid "Menus"
+msgstr "Меню"
+
+msgid "Organization this category belongs to"
+msgstr "Організація, якій належить ця категорія"
+
+msgid "Menu this category belongs to"
+msgstr "Меню, якому належить ця категорія"
+
+msgid "Parent category"
+msgstr "Батьківська категорія"
+
+msgid "Parent category for nested structure (null for root categories)"
+msgstr "Батьківська категорія для вкладеної структури (null для кореневих)"
+
+msgid "Display name of the category"
+msgstr "Відображувана назва категорії"
+
+msgid "URL-friendly identifier (unique within menu)"
+msgstr "URL-сумісний ідентифікатор (унікальний в меню)"
+
+msgid "Optional description of the category"
+msgstr "Необов'язковий опис категорії"
+
+msgid "Image URL"
+msgstr "URL зображення"
+
+msgid "URL to category image"
+msgstr "URL зображення категорії"
+
+msgid "Phosphor icon class (e.g., ph-fill ph-knife, ph-fill ph-hamburger)"
+msgstr "CSS клас іконки Phosphor (напр., ph-fill ph-knife, ph-fill ph-hamburger)"
+
+msgid "Whether the category is visible/active"
+msgstr "Чи видима/активна категорія"
+
+msgid "Display order within parent category/menu (lower numbers appear first)"
+msgstr "Порядок відображення в батьківській категорії/меню (менші числа першими)"
+
+msgid "Organization this product belongs to"
+msgstr "Організація, якій належить цей продукт"
+
+msgid "Category this product belongs to"
+msgstr "Категорія, якій належить цей продукт"
+
+msgid "Display name of the product"
+msgstr "Відображувана назва продукту"
+
+msgid "URL-friendly identifier (unique within category)"
+msgstr "URL-сумісний ідентифікатор (унікальний в категорії)"
+
+msgid "Full product description"
+msgstr "Повний опис продукту"
+
+msgid "Short description"
+msgstr "Короткий опис"
+
+msgid "Brief description for listings (max 100 chars)"
+msgstr "Короткий опис для списків (макс. 100 символів)"
+
+msgid "Base price"
+msgstr "Базова ціна"
+
+msgid "Base price in the default currency"
+msgstr "Базова ціна в валюті за замовчуванням"
+
+msgid "Currency"
+msgstr "Валюта"
+
+msgid "Currency code (e.g., TRY, USD, EUR)"
+msgstr "Код валюти (напр., TRY, USD, EUR)"
+
+msgid "Main product image URL"
+msgstr "URL основного зображення продукту"
+
+msgid "Gallery"
+msgstr "Галерея"
+
+msgid "Array of additional image URLs"
+msgstr "Масив додаткових URL зображень"
+
+msgid "Whether the product is visible on the menu"
+msgstr "Чи видимий продукт у меню"
+
+msgid "Is available"
+msgstr "Доступний"
+
+msgid "Whether the product is in stock/available for ordering"
+msgstr "Чи є продукт в наявності/доступний для замовлення"
+
+msgid "Is featured"
+msgstr "Рекомендований"
+
+msgid "Whether to highlight this product on the menu"
+msgstr "Чи виділяти цей продукт у меню"
+
+msgid "Is chef recommended"
+msgstr "Рекомендація шефа"
+
+msgid "Special chef recommendation flag"
+msgstr "Позначка спеціальної рекомендації шеф-кухаря"
+
+msgid "Preparation time"
+msgstr "Час приготування"
+
+msgid "Calories"
+msgstr "Калорії"
+
+msgid "Calorie count (kcal)"
+msgstr "Кількість калорій (ккал)"
+
+msgid "Spicy level"
+msgstr "Рівень гостроти"
+
+msgid "Spiciness level 0-5 (0=not spicy, 5=very spicy)"
+msgstr "Рівень гостроти 0-5 (0=не гостре, 5=дуже гостре)"
+
+msgid "Discount percentage"
+msgstr "Відсоток знижки"
+
+msgid "Discount percentage 0-100 (e.g., 10 means 10% off)"
+msgstr "Відсоток знижки 0-100 (напр., 10 означає знижку 10%)"
+
+msgid "Average customer rating 0.0-5.0"
+msgstr "Середній рейтинг клієнтів 0.0-5.0"
+
+msgid "Number of customer reviews/ratings"
+msgstr "Кількість відгуків/оцінок клієнтів"
+
+msgid "Tags"
+msgstr "Теги"
+
+msgid "Array of tags for filtering (e.g., vegetarian, vegan, gluten-free)"
+msgstr "Масив тегів для фільтрації (напр., vegetarian, vegan, gluten-free)"
+
+msgid "Display order within category (lower numbers appear first)"
+msgstr "Порядок відображення в категорії (менші числа першими)"
+
+msgid "Not spicy"
+msgstr "Не гостре"
+
+msgid "Product this variant belongs to"
+msgstr "Продукт, якому належить цей варіант"
+
+msgid "Display name of the variant (e.g., Small, Large, Regular)"
+msgstr "Відображувана назва варіанту (напр., Малий, Великий, Звичайний)"
+
+msgid "Price for this variant"
+msgstr "Ціна цього варіанту"
+
+msgid "Whether this is the default selected variant"
+msgstr "Чи обраний цей варіант за замовчуванням"
+
+msgid "Whether the variant is in stock/available"
+msgstr "Чи є варіант в наявності/доступний"
+
+msgid "Display order within the product (lower numbers appear first)"
+msgstr "Порядок відображення в продукті (менші числа першими)"
+
+msgid "Product Variant"
+msgstr "Варіант продукту"
+
+msgid "Product Variants"
+msgstr "Варіанти продуктів"
+
+msgid "Product this modifier belongs to"
+msgstr "Продукт, якому належить цей модифікатор"
+
+msgid "Display name of the modifier (e.g., Extra Cheese, No Onion)"
+msgstr "Відображувана назва модифікатора (напр., Додатковий сир, Без цибулі)"
+
+msgid "Additional cost for this modifier (can be 0 for free mods)"
+msgstr "Додаткова вартість модифікатора (може бути 0 для безкоштовних)"
+
+msgid "Whether this modifier is pre-selected by default"
+msgstr "Чи попередньо обраний цей модифікатор за замовчуванням"
+
+msgid "Is required"
+msgstr "Обов'язковий"
+
+msgid "Whether the customer must select this modifier"
+msgstr "Чи повинен клієнт обрати цей модифікатор"
+
+msgid "Max quantity"
+msgstr "Максимальна кількість"
+
+msgid "Maximum times this modifier can be added to the order"
+msgstr "Максимальна кількість разів, коли модифікатор може бути доданий до замовлення"
+
+msgid "Product Modifier"
+msgstr "Модифікатор продукту"
+
+msgid "Product Modifiers"
+msgstr "Модифікатори продуктів"
+
+msgid "Free"
+msgstr "Безкоштовно"
+
+msgid "Contains"
+msgstr "Містить"
+
+msgid "May Contain"
+msgstr "Може містити"
+
+msgid "Traces"
+msgstr "Сліди"
+
+msgid "Display name of the allergen (e.g., Gluten, Nuts, Dairy)"
+msgstr "Відображувана назва алергену (напр., Глютен, Горіхи, Молочне)"
+
+msgid "URL-friendly identifier (globally unique)"
+msgstr "URL-сумісний ідентифікатор (глобально унікальний)"
+
+msgid "Short code for the allergen (e.g., GLU, NUT, DAI)"
+msgstr "Короткий код алергену (напр., GLU, NUT, DAI)"
+
+msgid "Icon URL"
+msgstr "URL іконки"
+
+msgid "URL to allergen icon/image"
+msgstr "URL іконки/зображення алергену"
+
+msgid "Detailed description of the allergen and its sources"
+msgstr "Детальний опис алергену та його джерел"
+
+msgid "Display order for consistent listing (lower numbers appear first)"
+msgstr "Порядок відображення для узгодженого списку (менші числа першими)"
+
+msgid "Whether the allergen is available for selection"
+msgstr "Чи доступний алерген для вибору"
+
+msgid "Allergens"
+msgstr "Алергени"
+
+msgid "Product this allergen association belongs to"
+msgstr "Продукт, якому належить цей зв'язок з алергеном"
+
+msgid "The allergen associated with this product"
+msgstr "Алерген, пов'язаний з цим продуктом"
+
+msgid "Level of allergen presence (contains/may_contain/traces)"
+msgstr "Рівень наявності алергену (contains/may_contain/traces)"
+
+msgid "Optional additional notes about this allergen in the product"
+msgstr "Необов'язкові додаткові нотатки про цей алерген у продукті"
+
+msgid "Product Allergen"
+msgstr "Алерген продукту"
+
+msgid "Product Allergens"
+msgstr "Алергени продуктів"
+
+msgid "Product this nutrition info belongs to"
+msgstr "Продукт, якому належить ця інформація про харчування"
+
+msgid "Serving size"
+msgstr "Розмір порції"
+
+msgid ""
+"Description of serving size (e.g., \"100g\", \"1 portion\", \"1 slice\")"
+msgstr "Опис розміру порції (напр., \"100г\", \"1 порція\", \"1 шматок\")"
+
+msgid "Serving size (grams)"
+msgstr "Розмір порції (грами)"
+
+msgid "Numeric serving size in grams for calculations"
+msgstr "Числовий розмір порції в грамах для розрахунків"
+
+msgid "Energy in kcal per serving"
+msgstr "Енергія в ккал на порцію"
+
+msgid "Protein"
+msgstr "Білки"
+
+msgid "Protein in grams per serving"
+msgstr "Білки в грамах на порцію"
+
+msgid "Carbohydrates"
+msgstr "Вуглеводи"
+
+msgid "Total carbohydrates in grams per serving"
+msgstr "Загальні вуглеводи в грамах на порцію"
+
+msgid "Sugar"
+msgstr "Цукор"
+
+msgid "Sugar content in grams per serving"
+msgstr "Вміст цукру в грамах на порцію"
+
+msgid "Fiber"
+msgstr "Клітковина"
+
+msgid "Dietary fiber in grams per serving"
+msgstr "Харчова клітковина в грамах на порцію"
+
+msgid "Fat"
+msgstr "Жири"
+
+msgid "Total fat in grams per serving"
+msgstr "Загальні жири в грамах на порцію"
+
+msgid "Saturated fat"
+msgstr "Насичені жири"
+
+msgid "Saturated fat in grams per serving"
+msgstr "Насичені жири в грамах на порцію"
+
+msgid "Trans fat"
+msgstr "Трансжири"
+
+msgid "Trans fat in grams per serving"
+msgstr "Трансжири в грамах на порцію"
+
+msgid "Cholesterol"
+msgstr "Холестерин"
+
+msgid "Cholesterol in mg per serving"
+msgstr "Холестерин в мг на порцію"
+
+msgid "Sodium"
+msgstr "Натрій"
+
+msgid "Sodium in mg per serving"
+msgstr "Натрій в мг на порцію"
+
+msgid "Potassium"
+msgstr "Калій"
+
+msgid "Potassium in mg per serving"
+msgstr "Калій в мг на порцію"
+
+msgid "Calcium"
+msgstr "Кальцій"
+
+msgid "Calcium in mg per serving"
+msgstr "Кальцій в мг на порцію"
+
+msgid "Iron"
+msgstr "Залізо"
+
+msgid "Iron in mg per serving"
+msgstr "Залізо в мг на порцію"
+
+msgid "Vitamin A"
+msgstr "Вітамін A"
+
+msgid "Vitamin A in IU or mcg per serving"
+msgstr "Вітамін A в МО або мкг на порцію"
+
+msgid "Vitamin C"
+msgstr "Вітамін C"
+
+msgid "Vitamin C in mg per serving"
+msgstr "Вітамін C в мг на порцію"
+
+msgid "Custom nutrients"
+msgstr "Користувацькі поживні речовини"
+
+msgid "Additional nutrients not covered by standard fields (JSON)"
+msgstr "Додаткові поживні речовини, не охоплені стандартними полями (JSON)"
+
+msgid "Nutrition Info"
+msgstr "Інформація про харчування"
+
+msgid "Menu not found"
+msgstr "Меню не знайдено"
+
+msgid "Product not found"
+msgstr "Продукт не знайдено"
+
+msgid "Number of menus using this theme"
+msgstr "Кількість меню, що використовують цю тему"
+
+msgid "A theme with this slug already exists."
+msgstr "Тема з таким slug вже існує."
+
+msgid "Number of categories in this menu"
+msgstr "Кількість категорій у цьому меню"
+
+msgid "Theme UUID to associate with this menu"
+msgstr "UUID теми для прив'язки до цього меню"
+
+msgid "A menu with this slug already exists."
+msgstr "Меню з таким slug вже існує."
+
+msgid "Theme not found."
+msgstr "Тему не знайдено."
+
+msgid "Number of products in this category"
+msgstr "Кількість продуктів у цій категорії"
+
+msgid "Menu UUID this category belongs to"
+msgstr "UUID меню, якому належить ця категорія"
+
+msgid "Parent category UUID for nested structure"
+msgstr "UUID батьківської категорії для вкладеної структури"
+
+msgid "Menu not found."
+msgstr "Меню не знайдено."
+
+msgid "Organization context required."
+msgstr "Потрібен контекст організації."
+
+msgid "Parent category not found."
+msgstr "Батьківську категорію не знайдено."
+
+msgid "Parent category must belong to the same menu."
+msgstr "Батьківська категорія повинна належати тому ж меню."
+
+msgid "A category with this slug already exists in this menu."
+msgstr "Категорія з таким slug вже існує в цьому меню."
+
+msgid "Cannot set category as its own parent."
+msgstr "Неможливо встановити категорію як власну батьківську."
+
+msgid "Allergen UUID"
+msgstr "UUID алергену"
+
+msgid "Category UUID this product belongs to"
+msgstr "UUID категорії, якій належить цей продукт"
+
+msgid "Category not found."
+msgstr "Категорію не знайдено."
+
+msgid "A product with this slug already exists in this category."
+msgstr "Продукт з таким slug вже існує в цій категорії."
+
+msgid "Theme set as default"
+msgstr "Тему встановлено за замовчуванням"
+
+msgid "Menu published"
+msgstr "Меню опубліковано"
+
+msgid "Menu unpublished"
+msgstr "Меню знято з публікації"
+
+msgid "Menu set as default"
+msgstr "Меню встановлено за замовчуванням"
+
+msgid "Notification Content"
+msgstr "Вміст сповіщення"
+
+msgid "Classification"
+msgstr "Класифікація"
+
+msgid "Timing"
+msgstr "Час"
+
+msgid "Data"
+msgstr "Дані"
+
+msgid "Mark selected notifications as read"
+msgstr "Позначити обрані сповіщення як прочитані"
+
+msgid "Mark selected notifications as sent"
+msgstr "Позначити обрані сповіщення як надіслані"
+
+msgid "Archive selected notifications"
+msgstr "Архівувати обрані сповіщення"
+
+msgid "Organization this notification belongs to"
+msgstr "Організація, якій належить це сповіщення"
+
+msgid "User who is the recipient of this notification"
+msgstr "Користувач-отримувач цього сповіщення"
+
+msgid "Notification type"
+msgstr "Тип сповіщення"
+
+msgid "Category of the notification"
+msgstr "Категорія сповіщення"
+
+msgid "Current delivery/read status of the notification"
+msgstr "Поточний статус доставки/читання сповіщення"
+
+msgid "Priority level for ordering and urgency"
+msgstr "Рівень пріоритету для порядку та терміновості"
+
+msgid "Delivery channel for the notification"
+msgstr "Канал доставки сповіщення"
+
+msgid "Short title or subject for the notification"
+msgstr "Короткий заголовок або тема сповіщення"
+
+msgid "Message"
+msgstr "Повідомлення"
+
+msgid "Full notification message content"
+msgstr "Повний текст сповіщення"
+
+msgid "Additional context data (order_id, urls, etc.)"
+msgstr "Додаткові контекстні дані (order_id, urls тощо)"
+
+msgid "Read at"
+msgstr "Прочитано о"
+
+msgid "When the notification was read/viewed by the user"
+msgstr "Коли сповіщення було прочитано/переглянуто користувачем"
+
+msgid "Sent at"
+msgstr "Надіслано о"
+
+msgid "When the notification was sent to the delivery channel"
+msgstr "Коли сповіщення було надіслано в канал доставки"
+
+msgid "Delivered at"
+msgstr "Доставлено о"
+
+msgid "When the notification was confirmed delivered"
+msgstr "Коли доставку сповіщення було підтверджено"
+
+msgid "Scheduled for"
+msgstr "Заплановано на"
+
+msgid "Optional scheduled delivery time (null for immediate)"
+msgstr "Необов'язковий запланований час доставки (null для негайної)"
+
+msgid "Optional expiration time after which notification is hidden"
+msgstr "Необов'язковий час закінчення, після якого сповіщення приховується"
+
+msgid "Action URL"
+msgstr "URL дії"
+
+msgid "Optional URL for click-through action"
+msgstr "Необов'язковий URL для дії при натисканні"
+
+msgid "Optional image URL for rich notifications"
+msgstr "Необов'язковий URL зображення для розширених сповіщень"
+
+msgid "Additional metadata for tracking and analytics"
+msgstr "Додаткові метадані для відстеження та аналітики"
+
+msgid "Notification"
+msgstr "Сповіщення"
+
+msgid "Notifications"
+msgstr "Сповіщення"
+
+msgid "Notification marked as read"
+msgstr "Сповіщення позначено як прочитане"
+
+msgid "Organization context required"
+msgstr "Потрібен контекст організації"
+
+msgid "All notifications marked as read"
+msgstr "Усі сповіщення позначено як прочитані"
+
+msgid "Notification archived"
+msgstr "Сповіщення заархівовано"
+
+msgid "Basic zone information"
+msgstr "Основна інформація про зону"
+
+msgid "Appearance"
+msgstr "Зовнішній вигляд"
+
+msgid "Visual identification for the zone"
+msgstr "Візуальна ідентифікація зони"
+
+msgid "Capacity & Characteristics"
+msgstr "Місткість та характеристики"
+
+msgid "Status & Order"
+msgstr "Статус та порядок"
+
+msgid "Color"
+msgstr "Колір"
+
+msgid "Tables"
+msgstr "Столики"
+
+msgid "Outdoor"
+msgstr "Відкритий простір"
+
+msgid "Smoking"
+msgstr "Для курців"
+
+msgid "Reservable"
+msgstr "Можна забронювати"
+
+msgid "Flags"
+msgstr "Позначки"
+
+msgid "Activate selected zones"
+msgstr "Активувати обрані зони"
+
+#, python-format
+msgid "%(count)d zone(s) have been activated."
+msgstr "%(count)d зону(зон) активовано."
+
+msgid "Deactivate selected zones"
+msgstr "Деактивувати обрані зони"
+
+#, python-format
+msgid "%(count)d zone(s) have been deactivated."
+msgstr "%(count)d зону(зон) деактивовано."
+
+msgid "Basic table information"
+msgstr "Основна інформація про столик"
+
+msgid "Capacity"
+msgstr "Місткість"
+
+msgid "Floor Plan"
+msgstr "План приміщення"
+
+msgid "Position and shape for floor plan visualization"
+msgstr "Позиція та форма для візуалізації плану приміщення"
+
+msgid "VIP"
+msgstr "VIP"
+
+msgid "Set as available"
+msgstr "Встановити як доступний"
+
+#, python-format
+msgid "%(count)d table(s) have been set to available."
+msgstr "%(count)d столик(ів) встановлено як доступні."
+
+msgid "Set as occupied"
+msgstr "Встановити як зайнятий"
+
+#, python-format
+msgid "%(count)d table(s) have been set to occupied."
+msgstr "%(count)d столик(ів) встановлено як зайняті."
+
+msgid "Set as reserved"
+msgstr "Встановити як заброньований"
+
+#, python-format
+msgid "%(count)d table(s) have been set to reserved."
+msgstr "%(count)d столик(ів) встановлено як заброньовані."
+
+msgid "Activate selected tables"
+msgstr "Активувати обрані столики"
+
+#, python-format
+msgid "%(count)d table(s) have been activated."
+msgstr "%(count)d столик(ів) активовано."
+
+msgid "Deactivate selected tables"
+msgstr "Деактивувати обрані столики"
+
+#, python-format
+msgid "%(count)d table(s) have been deactivated."
+msgstr "%(count)d столик(ів) деактивовано."
+
+msgid "Basic QR code information"
+msgstr "Основна інформація про QR-код"
+
+msgid "Type & Links"
+msgstr "Тип та посилання"
+
+msgid "QR code type and linked entities"
+msgstr "Тип QR-коду та пов'язані сутності"
+
+msgid "Analytics"
+msgstr "Аналітика"
+
+msgid "QR code scan statistics (read-only)"
+msgstr "Статистика сканувань QR-коду (тільки читання)"
+
+msgid "Settings & Metadata"
+msgstr "Налаштування та метадані"
+
+msgid "Scans (Total/Unique)"
+msgstr "Сканування (Всього/Унікальних)"
+
+msgid "Activate selected QR codes"
+msgstr "Активувати обрані QR-коди"
+
+#, python-format
+msgid "%(count)d QR code(s) have been activated."
+msgstr "%(count)d QR-код(ів) активовано."
+
+msgid "Deactivate selected QR codes"
+msgstr "Деактивувати обрані QR-коди"
+
+#, python-format
+msgid "%(count)d QR code(s) have been deactivated."
+msgstr "%(count)d QR-код(ів) деактивовано."
+
+msgid "Network"
+msgstr "Мережа"
+
+msgid "Tracking"
+msgstr "Відстеження"
+
+msgid "Unknown"
+msgstr "Невідомо"
+
+msgid "Device"
+msgstr "Пристрій"
+
+msgid "Order identification"
+msgstr "Ідентифікація замовлення"
+
+msgid "Customer & Table"
+msgstr "Клієнт та столик"
+
+msgid "Financial"
+msgstr "Фінансове"
+
+msgid "Delivery"
+msgstr "Доставка"
+
+msgid "Staff"
+msgstr "Персонал"
+
+msgid "Workflow Timestamps"
+msgstr "Часові мітки процесу"
+
+msgid "Total"
+msgstr "Разом"
+
+msgid "Items"
+msgstr "Позиції"
+
+msgid "Confirm selected orders"
+msgstr "Підтвердити обрані замовлення"
+
+#, python-format
+msgid "%(count)d order(s) have been confirmed."
+msgstr "%(count)d замовлення(нь) підтверджено."
+
+msgid "Start preparing selected orders"
+msgstr "Почати приготування обраних замовлень"
+
+#, python-format
+msgid "%(count)d order(s) have started preparation."
+msgstr "%(count)d замовлення(нь) почали готуватися."
+
+msgid "Mark selected orders as ready"
+msgstr "Позначити обрані замовлення як готові"
+
+#, python-format
+msgid "%(count)d order(s) have been marked as ready."
+msgstr "%(count)d замовлення(нь) позначено як готові."
+
+msgid "Mark selected orders as completed"
+msgstr "Позначити обрані замовлення як завершені"
+
+#, python-format
+msgid "%(count)d order(s) have been completed."
+msgstr "%(count)d замовлення(нь) завершено."
+
+msgid "Cancel selected orders"
+msgstr "Скасувати обрані замовлення"
+
+#, python-format
+msgid "%(count)d order(s) have been cancelled."
+msgstr "%(count)d замовлення(нь) скасовано."
+
+msgid "Quantity & Pricing"
+msgstr "Кількість та ціноутворення"
+
+msgid "Modifiers & Notes"
+msgstr "Модифікатори та нотатки"
+
+msgid "Gift"
+msgstr "Подарунок"
+
+msgid "Start preparing selected items"
+msgstr "Почати приготування обраних позицій"
+
+#, python-format
+msgid "%(count)d item(s) have started preparation."
+msgstr "%(count)d позицію(ій) почали готувати."
+
+msgid "Mark selected items as ready"
+msgstr "Позначити обрані позиції як готові"
+
+#, python-format
+msgid "%(count)d item(s) have been marked as ready."
+msgstr "%(count)d позицію(ій) позначено як готові."
+
+msgid "Mark selected items as delivered"
+msgstr "Позначити обрані позиції як доставлені"
+
+#, python-format
+msgid "%(count)d item(s) have been marked as delivered."
+msgstr "%(count)d позицію(ій) позначено як доставлені."
+
+msgid "Cancel selected items"
+msgstr "Скасувати обрані позиції"
+
+#, python-format
+msgid "%(count)d item(s) have been cancelled."
+msgstr "%(count)d позицію(ій) скасовано."
+
+msgid "Request Details"
+msgstr "Деталі запиту"
+
+msgid "Assignment"
+msgstr "Призначення"
+
+msgid "Urgent"
+msgstr "Терміново"
+
+msgid "High"
+msgstr "Високий"
+
+msgid "Very Low"
+msgstr "Дуже низький"
+
+msgid "sec"
+msgstr "сек"
+
+msgid "min"
+msgstr "хв"
+
+msgid "hr"
+msgstr "год"
+
+msgid "Response Time"
+msgstr "Час відповіді"
+
+msgid "Acknowledge selected requests"
+msgstr "Підтвердити отримання обраних запитів"
+
+#, python-format
+msgid "%(count)d request(s) have been acknowledged."
+msgstr "%(count)d запит(ів) підтверджено."
+
+msgid "Complete selected requests"
+msgstr "Завершити обрані запити"
+
+#, python-format
+msgid "%(count)d request(s) have been completed."
+msgstr "%(count)d запит(ів) завершено."
+
+msgid "Cancel selected requests"
+msgstr "Скасувати обрані запити"
+
+#, python-format
+msgid "%(count)d request(s) have been cancelled."
+msgstr "%(count)d запит(ів) скасовано."
+
+msgid "Online"
+msgstr "Онлайн"
+
+msgid "Buy X Get Y"
+msgstr "Купи X — отримай Y"
+
+msgid "Loyalty"
+msgstr "Лояльність"
+
+msgid "Happy Hour"
+msgstr "Щаслива година"
+
+msgid "Full Refund"
+msgstr "Повне повернення"
+
+msgid "Partial Refund"
+msgstr "Часткове повернення"
+
+msgid "Item Refund"
+msgstr "Повернення товару"
+
+msgid "Processed"
+msgstr "Оброблено"
+
+msgid "Rejected"
+msgstr "Відхилено"
+
+msgid "Confirmed"
+msgstr "Підтверджено"
+
+msgid "Seated"
+msgstr "Посаджено"
+
+msgid "No Show"
+msgstr "Не з'явився"
+
+msgid "Organization this zone belongs to"
+msgstr "Організація, якій належить ця зона"
+
+msgid "Branch this zone belongs to (optional for single-location)"
+msgstr "Філія, якій належить ця зона (необов'язково для однієї локації)"
+
+msgid "Display name of the zone (e.g., Garden, VIP Section)"
+msgstr "Відображувана назва зони (напр., Сад, VIP секція)"
+
+msgid "Optional description of the zone and its characteristics"
+msgstr "Необов'язковий опис зони та її характеристик"
+
+msgid "Hex color code for visual identification (e.g., #3B82F6)"
+msgstr "Hex-код кольору для візуальної ідентифікації (напр., #3B82F6)"
+
+msgid "Icon name or URL for zone representation in UI"
+msgstr "Назва іконки або URL для представлення зони в інтерфейсі"
+
+msgid "Maximum number of guests the zone can accommodate"
+msgstr "Максимальна кількість гостей, яких може вмістити зона"
+
+msgid "Whether the zone is available for seating"
+msgstr "Чи доступна зона для розміщення"
+
+msgid "Is smoking allowed"
+msgstr "Дозволено курити"
+
+msgid "Whether smoking is permitted in this zone"
+msgstr "Чи дозволено курити в цій зоні"
+
+msgid "Is outdoor"
+msgstr "Відкритий простір"
+
+msgid "Whether the zone is located outdoors"
+msgstr "Чи розташована зона на вулиці"
+
+msgid "Is reservable"
+msgstr "Можна забронювати"
+
+msgid "Whether tables in this zone can be reserved"
+msgstr "Чи можна бронювати столики в цій зоні"
+
+msgid "Display order for zones (lower numbers appear first)"
+msgstr "Порядок відображення зон (менші числа першими)"
+
+msgid "Zone-specific settings (JSON)"
+msgstr "Налаштування зони (JSON)"
+
+msgid "Zone"
+msgstr "Зона"
+
+msgid "Zones"
+msgstr "Зони"
+
+msgid "Organization this table belongs to"
+msgstr "Організація, якій належить цей столик"
+
+msgid "Zone/section this table belongs to"
+msgstr "Зона/секція, якій належить цей столик"
+
+msgid "Branch this table belongs to (optional for single-location)"
+msgstr "Філія, якій належить цей столик (необов'язково для однієї локації)"
+
+msgid "Display name/number of the table (e.g., \"Table 1\", \"A-12\")"
+msgstr "Відображувана назва/номер столу (напр., \"Table 1\", \"A-12\")"
+
+msgid "Number"
+msgstr "Номер"
+
+msgid "Numeric table number for ordering and quick reference"
+msgstr "Числовий номер столика для порядку та швидкого доступу"
+
+msgid "Maximum number of guests the table can seat"
+msgstr "Максимальна кількість гостей, яких може вмістити столик"
+
+msgid "Minimum capacity"
+msgstr "Мінімальна місткість"
+
+msgid "Minimum number of guests required for reservation"
+msgstr "Мінімальна кількість гостей для бронювання"
+
+msgid "Current table status (available, occupied, reserved)"
+msgstr "Поточний статус столика (доступний, зайнятий, заброньований)"
+
+msgid ""
+"Whether the table is available for use (can be disabled for maintenance)"
+msgstr "Чи доступний стіл для використання (можна вимкнути для обслуговування)"
+
+msgid "Is VIP"
+msgstr "VIP"
+
+msgid "Whether this is a VIP/premium table"
+msgstr "Чи є цей столик VIP/преміальним"
+
+msgid "Position X"
+msgstr "Позиція X"
+
+msgid "X coordinate for floor plan visualization"
+msgstr "Координата X для візуалізації плану"
+
+msgid "Position Y"
+msgstr "Позиція Y"
+
+msgid "Y coordinate for floor plan visualization"
+msgstr "Координата Y для візуалізації плану"
+
+msgid "Shape"
+msgstr "Форма"
+
+msgid "Table shape for visualization (round, square, rectangle)"
+msgstr "Форма столика для візуалізації (круглий, квадратний, прямокутний)"
+
+msgid "Display order within the zone (lower numbers appear first)"
+msgstr "Порядок відображення в зоні (менші числа першими)"
+
+msgid ""
+"Staff notes about the table (e.g., \"near window\", \"wheelchair "
+"accessible\")"
+msgstr "Нотатки персоналу про стіл (напр., \"біля вікна\", \"доступний для інвалідного візка\")"
+
+msgid "Table-specific settings (JSON)"
+msgstr "Налаштування столика (JSON)"
+
+msgid "Table"
+msgstr "Столик"
+
+msgid "Organization this QR code belongs to"
+msgstr "Організація, якій належить цей QR-код"
+
+msgid "Branch this QR code belongs to (optional for single-location)"
+msgstr "Філія, якій належить цей QR-код (необов'язково для однієї локації)"
+
+msgid "Menu this QR code links to (for MENU type)"
+msgstr "Меню, на яке посилається QR-код (для типу MENU)"
+
+msgid "Table this QR code is associated with (for TABLE type)"
+msgstr "Столик, з яким пов'язаний QR-код (для типу TABLE)"
+
+msgid "Type of QR code (MENU, TABLE, CAMPAIGN)"
+msgstr "Тип QR-коду (MENU, TABLE, CAMPAIGN)"
+
+msgid "Unique code/slug for the QR code URL (unique within organization)"
+msgstr "Унікальний код/slug для URL QR-коду (унікальний в організації)"
+
+msgid "Display name for the QR code"
+msgstr "Відображувана назва QR-коду"
+
+msgid "Optional description of the QR code purpose"
+msgstr "Необов'язковий опис призначення QR-коду"
+
+msgid "Short URL"
+msgstr "Коротка URL-адреса"
+
+msgid "Generated short URL for QR scanning"
+msgstr "Згенерована коротка URL-адреса для сканування QR"
+
+msgid "QR image URL"
+msgstr "URL зображення QR"
+
+msgid "URL to the generated QR code image"
+msgstr "URL згенерованого зображення QR-коду"
+
+msgid "Redirect URL"
+msgstr "URL переспрямування"
+
+msgid "Custom redirect URL (overrides default behavior)"
+msgstr "Користувацький URL переспрямування (перевизначає поведінку за замовчуванням)"
+
+msgid "Whether the QR code is active and scannable"
+msgstr "Чи активний та доступний для сканування QR-код"
+
+msgid "Optional expiration date for the QR code"
+msgstr "Необов'язкова дата закінчення терміну дії QR-коду"
+
+msgid "Scan count"
+msgstr "Кількість сканувань"
+
+msgid "Total number of scans (cached counter)"
+msgstr "Загальна кількість сканувань (кешований лічильник)"
+
+msgid "Unique scan count"
+msgstr "Кількість унікальних сканувань"
+
+msgid "Number of unique device scans (cached counter)"
+msgstr "Кількість унікальних сканувань пристроїв (кешований лічильник)"
+
+msgid "Last scanned at"
+msgstr "Останнє сканування о"
+
+msgid "Timestamp of the most recent scan"
+msgstr "Час останнього сканування"
+
+msgid "QR code-specific settings (JSON)"
+msgstr "Налаштування QR-коду (JSON)"
+
+msgid "Custom metadata (campaign info, tracking params, etc.)"
+msgstr "Користувацькі метадані (інформація кампанії, параметри відстеження тощо)"
+
+msgid "QR Codes"
+msgstr "QR-коди"
+
+msgid "QR code that was scanned"
+msgstr "Відсканований QR-код"
+
+msgid "Organization this scan belongs to (denormalized)"
+msgstr "Організація, якій належить це сканування (денормалізовано)"
+
+msgid "Scanned at"
+msgstr "Відскановано о"
+
+msgid "Timestamp when the scan occurred"
+msgstr "Час сканування"
+
+msgid "IP address of the scanner"
+msgstr "IP-адреса сканера"
+
+msgid "Full user agent string"
+msgstr "Повний рядок user agent"
+
+msgid "Session ID"
+msgstr "ID сесії"
+
+msgid "Session identifier for tracking unique visits"
+msgstr "Ідентифікатор сесії для відстеження унікальних відвідувань"
+
+msgid "Device type"
+msgstr "Тип пристрою"
+
+msgid "Device type (mobile, tablet, desktop)"
+msgstr "Тип пристрою (мобільний, планшет, десктоп)"
+
+msgid "Browser"
+msgstr "Браузер"
+
+msgid "Browser name (e.g., Chrome, Safari, Firefox)"
+msgstr "Назва браузера (напр., Chrome, Safari, Firefox)"
+
+msgid "Operating system"
+msgstr "Операційна система"
+
+msgid "Operating system (e.g., iOS, Android, Windows)"
+msgstr "Операційна система (напр., iOS, Android, Windows)"
+
+msgid "Two-letter country code (ISO 3166-1 alpha-2)"
+msgstr "Двобуквений код країни (ISO 3166-1 alpha-2)"
+
+msgid "City from IP geolocation"
+msgstr "Місто за IP-геолокацією"
+
+msgid "Region"
+msgstr "Регіон"
+
+msgid "Region/state from IP geolocation"
+msgstr "Регіон/область за IP-геолокацією"
+
+msgid "Latitude coordinate from geolocation"
+msgstr "Координата широти за геолокацією"
+
+msgid "Longitude coordinate from geolocation"
+msgstr "Координата довготи за геолокацією"
+
+msgid "Referer"
+msgstr "Referer"
+
+msgid "HTTP referer header"
+msgstr "HTTP referer заголовок"
+
+msgid "Is unique"
+msgstr "Унікальний"
+
+msgid "Whether this was a unique visit (first from this device/session)"
+msgstr "Чи був це унікальний візит (перший з цього пристрою/сесії)"
+
+msgid "Customer who scanned (if logged in)"
+msgstr "Клієнт, що сканував (якщо увійшов)"
+
+msgid "Additional tracking data (UTM params, custom fields, etc.)"
+msgstr "Додаткові дані відстеження (UTM параметри, користувацькі поля тощо)"
+
+msgid "QR Scan"
+msgstr "Сканування QR"
+
+msgid "QR Scans"
+msgstr "Сканування QR"
+
+msgid "Organization this order belongs to"
+msgstr "Організація, якій належить це замовлення"
+
+msgid "Branch this order belongs to (optional for single-location)"
+msgstr "Філія, якій належить це замовлення (необов'язково для однієї локації)"
+
+msgid "Table associated with this order (for dine-in)"
+msgstr "Столик, пов'язаний з цим замовленням (для їжі на місці)"
+
+msgid "Customer who placed this order (if registered)"
+msgstr "Клієнт, що зробив це замовлення (якщо зареєстрований)"
+
+msgid "Human-readable order number (e.g., ORD-2024-0001)"
+msgstr "Зрозумілий номер замовлення (напр., ORD-2024-0001)"
+
+msgid "Current order status"
+msgstr "Поточний статус замовлення"
+
+msgid "Order type (dine-in, takeaway, delivery)"
+msgstr "Тип замовлення (на місці, на виніс, доставка)"
+
+msgid "Payment status"
+msgstr "Статус оплати"
+
+msgid "Current payment status"
+msgstr "Поточний статус оплати"
+
+msgid "Payment method"
+msgstr "Спосіб оплати"
+
+msgid "Payment method used"
+msgstr "Використаний спосіб оплати"
+
+msgid "Sum of all items before tax and discount"
+msgstr "Сума всіх позицій до податку та знижки"
+
+msgid "Discount amount"
+msgstr "Сума знижки"
+
+msgid "Total discount applied"
+msgstr "Загальна застосована знижка"
+
+msgid "Refund amount"
+msgstr "Сума повернення"
+
+msgid "Total refund amount"
+msgstr "Загальна сума повернення"
+
+msgid "Tip amount"
+msgstr "Сума чайових"
+
+msgid "Tip/gratuity amount"
+msgstr "Сума чайових/подяки"
+
+msgid "Final total (subtotal + tax - discount + tip)"
+msgstr "Кінцева сума (проміжний підсумок + податок - знижка + чайові)"
+
+msgid "Currency code (ISO 4217)"
+msgstr "Код валюти (ISO 4217)"
+
+msgid "Guest count"
+msgstr "Кількість гостей"
+
+msgid "Number of guests (for dine-in orders)"
+msgstr "Кількість гостей (для замовлень на місці)"
+
+msgid "Staff/kitchen notes about the order"
+msgstr "Нотатки персоналу/кухні про замовлення"
+
+msgid "Special instructions"
+msgstr "Спеціальні побажання"
+
+msgid "Customer special instructions or requests"
+msgstr "Спеціальні побажання або запити клієнта"
+
+msgid "Customer info"
+msgstr "Інформація про клієнта"
+
+msgid "Guest customer details: name, phone, email"
+msgstr "Дані гостя: ім'я, телефон, email"
+
+msgid "Delivery address"
+msgstr "Адреса доставки"
+
+msgid "Delivery address details: street, city, postal_code, etc."
+msgstr "Деталі адреси доставки: вулиця, місто, поштовий індекс тощо"
+
+msgid "Placed at"
+msgstr "Розміщено о"
+
+msgid "Timestamp when order was placed"
+msgstr "Час розміщення замовлення"
+
+msgid "Confirmed at"
+msgstr "Підтверджено о"
+
+msgid "Timestamp when order was confirmed by staff"
+msgstr "Час підтвердження замовлення персоналом"
+
+msgid "Preparing at"
+msgstr "Приготування о"
+
+msgid "Timestamp when order preparation started"
+msgstr "Час початку приготування замовлення"
+
+msgid "Ready at"
+msgstr "Готово о"
+
+msgid "Timestamp when order was ready"
+msgstr "Час готовності замовлення"
+
+msgid "Timestamp when order was delivered to customer"
+msgstr "Час доставки замовлення клієнту"
+
+msgid "Timestamp when order was completed"
+msgstr "Час завершення замовлення"
+
+msgid "Cancelled at"
+msgstr "Скасовано о"
+
+msgid "Timestamp when order was cancelled"
+msgstr "Час скасування замовлення"
+
+msgid "Cancel reason"
+msgstr "Причина скасування"
+
+msgid "Reason for order cancellation"
+msgstr "Причина скасування замовлення"
+
+msgid "Placed by"
+msgstr "Розміщено"
+
+msgid "Staff member who placed the order"
+msgstr "Співробітник, що розмістив замовлення"
+
+msgid "Assigned to"
+msgstr "Призначено"
+
+msgid "Staff member assigned to handle this order"
+msgstr "Співробітник, призначений для обробки замовлення"
+
+msgid "Additional order data (source, promo codes, etc.)"
+msgstr "Додаткові дані замовлення (джерело, промокоди тощо)"
+
+msgid "Guest"
+msgstr "Гість"
+
+msgid "Order this item belongs to"
+msgstr "Замовлення, якому належить ця позиція"
+
+msgid "Product ordered (reference, may be soft-deleted)"
+msgstr "Замовлений продукт (посилання, може бути м'яко видалений)"
+
+msgid "Variant"
+msgstr "Варіант"
+
+msgid "Product variant selected (e.g., Large, Small)"
+msgstr "Обраний варіант продукту (напр., Великий, Малий)"
+
+msgid "Number of items ordered"
+msgstr "Кількість замовлених одиниць"
+
+msgid "Unit price"
+msgstr "Ціна за одиницю"
+
+msgid "Price per unit at time of order (captured, not referenced)"
+msgstr "Ціна за одиницю на момент замовлення (зафіксована, не посилання)"
+
+msgid "Total price"
+msgstr "Загальна ціна"
+
+msgid "Total price (unit_price * quantity + modifier costs)"
+msgstr "Загальна ціна (ціна за одиницю * кількість + вартість модифікаторів)"
+
+msgid "Current item status"
+msgstr "Поточний статус позиції"
+
+msgid "Modifiers"
+msgstr "Модифікатори"
+
+msgid "JSON snapshot of selected modifiers with prices at order time"
+msgstr "JSON-знімок обраних модифікаторів з цінами на момент замовлення"
+
+msgid "Customer notes/special instructions for this item"
+msgstr "Нотатки клієнта/спеціальні побажання для цієї позиції"
+
+msgid "Is gift"
+msgstr "Подарунок"
+
+msgid "Whether this item is a complimentary gift (zero charge)"
+msgstr "Чи є ця позиція безкоштовним подарунком (без оплати)"
+
+msgid "Prepared at"
+msgstr "Приготовлено о"
+
+msgid "Timestamp when item preparation completed"
+msgstr "Час завершення приготування позиції"
+
+msgid "Timestamp when item was delivered to customer"
+msgstr "Час доставки позиції клієнту"
+
+msgid "Timestamp when item was cancelled"
+msgstr "Час скасування позиції"
+
+msgid "Reason for item cancellation"
+msgstr "Причина скасування позиції"
+
+msgid "Additional item data (JSON)"
+msgstr "Додаткові дані позиції (JSON)"
+
+msgid "Order Item"
+msgstr "Позиція замовлення"
+
+msgid "Order Items"
+msgstr "Позиції замовлення"
+
+msgid "Unknown Product"
+msgstr "Невідомий продукт"
+
+msgid "Organization this request belongs to"
+msgstr "Організація, якій належить цей запит"
+
+msgid "Branch this request belongs to (optional for single-location)"
+msgstr "Філія, якій належить цей запит (необов'язково для однієї локації)"
+
+msgid "Table making this request"
+msgstr "Столик, що робить запит"
+
+msgid "Related order (if applicable)"
+msgstr "Пов'язане замовлення (якщо застосовно)"
+
+msgid "Customer who made this request (if logged in)"
+msgstr "Клієнт, що зробив запит (якщо увійшов)"
+
+msgid "Type of service request"
+msgstr "Тип запиту на обслуговування"
+
+msgid "Current request status"
+msgstr "Поточний статус запиту"
+
+msgid "Optional customer message or notes"
+msgstr "Необов'язкове повідомлення або нотатки клієнта"
+
+msgid "Priority level 1-5 (1 is highest priority)"
+msgstr "Рівень пріоритету 1-5 (1 — найвищий)"
+
+msgid "Staff member assigned to handle this request"
+msgstr "Співробітник, призначений для обробки запиту"
+
+msgid "Acknowledged at"
+msgstr "Підтверджено о"
+
+msgid "Timestamp when request was acknowledged by staff"
+msgstr "Час підтвердження запиту персоналом"
+
+msgid "Timestamp when request was completed"
+msgstr "Час завершення запиту"
+
+msgid "Timestamp when request was cancelled"
+msgstr "Час скасування запиту"
+
+msgid "Reason for request cancellation"
+msgstr "Причина скасування запиту"
+
+msgid "Response time"
+msgstr "Час відповіді"
+
+msgid "Time to first response in seconds"
+msgstr "Час до першої відповіді в секундах"
+
+msgid "Additional request data (JSON)"
+msgstr "Додаткові дані запиту (JSON)"
+
+msgid "Service Request"
+msgstr "Запит на обслуговування"
+
+msgid "Service Requests"
+msgstr "Запити на обслуговування"
+
+msgid "Just now"
+msgstr "Щойно"
+
+#, python-format
+msgid "%(minutes)d min ago"
+msgstr "%(minutes)d хв тому"
+
+#, python-format
+msgid "%(hours)d hr ago"
+msgstr "%(hours)d год тому"
+
+msgid "Organization this discount belongs to"
+msgstr "Організація, якій належить ця знижка"
+
+msgid "Order this discount is applied to"
+msgstr "Замовлення, до якого застосована знижка"
+
+msgid "Type of discount applied"
+msgstr "Тип застосованої знижки"
+
+msgid "Discount value (percentage or fixed amount)"
+msgstr "Розмір знижки (відсоток або фіксована сума)"
+
+msgid "Applied amount"
+msgstr "Застосована сума"
+
+msgid "Actual monetary amount applied to the order"
+msgstr "Фактична грошова сума, застосована до замовлення"
+
+msgid "Coupon or promo code used"
+msgstr "Використаний купон або промокод"
+
+msgid "Reason"
+msgstr "Причина"
+
+msgid "Reason for applying the discount"
+msgstr "Причина застосування знижки"
+
+msgid "Applied by"
+msgstr "Застосовано"
+
+msgid "Staff member who applied this discount"
+msgstr "Співробітник, що застосував знижку"
+
+msgid "Discounts"
+msgstr "Знижки"
+
+msgid "Organization this refund belongs to"
+msgstr "Організація, якій належить це повернення"
+
+msgid "Order being refunded"
+msgstr "Замовлення для повернення"
+
+msgid "Order item"
+msgstr "Позиція замовлення"
+
+msgid "Specific order item being refunded (for item-level refunds)"
+msgstr "Конкретна позиція для повернення (для повернень на рівні позицій)"
+
+msgid "Refund type"
+msgstr "Тип повернення"
+
+msgid "Type of refund (full, partial, or item)"
+msgstr "Тип повернення (повне, часткове або позиція)"
+
+msgid "Amount"
+msgstr "Сума"
+
+msgid "Refund monetary amount"
+msgstr "Грошова сума повернення"
+
+msgid "Reason for the refund"
+msgstr "Причина повернення"
+
+msgid "Current refund status"
+msgstr "Поточний статус повернення"
+
+msgid "Processed by"
+msgstr "Оброблено"
+
+msgid "Staff member who processed this refund"
+msgstr "Співробітник, що обробив повернення"
+
+msgid "Processed at"
+msgstr "Оброблено о"
+
+msgid "Timestamp when refund was processed"
+msgstr "Час обробки повернення"
+
+msgid "Refund"
+msgstr "Повернення"
+
+msgid "Refunds"
+msgstr "Повернення"
+
+msgid "Organization this reservation belongs to"
+msgstr "Організація, якій належить це бронювання"
+
+msgid "Registered customer who made this reservation"
+msgstr "Зареєстрований клієнт, що зробив бронювання"
+
+msgid "Table assigned to this reservation"
+msgstr "Столик, призначений для бронювання"
+
+msgid "Preferred zone/section for this reservation"
+msgstr "Бажана зона/секція для бронювання"
+
+msgid "Guest name"
+msgstr "Ім'я гостя"
+
+msgid "Name of the guest making the reservation"
+msgstr "Ім'я гостя, що бронює"
+
+msgid "Guest phone"
+msgstr "Телефон гостя"
+
+msgid "Phone number of the guest"
+msgstr "Номер телефону гостя"
+
+msgid "Number of guests expected"
+msgstr "Очікувана кількість гостей"
+
+msgid "Reservation date"
+msgstr "Дата бронювання"
+
+msgid "Date of the reservation"
+msgstr "Дата бронювання"
+
+msgid "Reservation time"
+msgstr "Час бронювання"
+
+msgid "Time of the reservation"
+msgstr "Час бронювання"
+
+msgid "Expected duration of the reservation in minutes"
+msgstr "Очікувана тривалість бронювання в хвилинах"
+
+msgid "Current reservation status"
+msgstr "Поточний статус бронювання"
+
+msgid "Additional notes about the reservation"
+msgstr "Додаткові нотатки про бронювання"
+
+msgid "Reservation"
+msgstr "Бронювання"
+
+msgid "Reservations"
+msgstr "Бронювання"
+
+msgid "Number of tables in this zone"
+msgstr "Кількість столиків у цій зоні"
+
+msgid "Number of available tables in this zone"
+msgstr "Кількість доступних столиків у цій зоні"
+
+msgid "A zone with this slug already exists."
+msgstr "Зона з таким slug вже існує."
+
+msgid "Zone UUID this table belongs to"
+msgstr "UUID зони, якій належить столик"
+
+msgid "Active orders at this table"
+msgstr "Активні замовлення за цим столиком"
+
+msgid "Zone not found."
+msgstr "Зону не знайдено."
+
+msgid "A table with this slug already exists."
+msgstr "Столик з таким slug вже існує."
+
+msgid "Menu UUID to link this QR code to"
+msgstr "UUID меню для прив'язки QR-коду"
+
+msgid "Table UUID to link this QR code to"
+msgstr "UUID столика для прив'язки QR-коду"
+
+msgid "A QR code with this code already exists."
+msgstr "QR-код з таким кодом вже існує."
+
+msgid "Table not found."
+msgstr "Столик не знайдено."
+
+msgid "Table is required for TABLE type QR codes."
+msgstr "Столик обов'язковий для QR-кодів типу TABLE."
+
+msgid "Deleted Product"
+msgstr "Видалений продукт"
+
+msgid "Table UUID for dine-in orders"
+msgstr "UUID столика для замовлень на місці"
+
+msgid "List of order items to create with the order"
+msgstr "Список позицій для створення із замовленням"
+
+msgid "An order with this number already exists."
+msgstr "Замовлення з таким номером вже існує."
+
+msgid "Table is required for dine-in orders."
+msgstr "Столик обов'язковий для замовлень на місці."
+
+msgid "Delivery address is required for delivery orders."
+msgstr "Адреса доставки обов'язкова для замовлень з доставкою."
+
+msgid "Table UUID for the service request"
+msgstr "UUID столика для запиту на обслуговування"
+
+msgid "Zone activated"
+msgstr "Зону активовано"
+
+msgid "Zone deactivated"
+msgstr "Зону деактивовано"
+
+msgid "Table set as available"
+msgstr "Столик позначено як доступний"
+
+msgid "Table set as occupied"
+msgstr "Столик позначено як зайнятий"
+
+msgid "Table set as reserved"
+msgstr "Столик позначено як заброньований"
+
+msgid "Table activated"
+msgstr "Столик активовано"
+
+msgid "Table deactivated"
+msgstr "Столик деактивовано"
+
+msgid "QR code activated"
+msgstr "QR-код активовано"
+
+msgid "QR code deactivated"
+msgstr "QR-код деактивовано"
+
+msgid "Order confirmed"
+msgstr "Замовлення підтверджено"
+
+msgid "Order preparation started"
+msgstr "Приготування замовлення розпочато"
+
+msgid "Order marked as ready"
+msgstr "Замовлення позначено як готове"
+
+msgid "Order delivered"
+msgstr "Замовлення доставлено"
+
+msgid "Order completed"
+msgstr "Замовлення завершено"
+
+msgid "Order cancelled"
+msgstr "Замовлення скасовано"
+
+msgid "Order marked as paid"
+msgstr "Замовлення позначено як оплачене"
+
+msgid "Service request is not pending"
+msgstr "Запит на обслуговування не очікує"
+
+msgid "Service request acknowledged"
+msgstr "Запит на обслуговування підтверджено"
+
+msgid "Service request cannot be completed"
+msgstr "Запит на обслуговування не може бути завершений"
+
+msgid "Service request completed"
+msgstr "Запит на обслуговування завершено"
+
+msgid "Reporting"
+msgstr "Звітність"
+
+msgid "Sales"
+msgstr "Продажі"
+
+msgid "Operations"
+msgstr "Операції"
+
+msgid "Digital"
+msgstr "Цифровий"
+
+msgid "Periodic"
+msgstr "Періодичний"
+
+msgid "Inventory"
+msgstr "Інвентар"
+
+msgid "Platform"
+msgstr "Платформа"
+
+msgid "AI Insights"
+msgstr "Аналітика ШІ"
+
+msgid "AI Query"
+msgstr "Запит ШІ"
+
+msgid "Forecasting"
+msgstr "Прогнозування"
+
+msgid "Bi-weekly"
+msgstr "Раз на два тижні"
+
+msgid "Dashboard"
+msgstr "Дашборд"
+
+msgid "Push Notification"
+msgstr "Push-сповіщення"
+
+msgid "Webhook"
+msgstr "Вебхук"
+
+msgid "JSON"
+msgstr "JSON"
+
+msgid "PDF"
+msgstr "PDF"
+
+msgid "Excel"
+msgstr "Excel"
+
+msgid "CSV"
+msgstr "CSV"
+
+msgid "Claude Haiku"
+msgstr "Claude Haiku"
+
+msgid "Claude Sonnet"
+msgstr "Claude Sonnet"
+
+msgid "Claude Opus"
+msgstr "Claude Opus"
+
+msgid "No AI"
+msgstr "Без ШІ"
+
+msgid "Starter"
+msgstr "Стартовий"
+
+msgid "Professional"
+msgstr "Професійний"
+
+msgid "Business"
+msgstr "Бізнес"
+
+msgid "Enterprise"
+msgstr "Корпоративний"
+
+msgid "P0 - Critical"
+msgstr "P0 — Критичний"
+
+msgid "P1 - High"
+msgstr "P1 — Високий"
+
+msgid "P2 - Medium"
+msgstr "P2 — Середній"
+
+msgid "P3 - Low"
+msgstr "P3 — Низький"
+
+msgid "Unique feature key, e.g., RPT-SAL-001"
+msgstr "Унікальний ключ функції, напр., RPT-SAL-001"
+
+msgid "Human-readable report name"
+msgstr "Зрозуміла назва звіту"
+
+msgid "Report description"
+msgstr "Опис звіту"
+
+msgid "Report category"
+msgstr "Категорія звіту"
+
+msgid "Implementation priority"
+msgstr "Пріоритет реалізації"
+
+msgid "AI model used for this report"
+msgstr "Модель ШІ, що використовується для цього звіту"
+
+msgid "Credit cost per execution"
+msgstr "Вартість кредитів за виконання"
+
+msgid "Minimum plan required to access this report"
+msgstr "Мінімальний план для доступу до звіту"
+
+msgid "Default parameters for this report"
+msgstr "Параметри за замовчуванням для цього звіту"
+
+msgid "Supported export formats, e.g., [\"PDF\", \"EXCEL\", \"CSV\"]"
+msgstr "Підтримувані формати експорту, напр., [\"PDF\", \"EXCEL\", \"CSV\"]"
+
+msgid "Supported grouping dimensions"
+msgstr "Підтримувані виміри групування"
+
+msgid "Dotted path to handler class"
+msgstr "Шлях до класу обробника через крапку"
+
+msgid "Whether this report is available"
+msgstr "Чи доступний цей звіт"
+
+msgid "Whether this report can be scheduled"
+msgstr "Чи можна запланувати цей звіт"
+
+msgid "Whether this report requires AI processing"
+msgstr "Чи потребує цей звіт обробки ШІ"
+
+msgid "Report Definition"
+msgstr "Визначення звіту"
+
+msgid "Report Definitions"
+msgstr "Визначення звітів"
+
+msgid "Organization that requested this report"
+msgstr "Організація, що запросила цей звіт"
+
+msgid "The report definition being executed"
+msgstr "Визначення звіту, що виконується"
+
+msgid "User who requested the report"
+msgstr "Користувач, що запросив звіт"
+
+msgid "Current execution status"
+msgstr "Поточний статус виконання"
+
+msgid "Parameters used for this execution"
+msgstr "Параметри, використані для цього виконання"
+
+msgid "Report result data (JSON)"
+msgstr "Результати звіту (JSON)"
+
+msgid "Error message if execution failed"
+msgstr "Повідомлення про помилку при невдалому виконанні"
+
+msgid "When processing started"
+msgstr "Коли почалася обробка"
+
+msgid "When processing completed"
+msgstr "Коли завершилася обробка"
+
+msgid "Execution duration in milliseconds"
+msgstr "Тривалість виконання в мілісекундах"
+
+msgid "Credits consumed for this execution"
+msgstr "Кредити, витрачені на це виконання"
+
+msgid "AI model actually used (may differ from definition)"
+msgstr "Фактично використана модель ШІ (може відрізнятися від визначення)"
+
+msgid "AI tokens consumed"
+msgstr "Використані токени ШІ"
+
+msgid "Export format if exported"
+msgstr "Формат експорту при експортуванні"
+
+msgid "URL to exported file"
+msgstr "URL експортованого файлу"
+
+msgid "Schedule that triggered this execution (if scheduled)"
+msgstr "Розклад, що ініціював це виконання (якщо заплановане)"
+
+msgid "Celery task ID for tracking"
+msgstr "ID задачі Celery для відстеження"
+
+msgid "Report Execution"
+msgstr "Виконання звіту"
+
+msgid "Report Executions"
+msgstr "Виконання звітів"
+
+msgid "Organization that owns this schedule"
+msgstr "Організація, якій належить цей розклад"
+
+msgid "The report to generate"
+msgstr "Звіт для генерації"
+
+msgid "User who created the schedule"
+msgstr "Користувач, що створив розклад"
+
+msgid "Schedule name"
+msgstr "Назва розкладу"
+
+msgid "How often to generate the report"
+msgstr "Як часто генерувати звіт"
+
+msgid "Time of day to generate (local timezone)"
+msgstr "Час доби для генерації (місцевий часовий пояс)"
+
+msgid "Day of week for weekly schedules (0=Monday, 6=Sunday)"
+msgstr "День тижня для тижневих розкладів (0=Понеділок, 6=Неділя)"
+
+msgid "Day of month for monthly schedules (1-28)"
+msgstr "День місяця для місячних розкладів (1-28)"
+
+msgid "Report parameters to use"
+msgstr "Параметри звіту для використання"
+
+msgid "Delivery channels: [\"DASHBOARD\", \"EMAIL\", \"PUSH\", \"WEBHOOK\"]"
+msgstr "Канали доставки: [\"DASHBOARD\", \"EMAIL\", \"PUSH\", \"WEBHOOK\"]"
+
+msgid "Email addresses for EMAIL delivery"
+msgstr "Електронні адреси для доставки EMAIL"
+
+msgid "Webhook URL for WEBHOOK delivery"
+msgstr "URL вебхуку для доставки WEBHOOK"
+
+msgid "Export format for delivery"
+msgstr "Формат експорту для доставки"
+
+msgid "Whether this schedule is active"
+msgstr "Чи активний цей розклад"
+
+msgid "Next scheduled run time"
+msgstr "Наступний запланований час запуску"
+
+msgid "When the schedule was last executed"
+msgstr "Коли розклад було востаннє виконано"
+
+msgid "Number of times this schedule has run"
+msgstr "Кількість разів виконання розкладу"
+
+msgid "Number of consecutive failures"
+msgstr "Кількість послідовних невдач"
+
+msgid "Max consecutive failures before auto-disable"
+msgstr "Максимум послідовних невдач до автовимкнення"
+
+msgid "Report Schedule"
+msgstr "Розклад звітів"
+
+msgid "Report Schedules"
+msgstr "Розклади звітів"
+
+msgid "Organization context"
+msgstr "Контекст організації"
+
+msgid "User who favorited this report"
+msgstr "Користувач, що додав звіт до обраного"
+
+msgid "The favorited report"
+msgstr "Обраний звіт"
+
+msgid "Custom name for this favorite"
+msgstr "Власна назва для обраного"
+
+msgid "Saved parameters for quick access"
+msgstr "Збережені параметри для швидкого доступу"
+
+msgid "Display order in favorites list"
+msgstr "Порядок відображення в списку обраного"
+
+msgid "Report Favorite"
+msgstr "Обраний звіт"
+
+msgid "Report Favorites"
+msgstr "Обрані звіти"
+
+msgid "Organization that owns this session"
+msgstr "Організація, якій належить ця сесія"
+
+msgid "User who initiated this conversation"
+msgstr "Користувач, що розпочав цю розмову"
+
+msgid "Session title (auto-generated or user-defined)"
+msgstr "Назва сесії (автоматична або визначена користувачем)"
+
+msgid "Accumulated context from conversation turns"
+msgstr "Накопичений контекст з розмови"
+
+msgid "Whether this session is still active"
+msgstr "Чи активна ця сесія"
+
+msgid "Timestamp of the last message in this session"
+msgstr "Час останнього повідомлення в цій сесії"
+
+msgid "Conversation Session"
+msgstr "Сесія розмови"
+
+msgid "Conversation Sessions"
+msgstr "Сесії розмов"
+
+msgid "Assistant"
+msgstr "Асистент"
+
+msgid "Parent conversation session"
+msgstr "Батьківська сесія розмови"
+
+msgid "Message role: user, assistant, or system"
+msgstr "Роль повідомлення: user, assistant або system"
+
+msgid "Message text content"
+msgstr "Текстовий вміст повідомлення"
+
+msgid "Additional message metadata (intent, confidence, etc.)"
+msgstr "Додаткові метадані повідомлення (intent, confidence тощо)"
+
+msgid "Associated report data returned with this message"
+msgstr "Пов'язані дані звіту, повернуті з цим повідомленням"
+
+msgid "Conversation Message"
+msgstr "Повідомлення розмови"
+
+msgid "Conversation Messages"
+msgstr "Повідомлення розмов"
+
+msgid "Organization this balance belongs to"
+msgstr "Організація, якій належить цей баланс"
+
+msgid "Total credits ever purchased/granted"
+msgstr "Загальна кількість придбаних/наданих кредитів"
+
+msgid "Total credits consumed"
+msgstr "Загальна кількість витрачених кредитів"
+
+msgid "Credits currently reserved for in-progress operations"
+msgstr "Кредити, зарезервовані для поточних операцій"
+
+msgid "Credit Balance"
+msgstr "Баланс кредитів"
+
+msgid "Credit Balances"
+msgstr "Баланси кредитів"
+
+msgid "Consume"
+msgstr "Витрата"
+
+msgid "Bonus"
+msgstr "Бонус"
+
+msgid "Expire"
+msgstr "Закінчення"
+
+msgid "Type of credit transaction"
+msgstr "Тип кредитної транзакції"
+
+msgid "Credit amount (positive=addition, negative=consumption)"
+msgstr "Сума кредитів (додатне=додавання, від'ємне=витрата)"
+
+msgid "Available balance after this transaction"
+msgstr "Доступний баланс після цієї транзакції"
+
+msgid "Reference type (e.g., report_execution, subscription)"
+msgstr "Тип посилання (напр., report_execution, subscription)"
+
+msgid "UUID of the referenced entity"
+msgstr "UUID пов'язаної сутності"
+
+msgid "User who initiated this transaction"
+msgstr "Користувач, що ініціював транзакцію"
+
+msgid "Credit Transaction"
+msgstr "Кредитна транзакція"
+
+msgid "Credit Transactions"
+msgstr "Кредитні транзакції"
+
+msgid "Metric identifier (e.g., avg_order_value, daily_revenue)"
+msgstr "Ідентифікатор метрики (напр., avg_order_value, daily_revenue)"
+
+msgid "Business category (e.g., cafe, restaurant, fast_food)"
+msgstr "Категорія бізнесу (напр., cafe, restaurant, fast_food)"
+
+msgid "Geographic region (ISO country code or city)"
+msgstr "Географічний регіон (код країни ISO або місто)"
+
+msgid "Period granularity"
+msgstr "Деталізація періоду"
+
+msgid "Start date of the benchmark period"
+msgstr "Дата початку періоду еталонного тесту"
+
+msgid "Benchmark mean/average value"
+msgstr "Середнє значення еталону"
+
+msgid "Number of organizations in this benchmark"
+msgstr "Кількість організацій у цьому еталоні"
+
+msgid "25th percentile value"
+msgstr "Значення 25-го перцентилю"
+
+msgid "50th percentile (median) value"
+msgstr "Значення 50-го перцентилю (медіана)"
+
+msgid "75th percentile value"
+msgstr "Значення 75-го перцентилю"
+
+msgid "90th percentile value"
+msgstr "Значення 90-го перцентилю"
+
+msgid "Industry Benchmark"
+msgstr "Галузевий еталон"
+
+msgid "Industry Benchmarks"
+msgstr "Галузеві еталони"
+
+msgid "Whether a handler is registered for this report"
+msgstr "Чи зареєстрований обробник для цього звіту"
+
+msgid "Report feature key (e.g., RPT-SAL-001)"
+msgstr "Ключ функції звіту (напр., RPT-SAL-001)"
+
+msgid "Report parameters"
+msgstr "Параметри звіту"
+
+msgid "Export format"
+msgstr "Формат експорту"
+
+msgid "Whether to execute asynchronously"
+msgstr "Чи виконувати асинхронно"
+
+msgid "Display Feature (Pricing Card)"
+msgstr "Функція відображення (картка ціноутворення)"
+
+msgid "Display Features (Pricing Card)"
+msgstr "Функції відображення (картка ціноутворення)"
+
+msgid "Usage"
+msgstr "Використання"
+
+msgid "Type & Configuration"
+msgstr "Тип та конфігурація"
+
+msgid "Used By Plans"
+msgstr "Використовується планами"
+
+msgid "Plans"
+msgstr "Плани"
+
+msgid "Plans using this feature"
+msgstr "Плани, що використовують цю функцію"
+
+msgid "Limits"
+msgstr "Ліміти"
+
+msgid ""
+"JSON format: {\"max_menus\": 3, \"max_products\": 200, \"max_qr_codes\": 10, "
+"\"max_users\": 5, \"max_branches\": 1, \"storage_mb\": 500, "
+"\"ai_credits_monthly\": 100}. Use -1 for unlimited."
+msgstr "Формат JSON: {\"max_menus\": 3, \"max_products\": 200, \"max_qr_codes\": 10, \"max_users\": 5, \"max_branches\": 1, \"storage_mb\": 500, \"ai_credits_monthly\": 100}. Використовуйте -1 для необмежених."
+
+msgid "Feature Flags"
+msgstr "Прапорці функцій"
+
+msgid ""
+"JSON format: {\"ai_content_generation\": true, \"analytics_basic\": true, "
+"\"custom_domain\": false, \"api_access\": false, ...}"
+msgstr "Формат JSON: {\"ai_content_generation\": true, \"analytics_basic\": true, \"custom_domain\": false, \"api_access\": false, ...}"
+
+msgid "Display & Status"
+msgstr "Відображення та статус"
+
+msgid "Pricing Card Preview"
+msgstr "Попередній перегляд картки ціноутворення"
+
+msgid "Tier"
+msgstr "Рівень"
+
+msgid "Subscribers"
+msgstr "Підписники"
+
+msgid "Features"
+msgstr "Функції"
+
+msgid "Limits (visual)"
+msgstr "Ліміти (візуальні)"
+
+msgid "Feature Flags (visual)"
+msgstr "Прапорці функцій (візуальні)"
+
+msgid "Activate selected plans"
+msgstr "Активувати обрані плани"
+
+#, python-format
+msgid "%d plan(s) activated."
+msgstr "%d план(ів) активовано."
+
+msgid "Deactivate selected plans"
+msgstr "Деактивувати обрані плани"
+
+#, python-format
+msgid "%d plan(s) deactivated."
+msgstr "%d план(ів) деактивовано."
+
+msgid "Set as default plan"
+msgstr "Встановити як план за замовчуванням"
+
+msgid "Please select exactly one plan."
+msgstr "Оберіть рівно один план."
+
+#, python-format
+msgid "\"%s\" is now the default plan."
+msgstr "\"%s\" тепер план за замовчуванням."
+
+msgid "Duplicate selected plan"
+msgstr "Дублювати обраний план"
+
+#, python-format
+msgid "%d plan(s) duplicated."
+msgstr "%d план(ів) дубльовано."
+
+msgid "Plan"
+msgstr "План"
+
+msgid "Feature"
+msgstr "Функція"
+
+msgid "Subscription Health"
+msgstr "Стан підписки"
+
+msgid "Billing"
+msgstr "Розрахунки"
+
+msgid "Billing Period"
+msgstr "Розрахунковий період"
+
+msgid "Cancellation"
+msgstr "Скасування"
+
+msgid "External Payment"
+msgstr "Зовнішня оплата"
+
+msgid "Period"
+msgstr "Період"
+
+msgid "Health"
+msgstr "Стан"
+
+msgid "Usage Summary"
+msgstr "Зведення використання"
+
+msgid "Activate selected subscriptions"
+msgstr "Активувати обрані підписки"
+
+#, python-format
+msgid "%d subscription(s) activated."
+msgstr "%d підписку(ок) активовано."
+
+msgid "Suspend selected subscriptions"
+msgstr "Призупинити обрані підписки"
+
+#, python-format
+msgid "%d subscription(s) suspended."
+msgstr "%d підписку(ок) призупинено."
+
+msgid "Expire selected subscriptions"
+msgstr "Завершити обрані підписки"
+
+#, python-format
+msgid "%d subscription(s) expired."
+msgstr "%d підписку(ок) завершено."
+
+msgid "Invoice Summary"
+msgstr "Зведення рахунку"
+
+msgid "Amounts"
+msgstr "Суми"
+
+msgid "Dates"
+msgstr "Дати"
+
+msgid "#"
+msgstr "#"
+
+msgid "Due Date"
+msgstr "Термін оплати"
+
+msgid "Paid"
+msgstr "Оплачено"
+
+msgid "Summary"
+msgstr "Зведення"
+
+msgid "Mark as paid"
+msgstr "Позначити як оплачений"
+
+#, python-format
+msgid "%d invoice(s) marked as paid."
+msgstr "%d рахунок(ів) позначено як оплачені."
+
+msgid "Void selected invoices"
+msgstr "Анулювати обрані рахунки"
+
+#, python-format
+msgid "%d invoice(s) voided."
+msgstr "%d рахунок(ів) анульовано."
+
+msgid "Finalize (draft → pending)"
+msgstr "Завершити (чернетка → очікує)"
+
+#, python-format
+msgid "%d invoice(s) finalized."
+msgstr "%d рахунок(ів) завершено."
+
+msgid "Reset usage counters to 0"
+msgstr "Скинути лічильники використання до 0"
+
+#, python-format
+msgid "%d usage record(s) reset."
+msgstr "%d запис(ів) використання скинуто."
+
+msgid "Unique identifier code for feature lookup (e.g., max_menus, ai_enabled)"
+msgstr "Унікальний код для пошуку функції (напр., max_menus, ai_enabled)"
+
+msgid "Human-readable display name for the feature"
+msgstr "Зрозуміла відображувана назва функції"
+
+msgid "Detailed description of what this feature provides"
+msgstr "Детальний опис того, що надає ця функція"
+
+msgid "Feature type"
+msgstr "Тип функції"
+
+msgid "Type of feature: BOOLEAN (on/off), LIMIT (max count), USAGE (metered)"
+msgstr "Тип функції: BOOLEAN (увімк./вимк.), LIMIT (максимум), USAGE (обмежене)"
+
+msgid "Default value"
+msgstr "Значення за замовчуванням"
+
+msgid "Default value for the feature (JSON format)"
+msgstr "Значення функції за замовчуванням (формат JSON)"
+
+msgid "Category for grouping features (e.g., menus, orders, ai, analytics)"
+msgstr "Категорія для групування функцій (напр., menus, orders, ai, analytics)"
+
+msgid "Whether the feature is currently available"
+msgstr "Чи доступна функція наразі"
+
+msgid "Additional metadata for the feature (JSON)"
+msgstr "Додаткові метадані функції (JSON)"
+
+msgid "Display name of the plan (e.g., Starter, Professional)"
+msgstr "Відображувана назва плану (напр., Starter, Professional)"
+
+msgid "Plan tier level (FREE, STARTER, GROWTH, etc.)"
+msgstr "Рівень плану (FREE, STARTER, GROWTH тощо)"
+
+msgid "Detailed description of the plan and its features"
+msgstr "Детальний опис плану та його функцій"
+
+msgid "Brief tagline for the plan (shown on pricing cards)"
+msgstr "Короткий слоган плану (показується на картках ціноутворення)"
+
+msgid "Monthly price"
+msgstr "Місячна ціна"
+
+msgid "Monthly subscription price"
+msgstr "Місячна ціна підписки"
+
+msgid "Yearly price"
+msgstr "Річна ціна"
+
+msgid "Yearly subscription price (typically with discount)"
+msgstr "Річна ціна підписки (зазвичай зі знижкою)"
+
+msgid "Currency code for pricing (e.g., TRY, USD, EUR)"
+msgstr "Код валюти для ціноутворення (напр., TRY, USD, EUR)"
+
+msgid ""
+"Plan limits as JSON (e.g., {\"max_menus\": 3, \"max_products\": 200, "
+"\"max_qr_codes\": 10, \"max_users\": 5, \"storage_mb\": 500})"
+msgstr "Ліміти плану у форматі JSON (напр., {\"max_menus\": 3, \"max_products\": 200, \"max_qr_codes\": 10, \"max_users\": 5, \"storage_mb\": 500})"
+
+msgid "Feature flags"
+msgstr "Прапорці функцій"
+
+msgid ""
+"Boolean feature flags as JSON (e.g., {\"ai_enabled\": true, "
+"\"custom_domain\": false, \"api_access\": false})"
+msgstr "Булеві прапорці функцій у форматі JSON (напр., {\"ai_enabled\": true, \"custom_domain\": false, \"api_access\": false})"
+
+msgid "Trial days"
+msgstr "Дні пробного періоду"
+
+msgid "Number of trial days for this plan (0 for no trial)"
+msgstr "Кількість днів пробного періоду (0 — без пробного)"
+
+msgid "Whether the plan is available for subscription"
+msgstr "Чи доступний план для підписки"
+
+msgid "Whether this is the default plan for new organizations"
+msgstr "Чи є цей план за замовчуванням для нових організацій"
+
+msgid "Whether the plan is visible on the public pricing page"
+msgstr "Чи видимий план на публічній сторінці ціноутворення"
+
+msgid "Is custom"
+msgstr "Користувацький"
+
+msgid "Whether this is a custom enterprise plan"
+msgstr "Чи є цей план індивідуальним корпоративним"
+
+msgid "Highlight text"
+msgstr "Текст виділення"
+
+msgid "Optional badge text (e.g., \"Most Popular\", \"Best Value\")"
+msgstr "Необов'язковий текст значка (напр., \"Найпопулярніший\", \"Найвигідніший\")"
+
+msgid "Display order on pricing page (lower numbers appear first)"
+msgstr "Порядок відображення на сторінці ціноутворення (менші числа першими)"
+
+msgid "Additional plan metadata (JSON)"
+msgstr "Додаткові метадані плану (JSON)"
+
+msgid "Organization this subscription belongs to"
+msgstr "Організація, якій належить ця підписка"
+
+msgid "Subscription plan"
+msgstr "План підписки"
+
+msgid "Current subscription status"
+msgstr "Поточний статус підписки"
+
+msgid "Billing period"
+msgstr "Розрахунковий період"
+
+msgid "Billing cycle (MONTHLY or YEARLY)"
+msgstr "Розрахунковий цикл (MONTHLY або YEARLY)"
+
+msgid "How the subscription is paid"
+msgstr "Як оплачується підписка"
+
+msgid "Current price"
+msgstr "Поточна ціна"
+
+msgid "Locked-in price at subscription time"
+msgstr "Зафіксована ціна на момент підписки"
+
+msgid "When the trial period ends (null if no trial)"
+msgstr "Коли закінчується пробний період (null, якщо немає пробного)"
+
+msgid "Current period start"
+msgstr "Початок поточного періоду"
+
+msgid "Start of the current billing period"
+msgstr "Початок поточного розрахункового періоду"
+
+msgid "Current period end"
+msgstr "Кінець поточного періоду"
+
+msgid "End of the current billing period"
+msgstr "Кінець поточного розрахункового періоду"
+
+msgid "Next billing date"
+msgstr "Наступна дата оплати"
+
+msgid "When next payment will be charged"
+msgstr "Коли буде знято наступну оплату"
+
+msgid "When cancellation was requested"
+msgstr "Коли було запрошено скасування"
+
+msgid "User-provided reason for cancellation"
+msgstr "Причина скасування від користувача"
+
+msgid "Cancel at period end"
+msgstr "Скасувати в кінці періоду"
+
+msgid "If true, subscription will cancel at end of current period"
+msgstr "Якщо true, підписка буде скасована в кінці поточного періоду"
+
+msgid "External subscription ID"
+msgstr "Зовнішній ID підписки"
+
+msgid "Subscription ID from payment provider (e.g., Iyzico)"
+msgstr "ID підписки від платіжного провайдера (напр., Iyzico)"
+
+msgid "External customer ID"
+msgstr "Зовнішній ID клієнта"
+
+msgid "Customer ID from payment provider"
+msgstr "ID клієнта від платіжного провайдера"
+
+msgid "Payment details"
+msgstr "Деталі оплати"
+
+msgid ""
+"Masked payment method details (e.g., {\"last4\": \"4242\", \"brand\": "
+"\"visa\"})"
+msgstr "Замасковані деталі способу оплати (напр., {\"last4\": \"4242\", \"brand\": \"visa\"})"
+
+msgid "Additional subscription metadata (JSON)"
+msgstr "Додаткові метадані підписки (JSON)"
+
+msgid "Subscription"
+msgstr "Підписка"
+
+msgid "Subscriptions"
+msgstr "Підписки"
+
+msgid "Organization this invoice belongs to"
+msgstr "Організація, якій належить цей рахунок"
+
+msgid "Related subscription (null for one-time purchases)"
+msgstr "Пов'язана підписка (null для одноразових покупок)"
+
+msgid "Invoice number"
+msgstr "Номер рахунку"
+
+msgid "Unique invoice number within organization"
+msgstr "Унікальний номер рахунку в організації"
+
+msgid "Current invoice status"
+msgstr "Поточний статус рахунку"
+
+msgid "Amount before tax"
+msgstr "Сума до оподаткування"
+
+msgid "Total amount due"
+msgstr "Загальна сума до сплати"
+
+msgid "Amount paid"
+msgstr "Сплачена сума"
+
+msgid "Amount actually paid"
+msgstr "Фактично сплачена сума"
+
+msgid "Amount refunded"
+msgstr "Повернута сума"
+
+msgid "Currency code for this invoice"
+msgstr "Код валюти цього рахунку"
+
+msgid "Due date"
+msgstr "Термін оплати"
+
+msgid "When payment is due"
+msgstr "Коли потрібно здійснити оплату"
+
+msgid "Paid at"
+msgstr "Оплачено о"
+
+msgid "When payment was received"
+msgstr "Коли отримано оплату"
+
+msgid "Start of billing period covered"
+msgstr "Початок охопленого розрахункового періоду"
+
+msgid "End of billing period covered"
+msgstr "Кінець охопленого розрахункового періоду"
+
+msgid "Invoice description or memo"
+msgstr "Опис або примітка рахунку"
+
+msgid "Line items"
+msgstr "Позиції рахунку"
+
+msgid "Array of line items: [{description, quantity, unit_price, amount}]"
+msgstr "Масив позицій: [{description, quantity, unit_price, amount}]"
+
+msgid "Billing address"
+msgstr "Адреса для розрахунків"
+
+msgid "Billing address details (JSON)"
+msgstr "Деталі адреси для розрахунків (JSON)"
+
+msgid "External invoice ID"
+msgstr "Зовнішній ID рахунку"
+
+msgid "Invoice ID from payment provider"
+msgstr "ID рахунку від платіжного провайдера"
+
+msgid "External payment ID"
+msgstr "Зовнішній ID платежу"
+
+msgid "Payment transaction ID from provider"
+msgstr "ID платіжної транзакції від провайдера"
+
+msgid "Masked payment method details"
+msgstr "Замасковані деталі способу оплати"
+
+msgid "PDF URL"
+msgstr "URL PDF"
+
+msgid "URL to generated PDF invoice"
+msgstr "URL згенерованого PDF рахунку"
+
+msgid "Additional invoice metadata (JSON)"
+msgstr "Додаткові метадані рахунку (JSON)"
+
+msgid "Invoice"
+msgstr "Рахунок"
+
+msgid "Invoices"
+msgstr "Рахунки"
+
+msgid "Plan that includes this feature"
+msgstr "План, що включає цю функцію"
+
+msgid "Feature included in the plan"
+msgstr "Функція, включена до плану"
+
+msgid ""
+"Plan-specific feature configuration (JSON). For LIMIT: {\"limit\": 10}, for "
+"BOOLEAN: {\"enabled\": true}, for USAGE: {\"credits\": 100, "
+"\"reset_period\": \"monthly\"}"
+msgstr "Конфігурація функцій для плану (JSON). Для LIMIT: {\"limit\": 10}, для BOOLEAN: {\"enabled\": true}, для USAGE: {\"credits\": 100, \"reset_period\": \"monthly\"}"
+
+msgid "Is enabled"
+msgstr "Увімкнено"
+
+msgid "Whether this feature is enabled for this plan"
+msgstr "Чи увімкнена ця функція для цього плану"
+
+msgid "Display order within plan (lower numbers appear first)"
+msgstr "Порядок відображення в плані (менші числа першими)"
+
+msgid "Additional metadata for this plan-feature relationship (JSON)"
+msgstr "Додаткові метадані зв'язку план-функція (JSON)"
+
+msgid "Plan Feature"
+msgstr "Функція плану"
+
+msgid "Plan Features"
+msgstr "Функції плану"
+
+msgid "Feature being tracked"
+msgstr "Відстежувана функція"
+
+msgid "Current usage"
+msgstr "Поточне використання"
+
+msgid "Current usage count for this period"
+msgstr "Поточна кількість використань за цей період"
+
+msgid "Limit from plan (-1 = unlimited)"
+msgstr "Ліміт плану (-1 = необмежено)"
+
+msgid "Start of current tracking period"
+msgstr "Початок поточного періоду відстеження"
+
+msgid "End of current tracking period"
+msgstr "Кінець поточного періоду відстеження"
+
+msgid "Last reset at"
+msgstr "Останнє скидання о"
+
+msgid "When usage was last reset"
+msgstr "Коли використання було востаннє скинуто"
+
+msgid "Last usage at"
+msgstr "Останнє використання о"
+
+msgid "When usage was last recorded"
+msgstr "Коли використання було востаннє зафіксовано"
+
+msgid "Additional usage metadata (e.g., usage breakdown, history)"
+msgstr "Додаткові метадані використання (напр., деталізація, історія)"
+
+msgid "Organization Usage"
+msgstr "Використання організацією"
+
+msgid "A feature with this code already exists."
+msgstr "Функція з таким кодом вже існує."
+
+msgid "Number of active subscriptions using this plan"
+msgstr "Кількість активних підписок, що використовують цей план"
+
+msgid "A plan with this slug already exists."
+msgstr "План з таким slug вже існує."
+
+msgid "Plan UUID to associate with this subscription"
+msgstr "UUID плану для прив'язки до підписки"
+
+msgid "Plan UUID for this subscription"
+msgstr "UUID плану для цієї підписки"
+
+msgid "Plan not found or not active."
+msgstr "План не знайдено або він неактивний."
+
+msgid "Organization already has an active subscription."
+msgstr "Організація вже має активну підписку."
+
+msgid "Reason for cancellation"
+msgstr "Причина скасування"
+
+msgid "If true, cancel at end of current period. If false, cancel immediately."
+msgstr "Якщо true, скасувати в кінці поточного періоду. Якщо false, скасувати негайно."
+
+msgid "New plan UUID"
+msgstr "UUID нового плану"
+
+msgid "Whether to prorate the change"
+msgstr "Чи пропорційно розраховувати зміну"
+
+msgid "Subscription UUID for this invoice"
+msgstr "UUID підписки для цього рахунку"
+
+msgid "Auto-generate invoice number"
+msgstr "Автоматично генерувати номер рахунку"
+
+msgid "Subscription not found."
+msgstr "Підписку не знайдено."
+
+msgid "External payment transaction ID"
+msgstr "Зовнішній ID платіжної транзакції"
+
+msgid "Amount paid (defaults to total)"
+msgstr "Сплачена сума (за замовчуванням — загальна)"
+
+msgid "Amount to refund (defaults to full amount)"
+msgstr "Сума повернення (за замовчуванням — повна)"
+
+msgid "Reason for refund"
+msgstr "Причина повернення"
+
+msgid "Plan UUID"
+msgstr "UUID плану"
+
+msgid "Feature UUID"
+msgstr "UUID функції"
+
+msgid "Plan not found."
+msgstr "План не знайдено."
+
+msgid "Feature not found."
+msgstr "Функцію не знайдено."
+
+msgid "This feature is already linked to this plan."
+msgstr "Ця функція вже прив'язана до цього плану."
+
+msgid "Feature UUID to track usage for"
+msgstr "UUID функції для відстеження використання"
+
+msgid "Plan set as default"
+msgstr "План встановлено за замовчуванням"
+
+msgid "The \"with\" parameter is required"
+msgstr "Параметр \"with\" обов'язковий"
+
+msgid "Comparison plan not found"
+msgstr "План для порівняння не знайдено"
+
+msgid "Subscription cancelled"
+msgstr "Підписку скасовано"
+
+msgid "Only cancelled or suspended subscriptions can be reactivated"
+msgstr "Лише скасовані або призупинені підписки можуть бути відновлені"
+
+msgid "Subscription reactivated"
+msgstr "Підписку відновлено"
+
+msgid "Plan changed successfully"
+msgstr "План успішно змінено"
+
+msgid "Only draft invoices can be finalized"
+msgstr "Лише чернеткові рахунки можуть бути завершені"
+
+msgid "Invoice finalized"
+msgstr "Рахунок завершено"
+
+msgid "Only pending or draft invoices can be marked as paid"
+msgstr "Лише очікуючі або чернеткові рахунки можуть бути позначені як оплачені"
+
+msgid "Invoice marked as paid"
+msgstr "Рахунок позначено як оплачений"
+
+msgid "Paid invoices cannot be voided. Use refund instead."
+msgstr "Оплачені рахунки не можуть бути анульовані. Використовуйте повернення."
+
+msgid "Invoice voided"
+msgstr "Рахунок анульовано"
+
+msgid "Only paid invoices can be refunded"
+msgstr "Лише оплачені рахунки можуть бути повернуті"
+
+msgid "Invoice refunded"
+msgstr "Рахунок повернуто"
+
+msgid "Konu"
+msgstr "Тема"
+
+msgid "Okundu"
+msgstr "Прочитано"
+
+msgid "Secilenleri okundu isaretle"
+msgstr "Позначити обрані як прочитані"
+
+msgid "Secilenleri okunmadi isaretle"
+msgstr "Позначити обрані як непрочитані"
+
+msgid "Iletisim Bilgileri"
+msgstr "Контактна інформація"
+
+msgid "Isletme Bilgileri"
+msgstr "Інформація про заклад"
+
+msgid "Durum Takibi"
+msgstr "Відстеження статусу"
+
+msgid "Sistem"
+msgstr "Система"
+
+msgid "Durum"
+msgstr "Статус"
+
+msgid "Iletisime gecildi olarak isaretle"
+msgstr "Позначити як контактовано"
+
+msgid "Demo yapildi olarak isaretle"
+msgstr "Позначити як демо проведено"
+
+msgid "Musteri oldu olarak isaretle"
+msgstr "Позначити як став клієнтом"
+
+msgid "Sirket Bilgileri"
+msgstr "Інформація про компанію"
+
+msgid "Iletisim"
+msgstr "Контакт"
+
+msgid "Sosyal Medya"
+msgstr "Соціальні мережі"
+
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+msgid "CTA Varsayilanlari"
+msgstr "CTA за замовчуванням"
+
+msgid "Diger"
+msgstr "Інше"
+
+msgid "Sayfa & Icerik"
+msgstr "Сторінка та контент"
+
+msgid "CTA Ozellestirme"
+msgstr "Налаштування CTA"
+
+msgid "Bos birakilirsa Site Ayarlari'ndaki varsayilanlar kullanilir."
+msgstr "Якщо залишити порожнім, використовуються значення за замовчуванням з Налаштувань сайту."
+
+msgid "Gorunum"
+msgstr "Вигляд"
+
+msgid "Sayfa"
+msgstr "Сторінка"
+
+msgid "Baslik"
+msgstr "Заголовок"
+
+msgid "Icerik"
+msgstr "Контент"
+
+msgid "Istatistik Sayac"
+msgstr "Лічильник статистики"
+
+msgid "Sadece \"Istatistik Sayac\" tipi icin"
+msgstr "Тільки для типу \"Лічильник статистики\""
+
+msgid "Nasil Calisir"
+msgstr "Як це працює"
+
+msgid "Sadece \"Nasil Calisir\" tipi icin"
+msgstr "Тільки для типу \"Як це працює\""
+
+msgid "Problem / Cozum"
+msgstr "Проблема / Рішення"
+
+msgid "Sadece \"Problem / Cozum\" tipi icin"
+msgstr "Тільки для типу \"Проблема / Рішення\""
+
+msgid "Tip"
+msgstr "Тип"
+
+msgid "Badge"
+msgstr "Бейдж"
+
+msgid "Madde Sayisi"
+msgstr "Кількість пунктів"
+
+msgid "Yazar"
+msgstr "Автор"
+
+msgid "Isletme"
+msgstr "Заклад"
+
+msgid "Yorum"
+msgstr "Відгук"
+
+msgid "Puan"
+msgstr "Бал"
+
+msgid "Soru"
+msgstr "Питання"
+
+msgid ""
+"HTML icerik desteklenir. Basliklar icin <h3>, paragraflar icin <p>, listeler "
+"icin <ul><li> kullanin."
+msgstr "Підтримується HTML-вміст. Використовуйте <h3> для заголовків, <p> для абзаців, <ul><li> для списків."
+
+msgid "Meta"
+msgstr "Мета"
+
+msgid "Yayin"
+msgstr "Публікація"
+
+msgid "Secilenleri yayinla"
+msgstr "Опублікувати обрані"
+
+msgid "Secilenleri arsivle"
+msgstr "Архівувати обрані"
+
+msgid "Metin"
+msgstr "Текст"
+
+msgid "Link"
+msgstr "Посилання"
+
+msgid "Hiyerarsi"
+msgstr "Ієрархія"
+
+msgid "Header dropdown'lar icin ust linki secin."
+msgstr "Оберіть батьківське посилання для випадних меню Header."
+
+msgid "Konum"
+msgstr "Розташування"
+
+msgid "Ust Link"
+msgstr "Батьківське посилання"
+
+msgid "Website & Marketing"
+msgstr "Веб-сайт та маркетинг"
+
+msgid "QR Menunuz, Isletmenizin Dijital Vitrini"
+msgstr "QR-меню — цифрова вітрина вашого закладу"
+
+msgid "Restoran ve kafeler icin yapay zeka destekli dijital menu platformu."
+msgstr "Цифрова платформа меню з підтримкою штучного інтелекту для ресторанів та кафе."
+
+msgid "Istanbul, Turkiye"
+msgstr "Стамбул, Туреччина"
+
+msgid "Merhaba! E-Menum hakkinda bilgi almak istiyorum."
+msgstr "Привіт! Хочу дізнатися більше про E-Menum."
+
+msgid "14 Gun Ucretsiz Basla"
+msgstr "Почніть безкоштовно на 14 днів"
+
+msgid "Demo Iste"
+msgstr "Замовити демо"
+
+msgid "Kredi karti gerekmez · 2 dakikada kurulum"
+msgstr "Кредитна картка не потрібна · Налаштування за 2 хвилини"
+
+msgid "Adiniz Soyadiniz"
+msgstr "Ваше повне ім'я"
+
+msgid "ornek@email.com"
+msgstr "example@email.com"
+
+msgid "0555 123 4567"
+msgstr "0555 123 4567"
+
+msgid "Mesajinizi yazin..."
+msgstr "Напишіть ваше повідомлення..."
+
+msgid "Spam algilandi."
+msgstr "Виявлено спам."
+
+msgid "Isletme adi"
+msgstr "Назва закладу"
+
+msgid "Eklemek istediginiz bir not var mi?"
+msgstr "Чи є у вас нотатка, яку хочете додати?"
+
+msgid "E-posta adresiniz"
+msgstr "Ваша електронна пошта"
+
+msgid "created at"
+msgstr "створено о"
+
+msgid "updated at"
+msgstr "оновлено о"
+
+msgid "deleted at"
+msgstr "видалено о"
+
+msgid "Genel Bilgi"
+msgstr "Загальна інформація"
+
+msgid "Satis"
+msgstr "Продажі"
+
+msgid "Teknik Destek"
+msgstr "Технічна підтримка"
+
+msgid "Is Birligi"
+msgstr "Співпраця"
+
+msgid "Basin & Medya"
+msgstr "Преса та медіа"
+
+msgid "ad soyad"
+msgstr "повне ім'я"
+
+msgid "e-posta"
+msgstr "електронна пошта"
+
+msgid "telefon"
+msgstr "телефон"
+
+msgid "konu"
+msgstr "тема"
+
+msgid "mesaj"
+msgstr "повідомлення"
+
+msgid "okundu"
+msgstr "прочитано"
+
+msgid "Iletisim Formu"
+msgstr "Контактна форма"
+
+msgid "Iletisim Formlari"
+msgstr "Контактні форми"
+
+msgid "Restoran"
+msgstr "Ресторан"
+
+msgid "Lokanta / Ev Yemekleri"
+msgstr "Їдальня / Домашня кухня"
+
+msgid "Fine Dining"
+msgstr "Вишукана кухня"
+
+msgid "Meyhane / Balik Restoran"
+msgstr "Таверна / Рибний ресторан"
+
+msgid "Steakhouse / Izgara"
+msgstr "Стейкхаус / Гриль"
+
+msgid "Fast Food"
+msgstr "Фаст-фуд"
+
+msgid "Kebapci / Pideci / Lahmacuncu"
+msgstr "Кебаб / Піде / Лахмаджун"
+
+msgid "Donerci / Cigerci"
+msgstr "Донер / Чігер"
+
+msgid "Borekci / Mantici"
+msgstr "Борек / Манти"
+
+msgid "Pastane / Firincilik"
+msgstr "Кондитерська / Пекарня"
+
+msgid "Kafe / Kahve Dukkani"
+msgstr "Кафе / Кав'ярня"
+
+msgid "Nargile Kafe"
+msgstr "Кальян-кафе"
+
+msgid "Pub / Bar / Biraevi"
+msgstr "Паб / Бар / Пивоварня"
+
+msgid "Smoothie / Juice Bar"
+msgstr "Смузі / Джус-бар"
+
+msgid "Beach Club / Havuz Bar"
+msgstr "Пляжний клуб / Бар біля басейну"
+
+msgid "Otel / Tatil Koyu"
+msgstr "Готель / Курорт"
+
+msgid "Zincir Isletme"
+msgstr "Мережевий заклад"
+
+msgid "Franchise"
+msgstr "Франшиза"
+
+msgid "Catering / Toplu Yemek"
+msgstr "Кейтеринг / Масове харчування"
+
+msgid "Kantin / Yemekhane"
+msgstr "Буфет / Їдальня"
+
+msgid "Food Court"
+msgstr "Фуд-корт"
+
+msgid "Beklemede"
+msgstr "В очікуванні"
+
+msgid "Iletisime Gecildi"
+msgstr "Контактовано"
+
+msgid "Demo Yapildi"
+msgstr "Демо проведено"
+
+msgid "Musteri Oldu"
+msgstr "Став клієнтом"
+
+msgid "Vazgecti"
+msgstr "Відмовився"
+
+msgid "isletme adi"
+msgstr "назва закладу"
+
+msgid "isletme tipi"
+msgstr "тип закладу"
+
+msgid "sube sayisi"
+msgstr "кількість філій"
+
+msgid "durum"
+msgstr "статус"
+
+msgid "admin notlari"
+msgstr "нотатки адміністратора"
+
+msgid "Demo Talebi"
+msgstr "Запит на демо"
+
+msgid "Demo Talepleri"
+msgstr "Запити на демо"
+
+msgid "aktif"
+msgstr "активний"
+
+msgid "dil"
+msgstr "мова"
+
+msgid "Bulten Abonesi"
+msgstr "Підписник розсилки"
+
+msgid "Bulten Aboneleri"
+msgstr "Підписники розсилки"
+
+msgid "sirket adi"
+msgstr "назва компанії"
+
+msgid "slogan"
+msgstr "слоган"
+
+msgid "aciklama"
+msgstr "опис"
+
+msgid "adres"
+msgstr "адреса"
+
+msgid "Instagram"
+msgstr "Instagram"
+
+msgid "Twitter / X"
+msgstr "Twitter / X"
+
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+msgid "YouTube"
+msgstr "YouTube"
+
+msgid "WhatsApp numara"
+msgstr "Номер WhatsApp"
+
+msgid "WhatsApp mesaj"
+msgstr "Повідомлення WhatsApp"
+
+msgid "birincil CTA metni"
+msgstr "текст основного CTA"
+
+msgid "ikincil CTA metni"
+msgstr "текст додаткового CTA"
+
+msgid "guven metni"
+msgstr "текст довіри"
+
+msgid "birincil CTA URL"
+msgstr "URL основного CTA"
+
+msgid "ikincil CTA URL"
+msgstr "URL додаткового CTA"
+
+msgid "giris URL"
+msgstr "URL входу"
+
+msgid "Site Ayarlari"
+msgstr "Налаштування сайту"
+
+msgid "Ana Sayfa"
+msgstr "Головна"
+
+msgid "Ozellikler"
+msgstr "Функції"
+
+msgid "Fiyatlandirma"
+msgstr "Ціноутворення"
+
+msgid "Hakkimizda"
+msgstr "Про нас"
+
+msgid "Demo"
+msgstr "Демо"
+
+msgid "Blog"
+msgstr "Блог"
+
+msgid "sayfa"
+msgstr "сторінка"
+
+msgid "baslik"
+msgstr "заголовок"
+
+msgid "alt baslik"
+msgstr "підзаголовок"
+
+msgid "badge metni"
+msgstr "текст бейджа"
+
+msgid "gradient sinifi"
+msgstr "клас градієнту"
+
+msgid "birincil CTA"
+msgstr "основний CTA"
+
+msgid "ikincil CTA"
+msgstr "додатковий CTA"
+
+msgid "hero gorsel goster"
+msgstr "показати зображення hero"
+
+msgid "Sayfa Hero"
+msgstr "Hero сторінки"
+
+msgid "Sayfa Hero'lari"
+msgstr "Hero сторінок"
+
+msgid "Ozellik Karti"
+msgstr "Картка функцій"
+
+msgid "Problem"
+msgstr "Проблема"
+
+msgid "Cozum"
+msgstr "Рішення"
+
+msgid "Fark"
+msgstr "Різниця"
+
+msgid "bolum tipi"
+msgstr "тип розділу"
+
+msgid "ikon"
+msgstr "іконка"
+
+msgid "Phosphor icon sinifi (ornek: ph-qr-code)"
+msgstr "CSS клас іконки Phosphor (приклад: ph-qr-code)"
+
+msgid "renk"
+msgstr "колір"
+
+msgid "Tailwind renk adi (ornek: primary, green, red)"
+msgstr "Назва кольору Tailwind (приклад: primary, green, red)"
+
+msgid "istatistik degeri"
+msgstr "значення статистики"
+
+msgid "Ornek: 350.000+"
+msgstr "Приклад: 350.000+"
+
+msgid "istatistik eki"
+msgstr "суфікс статистики"
+
+msgid "Ornek: +, %, x"
+msgstr "Приклад: +, %, x"
+
+msgid "adim numarasi"
+msgstr "номер кроку"
+
+msgid "kart varyanti"
+msgstr "варіант картки"
+
+msgid "siralama"
+msgstr "порядок"
+
+msgid "Ana Sayfa Bolumu"
+msgstr "Розділ головної сторінки"
+
+msgid "Ana Sayfa Bolumleri"
+msgstr "Розділи головної сторінки"
+
+msgid "badge rengi"
+msgstr "колір бейджа"
+
+msgid "gorsel alt metni"
+msgstr "альтернативний текст зображення"
+
+msgid "ters duzenleme"
+msgstr "зворотне розташування"
+
+msgid "Ozellik Kategorisi"
+msgstr "Категорія функцій"
+
+msgid "Ozellik Kategorileri"
+msgstr "Категорії функцій"
+
+msgid "kategori"
+msgstr "категорія"
+
+msgid "metin"
+msgstr "текст"
+
+msgid "Ozellik Maddesi"
+msgstr "Пункт функції"
+
+msgid "Ozellik Maddeleri"
+msgstr "Пункти функцій"
+
+msgid "yazar adi"
+msgstr "ім'я автора"
+
+msgid "bas harfler"
+msgstr "ініціали"
+
+msgid "rol / isletme"
+msgstr "роль / заклад"
+
+msgid "konum"
+msgstr "розташування"
+
+msgid "isletme tipi etiketi"
+msgstr "мітка типу закладу"
+
+msgid "avatar rengi"
+msgstr "колір аватара"
+
+msgid "yorum"
+msgstr "відгук"
+
+msgid "puan"
+msgstr "бал"
+
+msgid "1-5 arasi"
+msgstr "від 1 до 5"
+
+msgid "Musteri Yorumu"
+msgstr "Відгук клієнта"
+
+msgid "Musteri Yorumlari"
+msgstr "Відгуки клієнтів"
+
+msgid "etiket"
+msgstr "мітка"
+
+msgid "Phosphor icon sinifi"
+msgstr "CSS клас іконки Phosphor"
+
+msgid "Guven Rozeti"
+msgstr "Знак довіри"
+
+msgid "Guven Rozetleri"
+msgstr "Знаки довіри"
+
+msgid "Guven Lokasyon"
+msgstr "Довірена локація"
+
+msgid "Guven Lokasyonlari"
+msgstr "Довірені локації"
+
+msgid "Her Ikisi"
+msgstr "Обидва"
+
+msgid "soru"
+msgstr "питання"
+
+msgid "cevap"
+msgstr "відповідь"
+
+msgid "SSS"
+msgstr "FAQ"
+
+msgid "SSS (Sikca Sorulan Sorular)"
+msgstr "FAQ (Часті запитання)"
+
+msgid "unvan"
+msgstr "посада"
+
+msgid "Ekip Uyesi"
+msgstr "Член команди"
+
+msgid "Ekip Uyeleri"
+msgstr "Члени команди"
+
+msgid "Sirket Degeri"
+msgstr "Цінність компанії"
+
+msgid "Sirket Degerleri"
+msgstr "Цінності компанії"
+
+msgid "deger"
+msgstr "значення"
+
+msgid "Sirket Istatistigi"
+msgstr "Статистика компанії"
+
+msgid "Sirket Istatistikleri"
+msgstr "Статистика компанії"
+
+msgid "Gizlilik Politikasi"
+msgstr "Політика конфіденційності"
+
+msgid "Kullanim Sartlari"
+msgstr "Умови використання"
+
+msgid "KVKK Aydinlatma"
+msgstr "Повідомлення KVKK"
+
+msgid "icerik"
+msgstr "контент"
+
+msgid "HTML icerik desteklenir"
+msgstr "Підтримується HTML контент"
+
+msgid "son guncelleme (gorunum)"
+msgstr "останнє оновлення (відображення)"
+
+msgid "Sayfada gosterilecek tarih metni"
+msgstr "Текст дати для відображення на сторінці"
+
+msgid "meta aciklama"
+msgstr "мета-опис"
+
+msgid "Yasal Sayfa"
+msgstr "Юридична сторінка"
+
+msgid "Yasal Sayfalar"
+msgstr "Юридичні сторінки"
+
+msgid "Taslak"
+msgstr "Чернетка"
+
+msgid "Yayinda"
+msgstr "Опубліковано"
+
+msgid "Arsivlenmis"
+msgstr "Заархівовано"
+
+msgid "slug"
+msgstr "slug"
+
+msgid "ozet"
+msgstr "резюме"
+
+msgid "Kart onizlemesinde gosterilir"
+msgstr "Відображається в попередньому перегляді картки"
+
+msgid "yazar"
+msgstr "автор"
+
+msgid "yayin tarihi"
+msgstr "дата публікації"
+
+msgid "one cikan"
+msgstr "рекомендований"
+
+msgid "Blog Yazisi"
+msgstr "Стаття блогу"
+
+msgid "Blog Yazilari"
+msgstr "Статті блогу"
+
+msgid "plan"
+msgstr "план"
+
+msgid "vurgulu"
+msgstr "виділений"
+
+msgid "Kalin yazi ile gosterilir"
+msgstr "Відображається жирним шрифтом"
+
+msgid "Plan Gosterim Ozelligi"
+msgstr "Функція відображення плану"
+
+msgid "Plan Gosterim Ozellikleri"
+msgstr "Функції відображення плану"
+
+msgid "Header"
+msgstr "Header"
+
+msgid "Footer — Urun"
+msgstr "Footer — Продукт"
+
+msgid "Footer — Cozumler"
+msgstr "Footer — Рішення"
+
+msgid "Footer — Sirket"
+msgstr "Footer — Компанія"
+
+msgid "Footer — Destek"
+msgstr "Footer — Підтримка"
+
+msgid "Footer — Yasal"
+msgstr "Footer — Юридичне"
+
+msgid "Django URL adi (ornek: website:features) veya /tam/yol/"
+msgstr "Django URL ім'я (приклад: website:features) або /повний/шлях/"
+
+msgid "Dropdown aciklama metni"
+msgstr "Текст опису випадного меню"
+
+msgid "ust link"
+msgstr "батьківське посилання"
+
+msgid "Dropdown ustune bagli alt linkler icin"
+msgstr "Для підпорядкованих посилань у випадному меню"
+
+msgid "Navigasyon Linki"
+msgstr "Навігаційне посилання"
+
+msgid "Navigasyon Linkleri"
+msgstr "Навігаційні посилання"
+
+#, python-format
+msgid "[E-Menum] Yeni Iletisim Formu: %(name)s — %(topic)s"
+msgstr "[E-Menum] Нова контактна форма: %(name)s — %(topic)s"
+
+#, python-format
+msgid ""
+"Yeni iletisim formu gonderildi.\n"
+"\n"
+"Ad Soyad: %(name)s\n"
+"E-posta: %(email)s\n"
+"Telefon: %(phone)s\n"
+"Konu: %(subject)s\n"
+"Mesaj:\n"
+"%(message)s\n"
+"\n"
+"Tarih: %(date)s\n"
+"Admin panelden goruntuleyebilirsiniz."
+msgstr "Надіслано нову контактну форму.\n\nПІБ: %(name)s\nE-пошта: %(email)s\nТелефон: %(phone)s\nТема: %(subject)s\nПовідомлення:\n%(message)s\n\nДата: %(date)s\nВи можете переглянути в панелі адміністратора."
+
+#, python-format
+msgid "[E-Menum] Yeni Demo Talebi: %(business)s (%(type)s)"
+msgstr "[E-Menum] Новий запит на демо: %(business)s (%(type)s)"
+
+#, python-format
+msgid ""
+"Yeni demo talebi alindi.\n"
+"\n"
+"Ad Soyad: %(name)s\n"
+"Isletme: %(business)s\n"
+"E-posta: %(email)s\n"
+"Telefon: %(phone)s\n"
+"Isletme Tipi: %(type)s\n"
+"Sube Sayisi: %(branches)d\n"
+"Mesaj: %(message)s\n"
+"\n"
+"Tarih: %(date)s\n"
+"Admin panelden durum takibini yapabilirsiniz."
+msgstr "Отримано новий запит на демо.\n\nПІБ: %(name)s\nБізнес: %(business)s\nE-пошта: %(email)s\nТелефон: %(phone)s\nТип бізнесу: %(type)s\nКількість філій: %(branches)d\nПовідомлення: %(message)s\n\nДата: %(date)s\nВи можете відстежувати статус у панелі адміністратора."
+
+msgid "ozellikler/"
+msgstr "features/"
+
+msgid "fiyatlandirma/"
+msgstr "pricing/"
+
+msgid "hakkimizda/"
+msgstr "about/"
+
+msgid "blog/"
+msgstr "blog/"
+
+msgid "iletisim/"
+msgstr "contact/"
+
+msgid "demo/"
+msgstr "demo/"
+
+msgid "gizlilik/"
+msgstr "privacy/"
+
+msgid "kullanim-sartlari/"
+msgstr "terms/"
+
+msgid "kvkk/"
+msgstr "kvkk/"
+
+msgid "Mesajiniz basariyla gonderildi. En kisa surede size donecegiz."
+msgstr "Ваше повідомлення успішно надіслано. Ми зв'яжемося з вами якнайшвидше."
+
+msgid "Lutfen formdaki hatalari duzeltiniz."
+msgstr "Будь ласка, виправте помилки у формі."
+
+msgid ""
+"Demo talebiniz alinmistir. Ekibimiz en kisa surede sizinle iletisime "
+"gececektir."
+msgstr "Ваш запит на демо прийнято. Наша команда зв'яжеться з вами найближчим часом."
+
+msgid "Bultenimize basariyla abone oldunuz!"
+msgstr "Ви успішно підписалися на нашу розсилку!"
+
+msgid "Bu e-posta adresi zaten abone."
+msgstr "Ця електронна адреса вже підписана."
+
+msgid "Gecerli bir e-posta adresi giriniz."
+msgstr "Введіть дійсну адресу електронної пошти."
+
+msgid "Turkce"
+msgstr "Турецька"
+
+msgid "English"
+msgstr "Англійська"
+
+msgid "Arabic"
+msgstr "Арабська"
+
+msgid "Ukrainian"
+msgstr "Українська"
+
+msgid "Persian"
+msgstr "Перська"
+
+msgid "Organization context is required for this request"
+msgstr "Для цього запиту потрібен контекст організації"
+
+msgid "Organization context is required"
+msgstr "Потрібен контекст організації"
+
+msgid "Plan limit exceeded. Please upgrade your subscription."
+msgstr "Ліміт плану перевищено. Оновіть підписку."
+
+#, python-format
+msgid ""
+"You have reached the %(label)s limit for your plan (%(current)d/%(limit)d). "
+"Please upgrade to add more."
+msgstr "Ви досягли ліміту %(label)s для вашого плану (%(current)d/%(limit)d). Будь ласка, оновіть план, щоб додати більше."
+
+msgid "This feature is not available on your current plan."
+msgstr "Ця функція недоступна на вашому поточному плані."
+
+#, python-format
+msgid ""
+"%(label)s is not available on your current plan. Please upgrade to access "
+"this feature."
+msgstr "%(label)s недоступний у вашому поточному плані. Будь ласка, оновіть план для доступу до цієї функції."
+
+#, python-format
+msgid "The feature \"%(feature)s\" is not available on your current plan."
+msgstr "Функція \"%(feature)s\" недоступна у вашому поточному плані."
+
+#, python-format
+msgid ""
+"You have reached the %(label)s limit (%(current)d/%(limit)d) for your plan. "
+"Please upgrade to create more."
+msgstr "Ви досягли ліміту %(label)s (%(current)d/%(limit)d) для вашого плану. Будь ласка, оновіть план, щоб створити більше."
+
+msgid "Whether this record has been soft-deleted"
+msgstr "Чи був цей запис м'яко видалено"
+
+msgid "Organization UUID"
+msgstr "UUID організації"
+
+msgid "This resource does not belong to your organization."
+msgstr "Цей ресурс не належить вашій організації."
+
+msgid "Whether the request was successful"
+msgstr "Чи був запит успішним"
+
+msgid "The response data"
+msgstr "Дані відповіді"
+
+msgid "The list of items"
+msgstr "Список елементів"
+
+msgid "Pagination metadata"
+msgstr "Метадані пагінації"
+
+msgid "Machine-readable error code"
+msgstr "Машинозчитуваний код помилки"
+
+msgid "Human-readable error message"
+msgstr "Зрозуміле повідомлення про помилку"
+
+msgid "Additional error details (validation errors, etc.)"
+msgstr "Додаткові деталі помилки (помилки валідації тощо)"
+
+msgid "Always false for error responses"
+msgstr "Завжди false для відповідей з помилкою"
+
+msgid "Error details"
+msgstr "Деталі помилки"
+
+msgid "List of UUIDs to operate on (max 100)"
+msgstr "Список UUID для операції (максимум 100)"
+
+msgid "Number of items successfully affected"
+msgstr "Кількість успішно оброблених елементів"
+
+msgid "List of IDs that failed (if any)"
+msgstr "Список ID з помилками (якщо є)"
+
+msgid "An error occurred"
+msgstr "Виникла помилка"
+
+msgid "Authentication failed"
+msgstr "Автентифікація не вдалася"
+
+msgid "Permission denied"
+msgstr "Доступ заборонено"
+
+msgid "Resource not found"
+msgstr "Ресурс не знайдено"
+
+msgid "Not found"
+msgstr "Не знайдено"
+
+msgid "Validation error"
+msgstr "Помилка валідації"
+
+#, python-brace-format
+msgid "Rate limit exceeded. Try again in {} seconds."
+msgstr "Ліміт запитів перевищено. Спробуйте через {} секунд."
+
+msgid "Invalid request format"
+msgstr "Невірний формат запиту"
+
+msgid "Resource created successfully"
+msgstr "Ресурс успішно створено"
+
+msgid "Resource deleted successfully"
+msgstr "Ресурс успішно видалено"
+
+msgid "Cannot update resource from different organization"
+msgstr "Неможливо оновити ресурс з іншої організації"
+
+msgid "Log out"
+msgstr "Вийти"
+
+msgid "Search menu..."
+msgstr "Пошук у меню..."
+
+msgid "No results"
+msgstr "Немає результатів"
+
+msgid "Administrator"
+msgstr "Адміністратор"
+
+msgid "Breadcrumb"
+msgstr "Навігаційний шлях"
+
+msgid "Home"
+msgstr "Головна"
+
+msgid "View site"
+msgstr "Переглянути сайт"
+
+msgid "All rights reserved."
+msgstr "Всі права захищені."
+
+msgid "Navigation"
+msgstr "Навігація"
+
+#, python-format
+msgid "Add %(name)s"
+msgstr "Додати %(name)s"
+
+msgid "View Storefront"
+msgstr "Переглянути вітрину"
+
+msgid "Please correct the error below."
+msgstr "Будь ласка, виправте помилку нижче."
+
+msgid "Please correct the errors below."
+msgstr "Будь ласка, виправте помилки нижче."
+
+msgid "Filter"
+msgstr "Фільтр"
+
+msgid "Clear all filters"
+msgstr "Очистити всі фільтри"
+
+msgid "Welcome back"
+msgstr "З поверненням"
+
+msgid "Here is what is happening with your platform today."
+msgstr "Ось що відбувається з вашою платформою сьогодні."
+
+msgid "models"
+msgstr "моделі"
+
+msgid "Manage"
+msgstr "Керувати"
+
+msgid "Quick Access"
+msgstr "Швидкий доступ"
+
+msgid "Add"
+msgstr "Додати"
+
+msgid "Recent Actions"
+msgstr "Останні дії"
+
+msgid "No recent actions."
+msgstr "Немає останніх дій."
+
+msgid "ago"
+msgstr "тому"
+
+msgid "Please enter a product name first."
+msgstr "Спочатку введіть назву продукту."
+
+msgid "Existing descriptions will be overwritten. Continue?"
+msgstr "Існуючі описи будуть перезаписані. Продовжити?"
+
+msgid "Description generated successfully!"
+msgstr "Опис успішно згенеровано!"
+
+msgid "credits"
+msgstr "кредити"
+
+msgid "Generation failed. Please try again."
+msgstr "Генерація не вдалася. Спробуйте знову."
+
+msgid "Network error. Please check your connection."
+msgstr "Помилка мережі. Перевірте підключення."
+
+msgid "AI Generate"
+msgstr "Генерувати ШІ"
+
+msgid "Generating..."
+msgstr "Генерація..."
+
+msgid ""
+"Tip: Enter a short description or keywords first, then click AI Generate to "
+"create a full description."
+msgstr "Порада: Спочатку введіть короткий опис або ключові слова, потім натисніть AI Генерація для створення повного опису."
+
+msgid "AI Image generation coming soon"
+msgstr "Генерація зображень ШІ незабаром"
+
+msgid "AI Image"
+msgstr "Зображення ШІ"
+
+msgid "Soon"
+msgstr "Незабаром"
+
+msgid ""
+"AI Image generation requires product name, description, and category to be "
+"filled first."
+msgstr "Генерація зображень AI вимагає попереднього заповнення назви продукту, опису та категорії."
+
+msgid ""
+"Cross-role permission comparison. Shows which roles have which permissions "
+"across all resources."
+msgstr "Порівняння дозволів між ролями. Показує, які ролі мають які дозволи для всіх ресурсів."
+
+msgid "Resources"
+msgstr "Ресурси"
+
+msgid "Assignments"
+msgstr "Призначення"
+
+msgid "All Roles"
+msgstr "Усі ролі"
+
+msgid "Scroll horizontally to see all roles"
+msgstr "Прокрутіть горизонтально, щоб побачити всі ролі"
+
+msgid "Granted"
+msgstr "Надано"
+
+msgid "Conditional (ABAC)"
+msgstr "Умовний (ABAC)"
+
+msgid "Full Access"
+msgstr "Повний доступ"
+
+msgid "Conditional (ABAC rules apply)"
+msgstr "Умовний (застосовуються правила ABAC)"
+
+msgid "No Access"
+msgstr "Немає доступу"
+
+msgid "Reports"
+msgstr "Звіти"
+
+msgid "Reports & Analytics"
+msgstr "Звіти та аналітика"
+
+msgid "Monitor your business performance and track key metrics."
+msgstr "Моніторинг ефективності бізнесу та відстеження ключових метрик."
+
+msgid "Total Users"
+msgstr "Всього користувачів"
+
+msgid "Active Menus"
+msgstr "Активні меню"
+
+msgid "Available Reports"
+msgstr "Доступні звіти"
+
+msgid "System activity and changes"
+msgstr "Системна активність та зміни"
+
+msgid "User Activity"
+msgstr "Активність користувачів"
+
+msgid "User sessions and logins"
+msgstr "Сесії та входи користувачів"
+
+msgid "Order History"
+msgstr "Історія замовлень"
+
+msgid "All orders and transactions"
+msgstr "Усі замовлення та транзакції"
+
+msgid "Product Catalog"
+msgstr "Каталог продуктів"
+
+msgid "Menu items and pricing"
+msgstr "Позиції меню та ціноутворення"
+
+msgid "Coming Soon"
+msgstr "Незабаром"
+
+msgid "Advanced Analytics"
+msgstr "Розширена аналітика"
+
+msgid ""
+"Revenue tracking, customer insights, menu performance, and AI-powered "
+"recommendations will be available in a future update."
+msgstr "Відстеження доходів, аналітика клієнтів, ефективність меню та рекомендації на основі AI будуть доступні в майбутньому оновленні."
+
+msgid "Platform Settings"
+msgstr "Налаштування платформи"
+
+msgid "Manage platform configuration, integrations, and preferences."
+msgstr "Керування конфігурацією платформи, інтеграціями та налаштуваннями."
+
+msgid "AI Services"
+msgstr "Сервіси ШІ"
+
+msgid "AI Providers"
+msgstr "Провайдери ШІ"
+
+msgid "Configure text & image generation providers, API keys, and models"
+msgstr "Налаштування провайдерів генерації тексту та зображень, API ключів та моделей"
+
+msgid "Generation History"
+msgstr "Історія генерацій"
+
+msgid "View AI generation logs, credits used, and status"
+msgstr "Перегляд журналів генерації ШІ, використаних кредитів та статусу"
+
+msgid "Account & Security"
+msgstr "Обліковий запис та безпека"
+
+msgid "Change Password"
+msgstr "Змінити пароль"
+
+msgid "Update your admin account password"
+msgstr "Оновіть пароль вашого адміністраторського облікового запису"
+
+msgid "View and manage role-permission assignments"
+msgstr "Перегляд та керування призначеннями ролей-дозволів"
+
+msgid "Subscription & Billing"
+msgstr "Підписка та розрахунки"
+
+msgid "Manage subscription plans, pricing, and features"
+msgstr "Керування планами підписки, ціноутворенням та функціями"
+
+msgid "View active subscriptions and billing history"
+msgstr "Перегляд активних підписок та історії розрахунків"
+
+msgid "Manage tenant organizations and their settings"
+msgstr "Керування організаціями-тенантами та їх налаштуваннями"
+
+msgid "Manage platform users, roles, and access"
+msgstr "Керування користувачами платформи, ролями та доступом"
+
+msgid "Analytics, audit logs, and business metrics"
+msgstr "Аналітика, журнали аудиту та бізнес-метрики"
+
+msgid "Remove"
+msgstr "Видалити"
+
+msgid "Drop images here or click to browse"
+msgstr "Перетягніть зображення сюди або натисніть для вибору"
+
+msgid "Multiple files allowed - JPEG, PNG, WebP, GIF"
+msgstr "Допускається кілька файлів - JPEG, PNG, WebP, GIF"
+
+msgid "Upload Images"
+msgstr "Завантажити зображення"
+
+msgid "Add URL"
+msgstr "Додати URL"
+
+msgid "image(s)"
+msgstr "зображення"
+
+msgid "Image could not be loaded"
+msgstr "Не вдалося завантажити зображення"
+
+msgid "Change image"
+msgstr "Змінити зображення"
+
+msgid "Change"
+msgstr "Змінити"
+
+msgid "Remove image"
+msgstr "Видалити зображення"
+
+msgid "Drop image here or click to browse"
+msgstr "Перетягніть зображення сюди або натисніть для вибору"
+
+msgid "JPEG, PNG, WebP, GIF - Max 10MB"
+msgstr "JPEG, PNG, WebP, GIF - Макс. 10МБ"
+
+msgid "Uploading..."
+msgstr "Завантаження..."
+
+msgid "Hide URL input"
+msgstr "Приховати поле URL"
+
+msgid "Or enter URL manually"
+msgstr "Або введіть URL вручну"
+
+msgid "Close sidebar"
+msgstr "Закрити бічну панель"
+
+msgid "Main Navigation"
+msgstr "Головна навігація"
+
+msgid "All Menus"
+msgstr "Усі меню"
+
+msgid "Tables & QR"
+msgstr "Столики та QR"
+
+msgid "Logout"
+msgstr "Вихід"
+
+msgid "Open sidebar"
+msgstr "Відкрити бічну панель"
+
+msgid "Search..."
+msgstr "Пошук..."
+
+msgid "Toggle dark mode"
+msgstr "Перемкнути темний режим"
+
+msgid "Change language"
+msgstr "Змінити мову"
+
+msgid "E-Menum - Enterprise QR Menu SaaS Platform for restaurants and cafes"
+msgstr "E-Menum - Корпоративна SaaS-платформа QR-меню для ресторанів та кафе"
+
+msgid "Skip to main content"
+msgstr "Перейти до основного вмісту"
+
+msgid "Close"
+msgstr "Закрити"
+
+msgid "Ana navigasyon"
+msgstr "Головна навігація"
+
+msgid "Acik temaya gec"
+msgstr "Перейти на світлу тему"
+
+msgid "Koyu temaya gec"
+msgstr "Перейти на темну тему"
+
+msgid "Giris Yap"
+msgstr "Увійти"
+
+msgid "Mobil navigasyon"
+msgstr "Мобільна навігація"
+
+msgid "Urun"
+msgstr "Продукт"
+
+msgid "Cozumler"
+msgstr "Рішення"
+
+msgid "Sirket"
+msgstr "Компанія"
+
+msgid "Destek"
+msgstr "Підтримка"
+
+msgid "Bir hata olustu. Lutfen tekrar deneyin."
+msgstr "Виникла помилка. Будь ласка, спробуйте знову."
+
+msgid "Bulten"
+msgstr "Розсилка"
+
+msgid "Yeniliklerden ve kampanyalardan haberdar olun."
+msgstr "Будьте в курсі новин та акцій."
+
+msgid "Abone Ol"
+msgstr "Підписатися"
+
+msgid "Tum haklari saklidir."
+msgstr "Всі права захищені."
+
+msgid "WhatsApp ile iletisime gec"
+msgstr "Зв'язатися через WhatsApp"
+
+msgid "View cart"
+msgstr "Переглянути кошик"
+
+msgid "Call waiter"
+msgstr "Покликати офіціанта"
+
+msgid "Menu categories"
+msgstr "Категорії меню"
+
+msgid "items"
+msgstr "позиції"
+
+msgid "Your Order"
+msgstr "Ваше замовлення"
+
+msgid "Your cart is empty"
+msgstr "Ваш кошик порожній"
+
+msgid "Place Order"
+msgstr "Оформити замовлення"
+
+msgid "Call Waiter"
+msgstr "Покликати офіціанта"
+
+msgid "A waiter will come to your table shortly."
+msgstr "Офіціант незабаром підійде до вашого столика."
+
+msgid "Cancel"
+msgstr "Скасувати"
+
+msgid "Confirm"
+msgstr "Підтвердити"
+
+msgid "Sending..."
+msgstr "Надсилання..."
+
+msgid "Request Sent!"
+msgstr "Запит надіслано!"
+
+msgid "A waiter has been notified and will arrive soon."
+msgstr "Офіціанта повідомлено, він незабаром підійде."
+
+msgid "Powered by"
+msgstr "Працює на"
+
+#, python-format
+msgid ""
+"Digital menu for %(name)s. Browse our menu, view prices, and place orders "
+"directly from your phone."
+msgstr "Цифрове меню для %(name)s. Переглядайте наше меню, дивіться ціни та замовляйте прямо з телефону."
+
+msgid "Featured items"
+msgstr "Рекомендовані позиції"
+
+msgid "Chef's Recommendations"
+msgstr "Рекомендації шефа"
+
+msgid "Chef's Pick"
+msgstr "Вибір шефа"
+
+msgid "Sold Out"
+msgstr "Розпродано"
+
+msgid "Chef Recommended"
+msgstr "Рекомендація шефа"
+
+msgid "Featured"
+msgstr "Рекомендований"
+
+msgid "from"
+msgstr "від"
+
+msgid "Add to cart"
+msgstr "Додати до кошика"
+
+msgid "No products in this category"
+msgstr "Немає продуктів у цій категорії"
+
+msgid "Menu Coming Soon"
+msgstr "Меню незабаром"
+
+msgid "We're updating our menu. Please check back later."
+msgstr "Ми оновлюємо наше меню. Будь ласка, завітайте пізніше."
+
+msgid "Allergen Information"
+msgstr "Інформація про алергени"
+
+msgid ""
+"Our food may contain allergens. Please inform our staff of any allergies "
+"before ordering. Full allergen information is available upon request."
+msgstr "Наша їжа може містити алергени. Будь ласка, повідомте наш персонал про будь-які алергії перед замовленням. Повна інформація про алергени доступна за запитом."
+
+msgid "Added to cart"
+msgstr "Додано до кошика"
+
+msgid "Failed to add item"
+msgstr "Не вдалося додати позицію"
+
+msgid "Back to menu"
+msgstr "Повернутися до меню"
+
+msgid "Currently Unavailable"
+msgstr "Наразі недоступно"
+
+msgid "Spicy"
+msgstr "Гостре"
+
+msgid "kcal"
+msgstr "ккал"
+
+msgid "Select Size"
+msgstr "Оберіть розмір"
+
+msgid "Unavailable"
+msgstr "Недоступно"
+
+msgid "Extras & Customizations"
+msgstr "Додатки та налаштування"
+
+msgid "Required"
+msgstr "Обов'язково"
+
+msgid "Nutrition Facts"
+msgstr "Харчова цінність"
+
+msgid "Per serving"
+msgstr "На порцію"
+
+msgid "Carbs"
+msgstr "Вуглеводи"
+
+msgid "This item is currently unavailable"
+msgstr "Ця позиція наразі недоступна"
+
+msgid "Online ordering is not available for this menu"
+msgstr "Онлайн-замовлення недоступне для цього меню"
+
+msgid ""
+"E-Menum - Turkiye'nin yapay zeka destekli dijital menu platformu. "
+"Misyonumuz, ekibimiz ve degerlerimiz."
+msgstr "E-Menum - платформа цифрового меню з підтримкою штучного інтелекту з Туреччини. Наша місія, команда та цінності."
+
+msgid "Hikayemiz"
+msgstr "Наша історія"
+
+msgid ""
+"E-Menum, restoran ve kafe sahiplerinin dijital menulere gecis surecinde "
+"yasadiklari zorluklar gozetilerek kurulmustur. Basili menulerin pahali, "
+"guncellenmesi zor ve hijyenik olarak riskli oldugunu gorduk."
+msgstr "E-Menum був заснований з урахуванням труднощів, з якими стикаються власники ресторанів та кафе при переході на цифрові меню. Ми побачили, що друковані меню дорогі, складні в оновленні та ризиковані з точки зору гігієни."
+
+msgid ""
+"Yapay zeka teknolojisini gastronomi sektoruyle birlestirerek, isletmelerin "
+"sadece dijital menu degil, veri odakli kararlar alabilecekleri bir platform "
+"gelistirdik."
+msgstr "Поєднавши технологію штучного інтелекту з гастрономічною галуззю, ми розробили платформу, де бізнеси можуть не лише створювати цифрове меню, але й приймати рішення на основі даних."
+
+msgid "Ekibimiz"
+msgstr "Наша команда"
+
+msgid "Gastronomi ve teknoloji tutkunlari."
+msgstr "Ентузіасти гастрономії та технологій."
+
+msgid "Degerlerimiz"
+msgstr "Наші цінності"
+
+msgid ""
+"E-Menum Blog - Dijital menu, restoran yonetimi, gastronomi trendleri ve "
+"teknoloji haberleri."
+msgstr "Блог E-Menum - Цифрове меню, управління рестораном, гастрономічні тренди та технологічні новини."
+
+msgid "Sayfalama"
+msgstr "Пагінація"
+
+msgid "Onceki"
+msgstr "Попередня"
+
+msgid "Sonraki"
+msgstr "Наступна"
+
+msgid "Yakinda"
+msgstr "Незабаром"
+
+msgid "Iceriklerimiz Hazirlaniyor"
+msgstr "Контент готується"
+
+msgid ""
+"Blog yazilarimiz yakinda yayinda olacak. Bultenimize abone olarak haberdar "
+"olun."
+msgstr "Наші статті в блозі скоро будуть опубліковані. Підпишіться на нашу розсилку, щоб бути в курсі."
+
+msgid "Tum Yazilar"
+msgstr "Всі статті"
+
+msgid ""
+"E-Menum ile iletisime gecin. Sorularinizi yanitlayalim, isletmenize en uygun "
+"cozumu birlikte bulalim."
+msgstr "Зв'яжіться з E-Menum. Давайте відповімо на ваші запитання та разом знайдемо найкраще рішення для вашого бізнесу."
+
+msgid "Adres"
+msgstr "Адреса"
+
+msgid "Telefon"
+msgstr "Телефон"
+
+msgid "E-posta"
+msgstr "Електронна пошта"
+
+msgid "Mesaj Gonderin"
+msgstr "Надішліть повідомлення"
+
+msgid "Mesaj Gonder"
+msgstr "Надіслати повідомлення"
+
+msgid ""
+"E-Menum platformunu canli gorun. Ucretsiz demo talep edin, ekibimiz sizinle "
+"iletisime gecsin."
+msgstr "Подивіться платформу E-Menum наживо. Запросіть безкоштовну демонстрацію, і наша команда зв'яжеться з вами."
+
+msgid "Demo Talep Formu"
+msgstr "Форма запиту на демо"
+
+msgid "Demo Talep Et"
+msgstr "Замовити демо"
+
+msgid "Bilgileriniz guvenle saklanir ve ucuncu taraflarla paylasilmaz."
+msgstr "Ваші дані зберігаються безпечно і не передаються третім особам."
+
+msgid "Demo'da Neler Goreceksiniz?"
+msgstr "Що ви побачите на демо?"
+
+msgid "Canli Platform Turu"
+msgstr "Живий тур платформою"
+
+msgid "Admin paneli, menu olusturma ve QR kod surecini canli gorun."
+msgstr "Побачте адмін-панель, створення меню та процес QR-коду наживо."
+
+msgid "Sektorunuze Ozel Cozum"
+msgstr "Рішення для вашої галузі"
+
+msgid "Isletme tipinize ozel ozellikleri ve kullanim senaryolarini inceleyin."
+msgstr "Ознайомтеся з функціями та сценаріями використання для вашого типу закладу."
+
+msgid "ROI Hesaplama"
+msgstr "Розрахунок ROI"
+
+msgid ""
+"E-Menum'un isletmenize saglayacagi tasarrufu ve gelir artisini hesaplayin."
+msgstr "Розрахуйте економію та зростання доходу, які E-Menum принесе вашому бізнесу."
+
+msgid "Plan Danismanligi"
+msgstr "Консультація з планів"
+
+msgid ""
+"Sube sayiniza ve ihtiyaclariniza gore en uygun plani birlikte belirleyelim."
+msgstr "Давайте разом визначимо найкращий план відповідно до кількості ваших філій та потреб."
+
+msgid "SSL Guvenli"
+msgstr "SSL захищено"
+
+msgid "KVKK Uyumlu"
+msgstr "Відповідність KVKK"
+
+msgid "7/24 Destek"
+msgstr "Підтримка 24/7"
+
+msgid ""
+"E-Menum'un 50'den fazla ozelligi. QR menu, siparis yonetimi, AI icerik "
+"uretimi, analitik, coklu sube yonetimi ve daha fazlasi."
+msgstr "Понад 50 функцій E-Menum. QR-меню, управління замовленнями, AI-генерація контенту, аналітика, управління кількома філіями та багато іншого."
+
+msgid ""
+"E-Menum - Restoran ve kafeler icin yapay zeka destekli dijital menu "
+"platformu. QR menu, siparis yonetimi, analitik ve daha fazlasi."
+msgstr "E-Menum - платформа цифрового меню зі штучним інтелектом для ресторанів та кафе. QR-меню, управління замовленнями, аналітика та багато іншого."
+
+msgid "Neden Dijital Menu?"
+msgstr "Чому цифрове меню?"
+
+msgid "Basili menulerin sorunlarina modern cozum."
+msgstr "Сучасне рішення проблем друкованих меню."
+
+msgid "Tek Platformda Her Sey"
+msgstr "Все на одній платформі"
+
+msgid "50'den fazla ozellikle isletmenizi dijitallestirin."
+msgstr "Діджиталізуйте свій заклад з понад 50 функціями."
+
+msgid "Tum Ozellikleri Gor"
+msgstr "Переглянути всі функції"
+
+msgid "Nasil Calisir?"
+msgstr "Як це працює?"
+
+msgid "3 basit adimda dijital menunuzu olusturun."
+msgstr "Створіть своє цифрове меню за 3 простих кроки."
+
+msgid "Isletmenize Uygun Plan"
+msgstr "План для вашого закладу"
+
+msgid "Ucretsiz baslayin, buyudukce yukseltin."
+msgstr "Починайте безкоштовно, оновлюйте з ростом."
+
+msgid "ay"
+msgstr "міс."
+
+msgid "Ozel"
+msgstr "Індивідуальний"
+
+#, python-format
+msgid "%(days)s Gun Dene"
+msgstr "%(days)s днів безкоштовно"
+
+msgid "Basla"
+msgstr "Почати"
+
+msgid "Tum Planlari Karsilastir"
+msgstr "Порівняти всі плани"
+
+msgid "KVKK Aydinlatma Metni"
+msgstr "Текст повідомлення KVKK"
+
+msgid ""
+"E-Menum KVKK aydinlatma metni. 6698 sayili Kisisel Verilerin Korunmasi "
+"Kanunu kapsaminda aydinlatma yükumlulugumuzu yerine getiriyoruz."
+msgstr "Інформаційний текст E-Menum щодо KVKK. Ми виконуємо наш обов'язок інформування відповідно до Закону про захист персональних даних No 6698."
+
+msgid "Son guncelleme: 22 Subat 2026"
+msgstr "Останнє оновлення: 22 лютого 2026"
+
+msgid "1. Veri Sorumlusu"
+msgstr "1. Відповідальний за дані"
+
+msgid ""
+"6698 sayili Kisisel Verilerin Korunmasi Kanunu (KVKK) uyarinca, kisisel "
+"verileriniz veri sorumlusu sifatiyla E-Menum tarafindan asagida aciklanan "
+"amaclar kapsaminda islenebilecektir."
+msgstr "Відповідно до Закону про захист персональних даних No 6698 (KVKK), ваші персональні дані можуть оброблятися компанією E-Menum як відповідальною особою для цілей, описаних нижче."
+
+msgid "2. Islenen Kisisel Veriler"
+msgstr "2. Оброблювані персональні дані"
+
+msgid ""
+"Kimlik bilgileri (ad, soyad), iletisim bilgileri (e-posta, telefon), isletme "
+"bilgileri, kullanim verileri ve cihaz bilgileri islenebilir."
+msgstr "Можуть оброблятися ідентифікаційні дані (ім'я, прізвище), контактні дані (e-пошта, телефон), бізнес-дані, дані використання та дані пристрою."
+
+msgid "3. Veri Isleme Amaclar"
+msgstr "3. Цілі обробки даних"
+
+msgid "Hizmetlerimizin sunulmasi ve iyilestirilmesi"
+msgstr "Надання та покращення наших послуг"
+
+msgid "Kullanici hesaplarinin yonetimi"
+msgstr "Управління обліковими записами користувачів"
+
+msgid "Faturalandirma ve odeme islemleri"
+msgstr "Виставлення рахунків та обробка платежів"
+
+msgid "Teknik destek ve musteri hizmetleri"
+msgstr "Технічна підтримка та обслуговування клієнтів"
+
+msgid "Yasal yukumluluklerin yerine getirilmesi"
+msgstr "Виконання юридичних зобов'язань"
+
+msgid "Istatistiksel analiz ve raporlama"
+msgstr "Статистичний аналіз та звітність"
+
+msgid "4. Veri Aktarimi"
+msgstr "4. Передача даних"
+
+msgid ""
+"Kisisel verileriniz, yasal zorunluluklar disinda ucuncu taraflara "
+"aktarilmaz. Hizmet saglanmasi icin gerekli oldugu durumlarda, yurt ici ve "
+"yurt disindaki is ortaklarina ve hizmet saglayicilarina aktarilabilir."
+msgstr "Ваші персональні дані не передаються третім особам, за винятком вимог законодавства. У разі необхідності для надання послуг вони можуть передаватися діловим партнерам та постачальникам послуг у країні та за кордоном."
+
+msgid "5. Veri Saklama Suresi"
+msgstr "5. Термін зберігання даних"
+
+msgid ""
+"Kisisel verileriniz, isleme amacinin gerektirdigi sure boyunca ve yasal "
+"muhafaza surelerince saklanir. Sure bitiminde veriler silinir, yok edilir "
+"veya anonim hale getirilir."
+msgstr "Ваші персональні дані зберігаються протягом строку, необхідного для мети обробки, та протягом строків зберігання, передбачених законодавством. Після закінчення строку дані видаляються, знищуються або анонімізуються."
+
+msgid "6. KVKK Kapsamindaki Haklariniz"
+msgstr "6. Ваші права за KVKK"
+
+msgid "KVKK'nin 11. maddesi kapsaminda asagidaki haklara sahipsiniz:"
+msgstr "Відповідно до статті 11 KVKK ви маєте такі права:"
+
+msgid "Kisisel verilerinizin islenip islenmedigini ogrenme"
+msgstr "Дізнатися, чи обробляються ваші персональні дані"
+
+msgid "Islenmisse buna iliskin bilgi talep etme"
+msgstr "Запросити інформацію, якщо вони обробляються"
+
+msgid "Isleme amacini ve amacina uygun kullanilip kullanilmadigini ogrenme"
+msgstr "Дізнатися мету обробки та чи використовуються дані відповідно до неї"
+
+msgid "Yurt icinde veya yurt disinda aktarildigi ucuncu kisileri bilme"
+msgstr "Знати третіх осіб, яким передаються дані в країні або за кордоном"
+
+msgid "Eksik veya yanlis islenmisse duzeltilmesini isteme"
+msgstr "Вимагати виправлення неповних або неправильних даних"
+
+msgid ""
+"KVKK'nin 7. maddesindeki sartlar cercevesinde silinmesini veya yok "
+"edilmesini isteme"
+msgstr "Вимагати видалення або знищення відповідно до умов статті 7 KVKK"
+
+msgid ""
+"Islenme amacini asan veya kanuna aykiri islenmesi sebebiyle zarara ugramaniz "
+"halinde zararin giderilmesini talep etme"
+msgstr "Вимагати відшкодування збитків у разі понесення шкоди внаслідок обробки, що перевищує мету або суперечить закону"
+
+msgid "7. Basvuru"
+msgstr "7. Звернення"
+
+msgid ""
+"KVKK kapsamindaki taleplerinizi info@e-menum.com adresine yazili olarak "
+"iletebilirsiniz. Basvurunuz en gec 30 gun icinde degerlendirilecektir."
+msgstr "Ви можете надіслати свої запити в рамках KVKK у письмовій формі на адресу info@e-menum.com. Ваше звернення буде розглянуто протягом 30 днів."
+
+msgid "Son guncelleme:"
+msgstr "Останнє оновлення:"
+
+msgid "Sikca Sorulan Sorular"
+msgstr "Часті запитання"
+
+msgid "Merak ettiginiz sorularin cevaplari burada."
+msgstr "Тут відповіді на питання, які вас цікавлять."
+
+msgid "Platform Onizleme"
+msgstr "Попередній перегляд платформи"
+
+msgid "Aylik"
+msgstr "Щомісяця"
+
+msgid "Yillik faturalandirma"
+msgstr "Щорічне виставлення рахунків"
+
+msgid "Yillik"
+msgstr "Щорічно"
+
+msgid "0"
+msgstr "0"
+
+msgid "yil/12"
+msgstr "рік/12"
+
+msgid "Bize Ulasin"
+msgstr "Зв'яжіться з нами"
+
+msgid "Ucretsiz Basla"
+msgstr "Почати безкоштовно"
+
+msgid "14 Gun Deneyin"
+msgstr "Спробуйте 14 днів"
+
+msgid "Musterilerimiz Ne Diyor?"
+msgstr "Що кажуть наші клієнти?"
+
+msgid "Binlerce isletme E-Menum ile dijital donusumunu tamamladi."
+msgstr "Тисячі закладів завершили цифрову трансформацію з E-Menum."
+
+msgid ""
+"E-Menum fiyatlandirma planlari. Ucretsiz baslatin, isletmeniz buyudukce "
+"yükseltin. 14 gun ucretsiz deneme."
+msgstr "Тарифні плани E-Menum. Почніть безкоштовно, оновлюйте в міру зростання вашого бізнесу. 14 днів безкоштовного пробного періоду."
+
+msgid "Detayli Karsilastirma"
+msgstr "Детальне порівняння"
+
+msgid "Ozellik"
+msgstr "Функція"
+
+msgid ""
+"E-Menum gizlilik politikasi. Kisisel verilerinizin nasil toplandigi, "
+"islendigi ve korunduÄu hakkinda bilgi."
+msgstr "Політика конфіденційності E-Menum. Інформація про те, як збираються, обробляються та захищаються ваші персональні дані."
+
+msgid "1. Toplanan Veriler"
+msgstr "1. Зібрані дані"
+
+msgid ""
+"E-Menum platformunu kullandiginizda asagidaki verileri toplayabiliriz: ad, "
+"soyad, e-posta adresi, telefon numarasi, isletme bilgileri, kullanim "
+"istatistikleri ve cihaz bilgileri."
+msgstr "При використанні платформи E-Menum ми можемо збирати такі дані: ім'я, прізвище, адреса електронної пошти, номер телефону, бізнес-інформація, статистика використання та інформація про пристрій."
+
+msgid "2. Verilerin Kullanim Amaci"
+msgstr "2. Мета використання даних"
+
+msgid ""
+"Toplanan veriler hizmetlerimizi sunmak, iyilestirmek, guvenligini saglamak "
+"ve yasal yukumluluklerimizi yerine getirmek amaciyla kullanilir."
+msgstr "Зібрані дані використовуються для надання, покращення та забезпечення безпеки наших послуг, а також для виконання наших юридичних зобов'язань."
+
+msgid "3. Verilerin Paylasilmasi"
+msgstr "3. Передача даних"
+
+msgid ""
+"Kisisel verileriniz, yasal zorunluluklar disinda ucuncu taraflarla "
+"paylasilmaz. Hizmet saglayicilarimiz ile yalnizca hizmet sunumu icin gerekli "
+"olan minimum veri paylasilir."
+msgstr "Ваші персональні дані не передаються третім особам, за винятком вимог законодавства. З нашими постачальниками послуг передається лише мінімум даних, необхідних для надання послуг."
+
+msgid "4. Veri Guvenligi"
+msgstr "4. Безпека даних"
+
+msgid ""
+"Verileriniz SSL/TLS sifrelemesi, guclu parola politikalari ve duzenli "
+"guvenlik denetimleri ile korunur. Sunucularimiz Avrupa merkezli veri "
+"merkezlerinde barindirilmaktadir."
+msgstr "Ваші дані захищені шифруванням SSL/TLS, надійними політиками паролів та регулярними аудитами безпеки. Наші сервери розташовані у центрах обробки даних в Європі."
+
+msgid "5. Cerezler"
+msgstr "5. Файли cookie"
+
+msgid ""
+"Platformumuz, kullanici deneyimini iyilestirmek icin cerezler kullanir. "
+"Cerez tercihlerinizi tarayici ayarlarinizdan yonetebilirsiniz."
+msgstr "Наша платформа використовує файли cookie для покращення користувацького досвіду. Ви можете керувати налаштуваннями файлів cookie у налаштуваннях браузера."
+
+msgid "6. Haklariniz"
+msgstr "6. Ваші права"
+
+msgid ""
+"KVKK kapsaminda kisisel verilerinize erisim, duzeltme, silme ve tasima "
+"haklarina sahipsiniz. Bu haklarinizi kullanmak icin info@e-menum.com "
+"adresinden bize ulasabilirsiniz."
+msgstr "У рамках KVKK ви маєте право на доступ, виправлення, видалення та перенесення ваших персональних даних. Для реалізації цих прав зверніться до нас за адресою info@e-menum.com."
+
+msgid "7. Iletisim"
+msgstr "7. Контакт"
+
+msgid ""
+"Gizlilik politikamiz hakkinda sorulariniz icin info@e-menum.com adresinden "
+"bize ulasabilirsiniz."
+msgstr "Якщо у вас є запитання щодо нашої політики конфіденційності, ви можете зв'язатися з нами за адресою info@e-menum.com."
+
+msgid "E-Menum kullanim sartlari ve kosullari."
+msgstr "Умови та положення використання E-Menum."
+
+msgid "1. Hizmet Tanimi"
+msgstr "1. Визначення послуги"
+
+msgid ""
+"E-Menum, isletmelere dijital menu, siparis yonetimi ve analitik hizmetleri "
+"sunan bir SaaS platformudur. Bu sartlar platformun kullanimine iliskin "
+"kosullari duzenler."
+msgstr "E-Menum - це SaaS-платформа, що надає бізнесам послуги цифрового меню, управління замовленнями та аналітики. Ці умови регулюють використання платформи."
+
+msgid "2. Hesap Olusturma"
+msgstr "2. Створення облікового запису"
+
+msgid ""
+"Platformu kullanmak icin bir hesap olusturmaniz gerekir. Hesap "
+"bilgilerinizin dogrulugu ve guvenliginden siz sorumlusunuz."
+msgstr "Для використання платформи вам потрібно створити обліковий запис. Ви відповідаєте за точність та безпеку інформації вашого облікового запису."
+
+msgid "3. Abonelik ve Odeme"
+msgstr "3. Підписка та оплата"
+
+msgid ""
+"Ucretli planlar aylik veya yillik faturalandirilir. Plan degisiklikleri bir "
+"sonraki fatura donemine yansir. 14 gunluk ucretsiz deneme suresi sonunda "
+"otomatik faturalandirma baslar."
+msgstr "Платні плани виставляються щомісяця або щорічно. Зміни плану набувають чинності в наступному розрахунковому періоді. Після закінчення 14-денного безкоштовного пробного періоду починається автоматичне виставлення рахунків."
+
+msgid "4. Kabul Edilebilir Kullanim"
+msgstr "4. Допустиме використання"
+
+msgid ""
+"Platformu yalnizca yasal amaclarla kullanabilirsiniz. Zararli yazilim, spam "
+"veya yetkisiz erisim girisimleri yasaktir."
+msgstr "Ви можете використовувати платформу лише в законних цілях. Шкідливе програмне забезпечення, спам або спроби несанкціонованого доступу заборонені."
+
+msgid "5. Fikri Mulkiyet"
+msgstr "5. Інтелектуальна власність"
+
+msgid ""
+"E-Menum platformu, yazilimi, tasarimi ve icerikleri E-Menum'a aittir. "
+"Kullanicilar tarafindan yuklenen icerikler (menu, gorseller) kullanicinin "
+"mulkiyetindedir."
+msgstr "Платформа E-Menum, програмне забезпечення, дизайн та контент належать E-Menum. Контент, завантажений користувачами (меню, зображення), є власністю користувача."
+
+msgid "6. Hizmet Duzeydi"
+msgstr "6. Рівень обслуговування"
+
+#, python-format
+msgid ""
+"E-Menum, %%99.9 uptime hedefi ile hizmet vermektedir. Planli bakimlar "
+"onceden bildirilir."
+msgstr "E-Menum надає послуги з метою досягнення %%99.9 безвідмовної роботи. Про планові технічні роботи повідомляється заздалегідь."
+
+msgid "7. Sorumluluk Sinirlamasi"
+msgstr "7. Обмеження відповідальності"
+
+msgid ""
+"E-Menum, platformun kullanimindan kaynaklanan dolayli zararlardan sorumlu "
+"tutulamaz. Sorumlulugumuz odenen abonelik bedeli ile sinirlidir."
+msgstr "E-Menum не несе відповідальності за непрямі збитки, що виникають внаслідок використання платформи. Наша відповідальність обмежена сплаченою вартістю підписки."
+
+msgid "8. Iletisim"
+msgstr "8. Контакт"
+
+msgid ""
+"Kullanim sartlari hakkinda sorulariniz icin info@e-menum.com adresinden bize "
+"ulasabilirsiniz."
+msgstr "Якщо у вас є запитання щодо умов використання, ви можете зв'язатися з нами за адресою info@e-menum.com."

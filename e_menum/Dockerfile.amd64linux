@@ -1,0 +1,166 @@
+# syntax=docker/dockerfile:1
+# =============================================================================
+# E-Menum Django - Production Dockerfile (AMD64 Linux)
+# Multi-stage build for Hetzner / Coolify / any AMD64 Linux server
+# =============================================================================
+# Build:  docker build --platform linux/amd64 -f Dockerfile.amd64linux -t emenum:latest .
+# Run:    docker compose -f docker-compose.prod.yml up -d
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Stage 1: Builder - Install dependencies and compile Python packages
+# -----------------------------------------------------------------------------
+FROM --platform=linux/amd64 python:3.11-slim-bookworm AS builder
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create virtual environment
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Upgrade pip and install wheel
+RUN pip install --upgrade pip wheel setuptools
+
+# Copy requirements and install Python dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+
+# -----------------------------------------------------------------------------
+# Stage 2: Production - Minimal runtime image
+# -----------------------------------------------------------------------------
+FROM --platform=linux/amd64 python:3.11-slim-bookworm AS production
+
+LABEL maintainer="E-Menum Team" \
+      version="1.0" \
+      description="E-Menum Django Application - AMD64 Linux Production"
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONFAULTHANDLER=1 \
+    PATH="/opt/venv/bin:$PATH" \
+    DJANGO_SETTINGS_MODULE=config.settings.production \
+    APP_HOME=/app \
+    GUNICORN_WORKERS=3 \
+    GUNICORN_THREADS=2 \
+    GUNICORN_TIMEOUT=120 \
+    GUNICORN_GRACEFUL_TIMEOUT=30 \
+    GUNICORN_KEEPALIVE=5 \
+    PORT=8000
+
+# Install runtime dependencies only
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+    curl \
+    tini \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Create non-root user (fixed UID/GID for consistency)
+RUN groupadd --gid 1000 emenum \
+    && useradd --uid 1000 --gid emenum --shell /bin/bash --create-home emenum
+
+# Set work directory
+WORKDIR /app
+
+# Copy virtual environment from builder
+COPY --from=builder /opt/venv /opt/venv
+
+# Copy entrypoint script first (avoids heredoc parse issues)
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Copy application code
+COPY --chown=emenum:emenum . .
+
+# Create directories for static and media files
+RUN mkdir -p staticfiles media logs \
+    && chown -R emenum:emenum staticfiles media logs
+
+# Collect static files (build-time only secrets)
+RUN DJANGO_SECRET_KEY='build-time-secret-for-collectstatic' \
+    DATABASE_URL='postgresql://localhost/dummy' \
+    REDIS_URL='redis://localhost:6379/0' \
+    python manage.py collectstatic --noinput --clear 2>/dev/null || true
+
+# Switch to non-root user
+USER emenum
+
+# Expose port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl --fail http://localhost:8000/health/ || exit 1
+
+# Use tini as init system for proper signal handling
+ENTRYPOINT ["/usr/bin/tini", "--", "/entrypoint.sh"]
+
+# Default command: run gunicorn
+CMD ["gunicorn", "config.wsgi:application", \
+     "--bind", "0.0.0.0:8000", \
+     "--workers", "3", \
+     "--threads", "2", \
+     "--timeout", "120", \
+     "--graceful-timeout", "30", \
+     "--keep-alive", "5", \
+     "--worker-class", "gthread", \
+     "--worker-tmp-dir", "/dev/shm", \
+     "--access-logfile", "-", \
+     "--error-logfile", "-", \
+     "--capture-output", \
+     "--enable-stdio-inheritance", \
+     "--log-level", "info", \
+     "--forwarded-allow-ips", "*"]
+
+
+# -----------------------------------------------------------------------------
+# Stage 3: Development - Extended image for local development
+# -----------------------------------------------------------------------------
+FROM production AS development
+
+USER root
+
+ENV DJANGO_SETTINGS_MODULE=config.settings.development \
+    DEBUG=true
+
+# Install development dependencies
+COPY requirements-dev.txt .
+RUN pip install -r requirements-dev.txt 2>/dev/null || true
+
+USER emenum
+
+# Override command for development (use runserver)
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+
+# -----------------------------------------------------------------------------
+# Stage 4: Celery Worker - For running background tasks
+# -----------------------------------------------------------------------------
+FROM production AS celery-worker
+
+CMD ["celery", "-A", "config", "worker", \
+     "--loglevel=info", \
+     "--concurrency=2", \
+     "--max-tasks-per-child=50", \
+     "--pool=prefork"]
+
+
+# -----------------------------------------------------------------------------
+# Stage 5: Celery Beat - For running periodic tasks
+# -----------------------------------------------------------------------------
+FROM production AS celery-beat
+
+CMD ["celery", "-A", "config", "beat", \
+     "--loglevel=info", \
+     "--scheduler", "django_celery_beat.schedulers:DatabaseScheduler"]

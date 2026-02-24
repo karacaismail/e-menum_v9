@@ -1,0 +1,78 @@
+{% extends "layouts/marketing.html" %}
+{% load static i18n %}
+
+{% block page_title %}{% if hero %}{{ hero.title }}{% else %}{% trans "Ozellikler" %}{% endif %}{% endblock %}
+{% block meta_description %}{% trans "E-Menum'un 50'den fazla ozelligi. QR menu, siparis yonetimi, AI icerik uretimi, analitik, coklu sube yonetimi ve daha fazlasi." %}{% endblock %}
+
+{% block content %}
+
+{# Hero #}
+{% include "website/partials/_hero.html" %}
+
+{# Feature Categories — from database #}
+{% if feature_categories %}
+<section class="py-16 lg:py-24 bg-white dark:bg-gray-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% for cat in feature_categories %}
+        <div class="{% if not forloop.last %}mb-24{% endif %}" data-reveal>
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                {% if cat.layout_reversed %}
+                <div class="order-2 lg:order-1 bg-gray-100 dark:bg-gray-800 rounded-2xl aspect-video flex items-center justify-center">
+                    <div class="text-center text-gray-400 dark:text-gray-600">
+                        <i class="ph ph-image text-5xl mb-2"></i>
+                        <p class="text-sm">{{ cat.image_alt|default:cat.title }}</p>
+                    </div>
+                </div>
+                <div class="order-1 lg:order-2">
+                {% else %}
+                <div>
+                {% endif %}
+                    {% if cat.badge_text %}
+                    <div class="inline-flex items-center px-3 py-1 mb-4 text-xs font-semibold text-{{ cat.badge_color|default:'primary' }}-600 dark:text-{{ cat.badge_color|default:'primary' }}-400 bg-{{ cat.badge_color|default:'primary' }}-50 dark:bg-{{ cat.badge_color|default:'primary' }}-950/50 rounded-full">
+                        {{ cat.badge_text }}
+                    </div>
+                    {% endif %}
+                    <h2 class="heading-sans text-3xl text-gray-900 dark:text-white mb-4">
+                        {{ cat.title }}
+                    </h2>
+                    {% if cat.description %}
+                    <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                        {{ cat.description }}
+                    </p>
+                    {% endif %}
+                    {% with bullets=cat.bullets.all %}
+                    {% if bullets %}
+                    <ul class="space-y-3">
+                        {% for bullet in bullets %}
+                        {% if bullet.is_active %}
+                        <li class="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                            <i class="ph ph-check-circle text-green-500 mr-2 text-lg"></i>{{ bullet.text }}
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+                {% if not cat.layout_reversed %}
+                <div class="bg-gray-100 dark:bg-gray-800 rounded-2xl aspect-video flex items-center justify-center">
+                    <div class="text-center text-gray-400 dark:text-gray-600">
+                        <i class="ph ph-image text-5xl mb-2"></i>
+                        <p class="text-sm">{{ cat.image_alt|default:cat.title }}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+{# Stats #}
+{% include "website/partials/_stats_counter.html" %}
+
+{# CTA #}
+{% include "website/partials/_cta_banner.html" with title="Tum Ozellikleri Kesfetmek Ister Misiniz?" subtitle="14 gun ucretsiz deneme. Kredi karti gerekmez. 2 dakikada kurulum." button_text="14 Gun Ucretsiz Basla" button_url="website:demo" secondary_text="Canli Demo Izle" secondary_url="website:demo" %}
+
+{% endblock %}

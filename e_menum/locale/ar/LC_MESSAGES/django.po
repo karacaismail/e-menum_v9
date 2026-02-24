@@ -1,0 +1,7731 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-23 12:03+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+msgid "Input"
+msgstr "إدخال"
+
+msgid "Output"
+msgstr "إخراج"
+
+msgid "Cost"
+msgstr "التكلفة"
+
+msgid "Error"
+msgstr "خطأ"
+
+msgid "Timestamps"
+msgstr "الطوابع الزمنية"
+
+msgid "Type"
+msgstr "النوع"
+
+msgid "Organization"
+msgstr "المنظمة"
+
+msgid "User"
+msgstr "المستخدم"
+
+msgid "Status"
+msgstr "الحالة"
+
+msgid "Credits"
+msgstr "الأرصدة"
+
+msgid "Model"
+msgstr "النموذج"
+
+msgid "Provider"
+msgstr "المزود"
+
+msgid "Credentials"
+msgstr "بيانات الاعتماد"
+
+msgid "API credentials are encrypted at rest."
+msgstr "بيانات اعتماد API مشفرة في حالة السكون."
+
+msgid "Model Configuration"
+msgstr "تكوين النموذج"
+
+msgid "Category"
+msgstr "الفئة"
+
+msgid "Not configured"
+msgstr "غير مكوّن"
+
+msgid "API Key"
+msgstr "مفتاح API"
+
+msgid "Active"
+msgstr "نشط"
+
+msgid "Default"
+msgstr "افتراضي"
+
+msgid "Enter API key..."
+msgstr "أدخل مفتاح API..."
+
+msgid ""
+"Enter the API key for this provider. Leave blank to keep the existing key "
+"unchanged."
+msgstr "أدخل مفتاح API لهذا المزود. اتركه فارغاً للاحتفاظ بالمفتاح الحالي دون تغيير."
+
+#, python-format
+msgid ""
+"Existing key is stored (%(masked)s). Enter a new key to replace it, or leave "
+"blank to keep."
+msgstr "المفتاح الحالي مخزن (%(masked)s). أدخل مفتاحاً جديداً لاستبداله، أو اتركه فارغاً للاحتفاظ به."
+
+msgid "--- Select Provider ---"
+msgstr "--- اختر المزود ---"
+
+msgid "Text Generation"
+msgstr "توليد النص"
+
+msgid "Image Generation"
+msgstr "توليد الصور"
+
+msgid "Product Description"
+msgstr "وصف المنتج"
+
+msgid "Short Description"
+msgstr "وصف مختصر"
+
+msgid "Name Suggestion"
+msgstr "اقتراح الاسم"
+
+msgid "SEO Text"
+msgstr "نص SEO"
+
+msgid "Translation"
+msgstr "الترجمة"
+
+msgid "Image Search"
+msgstr "بحث الصور"
+
+msgid "Improve Text"
+msgstr "تحسين النص"
+
+msgid "Pending"
+msgstr "قيد الانتظار"
+
+msgid "Processing"
+msgstr "قيد المعالجة"
+
+msgid "Completed"
+msgstr "مكتمل"
+
+msgid "Failed"
+msgstr "فشل"
+
+msgid "Cancelled"
+msgstr "ملغى"
+
+msgid "ID"
+msgstr "المعرف"
+
+msgid "Requested by"
+msgstr "مطلوب من"
+
+msgid "Input text"
+msgstr "نص الإدخال"
+
+msgid "Original text or prompt sent to AI"
+msgstr "النص الأصلي أو الموجه المرسل إلى الذكاء الاصطناعي"
+
+msgid "Input context"
+msgstr "سياق الإدخال"
+
+msgid "Additional context: product name, category, cuisine, etc."
+msgstr "سياق إضافي: اسم المنتج، الفئة، نوع المطبخ، إلخ."
+
+msgid "Output text"
+msgstr "نص الإخراج"
+
+msgid "Generated text from AI"
+msgstr "النص المولّد من الذكاء الاصطناعي"
+
+msgid "Output data"
+msgstr "بيانات الإخراج"
+
+msgid "Structured output (alternatives, images, translations)"
+msgstr "مخرجات منظمة (بدائل، صور، ترجمات)"
+
+msgid "Credits used"
+msgstr "الأرصدة المستخدمة"
+
+msgid "AI model"
+msgstr "نموذج الذكاء الاصطناعي"
+
+msgid "e.g., gpt-4o-mini, claude-3-haiku"
+msgstr "مثال: gpt-4o-mini, claude-3-haiku"
+
+msgid "Input tokens"
+msgstr "رموز الإدخال"
+
+msgid "Output tokens"
+msgstr "رموز الإخراج"
+
+msgid "Product"
+msgstr "المنتج"
+
+msgid "AI Generation"
+msgstr "توليد الذكاء الاصطناعي"
+
+msgid "AI Generations"
+msgstr "عمليات توليد الذكاء الاصطناعي"
+
+msgid "OpenAI (GPT)"
+msgstr "OpenAI (GPT)"
+
+msgid "Anthropic (Claude)"
+msgstr "Anthropic (Claude)"
+
+msgid "Google (Gemini)"
+msgstr "Google (Gemini)"
+
+msgid "OpenAI (DALL-E)"
+msgstr "OpenAI (DALL-E)"
+
+msgid "Stability AI"
+msgstr "Stability AI"
+
+msgid "Leonardo AI"
+msgstr "Leonardo AI"
+
+msgid "Midjourney"
+msgstr "Midjourney"
+
+msgid "Runway"
+msgstr "Runway"
+
+msgid "Adobe Firefly"
+msgstr "Adobe Firefly"
+
+msgid "Display Name"
+msgstr "اسم العرض"
+
+msgid "Human-readable name (e.g., \"OpenAI Production\")"
+msgstr "اسم سهل القراءة (مثال: \"OpenAI Production\")"
+
+msgid "Provider identifier"
+msgstr "معرّف المزود"
+
+msgid "API Key (encrypted)"
+msgstr "مفتاح API (مشفر)"
+
+msgid "Encrypted API key stored at rest"
+msgstr "مفتاح API مشفر ومخزّن في حالة السكون"
+
+msgid "Default Model"
+msgstr "النموذج الافتراضي"
+
+msgid "Default model name (e.g., gpt-4o-mini, claude-3-haiku)"
+msgstr "اسم النموذج الافتراضي (مثال: gpt-4o-mini, claude-3-haiku)"
+
+msgid "API Base URL"
+msgstr "رابط API الأساسي"
+
+msgid "Custom API endpoint (leave blank for default)"
+msgstr "نقطة نهاية API مخصصة (اتركه فارغاً للافتراضي)"
+
+msgid "Default Provider"
+msgstr "المزود الافتراضي"
+
+msgid "Use this provider as the default for its category"
+msgstr "استخدم هذا المزود كافتراضي لفئته"
+
+msgid "Priority"
+msgstr "الأولوية"
+
+msgid "Lower number = higher priority for fallback"
+msgstr "رقم أقل = أولوية أعلى للاحتياط"
+
+msgid "Additional Settings"
+msgstr "إعدادات إضافية"
+
+msgid "Provider-specific settings (temperature, max_tokens, etc.)"
+msgstr "إعدادات خاصة بالمزود (temperature, max_tokens, إلخ.)"
+
+msgid "AI Provider Configuration"
+msgstr "تكوين مزود الذكاء الاصطناعي"
+
+msgid "AI Provider Configurations"
+msgstr "تكوينات مزود الذكاء الاصطناعي"
+
+msgid "Inactive"
+msgstr "غير نشط"
+
+msgid "Revenue"
+msgstr "الإيرادات"
+
+msgid "Orders"
+msgstr "الطلبات"
+
+msgid "Customers"
+msgstr "العملاء"
+
+msgid "Average Order Value"
+msgstr "متوسط قيمة الطلب"
+
+msgid "Rating"
+msgstr "التقييم"
+
+msgid "New Customers"
+msgstr "عملاء جدد"
+
+msgid "Returning Customers"
+msgstr "عملاء عائدون"
+
+msgid "Items Sold"
+msgstr "العناصر المباعة"
+
+msgid "Daily"
+msgstr "يومي"
+
+msgid "Weekly"
+msgstr "أسبوعي"
+
+msgid "Monthly"
+msgstr "شهري"
+
+msgid "Quarterly"
+msgstr "ربع سنوي"
+
+msgid "Yearly"
+msgstr "سنوي"
+
+msgid "Hourly"
+msgstr "كل ساعة"
+
+msgid "Metric type"
+msgstr "نوع المقياس"
+
+msgid "Period type"
+msgstr "نوع الفترة"
+
+msgid "Period start"
+msgstr "بداية الفترة"
+
+msgid "Period end"
+msgstr "نهاية الفترة"
+
+msgid "Value"
+msgstr "القيمة"
+
+msgid "Previous value"
+msgstr "القيمة السابقة"
+
+msgid "Change percent"
+msgstr "نسبة التغيير"
+
+msgid "Metadata"
+msgstr "البيانات الوصفية"
+
+msgid "Dashboard Metric"
+msgstr "مقياس لوحة المعلومات"
+
+msgid "Dashboard Metrics"
+msgstr "مقاييس لوحة المعلومات"
+
+msgid "Date"
+msgstr "التاريخ"
+
+msgid "Hour"
+msgstr "الساعة"
+
+msgid "Hour of day (0-23) for hourly granularity"
+msgstr "ساعة اليوم (0-23) للدقة بالساعة"
+
+msgid "Granularity"
+msgstr "الدقة"
+
+msgid "Gross revenue"
+msgstr "الإيرادات الإجمالية"
+
+msgid "Net revenue"
+msgstr "صافي الإيرادات"
+
+msgid "Order count"
+msgstr "عدد الطلبات"
+
+msgid "Item count"
+msgstr "عدد العناصر"
+
+msgid "Average order value"
+msgstr "متوسط قيمة الطلب"
+
+msgid "Customer count"
+msgstr "عدد العملاء"
+
+msgid "New customer count"
+msgstr "عدد العملاء الجدد"
+
+msgid "Payment breakdown"
+msgstr "تفصيل المدفوعات"
+
+msgid "Breakdown by payment method: {cash: X, card: Y, ...}"
+msgstr "تفصيل حسب طريقة الدفع: {cash: X, card: Y, ...}"
+
+msgid "Channel breakdown"
+msgstr "تفصيل القنوات"
+
+msgid "Breakdown by order type: {dine_in: X, takeaway: Y, ...}"
+msgstr "تفصيل حسب نوع الطلب: {dine_in: X, takeaway: Y, ...}"
+
+msgid "Category breakdown"
+msgstr "تفصيل الفئات"
+
+msgid "Breakdown by category: {cat_id: {revenue: X, qty: Y}, ...}"
+msgstr "تفصيل حسب الفئة: {cat_id: {revenue: X, qty: Y}, ...}"
+
+msgid "Sales Aggregation"
+msgstr "تجميع المبيعات"
+
+msgid "Sales Aggregations"
+msgstr "تجميعات المبيعات"
+
+msgid "Quantity sold"
+msgstr "الكمية المباعة"
+
+msgid "Profit margin (%)"
+msgstr "هامش الربح (%)"
+
+msgid "Sales mix (%)"
+msgstr "مزيج المبيعات (%)"
+
+msgid "Average rating"
+msgstr "متوسط التقييم"
+
+msgid "Review count"
+msgstr "عدد المراجعات"
+
+msgid "Return count"
+msgstr "عدد المرتجعات"
+
+msgid "View count"
+msgstr "عدد المشاهدات"
+
+msgid "Product Performance"
+msgstr "أداء المنتج"
+
+msgid "Product Performances"
+msgstr "أداء المنتجات"
+
+msgid "Total customers"
+msgstr "إجمالي العملاء"
+
+msgid "New customers"
+msgstr "عملاء جدد"
+
+msgid "Returning customers"
+msgstr "عملاء عائدون"
+
+msgid "Churn count"
+msgstr "عدد المغادرين"
+
+msgid "Average visit frequency"
+msgstr "متوسط تكرار الزيارة"
+
+msgid "Average lifetime value"
+msgstr "متوسط القيمة مدى الحياة"
+
+msgid "NPS score"
+msgstr "نتيجة NPS"
+
+msgid "Customer Metric"
+msgstr "مقياس العملاء"
+
+msgid "Customer Metrics"
+msgstr "مقاييس العملاء"
+
+msgid "Discount"
+msgstr "الخصم"
+
+msgid "Buy One Get One"
+msgstr "اشترِ واحداً واحصل على واحد"
+
+msgid "Free Item"
+msgstr "عنصر مجاني"
+
+msgid "Bundle Deal"
+msgstr "صفقة حزمة"
+
+msgid "Loyalty Reward"
+msgstr "مكافأة الولاء"
+
+msgid "Seasonal Promotion"
+msgstr "عرض موسمي"
+
+msgid "Flash Sale"
+msgstr "تخفيض سريع"
+
+msgid "Referral Program"
+msgstr "برنامج الإحالة"
+
+msgid "Draft"
+msgstr "مسودة"
+
+msgid "Paused"
+msgstr "متوقف مؤقتاً"
+
+msgid "Percentage"
+msgstr "النسبة المئوية"
+
+msgid "Fixed Amount"
+msgstr "مبلغ ثابت"
+
+msgid "Entire Order"
+msgstr "الطلب بالكامل"
+
+msgid "Specific Product"
+msgstr "منتج محدد"
+
+msgid "Product Category"
+msgstr "فئة المنتج"
+
+msgid "Used"
+msgstr "مستخدم"
+
+msgid "Expired"
+msgstr "منتهي الصلاحية"
+
+msgid "Unique identifier (UUID)"
+msgstr "معرّف فريد (UUID)"
+
+msgid "Organization this campaign belongs to"
+msgstr "المنظمة التي تنتمي إليها هذه الحملة"
+
+msgid "Name"
+msgstr "الاسم"
+
+msgid "Campaign name"
+msgstr "اسم الحملة"
+
+msgid "Campaign type"
+msgstr "نوع الحملة"
+
+msgid "Type of marketing campaign"
+msgstr "نوع الحملة التسويقية"
+
+msgid "Current campaign status"
+msgstr "حالة الحملة الحالية"
+
+msgid "Description"
+msgstr "الوصف"
+
+msgid "Campaign description"
+msgstr "وصف الحملة"
+
+msgid "Start date"
+msgstr "تاريخ البداية"
+
+msgid "When the campaign starts"
+msgstr "متى تبدأ الحملة"
+
+msgid "End date"
+msgstr "تاريخ النهاية"
+
+msgid "When the campaign ends"
+msgstr "متى تنتهي الحملة"
+
+msgid "Budget"
+msgstr "الميزانية"
+
+msgid "Total campaign budget"
+msgstr "إجمالي ميزانية الحملة"
+
+msgid "Spent amount"
+msgstr "المبلغ المنفق"
+
+msgid "Total amount spent/discounted so far"
+msgstr "إجمالي المبلغ المنفق/المخصوم حتى الآن"
+
+msgid "Target audience"
+msgstr "الجمهور المستهدف"
+
+msgid "Targeting criteria (JSON)"
+msgstr "معايير الاستهداف (JSON)"
+
+msgid "Discount value"
+msgstr "قيمة الخصم"
+
+msgid "Discount amount or percentage"
+msgstr "مبلغ أو نسبة الخصم"
+
+msgid "Discount type"
+msgstr "نوع الخصم"
+
+msgid "How the discount is calculated"
+msgstr "كيف يتم حساب الخصم"
+
+msgid "Minimum order amount"
+msgstr "الحد الأدنى لقيمة الطلب"
+
+msgid "Minimum order amount to qualify"
+msgstr "الحد الأدنى لقيمة الطلب للتأهل"
+
+msgid "Maximum discount amount"
+msgstr "الحد الأقصى لمبلغ الخصم"
+
+msgid "Cap on the discount amount (for percentage discounts)"
+msgstr "سقف مبلغ الخصم (للخصومات بالنسبة المئوية)"
+
+msgid "Usage limit"
+msgstr "حد الاستخدام"
+
+msgid "Maximum number of times this campaign can be used (0 = unlimited)"
+msgstr "الحد الأقصى لعدد مرات استخدام هذه الحملة (0 = غير محدود)"
+
+msgid "Usage count"
+msgstr "عدد الاستخدام"
+
+msgid "Number of times this campaign has been used"
+msgstr "عدد مرات استخدام هذه الحملة"
+
+msgid "Is active"
+msgstr "نشط"
+
+msgid "Whether this campaign is enabled"
+msgstr "ما إذا كانت هذه الحملة مفعّلة"
+
+msgid "Created by"
+msgstr "أنشئ بواسطة"
+
+msgid "User who created this campaign"
+msgstr "المستخدم الذي أنشأ هذه الحملة"
+
+msgid "Campaign"
+msgstr "الحملة"
+
+msgid "Campaigns"
+msgstr "الحملات"
+
+msgid "Organization this coupon belongs to"
+msgstr "المنظمة التي تنتمي إليها هذه القسيمة"
+
+msgid "Campaign this coupon is linked to (optional)"
+msgstr "الحملة المرتبطة بهذه القسيمة (اختياري)"
+
+msgid "Coupon code"
+msgstr "رمز القسيمة"
+
+msgid "Unique coupon code within the organization"
+msgstr "رمز قسيمة فريد داخل المنظمة"
+
+msgid "Minimum order amount to apply coupon"
+msgstr "الحد الأدنى لقيمة الطلب لتطبيق القسيمة"
+
+msgid "Maximum uses"
+msgstr "الحد الأقصى للاستخدام"
+
+msgid "Maximum number of times this coupon can be used"
+msgstr "الحد الأقصى لعدد مرات استخدام هذه القسيمة"
+
+msgid "Used count"
+msgstr "عدد الاستخدام"
+
+msgid "Number of times this coupon has been redeemed"
+msgstr "عدد مرات استرداد هذه القسيمة"
+
+msgid "Valid from"
+msgstr "صالح من"
+
+msgid "When the coupon becomes valid"
+msgstr "متى تصبح القسيمة صالحة"
+
+msgid "Valid until"
+msgstr "صالح حتى"
+
+msgid "When the coupon expires"
+msgstr "متى تنتهي صلاحية القسيمة"
+
+msgid "Whether this coupon is currently active"
+msgstr "ما إذا كانت هذه القسيمة نشطة حالياً"
+
+msgid "Coupon"
+msgstr "القسيمة"
+
+msgid "Coupons"
+msgstr "القسائم"
+
+msgid "Organization this usage belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا الاستخدام"
+
+msgid "The coupon that was redeemed"
+msgstr "القسيمة التي تم استردادها"
+
+msgid "Order"
+msgstr "الطلب"
+
+msgid "The order where the coupon was applied"
+msgstr "الطلب الذي طُبقت عليه القسيمة"
+
+msgid "Customer"
+msgstr "العميل"
+
+msgid "The customer who redeemed the coupon"
+msgstr "العميل الذي استرد القسيمة"
+
+msgid "Discount applied"
+msgstr "الخصم المطبق"
+
+msgid "Actual discount amount applied to the order"
+msgstr "مبلغ الخصم الفعلي المطبق على الطلب"
+
+msgid "Used at"
+msgstr "استخدم في"
+
+msgid "When the coupon was redeemed"
+msgstr "متى تم استرداد القسيمة"
+
+msgid "Coupon Usage"
+msgstr "استخدام القسيمة"
+
+msgid "Coupon Usages"
+msgstr "استخدامات القسائم"
+
+msgid "Organization this referral belongs to"
+msgstr "المنظمة التي تنتمي إليها هذه الإحالة"
+
+msgid "Referrer"
+msgstr "المُحيل"
+
+msgid "Customer who made the referral"
+msgstr "العميل الذي قام بالإحالة"
+
+msgid "Referred"
+msgstr "المُحال"
+
+msgid "Customer who was referred"
+msgstr "العميل الذي تمت إحالته"
+
+msgid "Referral code"
+msgstr "رمز الإحالة"
+
+msgid "Unique referral code used"
+msgstr "رمز الإحالة الفريد المستخدم"
+
+msgid "Reward type"
+msgstr "نوع المكافأة"
+
+msgid "How the referral reward is calculated"
+msgstr "كيف يتم حساب مكافأة الإحالة"
+
+msgid "Reward value"
+msgstr "قيمة المكافأة"
+
+msgid "Value of the referral reward"
+msgstr "قيمة مكافأة الإحالة"
+
+msgid "Is completed"
+msgstr "مكتمل"
+
+msgid "Whether the referral reward has been fulfilled"
+msgstr "ما إذا تم تحقيق مكافأة الإحالة"
+
+msgid "Completed at"
+msgstr "اكتمل في"
+
+msgid "When the referral was completed"
+msgstr "متى اكتملت الإحالة"
+
+msgid "Referral"
+msgstr "الإحالة"
+
+msgid "Referrals"
+msgstr "الإحالات"
+
+msgid "Basic organization information"
+msgstr "معلومات المنظمة الأساسية"
+
+msgid "Contact Information"
+msgstr "معلومات الاتصال"
+
+msgid "Status & Subscription"
+msgstr "الحالة والاشتراك"
+
+msgid "Organization lifecycle and subscription status"
+msgstr "دورة حياة المنظمة وحالة الاشتراك"
+
+msgid "Settings"
+msgstr "الإعدادات"
+
+msgid "Organization-specific configuration (JSON)"
+msgstr "تكوين خاص بالمنظمة (JSON)"
+
+msgid "Trial"
+msgstr "تجريبي"
+
+msgid "Storefront"
+msgstr "واجهة المتجر"
+
+msgid "Suspend selected organizations"
+msgstr "تعليق المنظمات المختارة"
+
+#, python-format
+msgid "%(count)d organization(s) have been suspended."
+msgstr "تم تعليق %(count)d منظمة/منظمات."
+
+msgid "Activate selected organizations"
+msgstr "تفعيل المنظمات المختارة"
+
+#, python-format
+msgid "%(count)d organization(s) have been activated."
+msgstr "تم تفعيل %(count)d منظمة/منظمات."
+
+msgid "Role Assignment"
+msgstr "تعيين الدور"
+
+msgid "Role Assignments"
+msgstr "تعيينات الأدوار"
+
+msgid "Personal Information"
+msgstr "المعلومات الشخصية"
+
+msgid "Tenant membership and account status"
+msgstr "عضوية المستأجر وحالة الحساب"
+
+msgid "Permissions"
+msgstr "الصلاحيات"
+
+msgid "Important Dates"
+msgstr "التواريخ المهمة"
+
+msgid "Full Name"
+msgstr "الاسم الكامل"
+
+msgid "Roles"
+msgstr "الأدوار"
+
+msgid "Impersonate"
+msgstr "انتحال الهوية"
+
+msgid "Suspend selected users"
+msgstr "تعليق المستخدمين المختارين"
+
+#, python-format
+msgid "%(count)d user(s) have been suspended."
+msgstr "تم تعليق %(count)d مستخدم/مستخدمين."
+
+msgid "Activate selected users"
+msgstr "تفعيل المستخدمين المختارين"
+
+#, python-format
+msgid "%(count)d user(s) have been activated."
+msgstr "تم تفعيل %(count)d مستخدم/مستخدمين."
+
+msgid "Mark email as verified"
+msgstr "تحديد البريد كتم التحقق"
+
+#, python-format
+msgid "%(count)d user(s) email verified."
+msgstr "تم التحقق من بريد %(count)d مستخدم/مستخدمين."
+
+msgid "Address"
+msgstr "العنوان"
+
+msgid "Contact"
+msgstr "جهة الاتصال"
+
+msgid "Location"
+msgstr "الموقع"
+
+msgid "Configuration"
+msgstr "التكوين"
+
+msgid "Permission"
+msgstr "الصلاحية"
+
+msgid "Scope"
+msgstr "النطاق"
+
+msgid "Platform roles apply system-wide. Organization roles are tenant-scoped."
+msgstr "أدوار المنصة تنطبق على مستوى النظام. أدوار المنظمة محدودة النطاق بالمستأجر."
+
+msgid "Permission Matrix"
+msgstr "مصفوفة الصلاحيات"
+
+msgid ""
+"Visual overview of all permissions assigned to this role, grouped by "
+"resource. Use the inline form below to add or remove permissions."
+msgstr "نظرة عامة مرئية لجميع الصلاحيات المعينة لهذا الدور، مجمعة حسب المورد. استخدم النموذج المضمّن أدناه لإضافة أو إزالة الصلاحيات."
+
+msgid "Assigned Users"
+msgstr "المستخدمون المعينون"
+
+msgid "Users currently assigned to this role."
+msgstr "المستخدمون المعيّنون حالياً لهذا الدور."
+
+msgid "Users"
+msgstr "المستخدمون"
+
+msgid "System"
+msgstr "النظام"
+
+msgid "Duplicate selected roles (without users)"
+msgstr "تكرار الأدوار المختارة (بدون المستخدمين)"
+
+#, python-format
+msgid "%(count)d role(s) have been duplicated."
+msgstr "تم تكرار %(count)d دور/أدوار."
+
+msgid "Used By Roles"
+msgstr "مستخدم من الأدوار"
+
+msgid "Roles that have this permission assigned."
+msgstr "الأدوار التي لديها هذه الصلاحية."
+
+msgid "Permission Code"
+msgstr "رمز الصلاحية"
+
+msgid "Resource"
+msgstr "المورد"
+
+msgid "Action"
+msgstr "الإجراء"
+
+msgid "Used By"
+msgstr "مستخدم من"
+
+msgid "Token Details"
+msgstr "تفاصيل الرمز"
+
+msgid "Client Information"
+msgstr "معلومات العميل"
+
+msgid "Revocation"
+msgstr "الإلغاء"
+
+msgid "Revoke selected sessions"
+msgstr "إلغاء الجلسات المختارة"
+
+#, python-format
+msgid "%(count)d session(s) have been revoked."
+msgstr "تم إلغاء %(count)d جلسة/جلسات."
+
+msgid "Select a user and assign a role."
+msgstr "اختر مستخدماً وعيّن له دوراً."
+
+msgid ""
+"Organization scope is required for organization roles. Branch further "
+"restricts access to a specific location."
+msgstr "نطاق المنظمة مطلوب لأدوار المنظمة. الفرع يقيد الوصول بشكل أكبر إلى موقع محدد."
+
+msgid "Administration"
+msgstr "الإدارة"
+
+msgid ""
+"Set an expiration date for temporary role assignments. Leave blank for "
+"permanent assignments."
+msgstr "حدد تاريخ انتهاء لتعيينات الأدوار المؤقتة. اتركه فارغاً للتعيينات الدائمة."
+
+msgid "Role"
+msgstr "الدور"
+
+msgid "Granted By"
+msgstr "ممنوح من"
+
+msgid "Expires"
+msgstr "ينتهي"
+
+msgid "Revoke selected role assignments (set expired)"
+msgstr "إلغاء تعيينات الأدوار المختارة (تعيين كمنتهية)"
+
+#, python-format
+msgid "%(count)d role assignment(s) have been revoked."
+msgstr "تم إلغاء %(count)d تعيين/تعيينات أدوار."
+
+msgid "Conditions"
+msgstr "الشروط"
+
+msgid ""
+"CASL-like conditions for fine-grained access control (JSON). Example: "
+"{\"organization_id\": \"${user.organization_id}\"} restricts access to the "
+"user's own organization data."
+msgstr "شروط مشابهة لـ CASL للتحكم الدقيق في الوصول (JSON). مثال: {\"organization_id\": \"${user.organization_id}\"} يقيد الوصول إلى بيانات منظمة المستخدم فقط."
+
+msgid "Action Details"
+msgstr "تفاصيل الإجراء"
+
+msgid "Context"
+msgstr "السياق"
+
+msgid "Data Changes"
+msgstr "تغييرات البيانات"
+
+msgid "Morning"
+msgstr "صباح"
+
+msgid "Afternoon"
+msgstr "بعد الظهر"
+
+msgid "Evening"
+msgstr "مساء"
+
+msgid "Night"
+msgstr "ليل"
+
+msgid "Custom"
+msgstr "مخصص"
+
+msgid "Scheduled"
+msgstr "مجدول"
+
+msgid "Checked In"
+msgstr "تسجيل دخول"
+
+msgid "Checked Out"
+msgstr "تسجيل خروج"
+
+msgid "Absent"
+msgstr "غائب"
+
+msgid "Late"
+msgstr "متأخر"
+
+msgid "Deleted at"
+msgstr "حُذف في"
+
+msgid "Timestamp when record was soft-deleted (null = active)"
+msgstr "الطابع الزمني لحذف السجل المبدئي (null = نشط)"
+
+msgid "Created at"
+msgstr "أُنشئ في"
+
+msgid "Timestamp when record was created"
+msgstr "الطابع الزمني لإنشاء السجل"
+
+msgid "Updated at"
+msgstr "حُدّث في"
+
+msgid "Timestamp when record was last updated"
+msgstr "الطابع الزمني لآخر تحديث للسجل"
+
+msgid "Display name of the organization"
+msgstr "اسم عرض المنظمة"
+
+msgid "Slug"
+msgstr "الرابط المختصر"
+
+msgid "URL-friendly unique identifier"
+msgstr "معرّف فريد صالح للروابط"
+
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+msgid "Primary contact email for the organization"
+msgstr "البريد الإلكتروني الرئيسي للمنظمة"
+
+msgid "Phone"
+msgstr "الهاتف"
+
+msgid "Contact phone number"
+msgstr "رقم هاتف الاتصال"
+
+msgid "Logo URL"
+msgstr "رابط الشعار"
+
+msgid "URL to organization logo image"
+msgstr "رابط صورة شعار المنظمة"
+
+msgid "Organization-specific settings (JSON)"
+msgstr "إعدادات خاصة بالمنظمة (JSON)"
+
+msgid "Organization lifecycle status"
+msgstr "حالة دورة حياة المنظمة"
+
+msgid "Trial ends at"
+msgstr "ينتهي التجريبي في"
+
+msgid "When trial period ends (null if not on trial)"
+msgstr "متى تنتهي الفترة التجريبية (null إذا لم تكن في تجربة)"
+
+msgid "Organizations"
+msgstr "المنظمات"
+
+msgid "The Email field must be set"
+msgstr "يجب تعيين حقل البريد الإلكتروني"
+
+msgid "Superuser must have is_staff=True."
+msgstr "المستخدم الفائق يجب أن يكون is_staff=True."
+
+msgid "Superuser must have is_superuser=True."
+msgstr "المستخدم الفائق يجب أن يكون is_superuser=True."
+
+msgid "Email address (used as username for authentication)"
+msgstr "البريد الإلكتروني (يُستخدم كاسم مستخدم للمصادقة)"
+
+msgid "First name"
+msgstr "الاسم الأول"
+
+msgid "User's first name"
+msgstr "الاسم الأول للمستخدم"
+
+msgid "Last name"
+msgstr "اسم العائلة"
+
+msgid "User's last name"
+msgstr "اسم العائلة للمستخدم"
+
+msgid "Avatar URL"
+msgstr "رابط الصورة الرمزية"
+
+msgid "URL to user's avatar image"
+msgstr "رابط الصورة الرمزية للمستخدم"
+
+msgid "User account status"
+msgstr "حالة حساب المستخدم"
+
+msgid "Staff status"
+msgstr "حالة الموظف"
+
+msgid "Designates whether the user can log into Django admin."
+msgstr "يحدد ما إذا كان المستخدم يمكنه الدخول إلى لوحة إدارة Django."
+
+msgid "Email verified at"
+msgstr "تم التحقق من البريد في"
+
+msgid "Timestamp when email was verified (null if not verified)"
+msgstr "الطابع الزمني للتحقق من البريد (null إذا لم يتم التحقق)"
+
+msgid "Last login at"
+msgstr "آخر تسجيل دخول في"
+
+msgid "Timestamp of last successful login"
+msgstr "الطابع الزمني لآخر تسجيل دخول ناجح"
+
+msgid "Organization this user belongs to (null for platform users)"
+msgstr "المنظمة التي ينتمي إليها المستخدم (null لمستخدمي المنصة)"
+
+msgid "Organization this branch belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا الفرع"
+
+msgid "Display name of the branch"
+msgstr "اسم عرض الفرع"
+
+msgid "URL-friendly identifier (unique within organization)"
+msgstr "معرّف صالح للروابط (فريد داخل المنظمة)"
+
+msgid "Full street address"
+msgstr "العنوان الكامل للشارع"
+
+msgid "City"
+msgstr "المدينة"
+
+msgid "City name"
+msgstr "اسم المدينة"
+
+msgid "District"
+msgstr "الحي"
+
+msgid "District or neighborhood"
+msgstr "الحي أو المنطقة"
+
+msgid "Postal code"
+msgstr "الرمز البريدي"
+
+msgid "Postal or ZIP code"
+msgstr "الرمز البريدي"
+
+msgid "Country"
+msgstr "البلد"
+
+msgid "Country code (ISO 3166-1 alpha-2)"
+msgstr "رمز البلد (ISO 3166-1 alpha-2)"
+
+msgid "Branch contact phone number"
+msgstr "رقم هاتف الفرع"
+
+msgid "Branch contact email"
+msgstr "البريد الإلكتروني للفرع"
+
+msgid "Latitude"
+msgstr "خط العرض"
+
+msgid "GPS latitude coordinate"
+msgstr "إحداثي خط العرض GPS"
+
+msgid "Longitude"
+msgstr "خط الطول"
+
+msgid "GPS longitude coordinate"
+msgstr "إحداثي خط الطول GPS"
+
+msgid "Timezone"
+msgstr "المنطقة الزمنية"
+
+msgid "Branch timezone (IANA format)"
+msgstr "المنطقة الزمنية للفرع (تنسيق IANA)"
+
+msgid "Branch-specific settings (JSON)"
+msgstr "إعدادات خاصة بالفرع (JSON)"
+
+msgid "Operating hours"
+msgstr "ساعات العمل"
+
+msgid "Daily operating hours (JSON)"
+msgstr "ساعات العمل اليومية (JSON)"
+
+msgid "Branch lifecycle status"
+msgstr "حالة دورة حياة الفرع"
+
+msgid "Is main branch"
+msgstr "الفرع الرئيسي"
+
+msgid "Whether this is the main/headquarters branch"
+msgstr "ما إذا كان هذا هو الفرع الرئيسي/المقر"
+
+msgid "Branch"
+msgstr "الفرع"
+
+msgid "Branches"
+msgstr "الفروع"
+
+msgid "Internal role identifier (lowercase, underscore-separated)"
+msgstr "معرّف الدور الداخلي (أحرف صغيرة، مفصولة بشرطة سفلية)"
+
+msgid "Display name"
+msgstr "اسم العرض"
+
+msgid "Human-readable role name"
+msgstr "اسم الدور سهل القراءة"
+
+msgid "Detailed description of the role and its capabilities"
+msgstr "وصف تفصيلي للدور وصلاحياته"
+
+msgid "Role scope (PLATFORM or ORGANIZATION)"
+msgstr "نطاق الدور (PLATFORM أو ORGANIZATION)"
+
+msgid "Is system role"
+msgstr "دور النظام"
+
+msgid "System roles are predefined and cannot be modified"
+msgstr "أدوار النظام محددة مسبقاً ولا يمكن تعديلها"
+
+msgid "Organization for org-scoped roles (null for platform roles)"
+msgstr "المنظمة للأدوار محدودة النطاق (null لأدوار المنصة)"
+
+msgid "Permissions granted to this role"
+msgstr "الصلاحيات الممنوحة لهذا الدور"
+
+msgid "Resource name (e.g., menu, order, user)"
+msgstr "اسم المورد (مثال: menu, order, user)"
+
+msgid "Action type (view, create, update, delete, etc.)"
+msgstr "نوع الإجراء (view, create, update, delete, إلخ.)"
+
+msgid "Human-readable description of the permission"
+msgstr "وصف الصلاحية سهل القراءة"
+
+msgid "Is system permission"
+msgstr "صلاحية النظام"
+
+msgid "System permissions are predefined and cannot be deleted"
+msgstr "صلاحيات النظام محددة مسبقاً ولا يمكن حذفها"
+
+msgid "User who owns this session"
+msgstr "المستخدم الذي يملك هذه الجلسة"
+
+msgid "Refresh token"
+msgstr "رمز التحديث"
+
+msgid "Hashed refresh token"
+msgstr "رمز التحديث المشفر"
+
+msgid "User agent"
+msgstr "وكيل المستخدم"
+
+msgid "Browser/client user agent string"
+msgstr "سلسلة وكيل المستخدم للمتصفح/العميل"
+
+msgid "IP address"
+msgstr "عنوان IP"
+
+msgid "Client IP address"
+msgstr "عنوان IP للعميل"
+
+msgid "Expires at"
+msgstr "ينتهي في"
+
+msgid "When the session/refresh token expires"
+msgstr "متى تنتهي صلاحية الجلسة/رمز التحديث"
+
+msgid "Session status"
+msgstr "حالة الجلسة"
+
+msgid "Revoked at"
+msgstr "ألغي في"
+
+msgid "When the session was revoked"
+msgstr "متى تم إلغاء الجلسة"
+
+msgid "Revoke reason"
+msgstr "سبب الإلغاء"
+
+msgid "Reason for session revocation"
+msgstr "سبب إلغاء الجلسة"
+
+msgid "Session"
+msgstr "الجلسة"
+
+msgid "Sessions"
+msgstr "الجلسات"
+
+msgid "User who has this role"
+msgstr "المستخدم الذي لديه هذا الدور"
+
+msgid "Role assigned to the user"
+msgstr "الدور المعيّن للمستخدم"
+
+msgid "Organization scope for this role assignment"
+msgstr "نطاق المنظمة لتعيين الدور هذا"
+
+msgid "Optional branch-level restriction"
+msgstr "تقييد اختياري على مستوى الفرع"
+
+msgid "Granted by"
+msgstr "ممنوح من"
+
+msgid "User who granted this role"
+msgstr "المستخدم الذي منح هذا الدور"
+
+msgid "Optional expiration for temporary role assignments"
+msgstr "انتهاء صلاحية اختياري لتعيينات الأدوار المؤقتة"
+
+msgid "User Role"
+msgstr "دور المستخدم"
+
+msgid "User Roles"
+msgstr "أدوار المستخدم"
+
+msgid "Role that has this permission"
+msgstr "الدور الذي لديه هذه الصلاحية"
+
+msgid "Permission granted to the role"
+msgstr "الصلاحية الممنوحة للدور"
+
+msgid "CASL-like conditions for fine-grained access control"
+msgstr "شروط مشابهة لـ CASL للتحكم الدقيق في الوصول"
+
+msgid "Role Permission"
+msgstr "صلاحية الدور"
+
+msgid "Role Permissions"
+msgstr "صلاحيات الدور"
+
+msgid ""
+"Organization context for this audit log (null for platform-level actions)"
+msgstr "سياق المنظمة لسجل التدقيق هذا (فارغ للإجراءات على مستوى المنصة)"
+
+msgid "User who performed the action (null for system actions)"
+msgstr "المستخدم الذي نفذ الإجراء (null لإجراءات النظام)"
+
+msgid "Type of action performed"
+msgstr "نوع الإجراء المنفّذ"
+
+msgid "Resource type affected (e.g., menu, order, user)"
+msgstr "نوع المورد المتأثر (مثال: menu, order, user)"
+
+msgid "Resource ID"
+msgstr "معرف المورد"
+
+msgid "ID of the affected resource"
+msgstr "معرّف المورد المتأثر"
+
+msgid "Human-readable description of the action"
+msgstr "وصف الإجراء سهل القراءة"
+
+msgid "Old values"
+msgstr "القيم القديمة"
+
+msgid "JSON snapshot of values before the change"
+msgstr "لقطة JSON للقيم قبل التغيير"
+
+msgid "New values"
+msgstr "القيم الجديدة"
+
+msgid "JSON snapshot of values after the change"
+msgstr "لقطة JSON للقيم بعد التغيير"
+
+msgid "Client user agent string"
+msgstr "سلسلة وكيل المستخدم للعميل"
+
+msgid "Additional context data (JSON)"
+msgstr "بيانات سياق إضافية (JSON)"
+
+msgid "Timestamp when the action occurred"
+msgstr "الطابع الزمني لوقت حدوث الإجراء"
+
+msgid "Audit Log"
+msgstr "سجل التدقيق"
+
+msgid "Audit Logs"
+msgstr "سجلات التدقيق"
+
+msgid "Organization this shift belongs to"
+msgstr "المنظمة التي تنتمي إليها هذه الوردية"
+
+msgid "Display name of the shift"
+msgstr "اسم عرض الوردية"
+
+msgid "Shift type"
+msgstr "نوع الوردية"
+
+msgid "Type of shift"
+msgstr "نوع الوردية"
+
+msgid "Start time"
+msgstr "وقت البداية"
+
+msgid "When the shift starts"
+msgstr "متى تبدأ الوردية"
+
+msgid "End time"
+msgstr "وقت النهاية"
+
+msgid "When the shift ends"
+msgstr "متى تنتهي الوردية"
+
+msgid "Whether this shift is currently active"
+msgstr "ما إذا كانت هذه الوردية نشطة حالياً"
+
+msgid "Shift"
+msgstr "الوردية"
+
+msgid "Shifts"
+msgstr "الورديات"
+
+msgid "Organization this schedule belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا الجدول"
+
+msgid "Staff member assigned to this shift"
+msgstr "الموظف المعيّن لهذه الوردية"
+
+msgid "Shift assigned to the staff member"
+msgstr "الوردية المعيّنة للموظف"
+
+msgid "Date of the scheduled shift"
+msgstr "تاريخ الوردية المجدولة"
+
+msgid "Actual start"
+msgstr "البداية الفعلية"
+
+msgid "Actual check-in time"
+msgstr "وقت تسجيل الدخول الفعلي"
+
+msgid "Actual end"
+msgstr "النهاية الفعلية"
+
+msgid "Actual check-out time"
+msgstr "وقت تسجيل الخروج الفعلي"
+
+msgid "Current status of the schedule entry"
+msgstr "الحالة الحالية لإدخال الجدول"
+
+msgid "Notes"
+msgstr "ملاحظات"
+
+msgid "Optional notes about the schedule entry"
+msgstr "ملاحظات اختيارية حول إدخال الجدول"
+
+msgid "Staff Schedule"
+msgstr "جدول الموظفين"
+
+msgid "Staff Schedules"
+msgstr "جداول الموظفين"
+
+msgid "Organization this metric belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا المقياس"
+
+msgid "Staff member these metrics are for"
+msgstr "الموظف الذي تخص هذه المقاييس"
+
+msgid "Date these metrics are for"
+msgstr "التاريخ الذي تخصه هذه المقاييس"
+
+msgid "Orders handled"
+msgstr "الطلبات المعالجة"
+
+msgid "Number of orders handled"
+msgstr "عدد الطلبات المعالجة"
+
+msgid "Revenue generated"
+msgstr "الإيرادات المحققة"
+
+msgid "Total revenue generated"
+msgstr "إجمالي الإيرادات المحققة"
+
+msgid "Average value per order"
+msgstr "متوسط القيمة لكل طلب"
+
+msgid "Average service time (seconds)"
+msgstr "متوسط وقت الخدمة (بالثواني)"
+
+msgid "Average service time in seconds"
+msgstr "متوسط وقت الخدمة بالثواني"
+
+msgid "Customer rating average"
+msgstr "متوسط تقييم العملاء"
+
+msgid "Average customer rating"
+msgstr "متوسط تقييم العملاء"
+
+msgid "Rating count"
+msgstr "عدد التقييمات"
+
+msgid "Number of ratings received"
+msgstr "عدد التقييمات المستلمة"
+
+msgid "Upsell count"
+msgstr "عدد البيع الإضافي"
+
+msgid "Number of successful upsells"
+msgstr "عدد عمليات البيع الإضافي الناجحة"
+
+msgid "Tips amount"
+msgstr "مبلغ الإكراميات"
+
+msgid "Total tips received"
+msgstr "إجمالي الإكراميات المستلمة"
+
+msgid "Staff Metric"
+msgstr "مقياس الموظف"
+
+msgid "Staff Metrics"
+msgstr "مقاييس الموظفين"
+
+msgid "An organization with this slug already exists."
+msgstr "توجد منظمة بهذا الرابط المختصر بالفعل."
+
+msgid "Password (minimum 12 characters)"
+msgstr "كلمة المرور (12 حرفاً كحد أدنى)"
+
+msgid "Confirm password"
+msgstr "تأكيد كلمة المرور"
+
+msgid "Role ID to assign to the user"
+msgstr "معرّف الدور لتعيينه للمستخدم"
+
+msgid "A user with this email already exists."
+msgstr "يوجد مستخدم بهذا البريد الإلكتروني بالفعل."
+
+msgid "Passwords do not match."
+msgstr "كلمات المرور غير متطابقة."
+
+msgid "You cannot suspend your own account."
+msgstr "لا يمكنك تعليق حسابك الخاص."
+
+msgid "User email address"
+msgstr "عنوان البريد الإلكتروني للمستخدم"
+
+msgid "User password"
+msgstr "كلمة مرور المستخدم"
+
+msgid "No account found with this email address."
+msgstr "لم يتم العثور على حساب بهذا البريد الإلكتروني."
+
+msgid "This account has been deleted."
+msgstr "تم حذف هذا الحساب."
+
+msgid "This account has been suspended. Please contact support."
+msgstr "تم تعليق هذا الحساب. يرجى الاتصال بالدعم."
+
+msgid "Please complete your registration first."
+msgstr "يرجى إكمال التسجيل أولاً."
+
+msgid "Invalid password."
+msgstr "كلمة مرور غير صالحة."
+
+msgid "Your organization has been suspended. Please contact support."
+msgstr "تم تعليق منظمتك. يرجى الاتصال بالدعم."
+
+msgid "Your organization has been deleted."
+msgstr "تم حذف منظمتك."
+
+msgid "JWT access token"
+msgstr "رمز وصول JWT"
+
+msgid "JWT refresh token"
+msgstr "رمز تحديث JWT"
+
+msgid "Authenticated user details"
+msgstr "تفاصيل المستخدم المُصادق"
+
+msgid "User organization (if any)"
+msgstr "منظمة المستخدم (إن وجدت)"
+
+msgid "JWT refresh token to invalidate"
+msgstr "رمز تحديث JWT لإبطاله"
+
+msgid "Refresh token is required."
+msgstr "رمز التحديث مطلوب."
+
+msgid "Invalid or expired refresh token."
+msgstr "رمز التحديث غير صالح أو منتهي الصلاحية."
+
+msgid "Current password"
+msgstr "كلمة المرور الحالية"
+
+msgid "New password (minimum 12 characters)"
+msgstr "كلمة المرور الجديدة (12 حرفاً كحد أدنى)"
+
+msgid "Confirm new password"
+msgstr "تأكيد كلمة المرور الجديدة"
+
+msgid "Current password is incorrect."
+msgstr "كلمة المرور الحالية غير صحيحة."
+
+msgid "New password must be different from current password."
+msgstr "يجب أن تكون كلمة المرور الجديدة مختلفة عن الحالية."
+
+msgid "Invalid credentials"
+msgstr "بيانات اعتماد غير صالحة"
+
+msgid "Invalid request"
+msgstr "طلب غير صالح"
+
+msgid "Successfully logged out"
+msgstr "تم تسجيل الخروج بنجاح"
+
+msgid "Invalid or expired refresh token"
+msgstr "رمز التحديث غير صالح أو منتهي الصلاحية"
+
+msgid "Refresh token has expired"
+msgstr "انتهت صلاحية رمز التحديث"
+
+msgid "Token is required"
+msgstr "الرمز مطلوب"
+
+msgid "Invalid data"
+msgstr "بيانات غير صالحة"
+
+msgid "Password changed successfully. Please log in again."
+msgstr "تم تغيير كلمة المرور بنجاح. يرجى تسجيل الدخول مرة أخرى."
+
+msgid "Session not found"
+msgstr "الجلسة غير موجودة"
+
+msgid "Session revoked successfully"
+msgstr "تم إلغاء الجلسة بنجاح"
+
+msgid "All sessions revoked"
+msgstr "تم إلغاء جميع الجلسات"
+
+msgid "You cannot delete your own account."
+msgstr "لا يمكنك حذف حسابك الخاص."
+
+msgid "Preferences"
+msgstr "التفضيلات"
+
+msgid "Loyalty & Stats"
+msgstr "الولاء والإحصائيات"
+
+msgid "Marketing"
+msgstr "التسويق"
+
+msgid "Visit Details"
+msgstr "تفاصيل الزيارة"
+
+msgid "Device Information"
+msgstr "معلومات الجهاز"
+
+msgid "Feedback"
+msgstr "التعليقات"
+
+msgid "Status & Response"
+msgstr "الحالة والاستجابة"
+
+msgid "Anonymous"
+msgstr "مجهول"
+
+msgid "Transaction"
+msgstr "المعاملة"
+
+msgid "Expiration"
+msgstr "انتهاء الصلاحية"
+
+msgid "Points"
+msgstr "النقاط"
+
+msgid "Dietary"
+msgstr "غذائي"
+
+msgid "Allergen"
+msgstr "مسبب الحساسية"
+
+msgid "Seating"
+msgstr "الجلوس"
+
+msgid "Payment"
+msgstr "الدفع"
+
+msgid "Communication"
+msgstr "التواصل"
+
+msgid "Promoter"
+msgstr "المروج"
+
+msgid "Passive"
+msgstr "سلبي"
+
+msgid "Detractor"
+msgstr "المنتقد"
+
+msgid "QR Code"
+msgstr "رمز QR"
+
+msgid "SMS"
+msgstr "رسالة نصية"
+
+msgid "In App"
+msgstr "داخل التطبيق"
+
+msgid "Organization this customer belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا العميل"
+
+msgid "Customer's display name"
+msgstr "اسم عرض العميل"
+
+msgid "Customer's email address (unique per organization)"
+msgstr "البريد الإلكتروني للعميل (فريد لكل منظمة)"
+
+msgid "Customer's phone number"
+msgstr "رقم هاتف العميل"
+
+msgid "URL to customer's profile image"
+msgstr "رابط صورة ملف العميل"
+
+msgid "Language preference"
+msgstr "تفضيل اللغة"
+
+msgid "Preferred language code (e.g., 'tr', 'en')"
+msgstr "رمز اللغة المفضلة (مثال: 'tr', 'en')"
+
+msgid "Source"
+msgstr "المصدر"
+
+msgid "How the customer was acquired"
+msgstr "كيف تم اكتساب العميل"
+
+msgid "Staff notes about the customer"
+msgstr "ملاحظات الموظفين حول العميل"
+
+msgid "Customer preferences and settings (JSON)"
+msgstr "تفضيلات وإعدادات العميل (JSON)"
+
+msgid "Total orders"
+msgstr "إجمالي الطلبات"
+
+msgid "Total number of orders placed"
+msgstr "إجمالي عدد الطلبات المقدمة"
+
+msgid "Total spent"
+msgstr "إجمالي الإنفاق"
+
+msgid "Total amount spent (denormalized)"
+msgstr "إجمالي المبلغ المنفق (غير طبيعي)"
+
+msgid "Loyalty points balance"
+msgstr "رصيد نقاط الولاء"
+
+msgid "Current loyalty points balance"
+msgstr "رصيد نقاط الولاء الحالي"
+
+msgid "First visit at"
+msgstr "أول زيارة في"
+
+msgid "Date and time of first visit"
+msgstr "تاريخ ووقت أول زيارة"
+
+msgid "Last visit at"
+msgstr "آخر زيارة في"
+
+msgid "Date and time of most recent visit"
+msgstr "تاريخ ووقت آخر زيارة"
+
+msgid "Marketing consent"
+msgstr "موافقة تسويقية"
+
+msgid "Whether customer consented to receive marketing communications"
+msgstr "ما إذا وافق العميل على تلقي رسائل تسويقية"
+
+msgid "Marketing consent at"
+msgstr "موافقة تسويقية في"
+
+msgid "When marketing consent was given"
+msgstr "متى تم منح الموافقة التسويقية"
+
+msgid "RFM Segment"
+msgstr "شريحة RFM"
+
+msgid "RFM Recency Score"
+msgstr "نتيجة حداثة RFM"
+
+msgid "RFM Frequency Score"
+msgstr "نتيجة تكرار RFM"
+
+msgid "RFM Monetary Score"
+msgstr "نتيجة القيمة المالية RFM"
+
+msgid "Lifetime Value"
+msgstr "القيمة مدى الحياة"
+
+msgid "Churn Risk Score"
+msgstr "نتيجة خطر المغادرة"
+
+msgid "Last Visit Date"
+msgstr "تاريخ آخر زيارة"
+
+msgid "Organization this visit belongs to"
+msgstr "المنظمة التي تنتمي إليها هذه الزيارة"
+
+msgid "Customer who made this visit"
+msgstr "العميل الذي قام بهذه الزيارة"
+
+msgid "Branch where the visit occurred"
+msgstr "الفرع الذي حدثت فيه الزيارة"
+
+msgid "Visited at"
+msgstr "تمت الزيارة في"
+
+msgid "When the visit occurred"
+msgstr "متى حدثت الزيارة"
+
+msgid "How the visit was recorded"
+msgstr "كيف تم تسجيل الزيارة"
+
+msgid "Table ID"
+msgstr "معرف الطاولة"
+
+msgid "Table where customer was seated (if applicable)"
+msgstr "الطاولة التي جلس عليها العميل (إن وجدت)"
+
+msgid "Order ID"
+msgstr "معرف الطلب"
+
+msgid "Order placed during this visit (if applicable)"
+msgstr "الطلب المقدم خلال هذه الزيارة (إن وجد)"
+
+msgid "Device info"
+msgstr "معلومات الجهاز"
+
+msgid "Device and browser information (JSON)"
+msgstr "معلومات الجهاز والمتصفح (JSON)"
+
+msgid "Duration (minutes)"
+msgstr "المدة (بالدقائق)"
+
+msgid "How long the customer stayed (estimated)"
+msgstr "مدة بقاء العميل (تقديرية)"
+
+msgid "Customer Visit"
+msgstr "زيارة العميل"
+
+msgid "Customer Visits"
+msgstr "زيارات العملاء"
+
+msgid "Organization this feedback belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا التعليق"
+
+msgid "Customer who gave this feedback (null for anonymous)"
+msgstr "العميل الذي قدم هذا التعليق (null للمجهول)"
+
+msgid "Order this feedback is about (if applicable)"
+msgstr "الطلب المتعلق بهذا التعليق (إن وجد)"
+
+msgid "Feedback type"
+msgstr "نوع التعليق"
+
+msgid "Category of feedback"
+msgstr "فئة التعليق"
+
+msgid "Rating on a 1-5 scale"
+msgstr "التقييم على مقياس من 1 إلى 5"
+
+msgid "Comment"
+msgstr "التعليق"
+
+msgid "Customer feedback comment"
+msgstr "تعليق العميل"
+
+msgid "Processing status of the feedback"
+msgstr "حالة معالجة التعليق"
+
+msgid "Staff response"
+msgstr "رد الموظف"
+
+msgid "Response from staff to the feedback"
+msgstr "رد الموظف على التعليق"
+
+msgid "Responded by"
+msgstr "رد بواسطة"
+
+msgid "User who responded to this feedback"
+msgstr "المستخدم الذي رد على هذا التعليق"
+
+msgid "Responded at"
+msgstr "تم الرد في"
+
+msgid "When the response was made"
+msgstr "متى تم الرد"
+
+msgid "Is public"
+msgstr "عام"
+
+msgid "Whether this feedback can be shown publicly"
+msgstr "ما إذا كان يمكن عرض هذا التعليق علنياً"
+
+msgid "Additional metadata (JSON)"
+msgstr "بيانات وصفية إضافية (JSON)"
+
+msgid "Feedbacks"
+msgstr "التعليقات"
+
+msgid "Organization this transaction belongs to"
+msgstr "المنظمة التي تنتمي إليها هذه المعاملة"
+
+msgid "Customer this transaction is for"
+msgstr "العميل الذي تخصه هذه المعاملة"
+
+msgid "Transaction type"
+msgstr "نوع المعاملة"
+
+msgid "Type of loyalty point transaction"
+msgstr "نوع معاملة نقاط الولاء"
+
+msgid "Number of points (positive for credit, negative for debit)"
+msgstr "عدد النقاط (موجب للإضافة، سالب للخصم)"
+
+msgid "Balance after"
+msgstr "الرصيد بعد"
+
+msgid "Customer's points balance after this transaction"
+msgstr "رصيد نقاط العميل بعد هذه المعاملة"
+
+msgid "Order associated with this transaction (if applicable)"
+msgstr "الطلب المرتبط بهذه المعاملة (إن وجد)"
+
+msgid "Human-readable description of the transaction"
+msgstr "وصف المعاملة سهل القراءة"
+
+msgid "When these points expire (null = never)"
+msgstr "متى تنتهي صلاحية هذه النقاط (null = لا تنتهي)"
+
+msgid "Additional transaction data (JSON)"
+msgstr "بيانات معاملة إضافية (JSON)"
+
+msgid "Loyalty Point"
+msgstr "نقطة ولاء"
+
+msgid "Loyalty Points"
+msgstr "نقاط الولاء"
+
+msgid "Organization this preference belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا التفضيل"
+
+msgid "Customer this preference belongs to"
+msgstr "العميل الذي ينتمي إليه هذا التفضيل"
+
+msgid "Preference type"
+msgstr "نوع التفضيل"
+
+msgid "Category of preference"
+msgstr "فئة التفضيل"
+
+msgid "Key"
+msgstr "المفتاح"
+
+msgid "Preference key identifier (e.g., 'vegetarian', 'window_seat')"
+msgstr "معرّف مفتاح التفضيل (مثال: 'vegetarian', 'window_seat')"
+
+msgid "Preference value (e.g., 'true', 'always')"
+msgstr "قيمة التفضيل (مثال: 'true', 'always')"
+
+msgid "Auto detected"
+msgstr "اكتشاف تلقائي"
+
+msgid "Whether this preference was automatically detected"
+msgstr "ما إذا تم اكتشاف هذا التفضيل تلقائياً"
+
+msgid "Confidence"
+msgstr "الثقة"
+
+msgid "Confidence score for auto-detected preferences (0-1)"
+msgstr "درجة الثقة للتفضيلات المكتشفة تلقائياً (0-1)"
+
+msgid "Customer Preference"
+msgstr "تفضيل العميل"
+
+msgid "Customer Preferences"
+msgstr "تفضيلات العميل"
+
+msgid "Organization this survey belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا الاستبيان"
+
+msgid "Customer who submitted this survey (null for anonymous)"
+msgstr "العميل الذي أرسل هذا الاستبيان (null للمجهول)"
+
+msgid "Order this survey is about (if applicable)"
+msgstr "الطلب المتعلق بهذا الاستبيان (إن وجد)"
+
+msgid "Score"
+msgstr "النتيجة"
+
+msgid "NPS score (0-10)"
+msgstr "نتيجة NPS (0-10)"
+
+msgid "Optional free-text comment"
+msgstr "تعليق نصي حر اختياري"
+
+msgid "NPS category (auto-calculated from score)"
+msgstr "فئة NPS (محسوبة تلقائياً من النتيجة)"
+
+msgid "Channel"
+msgstr "القناة"
+
+msgid "Channel through which survey was collected"
+msgstr "القناة التي تم جمع الاستبيان من خلالها"
+
+msgid "NPS Survey"
+msgstr "استبيان NPS"
+
+msgid "NPS Surveys"
+msgstr "استبيانات NPS"
+
+msgid "A customer with this email already exists."
+msgstr "يوجد عميل بهذا البريد الإلكتروني بالفعل."
+
+msgid "Rating must be between 1 and 5."
+msgstr "يجب أن يكون التقييم بين 1 و5."
+
+msgid "Staff response to the feedback"
+msgstr "رد الموظف على التعليق"
+
+msgid "Response added successfully"
+msgstr "تمت إضافة الرد بنجاح"
+
+msgid "Feedback is now public"
+msgstr "التعليق الآن عام"
+
+msgid "Feedback archived"
+msgstr "تم أرشفة التعليق"
+
+msgid "Purchase"
+msgstr "شراء"
+
+msgid "Sale"
+msgstr "بيع"
+
+msgid "Waste"
+msgstr "هدر"
+
+msgid "Adjustment"
+msgstr "تعديل"
+
+msgid "Transfer"
+msgstr "تحويل"
+
+msgid "Return"
+msgstr "إرجاع"
+
+msgid "Critical"
+msgstr "حرج"
+
+msgid "Low"
+msgstr "منخفض"
+
+msgid "Normal"
+msgstr "عادي"
+
+msgid "Excess"
+msgstr "فائض"
+
+msgid "Kilogram"
+msgstr "كيلوغرام"
+
+msgid "Gram"
+msgstr "غرام"
+
+msgid "Liter"
+msgstr "لتر"
+
+msgid "Milliliter"
+msgstr "ملليلتر"
+
+msgid "Piece"
+msgstr "قطعة"
+
+msgid "Pack"
+msgstr "علبة"
+
+msgid "Box"
+msgstr "صندوق"
+
+msgid "Submitted"
+msgstr "مقدم"
+
+msgid "Approved"
+msgstr "موافق عليه"
+
+msgid "Received"
+msgstr "مستلم"
+
+msgid "Organization this supplier belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا المورد"
+
+msgid "Supplier company name"
+msgstr "اسم شركة المورد"
+
+msgid "Contact person"
+msgstr "الشخص المسؤول"
+
+msgid "Primary contact person at the supplier"
+msgstr "الشخص المسؤول الرئيسي لدى المورد"
+
+msgid "Supplier contact email"
+msgstr "البريد الإلكتروني للمورد"
+
+msgid "Supplier contact phone"
+msgstr "هاتف المورد"
+
+msgid "Supplier full address"
+msgstr "العنوان الكامل للمورد"
+
+msgid "Tax ID"
+msgstr "الرقم الضريبي"
+
+msgid "Supplier tax identification number"
+msgstr "الرقم الضريبي للمورد"
+
+msgid "Whether this supplier is currently active"
+msgstr "ما إذا كان هذا المورد نشطاً حالياً"
+
+msgid "Supplier rating from 1 to 5"
+msgstr "تقييم المورد من 1 إلى 5"
+
+msgid "Additional notes about the supplier"
+msgstr "ملاحظات إضافية حول المورد"
+
+msgid "Supplier"
+msgstr "المورد"
+
+msgid "Suppliers"
+msgstr "الموردون"
+
+msgid "Organization this inventory item belongs to"
+msgstr "المنظمة التي ينتمي إليها صنف المخزون هذا"
+
+msgid "Name of the inventory item"
+msgstr "اسم صنف المخزون"
+
+msgid "SKU"
+msgstr "رمز المخزون"
+
+msgid "Stock Keeping Unit code"
+msgstr "رمز وحدة حفظ المخزون"
+
+msgid "Item category (e.g., Dairy, Produce, Meat)"
+msgstr "فئة الصنف (مثال: ألبان، خضروات، لحوم)"
+
+msgid "Unit type"
+msgstr "نوع الوحدة"
+
+msgid "Unit of measurement for this item"
+msgstr "وحدة القياس لهذا الصنف"
+
+msgid "Current stock"
+msgstr "المخزون الحالي"
+
+msgid "Current stock quantity in the specified unit"
+msgstr "كمية المخزون الحالية بالوحدة المحددة"
+
+msgid "Minimum stock level"
+msgstr "الحد الأدنى للمخزون"
+
+msgid "Minimum stock threshold before alert"
+msgstr "حد المخزون الأدنى قبل التنبيه"
+
+msgid "Maximum stock level"
+msgstr "الحد الأقصى للمخزون"
+
+msgid "Maximum recommended stock level"
+msgstr "الحد الأقصى الموصى به للمخزون"
+
+msgid "Cost per unit"
+msgstr "التكلفة لكل وحدة"
+
+msgid "Cost per unit in the base currency"
+msgstr "التكلفة لكل وحدة بالعملة الأساسية"
+
+msgid "Primary supplier for this item"
+msgstr "المورد الرئيسي لهذا الصنف"
+
+msgid "Whether this inventory item is actively tracked"
+msgstr "ما إذا كان يتم تتبع صنف المخزون هذا بنشاط"
+
+msgid "Inventory Item"
+msgstr "صنف المخزون"
+
+msgid "Inventory Items"
+msgstr "أصناف المخزون"
+
+msgid "Organization this movement belongs to"
+msgstr "المنظمة التي تنتمي إليها هذه الحركة"
+
+msgid "Inventory item"
+msgstr "صنف المخزون"
+
+msgid "The inventory item affected by this movement"
+msgstr "صنف المخزون المتأثر بهذه الحركة"
+
+msgid "Movement type"
+msgstr "نوع الحركة"
+
+msgid "Type of stock movement"
+msgstr "نوع حركة المخزون"
+
+msgid "Quantity"
+msgstr "الكمية"
+
+msgid "Quantity moved (positive for additions, negative for removals)"
+msgstr "الكمية المنقولة (موجب للإضافات، سالب للإزالات)"
+
+msgid "Unit cost"
+msgstr "تكلفة الوحدة"
+
+msgid "Cost per unit at the time of movement"
+msgstr "التكلفة لكل وحدة وقت الحركة"
+
+msgid "Total cost"
+msgstr "التكلفة الإجمالية"
+
+msgid "Total cost of this movement"
+msgstr "التكلفة الإجمالية لهذه الحركة"
+
+msgid "Reference number"
+msgstr "رقم المرجع"
+
+msgid "External reference number (invoice, PO, etc.)"
+msgstr "رقم المرجع الخارجي (فاتورة، أمر شراء، إلخ.)"
+
+msgid "Additional notes about this movement"
+msgstr "ملاحظات إضافية حول هذه الحركة"
+
+msgid "User who created this movement"
+msgstr "المستخدم الذي أنشأ هذه الحركة"
+
+msgid "Stock Movement"
+msgstr "حركة المخزون"
+
+msgid "Stock Movements"
+msgstr "حركات المخزون"
+
+msgid "Organization this purchase order belongs to"
+msgstr "المنظمة التي ينتمي إليها أمر الشراء"
+
+msgid "Supplier for this purchase order"
+msgstr "المورد لأمر الشراء هذا"
+
+msgid "Order number"
+msgstr "رقم الطلب"
+
+msgid "Unique order reference number"
+msgstr "رقم مرجع الطلب الفريد"
+
+msgid "Current status of the purchase order"
+msgstr "الحالة الحالية لأمر الشراء"
+
+msgid "Order date"
+msgstr "تاريخ الطلب"
+
+msgid "Date the order was placed"
+msgstr "تاريخ تقديم الطلب"
+
+msgid "Expected delivery"
+msgstr "التسليم المتوقع"
+
+msgid "Expected delivery date"
+msgstr "تاريخ التسليم المتوقع"
+
+msgid "Actual delivery"
+msgstr "التسليم الفعلي"
+
+msgid "Actual delivery date"
+msgstr "تاريخ التسليم الفعلي"
+
+msgid "Subtotal"
+msgstr "المجموع الفرعي"
+
+msgid "Total before tax"
+msgstr "الإجمالي قبل الضريبة"
+
+msgid "Tax amount"
+msgstr "مبلغ الضريبة"
+
+msgid "Total tax amount"
+msgstr "إجمالي مبلغ الضريبة"
+
+msgid "Total amount"
+msgstr "المبلغ الإجمالي"
+
+msgid "Total order amount including tax"
+msgstr "إجمالي مبلغ الطلب شامل الضريبة"
+
+msgid "Additional notes for this purchase order"
+msgstr "ملاحظات إضافية لأمر الشراء"
+
+msgid "User who created this purchase order"
+msgstr "المستخدم الذي أنشأ أمر الشراء"
+
+msgid "Approved by"
+msgstr "موافق عليه من"
+
+msgid "User who approved this purchase order"
+msgstr "المستخدم الذي وافق على أمر الشراء"
+
+msgid "Purchase Order"
+msgstr "أمر الشراء"
+
+msgid "Purchase Orders"
+msgstr "أوامر الشراء"
+
+msgid "Purchase order"
+msgstr "أمر الشراء"
+
+msgid "Parent purchase order"
+msgstr "أمر الشراء الأب"
+
+msgid "The inventory item being ordered"
+msgstr "صنف المخزون المطلوب"
+
+msgid "Quantity ordered"
+msgstr "الكمية المطلوبة"
+
+msgid "Quantity ordered from supplier"
+msgstr "الكمية المطلوبة من المورد"
+
+msgid "Quantity received"
+msgstr "الكمية المستلمة"
+
+msgid "Quantity actually received"
+msgstr "الكمية المستلمة فعلياً"
+
+msgid "Total line item cost"
+msgstr "إجمالي تكلفة البند"
+
+msgid "Purchase Order Item"
+msgstr "عنصر أمر الشراء"
+
+msgid "Purchase Order Items"
+msgstr "عناصر أمر الشراء"
+
+msgid "Organization this recipe belongs to"
+msgstr "المنظمة التي تنتمي إليها هذه الوصفة"
+
+msgid "Menu product this recipe produces"
+msgstr "منتج القائمة الذي تنتجه هذه الوصفة"
+
+msgid "Recipe name"
+msgstr "اسم الوصفة"
+
+msgid "Recipe description or preparation instructions"
+msgstr "وصف الوصفة أو تعليمات التحضير"
+
+msgid "Yield quantity"
+msgstr "كمية الإنتاج"
+
+msgid "Number of portions/units this recipe produces"
+msgstr "عدد الحصص/الوحدات التي تنتجها هذه الوصفة"
+
+msgid "Yield unit"
+msgstr "وحدة الإنتاج"
+
+msgid "Unit of measurement for the yield"
+msgstr "وحدة القياس للإنتاج"
+
+msgid "Preparation time (minutes)"
+msgstr "وقت التحضير (بالدقائق)"
+
+msgid "Estimated preparation time in minutes"
+msgstr "وقت التحضير التقديري بالدقائق"
+
+msgid "Whether this recipe is currently in use"
+msgstr "ما إذا كانت هذه الوصفة قيد الاستخدام حالياً"
+
+msgid "Recipe"
+msgstr "الوصفة"
+
+msgid "Recipes"
+msgstr "الوصفات"
+
+msgid "Parent recipe"
+msgstr "الوصفة الأب"
+
+msgid "The inventory item used as ingredient"
+msgstr "صنف المخزون المستخدم كمكون"
+
+msgid "Quantity required"
+msgstr "الكمية المطلوبة"
+
+msgid "Amount of this ingredient required per recipe yield"
+msgstr "كمية هذا المكون المطلوبة لكل إنتاج وصفة"
+
+msgid "Unit of measurement for this ingredient"
+msgstr "وحدة القياس لهذا المكون"
+
+msgid "Waste percentage"
+msgstr "نسبة الهدر"
+
+msgid "Expected waste percentage (0-100)"
+msgstr "نسبة الهدر المتوقعة (0-100)"
+
+msgid "Recipe Ingredient"
+msgstr "مكون الوصفة"
+
+msgid "Recipe Ingredients"
+msgstr "مكونات الوصفة"
+
+msgid "Preview"
+msgstr "معاينة"
+
+msgid "Size"
+msgstr "الحجم"
+
+msgid "Details"
+msgstr "التفاصيل"
+
+msgid "Statistics"
+msgstr "الإحصائيات"
+
+msgid "Media Count"
+msgstr "عدد الوسائط"
+
+msgid "Subfolders"
+msgstr "المجلدات الفرعية"
+
+msgid "File Information"
+msgstr "معلومات الملف"
+
+msgid "URLs"
+msgstr "الروابط"
+
+msgid "Dimensions & Size"
+msgstr "الأبعاد والحجم"
+
+msgid "SEO & Accessibility"
+msgstr "تحسين محركات البحث وسهولة الوصول"
+
+msgid "Usage Statistics"
+msgstr "إحصائيات الاستخدام"
+
+msgid "Dimensions"
+msgstr "الأبعاد"
+
+msgid "Organization this folder belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا المجلد"
+
+msgid "Parent folder"
+msgstr "المجلد الأب"
+
+msgid "Parent folder for nesting (null = root folder)"
+msgstr "المجلد الأب للتداخل (null = المجلد الجذر)"
+
+msgid "Display name of the folder"
+msgstr "اسم عرض المجلد"
+
+msgid "URL-friendly identifier (unique within parent)"
+msgstr "معرّف صالح للروابط (فريد داخل الأب)"
+
+msgid "Optional folder description"
+msgstr "وصف اختياري للمجلد"
+
+msgid "Whether folder contents are publicly accessible"
+msgstr "ما إذا كان محتوى المجلد متاحاً للعامة"
+
+msgid "Sort order"
+msgstr "ترتيب العرض"
+
+msgid "Display order within parent folder"
+msgstr "ترتيب العرض داخل المجلد الأب"
+
+msgid "Custom folder attributes (JSON)"
+msgstr "سمات مخصصة للمجلد (JSON)"
+
+msgid "Media Folder"
+msgstr "مجلد الوسائط"
+
+msgid "Media Folders"
+msgstr "مجلدات الوسائط"
+
+msgid "Organization this media belongs to"
+msgstr "المنظمة التي تنتمي إليها هذه الوسائط"
+
+msgid "Folder"
+msgstr "المجلد"
+
+msgid "Folder containing this media (null = root/unfiled)"
+msgstr "المجلد الذي يحتوي على هذه الوسائط (null = جذر/غير مصنف)"
+
+msgid "Uploaded by"
+msgstr "رُفع بواسطة"
+
+msgid "User who uploaded this media"
+msgstr "المستخدم الذي رفع هذه الوسائط"
+
+msgid "Display name of the media"
+msgstr "اسم عرض الوسائط"
+
+msgid "Original filename"
+msgstr "اسم الملف الأصلي"
+
+msgid "Original filename when uploaded"
+msgstr "اسم الملف الأصلي عند الرفع"
+
+msgid "File path"
+msgstr "مسار الملف"
+
+msgid "Path or key to the stored file"
+msgstr "المسار أو المفتاح للملف المخزّن"
+
+msgid "URL"
+msgstr "الرابط"
+
+msgid "Public URL to access the file"
+msgstr "رابط عام للوصول إلى الملف"
+
+msgid "Storage"
+msgstr "التخزين"
+
+msgid "Storage backend used"
+msgstr "واجهة التخزين المستخدمة"
+
+msgid "Media type"
+msgstr "نوع الوسائط"
+
+msgid "Type of media file"
+msgstr "نوع ملف الوسائط"
+
+msgid "Processing status"
+msgstr "حالة المعالجة"
+
+msgid "MIME type"
+msgstr "نوع MIME"
+
+msgid "MIME type of the file (e.g., image/jpeg)"
+msgstr "نوع MIME للملف (مثال: image/jpeg)"
+
+msgid "File size"
+msgstr "حجم الملف"
+
+msgid "File size in bytes"
+msgstr "حجم الملف بالبايت"
+
+msgid "Width"
+msgstr "العرض"
+
+msgid "Width in pixels (for images/videos)"
+msgstr "العرض بالبكسل (للصور/الفيديو)"
+
+msgid "Height"
+msgstr "الارتفاع"
+
+msgid "Height in pixels (for images/videos)"
+msgstr "الارتفاع بالبكسل (للصور/الفيديو)"
+
+msgid "Duration"
+msgstr "المدة"
+
+msgid "Duration in seconds (for videos/audio)"
+msgstr "المدة بالثواني (للفيديو/الصوت)"
+
+msgid "Thumbnail URL"
+msgstr "رابط الصورة المصغرة"
+
+msgid "URL to thumbnail image"
+msgstr "رابط الصورة المصغرة"
+
+msgid "Alt text"
+msgstr "النص البديل"
+
+msgid "Alt text for accessibility (required for images)"
+msgstr "النص البديل لسهولة الوصول (مطلوب للصور)"
+
+msgid "Title"
+msgstr "العنوان"
+
+msgid "Title for SEO purposes"
+msgstr "العنوان لأغراض SEO"
+
+msgid "Caption"
+msgstr "التسمية التوضيحية"
+
+msgid "Caption or description of the media"
+msgstr "التسمية التوضيحية أو وصف الوسائط"
+
+msgid "Whether media is publicly accessible without authentication"
+msgstr "ما إذا كانت الوسائط متاحة للعامة بدون مصادقة"
+
+msgid "Additional file metadata (EXIF, custom fields, etc.)"
+msgstr "بيانات وصفية إضافية للملف (EXIF، حقول مخصصة، إلخ.)"
+
+msgid "Number of times this media is used in content"
+msgstr "عدد مرات استخدام هذه الوسائط في المحتوى"
+
+msgid "Last used at"
+msgstr "آخر استخدام في"
+
+msgid "When this media was last used in content"
+msgstr "متى تم استخدام هذه الوسائط آخر مرة في المحتوى"
+
+msgid "Media"
+msgstr "الوسائط"
+
+msgid "Basic theme information"
+msgstr "معلومات القالب الأساسية"
+
+msgid "Colors"
+msgstr "الألوان"
+
+msgid ""
+"Theme color settings (hex format). Use the color swatches or type hex values."
+msgstr "إعدادات ألوان القالب (صيغة hex). استخدم عينات الألوان أو اكتب قيم hex."
+
+msgid "Typography"
+msgstr "الخطوط"
+
+msgid "Layout & Display"
+msgstr "التخطيط والعرض"
+
+msgid ""
+"Layout settings. Use the \"settings\" JSON field for: \"layout\" (wide/"
+"boxed), \"grid_columns\" (2/3/4/6), \"border_radius\" (0-24), \"dark_mode\" "
+"(true/false)"
+msgstr "إعدادات التخطيط. استخدم حقل JSON \"settings\" لـ: \"layout\" (واسع/محاصر)، \"grid_columns\" (2/3/4/6)، \"border_radius\" (0-24)، \"dark_mode\" (صحيح/خاطئ)"
+
+msgid "Advanced"
+msgstr "متقدم"
+
+msgid "Advanced customization options"
+msgstr "خيارات التخصيص المتقدمة"
+
+msgid "Layout"
+msgstr "التخطيط"
+
+msgid "Color Preview"
+msgstr "معاينة اللون"
+
+msgid "Set as default theme"
+msgstr "تعيين كقالب افتراضي"
+
+msgid "Please select only one theme to set as default."
+msgstr "يرجى اختيار قالب واحد فقط لتعيينه كافتراضي."
+
+#, python-format
+msgid "%(name)s has been set as default."
+msgstr "تم تعيين %(name)s كافتراضي."
+
+msgid "Activate selected themes"
+msgstr "تفعيل القوالب المختارة"
+
+#, python-format
+msgid "%(count)d theme(s) have been activated."
+msgstr "تم تفعيل %(count)d قالب/قوالب."
+
+msgid "Deactivate selected themes"
+msgstr "إلغاء تفعيل القوالب المختارة"
+
+#, python-format
+msgid "%(count)d theme(s) have been deactivated."
+msgstr "تم إلغاء تفعيل %(count)d قالب/قوالب."
+
+msgid "Basic menu information"
+msgstr "معلومات القائمة الأساسية"
+
+msgid "Publication"
+msgstr "النشر"
+
+msgid "Control menu visibility and default status"
+msgstr "التحكم في ظهور القائمة والحالة الافتراضية"
+
+msgid "Styling"
+msgstr "التنسيق"
+
+msgid "Published"
+msgstr "منشور"
+
+msgid "Categories"
+msgstr "الفئات"
+
+msgid "Publish selected menus"
+msgstr "نشر القوائم المختارة"
+
+#, python-format
+msgid "%(count)d menu(s) have been published."
+msgstr "تم نشر %(count)d قائمة/قوائم."
+
+msgid "Unpublish selected menus"
+msgstr "إلغاء نشر القوائم المختارة"
+
+#, python-format
+msgid "%(count)d menu(s) have been unpublished."
+msgstr "تم إلغاء نشر %(count)d قائمة/قوائم."
+
+msgid "Set as default menu"
+msgstr "تعيين كقائمة افتراضية"
+
+msgid "Please select only one menu to set as default."
+msgstr "يرجى اختيار قائمة واحدة فقط لتعيينها كافتراضية."
+
+msgid "Basic category information"
+msgstr "معلومات الفئة الأساسية"
+
+msgid "Hierarchy"
+msgstr "التسلسل الهرمي"
+
+msgid "Optional parent category for nested structure"
+msgstr "فئة أب اختيارية للبنية المتداخلة"
+
+msgid "Display"
+msgstr "العرض"
+
+msgid "Products"
+msgstr "المنتجات"
+
+msgid "Activate selected categories"
+msgstr "تفعيل الفئات المختارة"
+
+#, python-format
+msgid "%(count)d category(ies) have been activated."
+msgstr "تم تفعيل %(count)d فئة/فئات."
+
+msgid "Deactivate selected categories"
+msgstr "إلغاء تفعيل الفئات المختارة"
+
+#, python-format
+msgid "%(count)d category(ies) have been deactivated."
+msgstr "تم إلغاء تفعيل %(count)d فئة/فئات."
+
+msgid "Basic product information"
+msgstr "معلومات المنتج الأساسية"
+
+msgid "Pricing"
+msgstr "التسعير"
+
+msgid "Images"
+msgstr "الصور"
+
+msgid "Availability & Status"
+msgstr "التوفر والحالة"
+
+msgid "Attributes"
+msgstr "السمات"
+
+msgid "Price"
+msgstr "السعر"
+
+msgid "Available"
+msgstr "متوفر"
+
+msgid "Out of Stock"
+msgstr "نفد المخزون"
+
+msgid "Availability"
+msgstr "التوفر"
+
+msgid "Mark as available"
+msgstr "تحديد كمتوفر"
+
+#, python-format
+msgid "%(count)d product(s) have been marked as available."
+msgstr "تم تحديد %(count)d منتج/منتجات كمتوفر."
+
+msgid "Mark as out of stock"
+msgstr "تحديد كنفد المخزون"
+
+#, python-format
+msgid "%(count)d product(s) have been marked as out of stock."
+msgstr "تم تحديد %(count)d منتج/منتجات كنفد المخزون."
+
+msgid "Toggle featured status"
+msgstr "تبديل حالة المميز"
+
+#, python-format
+msgid "Featured status has been toggled for %(count)d product(s)."
+msgstr "تم تبديل حالة المميز لـ %(count)d منتج/منتجات."
+
+msgid "Toggle chef recommended"
+msgstr "تبديل توصية الشيف"
+
+#, python-format
+msgid "Chef recommended status has been toggled for %(count)d product(s)."
+msgstr "تم تبديل حالة توصية الشيف لـ %(count)d منتج/منتجات."
+
+msgid "🤖 AI: Generate descriptions"
+msgstr "🤖 AI: توليد الأوصاف"
+
+msgid "AI content generation is not available on your plan. Please upgrade."
+msgstr "توليد المحتوى بالذكاء الاصطناعي غير متوفر في خطتك. يرجى الترقية."
+
+#, python-format
+msgid "AI credit limit reached. %d product(s) generated before limit."
+msgstr "تم الوصول لحد أرصدة AI. تم توليد %d منتج/منتجات قبل الحد."
+
+#, python-format
+msgid "AI descriptions generated for %(success)d product(s)."
+msgstr "تم توليد أوصاف AI لـ %(success)d منتج/منتجات."
+
+#, python-format
+msgid " %(errors)d failed."
+msgstr " %(errors)d فشل."
+
+msgid "Basic allergen information"
+msgstr "معلومات مسبب الحساسية الأساسية"
+
+msgid "Code"
+msgstr "الرمز"
+
+msgid "Icon"
+msgstr "الأيقونة"
+
+msgid "Activate selected allergens"
+msgstr "تفعيل مسببات الحساسية المختارة"
+
+#, python-format
+msgid "%(count)d allergen(s) have been activated."
+msgstr "تم تفعيل %(count)d مسبب/مسببات حساسية."
+
+msgid "Deactivate selected allergens"
+msgstr "إلغاء تفعيل مسببات الحساسية المختارة"
+
+#, python-format
+msgid "%(count)d allergen(s) have been deactivated."
+msgstr "تم إلغاء تفعيل %(count)d مسبب/مسببات حساسية."
+
+msgid "Pricing & Availability"
+msgstr "التسعير والتوفر"
+
+msgid "Pricing & Behavior"
+msgstr "التسعير والسلوك"
+
+msgid "Severity"
+msgstr "الشدة"
+
+msgid "Serving Information"
+msgstr "معلومات الحصة"
+
+msgid "Energy"
+msgstr "الطاقة"
+
+msgid "Macronutrients"
+msgstr "العناصر الغذائية الكبرى"
+
+msgid "Micronutrients"
+msgstr "العناصر الغذائية الصغرى"
+
+msgid "Vitamins"
+msgstr "الفيتامينات"
+
+msgid "Custom Nutrients"
+msgstr "عناصر غذائية مخصصة"
+
+msgid "Macros"
+msgstr "الماكرو"
+
+msgid "Left"
+msgstr "يسار"
+
+msgid "Center"
+msgstr "وسط"
+
+msgid "Right"
+msgstr "يمين"
+
+msgid "Organization this theme belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا القالب"
+
+msgid "Display name of the theme"
+msgstr "اسم عرض القالب"
+
+msgid "Optional description of the theme"
+msgstr "وصف اختياري للقالب"
+
+msgid "Primary color"
+msgstr "اللون الأساسي"
+
+msgid "Primary brand color (hex format, e.g., #3B82F6)"
+msgstr "لون العلامة التجارية الأساسي (تنسيق hex، مثال: #3B82F6)"
+
+msgid "Secondary color"
+msgstr "اللون الثانوي"
+
+msgid "Secondary accent color (hex format)"
+msgstr "لون التمييز الثانوي (تنسيق hex)"
+
+msgid "Background color"
+msgstr "لون الخلفية"
+
+msgid "Page background color (hex format)"
+msgstr "لون خلفية الصفحة (تنسيق hex)"
+
+msgid "Text color"
+msgstr "لون النص"
+
+msgid "Primary text color (hex format)"
+msgstr "لون النص الأساسي (تنسيق hex)"
+
+msgid "Accent color"
+msgstr "لون التمييز"
+
+msgid "Optional accent color for highlights (hex format)"
+msgstr "لون تمييز اختياري للإبرازات (تنسيق hex)"
+
+msgid "Font family"
+msgstr "عائلة الخط"
+
+msgid "Primary font family (e.g., Inter, Roboto, Open Sans)"
+msgstr "عائلة الخط الأساسية (مثال: Inter, Roboto, Open Sans)"
+
+msgid "Heading font family"
+msgstr "عائلة خط العناوين"
+
+msgid "Optional separate font for headings"
+msgstr "خط منفصل اختياري للعناوين"
+
+msgid "Logo position"
+msgstr "موضع الشعار"
+
+msgid "Position of logo in menu header"
+msgstr "موضع الشعار في رأس القائمة"
+
+msgid "Custom CSS"
+msgstr "CSS مخصص"
+
+msgid "Custom CSS for advanced theme styling"
+msgstr "CSS مخصص لتنسيق القالب المتقدم"
+
+msgid "Additional theme settings (JSON)"
+msgstr "إعدادات إضافية للقالب (JSON)"
+
+msgid "Is default"
+msgstr "افتراضي"
+
+msgid "Whether this is the default theme for the organization"
+msgstr "ما إذا كان هذا هو القالب الافتراضي للمنظمة"
+
+msgid "Whether the theme is available for use"
+msgstr "ما إذا كان القالب متاحاً للاستخدام"
+
+msgid "Theme"
+msgstr "القالب"
+
+msgid "Themes"
+msgstr "القوالب"
+
+msgid "Organization this menu belongs to"
+msgstr "المنظمة التي تنتمي إليها هذه القائمة"
+
+msgid "Display name of the menu"
+msgstr "اسم عرض القائمة"
+
+msgid "Optional description of the menu"
+msgstr "وصف اختياري للقائمة"
+
+msgid "Is published"
+msgstr "منشور"
+
+msgid "Whether the menu is visible to customers"
+msgstr "ما إذا كانت القائمة مرئية للعملاء"
+
+msgid "Published at"
+msgstr "نُشر في"
+
+msgid "Timestamp when the menu was published"
+msgstr "الطابع الزمني لنشر القائمة"
+
+msgid "Whether this is the default menu for the organization"
+msgstr "ما إذا كانت هذه هي القائمة الافتراضية للمنظمة"
+
+msgid "Optional theme for styling customization"
+msgstr "قالب اختياري لتخصيص التنسيق"
+
+msgid "Additional menu settings (JSON)"
+msgstr "إعدادات إضافية للقائمة (JSON)"
+
+msgid "Display order for menus (lower numbers appear first)"
+msgstr "ترتيب عرض القوائم (الأرقام الأقل تظهر أولاً)"
+
+msgid "Menu"
+msgstr "القائمة"
+
+msgid "Menus"
+msgstr "القوائم"
+
+msgid "Organization this category belongs to"
+msgstr "المنظمة التي تنتمي إليها هذه الفئة"
+
+msgid "Menu this category belongs to"
+msgstr "القائمة التي تنتمي إليها هذه الفئة"
+
+msgid "Parent category"
+msgstr "الفئة الأب"
+
+msgid "Parent category for nested structure (null for root categories)"
+msgstr "الفئة الأب للبنية المتداخلة (null للفئات الجذرية)"
+
+msgid "Display name of the category"
+msgstr "اسم عرض الفئة"
+
+msgid "URL-friendly identifier (unique within menu)"
+msgstr "معرّف صالح للروابط (فريد داخل القائمة)"
+
+msgid "Optional description of the category"
+msgstr "وصف اختياري للفئة"
+
+msgid "Image URL"
+msgstr "رابط الصورة"
+
+msgid "URL to category image"
+msgstr "رابط صورة الفئة"
+
+msgid "Phosphor icon class (e.g., ph-fill ph-knife, ph-fill ph-hamburger)"
+msgstr "فئة أيقونة Phosphor (مثال: ph-fill ph-knife, ph-fill ph-hamburger)"
+
+msgid "Whether the category is visible/active"
+msgstr "ما إذا كانت الفئة مرئية/نشطة"
+
+msgid "Display order within parent category/menu (lower numbers appear first)"
+msgstr "ترتيب العرض داخل الفئة الأب/القائمة (الأرقام الأقل تظهر أولاً)"
+
+msgid "Organization this product belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا المنتج"
+
+msgid "Category this product belongs to"
+msgstr "الفئة التي ينتمي إليها هذا المنتج"
+
+msgid "Display name of the product"
+msgstr "اسم عرض المنتج"
+
+msgid "URL-friendly identifier (unique within category)"
+msgstr "معرّف صالح للروابط (فريد داخل الفئة)"
+
+msgid "Full product description"
+msgstr "وصف المنتج الكامل"
+
+msgid "Short description"
+msgstr "وصف مختصر"
+
+msgid "Brief description for listings (max 100 chars)"
+msgstr "وصف مختصر للقوائم (100 حرف كحد أقصى)"
+
+msgid "Base price"
+msgstr "السعر الأساسي"
+
+msgid "Base price in the default currency"
+msgstr "السعر الأساسي بالعملة الافتراضية"
+
+msgid "Currency"
+msgstr "العملة"
+
+msgid "Currency code (e.g., TRY, USD, EUR)"
+msgstr "رمز العملة (مثال: TRY, USD, EUR)"
+
+msgid "Main product image URL"
+msgstr "رابط صورة المنتج الرئيسية"
+
+msgid "Gallery"
+msgstr "المعرض"
+
+msgid "Array of additional image URLs"
+msgstr "مصفوفة روابط صور إضافية"
+
+msgid "Whether the product is visible on the menu"
+msgstr "ما إذا كان المنتج مرئياً في القائمة"
+
+msgid "Is available"
+msgstr "متوفر"
+
+msgid "Whether the product is in stock/available for ordering"
+msgstr "ما إذا كان المنتج متوفراً/متاحاً للطلب"
+
+msgid "Is featured"
+msgstr "مميز"
+
+msgid "Whether to highlight this product on the menu"
+msgstr "ما إذا كان يجب إبراز هذا المنتج في القائمة"
+
+msgid "Is chef recommended"
+msgstr "موصى به من الشيف"
+
+msgid "Special chef recommendation flag"
+msgstr "علامة توصية الشيف الخاصة"
+
+msgid "Preparation time"
+msgstr "وقت التحضير"
+
+msgid "Calories"
+msgstr "السعرات الحرارية"
+
+msgid "Calorie count (kcal)"
+msgstr "عدد السعرات الحرارية (kcal)"
+
+msgid "Spicy level"
+msgstr "مستوى الحرارة"
+
+msgid "Spiciness level 0-5 (0=not spicy, 5=very spicy)"
+msgstr "مستوى الحرارة 0-5 (0=غير حار، 5=حار جداً)"
+
+msgid "Discount percentage"
+msgstr "نسبة الخصم"
+
+msgid "Discount percentage 0-100 (e.g., 10 means 10% off)"
+msgstr "نسبة الخصم 0-100 (مثال: 10 تعني خصم 10%)"
+
+msgid "Average customer rating 0.0-5.0"
+msgstr "متوسط تقييم العملاء 0.0-5.0"
+
+msgid "Number of customer reviews/ratings"
+msgstr "عدد مراجعات/تقييمات العملاء"
+
+msgid "Tags"
+msgstr "الوسوم"
+
+msgid "Array of tags for filtering (e.g., vegetarian, vegan, gluten-free)"
+msgstr "مصفوفة وسوم للتصفية (مثال: نباتي، خالٍ من الغلوتين)"
+
+msgid "Display order within category (lower numbers appear first)"
+msgstr "ترتيب العرض داخل الفئة (الأرقام الأقل تظهر أولاً)"
+
+msgid "Not spicy"
+msgstr "غير حار"
+
+msgid "Product this variant belongs to"
+msgstr "المنتج الذي ينتمي إليه هذا المتغير"
+
+msgid "Display name of the variant (e.g., Small, Large, Regular)"
+msgstr "اسم عرض المتغير (مثال: صغير، كبير، عادي)"
+
+msgid "Price for this variant"
+msgstr "سعر هذا المتغير"
+
+msgid "Whether this is the default selected variant"
+msgstr "ما إذا كان هذا هو المتغير المحدد افتراضياً"
+
+msgid "Whether the variant is in stock/available"
+msgstr "ما إذا كان المتغير متوفراً/متاحاً"
+
+msgid "Display order within the product (lower numbers appear first)"
+msgstr "ترتيب العرض داخل المنتج (الأرقام الأقل تظهر أولاً)"
+
+msgid "Product Variant"
+msgstr "متغير المنتج"
+
+msgid "Product Variants"
+msgstr "متغيرات المنتج"
+
+msgid "Product this modifier belongs to"
+msgstr "المنتج الذي ينتمي إليه هذا المعدل"
+
+msgid "Display name of the modifier (e.g., Extra Cheese, No Onion)"
+msgstr "اسم عرض المعدل (مثال: جبنة إضافية، بدون بصل)"
+
+msgid "Additional cost for this modifier (can be 0 for free mods)"
+msgstr "التكلفة الإضافية لهذا المعدل (يمكن أن تكون 0 للمعدلات المجانية)"
+
+msgid "Whether this modifier is pre-selected by default"
+msgstr "ما إذا كان هذا المعدل محدداً مسبقاً افتراضياً"
+
+msgid "Is required"
+msgstr "مطلوب"
+
+msgid "Whether the customer must select this modifier"
+msgstr "ما إذا كان يجب على العميل اختيار هذا المعدل"
+
+msgid "Max quantity"
+msgstr "الحد الأقصى للكمية"
+
+msgid "Maximum times this modifier can be added to the order"
+msgstr "الحد الأقصى لعدد مرات إضافة هذا المعدل للطلب"
+
+msgid "Product Modifier"
+msgstr "معدل المنتج"
+
+msgid "Product Modifiers"
+msgstr "معدلات المنتج"
+
+msgid "Free"
+msgstr "مجاني"
+
+msgid "Contains"
+msgstr "يحتوي"
+
+msgid "May Contain"
+msgstr "قد يحتوي"
+
+msgid "Traces"
+msgstr "آثار"
+
+msgid "Display name of the allergen (e.g., Gluten, Nuts, Dairy)"
+msgstr "اسم عرض مسبب الحساسية (مثال: الغلوتين، المكسرات، الألبان)"
+
+msgid "URL-friendly identifier (globally unique)"
+msgstr "معرّف صالح للروابط (فريد عالمياً)"
+
+msgid "Short code for the allergen (e.g., GLU, NUT, DAI)"
+msgstr "رمز مختصر لمسبب الحساسية (مثال: GLU, NUT, DAI)"
+
+msgid "Icon URL"
+msgstr "رابط الأيقونة"
+
+msgid "URL to allergen icon/image"
+msgstr "رابط أيقونة/صورة مسبب الحساسية"
+
+msgid "Detailed description of the allergen and its sources"
+msgstr "وصف تفصيلي لمسبب الحساسية ومصادره"
+
+msgid "Display order for consistent listing (lower numbers appear first)"
+msgstr "ترتيب العرض للقائمة المتسقة (الأرقام الأقل تظهر أولاً)"
+
+msgid "Whether the allergen is available for selection"
+msgstr "ما إذا كان مسبب الحساسية متاحاً للاختيار"
+
+msgid "Allergens"
+msgstr "مسببات الحساسية"
+
+msgid "Product this allergen association belongs to"
+msgstr "المنتج الذي ينتمي إليه ارتباط مسبب الحساسية هذا"
+
+msgid "The allergen associated with this product"
+msgstr "مسبب الحساسية المرتبط بهذا المنتج"
+
+msgid "Level of allergen presence (contains/may_contain/traces)"
+msgstr "مستوى وجود مسبب الحساسية (يحتوي/قد يحتوي/آثار)"
+
+msgid "Optional additional notes about this allergen in the product"
+msgstr "ملاحظات إضافية اختيارية حول مسبب الحساسية في المنتج"
+
+msgid "Product Allergen"
+msgstr "مسبب حساسية المنتج"
+
+msgid "Product Allergens"
+msgstr "مسببات حساسية المنتج"
+
+msgid "Product this nutrition info belongs to"
+msgstr "المنتج الذي تنتمي إليه هذه المعلومات الغذائية"
+
+msgid "Serving size"
+msgstr "حجم الحصة"
+
+msgid ""
+"Description of serving size (e.g., \"100g\", \"1 portion\", \"1 slice\")"
+msgstr "وصف حجم الحصة (مثال: \"100 جرام\"، \"حصة واحدة\"، \"شريحة واحدة\")"
+
+msgid "Serving size (grams)"
+msgstr "حجم الحصة (غرام)"
+
+msgid "Numeric serving size in grams for calculations"
+msgstr "حجم الحصة الرقمي بالغرام للحسابات"
+
+msgid "Energy in kcal per serving"
+msgstr "الطاقة بالسعرات الحرارية لكل حصة"
+
+msgid "Protein"
+msgstr "البروتين"
+
+msgid "Protein in grams per serving"
+msgstr "البروتين بالغرام لكل حصة"
+
+msgid "Carbohydrates"
+msgstr "الكربوهيدرات"
+
+msgid "Total carbohydrates in grams per serving"
+msgstr "إجمالي الكربوهيدرات بالغرام لكل حصة"
+
+msgid "Sugar"
+msgstr "السكر"
+
+msgid "Sugar content in grams per serving"
+msgstr "محتوى السكر بالغرام لكل حصة"
+
+msgid "Fiber"
+msgstr "الألياف"
+
+msgid "Dietary fiber in grams per serving"
+msgstr "الألياف الغذائية بالغرام لكل حصة"
+
+msgid "Fat"
+msgstr "الدهون"
+
+msgid "Total fat in grams per serving"
+msgstr "إجمالي الدهون بالغرام لكل حصة"
+
+msgid "Saturated fat"
+msgstr "الدهون المشبعة"
+
+msgid "Saturated fat in grams per serving"
+msgstr "الدهون المشبعة بالغرام لكل حصة"
+
+msgid "Trans fat"
+msgstr "الدهون المتحولة"
+
+msgid "Trans fat in grams per serving"
+msgstr "الدهون المتحولة بالغرام لكل حصة"
+
+msgid "Cholesterol"
+msgstr "الكوليسترول"
+
+msgid "Cholesterol in mg per serving"
+msgstr "الكوليسترول بالملغ لكل حصة"
+
+msgid "Sodium"
+msgstr "الصوديوم"
+
+msgid "Sodium in mg per serving"
+msgstr "الصوديوم بالملغ لكل حصة"
+
+msgid "Potassium"
+msgstr "البوتاسيوم"
+
+msgid "Potassium in mg per serving"
+msgstr "البوتاسيوم بالملغ لكل حصة"
+
+msgid "Calcium"
+msgstr "الكالسيوم"
+
+msgid "Calcium in mg per serving"
+msgstr "الكالسيوم بالملغ لكل حصة"
+
+msgid "Iron"
+msgstr "الحديد"
+
+msgid "Iron in mg per serving"
+msgstr "الحديد بالملغ لكل حصة"
+
+msgid "Vitamin A"
+msgstr "فيتامين أ"
+
+msgid "Vitamin A in IU or mcg per serving"
+msgstr "فيتامين أ بالوحدات الدولية أو الميكروغرام لكل حصة"
+
+msgid "Vitamin C"
+msgstr "فيتامين ج"
+
+msgid "Vitamin C in mg per serving"
+msgstr "فيتامين ج بالملغ لكل حصة"
+
+msgid "Custom nutrients"
+msgstr "عناصر غذائية مخصصة"
+
+msgid "Additional nutrients not covered by standard fields (JSON)"
+msgstr "عناصر غذائية إضافية غير مشمولة بالحقول القياسية (JSON)"
+
+msgid "Nutrition Info"
+msgstr "المعلومات الغذائية"
+
+msgid "Menu not found"
+msgstr "القائمة غير موجودة"
+
+msgid "Product not found"
+msgstr "المنتج غير موجود"
+
+msgid "Number of menus using this theme"
+msgstr "عدد القوائم التي تستخدم هذا القالب"
+
+msgid "A theme with this slug already exists."
+msgstr "يوجد قالب بهذا الرابط المختصر بالفعل."
+
+msgid "Number of categories in this menu"
+msgstr "عدد الفئات في هذه القائمة"
+
+msgid "Theme UUID to associate with this menu"
+msgstr "UUID القالب لربطه بهذه القائمة"
+
+msgid "A menu with this slug already exists."
+msgstr "توجد قائمة بهذا الرابط المختصر بالفعل."
+
+msgid "Theme not found."
+msgstr "القالب غير موجود."
+
+msgid "Number of products in this category"
+msgstr "عدد المنتجات في هذه الفئة"
+
+msgid "Menu UUID this category belongs to"
+msgstr "UUID القائمة التي تنتمي إليها هذه الفئة"
+
+msgid "Parent category UUID for nested structure"
+msgstr "UUID الفئة الأب للبنية المتداخلة"
+
+msgid "Menu not found."
+msgstr "القائمة غير موجودة."
+
+msgid "Organization context required."
+msgstr "سياق المنظمة مطلوب."
+
+msgid "Parent category not found."
+msgstr "الفئة الأب غير موجودة."
+
+msgid "Parent category must belong to the same menu."
+msgstr "يجب أن تنتمي الفئة الأب لنفس القائمة."
+
+msgid "A category with this slug already exists in this menu."
+msgstr "توجد فئة بهذا الرابط المختصر في هذه القائمة بالفعل."
+
+msgid "Cannot set category as its own parent."
+msgstr "لا يمكن تعيين الفئة كأب لنفسها."
+
+msgid "Allergen UUID"
+msgstr "UUID مسبب الحساسية"
+
+msgid "Category UUID this product belongs to"
+msgstr "UUID الفئة التي ينتمي إليها هذا المنتج"
+
+msgid "Category not found."
+msgstr "الفئة غير موجودة."
+
+msgid "A product with this slug already exists in this category."
+msgstr "يوجد منتج بهذا الرابط المختصر في هذه الفئة بالفعل."
+
+msgid "Theme set as default"
+msgstr "تم تعيين القالب كافتراضي"
+
+msgid "Menu published"
+msgstr "تم نشر القائمة"
+
+msgid "Menu unpublished"
+msgstr "تم إلغاء نشر القائمة"
+
+msgid "Menu set as default"
+msgstr "تم تعيين القائمة كافتراضية"
+
+msgid "Notification Content"
+msgstr "محتوى الإشعار"
+
+msgid "Classification"
+msgstr "التصنيف"
+
+msgid "Timing"
+msgstr "التوقيت"
+
+msgid "Data"
+msgstr "البيانات"
+
+msgid "Mark selected notifications as read"
+msgstr "تحديد الإشعارات المختارة كمقروءة"
+
+msgid "Mark selected notifications as sent"
+msgstr "تحديد الإشعارات المختارة كمرسلة"
+
+msgid "Archive selected notifications"
+msgstr "أرشفة الإشعارات المختارة"
+
+msgid "Organization this notification belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا الإشعار"
+
+msgid "User who is the recipient of this notification"
+msgstr "المستخدم المستلم لهذا الإشعار"
+
+msgid "Notification type"
+msgstr "نوع الإشعار"
+
+msgid "Category of the notification"
+msgstr "فئة الإشعار"
+
+msgid "Current delivery/read status of the notification"
+msgstr "حالة التسليم/القراءة الحالية للإشعار"
+
+msgid "Priority level for ordering and urgency"
+msgstr "مستوى الأولوية للترتيب والاستعجال"
+
+msgid "Delivery channel for the notification"
+msgstr "قناة تسليم الإشعار"
+
+msgid "Short title or subject for the notification"
+msgstr "عنوان قصير أو موضوع الإشعار"
+
+msgid "Message"
+msgstr "الرسالة"
+
+msgid "Full notification message content"
+msgstr "محتوى رسالة الإشعار الكاملة"
+
+msgid "Additional context data (order_id, urls, etc.)"
+msgstr "بيانات سياق إضافية (order_id، روابط، إلخ.)"
+
+msgid "Read at"
+msgstr "قُرئ في"
+
+msgid "When the notification was read/viewed by the user"
+msgstr "متى قرأ/شاهد المستخدم الإشعار"
+
+msgid "Sent at"
+msgstr "أُرسل في"
+
+msgid "When the notification was sent to the delivery channel"
+msgstr "متى تم إرسال الإشعار إلى قناة التسليم"
+
+msgid "Delivered at"
+msgstr "تم التسليم في"
+
+msgid "When the notification was confirmed delivered"
+msgstr "متى تم تأكيد تسليم الإشعار"
+
+msgid "Scheduled for"
+msgstr "مجدول لـ"
+
+msgid "Optional scheduled delivery time (null for immediate)"
+msgstr "وقت تسليم مجدول اختياري (null للفوري)"
+
+msgid "Optional expiration time after which notification is hidden"
+msgstr "وقت انتهاء صلاحية اختياري يُخفى بعده الإشعار"
+
+msgid "Action URL"
+msgstr "رابط الإجراء"
+
+msgid "Optional URL for click-through action"
+msgstr "رابط اختياري لإجراء النقر"
+
+msgid "Optional image URL for rich notifications"
+msgstr "رابط صورة اختياري للإشعارات الغنية"
+
+msgid "Additional metadata for tracking and analytics"
+msgstr "بيانات وصفية إضافية للتتبع والتحليلات"
+
+msgid "Notification"
+msgstr "الإشعار"
+
+msgid "Notifications"
+msgstr "الإشعارات"
+
+msgid "Notification marked as read"
+msgstr "تم تحديد الإشعار كمقروء"
+
+msgid "Organization context required"
+msgstr "سياق المنظمة مطلوب"
+
+msgid "All notifications marked as read"
+msgstr "تم تحديد جميع الإشعارات كمقروءة"
+
+msgid "Notification archived"
+msgstr "تم أرشفة الإشعار"
+
+msgid "Basic zone information"
+msgstr "معلومات المنطقة الأساسية"
+
+msgid "Appearance"
+msgstr "المظهر"
+
+msgid "Visual identification for the zone"
+msgstr "التعريف المرئي للمنطقة"
+
+msgid "Capacity & Characteristics"
+msgstr "السعة والخصائص"
+
+msgid "Status & Order"
+msgstr "الحالة والترتيب"
+
+msgid "Color"
+msgstr "اللون"
+
+msgid "Tables"
+msgstr "الطاولات"
+
+msgid "Outdoor"
+msgstr "خارجي"
+
+msgid "Smoking"
+msgstr "التدخين"
+
+msgid "Reservable"
+msgstr "قابل للحجز"
+
+msgid "Flags"
+msgstr "العلامات"
+
+msgid "Activate selected zones"
+msgstr "تفعيل المناطق المختارة"
+
+#, python-format
+msgid "%(count)d zone(s) have been activated."
+msgstr "تم تفعيل %(count)d منطقة/مناطق."
+
+msgid "Deactivate selected zones"
+msgstr "إلغاء تفعيل المناطق المختارة"
+
+#, python-format
+msgid "%(count)d zone(s) have been deactivated."
+msgstr "تم إلغاء تفعيل %(count)d منطقة/مناطق."
+
+msgid "Basic table information"
+msgstr "معلومات الطاولة الأساسية"
+
+msgid "Capacity"
+msgstr "السعة"
+
+msgid "Floor Plan"
+msgstr "مخطط الطابق"
+
+msgid "Position and shape for floor plan visualization"
+msgstr "الموضع والشكل لعرض مخطط الطابق"
+
+msgid "VIP"
+msgstr "VIP"
+
+msgid "Set as available"
+msgstr "تعيين كمتاحة"
+
+#, python-format
+msgid "%(count)d table(s) have been set to available."
+msgstr "تم تعيين %(count)d طاولة/طاولات كمتاحة."
+
+msgid "Set as occupied"
+msgstr "تعيين كمشغولة"
+
+#, python-format
+msgid "%(count)d table(s) have been set to occupied."
+msgstr "تم تعيين %(count)d طاولة/طاولات كمشغولة."
+
+msgid "Set as reserved"
+msgstr "تعيين كمحجوزة"
+
+#, python-format
+msgid "%(count)d table(s) have been set to reserved."
+msgstr "تم تعيين %(count)d طاولة/طاولات كمحجوزة."
+
+msgid "Activate selected tables"
+msgstr "تفعيل الطاولات المختارة"
+
+#, python-format
+msgid "%(count)d table(s) have been activated."
+msgstr "تم تفعيل %(count)d طاولة/طاولات."
+
+msgid "Deactivate selected tables"
+msgstr "إلغاء تفعيل الطاولات المختارة"
+
+#, python-format
+msgid "%(count)d table(s) have been deactivated."
+msgstr "تم إلغاء تفعيل %(count)d طاولة/طاولات."
+
+msgid "Basic QR code information"
+msgstr "معلومات رمز QR الأساسية"
+
+msgid "Type & Links"
+msgstr "النوع والروابط"
+
+msgid "QR code type and linked entities"
+msgstr "نوع رمز QR والكيانات المرتبطة"
+
+msgid "Analytics"
+msgstr "التحليلات"
+
+msgid "QR code scan statistics (read-only)"
+msgstr "إحصائيات مسح رمز QR (للقراءة فقط)"
+
+msgid "Settings & Metadata"
+msgstr "الإعدادات والبيانات الوصفية"
+
+msgid "Scans (Total/Unique)"
+msgstr "المسح (الإجمالي/الفريد)"
+
+msgid "Activate selected QR codes"
+msgstr "تفعيل رموز QR المختارة"
+
+#, python-format
+msgid "%(count)d QR code(s) have been activated."
+msgstr "تم تفعيل %(count)d رمز/رموز QR."
+
+msgid "Deactivate selected QR codes"
+msgstr "إلغاء تفعيل رموز QR المختارة"
+
+#, python-format
+msgid "%(count)d QR code(s) have been deactivated."
+msgstr "تم إلغاء تفعيل %(count)d رمز/رموز QR."
+
+msgid "Network"
+msgstr "الشبكة"
+
+msgid "Tracking"
+msgstr "التتبع"
+
+msgid "Unknown"
+msgstr "غير معروف"
+
+msgid "Device"
+msgstr "الجهاز"
+
+msgid "Order identification"
+msgstr "تعريف الطلب"
+
+msgid "Customer & Table"
+msgstr "العميل والطاولة"
+
+msgid "Financial"
+msgstr "مالي"
+
+msgid "Delivery"
+msgstr "التوصيل"
+
+msgid "Staff"
+msgstr "الموظفون"
+
+msgid "Workflow Timestamps"
+msgstr "الطوابع الزمنية لسير العمل"
+
+msgid "Total"
+msgstr "الإجمالي"
+
+msgid "Items"
+msgstr "العناصر"
+
+msgid "Confirm selected orders"
+msgstr "تأكيد الطلبات المختارة"
+
+#, python-format
+msgid "%(count)d order(s) have been confirmed."
+msgstr "تم تأكيد %(count)d طلب/طلبات."
+
+msgid "Start preparing selected orders"
+msgstr "بدء تحضير الطلبات المختارة"
+
+#, python-format
+msgid "%(count)d order(s) have started preparation."
+msgstr "بدأ تحضير %(count)d طلب/طلبات."
+
+msgid "Mark selected orders as ready"
+msgstr "تحديد الطلبات المختارة كجاهزة"
+
+#, python-format
+msgid "%(count)d order(s) have been marked as ready."
+msgstr "تم تحديد %(count)d طلب/طلبات كجاهز."
+
+msgid "Mark selected orders as completed"
+msgstr "تحديد الطلبات المختارة كمكتملة"
+
+#, python-format
+msgid "%(count)d order(s) have been completed."
+msgstr "تم إتمام %(count)d طلب/طلبات."
+
+msgid "Cancel selected orders"
+msgstr "إلغاء الطلبات المختارة"
+
+#, python-format
+msgid "%(count)d order(s) have been cancelled."
+msgstr "تم إلغاء %(count)d طلب/طلبات."
+
+msgid "Quantity & Pricing"
+msgstr "الكمية والتسعير"
+
+msgid "Modifiers & Notes"
+msgstr "المعدلات والملاحظات"
+
+msgid "Gift"
+msgstr "هدية"
+
+msgid "Start preparing selected items"
+msgstr "بدء تحضير العناصر المختارة"
+
+#, python-format
+msgid "%(count)d item(s) have started preparation."
+msgstr "بدأ تحضير %(count)d عنصر/عناصر."
+
+msgid "Mark selected items as ready"
+msgstr "تحديد العناصر المختارة كجاهزة"
+
+#, python-format
+msgid "%(count)d item(s) have been marked as ready."
+msgstr "تم تحديد %(count)d عنصر/عناصر كجاهز."
+
+msgid "Mark selected items as delivered"
+msgstr "تحديد العناصر المختارة كتم التسليم"
+
+#, python-format
+msgid "%(count)d item(s) have been marked as delivered."
+msgstr "تم تحديد %(count)d عنصر/عناصر كتم التسليم."
+
+msgid "Cancel selected items"
+msgstr "إلغاء العناصر المختارة"
+
+#, python-format
+msgid "%(count)d item(s) have been cancelled."
+msgstr "تم إلغاء %(count)d عنصر/عناصر."
+
+msgid "Request Details"
+msgstr "تفاصيل الطلب"
+
+msgid "Assignment"
+msgstr "التعيين"
+
+msgid "Urgent"
+msgstr "عاجل"
+
+msgid "High"
+msgstr "مرتفع"
+
+msgid "Very Low"
+msgstr "منخفض جداً"
+
+msgid "sec"
+msgstr "ثانية"
+
+msgid "min"
+msgstr "دقيقة"
+
+msgid "hr"
+msgstr "ساعة"
+
+msgid "Response Time"
+msgstr "وقت الاستجابة"
+
+msgid "Acknowledge selected requests"
+msgstr "الإقرار بالطلبات المختارة"
+
+#, python-format
+msgid "%(count)d request(s) have been acknowledged."
+msgstr "تم الإقرار بـ %(count)d طلب/طلبات."
+
+msgid "Complete selected requests"
+msgstr "إتمام الطلبات المختارة"
+
+#, python-format
+msgid "%(count)d request(s) have been completed."
+msgstr "تم إتمام %(count)d طلب/طلبات."
+
+msgid "Cancel selected requests"
+msgstr "إلغاء الطلبات المختارة"
+
+#, python-format
+msgid "%(count)d request(s) have been cancelled."
+msgstr "تم إلغاء %(count)d طلب/طلبات."
+
+msgid "Online"
+msgstr "متصل"
+
+msgid "Buy X Get Y"
+msgstr "اشترِ X واحصل على Y"
+
+msgid "Loyalty"
+msgstr "الولاء"
+
+msgid "Happy Hour"
+msgstr "ساعة السعادة"
+
+msgid "Full Refund"
+msgstr "استرداد كامل"
+
+msgid "Partial Refund"
+msgstr "استرداد جزئي"
+
+msgid "Item Refund"
+msgstr "استرداد عنصر"
+
+msgid "Processed"
+msgstr "تمت المعالجة"
+
+msgid "Rejected"
+msgstr "مرفوض"
+
+msgid "Confirmed"
+msgstr "مؤكد"
+
+msgid "Seated"
+msgstr "جالس"
+
+msgid "No Show"
+msgstr "عدم حضور"
+
+msgid "Organization this zone belongs to"
+msgstr "المنظمة التي تنتمي إليها هذه المنطقة"
+
+msgid "Branch this zone belongs to (optional for single-location)"
+msgstr "الفرع الذي تنتمي إليه هذه المنطقة (اختياري لموقع واحد)"
+
+msgid "Display name of the zone (e.g., Garden, VIP Section)"
+msgstr "اسم عرض المنطقة (مثال: الحديقة، قسم VIP)"
+
+msgid "Optional description of the zone and its characteristics"
+msgstr "وصف اختياري للمنطقة وخصائصها"
+
+msgid "Hex color code for visual identification (e.g., #3B82F6)"
+msgstr "رمز لون hex للتعريف المرئي (مثال: #3B82F6)"
+
+msgid "Icon name or URL for zone representation in UI"
+msgstr "اسم الأيقونة أو الرابط لتمثيل المنطقة في الواجهة"
+
+msgid "Maximum number of guests the zone can accommodate"
+msgstr "الحد الأقصى لعدد الضيوف الذين يمكن للمنطقة استيعابهم"
+
+msgid "Whether the zone is available for seating"
+msgstr "ما إذا كانت المنطقة متاحة للجلوس"
+
+msgid "Is smoking allowed"
+msgstr "التدخين مسموح"
+
+msgid "Whether smoking is permitted in this zone"
+msgstr "ما إذا كان التدخين مسموحاً في هذه المنطقة"
+
+msgid "Is outdoor"
+msgstr "خارجي"
+
+msgid "Whether the zone is located outdoors"
+msgstr "ما إذا كانت المنطقة في الخارج"
+
+msgid "Is reservable"
+msgstr "قابل للحجز"
+
+msgid "Whether tables in this zone can be reserved"
+msgstr "ما إذا كان يمكن حجز الطاولات في هذه المنطقة"
+
+msgid "Display order for zones (lower numbers appear first)"
+msgstr "ترتيب عرض المناطق (الأرقام الأقل تظهر أولاً)"
+
+msgid "Zone-specific settings (JSON)"
+msgstr "إعدادات خاصة بالمنطقة (JSON)"
+
+msgid "Zone"
+msgstr "المنطقة"
+
+msgid "Zones"
+msgstr "المناطق"
+
+msgid "Organization this table belongs to"
+msgstr "المنظمة التي تنتمي إليها هذه الطاولة"
+
+msgid "Zone/section this table belongs to"
+msgstr "المنطقة/القسم الذي تنتمي إليه هذه الطاولة"
+
+msgid "Branch this table belongs to (optional for single-location)"
+msgstr "الفرع الذي تنتمي إليه هذه الطاولة (اختياري لموقع واحد)"
+
+msgid "Display name/number of the table (e.g., \"Table 1\", \"A-12\")"
+msgstr "اسم/رقم عرض الطاولة (مثال: \"Table 1\", \"A-12\")"
+
+msgid "Number"
+msgstr "الرقم"
+
+msgid "Numeric table number for ordering and quick reference"
+msgstr "رقم الطاولة الرقمي للترتيب والمرجع السريع"
+
+msgid "Maximum number of guests the table can seat"
+msgstr "الحد الأقصى لعدد الضيوف الذين يمكن للطاولة استيعابهم"
+
+msgid "Minimum capacity"
+msgstr "الحد الأدنى للسعة"
+
+msgid "Minimum number of guests required for reservation"
+msgstr "الحد الأدنى لعدد الضيوف المطلوب للحجز"
+
+msgid "Current table status (available, occupied, reserved)"
+msgstr "حالة الطاولة الحالية (متاحة، مشغولة، محجوزة)"
+
+msgid ""
+"Whether the table is available for use (can be disabled for maintenance)"
+msgstr "ما إذا كانت الطاولة متاحة للاستخدام (يمكن تعطيلها للصيانة)"
+
+msgid "Is VIP"
+msgstr "VIP"
+
+msgid "Whether this is a VIP/premium table"
+msgstr "ما إذا كانت هذه طاولة VIP/مميزة"
+
+msgid "Position X"
+msgstr "الموضع X"
+
+msgid "X coordinate for floor plan visualization"
+msgstr "إحداثي X لعرض مخطط الطابق"
+
+msgid "Position Y"
+msgstr "الموضع Y"
+
+msgid "Y coordinate for floor plan visualization"
+msgstr "إحداثي Y لعرض مخطط الطابق"
+
+msgid "Shape"
+msgstr "الشكل"
+
+msgid "Table shape for visualization (round, square, rectangle)"
+msgstr "شكل الطاولة للعرض (دائري، مربع، مستطيل)"
+
+msgid "Display order within the zone (lower numbers appear first)"
+msgstr "ترتيب العرض داخل المنطقة (الأرقام الأقل تظهر أولاً)"
+
+msgid ""
+"Staff notes about the table (e.g., \"near window\", \"wheelchair "
+"accessible\")"
+msgstr "ملاحظات الموظفين حول الطاولة (مثال: \"بجانب النافذة\"، \"مناسبة لذوي الاحتياجات الخاصة\")"
+
+msgid "Table-specific settings (JSON)"
+msgstr "إعدادات خاصة بالطاولة (JSON)"
+
+msgid "Table"
+msgstr "الطاولة"
+
+msgid "Organization this QR code belongs to"
+msgstr "المنظمة التي ينتمي إليها رمز QR هذا"
+
+msgid "Branch this QR code belongs to (optional for single-location)"
+msgstr "الفرع الذي ينتمي إليه رمز QR هذا (اختياري لموقع واحد)"
+
+msgid "Menu this QR code links to (for MENU type)"
+msgstr "القائمة المرتبطة برمز QR هذا (لنوع MENU)"
+
+msgid "Table this QR code is associated with (for TABLE type)"
+msgstr "الطاولة المرتبطة برمز QR هذا (لنوع TABLE)"
+
+msgid "Type of QR code (MENU, TABLE, CAMPAIGN)"
+msgstr "نوع رمز QR (MENU, TABLE, CAMPAIGN)"
+
+msgid "Unique code/slug for the QR code URL (unique within organization)"
+msgstr "رمز/رابط مختصر فريد لرابط رمز QR (فريد داخل المنظمة)"
+
+msgid "Display name for the QR code"
+msgstr "اسم عرض رمز QR"
+
+msgid "Optional description of the QR code purpose"
+msgstr "وصف اختياري لغرض رمز QR"
+
+msgid "Short URL"
+msgstr "رابط مختصر"
+
+msgid "Generated short URL for QR scanning"
+msgstr "رابط مختصر مولّد لمسح QR"
+
+msgid "QR image URL"
+msgstr "رابط صورة QR"
+
+msgid "URL to the generated QR code image"
+msgstr "رابط صورة رمز QR المولّدة"
+
+msgid "Redirect URL"
+msgstr "رابط إعادة التوجيه"
+
+msgid "Custom redirect URL (overrides default behavior)"
+msgstr "رابط إعادة توجيه مخصص (يتجاوز السلوك الافتراضي)"
+
+msgid "Whether the QR code is active and scannable"
+msgstr "ما إذا كان رمز QR نشطاً وقابلاً للمسح"
+
+msgid "Optional expiration date for the QR code"
+msgstr "تاريخ انتهاء صلاحية اختياري لرمز QR"
+
+msgid "Scan count"
+msgstr "عدد المسح"
+
+msgid "Total number of scans (cached counter)"
+msgstr "إجمالي عدد عمليات المسح (عداد مؤقت)"
+
+msgid "Unique scan count"
+msgstr "عدد المسح الفريد"
+
+msgid "Number of unique device scans (cached counter)"
+msgstr "عدد عمليات المسح الفريدة بالأجهزة (عداد مؤقت)"
+
+msgid "Last scanned at"
+msgstr "آخر مسح في"
+
+msgid "Timestamp of the most recent scan"
+msgstr "الطابع الزمني لآخر عملية مسح"
+
+msgid "QR code-specific settings (JSON)"
+msgstr "إعدادات خاصة برمز QR (JSON)"
+
+msgid "Custom metadata (campaign info, tracking params, etc.)"
+msgstr "بيانات وصفية مخصصة (معلومات الحملة، معلمات التتبع، إلخ.)"
+
+msgid "QR Codes"
+msgstr "رموز QR"
+
+msgid "QR code that was scanned"
+msgstr "رمز QR الذي تم مسحه"
+
+msgid "Organization this scan belongs to (denormalized)"
+msgstr "المنظمة التي ينتمي إليها هذا المسح (غير طبيعي)"
+
+msgid "Scanned at"
+msgstr "تم المسح في"
+
+msgid "Timestamp when the scan occurred"
+msgstr "الطابع الزمني لوقت حدوث المسح"
+
+msgid "IP address of the scanner"
+msgstr "عنوان IP للماسح"
+
+msgid "Full user agent string"
+msgstr "سلسلة وكيل المستخدم الكاملة"
+
+msgid "Session ID"
+msgstr "معرف الجلسة"
+
+msgid "Session identifier for tracking unique visits"
+msgstr "معرّف الجلسة لتتبع الزيارات الفريدة"
+
+msgid "Device type"
+msgstr "نوع الجهاز"
+
+msgid "Device type (mobile, tablet, desktop)"
+msgstr "نوع الجهاز (هاتف، لوحي، مكتبي)"
+
+msgid "Browser"
+msgstr "المتصفح"
+
+msgid "Browser name (e.g., Chrome, Safari, Firefox)"
+msgstr "اسم المتصفح (مثال: Chrome, Safari, Firefox)"
+
+msgid "Operating system"
+msgstr "نظام التشغيل"
+
+msgid "Operating system (e.g., iOS, Android, Windows)"
+msgstr "نظام التشغيل (مثال: iOS, Android, Windows)"
+
+msgid "Two-letter country code (ISO 3166-1 alpha-2)"
+msgstr "رمز البلد المكون من حرفين (ISO 3166-1 alpha-2)"
+
+msgid "City from IP geolocation"
+msgstr "المدينة من تحديد الموقع الجغرافي بـ IP"
+
+msgid "Region"
+msgstr "المنطقة"
+
+msgid "Region/state from IP geolocation"
+msgstr "المنطقة/الولاية من تحديد الموقع الجغرافي بـ IP"
+
+msgid "Latitude coordinate from geolocation"
+msgstr "إحداثي خط العرض من تحديد الموقع الجغرافي"
+
+msgid "Longitude coordinate from geolocation"
+msgstr "إحداثي خط الطول من تحديد الموقع الجغرافي"
+
+msgid "Referer"
+msgstr "المُحيل"
+
+msgid "HTTP referer header"
+msgstr "رأس HTTP المُحيل"
+
+msgid "Is unique"
+msgstr "فريد"
+
+msgid "Whether this was a unique visit (first from this device/session)"
+msgstr "ما إذا كانت هذه زيارة فريدة (الأولى من هذا الجهاز/الجلسة)"
+
+msgid "Customer who scanned (if logged in)"
+msgstr "العميل الذي قام بالمسح (إذا كان مسجل الدخول)"
+
+msgid "Additional tracking data (UTM params, custom fields, etc.)"
+msgstr "بيانات تتبع إضافية (معلمات UTM، حقول مخصصة، إلخ.)"
+
+msgid "QR Scan"
+msgstr "مسح QR"
+
+msgid "QR Scans"
+msgstr "عمليات مسح QR"
+
+msgid "Organization this order belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا الطلب"
+
+msgid "Branch this order belongs to (optional for single-location)"
+msgstr "الفرع الذي ينتمي إليه هذا الطلب (اختياري لموقع واحد)"
+
+msgid "Table associated with this order (for dine-in)"
+msgstr "الطاولة المرتبطة بهذا الطلب (لتناول الطعام في المكان)"
+
+msgid "Customer who placed this order (if registered)"
+msgstr "العميل الذي قدم هذا الطلب (إذا كان مسجلاً)"
+
+msgid "Human-readable order number (e.g., ORD-2024-0001)"
+msgstr "رقم الطلب سهل القراءة (مثال: ORD-2024-0001)"
+
+msgid "Current order status"
+msgstr "حالة الطلب الحالية"
+
+msgid "Order type (dine-in, takeaway, delivery)"
+msgstr "نوع الطلب (في المكان، سفري، توصيل)"
+
+msgid "Payment status"
+msgstr "حالة الدفع"
+
+msgid "Current payment status"
+msgstr "حالة الدفع الحالية"
+
+msgid "Payment method"
+msgstr "طريقة الدفع"
+
+msgid "Payment method used"
+msgstr "طريقة الدفع المستخدمة"
+
+msgid "Sum of all items before tax and discount"
+msgstr "مجموع جميع العناصر قبل الضريبة والخصم"
+
+msgid "Discount amount"
+msgstr "مبلغ الخصم"
+
+msgid "Total discount applied"
+msgstr "إجمالي الخصم المطبق"
+
+msgid "Refund amount"
+msgstr "مبلغ الاسترداد"
+
+msgid "Total refund amount"
+msgstr "إجمالي مبلغ الاسترداد"
+
+msgid "Tip amount"
+msgstr "مبلغ الإكرامية"
+
+msgid "Tip/gratuity amount"
+msgstr "مبلغ الإكرامية"
+
+msgid "Final total (subtotal + tax - discount + tip)"
+msgstr "الإجمالي النهائي (المجموع الفرعي + الضريبة - الخصم + الإكرامية)"
+
+msgid "Currency code (ISO 4217)"
+msgstr "رمز العملة (ISO 4217)"
+
+msgid "Guest count"
+msgstr "عدد الضيوف"
+
+msgid "Number of guests (for dine-in orders)"
+msgstr "عدد الضيوف (لطلبات تناول الطعام في المكان)"
+
+msgid "Staff/kitchen notes about the order"
+msgstr "ملاحظات الموظفين/المطبخ حول الطلب"
+
+msgid "Special instructions"
+msgstr "تعليمات خاصة"
+
+msgid "Customer special instructions or requests"
+msgstr "تعليمات أو طلبات خاصة من العميل"
+
+msgid "Customer info"
+msgstr "معلومات العميل"
+
+msgid "Guest customer details: name, phone, email"
+msgstr "تفاصيل العميل الضيف: الاسم، الهاتف، البريد الإلكتروني"
+
+msgid "Delivery address"
+msgstr "عنوان التوصيل"
+
+msgid "Delivery address details: street, city, postal_code, etc."
+msgstr "تفاصيل عنوان التوصيل: الشارع، المدينة، الرمز البريدي، إلخ."
+
+msgid "Placed at"
+msgstr "تم تقديمه في"
+
+msgid "Timestamp when order was placed"
+msgstr "الطابع الزمني لتقديم الطلب"
+
+msgid "Confirmed at"
+msgstr "تم تأكيده في"
+
+msgid "Timestamp when order was confirmed by staff"
+msgstr "الطابع الزمني لتأكيد الطلب من الموظف"
+
+msgid "Preparing at"
+msgstr "بدأ التحضير في"
+
+msgid "Timestamp when order preparation started"
+msgstr "الطابع الزمني لبدء تحضير الطلب"
+
+msgid "Ready at"
+msgstr "جاهز في"
+
+msgid "Timestamp when order was ready"
+msgstr "الطابع الزمني لجاهزية الطلب"
+
+msgid "Timestamp when order was delivered to customer"
+msgstr "الطابع الزمني لتسليم الطلب للعميل"
+
+msgid "Timestamp when order was completed"
+msgstr "الطابع الزمني لاكتمال الطلب"
+
+msgid "Cancelled at"
+msgstr "ألغي في"
+
+msgid "Timestamp when order was cancelled"
+msgstr "الطابع الزمني لإلغاء الطلب"
+
+msgid "Cancel reason"
+msgstr "سبب الإلغاء"
+
+msgid "Reason for order cancellation"
+msgstr "سبب إلغاء الطلب"
+
+msgid "Placed by"
+msgstr "قُدم بواسطة"
+
+msgid "Staff member who placed the order"
+msgstr "الموظف الذي قدم الطلب"
+
+msgid "Assigned to"
+msgstr "مُعيّن إلى"
+
+msgid "Staff member assigned to handle this order"
+msgstr "الموظف المعيّن لمعالجة هذا الطلب"
+
+msgid "Additional order data (source, promo codes, etc.)"
+msgstr "بيانات طلب إضافية (المصدر، رموز العروض، إلخ.)"
+
+msgid "Guest"
+msgstr "ضيف"
+
+msgid "Order this item belongs to"
+msgstr "الطلب الذي ينتمي إليه هذا العنصر"
+
+msgid "Product ordered (reference, may be soft-deleted)"
+msgstr "المنتج المطلوب (مرجع، قد يكون محذوفاً مبدئياً)"
+
+msgid "Variant"
+msgstr "المتغير"
+
+msgid "Product variant selected (e.g., Large, Small)"
+msgstr "متغير المنتج المحدد (مثال: كبير، صغير)"
+
+msgid "Number of items ordered"
+msgstr "عدد العناصر المطلوبة"
+
+msgid "Unit price"
+msgstr "سعر الوحدة"
+
+msgid "Price per unit at time of order (captured, not referenced)"
+msgstr "السعر لكل وحدة وقت الطلب (ملتقط، غير مرجعي)"
+
+msgid "Total price"
+msgstr "السعر الإجمالي"
+
+msgid "Total price (unit_price * quantity + modifier costs)"
+msgstr "السعر الإجمالي (سعر_الوحدة × الكمية + تكاليف المعدلات)"
+
+msgid "Current item status"
+msgstr "حالة العنصر الحالية"
+
+msgid "Modifiers"
+msgstr "المعدلات"
+
+msgid "JSON snapshot of selected modifiers with prices at order time"
+msgstr "لقطة JSON للمعدلات المحددة مع الأسعار وقت الطلب"
+
+msgid "Customer notes/special instructions for this item"
+msgstr "ملاحظات/تعليمات خاصة من العميل لهذا العنصر"
+
+msgid "Is gift"
+msgstr "هدية"
+
+msgid "Whether this item is a complimentary gift (zero charge)"
+msgstr "ما إذا كان هذا العنصر هدية مجانية (بدون رسوم)"
+
+msgid "Prepared at"
+msgstr "جُهّز في"
+
+msgid "Timestamp when item preparation completed"
+msgstr "الطابع الزمني لاكتمال تحضير العنصر"
+
+msgid "Timestamp when item was delivered to customer"
+msgstr "الطابع الزمني لتسليم العنصر للعميل"
+
+msgid "Timestamp when item was cancelled"
+msgstr "الطابع الزمني لإلغاء العنصر"
+
+msgid "Reason for item cancellation"
+msgstr "سبب إلغاء العنصر"
+
+msgid "Additional item data (JSON)"
+msgstr "بيانات إضافية للعنصر (JSON)"
+
+msgid "Order Item"
+msgstr "عنصر الطلب"
+
+msgid "Order Items"
+msgstr "عناصر الطلب"
+
+msgid "Unknown Product"
+msgstr "منتج غير معروف"
+
+msgid "Organization this request belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا الطلب"
+
+msgid "Branch this request belongs to (optional for single-location)"
+msgstr "الفرع الذي ينتمي إليه هذا الطلب (اختياري لموقع واحد)"
+
+msgid "Table making this request"
+msgstr "الطاولة التي تقدم هذا الطلب"
+
+msgid "Related order (if applicable)"
+msgstr "الطلب المرتبط (إن وجد)"
+
+msgid "Customer who made this request (if logged in)"
+msgstr "العميل الذي قدم هذا الطلب (إذا كان مسجل الدخول)"
+
+msgid "Type of service request"
+msgstr "نوع طلب الخدمة"
+
+msgid "Current request status"
+msgstr "حالة الطلب الحالية"
+
+msgid "Optional customer message or notes"
+msgstr "رسالة أو ملاحظات اختيارية من العميل"
+
+msgid "Priority level 1-5 (1 is highest priority)"
+msgstr "مستوى الأولوية 1-5 (1 هو الأعلى أولوية)"
+
+msgid "Staff member assigned to handle this request"
+msgstr "الموظف المعيّن لمعالجة هذا الطلب"
+
+msgid "Acknowledged at"
+msgstr "تم الإقرار في"
+
+msgid "Timestamp when request was acknowledged by staff"
+msgstr "الطابع الزمني لإقرار الموظف بالطلب"
+
+msgid "Timestamp when request was completed"
+msgstr "الطابع الزمني لاكتمال الطلب"
+
+msgid "Timestamp when request was cancelled"
+msgstr "الطابع الزمني لإلغاء الطلب"
+
+msgid "Reason for request cancellation"
+msgstr "سبب إلغاء الطلب"
+
+msgid "Response time"
+msgstr "وقت الاستجابة"
+
+msgid "Time to first response in seconds"
+msgstr "الوقت لأول استجابة بالثواني"
+
+msgid "Additional request data (JSON)"
+msgstr "بيانات إضافية للطلب (JSON)"
+
+msgid "Service Request"
+msgstr "طلب الخدمة"
+
+msgid "Service Requests"
+msgstr "طلبات الخدمة"
+
+msgid "Just now"
+msgstr "الآن"
+
+#, python-format
+msgid "%(minutes)d min ago"
+msgstr "منذ %(minutes)d دقيقة"
+
+#, python-format
+msgid "%(hours)d hr ago"
+msgstr "منذ %(hours)d ساعة"
+
+msgid "Organization this discount belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا الخصم"
+
+msgid "Order this discount is applied to"
+msgstr "الطلب الذي طُبق عليه هذا الخصم"
+
+msgid "Type of discount applied"
+msgstr "نوع الخصم المطبق"
+
+msgid "Discount value (percentage or fixed amount)"
+msgstr "قيمة الخصم (نسبة مئوية أو مبلغ ثابت)"
+
+msgid "Applied amount"
+msgstr "المبلغ المطبق"
+
+msgid "Actual monetary amount applied to the order"
+msgstr "المبلغ المالي الفعلي المطبق على الطلب"
+
+msgid "Coupon or promo code used"
+msgstr "القسيمة أو رمز العرض المستخدم"
+
+msgid "Reason"
+msgstr "السبب"
+
+msgid "Reason for applying the discount"
+msgstr "سبب تطبيق الخصم"
+
+msgid "Applied by"
+msgstr "طُبق بواسطة"
+
+msgid "Staff member who applied this discount"
+msgstr "الموظف الذي طبق هذا الخصم"
+
+msgid "Discounts"
+msgstr "الخصومات"
+
+msgid "Organization this refund belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا الاسترداد"
+
+msgid "Order being refunded"
+msgstr "الطلب المسترد"
+
+msgid "Order item"
+msgstr "عنصر الطلب"
+
+msgid "Specific order item being refunded (for item-level refunds)"
+msgstr "عنصر الطلب المحدد المسترد (للاستردادات على مستوى العنصر)"
+
+msgid "Refund type"
+msgstr "نوع الاسترداد"
+
+msgid "Type of refund (full, partial, or item)"
+msgstr "نوع الاسترداد (كامل، جزئي، أو عنصر)"
+
+msgid "Amount"
+msgstr "المبلغ"
+
+msgid "Refund monetary amount"
+msgstr "المبلغ المالي للاسترداد"
+
+msgid "Reason for the refund"
+msgstr "سبب الاسترداد"
+
+msgid "Current refund status"
+msgstr "حالة الاسترداد الحالية"
+
+msgid "Processed by"
+msgstr "معالج بواسطة"
+
+msgid "Staff member who processed this refund"
+msgstr "الموظف الذي عالج هذا الاسترداد"
+
+msgid "Processed at"
+msgstr "معالج في"
+
+msgid "Timestamp when refund was processed"
+msgstr "الطابع الزمني لمعالجة الاسترداد"
+
+msgid "Refund"
+msgstr "الاسترداد"
+
+msgid "Refunds"
+msgstr "المبالغ المستردة"
+
+msgid "Organization this reservation belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا الحجز"
+
+msgid "Registered customer who made this reservation"
+msgstr "العميل المسجل الذي قام بهذا الحجز"
+
+msgid "Table assigned to this reservation"
+msgstr "الطاولة المعيّنة لهذا الحجز"
+
+msgid "Preferred zone/section for this reservation"
+msgstr "المنطقة/القسم المفضل لهذا الحجز"
+
+msgid "Guest name"
+msgstr "اسم الضيف"
+
+msgid "Name of the guest making the reservation"
+msgstr "اسم الضيف الذي يقوم بالحجز"
+
+msgid "Guest phone"
+msgstr "هاتف الضيف"
+
+msgid "Phone number of the guest"
+msgstr "رقم هاتف الضيف"
+
+msgid "Number of guests expected"
+msgstr "عدد الضيوف المتوقعين"
+
+msgid "Reservation date"
+msgstr "تاريخ الحجز"
+
+msgid "Date of the reservation"
+msgstr "تاريخ الحجز"
+
+msgid "Reservation time"
+msgstr "وقت الحجز"
+
+msgid "Time of the reservation"
+msgstr "وقت الحجز"
+
+msgid "Expected duration of the reservation in minutes"
+msgstr "المدة المتوقعة للحجز بالدقائق"
+
+msgid "Current reservation status"
+msgstr "حالة الحجز الحالية"
+
+msgid "Additional notes about the reservation"
+msgstr "ملاحظات إضافية حول الحجز"
+
+msgid "Reservation"
+msgstr "الحجز"
+
+msgid "Reservations"
+msgstr "الحجوزات"
+
+msgid "Number of tables in this zone"
+msgstr "عدد الطاولات في هذه المنطقة"
+
+msgid "Number of available tables in this zone"
+msgstr "عدد الطاولات المتاحة في هذه المنطقة"
+
+msgid "A zone with this slug already exists."
+msgstr "توجد منطقة بهذا الرابط المختصر بالفعل."
+
+msgid "Zone UUID this table belongs to"
+msgstr "UUID المنطقة التي تنتمي إليها هذه الطاولة"
+
+msgid "Active orders at this table"
+msgstr "الطلبات النشطة على هذه الطاولة"
+
+msgid "Zone not found."
+msgstr "المنطقة غير موجودة."
+
+msgid "A table with this slug already exists."
+msgstr "توجد طاولة بهذا الرابط المختصر بالفعل."
+
+msgid "Menu UUID to link this QR code to"
+msgstr "UUID القائمة لربط رمز QR هذا"
+
+msgid "Table UUID to link this QR code to"
+msgstr "UUID الطاولة لربط رمز QR هذا"
+
+msgid "A QR code with this code already exists."
+msgstr "يوجد رمز QR بهذا الرمز بالفعل."
+
+msgid "Table not found."
+msgstr "الطاولة غير موجودة."
+
+msgid "Table is required for TABLE type QR codes."
+msgstr "الطاولة مطلوبة لرموز QR من نوع TABLE."
+
+msgid "Deleted Product"
+msgstr "منتج محذوف"
+
+msgid "Table UUID for dine-in orders"
+msgstr "UUID الطاولة لطلبات تناول الطعام في المكان"
+
+msgid "List of order items to create with the order"
+msgstr "قائمة عناصر الطلب لإنشائها مع الطلب"
+
+msgid "An order with this number already exists."
+msgstr "يوجد طلب بهذا الرقم بالفعل."
+
+msgid "Table is required for dine-in orders."
+msgstr "الطاولة مطلوبة لطلبات تناول الطعام في المكان."
+
+msgid "Delivery address is required for delivery orders."
+msgstr "عنوان التوصيل مطلوب لطلبات التوصيل."
+
+msgid "Table UUID for the service request"
+msgstr "UUID الطاولة لطلب الخدمة"
+
+msgid "Zone activated"
+msgstr "تم تفعيل المنطقة"
+
+msgid "Zone deactivated"
+msgstr "تم إلغاء تفعيل المنطقة"
+
+msgid "Table set as available"
+msgstr "تم تعيين الطاولة كمتاحة"
+
+msgid "Table set as occupied"
+msgstr "تم تعيين الطاولة كمشغولة"
+
+msgid "Table set as reserved"
+msgstr "تم تعيين الطاولة كمحجوزة"
+
+msgid "Table activated"
+msgstr "تم تفعيل الطاولة"
+
+msgid "Table deactivated"
+msgstr "تم إلغاء تفعيل الطاولة"
+
+msgid "QR code activated"
+msgstr "تم تفعيل رمز QR"
+
+msgid "QR code deactivated"
+msgstr "تم إلغاء تفعيل رمز QR"
+
+msgid "Order confirmed"
+msgstr "تم تأكيد الطلب"
+
+msgid "Order preparation started"
+msgstr "بدأ تحضير الطلب"
+
+msgid "Order marked as ready"
+msgstr "تم تحديد الطلب كجاهز"
+
+msgid "Order delivered"
+msgstr "تم تسليم الطلب"
+
+msgid "Order completed"
+msgstr "اكتمل الطلب"
+
+msgid "Order cancelled"
+msgstr "تم إلغاء الطلب"
+
+msgid "Order marked as paid"
+msgstr "تم تحديد الطلب كمدفوع"
+
+msgid "Service request is not pending"
+msgstr "طلب الخدمة ليس قيد الانتظار"
+
+msgid "Service request acknowledged"
+msgstr "تم الإقرار بطلب الخدمة"
+
+msgid "Service request cannot be completed"
+msgstr "لا يمكن إتمام طلب الخدمة"
+
+msgid "Service request completed"
+msgstr "تم إتمام طلب الخدمة"
+
+msgid "Reporting"
+msgstr "التقارير"
+
+msgid "Sales"
+msgstr "المبيعات"
+
+msgid "Operations"
+msgstr "العمليات"
+
+msgid "Digital"
+msgstr "رقمي"
+
+msgid "Periodic"
+msgstr "دوري"
+
+msgid "Inventory"
+msgstr "المخزون"
+
+msgid "Platform"
+msgstr "المنصة"
+
+msgid "AI Insights"
+msgstr "رؤى الذكاء الاصطناعي"
+
+msgid "AI Query"
+msgstr "استعلام الذكاء الاصطناعي"
+
+msgid "Forecasting"
+msgstr "التنبؤ"
+
+msgid "Bi-weekly"
+msgstr "نصف أسبوعي"
+
+msgid "Dashboard"
+msgstr "لوحة المعلومات"
+
+msgid "Push Notification"
+msgstr "إشعار دفع"
+
+msgid "Webhook"
+msgstr "ويب هوك"
+
+msgid "JSON"
+msgstr "JSON"
+
+msgid "PDF"
+msgstr "PDF"
+
+msgid "Excel"
+msgstr "Excel"
+
+msgid "CSV"
+msgstr "CSV"
+
+msgid "Claude Haiku"
+msgstr "Claude Haiku"
+
+msgid "Claude Sonnet"
+msgstr "Claude Sonnet"
+
+msgid "Claude Opus"
+msgstr "Claude Opus"
+
+msgid "No AI"
+msgstr "بدون ذكاء اصطناعي"
+
+msgid "Starter"
+msgstr "المبتدئ"
+
+msgid "Professional"
+msgstr "الاحترافي"
+
+msgid "Business"
+msgstr "الأعمال"
+
+msgid "Enterprise"
+msgstr "المؤسسات"
+
+msgid "P0 - Critical"
+msgstr "P0 - حرج"
+
+msgid "P1 - High"
+msgstr "P1 - مرتفع"
+
+msgid "P2 - Medium"
+msgstr "P2 - متوسط"
+
+msgid "P3 - Low"
+msgstr "P3 - منخفض"
+
+msgid "Unique feature key, e.g., RPT-SAL-001"
+msgstr "مفتاح ميزة فريد، مثال: RPT-SAL-001"
+
+msgid "Human-readable report name"
+msgstr "اسم التقرير سهل القراءة"
+
+msgid "Report description"
+msgstr "وصف التقرير"
+
+msgid "Report category"
+msgstr "فئة التقرير"
+
+msgid "Implementation priority"
+msgstr "أولوية التنفيذ"
+
+msgid "AI model used for this report"
+msgstr "نموذج AI المستخدم لهذا التقرير"
+
+msgid "Credit cost per execution"
+msgstr "تكلفة الأرصدة لكل تنفيذ"
+
+msgid "Minimum plan required to access this report"
+msgstr "الحد الأدنى للخطة المطلوبة للوصول لهذا التقرير"
+
+msgid "Default parameters for this report"
+msgstr "المعلمات الافتراضية لهذا التقرير"
+
+msgid "Supported export formats, e.g., [\"PDF\", \"EXCEL\", \"CSV\"]"
+msgstr "صيغ التصدير المدعومة، مثال: [\"PDF\"، \"EXCEL\"، \"CSV\"]"
+
+msgid "Supported grouping dimensions"
+msgstr "أبعاد التجميع المدعومة"
+
+msgid "Dotted path to handler class"
+msgstr "المسار المنقط لفئة المعالج"
+
+msgid "Whether this report is available"
+msgstr "ما إذا كان هذا التقرير متاحاً"
+
+msgid "Whether this report can be scheduled"
+msgstr "ما إذا كان يمكن جدولة هذا التقرير"
+
+msgid "Whether this report requires AI processing"
+msgstr "ما إذا كان هذا التقرير يتطلب معالجة AI"
+
+msgid "Report Definition"
+msgstr "تعريف التقرير"
+
+msgid "Report Definitions"
+msgstr "تعريفات التقارير"
+
+msgid "Organization that requested this report"
+msgstr "المنظمة التي طلبت هذا التقرير"
+
+msgid "The report definition being executed"
+msgstr "تعريف التقرير قيد التنفيذ"
+
+msgid "User who requested the report"
+msgstr "المستخدم الذي طلب التقرير"
+
+msgid "Current execution status"
+msgstr "حالة التنفيذ الحالية"
+
+msgid "Parameters used for this execution"
+msgstr "المعلمات المستخدمة لهذا التنفيذ"
+
+msgid "Report result data (JSON)"
+msgstr "بيانات نتائج التقرير (JSON)"
+
+msgid "Error message if execution failed"
+msgstr "رسالة الخطأ في حالة فشل التنفيذ"
+
+msgid "When processing started"
+msgstr "متى بدأت المعالجة"
+
+msgid "When processing completed"
+msgstr "متى اكتملت المعالجة"
+
+msgid "Execution duration in milliseconds"
+msgstr "مدة التنفيذ بالملي ثانية"
+
+msgid "Credits consumed for this execution"
+msgstr "الأرصدة المستهلكة لهذا التنفيذ"
+
+msgid "AI model actually used (may differ from definition)"
+msgstr "نموذج AI المستخدم فعلياً (قد يختلف عن التعريف)"
+
+msgid "AI tokens consumed"
+msgstr "رموز AI المستهلكة"
+
+msgid "Export format if exported"
+msgstr "تنسيق التصدير إذا تم التصدير"
+
+msgid "URL to exported file"
+msgstr "رابط الملف المصدّر"
+
+msgid "Schedule that triggered this execution (if scheduled)"
+msgstr "الجدول الذي فعّل هذا التنفيذ (إذا كان مجدولاً)"
+
+msgid "Celery task ID for tracking"
+msgstr "معرّف مهمة Celery للتتبع"
+
+msgid "Report Execution"
+msgstr "تنفيذ التقرير"
+
+msgid "Report Executions"
+msgstr "عمليات تنفيذ التقارير"
+
+msgid "Organization that owns this schedule"
+msgstr "المنظمة التي تملك هذا الجدول"
+
+msgid "The report to generate"
+msgstr "التقرير المراد توليده"
+
+msgid "User who created the schedule"
+msgstr "المستخدم الذي أنشأ الجدول"
+
+msgid "Schedule name"
+msgstr "اسم الجدول"
+
+msgid "How often to generate the report"
+msgstr "كم مرة يتم توليد التقرير"
+
+msgid "Time of day to generate (local timezone)"
+msgstr "وقت اليوم للتوليد (المنطقة الزمنية المحلية)"
+
+msgid "Day of week for weekly schedules (0=Monday, 6=Sunday)"
+msgstr "يوم الأسبوع للجداول الأسبوعية (0=الاثنين، 6=الأحد)"
+
+msgid "Day of month for monthly schedules (1-28)"
+msgstr "يوم الشهر للجداول الشهرية (1-28)"
+
+msgid "Report parameters to use"
+msgstr "معلمات التقرير للاستخدام"
+
+msgid "Delivery channels: [\"DASHBOARD\", \"EMAIL\", \"PUSH\", \"WEBHOOK\"]"
+msgstr "قنوات التوصيل: [\"لوحة التحكم\"، \"البريد الإلكتروني\"، \"الإشعارات\"، \"WEBHOOK\"]"
+
+msgid "Email addresses for EMAIL delivery"
+msgstr "عناوين البريد الإلكتروني لتسليم EMAIL"
+
+msgid "Webhook URL for WEBHOOK delivery"
+msgstr "رابط Webhook لتسليم WEBHOOK"
+
+msgid "Export format for delivery"
+msgstr "تنسيق التصدير للتسليم"
+
+msgid "Whether this schedule is active"
+msgstr "ما إذا كان هذا الجدول نشطاً"
+
+msgid "Next scheduled run time"
+msgstr "وقت التشغيل المجدول التالي"
+
+msgid "When the schedule was last executed"
+msgstr "متى تم تنفيذ الجدول آخر مرة"
+
+msgid "Number of times this schedule has run"
+msgstr "عدد مرات تشغيل هذا الجدول"
+
+msgid "Number of consecutive failures"
+msgstr "عدد حالات الفشل المتتالية"
+
+msgid "Max consecutive failures before auto-disable"
+msgstr "الحد الأقصى لحالات الفشل المتتالية قبل الإيقاف التلقائي"
+
+msgid "Report Schedule"
+msgstr "جدول التقرير"
+
+msgid "Report Schedules"
+msgstr "جداول التقارير"
+
+msgid "Organization context"
+msgstr "سياق المنظمة"
+
+msgid "User who favorited this report"
+msgstr "المستخدم الذي فضّل هذا التقرير"
+
+msgid "The favorited report"
+msgstr "التقرير المفضل"
+
+msgid "Custom name for this favorite"
+msgstr "اسم مخصص لهذا المفضل"
+
+msgid "Saved parameters for quick access"
+msgstr "معلمات محفوظة للوصول السريع"
+
+msgid "Display order in favorites list"
+msgstr "ترتيب العرض في قائمة المفضلات"
+
+msgid "Report Favorite"
+msgstr "التقرير المفضل"
+
+msgid "Report Favorites"
+msgstr "التقارير المفضلة"
+
+msgid "Organization that owns this session"
+msgstr "المنظمة التي تملك هذه الجلسة"
+
+msgid "User who initiated this conversation"
+msgstr "المستخدم الذي بدأ هذه المحادثة"
+
+msgid "Session title (auto-generated or user-defined)"
+msgstr "عنوان الجلسة (مولّد تلقائياً أو محدد من المستخدم)"
+
+msgid "Accumulated context from conversation turns"
+msgstr "السياق المتراكم من جولات المحادثة"
+
+msgid "Whether this session is still active"
+msgstr "ما إذا كانت هذه الجلسة لا تزال نشطة"
+
+msgid "Timestamp of the last message in this session"
+msgstr "الطابع الزمني لآخر رسالة في هذه الجلسة"
+
+msgid "Conversation Session"
+msgstr "جلسة المحادثة"
+
+msgid "Conversation Sessions"
+msgstr "جلسات المحادثة"
+
+msgid "Assistant"
+msgstr "المساعد"
+
+msgid "Parent conversation session"
+msgstr "جلسة المحادثة الأب"
+
+msgid "Message role: user, assistant, or system"
+msgstr "دور الرسالة: مستخدم، مساعد، أو نظام"
+
+msgid "Message text content"
+msgstr "محتوى نص الرسالة"
+
+msgid "Additional message metadata (intent, confidence, etc.)"
+msgstr "بيانات وصفية إضافية للرسالة (النية، الثقة، إلخ.)"
+
+msgid "Associated report data returned with this message"
+msgstr "بيانات التقرير المرتبطة المعادة مع هذه الرسالة"
+
+msgid "Conversation Message"
+msgstr "رسالة المحادثة"
+
+msgid "Conversation Messages"
+msgstr "رسائل المحادثة"
+
+msgid "Organization this balance belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا الرصيد"
+
+msgid "Total credits ever purchased/granted"
+msgstr "إجمالي الأرصدة المشتراة/الممنوحة"
+
+msgid "Total credits consumed"
+msgstr "إجمالي الأرصدة المستهلكة"
+
+msgid "Credits currently reserved for in-progress operations"
+msgstr "الأرصدة المحجوزة حالياً للعمليات الجارية"
+
+msgid "Credit Balance"
+msgstr "رصيد الأرصدة"
+
+msgid "Credit Balances"
+msgstr "أرصدة الأرصدة"
+
+msgid "Consume"
+msgstr "استهلاك"
+
+msgid "Bonus"
+msgstr "مكافأة"
+
+msgid "Expire"
+msgstr "انتهاء"
+
+msgid "Type of credit transaction"
+msgstr "نوع معاملة الأرصدة"
+
+msgid "Credit amount (positive=addition, negative=consumption)"
+msgstr "مبلغ الأرصدة (موجب=إضافة، سالب=استهلاك)"
+
+msgid "Available balance after this transaction"
+msgstr "الرصيد المتاح بعد هذه المعاملة"
+
+msgid "Reference type (e.g., report_execution, subscription)"
+msgstr "نوع المرجع (مثال: report_execution, subscription)"
+
+msgid "UUID of the referenced entity"
+msgstr "UUID الكيان المرجعي"
+
+msgid "User who initiated this transaction"
+msgstr "المستخدم الذي بدأ هذه المعاملة"
+
+msgid "Credit Transaction"
+msgstr "معاملة أرصدة"
+
+msgid "Credit Transactions"
+msgstr "معاملات الأرصدة"
+
+msgid "Metric identifier (e.g., avg_order_value, daily_revenue)"
+msgstr "معرّف المقياس (مثال: avg_order_value, daily_revenue)"
+
+msgid "Business category (e.g., cafe, restaurant, fast_food)"
+msgstr "فئة الأعمال (مثال: مقهى، مطعم، وجبات سريعة)"
+
+msgid "Geographic region (ISO country code or city)"
+msgstr "المنطقة الجغرافية (رمز البلد ISO أو المدينة)"
+
+msgid "Period granularity"
+msgstr "دقة الفترة"
+
+msgid "Start date of the benchmark period"
+msgstr "تاريخ بداية فترة المعيار"
+
+msgid "Benchmark mean/average value"
+msgstr "القيمة المتوسطة/المعدل للمعيار"
+
+msgid "Number of organizations in this benchmark"
+msgstr "عدد المنظمات في هذا المعيار"
+
+msgid "25th percentile value"
+msgstr "قيمة المئين الخامس والعشرين"
+
+msgid "50th percentile (median) value"
+msgstr "قيمة المئين الخمسين (الوسيط)"
+
+msgid "75th percentile value"
+msgstr "قيمة المئين الخامس والسبعين"
+
+msgid "90th percentile value"
+msgstr "قيمة المئين التسعين"
+
+msgid "Industry Benchmark"
+msgstr "معيار الصناعة"
+
+msgid "Industry Benchmarks"
+msgstr "معايير الصناعة"
+
+msgid "Whether a handler is registered for this report"
+msgstr "ما إذا كان معالج مسجل لهذا التقرير"
+
+msgid "Report feature key (e.g., RPT-SAL-001)"
+msgstr "مفتاح ميزة التقرير (مثال: RPT-SAL-001)"
+
+msgid "Report parameters"
+msgstr "معلمات التقرير"
+
+msgid "Export format"
+msgstr "تنسيق التصدير"
+
+msgid "Whether to execute asynchronously"
+msgstr "ما إذا كان يجب التنفيذ بشكل غير متزامن"
+
+msgid "Display Feature (Pricing Card)"
+msgstr "ميزة العرض (بطاقة التسعير)"
+
+msgid "Display Features (Pricing Card)"
+msgstr "ميزات العرض (بطاقة التسعير)"
+
+msgid "Usage"
+msgstr "الاستخدام"
+
+msgid "Type & Configuration"
+msgstr "النوع والتكوين"
+
+msgid "Used By Plans"
+msgstr "مستخدم من الخطط"
+
+msgid "Plans"
+msgstr "الخطط"
+
+msgid "Plans using this feature"
+msgstr "الخطط التي تستخدم هذه الميزة"
+
+msgid "Limits"
+msgstr "الحدود"
+
+msgid ""
+"JSON format: {\"max_menus\": 3, \"max_products\": 200, \"max_qr_codes\": 10, "
+"\"max_users\": 5, \"max_branches\": 1, \"storage_mb\": 500, "
+"\"ai_credits_monthly\": 100}. Use -1 for unlimited."
+msgstr "صيغة JSON: {\"max_menus\": 3, \"max_products\": 200, \"max_qr_codes\": 10, \"max_users\": 5, \"max_branches\": 1, \"storage_mb\": 500, \"ai_credits_monthly\": 100}. استخدم -1 لغير محدود."
+
+msgid "Feature Flags"
+msgstr "علامات الميزات"
+
+msgid ""
+"JSON format: {\"ai_content_generation\": true, \"analytics_basic\": true, "
+"\"custom_domain\": false, \"api_access\": false, ...}"
+msgstr "صيغة JSON: {\"ai_content_generation\": true, \"analytics_basic\": true, \"custom_domain\": false, \"api_access\": false, ...}"
+
+msgid "Display & Status"
+msgstr "العرض والحالة"
+
+msgid "Pricing Card Preview"
+msgstr "معاينة بطاقة التسعير"
+
+msgid "Tier"
+msgstr "المستوى"
+
+msgid "Subscribers"
+msgstr "المشتركون"
+
+msgid "Features"
+msgstr "الميزات"
+
+msgid "Limits (visual)"
+msgstr "الحدود (مرئي)"
+
+msgid "Feature Flags (visual)"
+msgstr "علامات الميزات (مرئي)"
+
+msgid "Activate selected plans"
+msgstr "تفعيل الخطط المختارة"
+
+#, python-format
+msgid "%d plan(s) activated."
+msgstr "تم تفعيل %d خطة/خطط."
+
+msgid "Deactivate selected plans"
+msgstr "إلغاء تفعيل الخطط المختارة"
+
+#, python-format
+msgid "%d plan(s) deactivated."
+msgstr "تم إلغاء تفعيل %d خطة/خطط."
+
+msgid "Set as default plan"
+msgstr "تعيين كخطة افتراضية"
+
+msgid "Please select exactly one plan."
+msgstr "يرجى اختيار خطة واحدة بالضبط."
+
+#, python-format
+msgid "\"%s\" is now the default plan."
+msgstr "\"%s\" هو الآن الخطة الافتراضية."
+
+msgid "Duplicate selected plan"
+msgstr "تكرار الخطة المختارة"
+
+#, python-format
+msgid "%d plan(s) duplicated."
+msgstr "تم تكرار %d خطة/خطط."
+
+msgid "Plan"
+msgstr "الخطة"
+
+msgid "Feature"
+msgstr "الميزة"
+
+msgid "Subscription Health"
+msgstr "صحة الاشتراك"
+
+msgid "Billing"
+msgstr "الفوترة"
+
+msgid "Billing Period"
+msgstr "فترة الفوترة"
+
+msgid "Cancellation"
+msgstr "الإلغاء"
+
+msgid "External Payment"
+msgstr "الدفع الخارجي"
+
+msgid "Period"
+msgstr "الفترة"
+
+msgid "Health"
+msgstr "الصحة"
+
+msgid "Usage Summary"
+msgstr "ملخص الاستخدام"
+
+msgid "Activate selected subscriptions"
+msgstr "تفعيل الاشتراكات المختارة"
+
+#, python-format
+msgid "%d subscription(s) activated."
+msgstr "تم تفعيل %d اشتراك/اشتراكات."
+
+msgid "Suspend selected subscriptions"
+msgstr "تعليق الاشتراكات المختارة"
+
+#, python-format
+msgid "%d subscription(s) suspended."
+msgstr "تم تعليق %d اشتراك/اشتراكات."
+
+msgid "Expire selected subscriptions"
+msgstr "إنهاء صلاحية الاشتراكات المختارة"
+
+#, python-format
+msgid "%d subscription(s) expired."
+msgstr "انتهت صلاحية %d اشتراك/اشتراكات."
+
+msgid "Invoice Summary"
+msgstr "ملخص الفاتورة"
+
+msgid "Amounts"
+msgstr "المبالغ"
+
+msgid "Dates"
+msgstr "التواريخ"
+
+msgid "#"
+msgstr "#"
+
+msgid "Due Date"
+msgstr "تاريخ الاستحقاق"
+
+msgid "Paid"
+msgstr "مدفوع"
+
+msgid "Summary"
+msgstr "الملخص"
+
+msgid "Mark as paid"
+msgstr "تحديد كمدفوع"
+
+#, python-format
+msgid "%d invoice(s) marked as paid."
+msgstr "تم تحديد %d فاتورة/فواتير كمدفوعة."
+
+msgid "Void selected invoices"
+msgstr "إبطال الفواتير المختارة"
+
+#, python-format
+msgid "%d invoice(s) voided."
+msgstr "تم إبطال %d فاتورة/فواتير."
+
+msgid "Finalize (draft → pending)"
+msgstr "اعتماد (مسودة → معلق)"
+
+#, python-format
+msgid "%d invoice(s) finalized."
+msgstr "تم اعتماد %d فاتورة/فواتير."
+
+msgid "Reset usage counters to 0"
+msgstr "إعادة تعيين عدادات الاستخدام إلى 0"
+
+#, python-format
+msgid "%d usage record(s) reset."
+msgstr "تم إعادة تعيين %d سجل/سجلات استخدام."
+
+msgid "Unique identifier code for feature lookup (e.g., max_menus, ai_enabled)"
+msgstr "رمز معرّف فريد للبحث عن الميزات (مثال: max_menus, ai_enabled)"
+
+msgid "Human-readable display name for the feature"
+msgstr "اسم عرض الميزة سهل القراءة"
+
+msgid "Detailed description of what this feature provides"
+msgstr "وصف تفصيلي لما توفره هذه الميزة"
+
+msgid "Feature type"
+msgstr "نوع الميزة"
+
+msgid "Type of feature: BOOLEAN (on/off), LIMIT (max count), USAGE (metered)"
+msgstr "نوع الميزة: BOOLEAN (تشغيل/إيقاف)، LIMIT (حد أقصى)، USAGE (مقاس)"
+
+msgid "Default value"
+msgstr "القيمة الافتراضية"
+
+msgid "Default value for the feature (JSON format)"
+msgstr "القيمة الافتراضية للميزة (تنسيق JSON)"
+
+msgid "Category for grouping features (e.g., menus, orders, ai, analytics)"
+msgstr "الفئة لتجميع الميزات (مثال: menus, orders, ai, analytics)"
+
+msgid "Whether the feature is currently available"
+msgstr "ما إذا كانت الميزة متاحة حالياً"
+
+msgid "Additional metadata for the feature (JSON)"
+msgstr "بيانات وصفية إضافية للميزة (JSON)"
+
+msgid "Display name of the plan (e.g., Starter, Professional)"
+msgstr "اسم عرض الخطة (مثال: المبتدئ، الاحترافي)"
+
+msgid "Plan tier level (FREE, STARTER, GROWTH, etc.)"
+msgstr "مستوى الخطة (FREE, STARTER, GROWTH, إلخ.)"
+
+msgid "Detailed description of the plan and its features"
+msgstr "وصف تفصيلي للخطة وميزاتها"
+
+msgid "Brief tagline for the plan (shown on pricing cards)"
+msgstr "شعار مختصر للخطة (يُعرض على بطاقات التسعير)"
+
+msgid "Monthly price"
+msgstr "السعر الشهري"
+
+msgid "Monthly subscription price"
+msgstr "سعر الاشتراك الشهري"
+
+msgid "Yearly price"
+msgstr "السعر السنوي"
+
+msgid "Yearly subscription price (typically with discount)"
+msgstr "سعر الاشتراك السنوي (عادةً مع خصم)"
+
+msgid "Currency code for pricing (e.g., TRY, USD, EUR)"
+msgstr "رمز العملة للتسعير (مثال: TRY, USD, EUR)"
+
+msgid ""
+"Plan limits as JSON (e.g., {\"max_menus\": 3, \"max_products\": 200, "
+"\"max_qr_codes\": 10, \"max_users\": 5, \"storage_mb\": 500})"
+msgstr "حدود الخطة بصيغة JSON (مثال: {\"max_menus\": 3, \"max_products\": 200, \"max_qr_codes\": 10, \"max_users\": 5, \"storage_mb\": 500})"
+
+msgid "Feature flags"
+msgstr "علامات الميزات"
+
+msgid ""
+"Boolean feature flags as JSON (e.g., {\"ai_enabled\": true, "
+"\"custom_domain\": false, \"api_access\": false})"
+msgstr "إشارات الميزات المنطقية بصيغة JSON (مثال: {\"ai_enabled\": true, \"custom_domain\": false, \"api_access\": false})"
+
+msgid "Trial days"
+msgstr "أيام التجربة"
+
+msgid "Number of trial days for this plan (0 for no trial)"
+msgstr "عدد أيام التجربة لهذه الخطة (0 لبدون تجربة)"
+
+msgid "Whether the plan is available for subscription"
+msgstr "ما إذا كانت الخطة متاحة للاشتراك"
+
+msgid "Whether this is the default plan for new organizations"
+msgstr "ما إذا كانت هذه هي الخطة الافتراضية للمنظمات الجديدة"
+
+msgid "Whether the plan is visible on the public pricing page"
+msgstr "ما إذا كانت الخطة مرئية في صفحة التسعير العامة"
+
+msgid "Is custom"
+msgstr "مخصص"
+
+msgid "Whether this is a custom enterprise plan"
+msgstr "ما إذا كانت هذه خطة مؤسسات مخصصة"
+
+msgid "Highlight text"
+msgstr "نص التمييز"
+
+msgid "Optional badge text (e.g., \"Most Popular\", \"Best Value\")"
+msgstr "نص الشارة الاختياري (مثال: \"الأكثر شعبية\"، \"أفضل قيمة\")"
+
+msgid "Display order on pricing page (lower numbers appear first)"
+msgstr "ترتيب العرض في صفحة التسعير (الأرقام الأقل تظهر أولاً)"
+
+msgid "Additional plan metadata (JSON)"
+msgstr "بيانات وصفية إضافية للخطة (JSON)"
+
+msgid "Organization this subscription belongs to"
+msgstr "المنظمة التي ينتمي إليها هذا الاشتراك"
+
+msgid "Subscription plan"
+msgstr "خطة الاشتراك"
+
+msgid "Current subscription status"
+msgstr "حالة الاشتراك الحالية"
+
+msgid "Billing period"
+msgstr "فترة الفوترة"
+
+msgid "Billing cycle (MONTHLY or YEARLY)"
+msgstr "دورة الفوترة (MONTHLY أو YEARLY)"
+
+msgid "How the subscription is paid"
+msgstr "كيف يتم دفع الاشتراك"
+
+msgid "Current price"
+msgstr "السعر الحالي"
+
+msgid "Locked-in price at subscription time"
+msgstr "السعر المثبت وقت الاشتراك"
+
+msgid "When the trial period ends (null if no trial)"
+msgstr "متى تنتهي فترة التجربة (فارغ إذا لم يكن هناك فترة تجربة)"
+
+msgid "Current period start"
+msgstr "بداية الفترة الحالية"
+
+msgid "Start of the current billing period"
+msgstr "بداية فترة الفوترة الحالية"
+
+msgid "Current period end"
+msgstr "نهاية الفترة الحالية"
+
+msgid "End of the current billing period"
+msgstr "نهاية فترة الفوترة الحالية"
+
+msgid "Next billing date"
+msgstr "تاريخ الفوترة التالي"
+
+msgid "When next payment will be charged"
+msgstr "متى سيتم تحصيل الدفعة التالية"
+
+msgid "When cancellation was requested"
+msgstr "متى تم طلب الإلغاء"
+
+msgid "User-provided reason for cancellation"
+msgstr "سبب الإلغاء المقدم من المستخدم"
+
+msgid "Cancel at period end"
+msgstr "إلغاء في نهاية الفترة"
+
+msgid "If true, subscription will cancel at end of current period"
+msgstr "إذا كان صحيحاً، سيُلغى الاشتراك في نهاية الفترة الحالية"
+
+msgid "External subscription ID"
+msgstr "معرف الاشتراك الخارجي"
+
+msgid "Subscription ID from payment provider (e.g., Iyzico)"
+msgstr "معرّف الاشتراك من مزود الدفع (مثال: Iyzico)"
+
+msgid "External customer ID"
+msgstr "معرف العميل الخارجي"
+
+msgid "Customer ID from payment provider"
+msgstr "معرّف العميل من مزود الدفع"
+
+msgid "Payment details"
+msgstr "تفاصيل الدفع"
+
+msgid ""
+"Masked payment method details (e.g., {\"last4\": \"4242\", \"brand\": "
+"\"visa\"})"
+msgstr "تفاصيل طريقة الدفع المقنعة (مثال: {\"last4\": \"4242\", \"brand\": \"visa\"})"
+
+msgid "Additional subscription metadata (JSON)"
+msgstr "بيانات وصفية إضافية للاشتراك (JSON)"
+
+msgid "Subscription"
+msgstr "الاشتراك"
+
+msgid "Subscriptions"
+msgstr "الاشتراكات"
+
+msgid "Organization this invoice belongs to"
+msgstr "المنظمة التي تنتمي إليها هذه الفاتورة"
+
+msgid "Related subscription (null for one-time purchases)"
+msgstr "الاشتراك المرتبط (null للمشتريات لمرة واحدة)"
+
+msgid "Invoice number"
+msgstr "رقم الفاتورة"
+
+msgid "Unique invoice number within organization"
+msgstr "رقم فاتورة فريد داخل المنظمة"
+
+msgid "Current invoice status"
+msgstr "حالة الفاتورة الحالية"
+
+msgid "Amount before tax"
+msgstr "المبلغ قبل الضريبة"
+
+msgid "Total amount due"
+msgstr "إجمالي المبلغ المستحق"
+
+msgid "Amount paid"
+msgstr "المبلغ المدفوع"
+
+msgid "Amount actually paid"
+msgstr "المبلغ المدفوع فعلياً"
+
+msgid "Amount refunded"
+msgstr "المبلغ المسترد"
+
+msgid "Currency code for this invoice"
+msgstr "رمز العملة لهذه الفاتورة"
+
+msgid "Due date"
+msgstr "تاريخ الاستحقاق"
+
+msgid "When payment is due"
+msgstr "متى يستحق الدفع"
+
+msgid "Paid at"
+msgstr "مدفوع في"
+
+msgid "When payment was received"
+msgstr "متى تم استلام الدفع"
+
+msgid "Start of billing period covered"
+msgstr "بداية فترة الفوترة المغطاة"
+
+msgid "End of billing period covered"
+msgstr "نهاية فترة الفوترة المغطاة"
+
+msgid "Invoice description or memo"
+msgstr "وصف أو مذكرة الفاتورة"
+
+msgid "Line items"
+msgstr "بنود الفاتورة"
+
+msgid "Array of line items: [{description, quantity, unit_price, amount}]"
+msgstr "مصفوفة عناصر السطر: [{الوصف، الكمية، سعر الوحدة، المبلغ}]"
+
+msgid "Billing address"
+msgstr "عنوان الفوترة"
+
+msgid "Billing address details (JSON)"
+msgstr "تفاصيل عنوان الفوترة (JSON)"
+
+msgid "External invoice ID"
+msgstr "معرف الفاتورة الخارجي"
+
+msgid "Invoice ID from payment provider"
+msgstr "معرّف الفاتورة من مزود الدفع"
+
+msgid "External payment ID"
+msgstr "معرف الدفع الخارجي"
+
+msgid "Payment transaction ID from provider"
+msgstr "معرّف معاملة الدفع من المزود"
+
+msgid "Masked payment method details"
+msgstr "تفاصيل طريقة الدفع المخفية"
+
+msgid "PDF URL"
+msgstr "رابط PDF"
+
+msgid "URL to generated PDF invoice"
+msgstr "رابط فاتورة PDF المولّدة"
+
+msgid "Additional invoice metadata (JSON)"
+msgstr "بيانات وصفية إضافية للفاتورة (JSON)"
+
+msgid "Invoice"
+msgstr "الفاتورة"
+
+msgid "Invoices"
+msgstr "الفواتير"
+
+msgid "Plan that includes this feature"
+msgstr "الخطة التي تشمل هذه الميزة"
+
+msgid "Feature included in the plan"
+msgstr "الميزة المشمولة في الخطة"
+
+msgid ""
+"Plan-specific feature configuration (JSON). For LIMIT: {\"limit\": 10}, for "
+"BOOLEAN: {\"enabled\": true}, for USAGE: {\"credits\": 100, "
+"\"reset_period\": \"monthly\"}"
+msgstr "تكوين ميزات خاصة بالخطة (JSON). للحد: {\"limit\": 10}، للمنطقي: {\"enabled\": true}، للاستخدام: {\"credits\": 100, \"reset_period\": \"monthly\"}"
+
+msgid "Is enabled"
+msgstr "مفعّل"
+
+msgid "Whether this feature is enabled for this plan"
+msgstr "ما إذا كانت هذه الميزة مفعّلة لهذه الخطة"
+
+msgid "Display order within plan (lower numbers appear first)"
+msgstr "ترتيب العرض داخل الخطة (الأرقام الأقل تظهر أولاً)"
+
+msgid "Additional metadata for this plan-feature relationship (JSON)"
+msgstr "بيانات وصفية إضافية لعلاقة الخطة-الميزة (JSON)"
+
+msgid "Plan Feature"
+msgstr "ميزة الخطة"
+
+msgid "Plan Features"
+msgstr "ميزات الخطة"
+
+msgid "Feature being tracked"
+msgstr "الميزة المتتبعة"
+
+msgid "Current usage"
+msgstr "الاستخدام الحالي"
+
+msgid "Current usage count for this period"
+msgstr "عدد الاستخدام الحالي لهذه الفترة"
+
+msgid "Limit from plan (-1 = unlimited)"
+msgstr "الحد من الخطة (-1 = غير محدود)"
+
+msgid "Start of current tracking period"
+msgstr "بداية فترة التتبع الحالية"
+
+msgid "End of current tracking period"
+msgstr "نهاية فترة التتبع الحالية"
+
+msgid "Last reset at"
+msgstr "آخر إعادة تعيين في"
+
+msgid "When usage was last reset"
+msgstr "متى تم إعادة تعيين الاستخدام آخر مرة"
+
+msgid "Last usage at"
+msgstr "آخر استخدام في"
+
+msgid "When usage was last recorded"
+msgstr "متى تم تسجيل الاستخدام آخر مرة"
+
+msgid "Additional usage metadata (e.g., usage breakdown, history)"
+msgstr "بيانات وصفية إضافية للاستخدام (مثال: تفصيل الاستخدام، السجل)"
+
+msgid "Organization Usage"
+msgstr "استخدام المنظمة"
+
+msgid "A feature with this code already exists."
+msgstr "توجد ميزة بهذا الرمز بالفعل."
+
+msgid "Number of active subscriptions using this plan"
+msgstr "عدد الاشتراكات النشطة باستخدام هذه الخطة"
+
+msgid "A plan with this slug already exists."
+msgstr "توجد خطة بهذا الرابط المختصر بالفعل."
+
+msgid "Plan UUID to associate with this subscription"
+msgstr "UUID الخطة لربطها بهذا الاشتراك"
+
+msgid "Plan UUID for this subscription"
+msgstr "UUID الخطة لهذا الاشتراك"
+
+msgid "Plan not found or not active."
+msgstr "الخطة غير موجودة أو غير نشطة."
+
+msgid "Organization already has an active subscription."
+msgstr "المنظمة لديها اشتراك نشط بالفعل."
+
+msgid "Reason for cancellation"
+msgstr "سبب الإلغاء"
+
+msgid "If true, cancel at end of current period. If false, cancel immediately."
+msgstr "إذا كان صحيحاً، يتم الإلغاء في نهاية الفترة الحالية. إذا كان خاطئاً، يتم الإلغاء فوراً."
+
+msgid "New plan UUID"
+msgstr "UUID الخطة الجديدة"
+
+msgid "Whether to prorate the change"
+msgstr "ما إذا كان يجب حساب التغيير بالتناسب"
+
+msgid "Subscription UUID for this invoice"
+msgstr "UUID الاشتراك لهذه الفاتورة"
+
+msgid "Auto-generate invoice number"
+msgstr "توليد رقم الفاتورة تلقائياً"
+
+msgid "Subscription not found."
+msgstr "الاشتراك غير موجود."
+
+msgid "External payment transaction ID"
+msgstr "معرّف معاملة الدفع الخارجية"
+
+msgid "Amount paid (defaults to total)"
+msgstr "المبلغ المدفوع (الافتراضي هو الإجمالي)"
+
+msgid "Amount to refund (defaults to full amount)"
+msgstr "المبلغ المسترد (الافتراضي هو المبلغ الكامل)"
+
+msgid "Reason for refund"
+msgstr "سبب الاسترداد"
+
+msgid "Plan UUID"
+msgstr "UUID الخطة"
+
+msgid "Feature UUID"
+msgstr "UUID الميزة"
+
+msgid "Plan not found."
+msgstr "الخطة غير موجودة."
+
+msgid "Feature not found."
+msgstr "الميزة غير موجودة."
+
+msgid "This feature is already linked to this plan."
+msgstr "هذه الميزة مرتبطة بهذه الخطة بالفعل."
+
+msgid "Feature UUID to track usage for"
+msgstr "UUID الميزة لتتبع الاستخدام"
+
+msgid "Plan set as default"
+msgstr "تم تعيين الخطة كافتراضية"
+
+msgid "The \"with\" parameter is required"
+msgstr "المعامل \"with\" مطلوب"
+
+msgid "Comparison plan not found"
+msgstr "خطة المقارنة غير موجودة"
+
+msgid "Subscription cancelled"
+msgstr "تم إلغاء الاشتراك"
+
+msgid "Only cancelled or suspended subscriptions can be reactivated"
+msgstr "يمكن إعادة تفعيل الاشتراكات الملغاة أو المعلقة فقط"
+
+msgid "Subscription reactivated"
+msgstr "تمت إعادة تفعيل الاشتراك"
+
+msgid "Plan changed successfully"
+msgstr "تم تغيير الخطة بنجاح"
+
+msgid "Only draft invoices can be finalized"
+msgstr "يمكن اعتماد فواتير المسودة فقط"
+
+msgid "Invoice finalized"
+msgstr "تم اعتماد الفاتورة"
+
+msgid "Only pending or draft invoices can be marked as paid"
+msgstr "يمكن تحديد الفواتير المعلقة أو المسودة فقط كمدفوعة"
+
+msgid "Invoice marked as paid"
+msgstr "تم تحديد الفاتورة كمدفوعة"
+
+msgid "Paid invoices cannot be voided. Use refund instead."
+msgstr "لا يمكن إبطال الفواتير المدفوعة. استخدم الاسترداد بدلاً من ذلك."
+
+msgid "Invoice voided"
+msgstr "تم إبطال الفاتورة"
+
+msgid "Only paid invoices can be refunded"
+msgstr "يمكن استرداد الفواتير المدفوعة فقط"
+
+msgid "Invoice refunded"
+msgstr "تم استرداد الفاتورة"
+
+msgid "Konu"
+msgstr "الموضوع"
+
+msgid "Okundu"
+msgstr "مقروء"
+
+msgid "Secilenleri okundu isaretle"
+msgstr "تحديد المختارة كمقروءة"
+
+msgid "Secilenleri okunmadi isaretle"
+msgstr "تحديد المختارة كغير مقروءة"
+
+msgid "Iletisim Bilgileri"
+msgstr "معلومات الاتصال"
+
+msgid "Isletme Bilgileri"
+msgstr "معلومات المنشأة"
+
+msgid "Durum Takibi"
+msgstr "تتبع الحالة"
+
+msgid "Sistem"
+msgstr "النظام"
+
+msgid "Durum"
+msgstr "الحالة"
+
+msgid "Iletisime gecildi olarak isaretle"
+msgstr "تحديد كتم الاتصال"
+
+msgid "Demo yapildi olarak isaretle"
+msgstr "تحديد كتم العرض التوضيحي"
+
+msgid "Musteri oldu olarak isaretle"
+msgstr "تحديد كأصبح عميلاً"
+
+msgid "Sirket Bilgileri"
+msgstr "معلومات الشركة"
+
+msgid "Iletisim"
+msgstr "الاتصال"
+
+msgid "Sosyal Medya"
+msgstr "وسائل التواصل الاجتماعي"
+
+msgid "WhatsApp"
+msgstr "واتساب"
+
+msgid "CTA Varsayilanlari"
+msgstr "إعدادات CTA الافتراضية"
+
+msgid "Diger"
+msgstr "أخرى"
+
+msgid "Sayfa & Icerik"
+msgstr "الصفحة والمحتوى"
+
+msgid "CTA Ozellestirme"
+msgstr "تخصيص CTA"
+
+msgid "Bos birakilirsa Site Ayarlari'ndaki varsayilanlar kullanilir."
+msgstr "إذا تُرك فارغاً، سيتم استخدام الإعدادات الافتراضية من إعدادات الموقع."
+
+msgid "Gorunum"
+msgstr "المظهر"
+
+msgid "Sayfa"
+msgstr "الصفحة"
+
+msgid "Baslik"
+msgstr "العنوان"
+
+msgid "Icerik"
+msgstr "المحتوى"
+
+msgid "Istatistik Sayac"
+msgstr "عداد الإحصائيات"
+
+msgid "Sadece \"Istatistik Sayac\" tipi icin"
+msgstr "فقط لنوع \"عداد الإحصائيات\""
+
+msgid "Nasil Calisir"
+msgstr "كيف يعمل"
+
+msgid "Sadece \"Nasil Calisir\" tipi icin"
+msgstr "فقط لنوع \"كيف يعمل\""
+
+msgid "Problem / Cozum"
+msgstr "المشكلة / الحل"
+
+msgid "Sadece \"Problem / Cozum\" tipi icin"
+msgstr "فقط لنوع \"المشكلة / الحل\""
+
+msgid "Tip"
+msgstr "النوع"
+
+msgid "Badge"
+msgstr "الشارة"
+
+msgid "Madde Sayisi"
+msgstr "عدد العناصر"
+
+msgid "Yazar"
+msgstr "الكاتب"
+
+msgid "Isletme"
+msgstr "المنشأة"
+
+msgid "Yorum"
+msgstr "التعليق"
+
+msgid "Puan"
+msgstr "النقاط"
+
+msgid "Soru"
+msgstr "السؤال"
+
+msgid ""
+"HTML icerik desteklenir. Basliklar icin <h3>, paragraflar icin <p>, listeler "
+"icin <ul><li> kullanin."
+msgstr "يدعم محتوى HTML. استخدم <h3> للعناوين، <p> للفقرات، <ul><li> للقوائم."
+
+msgid "Meta"
+msgstr "ميتا"
+
+msgid "Yayin"
+msgstr "النشر"
+
+msgid "Secilenleri yayinla"
+msgstr "نشر المختارة"
+
+msgid "Secilenleri arsivle"
+msgstr "أرشفة المختارة"
+
+msgid "Metin"
+msgstr "النص"
+
+msgid "Link"
+msgstr "الرابط"
+
+msgid "Hiyerarsi"
+msgstr "التسلسل الهرمي"
+
+msgid "Header dropdown'lar icin ust linki secin."
+msgstr "اختر الرابط الرئيسي لقوائم الرأس المنسدلة."
+
+msgid "Konum"
+msgstr "الموقع"
+
+msgid "Ust Link"
+msgstr "الرابط الرئيسي"
+
+msgid "Website & Marketing"
+msgstr "الموقع والتسويق"
+
+msgid "QR Menunuz, Isletmenizin Dijital Vitrini"
+msgstr "قائمة QR الخاصة بك، واجهة منشأتك الرقمية"
+
+msgid "Restoran ve kafeler icin yapay zeka destekli dijital menu platformu."
+msgstr "منصة قائمة رقمية مدعومة بالذكاء الاصطناعي للمطاعم والمقاهي."
+
+msgid "Istanbul, Turkiye"
+msgstr "إسطنبول، تركيا"
+
+msgid "Merhaba! E-Menum hakkinda bilgi almak istiyorum."
+msgstr "مرحباً! أريد الحصول على معلومات حول E-Menum."
+
+msgid "14 Gun Ucretsiz Basla"
+msgstr "ابدأ مجاناً لمدة 14 يوماً"
+
+msgid "Demo Iste"
+msgstr "اطلب عرضاً توضيحياً"
+
+msgid "Kredi karti gerekmez · 2 dakikada kurulum"
+msgstr "لا حاجة لبطاقة ائتمان · إعداد في دقيقتين"
+
+msgid "Adiniz Soyadiniz"
+msgstr "الاسم الكامل"
+
+msgid "ornek@email.com"
+msgstr "example@email.com"
+
+msgid "0555 123 4567"
+msgstr "0555 123 4567"
+
+msgid "Mesajinizi yazin..."
+msgstr "اكتب رسالتك..."
+
+msgid "Spam algilandi."
+msgstr "تم اكتشاف بريد مزعج."
+
+msgid "Isletme adi"
+msgstr "اسم المنشأة"
+
+msgid "Eklemek istediginiz bir not var mi?"
+msgstr "هل لديك ملاحظة تريد إضافتها؟"
+
+msgid "E-posta adresiniz"
+msgstr "بريدك الإلكتروني"
+
+msgid "created at"
+msgstr "أُنشئ في"
+
+msgid "updated at"
+msgstr "حُدّث في"
+
+msgid "deleted at"
+msgstr "حُذف في"
+
+msgid "Genel Bilgi"
+msgstr "معلومات عامة"
+
+msgid "Satis"
+msgstr "المبيعات"
+
+msgid "Teknik Destek"
+msgstr "الدعم الفني"
+
+msgid "Is Birligi"
+msgstr "التعاون"
+
+msgid "Basin & Medya"
+msgstr "الصحافة والإعلام"
+
+msgid "ad soyad"
+msgstr "الاسم الكامل"
+
+msgid "e-posta"
+msgstr "البريد الإلكتروني"
+
+msgid "telefon"
+msgstr "الهاتف"
+
+msgid "konu"
+msgstr "الموضوع"
+
+msgid "mesaj"
+msgstr "الرسالة"
+
+msgid "okundu"
+msgstr "مقروء"
+
+msgid "Iletisim Formu"
+msgstr "نموذج الاتصال"
+
+msgid "Iletisim Formlari"
+msgstr "نماذج الاتصال"
+
+msgid "Restoran"
+msgstr "مطعم"
+
+msgid "Lokanta / Ev Yemekleri"
+msgstr "مطعم / أكلات منزلية"
+
+msgid "Fine Dining"
+msgstr "مطعم فاخر"
+
+msgid "Meyhane / Balik Restoran"
+msgstr "حانة / مطعم أسماك"
+
+msgid "Steakhouse / Izgara"
+msgstr "ستيك هاوس / مشويات"
+
+msgid "Fast Food"
+msgstr "وجبات سريعة"
+
+msgid "Kebapci / Pideci / Lahmacuncu"
+msgstr "كباب / بيدة / لحم بعجين"
+
+msgid "Donerci / Cigerci"
+msgstr "دونر / كبدة"
+
+msgid "Borekci / Mantici"
+msgstr "بورك / مانتي"
+
+msgid "Pastane / Firincilik"
+msgstr "حلويات / مخبوزات"
+
+msgid "Kafe / Kahve Dukkani"
+msgstr "مقهى / محمصة قهوة"
+
+msgid "Nargile Kafe"
+msgstr "مقهى نارجيلة"
+
+msgid "Pub / Bar / Biraevi"
+msgstr "حانة / بار"
+
+msgid "Smoothie / Juice Bar"
+msgstr "سموثي / بار عصائر"
+
+msgid "Beach Club / Havuz Bar"
+msgstr "نادي شاطئي / بار مسبح"
+
+msgid "Otel / Tatil Koyu"
+msgstr "فندق / منتجع"
+
+msgid "Zincir Isletme"
+msgstr "سلسلة منشآت"
+
+msgid "Franchise"
+msgstr "فرانشايز"
+
+msgid "Catering / Toplu Yemek"
+msgstr "تموين / وجبات جماعية"
+
+msgid "Kantin / Yemekhane"
+msgstr "كافتيريا / مطعم"
+
+msgid "Food Court"
+msgstr "ساحة طعام"
+
+msgid "Beklemede"
+msgstr "قيد الانتظار"
+
+msgid "Iletisime Gecildi"
+msgstr "تم الاتصال"
+
+msgid "Demo Yapildi"
+msgstr "تم العرض التوضيحي"
+
+msgid "Musteri Oldu"
+msgstr "أصبح عميلاً"
+
+msgid "Vazgecti"
+msgstr "تراجع"
+
+msgid "isletme adi"
+msgstr "اسم المنشأة"
+
+msgid "isletme tipi"
+msgstr "نوع المنشأة"
+
+msgid "sube sayisi"
+msgstr "عدد الفروع"
+
+msgid "durum"
+msgstr "الحالة"
+
+msgid "admin notlari"
+msgstr "ملاحظات المسؤول"
+
+msgid "Demo Talebi"
+msgstr "طلب عرض توضيحي"
+
+msgid "Demo Talepleri"
+msgstr "طلبات العرض التوضيحي"
+
+msgid "aktif"
+msgstr "نشط"
+
+msgid "dil"
+msgstr "اللغة"
+
+msgid "Bulten Abonesi"
+msgstr "مشترك النشرة"
+
+msgid "Bulten Aboneleri"
+msgstr "مشتركو النشرة"
+
+msgid "sirket adi"
+msgstr "اسم الشركة"
+
+msgid "slogan"
+msgstr "الشعار"
+
+msgid "aciklama"
+msgstr "الوصف"
+
+msgid "adres"
+msgstr "العنوان"
+
+msgid "Instagram"
+msgstr "إنستغرام"
+
+msgid "Twitter / X"
+msgstr "تويتر / X"
+
+msgid "LinkedIn"
+msgstr "لينكد إن"
+
+msgid "YouTube"
+msgstr "يوتيوب"
+
+msgid "WhatsApp numara"
+msgstr "رقم واتساب"
+
+msgid "WhatsApp mesaj"
+msgstr "رسالة واتساب"
+
+msgid "birincil CTA metni"
+msgstr "نص CTA الأساسي"
+
+msgid "ikincil CTA metni"
+msgstr "نص CTA الثانوي"
+
+msgid "guven metni"
+msgstr "نص الثقة"
+
+msgid "birincil CTA URL"
+msgstr "رابط CTA الأساسي"
+
+msgid "ikincil CTA URL"
+msgstr "رابط CTA الثانوي"
+
+msgid "giris URL"
+msgstr "رابط تسجيل الدخول"
+
+msgid "Site Ayarlari"
+msgstr "إعدادات الموقع"
+
+msgid "Ana Sayfa"
+msgstr "الصفحة الرئيسية"
+
+msgid "Ozellikler"
+msgstr "الميزات"
+
+msgid "Fiyatlandirma"
+msgstr "التسعير"
+
+msgid "Hakkimizda"
+msgstr "من نحن"
+
+msgid "Demo"
+msgstr "عرض توضيحي"
+
+msgid "Blog"
+msgstr "المدونة"
+
+msgid "sayfa"
+msgstr "الصفحة"
+
+msgid "baslik"
+msgstr "العنوان"
+
+msgid "alt baslik"
+msgstr "العنوان الفرعي"
+
+msgid "badge metni"
+msgstr "نص الشارة"
+
+msgid "gradient sinifi"
+msgstr "فئة التدرج"
+
+msgid "birincil CTA"
+msgstr "CTA الأساسي"
+
+msgid "ikincil CTA"
+msgstr "CTA الثانوي"
+
+msgid "hero gorsel goster"
+msgstr "عرض صورة البطل"
+
+msgid "Sayfa Hero"
+msgstr "بطل الصفحة"
+
+msgid "Sayfa Hero'lari"
+msgstr "أبطال الصفحات"
+
+msgid "Ozellik Karti"
+msgstr "بطاقة الميزة"
+
+msgid "Problem"
+msgstr "المشكلة"
+
+msgid "Cozum"
+msgstr "الحل"
+
+msgid "Fark"
+msgstr "الفرق"
+
+msgid "bolum tipi"
+msgstr "نوع القسم"
+
+msgid "ikon"
+msgstr "الأيقونة"
+
+msgid "Phosphor icon sinifi (ornek: ph-qr-code)"
+msgstr "فئة أيقونة Phosphor (مثال: ph-qr-code)"
+
+msgid "renk"
+msgstr "اللون"
+
+msgid "Tailwind renk adi (ornek: primary, green, red)"
+msgstr "اسم لون Tailwind (مثال: primary, green, red)"
+
+msgid "istatistik degeri"
+msgstr "قيمة الإحصاء"
+
+msgid "Ornek: 350.000+"
+msgstr "مثال: +350,000"
+
+msgid "istatistik eki"
+msgstr "لاحقة الإحصاء"
+
+msgid "Ornek: +, %, x"
+msgstr "مثال: +، %، x"
+
+msgid "adim numarasi"
+msgstr "رقم الخطوة"
+
+msgid "kart varyanti"
+msgstr "متغير البطاقة"
+
+msgid "siralama"
+msgstr "الترتيب"
+
+msgid "Ana Sayfa Bolumu"
+msgstr "قسم الصفحة الرئيسية"
+
+msgid "Ana Sayfa Bolumleri"
+msgstr "أقسام الصفحة الرئيسية"
+
+msgid "badge rengi"
+msgstr "لون الشارة"
+
+msgid "gorsel alt metni"
+msgstr "النص البديل للصورة"
+
+msgid "ters duzenleme"
+msgstr "تخطيط معكوس"
+
+msgid "Ozellik Kategorisi"
+msgstr "فئة الميزات"
+
+msgid "Ozellik Kategorileri"
+msgstr "فئات الميزات"
+
+msgid "kategori"
+msgstr "الفئة"
+
+msgid "metin"
+msgstr "النص"
+
+msgid "Ozellik Maddesi"
+msgstr "عنصر الميزة"
+
+msgid "Ozellik Maddeleri"
+msgstr "عناصر الميزات"
+
+msgid "yazar adi"
+msgstr "اسم الكاتب"
+
+msgid "bas harfler"
+msgstr "الأحرف الأولى"
+
+msgid "rol / isletme"
+msgstr "الدور / المنشأة"
+
+msgid "konum"
+msgstr "الموقع"
+
+msgid "isletme tipi etiketi"
+msgstr "تسمية نوع المنشأة"
+
+msgid "avatar rengi"
+msgstr "لون الصورة الرمزية"
+
+msgid "yorum"
+msgstr "التعليق"
+
+msgid "puan"
+msgstr "النقاط"
+
+msgid "1-5 arasi"
+msgstr "من 1 إلى 5"
+
+msgid "Musteri Yorumu"
+msgstr "تقييم العميل"
+
+msgid "Musteri Yorumlari"
+msgstr "تقييمات العملاء"
+
+msgid "etiket"
+msgstr "التسمية"
+
+msgid "Phosphor icon sinifi"
+msgstr "فئة أيقونة Phosphor"
+
+msgid "Guven Rozeti"
+msgstr "شارة الثقة"
+
+msgid "Guven Rozetleri"
+msgstr "شارات الثقة"
+
+msgid "Guven Lokasyon"
+msgstr "موقع الثقة"
+
+msgid "Guven Lokasyonlari"
+msgstr "مواقع الثقة"
+
+msgid "Her Ikisi"
+msgstr "كلاهما"
+
+msgid "soru"
+msgstr "السؤال"
+
+msgid "cevap"
+msgstr "الجواب"
+
+msgid "SSS"
+msgstr "الأسئلة الشائعة"
+
+msgid "SSS (Sikca Sorulan Sorular)"
+msgstr "الأسئلة الشائعة (الأسئلة المتكررة)"
+
+msgid "unvan"
+msgstr "اللقب"
+
+msgid "Ekip Uyesi"
+msgstr "عضو الفريق"
+
+msgid "Ekip Uyeleri"
+msgstr "أعضاء الفريق"
+
+msgid "Sirket Degeri"
+msgstr "قيمة الشركة"
+
+msgid "Sirket Degerleri"
+msgstr "قيم الشركة"
+
+msgid "deger"
+msgstr "القيمة"
+
+msgid "Sirket Istatistigi"
+msgstr "إحصائية الشركة"
+
+msgid "Sirket Istatistikleri"
+msgstr "إحصائيات الشركة"
+
+msgid "Gizlilik Politikasi"
+msgstr "سياسة الخصوصية"
+
+msgid "Kullanim Sartlari"
+msgstr "شروط الاستخدام"
+
+msgid "KVKK Aydinlatma"
+msgstr "إشعار KVKK"
+
+msgid "icerik"
+msgstr "المحتوى"
+
+msgid "HTML icerik desteklenir"
+msgstr "يدعم محتوى HTML"
+
+msgid "son guncelleme (gorunum)"
+msgstr "آخر تحديث (العرض)"
+
+msgid "Sayfada gosterilecek tarih metni"
+msgstr "نص التاريخ الذي سيظهر في الصفحة"
+
+msgid "meta aciklama"
+msgstr "وصف ميتا"
+
+msgid "Yasal Sayfa"
+msgstr "صفحة قانونية"
+
+msgid "Yasal Sayfalar"
+msgstr "صفحات قانونية"
+
+msgid "Taslak"
+msgstr "مسودة"
+
+msgid "Yayinda"
+msgstr "منشور"
+
+msgid "Arsivlenmis"
+msgstr "مؤرشف"
+
+msgid "slug"
+msgstr "الرابط المختصر"
+
+msgid "ozet"
+msgstr "الملخص"
+
+msgid "Kart onizlemesinde gosterilir"
+msgstr "يُعرض في معاينة البطاقة"
+
+msgid "yazar"
+msgstr "الكاتب"
+
+msgid "yayin tarihi"
+msgstr "تاريخ النشر"
+
+msgid "one cikan"
+msgstr "مميز"
+
+msgid "Blog Yazisi"
+msgstr "مقال المدونة"
+
+msgid "Blog Yazilari"
+msgstr "مقالات المدونة"
+
+msgid "plan"
+msgstr "الخطة"
+
+msgid "vurgulu"
+msgstr "مُبرز"
+
+msgid "Kalin yazi ile gosterilir"
+msgstr "يُعرض بخط عريض"
+
+msgid "Plan Gosterim Ozelligi"
+msgstr "ميزة عرض الخطة"
+
+msgid "Plan Gosterim Ozellikleri"
+msgstr "ميزات عرض الخطة"
+
+msgid "Header"
+msgstr "الرأس"
+
+msgid "Footer — Urun"
+msgstr "التذييل — المنتج"
+
+msgid "Footer — Cozumler"
+msgstr "التذييل — الحلول"
+
+msgid "Footer — Sirket"
+msgstr "التذييل — الشركة"
+
+msgid "Footer — Destek"
+msgstr "التذييل — الدعم"
+
+msgid "Footer — Yasal"
+msgstr "التذييل — القانونية"
+
+msgid "Django URL adi (ornek: website:features) veya /tam/yol/"
+msgstr "اسم Django URL (مثال: website:features) أو /المسار/الكامل/"
+
+msgid "Dropdown aciklama metni"
+msgstr "نص وصف القائمة المنسدلة"
+
+msgid "ust link"
+msgstr "الرابط الرئيسي"
+
+msgid "Dropdown ustune bagli alt linkler icin"
+msgstr "للروابط الفرعية المرتبطة بالقائمة المنسدلة"
+
+msgid "Navigasyon Linki"
+msgstr "رابط التنقل"
+
+msgid "Navigasyon Linkleri"
+msgstr "روابط التنقل"
+
+#, python-format
+msgid "[E-Menum] Yeni Iletisim Formu: %(name)s — %(topic)s"
+msgstr "[E-Menum] نموذج اتصال جديد: %(name)s — %(topic)s"
+
+#, python-format
+msgid ""
+"Yeni iletisim formu gonderildi.\n"
+"\n"
+"Ad Soyad: %(name)s\n"
+"E-posta: %(email)s\n"
+"Telefon: %(phone)s\n"
+"Konu: %(subject)s\n"
+"Mesaj:\n"
+"%(message)s\n"
+"\n"
+"Tarih: %(date)s\n"
+"Admin panelden goruntuleyebilirsiniz."
+msgstr "تم إرسال نموذج اتصال جديد.\n"
+"\n"
+"الاسم الكامل: %(name)s\n"
+"البريد الإلكتروني: %(email)s\n"
+"الهاتف: %(phone)s\n"
+"الموضوع: %(subject)s\n"
+"الرسالة:\n"
+"%(message)s\n"
+"\n"
+"التاريخ: %(date)s\n"
+"يمكنك المشاهدة من لوحة الإدارة."
+
+#, python-format
+msgid "[E-Menum] Yeni Demo Talebi: %(business)s (%(type)s)"
+msgstr "[E-Menum] طلب عرض توضيحي جديد: %(business)s (%(type)s)"
+
+#, python-format
+msgid ""
+"Yeni demo talebi alindi.\n"
+"\n"
+"Ad Soyad: %(name)s\n"
+"Isletme: %(business)s\n"
+"E-posta: %(email)s\n"
+"Telefon: %(phone)s\n"
+"Isletme Tipi: %(type)s\n"
+"Sube Sayisi: %(branches)d\n"
+"Mesaj: %(message)s\n"
+"\n"
+"Tarih: %(date)s\n"
+"Admin panelden durum takibini yapabilirsiniz."
+msgstr "تم استلام طلب عرض توضيحي جديد.\n\nالاسم الكامل: %(name)s\nالمنشأة: %(business)s\nالبريد الإلكتروني: %(email)s\nالهاتف: %(phone)s\nنوع المنشأة: %(type)s\nعدد الفروع: %(branches)d\nالرسالة: %(message)s\n\nالتاريخ: %(date)s\nيمكنك متابعة الحالة من لوحة الإدارة."
+
+msgid "ozellikler/"
+msgstr "features/"
+
+msgid "fiyatlandirma/"
+msgstr "pricing/"
+
+msgid "hakkimizda/"
+msgstr "about/"
+
+msgid "blog/"
+msgstr "blog/"
+
+msgid "iletisim/"
+msgstr "contact/"
+
+msgid "demo/"
+msgstr "demo/"
+
+msgid "gizlilik/"
+msgstr "privacy/"
+
+msgid "kullanim-sartlari/"
+msgstr "terms/"
+
+msgid "kvkk/"
+msgstr "kvkk/"
+
+msgid "Mesajiniz basariyla gonderildi. En kisa surede size donecegiz."
+msgstr "تم إرسال رسالتك بنجاح. سنعود إليك في أقرب وقت."
+
+msgid "Lutfen formdaki hatalari duzeltiniz."
+msgstr "يرجى تصحيح الأخطاء في النموذج."
+
+msgid ""
+"Demo talebiniz alinmistir. Ekibimiz en kisa surede sizinle iletisime "
+"gececektir."
+msgstr "تم استلام طلب العرض التوضيحي الخاص بك. سيتواصل فريقنا معك في أقرب وقت ممكن."
+
+msgid "Bultenimize basariyla abone oldunuz!"
+msgstr "تم الاشتراك في نشرتنا بنجاح!"
+
+msgid "Bu e-posta adresi zaten abone."
+msgstr "هذا البريد الإلكتروني مشترك بالفعل."
+
+msgid "Gecerli bir e-posta adresi giriniz."
+msgstr "يرجى إدخال بريد إلكتروني صالح."
+
+msgid "Turkce"
+msgstr "التركية"
+
+msgid "English"
+msgstr "الإنجليزية"
+
+msgid "Arabic"
+msgstr "العربية"
+
+msgid "Ukrainian"
+msgstr "الأوكرانية"
+
+msgid "Persian"
+msgstr "الفارسية"
+
+msgid "Organization context is required for this request"
+msgstr "سياق المنظمة مطلوب لهذا الطلب"
+
+msgid "Organization context is required"
+msgstr "سياق المنظمة مطلوب"
+
+msgid "Plan limit exceeded. Please upgrade your subscription."
+msgstr "تم تجاوز حد الخطة. يرجى ترقية اشتراكك."
+
+#, python-format
+msgid ""
+"You have reached the %(label)s limit for your plan (%(current)d/%(limit)d). "
+"Please upgrade to add more."
+msgstr "لقد وصلت إلى حد %(label)s لخطتك (%(current)d/%(limit)d). يرجى الترقية لإضافة المزيد."
+
+msgid "This feature is not available on your current plan."
+msgstr "هذه الميزة غير متوفرة في خطتك الحالية."
+
+#, python-format
+msgid ""
+"%(label)s is not available on your current plan. Please upgrade to access "
+"this feature."
+msgstr "%(label)s غير متاح في خطتك الحالية. يرجى الترقية للوصول إلى هذه الميزة."
+
+#, python-format
+msgid "The feature \"%(feature)s\" is not available on your current plan."
+msgstr "الميزة \"%(feature)s\" غير متاحة في خطتك الحالية."
+
+#, python-format
+msgid ""
+"You have reached the %(label)s limit (%(current)d/%(limit)d) for your plan. "
+"Please upgrade to create more."
+msgstr "لقد وصلت إلى حد %(label)s (%(current)d/%(limit)d) لخطتك. يرجى الترقية لإنشاء المزيد."
+
+msgid "Whether this record has been soft-deleted"
+msgstr "ما إذا تم حذف هذا السجل مبدئياً"
+
+msgid "Organization UUID"
+msgstr "UUID المنظمة"
+
+msgid "This resource does not belong to your organization."
+msgstr "هذا المورد لا ينتمي إلى منظمتك."
+
+msgid "Whether the request was successful"
+msgstr "ما إذا كان الطلب ناجحاً"
+
+msgid "The response data"
+msgstr "بيانات الاستجابة"
+
+msgid "The list of items"
+msgstr "قائمة العناصر"
+
+msgid "Pagination metadata"
+msgstr "البيانات الوصفية للتصفح"
+
+msgid "Machine-readable error code"
+msgstr "رمز خطأ قابل للقراءة آلياً"
+
+msgid "Human-readable error message"
+msgstr "رسالة خطأ سهلة القراءة"
+
+msgid "Additional error details (validation errors, etc.)"
+msgstr "تفاصيل خطأ إضافية (أخطاء التحقق، إلخ.)"
+
+msgid "Always false for error responses"
+msgstr "دائماً false لاستجابات الأخطاء"
+
+msgid "Error details"
+msgstr "تفاصيل الخطأ"
+
+msgid "List of UUIDs to operate on (max 100)"
+msgstr "قائمة UUIDs للعمل عليها (100 كحد أقصى)"
+
+msgid "Number of items successfully affected"
+msgstr "عدد العناصر المتأثرة بنجاح"
+
+msgid "List of IDs that failed (if any)"
+msgstr "قائمة المعرّفات التي فشلت (إن وجدت)"
+
+msgid "An error occurred"
+msgstr "حدث خطأ"
+
+msgid "Authentication failed"
+msgstr "فشل المصادقة"
+
+msgid "Permission denied"
+msgstr "تم رفض الصلاحية"
+
+msgid "Resource not found"
+msgstr "المورد غير موجود"
+
+msgid "Not found"
+msgstr "غير موجود"
+
+msgid "Validation error"
+msgstr "خطأ في التحقق"
+
+#, python-brace-format
+msgid "Rate limit exceeded. Try again in {} seconds."
+msgstr "تم تجاوز حد الطلبات. حاول مرة أخرى بعد {} ثانية."
+
+msgid "Invalid request format"
+msgstr "تنسيق الطلب غير صالح"
+
+msgid "Resource created successfully"
+msgstr "تم إنشاء المورد بنجاح"
+
+msgid "Resource deleted successfully"
+msgstr "تم حذف المورد بنجاح"
+
+msgid "Cannot update resource from different organization"
+msgstr "لا يمكن تحديث مورد من منظمة مختلفة"
+
+msgid "Log out"
+msgstr "تسجيل الخروج"
+
+msgid "Search menu..."
+msgstr "بحث في القائمة..."
+
+msgid "No results"
+msgstr "لا توجد نتائج"
+
+msgid "Administrator"
+msgstr "المسؤول"
+
+msgid "Breadcrumb"
+msgstr "مسار التنقل"
+
+msgid "Home"
+msgstr "الرئيسية"
+
+msgid "View site"
+msgstr "عرض الموقع"
+
+msgid "All rights reserved."
+msgstr "جميع الحقوق محفوظة."
+
+msgid "Navigation"
+msgstr "التنقل"
+
+#, python-format
+msgid "Add %(name)s"
+msgstr "إضافة %(name)s"
+
+msgid "View Storefront"
+msgstr "عرض واجهة المتجر"
+
+msgid "Please correct the error below."
+msgstr "يرجى تصحيح الخطأ أدناه."
+
+msgid "Please correct the errors below."
+msgstr "يرجى تصحيح الأخطاء أدناه."
+
+msgid "Filter"
+msgstr "تصفية"
+
+msgid "Clear all filters"
+msgstr "مسح جميع التصفيات"
+
+msgid "Welcome back"
+msgstr "مرحباً بعودتك"
+
+msgid "Here is what is happening with your platform today."
+msgstr "إليك ما يحدث في منصتك اليوم."
+
+msgid "models"
+msgstr "النماذج"
+
+msgid "Manage"
+msgstr "إدارة"
+
+msgid "Quick Access"
+msgstr "وصول سريع"
+
+msgid "Add"
+msgstr "إضافة"
+
+msgid "Recent Actions"
+msgstr "الإجراءات الأخيرة"
+
+msgid "No recent actions."
+msgstr "لا توجد إجراءات حديثة."
+
+msgid "ago"
+msgstr "مضت"
+
+msgid "Please enter a product name first."
+msgstr "يرجى إدخال اسم المنتج أولاً."
+
+msgid "Existing descriptions will be overwritten. Continue?"
+msgstr "ستتم الكتابة فوق الأوصاف الحالية. هل تريد المتابعة؟"
+
+msgid "Description generated successfully!"
+msgstr "تم توليد الوصف بنجاح!"
+
+msgid "credits"
+msgstr "أرصدة"
+
+msgid "Generation failed. Please try again."
+msgstr "فشل التوليد. يرجى المحاولة مرة أخرى."
+
+msgid "Network error. Please check your connection."
+msgstr "خطأ في الشبكة. يرجى التحقق من اتصالك."
+
+msgid "AI Generate"
+msgstr "توليد AI"
+
+msgid "Generating..."
+msgstr "جارٍ التوليد..."
+
+msgid ""
+"Tip: Enter a short description or keywords first, then click AI Generate to "
+"create a full description."
+msgstr "نصيحة: أدخل وصفاً قصيراً أو كلمات مفتاحية أولاً، ثم انقر على توليد بالذكاء الاصطناعي لإنشاء وصف كامل."
+
+msgid "AI Image generation coming soon"
+msgstr "توليد صور AI قريباً"
+
+msgid "AI Image"
+msgstr "صورة AI"
+
+msgid "Soon"
+msgstr "قريباً"
+
+msgid ""
+"AI Image generation requires product name, description, and category to be "
+"filled first."
+msgstr "يتطلب توليد الصور بالذكاء الاصطناعي ملء اسم المنتج والوصف والفئة أولاً."
+
+msgid ""
+"Cross-role permission comparison. Shows which roles have which permissions "
+"across all resources."
+msgstr "مقارنة الصلاحيات عبر الأدوار. يعرض أي الأدوار لديها أي صلاحيات عبر جميع الموارد."
+
+msgid "Resources"
+msgstr "الموارد"
+
+msgid "Assignments"
+msgstr "التعيينات"
+
+msgid "All Roles"
+msgstr "جميع الأدوار"
+
+msgid "Scroll horizontally to see all roles"
+msgstr "مرر أفقياً لرؤية جميع الأدوار"
+
+msgid "Granted"
+msgstr "ممنوح"
+
+msgid "Conditional (ABAC)"
+msgstr "مشروط (ABAC)"
+
+msgid "Full Access"
+msgstr "وصول كامل"
+
+msgid "Conditional (ABAC rules apply)"
+msgstr "مشروط (تنطبق قواعد ABAC)"
+
+msgid "No Access"
+msgstr "لا وصول"
+
+msgid "Reports"
+msgstr "التقارير"
+
+msgid "Reports & Analytics"
+msgstr "التقارير والتحليلات"
+
+msgid "Monitor your business performance and track key metrics."
+msgstr "راقب أداء عملك وتتبع المقاييس الرئيسية."
+
+msgid "Total Users"
+msgstr "إجمالي المستخدمين"
+
+msgid "Active Menus"
+msgstr "القوائم النشطة"
+
+msgid "Available Reports"
+msgstr "التقارير المتاحة"
+
+msgid "System activity and changes"
+msgstr "نشاط النظام والتغييرات"
+
+msgid "User Activity"
+msgstr "نشاط المستخدم"
+
+msgid "User sessions and logins"
+msgstr "جلسات وتسجيلات دخول المستخدمين"
+
+msgid "Order History"
+msgstr "سجل الطلبات"
+
+msgid "All orders and transactions"
+msgstr "جميع الطلبات والمعاملات"
+
+msgid "Product Catalog"
+msgstr "كتالوج المنتجات"
+
+msgid "Menu items and pricing"
+msgstr "عناصر القائمة والتسعير"
+
+msgid "Coming Soon"
+msgstr "قريباً"
+
+msgid "Advanced Analytics"
+msgstr "تحليلات متقدمة"
+
+msgid ""
+"Revenue tracking, customer insights, menu performance, and AI-powered "
+"recommendations will be available in a future update."
+msgstr "تتبع الإيرادات، رؤى العملاء، أداء القائمة، والتوصيات المدعومة بالذكاء الاصطناعي ستكون متاحة في تحديث مستقبلي."
+
+msgid "Platform Settings"
+msgstr "إعدادات المنصة"
+
+msgid "Manage platform configuration, integrations, and preferences."
+msgstr "إدارة تكوين المنصة والتكاملات والتفضيلات."
+
+msgid "AI Services"
+msgstr "خدمات AI"
+
+msgid "AI Providers"
+msgstr "مزودو AI"
+
+msgid "Configure text & image generation providers, API keys, and models"
+msgstr "تكوين مزودي توليد النصوص والصور ومفاتيح API والنماذج"
+
+msgid "Generation History"
+msgstr "سجل التوليد"
+
+msgid "View AI generation logs, credits used, and status"
+msgstr "عرض سجلات توليد AI والأرصدة المستخدمة والحالة"
+
+msgid "Account & Security"
+msgstr "الحساب والأمان"
+
+msgid "Change Password"
+msgstr "تغيير كلمة المرور"
+
+msgid "Update your admin account password"
+msgstr "تحديث كلمة مرور حساب المسؤول"
+
+msgid "View and manage role-permission assignments"
+msgstr "عرض وإدارة تعيينات الأدوار والصلاحيات"
+
+msgid "Subscription & Billing"
+msgstr "الاشتراك والفوترة"
+
+msgid "Manage subscription plans, pricing, and features"
+msgstr "إدارة خطط الاشتراك والتسعير والميزات"
+
+msgid "View active subscriptions and billing history"
+msgstr "عرض الاشتراكات النشطة وسجل الفوترة"
+
+msgid "Manage tenant organizations and their settings"
+msgstr "إدارة المنظمات المستأجرة وإعداداتها"
+
+msgid "Manage platform users, roles, and access"
+msgstr "إدارة مستخدمي المنصة والأدوار والوصول"
+
+msgid "Analytics, audit logs, and business metrics"
+msgstr "التحليلات وسجلات التدقيق ومقاييس الأعمال"
+
+msgid "Remove"
+msgstr "إزالة"
+
+msgid "Drop images here or click to browse"
+msgstr "أسقط الصور هنا أو انقر للتصفح"
+
+msgid "Multiple files allowed - JPEG, PNG, WebP, GIF"
+msgstr "ملفات متعددة مسموحة - JPEG, PNG, WebP, GIF"
+
+msgid "Upload Images"
+msgstr "رفع الصور"
+
+msgid "Add URL"
+msgstr "إضافة رابط"
+
+msgid "image(s)"
+msgstr "صورة/صور"
+
+msgid "Image could not be loaded"
+msgstr "تعذر تحميل الصورة"
+
+msgid "Change image"
+msgstr "تغيير الصورة"
+
+msgid "Change"
+msgstr "تغيير"
+
+msgid "Remove image"
+msgstr "إزالة الصورة"
+
+msgid "Drop image here or click to browse"
+msgstr "أسقط الصورة هنا أو انقر للتصفح"
+
+msgid "JPEG, PNG, WebP, GIF - Max 10MB"
+msgstr "JPEG, PNG, WebP, GIF - الحد الأقصى 10MB"
+
+msgid "Uploading..."
+msgstr "جارٍ الرفع..."
+
+msgid "Hide URL input"
+msgstr "إخفاء إدخال الرابط"
+
+msgid "Or enter URL manually"
+msgstr "أو أدخل الرابط يدوياً"
+
+msgid "Close sidebar"
+msgstr "إغلاق الشريط الجانبي"
+
+msgid "Main Navigation"
+msgstr "التنقل الرئيسي"
+
+msgid "All Menus"
+msgstr "جميع القوائم"
+
+msgid "Tables & QR"
+msgstr "الطاولات و QR"
+
+msgid "Logout"
+msgstr "تسجيل الخروج"
+
+msgid "Open sidebar"
+msgstr "فتح الشريط الجانبي"
+
+msgid "Search..."
+msgstr "بحث..."
+
+msgid "Toggle dark mode"
+msgstr "تبديل الوضع الداكن"
+
+msgid "Change language"
+msgstr "تغيير اللغة"
+
+msgid "E-Menum - Enterprise QR Menu SaaS Platform for restaurants and cafes"
+msgstr "E-Menum - منصة قائمة QR المؤسسية SaaS للمطاعم والمقاهي"
+
+msgid "Skip to main content"
+msgstr "تخطي إلى المحتوى الرئيسي"
+
+msgid "Close"
+msgstr "إغلاق"
+
+msgid "Ana navigasyon"
+msgstr "التنقل الرئيسي"
+
+msgid "Acik temaya gec"
+msgstr "التبديل إلى الوضع الفاتح"
+
+msgid "Koyu temaya gec"
+msgstr "التبديل إلى الوضع الداكن"
+
+msgid "Giris Yap"
+msgstr "تسجيل الدخول"
+
+msgid "Mobil navigasyon"
+msgstr "التنقل عبر الهاتف"
+
+msgid "Urun"
+msgstr "المنتج"
+
+msgid "Cozumler"
+msgstr "الحلول"
+
+msgid "Sirket"
+msgstr "الشركة"
+
+msgid "Destek"
+msgstr "الدعم"
+
+msgid "Bir hata olustu. Lutfen tekrar deneyin."
+msgstr "حدث خطأ. يرجى المحاولة مرة أخرى."
+
+msgid "Bulten"
+msgstr "النشرة"
+
+msgid "Yeniliklerden ve kampanyalardan haberdar olun."
+msgstr "ابقَ على اطلاع بالجديد والعروض."
+
+msgid "Abone Ol"
+msgstr "اشترك"
+
+msgid "Tum haklari saklidir."
+msgstr "جميع الحقوق محفوظة."
+
+msgid "WhatsApp ile iletisime gec"
+msgstr "تواصل عبر واتساب"
+
+msgid "View cart"
+msgstr "عرض السلة"
+
+msgid "Call waiter"
+msgstr "استدعاء النادل"
+
+msgid "Menu categories"
+msgstr "فئات القائمة"
+
+msgid "items"
+msgstr "عناصر"
+
+msgid "Your Order"
+msgstr "طلبك"
+
+msgid "Your cart is empty"
+msgstr "سلتك فارغة"
+
+msgid "Place Order"
+msgstr "تقديم الطلب"
+
+msgid "Call Waiter"
+msgstr "استدعاء النادل"
+
+msgid "A waiter will come to your table shortly."
+msgstr "سيأتي نادل إلى طاولتك قريباً."
+
+msgid "Cancel"
+msgstr "إلغاء"
+
+msgid "Confirm"
+msgstr "تأكيد"
+
+msgid "Sending..."
+msgstr "جارٍ الإرسال..."
+
+msgid "Request Sent!"
+msgstr "تم إرسال الطلب!"
+
+msgid "A waiter has been notified and will arrive soon."
+msgstr "تم إشعار النادل وسيصل قريباً."
+
+msgid "Powered by"
+msgstr "مدعوم من"
+
+#, python-format
+msgid ""
+"Digital menu for %(name)s. Browse our menu, view prices, and place orders "
+"directly from your phone."
+msgstr "القائمة الرقمية لـ %(name)s. تصفح قائمتنا، عرض الأسعار، واطلب مباشرة من هاتفك."
+
+msgid "Featured items"
+msgstr "العناصر المميزة"
+
+msgid "Chef's Recommendations"
+msgstr "توصيات الشيف"
+
+msgid "Chef's Pick"
+msgstr "اختيار الشيف"
+
+msgid "Sold Out"
+msgstr "نفد المخزون"
+
+msgid "Chef Recommended"
+msgstr "موصى به من الشيف"
+
+msgid "Featured"
+msgstr "مميز"
+
+msgid "from"
+msgstr "من"
+
+msgid "Add to cart"
+msgstr "أضف إلى السلة"
+
+msgid "No products in this category"
+msgstr "لا توجد منتجات في هذه الفئة"
+
+msgid "Menu Coming Soon"
+msgstr "القائمة قريباً"
+
+msgid "We're updating our menu. Please check back later."
+msgstr "نحن نقوم بتحديث قائمتنا. يرجى المراجعة لاحقاً."
+
+msgid "Allergen Information"
+msgstr "معلومات مسببات الحساسية"
+
+msgid ""
+"Our food may contain allergens. Please inform our staff of any allergies "
+"before ordering. Full allergen information is available upon request."
+msgstr "قد يحتوي طعامنا على مسببات الحساسية. يرجى إبلاغ طاقمنا بأي حساسية قبل الطلب. معلومات الحساسية الكاملة متاحة عند الطلب."
+
+msgid "Added to cart"
+msgstr "أُضيف إلى السلة"
+
+msgid "Failed to add item"
+msgstr "فشل إضافة العنصر"
+
+msgid "Back to menu"
+msgstr "العودة إلى القائمة"
+
+msgid "Currently Unavailable"
+msgstr "غير متوفر حالياً"
+
+msgid "Spicy"
+msgstr "حار"
+
+msgid "kcal"
+msgstr "سعرة حرارية"
+
+msgid "Select Size"
+msgstr "اختر الحجم"
+
+msgid "Unavailable"
+msgstr "غير متوفر"
+
+msgid "Extras & Customizations"
+msgstr "الإضافات والتخصيصات"
+
+msgid "Required"
+msgstr "مطلوب"
+
+msgid "Nutrition Facts"
+msgstr "الحقائق الغذائية"
+
+msgid "Per serving"
+msgstr "لكل حصة"
+
+msgid "Carbs"
+msgstr "الكربوهيدرات"
+
+msgid "This item is currently unavailable"
+msgstr "هذا العنصر غير متوفر حالياً"
+
+msgid "Online ordering is not available for this menu"
+msgstr "الطلب عبر الإنترنت غير متاح لهذه القائمة"
+
+msgid ""
+"E-Menum - Turkiye'nin yapay zeka destekli dijital menu platformu. "
+"Misyonumuz, ekibimiz ve degerlerimiz."
+msgstr "E-Menum - منصة القوائم الرقمية المدعومة بالذكاء الاصطناعي في تركيا. مهمتنا وفريقنا وقيمنا."
+
+msgid "Hikayemiz"
+msgstr "قصتنا"
+
+msgid ""
+"E-Menum, restoran ve kafe sahiplerinin dijital menulere gecis surecinde "
+"yasadiklari zorluklar gozetilerek kurulmustur. Basili menulerin pahali, "
+"guncellenmesi zor ve hijyenik olarak riskli oldugunu gorduk."
+msgstr "تأسست E-Menum مع مراعاة الصعوبات التي يواجهها أصحاب المطاعم والمقاهي في الانتقال إلى القوائم الرقمية. رأينا أن القوائم المطبوعة مكلفة وصعبة التحديث ومحفوفة بالمخاطر الصحية."
+
+msgid ""
+"Yapay zeka teknolojisini gastronomi sektoruyle birlestirerek, isletmelerin "
+"sadece dijital menu degil, veri odakli kararlar alabilecekleri bir platform "
+"gelistirdik."
+msgstr "من خلال دمج تكنولوجيا الذكاء الاصطناعي مع قطاع فن الطهي، طورنا منصة تمكّن المنشآت ليس فقط من القوائم الرقمية، بل من اتخاذ قرارات مبنية على البيانات."
+
+msgid "Ekibimiz"
+msgstr "فريقنا"
+
+msgid "Gastronomi ve teknoloji tutkunlari."
+msgstr "عشاق فن الطهي والتكنولوجيا."
+
+msgid "Degerlerimiz"
+msgstr "قيمنا"
+
+msgid ""
+"E-Menum Blog - Dijital menu, restoran yonetimi, gastronomi trendleri ve "
+"teknoloji haberleri."
+msgstr "مدونة E-Menum - القوائم الرقمية، إدارة المطاعم، اتجاهات فن الطهي وأخبار التكنولوجيا."
+
+msgid "Sayfalama"
+msgstr "التصفح"
+
+msgid "Onceki"
+msgstr "السابق"
+
+msgid "Sonraki"
+msgstr "التالي"
+
+msgid "Yakinda"
+msgstr "قريباً"
+
+msgid "Iceriklerimiz Hazirlaniyor"
+msgstr "محتوياتنا قيد التحضير"
+
+msgid ""
+"Blog yazilarimiz yakinda yayinda olacak. Bultenimize abone olarak haberdar "
+"olun."
+msgstr "مقالات المدونة ستكون متاحة قريباً. اشترك في نشرتنا الإخبارية للبقاء على اطلاع."
+
+msgid "Tum Yazilar"
+msgstr "جميع المقالات"
+
+msgid ""
+"E-Menum ile iletisime gecin. Sorularinizi yanitlayalim, isletmenize en uygun "
+"cozumu birlikte bulalim."
+msgstr "تواصل مع E-Menum. دعنا نجيب على أسئلتك ونجد معاً الحل الأنسب لمنشأتك."
+
+msgid "Adres"
+msgstr "العنوان"
+
+msgid "Telefon"
+msgstr "الهاتف"
+
+msgid "E-posta"
+msgstr "البريد الإلكتروني"
+
+msgid "Mesaj Gonderin"
+msgstr "أرسل رسالة"
+
+msgid "Mesaj Gonder"
+msgstr "إرسال الرسالة"
+
+msgid ""
+"E-Menum platformunu canli gorun. Ucretsiz demo talep edin, ekibimiz sizinle "
+"iletisime gecsin."
+msgstr "شاهد منصة E-Menum مباشرة. اطلب عرضاً توضيحياً مجانياً، وسيتواصل فريقنا معك."
+
+msgid "Demo Talep Formu"
+msgstr "نموذج طلب العرض التوضيحي"
+
+msgid "Demo Talep Et"
+msgstr "اطلب عرضاً توضيحياً"
+
+msgid "Bilgileriniz guvenle saklanir ve ucuncu taraflarla paylasilmaz."
+msgstr "معلوماتك محفوظة بأمان ولا تُشارك مع أطراف ثالثة."
+
+msgid "Demo'da Neler Goreceksiniz?"
+msgstr "ماذا سترى في العرض التوضيحي؟"
+
+msgid "Canli Platform Turu"
+msgstr "جولة حية في المنصة"
+
+msgid "Admin paneli, menu olusturma ve QR kod surecini canli gorun."
+msgstr "شاهد لوحة الإدارة وإنشاء القائمة وعملية رمز QR مباشرةً."
+
+msgid "Sektorunuze Ozel Cozum"
+msgstr "حل مخصص لقطاعك"
+
+msgid "Isletme tipinize ozel ozellikleri ve kullanim senaryolarini inceleyin."
+msgstr "استعرض الميزات وسيناريوهات الاستخدام الخاصة بنوع منشأتك."
+
+msgid "ROI Hesaplama"
+msgstr "حساب العائد على الاستثمار"
+
+msgid ""
+"E-Menum'un isletmenize saglayacagi tasarrufu ve gelir artisini hesaplayin."
+msgstr "احسب التوفير وزيادة الإيرادات التي ستحققها E-Menum لمنشأتك."
+
+msgid "Plan Danismanligi"
+msgstr "استشارة الخطة"
+
+msgid ""
+"Sube sayiniza ve ihtiyaclariniza gore en uygun plani birlikte belirleyelim."
+msgstr "دعنا نحدد معاً الخطة الأنسب بناءً على عدد فروعك واحتياجاتك."
+
+msgid "SSL Guvenli"
+msgstr "محمي بـ SSL"
+
+msgid "KVKK Uyumlu"
+msgstr "متوافق مع KVKK"
+
+msgid "7/24 Destek"
+msgstr "دعم 24/7"
+
+msgid ""
+"E-Menum'un 50'den fazla ozelligi. QR menu, siparis yonetimi, AI icerik "
+"uretimi, analitik, coklu sube yonetimi ve daha fazlasi."
+msgstr "أكثر من 50 ميزة في E-Menum. قائمة QR، إدارة الطلبات، توليد المحتوى بالذكاء الاصطناعي، التحليلات، إدارة الفروع المتعددة والمزيد."
+
+msgid ""
+"E-Menum - Restoran ve kafeler icin yapay zeka destekli dijital menu "
+"platformu. QR menu, siparis yonetimi, analitik ve daha fazlasi."
+msgstr "E-Menum - منصة القوائم الرقمية المدعومة بالذكاء الاصطناعي للمطاعم والمقاهي. قائمة QR، إدارة الطلبات، التحليلات والمزيد."
+
+msgid "Neden Dijital Menu?"
+msgstr "لماذا القائمة الرقمية؟"
+
+msgid "Basili menulerin sorunlarina modern cozum."
+msgstr "حل حديث لمشاكل القوائم المطبوعة."
+
+msgid "Tek Platformda Her Sey"
+msgstr "كل شيء في منصة واحدة"
+
+msgid "50'den fazla ozellikle isletmenizi dijitallestirin."
+msgstr "قم برقمنة منشأتك بأكثر من 50 ميزة."
+
+msgid "Tum Ozellikleri Gor"
+msgstr "عرض جميع الميزات"
+
+msgid "Nasil Calisir?"
+msgstr "كيف يعمل؟"
+
+msgid "3 basit adimda dijital menunuzu olusturun."
+msgstr "أنشئ قائمتك الرقمية في 3 خطوات بسيطة."
+
+msgid "Isletmenize Uygun Plan"
+msgstr "خطة مناسبة لمنشأتك"
+
+msgid "Ucretsiz baslayin, buyudukce yukseltin."
+msgstr "ابدأ مجاناً، وقم بالترقية مع نموك."
+
+msgid "ay"
+msgstr "شهر"
+
+msgid "Ozel"
+msgstr "مخصص"
+
+#, python-format
+msgid "%(days)s Gun Dene"
+msgstr "%(days)s يوم تجربة"
+
+msgid "Basla"
+msgstr "ابدأ"
+
+msgid "Tum Planlari Karsilastir"
+msgstr "مقارنة جميع الخطط"
+
+msgid "KVKK Aydinlatma Metni"
+msgstr "نص إشعار KVKK"
+
+msgid ""
+"E-Menum KVKK aydinlatma metni. 6698 sayili Kisisel Verilerin Korunmasi "
+"Kanunu kapsaminda aydinlatma yükumlulugumuzu yerine getiriyoruz."
+msgstr "نص إشعار KVKK الخاص بـ E-Menum. نحن نفي بالتزامنا بالإشعار في إطار قانون حماية البيانات الشخصية رقم 6698."
+
+msgid "Son guncelleme: 22 Subat 2026"
+msgstr "آخر تحديث: 22 فبراير 2026"
+
+msgid "1. Veri Sorumlusu"
+msgstr "1. مسؤول البيانات"
+
+msgid ""
+"6698 sayili Kisisel Verilerin Korunmasi Kanunu (KVKK) uyarinca, kisisel "
+"verileriniz veri sorumlusu sifatiyla E-Menum tarafindan asagida aciklanan "
+"amaclar kapsaminda islenebilecektir."
+msgstr "وفقاً لقانون حماية البيانات الشخصية رقم 6698 (KVKK)، قد تتم معالجة بياناتك الشخصية من قبل E-Menum بصفتها المسؤول عن البيانات ضمن الأغراض الموضحة أدناه."
+
+msgid "2. Islenen Kisisel Veriler"
+msgstr "2. البيانات الشخصية المعالجة"
+
+msgid ""
+"Kimlik bilgileri (ad, soyad), iletisim bilgileri (e-posta, telefon), isletme "
+"bilgileri, kullanim verileri ve cihaz bilgileri islenebilir."
+msgstr "يمكن معالجة بيانات الهوية (الاسم، اللقب)، بيانات الاتصال (البريد الإلكتروني، الهاتف)، بيانات المنشأة، بيانات الاستخدام وبيانات الجهاز."
+
+msgid "3. Veri Isleme Amaclar"
+msgstr "3. أغراض معالجة البيانات"
+
+msgid "Hizmetlerimizin sunulmasi ve iyilestirilmesi"
+msgstr "تقديم وتحسين خدماتنا"
+
+msgid "Kullanici hesaplarinin yonetimi"
+msgstr "إدارة حسابات المستخدمين"
+
+msgid "Faturalandirma ve odeme islemleri"
+msgstr "عمليات الفوترة والدفع"
+
+msgid "Teknik destek ve musteri hizmetleri"
+msgstr "الدعم الفني وخدمة العملاء"
+
+msgid "Yasal yukumluluklerin yerine getirilmesi"
+msgstr "الوفاء بالالتزامات القانونية"
+
+msgid "Istatistiksel analiz ve raporlama"
+msgstr "التحليل الإحصائي والتقارير"
+
+msgid "4. Veri Aktarimi"
+msgstr "4. نقل البيانات"
+
+msgid ""
+"Kisisel verileriniz, yasal zorunluluklar disinda ucuncu taraflara "
+"aktarilmaz. Hizmet saglanmasi icin gerekli oldugu durumlarda, yurt ici ve "
+"yurt disindaki is ortaklarina ve hizmet saglayicilarina aktarilabilir."
+msgstr "لا يتم نقل بياناتك الشخصية إلى أطراف ثالثة إلا في حالات الالتزامات القانونية. يمكن نقلها إلى شركاء الأعمال ومقدمي الخدمات المحليين والدوليين عند الضرورة لتقديم الخدمة."
+
+msgid "5. Veri Saklama Suresi"
+msgstr "5. مدة حفظ البيانات"
+
+msgid ""
+"Kisisel verileriniz, isleme amacinin gerektirdigi sure boyunca ve yasal "
+"muhafaza surelerince saklanir. Sure bitiminde veriler silinir, yok edilir "
+"veya anonim hale getirilir."
+msgstr "يتم الاحتفاظ ببياناتك الشخصية طوال المدة التي يتطلبها غرض المعالجة وفترات الحفظ القانونية. عند انتهاء المدة، يتم حذف البيانات أو إتلافها أو إخفاء هويتها."
+
+msgid "6. KVKK Kapsamindaki Haklariniz"
+msgstr "6. حقوقك في إطار KVKK"
+
+msgid "KVKK'nin 11. maddesi kapsaminda asagidaki haklara sahipsiniz:"
+msgstr "لديك الحقوق التالية بموجب المادة 11 من KVKK:"
+
+msgid "Kisisel verilerinizin islenip islenmedigini ogrenme"
+msgstr "معرفة ما إذا كانت بياناتك الشخصية تُعالج"
+
+msgid "Islenmisse buna iliskin bilgi talep etme"
+msgstr "طلب معلومات إذا تمت المعالجة"
+
+msgid "Isleme amacini ve amacina uygun kullanilip kullanilmadigini ogrenme"
+msgstr "معرفة غرض المعالجة وما إذا كانت تُستخدم وفقاً للغرض"
+
+msgid "Yurt icinde veya yurt disinda aktarildigi ucuncu kisileri bilme"
+msgstr "معرفة الأطراف الثالثة المنقولة إليها محلياً أو دولياً"
+
+msgid "Eksik veya yanlis islenmisse duzeltilmesini isteme"
+msgstr "طلب تعويض الضرر في حالة تعرضك لضرر بسبب معالجة البيانات بما يتجاوز الغرض أو بشكل مخالف للقانون"
+
+msgid ""
+"KVKK'nin 7. maddesindeki sartlar cercevesinde silinmesini veya yok "
+"edilmesini isteme"
+msgstr "طلب حذف أو إتلاف بياناتك وفقاً للشروط المنصوص عليها في المادة 7 من قانون KVKK"
+
+msgid ""
+"Islenme amacini asan veya kanuna aykiri islenmesi sebebiyle zarara ugramaniz "
+"halinde zararin giderilmesini talep etme"
+msgstr "طلب تعويض الضرر في حالة تعرضك لضرر بسبب معالجة البيانات بما يتجاوز الغرض أو بشكل مخالف للقانون"
+
+msgid "7. Basvuru"
+msgstr "7. التقديم"
+
+msgid ""
+"KVKK kapsamindaki taleplerinizi info@e-menum.com adresine yazili olarak "
+"iletebilirsiniz. Basvurunuz en gec 30 gun icinde degerlendirilecektir."
+msgstr "يمكنكم إرسال طلباتكم في إطار KVKK كتابياً إلى عنوان info@e-menum.com. سيتم تقييم طلبكم خلال 30 يوماً كحد أقصى."
+
+msgid "Son guncelleme:"
+msgstr "آخر تحديث:"
+
+msgid "Sikca Sorulan Sorular"
+msgstr "الأسئلة الشائعة"
+
+msgid "Merak ettiginiz sorularin cevaplari burada."
+msgstr "إجابات أسئلتكم المتكررة هنا."
+
+msgid "Platform Onizleme"
+msgstr "معاينة المنصة"
+
+msgid "Aylik"
+msgstr "شهري"
+
+msgid "Yillik faturalandirma"
+msgstr "فوترة سنوية"
+
+msgid "Yillik"
+msgstr "سنوي"
+
+msgid "0"
+msgstr "0"
+
+msgid "yil/12"
+msgstr "سنة/12"
+
+msgid "Bize Ulasin"
+msgstr "تواصل معنا"
+
+msgid "Ucretsiz Basla"
+msgstr "ابدأ مجاناً"
+
+msgid "14 Gun Deneyin"
+msgstr "جرّب لمدة 14 يوماً"
+
+msgid "Musterilerimiz Ne Diyor?"
+msgstr "ماذا يقول عملاؤنا؟"
+
+msgid "Binlerce isletme E-Menum ile dijital donusumunu tamamladi."
+msgstr "آلاف المنشآت أكملت تحولها الرقمي مع E-Menum."
+
+msgid ""
+"E-Menum fiyatlandirma planlari. Ucretsiz baslatin, isletmeniz buyudukce "
+"yükseltin. 14 gun ucretsiz deneme."
+msgstr "خطط تسعير E-Menum. ابدأ مجاناً، وقم بالترقية مع نمو منشأتك. تجربة مجانية لمدة 14 يوماً."
+
+msgid "Detayli Karsilastirma"
+msgstr "مقارنة تفصيلية"
+
+msgid "Ozellik"
+msgstr "الميزة"
+
+msgid ""
+"E-Menum gizlilik politikasi. Kisisel verilerinizin nasil toplandigi, "
+"islendigi ve korunduÄu hakkinda bilgi."
+msgstr "سياسة الخصوصية لـ E-Menum. معلومات حول كيفية جمع ومعالجة وحماية بياناتك الشخصية."
+
+msgid "1. Toplanan Veriler"
+msgstr "1. البيانات المجمعة"
+
+msgid ""
+"E-Menum platformunu kullandiginizda asagidaki verileri toplayabiliriz: ad, "
+"soyad, e-posta adresi, telefon numarasi, isletme bilgileri, kullanim "
+"istatistikleri ve cihaz bilgileri."
+msgstr "عند استخدامك لمنصة E-Menum، قد نقوم بجمع البيانات التالية: الاسم، اللقب، عنوان البريد الإلكتروني، رقم الهاتف، معلومات المنشأة، إحصاءات الاستخدام ومعلومات الجهاز."
+
+msgid "2. Verilerin Kullanim Amaci"
+msgstr "2. غرض استخدام البيانات"
+
+msgid ""
+"Toplanan veriler hizmetlerimizi sunmak, iyilestirmek, guvenligini saglamak "
+"ve yasal yukumluluklerimizi yerine getirmek amaciyla kullanilir."
+msgstr "تُستخدم البيانات المجمعة لتقديم خدماتنا وتحسينها وضمان أمانها والوفاء بالتزاماتنا القانونية."
+
+msgid "3. Verilerin Paylasilmasi"
+msgstr "3. مشاركة البيانات"
+
+msgid ""
+"Kisisel verileriniz, yasal zorunluluklar disinda ucuncu taraflarla "
+"paylasilmaz. Hizmet saglayicilarimiz ile yalnizca hizmet sunumu icin gerekli "
+"olan minimum veri paylasilir."
+msgstr "لا تتم مشاركة بياناتك الشخصية مع أطراف ثالثة إلا في حالات الالتزامات القانونية. نشارك فقط الحد الأدنى من البيانات الضرورية مع مقدمي خدماتنا لتقديم الخدمة."
+
+msgid "4. Veri Guvenligi"
+msgstr "4. أمن البيانات"
+
+msgid ""
+"Verileriniz SSL/TLS sifrelemesi, guclu parola politikalari ve duzenli "
+"guvenlik denetimleri ile korunur. Sunucularimiz Avrupa merkezli veri "
+"merkezlerinde barindirilmaktadir."
+msgstr "تتم حماية بياناتك بتشفير SSL/TLS وسياسات كلمات مرور قوية وعمليات تدقيق أمني منتظمة. يتم استضافة خوادمنا في مراكز بيانات أوروبية."
+
+msgid "5. Cerezler"
+msgstr "5. ملفات تعريف الارتباط"
+
+msgid ""
+"Platformumuz, kullanici deneyimini iyilestirmek icin cerezler kullanir. "
+"Cerez tercihlerinizi tarayici ayarlarinizdan yonetebilirsiniz."
+msgstr "تستخدم منصتنا ملفات تعريف الارتباط لتحسين تجربة المستخدم. يمكنك إدارة تفضيلات ملفات تعريف الارتباط من إعدادات متصفحك."
+
+msgid "6. Haklariniz"
+msgstr "6. حقوقك"
+
+msgid ""
+"KVKK kapsaminda kisisel verilerinize erisim, duzeltme, silme ve tasima "
+"haklarina sahipsiniz. Bu haklarinizi kullanmak icin info@e-menum.com "
+"adresinden bize ulasabilirsiniz."
+msgstr "في إطار KVKK، لديك حقوق الوصول إلى بياناتك الشخصية وتصحيحها وحذفها ونقلها. لممارسة هذه الحقوق، يمكنكم التواصل معنا عبر info@e-menum.com."
+
+msgid "7. Iletisim"
+msgstr "7. الاتصال"
+
+msgid ""
+"Gizlilik politikamiz hakkinda sorulariniz icin info@e-menum.com adresinden "
+"bize ulasabilirsiniz."
+msgstr "لأي أسئلة حول سياسة الخصوصية الخاصة بنا، يمكنكم التواصل معنا عبر info@e-menum.com."
+
+msgid "E-Menum kullanim sartlari ve kosullari."
+msgstr "شروط وأحكام استخدام E-Menum."
+
+msgid "1. Hizmet Tanimi"
+msgstr "1. تعريف الخدمة"
+
+msgid ""
+"E-Menum, isletmelere dijital menu, siparis yonetimi ve analitik hizmetleri "
+"sunan bir SaaS platformudur. Bu sartlar platformun kullanimine iliskin "
+"kosullari duzenler."
+msgstr "E-Menum هي منصة SaaS تقدم خدمات القوائم الرقمية وإدارة الطلبات والتحليلات للمنشآت. تنظم هذه الشروط أحكام استخدام المنصة."
+
+msgid "2. Hesap Olusturma"
+msgstr "2. إنشاء الحساب"
+
+msgid ""
+"Platformu kullanmak icin bir hesap olusturmaniz gerekir. Hesap "
+"bilgilerinizin dogrulugu ve guvenliginden siz sorumlusunuz."
+msgstr "يجب عليك إنشاء حساب لاستخدام المنصة. أنت مسؤول عن دقة وأمان معلومات حسابك."
+
+msgid "3. Abonelik ve Odeme"
+msgstr "3. الاشتراك والدفع"
+
+msgid ""
+"Ucretli planlar aylik veya yillik faturalandirilir. Plan degisiklikleri bir "
+"sonraki fatura donemine yansir. 14 gunluk ucretsiz deneme suresi sonunda "
+"otomatik faturalandirma baslar."
+msgstr "يتم فوترة الخطط المدفوعة شهرياً أو سنوياً. تنعكس تغييرات الخطة في فترة الفوترة التالية. تبدأ الفوترة التلقائية بعد انتهاء فترة التجربة المجانية لمدة 14 يوماً."
+
+msgid "4. Kabul Edilebilir Kullanim"
+msgstr "4. الاستخدام المقبول"
+
+msgid ""
+"Platformu yalnizca yasal amaclarla kullanabilirsiniz. Zararli yazilim, spam "
+"veya yetkisiz erisim girisimleri yasaktir."
+msgstr "يمكنك استخدام المنصة فقط لأغراض قانونية. البرامج الضارة والرسائل غير المرغوب فيها ومحاولات الوصول غير المصرح به محظورة."
+
+msgid "5. Fikri Mulkiyet"
+msgstr "5. الملكية الفكرية"
+
+msgid ""
+"E-Menum platformu, yazilimi, tasarimi ve icerikleri E-Menum'a aittir. "
+"Kullanicilar tarafindan yuklenen icerikler (menu, gorseller) kullanicinin "
+"mulkiyetindedir."
+msgstr "منصة E-Menum وبرمجياتها وتصميمها ومحتوياتها مملوكة لـ E-Menum. المحتوى المحمّل من قبل المستخدمين (القوائم، الصور) مملوك للمستخدم."
+
+msgid "6. Hizmet Duzeydi"
+msgstr "6. مستوى الخدمة"
+
+#, python-format
+msgid ""
+"E-Menum, %%99.9 uptime hedefi ile hizmet vermektedir. Planli bakimlar "
+"onceden bildirilir."
+msgstr "تقدم E-Menum خدماتها بهدف وقت تشغيل 99.9%%. يتم الإعلان عن أعمال الصيانة المخططة مسبقاً."
+
+msgid "7. Sorumluluk Sinirlamasi"
+msgstr "7. تحديد المسؤولية"
+
+msgid ""
+"E-Menum, platformun kullanimindan kaynaklanan dolayli zararlardan sorumlu "
+"tutulamaz. Sorumlulugumuz odenen abonelik bedeli ile sinirlidir."
+msgstr "لا تتحمل E-Menum مسؤولية الأضرار غير المباشرة الناتجة عن استخدام المنصة. تقتصر مسؤوليتنا على مبلغ الاشتراك المدفوع."
+
+msgid "8. Iletisim"
+msgstr "8. الاتصال"
+
+msgid ""
+"Kullanim sartlari hakkinda sorulariniz icin info@e-menum.com adresinden bize "
+"ulasabilirsiniz."
+msgstr "لأي أسئلة حول شروط الاستخدام، يمكنكم التواصل معنا عبر info@e-menum.com."

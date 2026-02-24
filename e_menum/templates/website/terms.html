@@ -1,0 +1,45 @@
+{% extends "layouts/marketing.html" %}
+{% load static i18n %}
+
+{% block page_title %}{% trans "Kullanim Sartlari" %}{% endblock %}
+{% block meta_description %}{% trans "E-Menum kullanim sartlari ve kosullari." %}{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
+
+{% block content %}
+
+<section class="py-24 lg:py-32 bg-white dark:bg-gray-950">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="heading-sans text-3xl sm:text-4xl text-gray-900 dark:text-white mb-8">
+            {% trans "Kullanim Sartlari" %}
+        </h1>
+        <p class="text-sm text-gray-500 dark:text-gray-300 mb-8">{% trans "Son guncelleme: 22 Subat 2026" %}</p>
+
+        <div class="prose prose-lg dark:prose-invert max-w-none space-y-8 text-gray-700 dark:text-gray-300">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "1. Hizmet Tanimi" %}</h2>
+            <p>{% trans "E-Menum, isletmelere dijital menu, siparis yonetimi ve analitik hizmetleri sunan bir SaaS platformudur. Bu sartlar platformun kullanimine iliskin kosullari duzenler." %}</p>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "2. Hesap Olusturma" %}</h2>
+            <p>{% trans "Platformu kullanmak icin bir hesap olusturmaniz gerekir. Hesap bilgilerinizin dogrulugu ve guvenliginden siz sorumlusunuz." %}</p>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "3. Abonelik ve Odeme" %}</h2>
+            <p>{% trans "Ucretli planlar aylik veya yillik faturalandirilir. Plan degisiklikleri bir sonraki fatura donemine yansir. 14 gunluk ucretsiz deneme suresi sonunda otomatik faturalandirma baslar." %}</p>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "4. Kabul Edilebilir Kullanim" %}</h2>
+            <p>{% trans "Platformu yalnizca yasal amaclarla kullanabilirsiniz. Zararli yazilim, spam veya yetkisiz erisim girisimleri yasaktir." %}</p>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "5. Fikri Mulkiyet" %}</h2>
+            <p>{% trans "E-Menum platformu, yazilimi, tasarimi ve icerikleri E-Menum'a aittir. Kullanicilar tarafindan yuklenen icerikler (menu, gorseller) kullanicinin mulkiyetindedir." %}</p>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "6. Hizmet Duzeydi" %}</h2>
+            <p>{% trans "E-Menum, %99.9 uptime hedefi ile hizmet vermektedir. Planli bakimlar onceden bildirilir." %}</p>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "7. Sorumluluk Sinirlamasi" %}</h2>
+            <p>{% trans "E-Menum, platformun kullanimindan kaynaklanan dolayli zararlardan sorumlu tutulamaz. Sorumlulugumuz odenen abonelik bedeli ile sinirlidir." %}</p>
+
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{% trans "8. Iletisim" %}</h2>
+            <p>{% trans "Kullanim sartlari hakkinda sorulariniz icin info@e-menum.com adresinden bize ulasabilirsiniz." %}</p>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

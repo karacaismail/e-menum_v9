@@ -1,0 +1,7 @@
+{% comment %}
+  JSON-LD Structured Data Template
+  Renders a <script type="application/ld+json"> block from jsonld_data context variable.
+{% endcomment %}
+{% if jsonld_data %}
+<script type="application/ld+json">{{ jsonld_data|safe }}</script>
+{% endif %}

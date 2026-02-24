@@ -1,0 +1,27 @@
+{% load i18n %}
+{% comment %}============================================================================
+   WHATSAPP FLOATING BUTTON — Already included in marketing.html layout.
+   This partial is kept for use outside the marketing layout if needed.
+
+   Usage:
+   {% include "website/partials/_whatsapp_button.html" %}
+   ============================================================================{% endcomment %}
+
+<div class="fixed bottom-6 right-6 z-40"
+     x-data="{ show: false }"
+     x-init="setTimeout(() => show = true, 2000)"
+>
+    <a
+        x-show="show"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 scale-75"
+        x-transition:enter-end="opacity-100 scale-100"
+        href="https://wa.me/{{ marketing.whatsapp_number }}?text={{ marketing.whatsapp_message|urlencode }}"
+        target="_blank"
+        rel="noopener"
+        class="flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110"
+        aria-label="{% trans 'WhatsApp ile iletisime gec' %}"
+    >
+        <i class="ph ph-whatsapp-logo text-3xl"></i>
+    </a>
+</div>

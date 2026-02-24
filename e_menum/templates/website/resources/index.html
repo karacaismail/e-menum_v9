@@ -1,0 +1,88 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Kaynaklar" %} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="hero-gradient hero-gradient-resources pattern-dots">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24 text-center">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-500/10 text-primary-400 text-sm font-semibold mb-6">
+            <i class="ph ph-books"></i>
+            {% trans "Kaynak Merkezi" %}
+        </span>
+        <h1 class="heading-display text-4xl lg:text-5xl text-white mb-6">
+            {% if hero %}{{ hero.title }}{% else %}{% trans "Bilgi Merkezi" %}{% endif %}
+        </h1>
+        <p class="text-lg text-gray-300 max-w-2xl mx-auto">
+            {% if hero %}{{ hero.subtitle }}{% else %}{% trans "Sektör raporları, ücretsiz araçlar ve webinarlarla işletmenizi büyütün." %}{% endif %}
+        </p>
+    </div>
+</section>
+
+{# Reports Section #}
+{% if reports %}
+<section class="py-16 lg:py-20 bg-white dark:bg-gray-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-8">
+            <h2 class="heading-sans text-2xl text-gray-900 dark:text-white">
+                <i class="ph ph-file-text text-primary-500 mr-2"></i>{% trans "Sektör Raporları" %}
+            </h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for report in reports %}
+            <a href="{% url 'website:report_detail' slug=report.slug %}" class="group bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 card-hover">
+                <i class="ph ph-file-pdf text-3xl text-red-500 mb-3"></i>
+                <h3 class="text-sm font-bold text-gray-900 dark:text-white group-hover:text-primary-600 transition-colors mb-2">{{ report.title }}</h3>
+                <p class="text-xs text-gray-500 line-clamp-2">{{ report.excerpt }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# Tools Section #}
+{% if tools %}
+<section class="py-16 lg:py-20 bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="heading-sans text-2xl text-gray-900 dark:text-white mb-8">
+            <i class="ph ph-wrench text-amber-500 mr-2"></i>{% trans "Ücretsiz Araçlar" %}
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for tool in tools %}
+            <a href="{% url 'website:tool_detail' slug=tool.slug %}" class="group bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl p-5 card-hover">
+                <i class="ph ph-wrench text-3xl text-amber-500 mb-3"></i>
+                <h3 class="text-sm font-bold text-gray-900 dark:text-white group-hover:text-primary-600 transition-colors mb-2">{{ tool.title }}</h3>
+                <p class="text-xs text-gray-500 line-clamp-2">{{ tool.description }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# Webinars Section #}
+{% if webinars %}
+<section class="py-16 lg:py-20 bg-white dark:bg-gray-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="heading-sans text-2xl text-gray-900 dark:text-white mb-8">
+            <i class="ph ph-video-camera text-purple-500 mr-2"></i>{% trans "Webinarlar" %}
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for webinar in webinars %}
+            <a href="{% url 'website:webinar_detail' slug=webinar.slug %}" class="group bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 card-hover">
+                <i class="ph ph-video-camera text-3xl text-purple-500 mb-3"></i>
+                <h3 class="text-sm font-bold text-gray-900 dark:text-white group-hover:text-primary-600 transition-colors mb-2">{{ webinar.title }}</h3>
+                <div class="text-xs text-gray-500">
+                    {% if webinar.speaker %}<span>{{ webinar.speaker }}</span> · {% endif %}
+                    <span>{{ webinar.event_date|date:"d M Y" }}</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% include "website/partials/_cta_banner.html" %}
+{% endblock %}

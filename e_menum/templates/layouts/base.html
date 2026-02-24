@@ -1,12 +1,16 @@
-{% load static i18n %}
+{% load static i18n seo_tags %}
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE|default:'tr' }}" dir="ltr" class="{% block html_class %}{% endblock %}">
+<html lang="{{ LANGUAGE_CODE|default:'tr' }}" dir="{% if LANGUAGE_CODE == 'ar' %}rtl{% else %}ltr{% endif %}" class="{% block html_class %}{% endblock %}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    {# SEO Meta Tags #}
+    {# GTM Head Snippet #}
+    {% if SEO_GTM_HEAD %}{{ SEO_GTM_HEAD|safe }}{% endif %}
+
+    {# SEO Meta Tags — override with {% block seo_meta %} for per-page SEO #}
+    {% block seo_meta %}
     <meta name="description" content="{% block meta_description %}{% trans 'E-Menum - Enterprise QR Menu SaaS Platform for restaurants and cafes' %}{% endblock %}">
     <meta name="keywords" content="{% block meta_keywords %}QR menu, digital menu, restaurant, cafe, E-Menum{% endblock %}">
     <meta name="author" content="E-Menum">
@@ -24,6 +28,14 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{% block twitter_title %}{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_description %}{% endblock %}">
+    {% endblock seo_meta %}
+
+    {# Hreflang — SEO alternate language URLs #}
+    {% get_available_languages as available_languages %}
+    {% for lang_code, lang_name in available_languages %}
+    <link rel="alternate" hreflang="{{ lang_code }}" href="{{ request.scheme }}://{{ request.get_host }}/{{ lang_code }}{{ request.path|cut:request.LANGUAGE_CODE }}">
+    {% endfor %}
+    <link rel="alternate" hreflang="x-default" href="{{ request.scheme }}://{{ request.get_host }}/tr{{ request.path|cut:request.LANGUAGE_CODE }}">
 
     {# Favicon #}
     <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
@@ -37,12 +49,59 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://unpkg.com">
 
-    {# Google Fonts - Inter (Primary) #}
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    {# Google Fonts - Inter (Primary) + Noto Sans Arabic (RTL) #}
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700{% if LANGUAGE_CODE == 'ar' %}&family=Noto+Sans+Arabic:wght@300;400;500;600;700{% endif %}&display=swap" rel="stylesheet">
 
     {# Tailwind CSS (via CDN for development, build for production) #}
     {% if debug %}
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <!--
+        Tailwind CDN safelist: dynamic classes from DB that CDN scanner can't detect.
+        These are hidden in an HTML comment so the CDN JIT compiler picks them up.
+
+        bg-red-50 bg-red-100 bg-red-500 bg-red-900 bg-red-950
+        bg-orange-50 bg-orange-100 bg-orange-500 bg-orange-900 bg-orange-950
+        bg-amber-50 bg-amber-100 bg-amber-500 bg-amber-900 bg-amber-950
+        bg-yellow-50 bg-yellow-100 bg-yellow-500 bg-yellow-900 bg-yellow-950
+        bg-green-50 bg-green-100 bg-green-500 bg-green-900 bg-green-950
+        bg-teal-50 bg-teal-100 bg-teal-500 bg-teal-900 bg-teal-950
+        bg-blue-50 bg-blue-100 bg-blue-500 bg-blue-900 bg-blue-950
+        bg-indigo-50 bg-indigo-100 bg-indigo-500 bg-indigo-900 bg-indigo-950
+        bg-purple-50 bg-purple-100 bg-purple-500 bg-purple-900 bg-purple-950
+        bg-pink-50 bg-pink-100 bg-pink-500 bg-pink-900 bg-pink-950
+        text-red-500 text-red-600 text-red-400
+        text-orange-500 text-orange-600 text-orange-400
+        text-amber-500 text-amber-600 text-amber-400
+        text-yellow-500 text-yellow-600 text-yellow-400
+        text-green-500 text-green-600 text-green-400
+        text-teal-500 text-teal-600 text-teal-400
+        text-blue-500 text-blue-600 text-blue-400
+        text-indigo-500 text-indigo-600 text-indigo-400
+        text-purple-500 text-purple-600 text-purple-400
+        text-pink-500 text-pink-600 text-pink-400
+        border-red-100 border-red-900
+        border-orange-100 border-orange-900
+        border-amber-100 border-amber-900
+        border-green-100 border-green-900
+        border-blue-100 border-blue-900
+        border-purple-100 border-purple-900
+        border-teal-100 border-teal-900
+        border-pink-100 border-pink-900
+        bg-rose-50 bg-rose-100 bg-rose-500 bg-rose-900 bg-rose-950
+        bg-cyan-50 bg-cyan-100 bg-cyan-500 bg-cyan-900 bg-cyan-950
+        text-rose-500 text-rose-600 text-rose-400
+        text-cyan-500 text-cyan-600 text-cyan-400
+        lg:grid-cols-1 lg:grid-cols-2 lg:grid-cols-3 lg:grid-cols-4 lg:grid-cols-5 lg:grid-cols-6
+        dark:bg-red-900 dark:bg-red-950 dark:bg-orange-900 dark:bg-orange-950
+        dark:bg-green-900 dark:bg-green-950 dark:bg-blue-900 dark:bg-blue-950
+        dark:bg-purple-900 dark:bg-purple-950 dark:bg-pink-900 dark:bg-pink-950
+        dark:bg-rose-900 dark:bg-rose-950 dark:bg-cyan-900 dark:bg-cyan-950
+        dark:bg-teal-900 dark:bg-teal-950 dark:bg-amber-900 dark:bg-amber-950
+        dark:text-red-400 dark:text-orange-400 dark:text-green-400 dark:text-blue-400 dark:text-purple-400 dark:text-pink-400
+        dark:text-rose-400 dark:text-cyan-400 dark:text-teal-400 dark:text-amber-400
+        dark:border-red-900 dark:border-orange-900 dark:border-green-900 dark:border-blue-900 dark:border-purple-900
+        dark:border-rose-900 dark:border-cyan-900 dark:border-teal-900 dark:border-amber-900
+    -->
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -50,17 +109,30 @@
                 extend: {
                     colors: {
                         primary: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            200: '#bfdbfe',
-                            300: '#93c5fd',
-                            400: '#60a5fa',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
-                            950: '#172554',
+                            50: '#f0fdf8',
+                            100: '#ccfced',
+                            200: '#9af8db',
+                            300: '#5aefc5',
+                            400: '#2adea9',
+                            500: '#1A6B5A',
+                            600: '#0f5c4b',
+                            700: '#0a4a3b',
+                            800: '#083a2f',
+                            900: '#062f26',
+                            950: '#031a15',
+                        },
+                        accent: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#F5A623',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                            950: '#451a03',
                         },
                         secondary: {
                             50: '#f0fdf4',
@@ -78,6 +150,8 @@
                     },
                     fontFamily: {
                         sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+                        heading: ['Plus Jakarta Sans', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
                     },
                     minHeight: {
                         'touch': '48px',
@@ -93,7 +167,8 @@
     <link rel="stylesheet" href="{% static 'css/tailwind.min.css' %}">
     {% endif %}
 
-    {# Alpine.js #}
+    {# Alpine.js + Collapse plugin #}
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     {# Phosphor Icons #}
@@ -102,79 +177,95 @@
     {# CSS Custom Properties for Theming #}
     <style>
         :root {
-            /* Color Tokens */
-            --color-primary: #3b82f6;
-            --color-primary-light: #60a5fa;
-            --color-primary-dark: #2563eb;
-            --color-primary-subtle: #eff6ff;
+            /* ── Primitive Tokens (never change between themes) ── */
+            --teal-500: #1A6B5A;
+            --teal-400: #2adea9;
+            --teal-600: #0f5c4b;
+            --amber-400: #F5A623;
+            --amber-500: #f59e0b;
+            --amber-600: #d97706;
+
+            /* ── Semantic Color Tokens ── */
+            --color-primary: #1A6B5A;
+            --color-primary-light: #2adea9;
+            --color-primary-dark: #0f5c4b;
+            --color-primary-subtle: #f0fdf8;
+            --color-accent: #F5A623;
+            --color-accent-light: #fcd34d;
+            --color-accent-dark: #d97706;
             --color-secondary: #22c55e;
             --color-secondary-light: #4ade80;
             --color-secondary-dark: #16a34a;
-            --color-accent: #f59e0b;
 
-            /* Surface Tokens */
+            /* ── Surface Tokens ── */
             --surface-background: #ffffff;
             --surface-card: #ffffff;
-            --surface-elevated: #f9fafb;
+            --surface-elevated: #F4F6F4;
             --surface-overlay: rgba(0, 0, 0, 0.5);
 
-            /* Text Tokens */
-            --text-primary: #111827;
+            /* ── Text Tokens ── */
+            --text-primary: #0F1923;
             --text-secondary: #4b5563;
             --text-muted: #9ca3af;
             --text-inverse: #ffffff;
             --text-on-primary: #ffffff;
 
-            /* Border Tokens */
+            /* ── Border Tokens ── */
             --border-color: #e5e7eb;
-            --border-radius-sm: 0.25rem;
+            --border-radius-sm: 0.375rem;
             --border-radius-md: 0.5rem;
             --border-radius-lg: 0.75rem;
             --border-radius-xl: 1rem;
+            --border-radius-2xl: 1.25rem;
             --border-radius-full: 9999px;
 
-            /* Shadow Tokens */
+            /* ── Shadow / Elevation Tokens ── */
             --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 
-            /* Typography Tokens */
+            /* ── Typography Tokens ── */
             --font-family-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+            --font-family-heading: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
+            --font-family-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
             --font-size-base: 1rem;
             --line-height-base: 1.5;
 
-            /* Spacing Tokens */
+            /* ── Spacing Tokens ── */
             --spacing-touch: 48px;
 
-            /* Transition Tokens */
+            /* ── Transition Tokens ── */
             --transition-fast: 150ms;
             --transition-normal: 300ms;
             --transition-slow: 500ms;
         }
 
-        /* Dark Mode */
+        /* Dark Mode — semantic tokens swap */
         .dark {
-            --color-primary: #60a5fa;
-            --color-primary-light: #93c5fd;
-            --color-primary-dark: #3b82f6;
-            --color-primary-subtle: #1e3a8a;
+            --color-primary: #2adea9;
+            --color-primary-light: #5aefc5;
+            --color-primary-dark: #1A6B5A;
+            --color-primary-subtle: #062f26;
+            --color-accent: #fcd34d;
+            --color-accent-light: #fde68a;
+            --color-accent-dark: #F5A623;
             --color-secondary: #4ade80;
             --color-secondary-light: #86efac;
             --color-secondary-dark: #22c55e;
 
-            --surface-background: #111827;
-            --surface-card: #1f2937;
-            --surface-elevated: #374151;
+            --surface-background: #0F1923;
+            --surface-card: #1a2634;
+            --surface-elevated: #243447;
             --surface-overlay: rgba(0, 0, 0, 0.75);
 
             --text-primary: #f9fafb;
             --text-secondary: #d1d5db;
             --text-muted: #6b7280;
-            --text-inverse: #111827;
-            --text-on-primary: #ffffff;
+            --text-inverse: #0F1923;
+            --text-on-primary: #0F1923;
 
-            --border-color: #374151;
+            --border-color: #243447;
         }
 
         /* Base Styles */
@@ -186,6 +277,11 @@
             background-color: var(--surface-background);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Heading font utility */
+        .font-heading {
+            font-family: var(--font-family-heading);
         }
 
         /* Focus Styles for Accessibility */
@@ -249,6 +345,9 @@
     "
     :class="{ 'dark': darkMode }"
 >
+    {# GTM Body Snippet (noscript fallback) #}
+    {% if SEO_GTM_BODY %}{{ SEO_GTM_BODY|safe }}{% endif %}
+
     {# Skip to Main Content Link (Accessibility) #}
     <a href="#main-content" class="skip-link">
         {% trans "Skip to main content" %}

@@ -1,0 +1,14 @@
+{# KPI Strip: 6 metric cards with sparklines #}
+<div class="db-kpi-strip" data-endpoint="/admin/api/kpis/" data-chart-type="kpi">
+    {% for i in "123456" %}
+    <div class="kpi-card loading" data-kpi-idx="{{ forloop.counter0 }}">
+        <div class="kpi-icon"><div class="skeleton skeleton-icon"></div></div>
+        <div class="kpi-body">
+            <div class="kpi-value"><div class="skeleton skeleton-text"></div></div>
+            <div class="kpi-label"><div class="skeleton skeleton-text-sm"></div></div>
+            <div class="kpi-trend"><div class="skeleton skeleton-text-xs"></div></div>
+        </div>
+        <div class="kpi-sparkline" data-kpi-sparkline="{{ forloop.counter0 }}"></div>
+    </div>
+    {% endfor %}
+</div>

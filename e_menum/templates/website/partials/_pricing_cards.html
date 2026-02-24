@@ -1,0 +1,107 @@
+{% load i18n %}
+{% comment %}============================================================================
+   PRICING CARDS — Plan comparison cards from database with monthly/yearly toggle
+
+   Context:
+   - plans (queryset from view — Plan objects with display_features prefetched)
+
+   Usage:
+   {% include "website/partials/_pricing_cards.html" %}
+   ============================================================================{% endcomment %}
+
+{% if plans %}
+<section class="py-16 lg:py-24 bg-white dark:bg-gray-950"
+         x-data="{ yearly: false }">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {# Toggle Monthly / Yearly #}
+        <div class="flex items-center justify-center gap-4 mb-12">
+            <span class="text-sm font-medium" :class="!yearly ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-300'">
+                {% trans "Aylik" %}
+            </span>
+            <button
+                @click="yearly = !yearly"
+                class="relative w-14 h-8 bg-gray-200 dark:bg-gray-700 rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-950"
+                :class="yearly && 'bg-primary-600 dark:bg-primary-600'"
+                role="switch"
+                :aria-checked="yearly"
+                aria-label="{% trans 'Yillik faturalandirma' %}"
+            >
+                <span class="absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full shadow transition-transform"
+                      :class="yearly && 'translate-x-7'"></span>
+            </button>
+            <span class="text-sm font-medium" :class="yearly ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-300'">
+                {% trans "Yillik" %}
+                <span class="ml-1 text-xs font-semibold text-green-600 dark:text-green-400">-20%</span>
+            </span>
+        </div>
+
+        {# Pricing Cards Grid #}
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-{{ plans|length }} gap-6">
+            {% for plan in plans %}
+            <div class="{% if plan.highlight_text %}pricing-card-recommended{% endif %} bg-white dark:bg-gray-900 rounded-2xl {% if not plan.highlight_text %}border border-gray-200 dark:border-gray-800{% endif %} p-6 card-hover {% if plan.highlight_text %}relative{% endif %}">
+
+                {% if plan.highlight_text %}
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span class="px-4 py-1 text-xs font-bold text-white bg-primary-600 rounded-full uppercase">
+                        {{ plan.highlight_text }}
+                    </span>
+                </div>
+                {% endif %}
+
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{{ plan.name }}</h3>
+                {% if plan.short_description %}
+                <p class="text-sm text-gray-500 dark:text-gray-300 mb-4">{{ plan.short_description }}</p>
+                {% endif %}
+
+                <div class="mb-6">
+                    {% if plan.price_monthly == 0 %}
+                        <span class="text-4xl font-bold text-gray-900 dark:text-white">{% trans "0" %}</span>
+                        <span class="text-gray-500 dark:text-gray-300">TL</span>
+                    {% elif plan.is_custom %}
+                        <span class="text-4xl font-bold text-gray-900 dark:text-white">{% trans "Ozel" %}</span>
+                    {% else %}
+                        <span class="text-4xl font-bold {% if plan.highlight_text %}text-primary-600 dark:text-primary-400{% else %}text-gray-900 dark:text-white{% endif %}"
+                              x-text="yearly ? '{{ plan.yearly_per_month|default:plan.price_monthly }}' : '{{ plan.price_monthly }}'">{{ plan.price_monthly }}</span>
+                        <span class="text-gray-500 dark:text-gray-300">TL/<span x-text="yearly ? '{% trans "yil/12" %}' : '{% trans "ay" %}'">{% trans "ay" %}</span></span>
+                    {% endif %}
+                </div>
+
+                {# Display Features from PlanDisplayFeature #}
+                {% with features=plan.display_features.all %}
+                {% if features %}
+                <ul class="space-y-3 mb-8 text-sm text-gray-600 dark:text-gray-300">
+                    {% for feature in features %}
+                    {% if feature.is_active %}
+                    <li class="flex items-center {% if feature.is_highlighted %}font-semibold text-gray-900 dark:text-white{% endif %}">
+                        <i class="ph ph-check text-green-500 mr-2"></i>{{ feature.text }}
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
+
+                {% if plan.is_custom %}
+                <a href="{% url 'website:contact' %}" class="block w-full text-center px-4 py-3 text-sm font-semibold text-primary-600 border-2 border-primary-600 hover:bg-primary-50 dark:hover:bg-primary-950 rounded-xl transition-colors focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900">
+                    {% trans "Bize Ulasin" %}
+                </a>
+                {% elif plan.price_monthly == 0 %}
+                <a href="{% url 'website:demo' %}" class="block w-full text-center px-4 py-3 text-sm font-semibold text-primary-600 border-2 border-primary-600 hover:bg-primary-50 dark:hover:bg-primary-950 rounded-xl transition-colors focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900">
+                    {% trans "Ucretsiz Basla" %}
+                </a>
+                {% elif plan.highlight_text %}
+                <a href="{% url 'website:demo' %}" class="block w-full text-center px-4 py-3 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-xl shadow-md transition-all focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900">
+                    {% trans "14 Gun Deneyin" %}
+                </a>
+                {% else %}
+                <a href="{% url 'website:demo' %}" class="block w-full text-center px-4 py-3 text-sm font-semibold text-primary-600 border-2 border-primary-600 hover:bg-primary-50 dark:hover:bg-primary-950 rounded-xl transition-colors focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900">
+                    {% trans "14 Gun Deneyin" %}
+                </a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}

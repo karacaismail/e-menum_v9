@@ -1,0 +1,59 @@
+{% extends "layouts/marketing.html" %}
+{% load seo_tags %}
+
+{% comment %}
+  Programmatic SEO Page Template
+  Renders a generated pSEO page with full SEO metadata.
+
+  Context:
+    page - PSEOPage model instance (includes SEOMixin fields)
+{% endcomment %}
+
+{% block extra_head %}
+{{ block.super }}
+{% seo_meta page %}
+{% endblock %}
+
+{% block content %}
+<article class="container mx-auto px-4 py-12 max-w-4xl">
+
+  {# Breadcrumbs #}
+  <nav aria-label="breadcrumb" class="mb-8">
+    <ol class="flex items-center space-x-2 text-sm text-gray-500">
+      <li>
+        <a href="/" class="hover:text-primary-600 transition-colors">Ana Sayfa</a>
+        <span class="mx-1 text-gray-400">/</span>
+      </li>
+      <li>
+        <span class="text-gray-900 font-medium" aria-current="page">{{ page.rendered_title }}</span>
+      </li>
+    </ol>
+  </nav>
+
+  {# Page title #}
+  <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+    {{ page.rendered_title }}
+  </h1>
+
+  {# Page description / lead paragraph #}
+  {% if page.rendered_description %}
+  <p class="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+    {{ page.rendered_description }}
+  </p>
+  {% endif %}
+
+  {# Main content #}
+  <div class="prose prose-lg max-w-none dark:prose-invert
+              prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white
+              prose-a:text-primary-600 dark:prose-a:text-primary-400 prose-a:no-underline hover:prose-a:underline
+              prose-img:rounded-xl">
+    {{ page.rendered_content|safe }}
+  </div>
+
+  {# Structured data (JSON-LD) if available #}
+  {% if page.structured_data %}
+  <script type="application/ld+json">{{ page.structured_data|safe }}</script>
+  {% endif %}
+
+</article>
+{% endblock %}

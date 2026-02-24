@@ -1,0 +1,549 @@
+/*
+ * E-Menum Marketing Pages Stylesheet
+ *
+ * Design System: Teal-olive primary (#1A6B5A) + Amber accent (#F5A623)
+ * Typography: Plus Jakarta Sans (headings) + Inter (body) + JetBrains Mono (code)
+ *
+ * Custom styles for the marketing/landing pages that extend the base
+ * Tailwind utilities. Keeps the file lean — most styling is in Tailwind classes.
+ */
+
+/* ============================================================================
+   TYPOGRAPHY
+   ============================================================================ */
+
+.heading-display {
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+}
+
+.heading-sans {
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.text-balance {
+    text-wrap: balance;
+}
+
+
+/* ============================================================================
+   HERO GRADIENT OVERLAYS — Teal-olive theme
+   ============================================================================ */
+
+.hero-gradient {
+    background: #0b1a14 !important;
+    background: linear-gradient(160deg, #0b1a14 0%, #081017 40%, #0f2b22 100%) !important;
+    position: relative;
+}
+
+.hero-gradient::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 70% 30%, rgba(26, 107, 90, 0.12) 0%, transparent 55%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.hero-gradient-pricing {
+    background: #080e15 !important;
+    background: linear-gradient(160deg, #080e15 0%, #071912 50%, #080e15 100%) !important;
+}
+
+.hero-gradient-features {
+    background: #080e15 !important;
+    background: linear-gradient(160deg, #080e15 0%, #0a2219 50%, #061210 100%) !important;
+}
+
+.hero-gradient-about {
+    background: #080e15 !important;
+    background: linear-gradient(160deg, #080e15 0%, #0c2a20 50%, #080e15 100%) !important;
+}
+
+
+/* ============================================================================
+   PATTERN BACKGROUNDS — use pseudo-elements to avoid overriding bg gradients
+   ============================================================================ */
+
+.pattern-dots {
+    position: relative;
+}
+
+.pattern-dots::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.pattern-grid {
+    position: relative;
+}
+
+.pattern-grid::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+
+/* ============================================================================
+   ELEVATION SYSTEM
+   ============================================================================ */
+
+.elevation-1 {
+    box-shadow: 0 1px 3px rgba(15, 25, 35, 0.08), 0 1px 2px rgba(15, 25, 35, 0.06);
+}
+
+.elevation-2 {
+    box-shadow: 0 4px 6px -1px rgba(15, 25, 35, 0.08), 0 2px 4px -2px rgba(15, 25, 35, 0.06);
+}
+
+.elevation-3 {
+    box-shadow: 0 10px 15px -3px rgba(15, 25, 35, 0.1), 0 4px 6px -4px rgba(15, 25, 35, 0.06);
+}
+
+.dark .elevation-1 {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.dark .elevation-2 {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+}
+
+.dark .elevation-3 {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.25);
+}
+
+
+/* ============================================================================
+   BUTTON SYSTEM
+   ============================================================================ */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+    min-height: 48px;
+    padding: 0.625rem 1.5rem;
+    font-size: 0.9375rem;
+}
+
+.btn-primary {
+    background-color: #1A6B5A;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: #0f5c4b;
+    box-shadow: 0 4px 12px rgba(26, 107, 90, 0.3);
+}
+
+.btn-accent {
+    background-color: #F5A623;
+    color: #0F1923;
+}
+
+.btn-accent:hover {
+    background-color: #d97706;
+    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.3);
+}
+
+.btn-outline {
+    border: 2px solid #1A6B5A;
+    color: #1A6B5A;
+    background: transparent;
+}
+
+.btn-outline:hover {
+    background-color: #f0fdf8;
+    border-color: #0f5c4b;
+}
+
+.dark .btn-outline {
+    border-color: #2adea9;
+    color: #2adea9;
+}
+
+.dark .btn-outline:hover {
+    background-color: rgba(42, 222, 169, 0.1);
+}
+
+.btn-lg {
+    min-height: 56px;
+    padding: 0.875rem 2rem;
+    font-size: 1.0625rem;
+    border-radius: 0.875rem;
+}
+
+.btn-sm {
+    min-height: 40px;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.875rem;
+    border-radius: 0.625rem;
+}
+
+
+/* ============================================================================
+   ANIMATIONS
+   ============================================================================ */
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-slide-in-left {
+    animation: slideInLeft 0.6s ease-out forwards;
+}
+
+.animate-scale-in {
+    animation: scaleIn 0.5s ease-out forwards;
+}
+
+.animate-marquee {
+    animation: marquee 30s linear infinite;
+}
+
+/* Staggered delays for elements */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+
+/* ============================================================================
+   CARD STYLES
+   ============================================================================ */
+
+.card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.pricing-card-recommended {
+    position: relative;
+    border: 2px solid var(--color-primary);
+    box-shadow: 0 0 0 4px rgba(26, 107, 90, 0.1);
+}
+
+
+/* ============================================================================
+   SECTION DIVIDERS
+   ============================================================================ */
+
+.section-divider {
+    position: relative;
+}
+
+.section-divider::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+    border-radius: 2px;
+}
+
+
+/* ============================================================================
+   FEATURE TOGGLE (Monthly/Yearly)
+   ============================================================================ */
+
+.pricing-toggle {
+    position: relative;
+}
+
+.pricing-toggle-slider {
+    transition: transform 0.3s ease;
+}
+
+
+/* ============================================================================
+   TRUST BAR / LOGO MARQUEE
+   ============================================================================ */
+
+.logo-marquee {
+    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+
+/* ============================================================================
+   DROPDOWN NAVIGATION (legacy)
+   ============================================================================ */
+
+.nav-dropdown {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: all 0.2s ease;
+}
+
+.nav-dropdown.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+
+/* ============================================================================
+   MEGA MENU
+   ============================================================================ */
+
+.mega-menu-panel {
+    /* Smooth appear with delay for hover tolerance */
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Ensure mega menu dropdown has proper z-index stacking */
+[x-cloak].mega-menu-panel {
+    display: none !important;
+}
+
+/* Mega menu child link hover state — subtle left border accent */
+.mega-menu-panel a:hover .ph-arrow-right {
+    opacity: 1;
+    transform: translateX(2px);
+}
+
+
+/* ============================================================================
+   TOPBAR
+   ============================================================================ */
+
+.topbar-announcement .animate-ping {
+    animation-duration: 2s;
+}
+
+
+/* ============================================================================
+   BREADCRUMB
+   ============================================================================ */
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.4;
+    margin: 0 0.5rem;
+    vertical-align: middle;
+}
+
+[dir="rtl"] .breadcrumb-item + .breadcrumb-item::before {
+    margin: 0 0.5rem;
+}
+
+
+/* ============================================================================
+   PAGE-SPECIFIC HERO GRADIENTS
+   ============================================================================ */
+
+.hero-gradient-solutions {
+    background: #080e15 !important;
+    background: linear-gradient(160deg, #080e15 0%, #091d17 50%, #080e15 100%) !important;
+}
+
+.hero-gradient-customers {
+    background: #080e15 !important;
+    background: linear-gradient(160deg, #080e15 0%, #0b2118 50%, #070d12 100%) !important;
+}
+
+.hero-gradient-resources {
+    background: #080e15 !important;
+    background: linear-gradient(160deg, #080e15 0%, #0d1e28 50%, #080e15 100%) !important;
+}
+
+.hero-gradient-careers {
+    background: #080e15 !important;
+    background: linear-gradient(160deg, #080e15 0%, #15201a 50%, #080e15 100%) !important;
+}
+
+.hero-gradient-investor {
+    background: #080e15 !important;
+    background: linear-gradient(160deg, #080e15 0%, #0e1820 50%, #080e15 100%) !important;
+}
+
+.hero-gradient-partners {
+    background: #080e15 !important;
+    background: linear-gradient(160deg, #080e15 0%, #0d2219 50%, #080e15 100%) !important;
+}
+
+.hero-gradient-support {
+    background: #080e15 !important;
+    background: linear-gradient(160deg, #080e15 0%, #0f1f25 50%, #080e15 100%) !important;
+}
+
+.hero-gradient-press {
+    background: #080e15 !important;
+    background: linear-gradient(160deg, #080e15 0%, #121a1e 50%, #080e15 100%) !important;
+}
+
+
+/* ============================================================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================================================ */
+
+@media (max-width: 640px) {
+    .heading-display {
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-float,
+    .animate-fade-in-up,
+    .animate-slide-in-left,
+    .animate-scale-in,
+    .animate-marquee {
+        animation: none;
+    }
+
+    .card-hover:hover {
+        transform: none;
+    }
+}
+
+
+/* ============================================================================
+   COOKIE CONSENT BANNER (shown via Alpine.js)
+   ============================================================================ */
+
+.cookie-banner {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+
+/* ============================================================================
+   RTL SUPPORT — Arabic (ar)
+   ============================================================================ */
+
+[dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+}
+
+[dir="rtl"] .text-left {
+    text-align: right;
+}
+
+[dir="rtl"] .text-right {
+    text-align: left;
+}
+
+/* Flip horizontal spacings for RTL */
+[dir="rtl"] .space-x-1 > :not([hidden]) ~ :not([hidden]),
+[dir="rtl"] .space-x-2 > :not([hidden]) ~ :not([hidden]),
+[dir="rtl"] .space-x-3 > :not([hidden]) ~ :not([hidden]),
+[dir="rtl"] .space-x-4 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 1;
+}
+
+/* Flip margins for icons and arrows */
+[dir="rtl"] .ml-1, [dir="rtl"] .ml-2 { margin-left: 0; margin-right: 0.25rem; }
+[dir="rtl"] .mr-1, [dir="rtl"] .mr-2 { margin-right: 0; margin-left: 0.25rem; }
+[dir="rtl"] .ml-auto { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .mr-auto { margin-right: 0; margin-left: auto; }
+
+/* Flip float */
+[dir="rtl"] .float-left { float: right; }
+[dir="rtl"] .float-right { float: left; }
+
+/* Flip gradients for hero */
+[dir="rtl"] .hero-gradient::before {
+    background: radial-gradient(ellipse at 30% 30%, rgba(26, 107, 90, 0.12) 0%, transparent 55%);
+}
+
+/* Flip arrow icons */
+[dir="rtl"] .ph-arrow-right::before {
+    transform: scaleX(-1);
+}
+[dir="rtl"] .ph-arrow-left::before {
+    transform: scaleX(-1);
+}
+
+/* Arabic/Persian font stack */
+[dir="rtl"] body {
+    font-family: 'Noto Sans Arabic', 'Noto Sans', 'Inter', sans-serif;
+}
+
+[dir="rtl"] .heading-display,
+[dir="rtl"] .heading-sans {
+    font-family: 'Noto Sans Arabic', 'Plus Jakarta Sans', 'Inter', sans-serif;
+}

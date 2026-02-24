@@ -1,0 +1,27 @@
+{% load i18n %}
+{% comment %}============================================================================
+   STATS COUNTER — Animated counters from database
+
+   Context:
+   - stat_counters (queryset from view, HomeSection with section_type=stat_counter)
+
+   Usage:
+   {% include "website/partials/_stats_counter.html" %}
+   ============================================================================{% endcomment %}
+
+{% if stat_counters %}
+<section class="py-16 lg:py-20 bg-white dark:bg-gray-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 lg:grid-cols-{{ stat_counters|length|default:'4' }} gap-8">
+            {% for stat in stat_counters %}
+            <div class="text-center" data-reveal>
+                <div class="text-4xl lg:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-2">
+                    {{ stat.stat_value }}{{ stat.stat_suffix }}
+                </div>
+                <p class="text-sm text-gray-600 dark:text-gray-300 font-medium">{{ stat.title }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}

@@ -1,0 +1,29 @@
+{% load i18n %}
+{% comment %}============================================================================
+   FEATURE CARD — Single feature display card
+
+   Usage:
+   {% include "website/partials/_feature_card.html" with
+       icon="ph-qr-code"
+       title="QR Menu"
+       description="Kisa aciklama..."
+       color="primary"
+   %}
+   ============================================================================{% endcomment %}
+
+<div class="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 card-hover" data-reveal>
+    <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4
+         {% if color == 'primary' %}bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400
+         {% elif color == 'green' %}bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400
+         {% elif color == 'purple' %}bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400
+         {% elif color == 'amber' %}bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400
+         {% elif color == 'rose' %}bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-400
+         {% elif color == 'cyan' %}bg-cyan-100 dark:bg-cyan-900/50 text-cyan-600 dark:text-cyan-400
+         {% else %}bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400
+         {% endif %}"
+    >
+        <i class="ph {{ icon|default:'ph-star' }} text-2xl"></i>
+    </div>
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ title }}</h3>
+    <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{{ description }}</p>
+</div>

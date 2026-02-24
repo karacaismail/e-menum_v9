@@ -1,0 +1,34 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{{ category.name }} — {% trans "Destek" %} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <a href="{% url 'website:support' %}" class="inline-flex items-center gap-1 text-sm text-primary-600 hover:text-primary-700 mb-4">
+            <i class="ph ph-arrow-left"></i> {% trans "Destek Merkezi" %}
+        </a>
+        <h1 class="heading-sans text-3xl text-gray-900 dark:text-white">{{ category.name }}</h1>
+        {% if category.description %}<p class="text-gray-500 dark:text-gray-400 mt-2">{{ category.description }}</p>{% endif %}
+    </div>
+</section>
+
+<section class="py-12 lg:py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="space-y-3">
+            {% for article in articles %}
+            <a href="{% url 'website:help_article' category_slug=category.slug article_slug=article.slug %}" class="group flex items-center justify-between p-5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl hover:border-primary-300 dark:hover:border-primary-700 transition-colors">
+                <div class="flex items-center gap-3">
+                    <i class="ph ph-article text-lg text-primary-500"></i>
+                    <span class="font-medium text-gray-900 dark:text-white group-hover:text-primary-600 transition-colors">{{ article.title }}</span>
+                </div>
+                <i class="ph ph-arrow-right text-gray-400 group-hover:text-primary-500 transition-colors"></i>
+            </a>
+            {% empty %}
+            <p class="text-center text-gray-500 py-8">{% trans "Bu kategoride henüz makale yok." %}</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Destek Merkezi" %} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="hero-gradient hero-gradient-support pattern-dots">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24 text-center">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-500/10 text-primary-400 text-sm font-semibold mb-6">
+            <i class="ph ph-lifebuoy"></i>
+            {% trans "Destek Merkezi" %}
+        </span>
+        <h1 class="heading-display text-4xl lg:text-5xl text-white mb-6">
+            {% if hero %}{{ hero.title }}{% else %}{% trans "Size Nasıl Yardımcı Olabiliriz?" %}{% endif %}
+        </h1>
+    </div>
+</section>
+
+{# Categories Grid #}
+<section class="py-16 lg:py-24 bg-white dark:bg-gray-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for cat in categories %}
+            <a href="{% url 'website:help_category' slug=cat.slug %}" class="group bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 card-hover elevation-1">
+                <div class="flex items-center justify-center w-12 h-12 mb-4 rounded-xl bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400">
+                    <i class="ph {{ cat.icon|default:'ph-question' }} text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-primary-600 transition-colors mb-2">{{ cat.name }}</h3>
+                {% if cat.description %}<p class="text-sm text-gray-500 dark:text-gray-400">{{ cat.description|truncatewords:15 }}</p>{% endif %}
+            </a>
+            {% empty %}
+            <div class="col-span-full text-center py-12 text-gray-500">
+                <p>{% trans "Destek kategorileri yakında eklenecek." %}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# Popular Articles #}
+{% if popular_articles %}
+<section class="py-16 lg:py-20 bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="heading-sans text-2xl text-gray-900 dark:text-white mb-8 text-center">{% trans "Popüler Makaleler" %}</h2>
+        <div class="space-y-3">
+            {% for article in popular_articles %}
+            <a href="{% url 'website:help_article' category_slug=article.category.slug article_slug=article.slug %}" class="group flex items-center justify-between p-4 bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl hover:border-primary-300 dark:hover:border-primary-700 transition-colors">
+                <div class="flex items-center gap-3">
+                    <i class="ph ph-article text-lg text-primary-500"></i>
+                    <span class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-primary-600 transition-colors">{{ article.title }}</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-gray-400">
+                    <i class="ph ph-eye"></i> {{ article.view_count }}
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# FAQ Section #}
+{% if faqs %}
+<section class="py-16 lg:py-20 bg-white dark:bg-gray-950">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="heading-sans text-2xl text-gray-900 dark:text-white mb-8 text-center">{% trans "Sıkça Sorulan Sorular" %}</h2>
+        {% include "website/partials/_faq_accordion.html" %}
+    </div>
+</section>
+{% endif %}
+
+{# Contact CTA #}
+<section class="py-12 text-center">
+    <p class="text-gray-500 mb-4">{% trans "Aradığınızı bulamadınız mı?" %}</p>
+    <a href="{% url 'website:contact' %}" class="btn btn-primary">
+        <i class="ph ph-envelope mr-2"></i>{% trans "Bize Ulaşın" %}
+    </a>
+</section>
+{% endblock %}
