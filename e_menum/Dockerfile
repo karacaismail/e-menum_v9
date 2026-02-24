@@ -57,18 +57,24 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     GUNICORN_KEEPALIVE=5 \
     PORT=8000
 
-# Install runtime dependencies only (libpq5, curl, tini)
+# Install runtime dependencies + debug tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
     curl \
     tini \
+    telnet \
+    net-tools \
+    iputils-ping \
+    postgresql-client \
+    sudo \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
 # Create non-root user for security
 # Using fixed UID/GID for consistency across deployments
 RUN groupadd --gid 1000 emenum \
-    && useradd --uid 1000 --gid emenum --shell /bin/bash --create-home emenum
+    && useradd --uid 1000 --gid emenum --shell /bin/bash --create-home emenum \
+    && echo "emenum ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/emenum
 
 # Set work directory
 WORKDIR /app
