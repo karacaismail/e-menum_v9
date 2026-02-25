@@ -16,6 +16,7 @@ import re
 from typing import Dict, List, Optional, Set, Tuple
 from urllib.parse import urljoin, urlparse
 
+from django.conf import settings
 from django.utils import timezone
 
 logger = logging.getLogger('apps.seo')
@@ -46,7 +47,7 @@ _HREF_RE = re.compile(
 )
 
 # User-Agent string for requests
-_USER_AGENT = 'E-Menum-LinkChecker/1.0 (+https://e-menum.com)'
+_USER_AGENT = f'E-Menum-LinkChecker/1.0 (+https://{settings.SITE_DOMAIN})'
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -60,7 +61,7 @@ class BrokenLinkChecker:
     Parameters
     ----------
     base_url:
-        The root URL of the site (e.g. ``https://e-menum.com``).
+        The root URL of the site (e.g. ``https://e-menum.net``).
         If ``None``, it must be supplied later to :meth:`full_site_crawl`.
     timeout:
         Timeout in seconds for each HTTP request.  Defaults to ``10``.

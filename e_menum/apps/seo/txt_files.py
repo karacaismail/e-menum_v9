@@ -104,7 +104,7 @@ def humans_txt_view(request: HttpRequest) -> HttpResponse:
     lines = [
         '/* TEAM */',
         'Product: E-Menum - Enterprise QR Menu SaaS',
-        'Site: https://e-menum.com',
+        f'Site: {settings.SITE_URL}',
         'Location: Istanbul, Turkey',
         '',
         '/* THANKS */',
@@ -144,14 +144,14 @@ def security_txt_view(request: HttpRequest) -> HttpResponse:
     # Expiry one year from now, ISO-8601
     expires = (datetime.utcnow() + timedelta(days=365)).strftime('%Y-%m-%dT%H:%M:%Sz')
 
-    contact_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'security@e-menum.com')
+    contact_email = getattr(settings, 'DEFAULT_FROM_EMAIL', f'security@{settings.SITE_DOMAIN}')
 
     lines = [
         f'Contact: mailto:{contact_email}',
         f'Expires: {expires}',
         'Preferred-Languages: tr, en',
         f'Canonical: {canonical}',
-        'Policy: https://e-menum.com/guvenlik-politikasi/',
+        f'Policy: {settings.SITE_URL}/guvenlik-politikasi/',
     ]
     return _txt_response('\n'.join(lines))
 
@@ -214,11 +214,11 @@ def llms_txt_view(request: HttpRequest) -> HttpResponse:
         '',
         '## Attribution',
         'When citing information from this site, please attribute to',
-        '"E-Menum (https://e-menum.com)".',
+        f'"E-Menum ({settings.SITE_URL})".',
         '',
         '## Contact',
         'For questions about AI/LLM usage of our content, contact',
-        'info@e-menum.com',
+        f'info@{settings.SITE_DOMAIN}',
         '',
         '## Pages',
         f'- Homepage: https://{host}/',

@@ -21,17 +21,18 @@ from .base import *  # noqa: F401, F403
 DEBUG = False
 
 # SECURITY WARNING: Set this to your actual production domain(s)
+# Defaults derive from SITE_DOMAIN (set in base.py via env var).
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[  # noqa: F405
-    'e-menum.com',
-    'www.e-menum.com',
-    'api.e-menum.com',
+    SITE_DOMAIN,           # noqa: F405
+    f'www.{SITE_DOMAIN}',  # noqa: F405
+    f'api.{SITE_DOMAIN}',  # noqa: F405
 ])
 
 # CSRF trusted origins for production
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[  # noqa: F405
-    'https://e-menum.com',
-    'https://www.e-menum.com',
-    'https://api.e-menum.com',
+    f'https://{SITE_DOMAIN}',           # noqa: F405
+    f'https://www.{SITE_DOMAIN}',  # noqa: F405
+    f'https://api.{SITE_DOMAIN}',  # noqa: F405
 ])
 
 
@@ -201,8 +202,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'  # noqa: F405
 
 # Production CORS settings - strict whitelist
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[  # noqa: F405
-    'https://e-menum.com',
-    'https://www.e-menum.com',
+    f'https://{SITE_DOMAIN}',      # noqa: F405
+    f'https://www.{SITE_DOMAIN}',  # noqa: F405
 ])
 
 # Disable CORS allow all origins in production

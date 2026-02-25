@@ -78,7 +78,7 @@ class Command(BaseCommand):
                     'Disallow: /accounts/\n'
                     'Disallow: /dashboard/\n'
                     '\n'
-                    'Sitemap: https://emenum.com/sitemap.xml\n'
+                    'Sitemap: https://e-menum.net/sitemap.xml\n'
                 ),
                 'auto_generate': True,
                 'is_active': True,
@@ -88,7 +88,7 @@ class Command(BaseCommand):
                 'content': (
                     '/* TEAM */\n'
                     'Developer: E-Menum Engineering\n'
-                    'Contact: dev@emenum.com\n'
+                    'Contact: dev@e-menum.net\n'
                     'Location: Istanbul, Turkey\n'
                     '\n'
                     '/* SITE */\n'
@@ -104,11 +104,11 @@ class Command(BaseCommand):
             {
                 'file_type': TXTFileType.SECURITY,
                 'content': (
-                    'Contact: mailto:security@emenum.com\n'
+                    'Contact: mailto:security@e-menum.net\n'
                     'Expires: 2027-01-31T23:59:00.000Z\n'
                     'Preferred-Languages: tr, en\n'
-                    'Canonical: https://emenum.com/.well-known/security.txt\n'
-                    'Policy: https://emenum.com/security-policy\n'
+                    'Canonical: https://e-menum.net/.well-known/security.txt\n'
+                    'Policy: https://e-menum.net/security-policy\n'
                 ),
                 'auto_generate': False,
                 'is_active': True,
@@ -141,8 +141,8 @@ class Command(BaseCommand):
                     '- Customer loyalty programs\n'
                     '\n'
                     '## Contact\n'
-                    'Website: https://emenum.com\n'
-                    'Support: destek@emenum.com\n'
+                    'Website: https://e-menum.net\n'
+                    'Support: destek@e-menum.net\n'
                 ),
                 'auto_generate': True,
                 'is_active': True,

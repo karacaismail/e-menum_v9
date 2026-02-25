@@ -31,7 +31,7 @@ class PartnerProgram(TimeStampedModel):
     hero_image = models.ImageField(_('hero gorsel'), upload_to='website/partners/', blank=True, null=True)
     commission_info = models.TextField(_('komisyon bilgisi'), blank=True)
     requirements = models.TextField(_('katilim kosullari'), blank=True, help_text=_('HTML icerik'))
-    contact_email = models.EmailField(_('iletisim e-posta'), blank=True, default='partners@emenum.com')
+    contact_email = models.EmailField(_('iletisim e-posta'), blank=True, default='partners@e-menum.net')
     sort_order = models.PositiveIntegerField(_('siralama'), default=0)
     is_active = models.BooleanField(_('aktif'), default=True)
 

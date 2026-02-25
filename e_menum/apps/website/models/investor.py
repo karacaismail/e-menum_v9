@@ -20,7 +20,7 @@ class InvestorPage(TimeStampedModel):
     market_size_sam = models.CharField(_('SAM'), max_length=50, blank=True, help_text=_('Hizmet Verilebilir Pazar'))
     market_size_som = models.CharField(_('SOM'), max_length=50, blank=True, help_text=_('Elde Edilebilir Pazar'))
     investment_thesis = models.TextField(_('yatirim tezi'), blank=True, help_text=_('HTML icerik'))
-    contact_email = models.EmailField(_('iletisim e-posta'), blank=True, default='investor@emenum.com')
+    contact_email = models.EmailField(_('iletisim e-posta'), blank=True, default='investor@e-menum.net')
     is_active = models.BooleanField(_('aktif'), default=True)
 
     class Meta:

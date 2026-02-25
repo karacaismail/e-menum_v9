@@ -213,6 +213,7 @@ def _build_context():
 
 def _default_context():
     """Fallback context if DB is unavailable."""
+    from django.conf import settings as django_settings
     return {
         'company_name': 'E-Menum',
         'tagline': _('QR Menunuz, Isletmenizin Dijital Vitrini'),
@@ -220,7 +221,7 @@ def _default_context():
             'Restoran ve kafeler icin yapay zeka destekli dijital menu platformu.'
         ),
         'phone': '+90 850 123 4567',
-        'email': 'info@e-menum.com',
+        'email': f'info@{django_settings.SITE_DOMAIN}',
         'address': _('Istanbul, Turkiye'),
         'social': {
             'instagram': 'https://instagram.com/emenum',
@@ -244,7 +245,7 @@ def _default_context():
         'vat_no': '',
         'mersis_no': '',
         'trade_registry': '',
-        'status_page_url': 'https://status.emenum.com',
+        'status_page_url': f'https://status.{django_settings.SITE_DOMAIN}',
 
         'nav_links': [],
         'mega_menu': [],

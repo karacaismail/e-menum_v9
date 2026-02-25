@@ -100,7 +100,7 @@ class CanonicalDomainMiddleware:
     """
     Enforce a single canonical domain.
 
-    If ``settings.SEO_CANONICAL_DOMAIN`` is set (e.g. ``"e-menum.com"``)
+    If ``settings.SEO_CANONICAL_DOMAIN`` is set (e.g. ``"e-menum.net"``)
     and the request's ``Host`` header does not match, the middleware issues
     a 301 redirect to the canonical domain.
 

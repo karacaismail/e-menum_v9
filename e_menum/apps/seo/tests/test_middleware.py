@@ -133,27 +133,27 @@ class TestCanonicalDomainMiddleware(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
 
-    @override_settings(SEO_CANONICAL_DOMAIN='e-menum.com')
+    @override_settings(SEO_CANONICAL_DOMAIN='e-menum.net')
     def test_www_redirects_to_non_www(self):
         middleware = CanonicalDomainMiddleware(dummy_response)
-        middleware.canonical_domain = 'e-menum.com'
+        middleware.canonical_domain = 'e-menum.net'
 
         request = self.factory.get('/some-page/')
-        request.META['HTTP_HOST'] = 'www.e-menum.com'
-        request.META['SERVER_NAME'] = 'www.e-menum.com'
+        request.META['HTTP_HOST'] = 'www.e-menum.net'
+        request.META['SERVER_NAME'] = 'www.e-menum.net'
         response = middleware(request)
 
         self.assertEqual(response.status_code, 301)
-        self.assertIn('e-menum.com', response['Location'])
+        self.assertIn('e-menum.net', response['Location'])
         self.assertIn('/some-page/', response['Location'])
 
-    @override_settings(SEO_CANONICAL_DOMAIN='e-menum.com')
+    @override_settings(SEO_CANONICAL_DOMAIN='e-menum.net')
     def test_canonical_domain_no_redirect(self):
         middleware = CanonicalDomainMiddleware(dummy_response)
-        middleware.canonical_domain = 'e-menum.com'
+        middleware.canonical_domain = 'e-menum.net'
 
         request = self.factory.get('/page/')
-        request.META['HTTP_HOST'] = 'e-menum.com'
+        request.META['HTTP_HOST'] = 'e-menum.net'
         response = middleware(request)
 
         self.assertEqual(response.status_code, 200)
@@ -243,9 +243,9 @@ class TestSEOHeadersMiddleware(TestCase):
 
     def test_link_canonical_header(self):
         request = self.factory.get('/page/')
-        request.seo_canonical = 'https://e-menum.com/page/'
+        request.seo_canonical = 'https://e-menum.net/page/'
         response = self.middleware(request)
-        self.assertEqual(response['Link'], '<https://e-menum.com/page/>; rel="canonical"')
+        self.assertEqual(response['Link'], '<https://e-menum.net/page/>; rel="canonical"')
 
     def test_no_link_header_without_canonical(self):
         request = self.factory.get('/page/')

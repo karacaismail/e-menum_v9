@@ -175,7 +175,7 @@ class Command(BaseCommand):
         User.objects.filter(
             organization=org
         ).exclude(
-            email__in=['admin@lezzetsarayi.com', 'admin@emenum.com']
+            email__in=['admin@lezzetsarayi.com', 'admin@e-menum.net']
         ).delete()
 
         Branch.all_objects.filter(organization=org).delete()
@@ -200,7 +200,7 @@ class Command(BaseCommand):
 
         platform_users = [
             {
-                'email': 'admin@emenum.com',
+                'email': 'admin@e-menum.net',
                 'role': 'super_admin',
                 'first_name': 'Admin',
                 'last_name': 'User',
@@ -208,21 +208,21 @@ class Command(BaseCommand):
                 'is_superuser': True,
             },
             {
-                'email': 'platform-admin@emenum.com',
+                'email': 'platform-admin@e-menum.net',
                 'role': 'admin',
                 'first_name': 'Platform',
                 'last_name': 'Admin',
                 'password': 'PlatAdmin1234!',
             },
             {
-                'email': 'sales@emenum.com',
+                'email': 'sales@e-menum.net',
                 'role': 'sales',
                 'first_name': 'Pinar',
                 'last_name': 'Yilmaz',
                 'password': 'Sales1234!emenum',
             },
             {
-                'email': 'support@emenum.com',
+                'email': 'support@e-menum.net',
                 'role': 'support',
                 'first_name': 'Destek',
                 'last_name': 'Ekibi',
@@ -745,8 +745,8 @@ class Command(BaseCommand):
                     'type': 'TABLE',
                     'name': f'QR - {table.name}',
                     'description': f'{table.name} icin QR kod',
-                    'short_url': f'https://emenum.com/q/{code}',
-                    'redirect_url': f'https://emenum.com/m/ana-menu/?table={table.number}',
+                    'short_url': f'https://e-menum.net/q/{code}',
+                    'redirect_url': f'https://e-menum.net/m/ana-menu/?table={table.number}',
                     'scan_count': random.randint(5, 200),
                     'unique_scan_count': random.randint(3, 100),
                     'last_scanned_at': rand_recent(72),
@@ -764,8 +764,8 @@ class Command(BaseCommand):
                 'type': 'CAMPAIGN',
                 'name': 'Yaz Kampanyasi QR',
                 'description': 'Yaz kampanyasi icin ozel QR kod',
-                'short_url': f'https://emenum.com/q/{camp_code}',
-                'redirect_url': 'https://emenum.com/m/ana-menu/?promo=summer',
+                'short_url': f'https://e-menum.net/q/{camp_code}',
+                'redirect_url': 'https://e-menum.net/m/ana-menu/?promo=summer',
                 'scan_count': random.randint(50, 500),
                 'unique_scan_count': random.randint(30, 200),
                 'last_scanned_at': rand_recent(24),

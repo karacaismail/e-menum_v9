@@ -62,7 +62,7 @@ def check_broken_links(self):
             pass
 
     if not base_url:
-        base_url = 'https://e-menum.com'
+        base_url = settings.SITE_URL
         logger.warning(
             'No SITE_URL or SiteSettings.website_url configured, '
             'falling back to %s',
@@ -403,7 +403,7 @@ def _generate_txt_content(file_type: str) -> str:
     """
     from datetime import datetime
 
-    host = getattr(settings, 'SITE_DOMAIN', 'e-menum.com')
+    host = settings.SITE_DOMAIN
     scheme = 'https'
 
     if file_type == 'robots':
@@ -449,7 +449,7 @@ def _generate_txt_content(file_type: str) -> str:
     elif file_type == 'security':
         canonical = f'{scheme}://{host}/.well-known/security.txt'
         expires = (datetime.utcnow() + timedelta(days=365)).strftime('%Y-%m-%dT%H:%M:%Sz')
-        contact_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'security@e-menum.com')
+        contact_email = settings.DEFAULT_FROM_EMAIL
         return '\n'.join([
             f'Contact: mailto:{contact_email}',
             f'Expires: {expires}',
@@ -485,7 +485,7 @@ def _generate_txt_content(file_type: str) -> str:
             '',
             '## Contact',
             'For questions about AI/LLM usage of our content, contact',
-            'info@e-menum.com',
+            f'info@{settings.SITE_DOMAIN}',
         ])
 
     logger.warning('Unknown TXT file type: %s', file_type)

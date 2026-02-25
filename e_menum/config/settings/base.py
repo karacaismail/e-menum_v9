@@ -704,7 +704,12 @@ EMAIL_PORT = env.int('EMAIL_PORT', default=587)
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@e-menum.com')
+# Central domain setting — single source of truth for the entire project.
+# Override via SITE_DOMAIN env var. Every email/URL default derives from here.
+SITE_DOMAIN = os.environ.get('SITE_DOMAIN', 'e-menum.net')
+SITE_URL = os.environ.get('SITE_URL', f'https://{SITE_DOMAIN}')
+
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', f'noreply@{SITE_DOMAIN}')
 
 
 # =============================================================================
@@ -878,7 +883,7 @@ SEO_SITE_NAME = 'E-Menum'
 SEO_DEFAULT_TITLE = 'E-Menum - Akilli QR Menu Platformu'
 SEO_DEFAULT_DESCRIPTION = 'Restoran ve kafeler icin yapay zeka destekli dijital menu platformu.'
 SEO_DEFAULT_OG_IMAGE = ''
-SEO_CANONICAL_DOMAIN = os.environ.get('SEO_CANONICAL_DOMAIN', '')  # e.g. 'e-menum.com'
+SEO_CANONICAL_DOMAIN = os.environ.get('SEO_CANONICAL_DOMAIN', SITE_DOMAIN)
 SEO_GTM_CONTAINER_ID = os.environ.get('SEO_GTM_CONTAINER_ID', '')  # e.g. 'GTM-XXXXXX'
 
 

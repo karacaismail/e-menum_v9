@@ -59,7 +59,7 @@ class TestOrganizationSchema(TestCase):
             'company_name': 'E-Menum',
             'description': 'Enterprise QR Menu SaaS',
             'phone': '+90 212 555 0000',
-            'email': 'info@e-menum.com',
+            'email': 'info@e-menum.net',
             'address': 'Istanbul, Turkey',
             'social_instagram': 'https://instagram.com/emenum',
             'social_twitter': 'https://twitter.com/emenum',
@@ -79,7 +79,7 @@ class TestOrganizationSchema(TestCase):
         self.assertEqual(data['name'], 'E-Menum')
         self.assertEqual(data['description'], 'Enterprise QR Menu SaaS')
         self.assertEqual(data['telephone'], '+90 212 555 0000')
-        self.assertEqual(data['email'], 'info@e-menum.com')
+        self.assertEqual(data['email'], 'info@e-menum.net')
 
     def test_to_dict_address(self):
         settings = self._make_settings()
@@ -149,13 +149,13 @@ class TestArticleSchema(TestCase):
 
     def test_to_dict_basic(self):
         post = self._make_post()
-        schema = ArticleSchema(post, base_url='https://e-menum.com')
+        schema = ArticleSchema(post, base_url='https://e-menum.net')
         data = schema.to_dict()
 
         self.assertEqual(data['@type'], 'Article')
         self.assertEqual(data['headline'], 'How to Create QR Menus')
         self.assertEqual(data['description'], 'A guide to digital menus.')
-        self.assertEqual(data['url'], 'https://e-menum.com/blog/how-to-create-qr-menus/')
+        self.assertEqual(data['url'], 'https://e-menum.net/blog/how-to-create-qr-menus/')
 
     def test_to_dict_author(self):
         post = self._make_post()

@@ -156,7 +156,7 @@ class ArticleSchema(SchemaBuilder):
         blog_post:
             A ``BlogPost`` model instance.
         base_url:
-            Absolute scheme + host prefix (e.g. ``https://e-menum.com``).
+            Absolute scheme + host prefix (e.g. ``https://e-menum.net``).
         """
         self.post = blog_post
         self.base_url = base_url.rstrip('/')

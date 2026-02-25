@@ -21,14 +21,14 @@ DEBUG = False
 
 # SECURITY WARNING: Set this to your actual staging domain(s)
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[  # noqa: F405
-    'staging.e-menum.com',
-    'staging-api.e-menum.com',
+    f'staging.{SITE_DOMAIN}',      # noqa: F405
+    f'staging-api.{SITE_DOMAIN}',  # noqa: F405
 ])
 
 # CSRF trusted origins for staging
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[  # noqa: F405
-    'https://staging.e-menum.com',
-    'https://staging-api.e-menum.com',
+    f'https://staging.{SITE_DOMAIN}',      # noqa: F405
+    f'https://staging-api.{SITE_DOMAIN}',  # noqa: F405
 ])
 
 
@@ -157,7 +157,7 @@ CSRF_COOKIE_HTTPONLY = True
 
 # Staging-specific CORS settings
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[  # noqa: F405
-    'https://staging.e-menum.com',
+    f'https://staging.{SITE_DOMAIN}',  # noqa: F405
 ])
 
 

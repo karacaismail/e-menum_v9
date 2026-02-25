@@ -23,7 +23,7 @@ class SiteSettings(TimeStampedModel):
 
     # Contact info
     phone = models.CharField(_('telefon'), max_length=30, default='+90 850 123 4567')
-    email = models.EmailField(_('e-posta'), default='info@e-menum.com')
+    email = models.EmailField(_('e-posta'), default='info@e-menum.net')
     address = models.CharField(_('adres'), max_length=200, default='Istanbul, Turkiye')
 
     # Social media
@@ -69,7 +69,7 @@ class SiteSettings(TimeStampedModel):
     trade_registry = models.CharField(_('ticaret sicil'), max_length=100, blank=True)
 
     # Status page
-    status_page_url = models.URLField(_('durum sayfasi URL'), blank=True, default='https://status.emenum.com')
+    status_page_url = models.URLField(_('durum sayfasi URL'), blank=True, default='https://status.e-menum.net')
 
     class Meta:
         verbose_name = _('Site Ayarlari')

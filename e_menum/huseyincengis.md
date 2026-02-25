@@ -152,12 +152,13 @@ POSTGRES_PASSWORD=<guclu-sifre-min-20-karakter>
 DJANGO_SUPERUSER_PASSWORD=<admin-sifresi-min-12-karakter>
 
 # ──────────────────────────────────────────────────
-# 2. DOMAIN AYARLARI
+# 2. DOMAIN AYARLARI (tek kaynak: SITE_DOMAIN)
 # ──────────────────────────────────────────────────
-ALLOWED_HOSTS=e-menum.com,www.e-menum.com,api.e-menum.com,SUNUCU_IP
-CSRF_TRUSTED_ORIGINS=https://e-menum.com,https://www.e-menum.com
-CORS_ALLOWED_ORIGINS=https://e-menum.com,https://www.e-menum.com
-SITE_URL=https://e-menum.com
+SITE_DOMAIN=e-menum.net
+ALLOWED_HOSTS=e-menum.net,www.e-menum.net,api.e-menum.net,SUNUCU_IP
+CSRF_TRUSTED_ORIGINS=https://e-menum.net,https://www.e-menum.net
+CORS_ALLOWED_ORIGINS=https://e-menum.net,https://www.e-menum.net
+SITE_URL=https://e-menum.net
 
 # ──────────────────────────────────────────────────
 # 3. DOCKER INTERNAL — Degistirme!
@@ -172,7 +173,7 @@ SECURE_SSL_REDIRECT=false
 DJANGO_MIGRATE=true
 DJANGO_COLLECTSTATIC=true
 DJANGO_CREATE_SUPERUSER=true
-DJANGO_SUPERUSER_EMAIL=admin@emenum.com
+DJANGO_SUPERUSER_EMAIL=admin@e-menum.net
 
 # ──────────────────────────────────────────────────
 # 5. E-POSTA (Opsiyonel — sonra ayarlanabilir)
@@ -246,7 +247,7 @@ Asagidaki icerigi yapistir:
 server {
     listen 80;
     listen [::]:80;
-    server_name e-menum.com www.e-menum.com;
+    server_name e-menum.net www.e-menum.net;
 
     # Let's Encrypt challenge icin
     location /.well-known/acme-challenge/ {
@@ -262,11 +263,11 @@ server {
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
-    server_name e-menum.com www.e-menum.com;
+    server_name e-menum.net www.e-menum.net;
 
     # SSL sertifikalari (certbot tarafindan yonetilir)
-    ssl_certificate /etc/letsencrypt/live/e-menum.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/e-menum.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/e-menum.net/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/e-menum.net/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
@@ -377,7 +378,7 @@ sudo systemctl reload nginx
 
 ```bash
 # SSL sertifika al
-sudo certbot --nginx -d e-menum.com -d www.e-menum.com
+sudo certbot --nginx -d e-menum.net -d www.e-menum.net
 
 # Otomatik yenileme test
 sudo certbot renew --dry-run
@@ -409,8 +410,8 @@ DJANGO_CREATE_SUPERUSER=false
 ### 5.3 Admin Panele Eris
 
 ```
-https://e-menum.com/admin/
-Email: admin@emenum.com
+https://e-menum.net/admin/
+Email: admin@e-menum.net
 Sifre: .env'de belirledigin sifre
 ```
 
@@ -841,7 +842,7 @@ docker compose -f docker-compose.prod.yml logs web --tail=1 2>&1 | wc -c
 - [ ] `curl http://localhost:8000/health/` — `healthy` dondurdu
 - [ ] Nginx reverse proxy konfigurasyonu yapildi
 - [ ] SSL sertifikasi alindi (certbot)
-- [ ] `https://e-menum.com` erisilebildi
+- [ ] `https://e-menum.net` erisilebildi
 - [ ] Admin panel calisiyorr (`/admin/`)
 - [ ] `seed_cms_content` komutu calistirildi
 - [ ] Backup cron job eklendi
@@ -849,5 +850,5 @@ docker compose -f docker-compose.prod.yml logs web --tail=1 2>&1 | wc -c
 
 ---
 
-**Sorular icin:** ismail@emenum.com | Slack: #devops
+**Sorular icin:** ismail@e-menum.net | Slack: #devops
 
