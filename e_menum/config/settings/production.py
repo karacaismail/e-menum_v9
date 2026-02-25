@@ -69,7 +69,7 @@ try:
             default=DATABASE_URL,
             conn_max_age=600,  # 10 minutes connection pooling
             conn_health_checks=True,
-            ssl_require=env.bool('DATABASE_SSL_REQUIRE', default=True),  # noqa: F405
+            ssl_require=env.bool('DATABASE_SSL_REQUIRE', default=False),  # noqa: F405
         )
     }
 except ImportError:

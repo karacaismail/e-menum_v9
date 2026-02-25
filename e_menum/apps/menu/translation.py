@@ -4,7 +4,7 @@ Model translation options for Menu app models.
 Uses django-modeltranslation to create per-language database columns
 for all translatable text fields. Supported languages: TR, EN, AR, UK, DE.
 
-Each registered model gets _tr, _en, _ar, _ru, _de suffixed columns.
+Each registered model gets _tr, _en, _ar, _uk, _de suffixed columns.
 The admin uses TabbedTranslationAdmin to show language tabs.
 """
 
