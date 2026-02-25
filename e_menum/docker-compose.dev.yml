@@ -13,8 +13,6 @@
 #   docker-compose up
 # =============================================================================
 
-version: "3.9"
-
 services:
   # ---------------------------------------------------------------------------
   # PostgreSQL - Development Overrides
@@ -65,8 +63,6 @@ services:
       - media_volume:/app/media
       # Cache pip packages between builds
       - pip_cache:/home/emenum/.cache/pip
-      # Preserve SQLite database if used
-      - ./db.sqlite3:/app/db.sqlite3:delegated
     # Override command for development with auto-reload
     command: >
       sh -c "
