@@ -541,7 +541,7 @@ LANGUAGES = [
     ('tr', _('Turkce')),
     ('en', _('English')),
     ('ar', _('Arabic')),
-    ('ru', _('Russian')),
+    ('uk', _('Ukrainian')),
     ('de', _('Deutsch')),
 ]
 
@@ -554,7 +554,7 @@ LOCALE_PATHS = [
 # =============================================================================
 
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'tr'
-MODELTRANSLATION_LANGUAGES = ('tr', 'en', 'ar', 'ru', 'de')
+MODELTRANSLATION_LANGUAGES = ('tr', 'en', 'ar', 'uk', 'de')
 MODELTRANSLATION_FALLBACK_LANGUAGES = {'default': ('tr', 'en')}
 MODELTRANSLATION_PREPOPULATE_LANGUAGE = 'tr'
 

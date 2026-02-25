@@ -2,7 +2,7 @@
 Model translation options for Subscriptions app models.
 
 Uses django-modeltranslation to create per-language database columns
-for all translatable text fields. Supported languages: TR, EN, AR, RU, DE.
+for all translatable text fields. Supported languages: TR, EN, AR, UK, DE.
 
 Only platform-defined content models are registered (Plan, Feature).
 Subscription/Invoice fields are operational data, not translated.

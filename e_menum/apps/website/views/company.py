@@ -86,5 +86,5 @@ class BrandAssetsView(CmsContextMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['assets'] = BrandAsset.objects.filter(
             is_active=True,
-        ).order_by('category', 'sort_order')
+        ).order_by('asset_type', 'sort_order')
         return context
