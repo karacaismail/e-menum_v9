@@ -35,10 +35,5 @@ class MenuConfig(AppConfig):
         This method is called once Django has finished loading.
         Used for signal registration and other startup tasks.
         """
-        # Import signals to register them
-        # Note: Uncomment when signals module is created
-        # try:
-        #     from apps.menu import signals  # noqa: F401
-        # except ImportError:
-        #     pass
+        # Import signals to register them (placeholder — no signals.py yet)
         pass

@@ -35,9 +35,7 @@ class CustomersConfig(AppConfig):
         Used for signal registration and other startup tasks.
         """
         # Import signals to register them
-        # Note: Uncomment when signals module is created
-        # try:
-        #     from apps.customers import signals  # noqa: F401
-        # except ImportError:
-        #     pass
-        pass
+        try:
+            from apps.customers import signals  # noqa: F401
+        except ImportError:
+            pass
