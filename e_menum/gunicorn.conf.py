@@ -122,6 +122,10 @@ reload = False
 # Using /dev/shm for faster I/O in containers
 tmp_upload_dir = None
 
+# Explicitly disable statsd to prevent control server socket errors
+statsd_host = None
+statsd_prefix = ''
+
 # Forwarded allow IPs - trust X-Forwarded-* headers from these IPs
 # '*' trusts all proxies - only use if behind trusted proxy
 forwarded_allow_ips = os.environ.get('GUNICORN_FORWARDED_ALLOW_IPS', '127.0.0.1')

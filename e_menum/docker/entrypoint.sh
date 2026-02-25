@@ -8,6 +8,15 @@ echo "Settings: ${DJANGO_SETTINGS_MODULE}"
 echo "Port: ${PORT:-8000}"
 echo "========================================"
 
+# ─── Create .env from .env.example if not exists ─────────────
+if [ ! -f /app/.env ] && [ -f /app/.env.example ]; then
+    echo "No .env file found. Creating from .env.example..."
+    cp /app/.env.example /app/.env
+    echo ".env file created from .env.example."
+elif [ -f /app/.env ]; then
+    echo ".env file already exists."
+fi
+
 # ─── Wait for database ──────────────────────────────────────
 if [ -n "$DATABASE_URL" ]; then
     echo "Checking database connection..."

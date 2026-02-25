@@ -28,6 +28,11 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[  # noqa: F405
     f'api.{SITE_DOMAIN}',  # noqa: F405
 ])
 
+# Always allow localhost for internal health checks (Docker, load balancers)
+for _host in ('localhost', '127.0.0.1'):
+    if _host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(_host)
+
 # CSRF trusted origins for production
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[  # noqa: F405
     f'https://{SITE_DOMAIN}',           # noqa: F405

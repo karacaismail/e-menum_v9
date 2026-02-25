@@ -558,6 +558,22 @@ class Plan(TimeStampedMixin, SoftDeleteMixin, models.Model):
         return round(discount)
 
     @property
+    def yearly_per_month(self) -> int:
+        """
+        Calculate yearly price divided by 12 (monthly equivalent when billed yearly).
+
+        Used in the pricing cards template for the monthly/yearly toggle.
+        Returns an integer for clean display (e.g., 1666 instead of 1666.67).
+
+        Returns:
+            int: Rounded-down yearly price per month
+        """
+        if self.price_yearly == 0:
+            return 0
+        from decimal import Decimal, ROUND_DOWN
+        return int((self.price_yearly / Decimal('12')).to_integral_value(rounding=ROUND_DOWN))
+
+    @property
     def formatted_price_monthly(self) -> str:
         """Return formatted monthly price with currency symbol."""
         currency_symbols = {

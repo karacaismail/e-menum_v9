@@ -117,8 +117,6 @@ class MediaFolderAdmin(EMenumPermissionMixin, admin.ModelAdmin):
 class MediaAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     """Admin interface for Media management."""
 
-    change_list_template = 'admin/media/media/change_list.html'
-
     list_display = [
         'thumbnail_preview', 'name', 'organization', 'folder',
         'media_type_badge', 'status_badge', 'file_size_display',

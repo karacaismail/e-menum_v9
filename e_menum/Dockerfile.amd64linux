@@ -89,9 +89,10 @@ RUN chmod +x /entrypoint.sh
 # Copy application code
 COPY --chown=emenum:emenum . .
 
-# Create directories for static and media files
-RUN mkdir -p staticfiles media logs \
-    && chown -R emenum:emenum staticfiles media logs
+# Create directories for static, media, and temp files
+RUN mkdir -p staticfiles media logs /run/gunicorn /tmp/gunicorn \
+    && chown -R emenum:emenum staticfiles media logs /run/gunicorn /tmp/gunicorn \
+    && chmod 1777 /tmp
 
 # Collect static files (build-time only secrets)
 RUN DJANGO_SECRET_KEY='build-time-secret-for-collectstatic' \
