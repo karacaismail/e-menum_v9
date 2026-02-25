@@ -7,7 +7,7 @@
 # -----------------------------------------------------------------------------
 # Stage 1: Builder - Install dependencies and compile Python packages
 # -----------------------------------------------------------------------------
-FROM python:3.11-slim-bookworm AS builder
+FROM python:3.13-slim-bookworm AS builder
 
 # Set environment variables for build
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -36,7 +36,7 @@ RUN pip install -r requirements.txt
 # -----------------------------------------------------------------------------
 # Stage 2: Production - Minimal runtime image
 # -----------------------------------------------------------------------------
-FROM python:3.11-slim-bookworm AS production
+FROM python:3.13-slim-bookworm AS production
 
 # Labels for container metadata
 LABEL maintainer="E-Menum Team" \

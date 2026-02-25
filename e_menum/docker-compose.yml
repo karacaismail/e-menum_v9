@@ -75,6 +75,7 @@ services:
 
       # Database
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-emenum}
+      DATABASE_SSL_REQUIRE: "false"
 
       # Redis
       REDIS_URL: redis://redis:6379/0

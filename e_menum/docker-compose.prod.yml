@@ -73,6 +73,7 @@ services:
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/1
       CELERY_RESULT_BACKEND: redis://redis:6379/1
+      DATABASE_SSL_REQUIRE: "false"
       TZ: ${TZ:-Europe/Istanbul}
       # Entrypoint flags
       DJANGO_MIGRATE: "true"
@@ -117,6 +118,7 @@ services:
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/1
       CELERY_RESULT_BACKEND: redis://redis:6379/1
+      DATABASE_SSL_REQUIRE: "false"
       TZ: ${TZ:-Europe/Istanbul}
     volumes:
       - media_volume:/app/media
@@ -146,6 +148,7 @@ services:
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/1
       CELERY_RESULT_BACKEND: redis://redis:6379/1
+      DATABASE_SSL_REQUIRE: "false"
       TZ: ${TZ:-Europe/Istanbul}
     depends_on:
       db:

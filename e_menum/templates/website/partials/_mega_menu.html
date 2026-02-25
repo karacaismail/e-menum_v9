@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n website_tags %}
 
 {% for item in marketing.mega_menu %}
     {% if item.is_mega %}
@@ -39,7 +39,7 @@
                 <div class="p-3">
                     <div class="grid grid-cols-1 gap-1">
                         {% for child in item.children %}
-                        <a href="{% url child.url %}"
+                        <a href="{{ child.url|resolve_nav_url }}"
                            class="flex items-start gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors group"
                         >
                             <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 group-hover:bg-primary-100 dark:group-hover:bg-primary-900/30 transition-colors shrink-0">
@@ -64,7 +64,7 @@
                 {# Bottom CTA band for mega menus with many items #}
                 {% if item.children|length > 3 %}
                 <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-800">
-                    <a href="{% if item.url %}{% url item.url %}{% else %}#{% endif %}"
+                    <a href="{{ item.url|resolve_nav_url }}"
                        class="text-xs font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 inline-flex items-center gap-1"
                     >
                         {% trans "Tümünü Gör" %}
@@ -78,7 +78,7 @@
 
     {% else %}
     {# SIMPLE FLAT LINK (no dropdown) #}
-    <a href="{% url item.url %}"
+    <a href="{{ item.url|resolve_nav_url }}"
        class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
        :class="scrolled
            ? 'text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-100 dark:hover:bg-gray-800'

@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n website_tags %}
 
 <header
     class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
@@ -145,7 +145,7 @@
                     </button>
                     <div x-show="open" x-collapse x-cloak class="pl-4 space-y-1 mt-1">
                         {% for child in item.children %}
-                        <a href="{% url child.url %}"
+                        <a href="{{ child.url|resolve_nav_url }}"
                            class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-lg"
                            @click="mobileOpen = false"
                         >
@@ -156,7 +156,7 @@
                     </div>
                 </div>
                 {% else %}
-                <a href="{% url item.url %}"
+                <a href="{{ item.url|resolve_nav_url }}"
                    class="block px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-lg"
                    @click="mobileOpen = false"
                 >

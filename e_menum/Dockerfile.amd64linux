@@ -10,7 +10,7 @@
 # -----------------------------------------------------------------------------
 # Stage 1: Builder - Install dependencies and compile Python packages
 # -----------------------------------------------------------------------------
-FROM --platform=linux/amd64 python:3.11-slim-bookworm AS builder
+FROM --platform=linux/amd64 python:3.13-slim-bookworm AS builder
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -38,7 +38,7 @@ RUN pip install -r requirements.txt
 # -----------------------------------------------------------------------------
 # Stage 2: Production - Minimal runtime image
 # -----------------------------------------------------------------------------
-FROM --platform=linux/amd64 python:3.11-slim-bookworm AS production
+FROM --platform=linux/amd64 python:3.13-slim-bookworm AS production
 
 LABEL maintainer="E-Menum Team" \
       version="1.0" \

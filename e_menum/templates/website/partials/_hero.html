@@ -1,4 +1,4 @@
-{% load i18n static %}
+{% load i18n static website_tags %}
 {% comment %}============================================================================
    HERO SECTION — Reusable hero banner
 
@@ -44,7 +44,7 @@
                 {% if cta1 or cta2 %}
                 <div class="flex flex-col sm:flex-row gap-4 {% if not show_image %}justify-center{% endif %}">
                     {% if cta1 %}
-                    <a href="{% url cta1_url %}"
+                    <a href="{{ cta1_url|resolve_nav_url }}"
                        class="btn btn-primary btn-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                     >
                         {{ cta1 }}
@@ -52,7 +52,7 @@
                     </a>
                     {% endif %}
                     {% if cta2 %}
-                    <a href="{% url cta2_url %}"
+                    <a href="{{ cta2_url|resolve_nav_url }}"
                        class="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white border-2 border-white/40 hover:border-white/80 rounded-xl transition-all hover:bg-white/10 bg-white/[0.06]"
                     >
                         {{ cta2 }}
