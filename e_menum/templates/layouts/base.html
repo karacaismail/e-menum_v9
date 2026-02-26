@@ -21,7 +21,7 @@
     <meta property="og:description" content="{% block og_description %}{{ block.super }}{% endblock %}">
     <meta property="og:type" content="{% block og_type %}website{% endblock %}">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
-    <meta property="og:image" content="{% block og_image %}{% static 'images/og-default.png' %}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{% static 'images/og-default.svg' %}{% endblock %}">
     <meta property="og:locale" content="{{ LANGUAGE_CODE|default:'tr' }}_{% if LANGUAGE_CODE == 'en' %}US{% else %}TR{% endif %}">
 
     {# Twitter Card #}
@@ -39,7 +39,7 @@
 
     {# Favicon #}
     <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
-    <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.svg' %}">
 
     {# Page Title #}
     <title>{% block full_title %}{% block page_title %}{% endblock %} | E-Menum{% endblock %}</title>

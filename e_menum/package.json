@@ -1,0 +1,15 @@
+{
+  "name": "e-menum-css",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tailwind CSS build for E-Menum Django project",
+  "scripts": {
+    "css:build": "npx tailwindcss -i ./static/css/input.css -o ./static/css/tailwind.min.css --minify",
+    "css:watch": "npx tailwindcss -i ./static/css/input.css -o ./static/css/tailwind.min.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17",
+    "@tailwindcss/forms": "^0.5.9",
+    "@tailwindcss/typography": "^0.5.15"
+  }
+}

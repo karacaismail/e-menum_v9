@@ -14,6 +14,9 @@ __pycache__
 *$py.class
 *.so
 
+# Node.js (only needed in css-builder stage, not in app context)
+node_modules/
+
 # Virtual environments
 venv/
 env/

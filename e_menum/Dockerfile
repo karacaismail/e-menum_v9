@@ -5,7 +5,27 @@
 # =============================================================================
 
 # -----------------------------------------------------------------------------
-# Stage 1: Builder - Install dependencies and compile Python packages
+# Stage 1: CSS Builder - Build Tailwind CSS (Node.js only needed here)
+# -----------------------------------------------------------------------------
+FROM node:20-slim AS css-builder
+
+WORKDIR /build
+
+# Copy only what's needed for Tailwind build
+COPY package.json tailwind.config.js ./
+COPY static/css/input.css ./static/css/
+COPY templates/ ./templates/
+COPY apps/ ./apps/
+COPY static/ ./static/
+
+# Install Tailwind and build CSS
+RUN npm install --no-audit --no-fund \
+    && npx tailwindcss -i ./static/css/input.css -o ./static/css/tailwind.min.css --minify \
+    && echo "Tailwind CSS built: $(wc -c < ./static/css/tailwind.min.css) bytes"
+
+
+# -----------------------------------------------------------------------------
+# Stage 2: Python Builder - Install dependencies and compile Python packages
 # -----------------------------------------------------------------------------
 FROM python:3.13-slim-bookworm AS builder
 
@@ -84,6 +104,9 @@ COPY --from=builder /opt/venv /opt/venv
 
 # Copy application code
 COPY --chown=emenum:emenum . .
+
+# Copy built Tailwind CSS from css-builder stage (replaces placeholder)
+COPY --from=css-builder --chown=emenum:emenum /build/static/css/tailwind.min.css ./static/css/tailwind.min.css
 
 # Create directories for static, media, and temp files
 RUN mkdir -p staticfiles media logs /run/gunicorn /tmp/gunicorn \

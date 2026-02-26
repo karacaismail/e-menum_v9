@@ -1,0 +1,6 @@
+/* Tailwind CSS source file for E-Menum */
+/* Build: npx tailwindcss -i ./static/css/input.css -o ./static/css/tailwind.min.css --minify */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
