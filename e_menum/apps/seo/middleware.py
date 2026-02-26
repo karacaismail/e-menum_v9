@@ -9,6 +9,7 @@ Middleware:
 """
 
 import logging
+import os
 from datetime import date
 
 from django.conf import settings
@@ -104,14 +105,25 @@ class CanonicalDomainMiddleware:
     and the request's ``Host`` header does not match, the middleware issues
     a 301 redirect to the canonical domain.
 
+    Requests to localhost, 127.0.0.1, or the server IP (``SERVER_IP`` env)
+    are **excluded** so health checks, direct IP access, and reverse-proxy
+    probes keep working.
+
     Additionally, if ``settings.APPEND_SLASH`` is ``True`` and the path
     does not end with ``/`` (and is not a file path), a trailing slash is
     appended.
     """
 
+    # Hosts that should never be redirected (internal / health checks)
+    SKIP_HOSTS = {'localhost', '127.0.0.1', '0.0.0.0'}
+
     def __init__(self, get_response):
         self.get_response = get_response
         self.canonical_domain = getattr(settings, 'SEO_CANONICAL_DOMAIN', '')
+        # Also skip the configured server IP
+        server_ip = os.environ.get('SERVER_IP', '')
+        if server_ip:
+            self.SKIP_HOSTS = self.SKIP_HOSTS | {server_ip}
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         # --- Canonical domain redirect ---
@@ -119,7 +131,8 @@ class CanonicalDomainMiddleware:
             host = request.get_host().split(':')[0]  # Strip port
             canonical = self.canonical_domain.split(':')[0]
 
-            if host != canonical:
+            # Skip redirect for internal/health-check hosts and IP access
+            if host != canonical and host not in self.SKIP_HOSTS:
                 # Preserve scheme, path, and query string
                 scheme = 'https' if request.is_secure() else request.scheme
                 new_url = f'{scheme}://{self.canonical_domain}{request.get_full_path()}'

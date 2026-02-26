@@ -69,11 +69,15 @@ services:
       DEBUG: "False"
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
       ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost}
+      SERVER_IP: ${SERVER_IP:-}
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-emenum}
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/1
       CELERY_RESULT_BACKEND: redis://redis:6379/1
       DATABASE_SSL_REQUIRE: "false"
+      # SSL/HTTPS: Let the reverse proxy (Traefik/Nginx) handle redirection.
+      # Only set to "true" if Django is directly exposed to the internet.
+      SECURE_SSL_REDIRECT: ${SECURE_SSL_REDIRECT:-false}
       TZ: ${TZ:-Europe/Istanbul}
       # Entrypoint flags
       DJANGO_MIGRATE: "true"

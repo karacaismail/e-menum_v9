@@ -28,17 +28,33 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[  # noqa: F405
     f'api.{SITE_DOMAIN}',  # noqa: F405
 ])
 
-# Always allow localhost for internal health checks (Docker, load balancers)
-for _host in ('localhost', '127.0.0.1'):
+# Always allow localhost and common internal hosts for health checks / proxies
+for _host in ('localhost', '127.0.0.1', '0.0.0.0'):
     if _host not in ALLOWED_HOSTS:
         ALLOWED_HOSTS.append(_host)
 
+# Allow server IP for direct access (useful when domain is not yet active)
+_server_ip = os.environ.get('SERVER_IP', '')
+if _server_ip and _server_ip not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(_server_ip)
+
 # CSRF trusted origins for production
+# Include both http:// and https:// so the app works behind a proxy that
+# terminates SSL (Django sees HTTP) as well as direct HTTPS.
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[  # noqa: F405
     f'https://{SITE_DOMAIN}',           # noqa: F405
-    f'https://www.{SITE_DOMAIN}',  # noqa: F405
-    f'https://api.{SITE_DOMAIN}',  # noqa: F405
+    f'https://www.{SITE_DOMAIN}',       # noqa: F405
+    f'https://api.{SITE_DOMAIN}',       # noqa: F405
+    f'http://{SITE_DOMAIN}',            # noqa: F405
+    f'http://www.{SITE_DOMAIN}',        # noqa: F405
 ])
+
+# Allow server IP for CSRF when accessed directly
+if _server_ip:
+    CSRF_TRUSTED_ORIGINS.extend([
+        f'http://{_server_ip}',
+        f'http://{_server_ip}:8000',
+    ])
 
 
 # =============================================================================
@@ -152,17 +168,27 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
 # HTTPS enforcement
-SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=True)  # noqa: F405
+# IMPORTANT: Set SECURE_SSL_REDIRECT=False (default) when running behind a
+# reverse proxy (Traefik, Nginx Proxy Manager, Coolify, etc.) that already
+# handles HTTP→HTTPS redirection.  Enabling it in BOTH the proxy AND Django
+# causes an infinite redirect loop (ERR_TOO_MANY_REDIRECTS).
+SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=False)  # noqa: F405
+
+# Trust X-Forwarded-Proto from the reverse proxy so request.is_secure()
+# returns True when the proxy terminates SSL.
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # HTTP Strict Transport Security (HSTS)
-SECURE_HSTS_SECONDS = 31536000  # 1 year
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True  # Allow HSTS preload list submission
+# Let the reverse proxy set HSTS headers to avoid conflicts.
+# Set SECURE_HSTS_SECONDS > 0 via env ONLY if Django handles SSL directly.
+SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS', default=0)  # noqa: F405
+SECURE_HSTS_INCLUDE_SUBDOMAINS = SECURE_HSTS_SECONDS > 0
+SECURE_HSTS_PRELOAD = SECURE_HSTS_SECONDS > 0
 
-# Cookie security
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# Cookie security — derive from SECURE_SSL_REDIRECT so cookies work on
+# both HTTP (direct IP) and HTTPS (behind proxy) without manual toggling.
+SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', default=False)  # noqa: F405
+CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE', default=False)  # noqa: F405
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
@@ -209,7 +235,16 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'  # noqa: F405
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[  # noqa: F405
     f'https://{SITE_DOMAIN}',      # noqa: F405
     f'https://www.{SITE_DOMAIN}',  # noqa: F405
+    f'http://{SITE_DOMAIN}',       # noqa: F405
+    f'http://www.{SITE_DOMAIN}',   # noqa: F405
 ])
+
+# Allow server IP for CORS when accessed directly
+if _server_ip:
+    CORS_ALLOWED_ORIGINS.extend([
+        f'http://{_server_ip}',
+        f'http://{_server_ip}:8000',
+    ])
 
 # Disable CORS allow all origins in production
 CORS_ALLOW_ALL_ORIGINS = False
