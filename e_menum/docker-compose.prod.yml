@@ -85,6 +85,8 @@ services:
       DJANGO_CREATE_SUPERUSER: ${DJANGO_CREATE_SUPERUSER:-false}
       DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL:-admin@e-menum.net}
       DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD:-admin123}
+      # Seed data: set to "true" for first deploy, auto-skips if data exists
+      DJANGO_SEED_DATA: ${DJANGO_SEED_DATA:-true}
     volumes:
       # NOTE: Do NOT mount a volume over /app/staticfiles!
       # WhiteNoise serves static files directly from the image.

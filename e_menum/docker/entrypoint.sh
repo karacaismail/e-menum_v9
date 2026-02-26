@@ -91,6 +91,42 @@ if [ "$DJANGO_COLLECTSTATIC" = "true" ]; then
     echo "Static files collected. $(ls /app/staticfiles/ 2>/dev/null | wc -l) items in staticfiles/"
 fi
 
+# ─── Seed data if requested (runs once, skips if data exists) ─
+if [ "$DJANGO_SEED_DATA" = "true" ]; then
+    echo "Checking if seed data is needed..."
+    NEEDS_SEED=$(python manage.py shell -c "
+from apps.core.models import Role
+print('yes' if Role.objects.count() == 0 else 'no')
+" 2>/dev/null || echo "yes")
+
+    if [ "$NEEDS_SEED" = "yes" ]; then
+        echo "════════════════════════════════════════"
+        echo "  Seeding initial data..."
+        echo "════════════════════════════════════════"
+
+        echo "[1/5] Seeding demo data (roles, plans, restaurants, products, orders)..."
+        python manage.py seed_demo_data 2>&1 || echo "WARNING: seed_demo_data had errors (continuing)"
+
+        echo "[2/5] Seeding CMS content (website pages, blog, FAQ)..."
+        python manage.py seed_cms_content 2>&1 || echo "WARNING: seed_cms_content had errors (continuing)"
+
+        echo "[3/5] Seeding SEO data (robots.txt, sitemap)..."
+        python manage.py seed_seo_data 2>&1 || echo "WARNING: seed_seo_data had errors (continuing)"
+
+        echo "[4/5] Seeding report definitions (140 reports)..."
+        python manage.py seed_report_definitions 2>&1 || echo "WARNING: seed_report_definitions had errors (continuing)"
+
+        echo "[5/5] Seeding shield data (bot whitelist, security rules)..."
+        python manage.py seed_shield_data 2>&1 || echo "WARNING: seed_shield_data had errors (continuing)"
+
+        echo "════════════════════════════════════════"
+        echo "  Seed data complete!"
+        echo "════════════════════════════════════════"
+    else
+        echo "Seed data already exists (roles found). Skipping."
+    fi
+fi
+
 echo "Starting application..."
 
 # Execute the main command (gunicorn, celery, etc.)
