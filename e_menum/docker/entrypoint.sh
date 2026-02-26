@@ -9,12 +9,20 @@ echo "Port: ${PORT:-8000}"
 echo "========================================"
 
 # ─── Create .env from .env.example if not exists ─────────────
-if [ ! -f /app/.env ] && [ -f /app/.env.example ]; then
-    echo "No .env file found. Creating from .env.example..."
-    cp /app/.env.example /app/.env
-    echo ".env file created from .env.example."
-elif [ -f /app/.env ]; then
+# NOTE: In production Docker, env vars come from docker-compose.prod.yml,
+# so a .env file inside the container is optional. If creation fails
+# (e.g. permission issue), the app continues with env vars from compose.
+if [ -f /app/.env ]; then
     echo ".env file already exists."
+elif [ -f /app/.env.example ]; then
+    echo "No .env file found. Creating from .env.example..."
+    if cp /app/.env.example /app/.env 2>/dev/null; then
+        echo ".env file created from .env.example."
+    else
+        echo "WARNING: Could not create .env (permission denied). Using environment variables from Docker."
+    fi
+else
+    echo "No .env or .env.example found. Using environment variables from Docker."
 fi
 
 # ─── Wait for database ──────────────────────────────────────

@@ -100,6 +100,10 @@ RUN DJANGO_SECRET_KEY='build-time-secret-for-collectstatic' \
     REDIS_URL='redis://localhost:6379/0' \
     python manage.py collectstatic --noinput --clear 2>/dev/null || true
 
+# IMPORTANT: Ensure /app directory itself is owned by emenum so the
+# entrypoint can create .env and other runtime files.
+RUN chown emenum:emenum /app
+
 # Switch to non-root user
 USER emenum
 
