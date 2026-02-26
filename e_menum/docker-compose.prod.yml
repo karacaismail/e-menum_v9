@@ -86,7 +86,9 @@ services:
       DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL:-admin@e-menum.net}
       DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD:-admin123}
     volumes:
-      - static_volume:/app/staticfiles
+      # NOTE: Do NOT mount a volume over /app/staticfiles!
+      # WhiteNoise serves static files directly from the image.
+      # A volume mount would mask the files collected during docker build.
       - media_volume:/app/media
     ports:
       - "${WEB_PORT:-8000}:8000"
@@ -180,7 +182,5 @@ volumes:
     name: emenum_postgres_data
   redis_data:
     name: emenum_redis_data
-  static_volume:
-    name: emenum_static
   media_volume:
     name: emenum_media

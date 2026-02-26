@@ -82,7 +82,13 @@ fi
 # ─── Collect static files if requested ──────────────────────
 if [ "$DJANGO_COLLECTSTATIC" = "true" ]; then
     echo "Collecting static files..."
+    # Ensure staticfiles directory is writable (volume mounts may be root-owned)
+    if [ -d /app/staticfiles ] && [ ! -w /app/staticfiles ]; then
+        echo "Fixing staticfiles directory permissions..."
+        sudo chown -R emenum:emenum /app/staticfiles 2>/dev/null || true
+    fi
     python manage.py collectstatic --noinput
+    echo "Static files collected. $(ls /app/staticfiles/ 2>/dev/null | wc -l) items in staticfiles/"
 fi
 
 echo "Starting application..."

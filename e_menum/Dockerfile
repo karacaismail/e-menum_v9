@@ -101,9 +101,11 @@ RUN DJANGO_SECRET_KEY='build-time-secret-for-collectstatic' \
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# IMPORTANT: Ensure /app directory itself is owned by emenum so the
-# entrypoint can create .env and other runtime files.
-RUN chown emenum:emenum /app
+# IMPORTANT: Ensure /app and staticfiles are owned by emenum so that:
+# 1. The entrypoint can create .env and other runtime files
+# 2. collectstatic (running as emenum) can update static files at startup
+RUN chown emenum:emenum /app \
+    && chown -R emenum:emenum /app/staticfiles 2>/dev/null || true
 
 # Switch to non-root user
 USER emenum
