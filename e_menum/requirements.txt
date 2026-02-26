@@ -18,6 +18,9 @@ dj-database-url>=2.1
 # Configuration
 django-environ>=0.12
 
+# Password Hashing
+bcrypt>=4.0
+
 # Permissions
 django-guardian>=2.4
 
