@@ -22,6 +22,7 @@
 #   DEPLOY_BUILD  1 ise Docker image yeniden derlenir (varsayılan: 0)
 #   FORCE_DEPLOY  1 ise degisiklik olmasa da islemler yapilir (varsayılan: 0)
 #   DEPLOY_DEBUG  1 ise deploy sonrasi health check ekler (degisiklik/FORCE yoksa calismaz)
+#   DEPLOY_LOG    Log dosyasi yolu (varsayilan: /var/log/deploy.log)
 #
 # Kesinti: Restart sirasinda web/celery ~2-5 sn kesinti olur. Migrate once uygulanir,
 #         hata verirse script durur, restart yapilmaz (proje bozulmaz).
@@ -38,10 +39,20 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-log_info()  { echo -e "${BLUE}[INFO]${NC} $*"; }
-log_ok()    { echo -e "${GREEN}[OK]${NC} $*"; }
-log_warn()  { echo -e "${YELLOW}[WARN]${NC} $*"; }
-log_err()   { echo -e "${RED}[ERROR]${NC} $*"; }
+# Log: hem ekrana hem dosyaya (timestamp ile)
+_log() {
+  local level="$1" color="$2" msg="${*:3}"
+  local ts
+  ts=$(date '+%Y-%m-%d %H:%M:%S')
+  echo -e "${color}[$level]${NC} $msg"
+  if [[ -n "$LOG_FILE" && -w "$(dirname "$LOG_FILE")" ]]; then
+    echo "[$ts] [$level] $msg" >> "$LOG_FILE"
+  fi
+}
+log_info()  { _log "INFO"  "$BLUE"  "$*"; }
+log_ok()    { _log "OK"    "$GREEN" "$*"; }
+log_warn()  { _log "WARN"  "$YELLOW" "$*"; }
+log_err()   { _log "ERROR" "$RED"   "$*"; }
 
 # -----------------------------------------------------------------------------
 # Lock: Dakikada bir tetiklenince ust uste calismayı engeller (flock)
@@ -71,9 +82,13 @@ if [[ ! -f "$APP_ROOT/manage.py" ]]; then
   exit 1
 fi
 
+# Log dosyasi: DEPLOY_LOG env veya /var/log/deploy.log
+LOG_FILE="${DEPLOY_LOG:-/var/log/deploy.log}"
+
 cd "$REPO_ROOT"
 log_info "Repo root: $REPO_ROOT"
 log_info "App root:  $APP_ROOT"
+log_info "Log file:  $LOG_FILE"
 
 # -----------------------------------------------------------------------------
 # 1. Git pull: fetch + reset --hard (local degisiklikleri atar, remote ile senkron)
@@ -86,6 +101,7 @@ if [[ "$SKIP_PULL" != "1" ]]; then
   BRANCH="${GIT_BRANCH:-$(git branch --show-current)}"
   git fetch origin
   git checkout "$BRANCH"
+  git clean -fd
   git reset --hard "origin/$BRANCH" || { log_err "Git reset failed. Aborting."; exit 1; }
   if [[ "$PREV_HEAD" != "$(git rev-parse HEAD)" ]]; then
     NEED_RESTART=1
@@ -273,6 +289,7 @@ echo ""
 echo "========================================"
 echo "  E-Menum Deploy"
 echo "========================================"
+log_info "Deploy basladi (mode=$DEPLOY_MODE)"
 
 if [[ "$DEPLOY_MODE" == "docker" ]]; then
   run_docker_deploy
@@ -283,3 +300,7 @@ fi
 echo ""
 log_ok "Deploy bitti."
 echo "========================================"
+if [[ -n "$LOG_FILE" ]]; then
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] [DONE] Deploy tamamlandi" >> "$LOG_FILE"
+  echo "" >> "$LOG_FILE"
+fi
