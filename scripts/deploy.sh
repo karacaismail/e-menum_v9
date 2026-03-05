@@ -18,6 +18,8 @@
 #   DEPLOY_MODE   docker | bare  (boşsa otomatik tespit)
 #   GIT_BRANCH    Çekilecek branch (varsayılan: mevcut branch)
 #   SKIP_PULL     1 ise git pull yapılmaz
+#   LOCK_FILE     Kilit dosyasi (varsayılan: /tmp/emenum-deploy.lock)
+#   DEPLOY_BUILD  1 ise Docker image yeniden derlenir (varsayılan: 0, sadece up + migrate)
 # =============================================================================
 
 set -e
@@ -33,6 +35,17 @@ log_info()  { echo -e "${BLUE}[INFO]${NC} $*"; }
 log_ok()    { echo -e "${GREEN}[OK]${NC} $*"; }
 log_warn()  { echo -e "${YELLOW}[WARN]${NC} $*"; }
 log_err()   { echo -e "${RED}[ERROR]${NC} $*"; }
+
+# -----------------------------------------------------------------------------
+# Lock: Dakikada bir tetiklenince ust uste calismayı engeller (flock)
+# -----------------------------------------------------------------------------
+LOCK_FILE="${LOCK_FILE:-/tmp/emenum-deploy.lock}"
+DEPLOY_LOCK_FD=200
+exec 200>"$LOCK_FILE"
+if ! flock -n 200; then
+  log_warn "Deploy zaten calisiyor (lock: $LOCK_FILE). Cikiliyor."
+  exit 0
+fi
 
 # -----------------------------------------------------------------------------
 # Proje yolları: script repo kökünden veya e_menum içinden çalıştırılabilir
@@ -91,23 +104,40 @@ DEPLOY_MODE="$(detect_deploy_mode)"
 log_info "Deploy mode: $DEPLOY_MODE"
 
 # -----------------------------------------------------------------------------
-# 2a. Docker deploy: build + up (migrate/collectstatic entrypoint'ta çalışır)
+# 2a. Docker deploy: kod host'tan mount (./e_menum -> /app), rebuild her seferinde YOK
+#     Host'ta Tailwind derlenir, migrate/collectstatic container'da, servis restart.
+#     DEPLOY_BUILD=1 ise image derlenir (Dockerfile/requirements degisince).
 # -----------------------------------------------------------------------------
 run_docker_deploy() {
   cd "$APP_ROOT"
-  log_info "Docker build (web, celery_worker, celery_beat)..."
-  docker compose -f docker-compose.prod.yml build --no-cache web celery_worker celery_beat 2>/dev/null \
-    || docker compose -f docker-compose.prod.yml build web celery_worker celery_beat
 
-  log_info "Containers recreating (migrate + collectstatic entrypoint'ta çalışacak)..."
+  if [[ "$DEPLOY_BUILD" == "1" ]]; then
+    log_info "Docker image derleniyor (web, celery_worker, celery_beat)..."
+    docker compose -f docker-compose.prod.yml build web celery_worker celery_beat
+  else
+    log_info "Docker build atlaniyor (kod volume'dan, tam build icin DEPLOY_BUILD=1)"
+  fi
+
+  # Host'ta Tailwind derle (container /app = host e_menum gorur)
+  if [[ -f package.json ]] && grep -q '"css:build"' package.json 2>/dev/null; then
+    log_info "Tailwind CSS (host'ta) derleniyor..."
+    npm ci --no-audit --no-fund 2>/dev/null || npm install --no-audit --no-fund
+    npm run css:build
+    log_ok "Tailwind tamamlandi."
+  fi
+
+  log_info "Containers ayakta (up -d)..."
   docker compose -f docker-compose.prod.yml up -d
 
-  log_info "Web container'da migrate durumu kontrol ediliyor..."
-  sleep 5
+  log_info "Migrate ve collectstatic (container icinde)..."
+  sleep 3
   docker compose -f docker-compose.prod.yml exec -T web python manage.py migrate --noinput 2>/dev/null || true
   docker compose -f docker-compose.prod.yml exec -T web python manage.py collectstatic --noinput 2>/dev/null || true
 
-  log_ok "Docker deploy tamamlandı."
+  log_info "Servisler yeniden baslatiliyor (yeni kod yuklensin)..."
+  docker compose -f docker-compose.prod.yml restart web celery_worker celery_beat
+
+  log_ok "Docker deploy tamamlandi."
 }
 
 # -----------------------------------------------------------------------------
@@ -165,7 +195,7 @@ run_bare_deploy() {
 echo ""
 echo "========================================"
 echo "  E-Menum Deploy"
-echo "========================================""
+echo "========================================"
 
 if [[ "$DEPLOY_MODE" == "docker" ]]; then
   run_docker_deploy

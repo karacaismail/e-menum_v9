@@ -11,7 +11,7 @@ GitHub’a commit atıldığında sunucuda güncel kodu çekip migration, build 
 ./scripts/deploy.sh
 ```
 
-- **Docker kullanıyorsanız:** `docker-compose.prod.yml` ile build + up yapar. Migrate ve collectstatic container entrypoint’te zaten çalışır.
+- **Docker (varsayilan: build yok, sadece up + migrate):** Kod host'tan mount; deploy: git pull, host'ta Tailwind, up -d, migrate, collectstatic, restart. Image her seferinde derlenmez. Migrate ve collectstatic container entrypoint’te zaten çalışır.
 - **Bare metal (Gunicorn):** venv, `pip install`, `migrate`, Tailwind `css:build`, `collectstatic`, ardından Gunicorn restart (systemctl veya HUP).
 
 ### Ortam değişkenleri
@@ -21,7 +21,11 @@ GitHub’a commit atıldığında sunucuda güncel kodu çekip migration, build 
 | `DEPLOY_MODE`  | `docker` veya `bare` (boşsa otomatik tespit) |
 | `GIT_BRANCH`   | Çekilecek branch (varsayılan: mevcut branch) |
 | `SKIP_PULL`    | `1` ise `git pull` atlanır |
+| `LOCK_FILE`    | Kilit dosyası (varsayılan: `/tmp/emenum-deploy.lock`) |
+| `DEPLOY_BUILD` | `1` ise Docker image derlenir (varsayılan: atlanır) |
 | `VENV_PATH`    | Bare metal’de venv yolu (varsayılan: repo kökünde `.venv`) |
+
+**Lock:** Script `flock` ile aynı anda yalnızca bir deploy calisir. Dakikada bir tetikleseniz bile, onceki deploy bitene kadar yeni cagri kilit alinamadigi icin sessizce cikar (exit 0).
 
 ### Örnekler
 
@@ -34,6 +38,9 @@ GIT_BRANCH=main ./scripts/deploy.sh
 
 # Pull yapmadan (zaten güncel kodu çektiniz)
 SKIP_PULL=1 ./scripts/deploy.sh
+
+# Kod/Dockerfile degisikligi sonrasi tam image build
+DEPLOY_BUILD=1 ./scripts/deploy.sh
 ```
 
 ### GitHub ile otomatik tetikleme
@@ -43,3 +50,5 @@ SKIP_PULL=1 ./scripts/deploy.sh
 3. **Sunucuda:** Webhook geldiğinde `./scripts/deploy.sh` çalıştırılacak şekilde ayarlayın (Coolify “Deploy” webhook’u veya küçük bir webhook sunucusu).
 
 Webhook kullanmıyorsanız: sunucuda elle `git pull && ./scripts/deploy.sh` veya SSH ile tek komut çalıştırabilirsiniz.
+
+**Docker + volume:** Sunucuda Node.js kurulu olmali (Tailwind host'ta derlenir). Kod `e_menum` -> container `/app` mount edilir; media ve staticfiles named volume'da kalir.
