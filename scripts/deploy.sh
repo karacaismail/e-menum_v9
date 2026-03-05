@@ -19,7 +19,13 @@
 #   GIT_BRANCH    Çekilecek branch (varsayılan: mevcut branch)
 #   SKIP_PULL     1 ise git pull yapılmaz
 #   LOCK_FILE     Kilit dosyasi (varsayılan: /tmp/emenum-deploy.lock)
-#   DEPLOY_BUILD  1 ise Docker image yeniden derlenir (varsayılan: 0, sadece up + migrate)
+#   DEPLOY_BUILD  1 ise Docker image yeniden derlenir (varsayılan: 0)
+#   FORCE_DEPLOY  1 ise degisiklik olmasa da islemler yapilir (varsayılan: 0)
+#
+# Kesinti: Restart sirasinda web/celery ~2-5 sn kesinti olur. Migrate once uygulanir,
+#         hata verirse script durur, restart yapilmaz (proje bozulmaz).
+# Yetkiler: Container emenum (UID 1000). Media/static volume'da; kod host mount.
+# Cift calisma: flock ile ayni anda tek deploy.
 # =============================================================================
 
 set -e
@@ -69,9 +75,11 @@ log_info "Repo root: $REPO_ROOT"
 log_info "App root:  $APP_ROOT"
 
 # -----------------------------------------------------------------------------
-# 1. Git pull
+# 1. Git pull (yeni commit geldiyse NEED_RESTART=1, sadece o zaman servis restart)
 # -----------------------------------------------------------------------------
+NEED_RESTART=0
 if [[ "$SKIP_PULL" != "1" ]]; then
+  PREV_HEAD="$(git rev-parse HEAD 2>/dev/null)"
   log_info "Git pull..."
   if ! git diff-index --quiet HEAD -- 2>/dev/null; then
     log_warn "Working directory has local changes; deploy may overwrite. Continuing."
@@ -80,6 +88,9 @@ if [[ "$SKIP_PULL" != "1" ]]; then
   git fetch origin
   git checkout "$BRANCH"
   git pull origin "$BRANCH" --ff-only || { log_err "Git pull failed (merge required?). Aborting."; exit 1; }
+  if [[ "$PREV_HEAD" != "$(git rev-parse HEAD)" ]]; then
+    NEED_RESTART=1
+  fi
   log_ok "Code updated (branch: $BRANCH)"
 else
   log_info "SKIP_PULL=1, skipping git pull"
@@ -103,6 +114,12 @@ detect_deploy_mode() {
 DEPLOY_MODE="$(detect_deploy_mode)"
 log_info "Deploy mode: $DEPLOY_MODE"
 
+# Degisiklik yoksa hicbir islem yapma (Tailwind, up, migrate, collectstatic, restart yok)
+if [[ "$NEED_RESTART" != "1" && "$FORCE_DEPLOY" != "1" ]]; then
+  log_ok "Degisiklik yok, hicbir islem yapilmiyor."
+  exit 0
+fi
+
 # -----------------------------------------------------------------------------
 # 2a. Docker deploy: kod host'tan mount (./e_menum -> /app), rebuild her seferinde YOK
 #     Host'ta Tailwind derlenir, migrate/collectstatic container'da, servis restart.
@@ -118,11 +135,13 @@ run_docker_deploy() {
     log_info "Docker build atlaniyor (kod volume'dan, tam build icin DEPLOY_BUILD=1)"
   fi
 
-  # Host'ta Tailwind derle (container /app = host e_menum gorur)
-  if [[ -f package.json ]] && grep -q '"css:build"' package.json 2>/dev/null; then
-    log_info "Tailwind CSS (host'ta) derleniyor..."
-    npm ci --no-audit --no-fund 2>/dev/null || npm install --no-audit --no-fund
-    npm run css:build
+  # Tailwind container icinde derlenir (host'ta Node gerekmez)
+  if [[ -f package.json ]] && [[ -f static/css/input.css ]]; then
+    log_info "Tailwind CSS (Node container icinde) derleniyor..."
+    docker run --rm \
+      -v "$(pwd):/app" -w /app \
+      node:20-slim \
+      sh -c "npm install --no-audit --no-fund && npx update-browserslist-db@latest --yes 2>/dev/null || true && npx tailwindcss -i ./static/css/input.css -o ./static/css/tailwind.min.css --minify"
     log_ok "Tailwind tamamlandi."
   fi
 
@@ -131,11 +150,27 @@ run_docker_deploy() {
 
   log_info "Migrate ve collectstatic (container icinde)..."
   sleep 3
-  docker compose -f docker-compose.prod.yml exec -T web python manage.py migrate --noinput 2>/dev/null || true
+  MIGRATE_OK=0
+  for _ in 1 2 3 4 5; do
+    if docker compose -f docker-compose.prod.yml exec -T web python manage.py migrate --noinput; then
+      MIGRATE_OK=1
+      break
+    fi
+    log_warn "Migrate bekleniyor (container/DB hazir olabilir), 5 sn sonra tekrar..."
+    sleep 5
+  done
+  if [[ "$MIGRATE_OK" != "1" ]]; then
+    log_err "Migrate basarisiz. Deploy durduruldu."
+    exit 1
+  fi
   docker compose -f docker-compose.prod.yml exec -T web python manage.py collectstatic --noinput 2>/dev/null || true
 
-  log_info "Servisler yeniden baslatiliyor (yeni kod yuklensin)..."
-  docker compose -f docker-compose.prod.yml restart web celery_worker celery_beat
+  if [[ "$NEED_RESTART" == "1" || "$DEPLOY_BUILD" == "1" || "$FORCE_DEPLOY" == "1" ]]; then
+    log_info "Servisler yeniden baslatiliyor (kod/image/force)..."
+    docker compose -f docker-compose.prod.yml restart web celery_worker celery_beat
+  else
+    log_info "Restart atlaniyor."
+  fi
 
   log_ok "Docker deploy tamamlandi."
 }
@@ -175,18 +210,22 @@ run_bare_deploy() {
   log_info "Django check..."
   python manage.py check || true
 
-  log_info "Gunicorn yeniden başlatılıyor..."
-  if systemctl is-active --quiet gunicorn 2>/dev/null || systemctl is-active --quiet emenum 2>/dev/null; then
-    sudo systemctl restart gunicorn 2>/dev/null || sudo systemctl restart emenum 2>/dev/null || true
-    log_ok "systemctl restart yapıldı."
-  elif pgrep -f "gunicorn.*config.wsgi" >/dev/null; then
-    GUNICORN_PID=$(pgrep -f "gunicorn.*config.wsgi" | head -1)
-    kill -HUP "$GUNICORN_PID" 2>/dev/null && log_ok "Gunicorn HUP gönderildi (PID $GUNICORN_PID)" || log_warn "Gunicorn restart manuel yapılmalı."
+  if [[ "$NEED_RESTART" == "1" || "$FORCE_DEPLOY" == "1" ]]; then
+    log_info "Gunicorn yeniden baslatiliyor..."
+    if systemctl is-active --quiet gunicorn 2>/dev/null || systemctl is-active --quiet emenum 2>/dev/null; then
+      sudo systemctl restart gunicorn 2>/dev/null || sudo systemctl restart emenum 2>/dev/null || true
+      log_ok "systemctl restart yapildi."
+    elif pgrep -f "gunicorn.*config.wsgi" >/dev/null; then
+      GUNICORN_PID=$(pgrep -f "gunicorn.*config.wsgi" | head -1)
+      kill -HUP "$GUNICORN_PID" 2>/dev/null && log_ok "Gunicorn HUP gonderildi (PID $GUNICORN_PID)" || log_warn "Gunicorn restart manuel yapilmalı."
+    else
+      log_warn "Gunicorn process bulunamadi. Manuel baslatin: gunicorn -c gunicorn.conf.py config.wsgi:application"
+    fi
   else
-    log_warn "Gunicorn process bulunamadı. Manuel başlatın: gunicorn -c gunicorn.conf.py config.wsgi:application"
+    log_info "Kod degismedi, Gunicorn restart atlaniyor."
   fi
 
-  log_ok "Bare metal deploy tamamlandı."
+  log_ok "Bare metal deploy tamamlandi."
 }
 
 # -----------------------------------------------------------------------------

@@ -23,6 +23,7 @@ GitHub’a commit atıldığında sunucuda güncel kodu çekip migration, build 
 | `SKIP_PULL`    | `1` ise `git pull` atlanır |
 | `LOCK_FILE`    | Kilit dosyası (varsayılan: `/tmp/emenum-deploy.lock`) |
 | `DEPLOY_BUILD` | `1` ise Docker image derlenir (varsayılan: atlanır) |
+| `FORCE_DEPLOY` | `1` ise degisiklik olmasa da islemler yapilir (varsayılan: atlanır) |
 | `VENV_PATH`    | Bare metal’de venv yolu (varsayılan: repo kökünde `.venv`) |
 
 **Lock:** Script `flock` ile aynı anda yalnızca bir deploy calisir. Dakikada bir tetikleseniz bile, onceki deploy bitene kadar yeni cagri kilit alinamadigi icin sessizce cikar (exit 0).
@@ -41,6 +42,9 @@ SKIP_PULL=1 ./scripts/deploy.sh
 
 # Kod/Dockerfile degisikligi sonrasi tam image build
 DEPLOY_BUILD=1 ./scripts/deploy.sh
+
+# Degisiklik olmasa da islemleri zorla calistir (migrate/collectstatic vb.)
+FORCE_DEPLOY=1 ./scripts/deploy.sh
 ```
 
 ### GitHub ile otomatik tetikleme
@@ -51,4 +55,10 @@ DEPLOY_BUILD=1 ./scripts/deploy.sh
 
 Webhook kullanmıyorsanız: sunucuda elle `git pull && ./scripts/deploy.sh` veya SSH ile tek komut çalıştırabilirsiniz.
 
-**Docker + volume:** Sunucuda Node.js kurulu olmali (Tailwind host'ta derlenir). Kod `e_menum` -> container `/app` mount edilir; media ve staticfiles named volume'da kalir.
+**Docker + volume:** Tailwind, gecici Node container icinde derlenir (sunucuda Node gerekmez). Kod `e_menum` -> container `/app` mount; media ve staticfiles volume'da.
+
+### Kesinti ve guvenlik
+
+- **Kesinti:** Restart sirasinda web/celery ~2-5 sn kesinti olur. Migrate once calistirilir; migrate hata verirse script durur, restart yapilmaz (proje tutarli kalir).
+- **Yetkiler:** Container kullanici emenum (UID 1000). Media ve staticfiles named volume'da; kod host mount (okunabilir olmali).
+- **Cift deploy:** `flock` ile ayni anda yalnizca bir deploy calisir; ust uste tetikleme projeyi bozmaz.
