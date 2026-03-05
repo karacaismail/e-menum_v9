@@ -21,7 +21,7 @@
 #   LOCK_FILE     Kilit dosyasi (varsayılan: /tmp/emenum-deploy.lock)
 #   DEPLOY_BUILD  1 ise Docker image yeniden derlenir (varsayılan: 0)
 #   FORCE_DEPLOY  1 ise degisiklik olmasa da islemler yapilir (varsayılan: 0)
-#   DEPLOY_DEBUG  1 ise test modu: FORCE_DEPLOY + deploy_test.json yazar, health check, ozet
+#   DEPLOY_DEBUG  1 ise deploy sonrasi health check ekler (degisiklik/FORCE yoksa calismaz)
 #
 # Kesinti: Restart sirasinda web/celery ~2-5 sn kesinti olur. Migrate once uygulanir,
 #         hata verirse script durur, restart yapilmaz (proje bozulmaz).
@@ -76,19 +76,17 @@ log_info "Repo root: $REPO_ROOT"
 log_info "App root:  $APP_ROOT"
 
 # -----------------------------------------------------------------------------
-# 1. Git pull (yeni commit geldiyse NEED_RESTART=1, sadece o zaman servis restart)
+# 1. Git pull: fetch + reset --hard (local degisiklikleri atar, remote ile senkron)
+#    Yeni commit geldiyse NEED_RESTART=1
 # -----------------------------------------------------------------------------
 NEED_RESTART=0
 if [[ "$SKIP_PULL" != "1" ]]; then
   PREV_HEAD="$(git rev-parse HEAD 2>/dev/null)"
-  log_info "Git pull..."
-  if ! git diff-index --quiet HEAD -- 2>/dev/null; then
-    log_warn "Working directory has local changes; deploy may overwrite. Continuing."
-  fi
+  log_info "Git pull (reset --hard ile remote senkron)..."
   BRANCH="${GIT_BRANCH:-$(git branch --show-current)}"
   git fetch origin
   git checkout "$BRANCH"
-  git pull origin "$BRANCH" --ff-only || { log_err "Git pull failed (merge required?). Aborting."; exit 1; }
+  git reset --hard "origin/$BRANCH" || { log_err "Git reset failed. Aborting."; exit 1; }
   if [[ "$PREV_HEAD" != "$(git rev-parse HEAD)" ]]; then
     NEED_RESTART=1
   fi
@@ -115,9 +113,9 @@ detect_deploy_mode() {
 DEPLOY_MODE="$(detect_deploy_mode)"
 log_info "Deploy mode: $DEPLOY_MODE"
 
-# Degisiklik yoksa hicbir islem yapma (Tailwind, up, migrate, collectstatic, restart yok)
-# DEPLOY_DEBUG=1 test modu: tum adimlari calistir, deploy_test.json yaz, dogrulama yap
-if [[ "$NEED_RESTART" != "1" && "$FORCE_DEPLOY" != "1" && "$DEPLOY_DEBUG" != "1" ]]; then
+# Degisiklik yoksa hicbir islem yapma (Tailwind, migrate, collectstatic, restart yok)
+# Sadece NEED_RESTART veya FORCE_DEPLOY varsa deploy calisir. DEPLOY_DEBUG sadece health check ekler.
+if [[ "$NEED_RESTART" != "1" && "$FORCE_DEPLOY" != "1" ]]; then
   log_ok "Degisiklik yok, hicbir islem yapilmiyor."
   exit 0
 fi
