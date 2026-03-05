@@ -12,6 +12,7 @@
 # Parametreler (ortam degiskenleri):
 #   WEBHOOK_SECRET   Guvenlik icin gizli anahtar (URL path'e eklenir)
 #   WEBHOOK_PORT     Dinlenecek port (varsayilan: 9000)
+#   WEBHOOK_LOG      Webhook servis log dosyasi (varsayilan: /var/log/webhook.log)
 #   REPO_PATH        Proje kokunu (varsayilan: script'in 1 ust dizini)
 # =============================================================================
 
@@ -96,10 +97,7 @@ sudo tee "$HOOKS_JSON" > /dev/null << HOOKSEOF
     "id": "$HOOK_ID",
     "execute-command": "$DEPLOY_SCRIPT",
     "command-working-directory": "$REPO_PATH",
-    "response-message": "Deploy tetiklendi.",
-    "pass-arguments-to-command": [
-      {"source": "payload", "name": "ref"}
-    ]
+    "response-message": "Deploy tetiklendi."
   }
 ]
 HOOKSEOF
@@ -109,7 +107,12 @@ log_ok "hooks.json olusturuldu: $HOOKS_JSON"
 # -----------------------------------------------------------------------------
 # systemd service
 # -----------------------------------------------------------------------------
-sudo tee /etc/systemd/system/emenum-webhook.service > /dev/null << SERVICEEOF
+WEBHOOK_LOG="${WEBHOOK_LOG:-/var/log/webhook.log}"
+sudo touch "$WEBHOOK_LOG" 2>/dev/null || true
+sudo chmod 644 "$WEBHOOK_LOG" 2>/dev/null || true
+
+# Service dosyası: log her zaman /var/log/webhook.log
+sudo tee /etc/systemd/system/emenum-webhook.service > /dev/null << EOF
 [Unit]
 Description=E-Menum deploy webhook
 After=network.target
@@ -119,15 +122,18 @@ Type=simple
 ExecStart=/usr/local/bin/webhook -hooks $HOOKS_JSON -port $WEBHOOK_PORT -verbose
 Restart=always
 RestartSec=5
+StandardOutput=append:$WEBHOOK_LOG
+StandardError=append:$WEBHOOK_LOG
 
 [Install]
 WantedBy=multi-user.target
-SERVICEEOF
+EOF
 
 sudo systemctl daemon-reload
 sudo systemctl enable emenum-webhook
 sudo systemctl restart emenum-webhook
 log_ok "systemd servisi: emenum-webhook (port $WEBHOOK_PORT)"
+log_info "Webhook log: $WEBHOOK_LOG"
 
 # -----------------------------------------------------------------------------
 # Firewall (ufw varsa)
@@ -165,4 +171,7 @@ echo ""
 echo "Servis:"
 echo "  sudo systemctl status emenum-webhook"
 echo "  sudo systemctl restart emenum-webhook"
+echo ""
+echo "Log:"
+echo "  tail -f $WEBHOOK_LOG"
 echo ""
