@@ -176,8 +176,13 @@ run_docker_deploy() {
 
   # DEPLOY_DEBUG: test verilerini yaz, health check, ozet
   if [[ "$DEPLOY_DEBUG" == "1" ]]; then
+    cd "$REPO_ROOT"
+    GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "")
+    GIT_BRANCH_NAME=$(git branch --show-current 2>/dev/null || echo "")
+    cd "$APP_ROOT"
     DEPLOY_AT=$(date -Iseconds 2>/dev/null || date '+%Y-%m-%dT%H:%M:%S')
-    echo "{\"at\":\"$DEPLOY_AT\",\"status\":\"ok\",\"mode\":\"docker\"}" > "$APP_ROOT/deploy_test.json"
+    BUILD_NUM=$(date '+%Y%m%d-%H%M' 2>/dev/null || echo "")
+    echo "{\"at\":\"$DEPLOY_AT\",\"status\":\"ok\",\"mode\":\"docker\",\"commit\":\"$GIT_COMMIT\",\"branch\":\"$GIT_BRANCH_NAME\",\"build\":\"$BUILD_NUM\"}" > "$APP_ROOT/deploy_test.json"
     log_info "deploy_test.json yazildi (footer'da gorunur)"
     sleep 5
     if curl -sf "http://localhost:${WEB_PORT:-8000}/health/" >/dev/null 2>&1; then
@@ -241,8 +246,13 @@ run_bare_deploy() {
   fi
 
   if [[ "$DEPLOY_DEBUG" == "1" ]]; then
+    cd "$REPO_ROOT"
+    GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "")
+    GIT_BRANCH_NAME=$(git branch --show-current 2>/dev/null || echo "")
+    cd "$APP_ROOT"
     DEPLOY_AT=$(date -Iseconds 2>/dev/null || date '+%Y-%m-%dT%H:%M:%S')
-    echo "{\"at\":\"$DEPLOY_AT\",\"status\":\"ok\",\"mode\":\"bare\"}" > "$APP_ROOT/deploy_test.json"
+    BUILD_NUM=$(date '+%Y%m%d-%H%M' 2>/dev/null || echo "")
+    echo "{\"at\":\"$DEPLOY_AT\",\"status\":\"ok\",\"mode\":\"bare\",\"commit\":\"$GIT_COMMIT\",\"branch\":\"$GIT_BRANCH_NAME\",\"build\":\"$BUILD_NUM\"}" > "$APP_ROOT/deploy_test.json"
     log_info "deploy_test.json yazildi (footer'da gorunur)"
     sleep 2
     if curl -sf "http://127.0.0.1:8000/health/" >/dev/null 2>&1; then
