@@ -190,7 +190,7 @@ run_docker_deploy() {
       docker compose -f docker-compose.prod.yml restart web celery_worker celery_beat
     else
       log_info "Graceful reload (kesinti minimum)..."
-      docker compose -f docker-compose.prod.yml exec -T web kill -HUP 1 2>/dev/null && log_ok "Web: Gunicorn HUP (graceful)" || docker compose -f docker-compose.prod.yml restart web
+      docker compose -f docker-compose.prod.yml exec -T web python -c "import os,signal; os.kill(1, signal.SIGHUP)" 2>/dev/null && log_ok "Web: Gunicorn HUP (graceful)" || docker compose -f docker-compose.prod.yml restart web
       docker compose -f docker-compose.prod.yml exec -T celery_worker celery -A config control pool_restart 2>/dev/null && log_ok "Celery worker: pool_restart (graceful)" || docker compose -f docker-compose.prod.yml restart celery_worker
       docker compose -f docker-compose.prod.yml restart celery_beat
       log_ok "Celery beat: restart (graceful desteklenmiyor)"

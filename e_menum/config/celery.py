@@ -195,6 +195,9 @@ app.conf.task_default_priority = 5
 app.conf.task_acks_late = True
 app.conf.task_reject_on_worker_lost = True
 
+# Graceful deploy: pool_restart control command (celery control pool_restart)
+app.conf.worker_pool_restarts = True
+
 # Retry configuration for transient failures
 app.conf.task_annotations = {
     '*': {
