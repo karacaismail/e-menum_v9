@@ -63,16 +63,17 @@ module.exports = {
       },
     },
   },
-  // Safelist: dynamic classes from DB/templates that Tailwind scanner can't detect
-  // Pattern = utility only; variants (dark, lg) in separate option per Tailwind v3
+  // Safelist: dynamic classes from DB that Tailwind scanner can't detect
   safelist: [
-    { pattern: /^bg-(red|orange|amber|yellow|green|teal|blue|indigo|purple|pink|rose|cyan)-(50|100|500|900|950)$/ },
-    { pattern: /^text-(red|orange|amber|yellow|green|teal|blue|indigo|purple|pink|rose|cyan)-(400|500|600)$/ },
-    { pattern: /^border-(red|orange|amber|green|blue|purple|teal|pink|rose|cyan)-(100|900)$/ },
-    { pattern: /^bg-(red|orange|green|blue|purple|pink|rose|cyan|teal|amber)-(900|950)$/, variants: ['dark'] },
-    { pattern: /^text-(red|orange|green|blue|purple|pink|rose|cyan|teal|amber)-400$/, variants: ['dark'] },
-    { pattern: /^border-(red|orange|green|blue|purple|rose|cyan|teal|amber)-900$/, variants: ['dark'] },
-    { pattern: /^grid-cols-(1|2|3|4|5|6)$/, variants: ['lg'] },
+    // Color variants used dynamically in templates
+    { pattern: /bg-(red|orange|amber|yellow|green|teal|blue|indigo|purple|pink|rose|cyan)-(50|100|500|900|950)/ },
+    { pattern: /text-(red|orange|amber|yellow|green|teal|blue|indigo|purple|pink|rose|cyan)-(400|500|600)/ },
+    { pattern: /border-(red|orange|amber|green|blue|purple|teal|pink|rose|cyan)-(100|900)/ },
+    { pattern: /dark:bg-(red|orange|green|blue|purple|pink|rose|cyan|teal|amber)-(900|950)/ },
+    { pattern: /dark:text-(red|orange|green|blue|purple|pink|rose|cyan|teal|amber)-400/ },
+    { pattern: /dark:border-(red|orange|green|blue|purple|rose|cyan|teal|amber)-900/ },
+    // Grid columns used dynamically
+    { pattern: /lg:grid-cols-(1|2|3|4|5|6)/ },
   ],
   plugins: [
     require('@tailwindcss/forms'),

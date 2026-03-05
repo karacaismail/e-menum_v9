@@ -23,7 +23,8 @@ GitHub’a commit atıldığında sunucuda güncel kodu çekip migration, build 
 | `SKIP_PULL`    | `1` ise `git pull` atlanır |
 | `LOCK_FILE`    | Kilit dosyası (varsayılan: `/tmp/emenum-deploy.lock`) |
 | `DEPLOY_BUILD` | `1` ise Docker image derlenir (varsayılan: atlanır) |
-| `FORCE_DEPLOY` | `1` ise degisiklik olmasa da islemler yapilir (varsayılan: atlanır) |
+| `FORCE_DEPLOY` | `1` ise degisiklik olmasa da islemler yapilir |
+| `DEPLOY_DEBUG` | `1` ise test modu: tum adimlar + deploy_test.json + health check (footer badge) |
 | `VENV_PATH`    | Bare metal’de venv yolu (varsayılan: repo kökünde `.venv`) |
 
 **Lock:** Script `flock` ile aynı anda yalnızca bir deploy calisir. Dakikada bir tetikleseniz bile, onceki deploy bitene kadar yeni cagri kilit alinamadigi icin sessizce cikar (exit 0).
@@ -45,6 +46,9 @@ DEPLOY_BUILD=1 ./scripts/deploy.sh
 
 # Degisiklik olmasa da islemleri zorla calistir (migrate/collectstatic vb.)
 FORCE_DEPLOY=1 ./scripts/deploy.sh
+
+# Test modu: tum CI/CD adimlari + deploy_test.json (footer'da badge) + health check
+DEPLOY_DEBUG=1 ./scripts/deploy.sh
 ```
 
 ### GitHub ile otomatik tetikleme

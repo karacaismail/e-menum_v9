@@ -264,3 +264,25 @@ def _default_context():
         'login_url': '/admin/',
         'year': datetime.now().year,
     }
+
+
+def deploy_test_context(request):
+    """
+    CI/CD test badge: reads deploy_test.json (written by deploy.sh DEPLOY_DEBUG=1).
+    Template'de {{ deploy_test.at }} ve {{ deploy_test.status }} kullanilir.
+    """
+    import json
+    from django.conf import settings
+
+    path = getattr(settings, 'BASE_DIR', None)
+    if not path:
+        return {}
+    path = path / 'deploy_test.json'
+    try:
+        if path.exists():
+            with open(path, 'r') as f:
+                data = json.load(f)
+            return {'deploy_test': data}
+    except (json.JSONDecodeError, OSError):
+        pass
+    return {}

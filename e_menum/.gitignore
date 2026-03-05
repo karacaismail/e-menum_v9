@@ -9,6 +9,9 @@
 node_modules/
 package-lock.json
 
+# CI/CD test marker (server'da DEPLOY_DEBUG=1 ile olusturulur)
+deploy_test.json
+
 # Python Bytecode and Cache
 # -----------------------------------------------------------------------------
 __pycache__/

@@ -21,6 +21,7 @@
 #   LOCK_FILE     Kilit dosyasi (varsayılan: /tmp/emenum-deploy.lock)
 #   DEPLOY_BUILD  1 ise Docker image yeniden derlenir (varsayılan: 0)
 #   FORCE_DEPLOY  1 ise degisiklik olmasa da islemler yapilir (varsayılan: 0)
+#   DEPLOY_DEBUG  1 ise test modu: FORCE_DEPLOY + deploy_test.json yazar, health check, ozet
 #
 # Kesinti: Restart sirasinda web/celery ~2-5 sn kesinti olur. Migrate once uygulanir,
 #         hata verirse script durur, restart yapilmaz (proje bozulmaz).
@@ -115,7 +116,8 @@ DEPLOY_MODE="$(detect_deploy_mode)"
 log_info "Deploy mode: $DEPLOY_MODE"
 
 # Degisiklik yoksa hicbir islem yapma (Tailwind, up, migrate, collectstatic, restart yok)
-if [[ "$NEED_RESTART" != "1" && "$FORCE_DEPLOY" != "1" ]]; then
+# DEPLOY_DEBUG=1 test modu: tum adimlari calistir, deploy_test.json yaz, dogrulama yap
+if [[ "$NEED_RESTART" != "1" && "$FORCE_DEPLOY" != "1" && "$DEPLOY_DEBUG" != "1" ]]; then
   log_ok "Degisiklik yok, hicbir islem yapilmiyor."
   exit 0
 fi
@@ -141,7 +143,7 @@ run_docker_deploy() {
     docker run --rm \
       -v "$(pwd):/app" -w /app \
       node:20-slim \
-      sh -c "npm install --no-audit --no-fund && npx update-browserslist-db@latest --yes 2>/dev/null || true && npx tailwindcss -i ./static/css/input.css -o ./static/css/tailwind.min.css --minify"
+      sh -c "npm install --no-audit --no-fund && npx tailwindcss -i ./static/css/input.css -o ./static/css/tailwind.min.css --minify"
     log_ok "Tailwind tamamlandi."
   fi
 
@@ -165,11 +167,24 @@ run_docker_deploy() {
   fi
   docker compose -f docker-compose.prod.yml exec -T web python manage.py collectstatic --noinput 2>/dev/null || true
 
-  if [[ "$NEED_RESTART" == "1" || "$DEPLOY_BUILD" == "1" || "$FORCE_DEPLOY" == "1" ]]; then
-    log_info "Servisler yeniden baslatiliyor (kod/image/force)..."
+  if [[ "$NEED_RESTART" == "1" || "$DEPLOY_BUILD" == "1" || "$FORCE_DEPLOY" == "1" || "$DEPLOY_DEBUG" == "1" ]]; then
+    log_info "Servisler yeniden baslatiliyor (kod/image/force/debug)..."
     docker compose -f docker-compose.prod.yml restart web celery_worker celery_beat
   else
     log_info "Restart atlaniyor."
+  fi
+
+  # DEPLOY_DEBUG: test verilerini yaz, health check, ozet
+  if [[ "$DEPLOY_DEBUG" == "1" ]]; then
+    DEPLOY_AT=$(date -Iseconds 2>/dev/null || date '+%Y-%m-%dT%H:%M:%S')
+    echo "{\"at\":\"$DEPLOY_AT\",\"status\":\"ok\",\"mode\":\"docker\"}" > "$APP_ROOT/deploy_test.json"
+    log_info "deploy_test.json yazildi (footer'da gorunur)"
+    sleep 5
+    if curl -sf "http://localhost:${WEB_PORT:-8000}/health/" >/dev/null 2>&1; then
+      log_ok "Health check: OK"
+    else
+      log_warn "Health check: /health/ ulasilamadi (nginx/proxy kullaniliyor olabilir)"
+    fi
   fi
 
   log_ok "Docker deploy tamamlandi."
@@ -210,7 +225,7 @@ run_bare_deploy() {
   log_info "Django check..."
   python manage.py check || true
 
-  if [[ "$NEED_RESTART" == "1" || "$FORCE_DEPLOY" == "1" ]]; then
+  if [[ "$NEED_RESTART" == "1" || "$FORCE_DEPLOY" == "1" || "$DEPLOY_DEBUG" == "1" ]]; then
     log_info "Gunicorn yeniden baslatiliyor..."
     if systemctl is-active --quiet gunicorn 2>/dev/null || systemctl is-active --quiet emenum 2>/dev/null; then
       sudo systemctl restart gunicorn 2>/dev/null || sudo systemctl restart emenum 2>/dev/null || true
@@ -223,6 +238,18 @@ run_bare_deploy() {
     fi
   else
     log_info "Kod degismedi, Gunicorn restart atlaniyor."
+  fi
+
+  if [[ "$DEPLOY_DEBUG" == "1" ]]; then
+    DEPLOY_AT=$(date -Iseconds 2>/dev/null || date '+%Y-%m-%dT%H:%M:%S')
+    echo "{\"at\":\"$DEPLOY_AT\",\"status\":\"ok\",\"mode\":\"bare\"}" > "$APP_ROOT/deploy_test.json"
+    log_info "deploy_test.json yazildi (footer'da gorunur)"
+    sleep 2
+    if curl -sf "http://127.0.0.1:8000/health/" >/dev/null 2>&1; then
+      log_ok "Health check: OK"
+    else
+      log_warn "Health check: /health/ ulasilamadi"
+    fi
   fi
 
   log_ok "Bare metal deploy tamamlandi."
