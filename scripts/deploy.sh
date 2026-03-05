@@ -22,6 +22,7 @@
 #   DEPLOY_BUILD  1 ise Docker image yeniden derlenir (varsayılan: 0)
 #   FORCE_DEPLOY  1 ise degisiklik olmasa da islemler yapilir (varsayılan: 0)
 #   DEPLOY_DEBUG  1 ise deploy sonrasi health check ekler (degisiklik/FORCE yoksa calismaz)
+#   DEPLOY_GRACEFUL 0 ise container restart (varsayilan: 1 = HUP/pool_restart ile kesintisiz)
 #   DEPLOY_LOG    Log dosyasi yolu (varsayilan: /var/log/deploy.log)
 #
 # Kesinti: Restart sirasinda web/celery ~2-5 sn kesinti olur. Migrate once uygulanir,
@@ -182,8 +183,18 @@ run_docker_deploy() {
   docker compose -f docker-compose.prod.yml exec -T web python manage.py collectstatic --noinput 2>/dev/null || true
 
   if [[ "$NEED_RESTART" == "1" || "$DEPLOY_BUILD" == "1" || "$FORCE_DEPLOY" == "1" || "$DEPLOY_DEBUG" == "1" ]]; then
-    log_info "Servisler yeniden baslatiliyor (kod/image/force/debug)..."
-    docker compose -f docker-compose.prod.yml restart web celery_worker celery_beat
+    if [[ "$DEPLOY_BUILD" == "1" ]]; then
+      log_info "Image yeniden derlendi, container'lar up -d ile zaten guncel. Restart atlaniyor."
+    elif [[ "${DEPLOY_GRACEFUL:-1}" == "0" ]]; then
+      log_info "DEPLOY_GRACEFUL=0, tam restart..."
+      docker compose -f docker-compose.prod.yml restart web celery_worker celery_beat
+    else
+      log_info "Graceful reload (kesinti minimum)..."
+      docker compose -f docker-compose.prod.yml exec -T web kill -HUP 1 2>/dev/null && log_ok "Web: Gunicorn HUP (graceful)" || docker compose -f docker-compose.prod.yml restart web
+      docker compose -f docker-compose.prod.yml exec -T celery_worker celery -A config control pool_restart 2>/dev/null && log_ok "Celery worker: pool_restart (graceful)" || docker compose -f docker-compose.prod.yml restart celery_worker
+      docker compose -f docker-compose.prod.yml restart celery_beat
+      log_ok "Celery beat: restart (graceful desteklenmiyor)"
+    fi
   else
     log_info "Restart atlaniyor."
   fi
