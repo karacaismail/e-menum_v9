@@ -246,10 +246,10 @@
                         {% endfor %}
                     </div>
 
-                    {# CI/CD test badge: DEPLOY_DEBUG=1 ile deploy sonrasi gorunur #}
-                    {% if deploy_test %}
-                    <span class="text-xs text-green-400/90" title="Deploy: {{ deploy_test.at }}{% if deploy_test.commit %} | {{ deploy_test.commit }}{% endif %}">
-                        CI/CD &check; {{ deploy_test.at|slice:":16" }}{% if deploy_test.commit %} &middot; {{ deploy_test.commit }}{% endif %}{% if deploy_test.build %} &middot; #{{ deploy_test.build }}{% endif %}
+                    {# Deploy bilgisi: her basarili deploy sonrasi gorunur #}
+                    {% if deploy_info %}
+                    <span class="text-xs text-green-400/90" title="Build: {{ deploy_info.at }}{% if deploy_info.commit %} | {{ deploy_info.commit }}{% endif %}">
+                        build &check; {{ deploy_info.at|slice:":16" }}{% if deploy_info.commit %} - {{ deploy_info.commit }}{% endif %}{% if deploy_info.build %} &middot; #{{ deploy_info.build }}{% endif %}
                     </span>
                     {% endif %}
                 </div>

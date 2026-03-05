@@ -268,8 +268,8 @@ def _default_context():
 
 def deploy_test_context(request):
     """
-    CI/CD test badge: reads deploy_test.json (written by deploy.sh DEPLOY_DEBUG=1).
-    Template'de {{ deploy_test.at }} ve {{ deploy_test.status }} kullanilir.
+    Deploy bilgisi: deploy_info.json (her basarili deploy sonrasi yazilir).
+    Footer'da build ✓ - at - commit · #build formatinda gosterilir.
     """
     import json
     from django.conf import settings
@@ -277,12 +277,12 @@ def deploy_test_context(request):
     path = getattr(settings, 'BASE_DIR', None)
     if not path:
         return {}
-    path = path / 'deploy_test.json'
+    path = path / 'deploy_info.json'
     try:
         if path.exists():
             with open(path, 'r') as f:
                 data = json.load(f)
-            return {'deploy_test': data}
+            return {'deploy_info': data}
     except (json.JSONDecodeError, OSError):
         pass
     return {}
