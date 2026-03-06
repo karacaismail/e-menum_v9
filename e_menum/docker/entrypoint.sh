@@ -113,43 +113,62 @@ if [ "$DJANGO_COLLECTSTATIC" = "true" ]; then
     echo "Static files collected. $(ls /app/staticfiles/ 2>/dev/null | wc -l) items in staticfiles/"
 fi
 
-# ─── Seed data if requested (runs once, skips if data exists) ─
-if [ "$DJANGO_SEED_DATA" = "true" ]; then
-    echo "Checking if seed data is needed..."
-    NEEDS_SEED=$(python manage.py shell -c "
+echo "Starting application..."
+
+# ─── Web container: start gunicorn in background, run seeds after listen, then hold ─
+if [ "$DJANGO_SEED_DATA" = "true" ] && [ "${1:-}" = "gunicorn" ]; then
+    PORT="${PORT:-8000}"
+    echo "Gunicorn will start first; seeds will run after server is listening on port $PORT."
+    # Start main command (gunicorn) in background
+    "$@" &
+    GUNICORN_PID=$!
+    trap "kill -TERM $GUNICORN_PID 2>/dev/null; exit 0" SIGTERM SIGINT
+
+    # Wait until server is listening (max 60s)
+    echo "Waiting for server to listen on port $PORT..."
+    for i in $(seq 1 30); do
+        if curl -sf "http://127.0.0.1:${PORT}/health/" >/dev/null 2>&1; then
+            echo "Server is listening. Running seed data if needed..."
+            NEEDS_SEED=$(python manage.py shell -c "
 from apps.core.models import Role
 print('yes' if Role.objects.count() == 0 else 'no')
 " 2>/dev/null || echo "yes")
+            if [ "$NEEDS_SEED" = "yes" ]; then
+                echo "[1/11] seed_roles..."
+                python manage.py seed_roles 2>&1 || true
+                echo "[2/11] seed_plans..."
+                python manage.py seed_plans 2>&1 || true
+                echo "[3/11] seed_allergens..."
+                python manage.py seed_allergens 2>&1 || true
+                echo "[4/11] seed_menu_data..."
+                python manage.py seed_menu_data 2>&1 || true
+                echo "[5/11] seed_extra_orgs..."
+                python manage.py seed_extra_orgs 2>&1 || true
+                echo "[6/11] seed_all_data..."
+                python manage.py seed_all_data 2>&1 || true
+                echo "[7/11] seed_demo_data..."
+                python manage.py seed_demo_data 2>&1 || true
+                echo "[8/11] seed_cms_content..."
+                python manage.py seed_cms_content 2>&1 || true
+                echo "[9/11] seed_seo_data..."
+                python manage.py seed_seo_data 2>&1 || true
+                echo "[10/11] seed_report_definitions..."
+                python manage.py seed_report_definitions 2>&1 || true
+                echo "[11/11] seed_shield_data..."
+                python manage.py seed_shield_data 2>&1 || true
+                echo "Seed data complete."
+            else
+                echo "Seed data already exists (roles found). Skipping."
+            fi
+            break
+        fi
+        [ $i -eq 30 ] && echo "WARNING: Server did not become ready in time; skipping seed."
+        sleep 2
+    done
 
-    if [ "$NEEDS_SEED" = "yes" ]; then
-        echo "════════════════════════════════════════"
-        echo "  Seeding initial data..."
-        echo "════════════════════════════════════════"
-
-        echo "[1/5] Seeding demo data (roles, plans, restaurants, products, orders)..."
-        python manage.py seed_demo_data 2>&1 || echo "WARNING: seed_demo_data had errors (continuing)"
-
-        echo "[2/5] Seeding CMS content (website pages, blog, FAQ)..."
-        python manage.py seed_cms_content 2>&1 || echo "WARNING: seed_cms_content had errors (continuing)"
-
-        echo "[3/5] Seeding SEO data (robots.txt, sitemap)..."
-        python manage.py seed_seo_data 2>&1 || echo "WARNING: seed_seo_data had errors (continuing)"
-
-        echo "[4/5] Seeding report definitions (140 reports)..."
-        python manage.py seed_report_definitions 2>&1 || echo "WARNING: seed_report_definitions had errors (continuing)"
-
-        echo "[5/5] Seeding shield data (bot whitelist, security rules)..."
-        python manage.py seed_shield_data 2>&1 || echo "WARNING: seed_shield_data had errors (continuing)"
-
-        echo "════════════════════════════════════════"
-        echo "  Seed data complete!"
-        echo "════════════════════════════════════════"
-    else
-        echo "Seed data already exists (roles found). Skipping."
-    fi
+    wait $GUNICORN_PID
+    exit $?
 fi
 
-echo "Starting application..."
-
-# Execute the main command (gunicorn, celery, etc.)
+# Execute the main command (gunicorn, celery, etc.) – default path
 exec "$@"
