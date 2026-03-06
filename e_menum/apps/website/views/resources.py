@@ -27,7 +27,7 @@ class ResourcesView(CmsContextMixin, TemplateView):
             is_active=True, deleted_at__isnull=True,
         ).order_by('-event_date')[:4]
         context['categories'] = ResourceCategory.objects.filter(
-            is_active=True,
+            is_active=True, deleted_at__isnull=True,
         ).order_by('sort_order')
         return context
 

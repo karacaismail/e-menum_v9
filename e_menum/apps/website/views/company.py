@@ -54,7 +54,7 @@ class PressView(CmsContextMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['milestones'] = Milestone.objects.filter(
-            is_active=True,
+            is_active=True, deleted_at__isnull=True,
         ).order_by('-year', '-quarter')
         return context
 
@@ -85,6 +85,6 @@ class BrandAssetsView(CmsContextMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['assets'] = BrandAsset.objects.filter(
-            is_active=True,
+            is_active=True, deleted_at__isnull=True,
         ).order_by('category', 'sort_order')
         return context

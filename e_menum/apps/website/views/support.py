@@ -18,7 +18,7 @@ class SupportView(CmsContextMixin, ListView):
 
     def get_queryset(self):
         return HelpCategory.objects.filter(
-            is_active=True,
+            is_active=True, deleted_at__isnull=True,
         ).order_by('sort_order')
 
     def get_context_data(self, **kwargs):
@@ -27,7 +27,8 @@ class SupportView(CmsContextMixin, ListView):
             is_active=True, deleted_at__isnull=True,
         ).order_by('-view_count')[:6]
         context['faqs'] = FAQ.objects.filter(
-            is_active=True, page__in=['support', 'both'],
+            is_active=True, deleted_at__isnull=True,
+            page__in=['support', 'both'],
         ).order_by('sort_order')
         return context
 
@@ -39,7 +40,7 @@ class HelpCategoryView(CmsContextMixin, DetailView):
     page_slug = 'support'
 
     def get_queryset(self):
-        return HelpCategory.objects.filter(is_active=True)
+        return HelpCategory.objects.filter(is_active=True, deleted_at__isnull=True)
 
     def get_object(self, queryset=None):
         queryset = self.get_queryset()

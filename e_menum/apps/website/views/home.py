@@ -4,7 +4,9 @@ import logging
 from django.views.generic import TemplateView
 
 from .mixins import CmsContextMixin
-from ..models import HomeSection, Testimonial, TrustBadge, TrustLocation
+from ..models import (
+    CompanyStat, HomeSection, Testimonial, TrustBadge, TrustLocation,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -32,22 +34,22 @@ class HomeView(CmsContextMixin, TemplateView):
             section_type='how_it_works', is_active=True,
         ).order_by('step_number', 'sort_order')
 
-        # Stat counters
-        context['stat_counters'] = HomeSection.objects.filter(
-            section_type='stat_counter', is_active=True,
+        # Stat counters — single source: CompanyStat (managed via CMS admin)
+        context['stat_counters'] = CompanyStat.objects.filter(
+            is_active=True, deleted_at__isnull=True,
         ).order_by('sort_order')
 
         # Testimonials
         context['testimonials'] = Testimonial.objects.filter(
-            is_active=True,
+            is_active=True, deleted_at__isnull=True,
         ).order_by('sort_order')
 
         # Trust badges & locations
         context['trust_badges'] = TrustBadge.objects.filter(
-            is_active=True,
+            is_active=True, deleted_at__isnull=True,
         ).order_by('sort_order')
         context['trust_locations'] = TrustLocation.objects.filter(
-            is_active=True,
+            is_active=True, deleted_at__isnull=True,
         ).order_by('sort_order')
 
         # Pricing summary — top 3 plans from subscriptions

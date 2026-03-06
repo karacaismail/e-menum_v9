@@ -18,12 +18,12 @@ class InvestorView(CmsContextMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['page_data'] = InvestorPage.objects.first()
         context['presentations'] = InvestorPresentation.objects.filter(
-            is_active=True,
+            is_active=True, deleted_at__isnull=True,
         ).order_by('-presentation_date')
         context['financials'] = InvestorFinancial.objects.filter(
-            is_active=True,
+            is_active=True, deleted_at__isnull=True,
         ).order_by('-period', 'metric_name')
         context['milestones'] = Milestone.objects.filter(
-            is_active=True,
+            is_active=True, deleted_at__isnull=True,
         ).order_by('-year', '-quarter')
         return context

@@ -17,12 +17,12 @@ class AboutView(CmsContextMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['team_members'] = TeamMember.objects.filter(
-            is_active=True,
+            is_active=True, deleted_at__isnull=True,
         ).order_by('sort_order')
         context['company_values'] = CompanyValue.objects.filter(
-            is_active=True,
+            is_active=True, deleted_at__isnull=True,
         ).order_by('sort_order')
         context['company_stats'] = CompanyStat.objects.filter(
-            is_active=True,
+            is_active=True, deleted_at__isnull=True,
         ).order_by('sort_order')
         return context

@@ -24,9 +24,11 @@ class CustomersView(CmsContextMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['testimonials'] = Testimonial.objects.filter(
-            is_active=True,
+            is_active=True, deleted_at__isnull=True,
         ).order_by('sort_order')[:6]
-        context['sectors'] = Sector.objects.filter(is_active=True).order_by('sort_order')
+        context['sectors'] = Sector.objects.filter(
+            is_active=True, deleted_at__isnull=True,
+        ).order_by('sort_order')
         return context
 
 

@@ -27,7 +27,7 @@ class ContactView(CmsContextMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['faqs'] = FAQ.objects.filter(
-            is_active=True,
+            is_active=True, deleted_at__isnull=True,
             page__in=['contact', 'both'],
         ).order_by('sort_order')
         return context
@@ -75,7 +75,7 @@ class DemoRequestView(CmsContextMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['testimonials'] = Testimonial.objects.filter(
-            is_active=True,
+            is_active=True, deleted_at__isnull=True,
         ).order_by('sort_order')[:3]
         return context
 

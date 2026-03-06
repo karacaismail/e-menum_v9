@@ -21,13 +21,13 @@ class PricingView(CmsContextMixin, TemplateView):
         try:
             from apps.subscriptions.models import Plan, Feature, PlanFeature
             plans = Plan.objects.filter(
-                is_active=True, is_public=True,
+                is_active=True, is_public=True, deleted_at__isnull=True,
             ).prefetch_related('display_features').order_by('sort_order')
             context['plans'] = plans
 
             # Comparison matrix: list of dicts {feature, values: [plan_value, ...]}
             features = Feature.objects.filter(
-                is_active=True,
+                is_active=True, deleted_at__isnull=True,
             ).order_by('category', 'sort_order')
 
             matrix = []
@@ -58,7 +58,7 @@ class PricingView(CmsContextMixin, TemplateView):
 
         # FAQs for pricing page
         context['faqs'] = FAQ.objects.filter(
-            is_active=True,
+            is_active=True, deleted_at__isnull=True,
             page__in=['pricing', 'both'],
         ).order_by('sort_order')
 
