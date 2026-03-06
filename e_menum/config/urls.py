@@ -503,6 +503,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # -------------------------------------------------------------------------
+    # Restaurant Owner Portal (/account/)
+    # -------------------------------------------------------------------------
+    path('account/', include(('apps.accounts.urls', 'accounts'), namespace='accounts')),
+
+    # -------------------------------------------------------------------------
     # Health Check (for monitoring, load balancers)
     # -------------------------------------------------------------------------
     path('health/', health_check, name='health-check'),

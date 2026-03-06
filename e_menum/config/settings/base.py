@@ -163,6 +163,7 @@ LOCAL_APPS = [
     'apps.seo.apps.SEOConfig',
     'apps.seo_shield.apps.SEOShieldConfig',
     'apps.dashboard.apps.DashboardConfig',
+    'apps.accounts.apps.AccountsConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + [
