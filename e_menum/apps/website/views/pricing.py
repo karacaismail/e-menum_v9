@@ -1,12 +1,39 @@
 """Pricing page view."""
 import logging
 
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 
 from .mixins import CmsContextMixin
 from ..models import FAQ
 
 logger = logging.getLogger(__name__)
+
+
+def _format_feature_value(value, is_enabled):
+    """Convert PlanFeature JSON value to human-readable display string."""
+    if not value or not isinstance(value, dict):
+        return ''
+
+    # LIMIT type: {'limit': 10} or {'limit': -1} (unlimited)
+    if 'limit' in value:
+        limit = value['limit']
+        if limit == -1:
+            return str(_('Sinirsiz'))
+        return str(limit)
+
+    # USAGE type: {'credits': 100, 'reset_period': 'monthly'}
+    if 'credits' in value:
+        credits = value['credits']
+        if credits == -1:
+            return str(_('Sinirsiz'))
+        return str(credits)
+
+    # BOOLEAN type: {'enabled': true/false}
+    if 'enabled' in value:
+        return ''  # Handled by is_enabled check/cross icons
+
+    return ''
 
 
 class PricingView(CmsContextMixin, TemplateView):
@@ -44,11 +71,15 @@ class PricingView(CmsContextMixin, TemplateView):
                         row['values'].append({
                             'is_enabled': pf.is_enabled,
                             'value': pf.value,
+                            'display_value': _format_feature_value(
+                                pf.value, pf.is_enabled,
+                            ),
                         })
                     else:
                         row['values'].append({
                             'is_enabled': False,
                             'value': None,
+                            'display_value': '',
                         })
                 matrix.append(row)
             context['comparison_matrix'] = matrix

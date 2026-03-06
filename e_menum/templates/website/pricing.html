@@ -46,8 +46,8 @@
                         <td class="py-3 px-4 text-gray-700 dark:text-gray-300">{{ row.feature.name }}</td>
                         {% for val in row.values %}
                         <td class="py-3 px-3 text-center">
-                            {% if val.value %}
-                                <span class="text-gray-600 dark:text-gray-300">{{ val.value }}</span>
+                            {% if val.display_value %}
+                                <span class="text-gray-600 dark:text-gray-300">{{ val.display_value }}</span>
                             {% elif val.is_enabled %}
                                 <i class="ph ph-check text-green-600 dark:text-green-400"></i>
                             {% else %}
