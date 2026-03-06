@@ -209,6 +209,7 @@ run_docker_deploy() {
   echo "{\"at\":\"$DEPLOY_AT\",\"status\":\"ok\",\"mode\":\"docker\",\"commit\":\"$GIT_COMMIT\",\"branch\":\"$GIT_BRANCH_NAME\",\"build\":\"$BUILD_NUM\"}" > "$APP_ROOT/deploy_info.json"
   # Container icinde /app image'dan; dosyayi container'a kopyala ki footer okuyabilsin
   if docker compose -f docker-compose.prod.yml cp "$APP_ROOT/deploy_info.json" web:/app/deploy_info.json 2>/dev/null; then
+    docker compose -f docker-compose.prod.yml exec -T web chown emenum:emenum /app/deploy_info.json 2>/dev/null || true
     log_ok "deploy_info.json container'a kopyalandi (footer build bilgisi)"
   else
     log_info "deploy_info.json host'ta yazildi (container'a kopya atlandi)"
