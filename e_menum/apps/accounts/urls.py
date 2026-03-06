@@ -87,6 +87,7 @@ urlpatterns = [
     path('qr-codes/<uuid:qr_id>/toggle/', qr_views.qrcode_toggle, name='qrcode-toggle'),
     path('qr-codes/<uuid:qr_id>/download/', qr_views.qrcode_download, name='qrcode-download'),
     path('qr-codes/<uuid:qr_id>/download-print/', qr_views.qrcode_download_print, name='qrcode-download-print'),
+    path('qr-codes/<uuid:qr_id>/download-branded/', qr_views.qrcode_download_branded_print, name='qrcode-download-branded'),
 
     # ── Customer Management ───────────────────────────────────────────────
     path('customers/', customer_views.customer_list, name='customer-list'),

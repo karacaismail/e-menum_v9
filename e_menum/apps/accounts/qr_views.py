@@ -72,6 +72,10 @@ def qrcode_detail(request, qr_id):
     from django.db.models import Count
     device_stats = QRScan.objects.filter(qr_code=qr).values('device_type').annotate(count=Count('id'))
 
+    # Branded design templates
+    from apps.orders.services.qr_print_designs import QRPrintDesignService
+    design_templates = QRPrintDesignService.get_available_templates()
+
     return render(request, 'accounts/qrcodes/detail.html', {
         'qr': qr,
         'scans': scans,
@@ -81,6 +85,7 @@ def qrcode_detail(request, qr_id):
         'download_formats': DOWNLOAD_CONTENT_TYPES,
         'download_sizes': [128, 256, 512, 1024],
         'print_sizes': PRINT_SIZE_LABELS,
+        'design_templates': design_templates,
     })
 
 
@@ -190,6 +195,71 @@ def qrcode_download_print(request, qr_id):
     buf = QRGeneratorService.download_print_design(qr, design_size=design_size)
 
     filename = f'qr_{qr.code}_print_{design_size}.pdf'
+    response = HttpResponse(buf.read(), content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
+
+
+BRANDED_TEMPLATE_CHOICES = ('ELEGANT', 'MODERN', 'RUSTIC', 'VIBRANT', 'MINIMAL')
+
+
+@login_required(login_url='/account/login/')
+def qrcode_download_branded_print(request, qr_id):
+    """Download a brand-aware print-ready PDF with a chosen design template.
+
+    Query params:
+        design_template: ELEGANT | MODERN | RUSTIC | VIBRANT | MINIMAL (default: ELEGANT)
+        design_size: 10x20cm | A5 | A4 | 15x30cm | 20x40cm (default: A4)
+        table_name: Optional table identifier (e.g. "Masa 5")
+        custom_text: Optional instructional text override
+    """
+    org = _get_org(request)
+    if not org:
+        return redirect('accounts:profile')
+    from apps.orders.models import QRCode
+    from apps.orders.services.qr_generator import QRGeneratorService
+    from apps.orders.services.qr_print_designs import QRPrintDesignService
+
+    qr = get_object_or_404(QRCode, id=qr_id, organization=org, deleted_at__isnull=True)
+
+    # Parse query parameters
+    design_template = request.GET.get('design_template', 'ELEGANT').upper()
+    if design_template not in BRANDED_TEMPLATE_CHOICES:
+        design_template = 'ELEGANT'
+
+    design_size = request.GET.get('design_size', 'A4')
+    if design_size not in PRINT_SIZE_LABELS:
+        design_size = 'A4'
+
+    table_name = request.GET.get('table_name', '').strip() or None
+    custom_text = request.GET.get('custom_text', '').strip() or None
+
+    # Resolve data
+    target_url = QRGeneratorService.get_target_url(qr)
+    org_name = getattr(org, 'name', '') or ''
+    org_logo_url = getattr(org, 'logo', None) or None
+
+    # Get theme colors from the organization's default theme
+    theme_colors = QRPrintDesignService.get_theme_colors_from_org(org)
+
+    # If the QR code is linked to a table and no table_name was passed,
+    # try to pull the table name from the model
+    if not table_name and hasattr(qr, 'table') and qr.table:
+        table_name = getattr(qr.table, 'name', None) or getattr(qr.table, 'label', None)
+
+    buf = QRPrintDesignService.generate_branded_print(
+        data_url=target_url,
+        design_template=design_template,
+        design_size=design_size,
+        org_name=org_name,
+        org_logo_url=org_logo_url,
+        theme_colors=theme_colors,
+        table_name=table_name,
+        custom_text=custom_text,
+    )
+
+    tpl_lower = design_template.lower()
+    filename = f'qr_{qr.code}_{tpl_lower}_{design_size}.pdf'
     response = HttpResponse(buf.read(), content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response

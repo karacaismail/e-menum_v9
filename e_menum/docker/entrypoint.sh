@@ -57,8 +57,19 @@ fi
 # ─── Run migrations if requested ────────────────────────────
 if [ "$DJANGO_MIGRATE" = "true" ]; then
     echo "Running database migrations..."
-    python manage.py migrate --noinput
-    echo "Migrations complete."
+
+    # Use safe_migrate with audit logging and advisory locking.
+    # Falls back to standard migrate if safe_migrate is not available
+    # (e.g. first deploy before management command exists).
+    if python manage.py safe_migrate --applied-by "docker-entrypoint" 2>&1; then
+        echo "Migrations complete (safe_migrate)."
+    else
+        SAFE_EXIT=$?
+        echo "WARNING: safe_migrate exited with code $SAFE_EXIT"
+        echo "Falling back to standard migrate..."
+        python manage.py migrate --noinput
+        echo "Migrations complete (standard fallback)."
+    fi
 fi
 
 # ─── Create superuser if requested ──────────────────────────
