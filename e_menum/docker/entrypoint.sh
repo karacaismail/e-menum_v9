@@ -26,6 +26,17 @@ else
 fi
 
 # ─── Wait for database ──────────────────────────────────────
+# Ensure .env has DATABASE_URL when created from .env.example (Docker injects it; persist for Django)
+if [ -n "$DATABASE_URL" ] && [ -f /app/.env ]; then
+    if ! grep -q '^DATABASE_URL=' /app/.env 2>/dev/null; then
+        echo "DATABASE_URL=$DATABASE_URL" >> /app/.env
+    fi
+fi
+# Debug: show which DB host we use (no password)
+if [ -n "$DATABASE_URL" ]; then
+    _db_host=$(echo "$DATABASE_URL" | sed -n 's|.*@\([^/]*\)/.*|\1|p')
+    echo "Database host: ${_db_host:-unknown}"
+fi
 if [ -n "$DATABASE_URL" ]; then
     echo "Checking database connection..."
     python << 'PYEOF'
@@ -49,7 +60,7 @@ for i in range(max_retries):
         if i == max_retries - 1:
             print(f"Could not connect to database after {max_retries} attempts: {e}")
             sys.exit(1)
-        print(f"Waiting for database... ({i+1}/{max_retries})")
+        print(f"Waiting for database... ({i+1}/{max_retries}) last error: {e}")
         time.sleep(retry_interval)
 PYEOF
 fi

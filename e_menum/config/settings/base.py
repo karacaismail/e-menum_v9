@@ -78,8 +78,8 @@ except ImportError:
 # BASE_DIR is the e_menum directory (where manage.py lives)
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# Read .env file if it exists (development)
-ENV_FILE = BASE_DIR.parent / '.env'
+# Read .env file if it exists (project root: e_menum/.env or Docker /app/.env)
+ENV_FILE = BASE_DIR / '.env'
 if ENV_FILE.exists():
     try:
         environ.Env.read_env(str(ENV_FILE))
