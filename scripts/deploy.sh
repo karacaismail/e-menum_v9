@@ -22,7 +22,7 @@
 #   DEPLOY_BUILD  1 ise Docker image her zaman derlenir; 0 ise sadece ilgili dosya degistiğinde (varsayılan: 0)
 #   FORCE_DEPLOY  1 ise degisiklik olmasa da islemler yapilir (varsayılan: 0)
 #   DEPLOY_DEBUG  1 ise deploy sonrasi health check ekler (degisiklik/FORCE yoksa calismaz)
-#   DEPLOY_GRACEFUL 0 ise container restart (varsayilan: 1 = HUP/pool_restart ile kesintisiz)
+#   DEPLOY_GRACEFUL 1 ise graceful (HUP); 0 ise tam restart (varsayilan: 0 = her deploy full restart)
 #   DEPLOY_LOG    Log dosyasi yolu (varsayilan: /var/log/deploy.log)
 #
 # Kesinti: Restart sirasinda web/celery ~2-5 sn kesinti olur. Migrate once uygulanir,
@@ -231,22 +231,29 @@ run_docker_deploy() {
   fi
   docker compose -f docker-compose.prod.yml exec -T web python manage.py collectstatic --noinput 2>/dev/null || true
 
-  # Restart: full build yaptiysak up -d zaten yeni container'lari baslatti, tekrar restart gerekmez
-  if [[ "$NEED_FULL_BUILD" == "1" ]]; then
-    log_info "Tam build yapildi, container'lar up -d ile zaten guncel. Ek restart yok."
-  elif [[ "$NEED_RESTART" == "1" || "$FORCE_DEPLOY" == "1" || "$DEPLOY_DEBUG" == "1" ]]; then
-    if [[ "${DEPLOY_GRACEFUL:-1}" == "0" ]]; then
-      log_info "DEPLOY_GRACEFUL=0, tam restart..."
-      docker compose -f docker-compose.prod.yml restart web celery_worker celery_beat
+  # Seed data: plans, roles, allergens --force (kod degisikliklerini DB'ye yansitir)
+  log_info "Seed data (roles, plans, allergens --force)..."
+  for cmd in seed_roles seed_plans seed_allergens; do
+    if docker compose -f docker-compose.prod.yml exec -T web python manage.py "$cmd" --force; then
+      log_ok "  $cmd tamamlandi."
     else
-      log_info "Graceful reload (kesinti minimum)..."
-      docker compose -f docker-compose.prod.yml exec -T web python -c "import os,signal; os.kill(1, signal.SIGHUP)" 2>/dev/null && log_ok "Web: Gunicorn HUP (graceful)" || docker compose -f docker-compose.prod.yml restart web
-      docker compose -f docker-compose.prod.yml exec -T celery_worker celery -A config control pool_restart 2>/dev/null && log_ok "Celery worker: pool_restart (graceful)" || docker compose -f docker-compose.prod.yml restart celery_worker
-      docker compose -f docker-compose.prod.yml restart celery_beat
-      log_ok "Celery beat: restart (graceful desteklenmiyor)"
+      log_warn "  $cmd atlandi veya hata (devam ediliyor)."
     fi
+  done
+
+  # Restart: her deploy'da web/celery tam restart (migration + seed sonrasi guvenli)
+  if [[ "$NEED_FULL_BUILD" == "1" ]]; then
+    log_info "Tam build yapildi, container'lar up -d ile zaten guncel."
+  fi
+  if [[ "${DEPLOY_GRACEFUL:-0}" == "1" ]]; then
+    log_info "DEPLOY_GRACEFUL=1, graceful reload..."
+    docker compose -f docker-compose.prod.yml exec -T web python -c "import os,signal; os.kill(1, signal.SIGHUP)" 2>/dev/null && log_ok "Web: Gunicorn HUP (graceful)" || docker compose -f docker-compose.prod.yml restart web
+    docker compose -f docker-compose.prod.yml exec -T celery_worker celery -A config control pool_restart 2>/dev/null && log_ok "Celery worker: pool_restart" || docker compose -f docker-compose.prod.yml restart celery_worker
+    docker compose -f docker-compose.prod.yml restart celery_beat
   else
-    log_info "Restart atlaniyor (degisiklik yok veya zaten tam build ile guncellendi)."
+    log_info "Web, celery tam restart (varsayilan)..."
+    docker compose -f docker-compose.prod.yml restart web celery_worker celery_beat
+    log_ok "Restart tamamlandi."
   fi
 
   # Her basarili deploy'da deploy_info.json yaz (footer'da build bilgisi)

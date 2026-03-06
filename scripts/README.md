@@ -12,9 +12,9 @@ GitHub'a commit atıldığında sunucuda güncel kodu çekip migration, build ve
 ```
 
 - **Docker (akıllı mod):** Commit'e göre karar verir:
-  - **Sadece kod değiştiyse:** Image derlenmez, Tailwind + up -d + migrate + collectstatic + **graceful reload** (Gunicorn HUP, Celery pool_restart) → minimal kesinti.
-  - **Dockerfile, requirements*.txt, package.json, docker/, docker-compose.prod.yml değiştiyse:** **Tam image build** + up -d + migrate + collectstatic → container'lar yeni image ile ayağa kalkar, ek restart yok.
-  - **DEPLOY_BUILD=1** verirseniz: Her seferinde tam build (manuel zorunlu build için).
+  - **Sadece kod değiştiyse:** Image derlenmez, Tailwind + up -d + migrate + collectstatic + **seed (roles, plans, allergens --force)** + **tam restart** (web, celery).
+  - **Dockerfile, requirements*.txt, package.json, docker/, docker-compose.prod.yml değiştiyse:** **Tam image build** + up -d + migrate + collectstatic + seed + restart.
+  - **DEPLOY_GRACEFUL=1** verirseniz: Graceful reload (HUP) yerine tam restart.
 - **Bare metal (Gunicorn):** venv, `pip install`, `migrate`, Tailwind `css:build`, `collectstatic`, ardından Gunicorn restart (systemctl veya HUP).
 
 ### Ortam değişkenleri
@@ -27,7 +27,7 @@ GitHub'a commit atıldığında sunucuda güncel kodu çekip migration, build ve
 | `LOCK_FILE`    | Kilit dosyası (varsayılan: `/tmp/emenum-deploy.lock`) |
 | `DEPLOY_BUILD` | `1` ise her deploy'da Docker image derlenir; `0` ise sadece ilgili dosya değiştiğinde (varsayılan: 0) |
 | `FORCE_DEPLOY`   | `1` ise degisiklik olmasa da islemler yapilir |
-| `DEPLOY_GRACEFUL`| `0` ise tam container restart (varsayilan: 1 = HUP/pool_restart) |
+| `DEPLOY_GRACEFUL`| `1` ise graceful (HUP); `0` ise her deploy tam restart (varsayilan: 0) |
 | `DEPLOY_LOG`     | Log dosyasi (varsayilan: `/var/log/deploy.log`) |
 | `DEPLOY_DEBUG` | `1` ise test modu: tum adimlar + deploy_test.json + health check (footer badge) |
 | `VENV_PATH`    | Bare metal'de venv yolu (varsayılan: repo kökünde `.venv`) |
