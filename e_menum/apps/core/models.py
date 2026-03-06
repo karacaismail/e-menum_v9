@@ -462,6 +462,16 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin, SoftDeleteMixin
         help_text=_('Email address (used as username for authentication)')
     )
 
+    username = models.CharField(
+        max_length=30,
+        null=True,
+        blank=True,
+        unique=True,
+        db_index=True,
+        verbose_name=_('Username'),
+        help_text=_('Optional display username for login (3–30 chars, lowercase, digits, underscore)')
+    )
+
     first_name = models.CharField(
         max_length=100,
         verbose_name=_('First name'),
