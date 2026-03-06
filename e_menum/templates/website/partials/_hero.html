@@ -68,18 +68,11 @@
                 {% endif %}
             </div>
 
-            {# Hero Image (optional) #}
+            {# Hero Image — Platform Mockup #}
             {% if show_image %}
             <div class="hidden lg:block relative" data-reveal>
                 <div class="relative animate-float">
-                    <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 shadow-2xl border border-white/10">
-                        <div class="rounded-xl overflow-hidden aspect-[4/3]">
-                            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=640&h=480&fit=crop&auto=format"
-                                 alt="{% trans 'Dijital menü ile restoran deneyimi' %}"
-                                 class="w-full h-full object-cover"
-                                 loading="lazy">
-                        </div>
-                    </div>
+                    {% include "website/partials/mockups/_dashboard_mockup.html" %}
                     {# Decorative Elements #}
                     <div class="absolute -top-4 -right-4 w-20 h-20 bg-primary-500/20 rounded-full blur-2xl"></div>
                     <div class="absolute -bottom-6 -left-6 w-28 h-28 bg-secondary-500/20 rounded-full blur-2xl"></div>

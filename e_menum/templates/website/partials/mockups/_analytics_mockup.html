@@ -1,0 +1,190 @@
+{% load i18n %}
+{% comment %}============================================================================
+   ANALYTICS MOCKUP — Miniature CSS representation of the analytics page
+
+   Usage:
+   {% include "website/partials/mockups/_analytics_mockup.html" %}
+
+   Displays inside a laptop device frame with:
+   - Date range selector
+   - Multi-line chart
+   - Horizontal bar chart (top products)
+   - Stat cards
+   ============================================================================{% endcomment %}
+
+<div class="rounded-xl overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800">
+
+    {# ── Laptop Top Bar ──────────────────────────────────────────────────── #}
+    <div class="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700">
+        <div class="flex gap-1.5">
+            <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>
+        </div>
+        <div class="flex-1 mx-4">
+            <div class="bg-white dark:bg-gray-600 rounded-md px-3 py-1 text-[10px] text-gray-500 dark:text-gray-300 font-mono truncate">
+                e-menum.com/account/analytics/
+            </div>
+        </div>
+    </div>
+
+    {# ── Analytics Content ───────────────────────────────────────────────── #}
+    <div class="flex bg-white dark:bg-gray-900">
+
+        {# ── Mini Sidebar ────────────────────────────────────────────────── #}
+        <div class="w-12 bg-gray-900 dark:bg-gray-950 py-3 flex flex-col items-center gap-3 flex-shrink-0">
+            <div class="w-6 h-6 rounded-lg bg-primary-500/30 flex items-center justify-center">
+                <div class="w-3 h-3 rounded bg-primary-400"></div>
+            </div>
+            <div class="w-5 h-5 rounded bg-gray-700"></div>
+            <div class="w-5 h-5 rounded bg-gray-700"></div>
+            <div class="w-5 h-5 rounded bg-gray-700"></div>
+            <div class="w-5 h-5 rounded bg-primary-600"></div>
+            <div class="w-5 h-5 rounded bg-gray-700"></div>
+            <div class="mt-auto w-5 h-5 rounded bg-gray-700"></div>
+        </div>
+
+        {# ── Main Content ────────────────────────────────────────────────── #}
+        <div class="flex-1 p-3 space-y-3 min-w-0">
+
+            {# Page Header + Date Range #}
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="text-[9px] font-bold text-gray-900 dark:text-white">{% trans "Analitik" %}</div>
+                    <div class="text-[7px] text-gray-500 dark:text-gray-400">{% trans "Detayli performans analizi" %}</div>
+                </div>
+                <div class="flex gap-1">
+                    <div class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded text-[7px]">{% trans "7 Gun" %}</div>
+                    <div class="px-2 py-0.5 bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded text-[7px] font-medium">{% trans "30 Gun" %}</div>
+                    <div class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded text-[7px]">{% trans "90 Gun" %}</div>
+                    <div class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded text-[7px] flex items-center gap-0.5">
+                        <div class="w-1.5 h-1.5 rounded-sm bg-gray-400"></div>
+                        {% trans "Ozel" %}
+                    </div>
+                </div>
+            </div>
+
+            {# Stat Cards Row #}
+            <div class="grid grid-cols-3 gap-2">
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-2 border-l-2 border-primary-500">
+                    <div class="text-[7px] text-gray-500 dark:text-gray-400 mb-0.5">{% trans "Toplam Goruntulenme" %}</div>
+                    <div class="text-[11px] font-bold text-gray-900 dark:text-white">4,821</div>
+                    <div class="flex items-center gap-1 mt-0.5">
+                        <div class="text-[7px] text-green-600 dark:text-green-400 font-medium">+18.3%</div>
+                        <div class="text-[6px] text-gray-400 dark:text-gray-500">{% trans "vs gecen ay" %}</div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-2 border-l-2 border-emerald-500">
+                    <div class="text-[7px] text-gray-500 dark:text-gray-400 mb-0.5">{% trans "Ort. Oturum Suresi" %}</div>
+                    <div class="text-[11px] font-bold text-gray-900 dark:text-white">3:42</div>
+                    <div class="flex items-center gap-1 mt-0.5">
+                        <div class="text-[7px] text-green-600 dark:text-green-400 font-medium">+0:28</div>
+                        <div class="text-[6px] text-gray-400 dark:text-gray-500">{% trans "vs gecen ay" %}</div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-2 border-l-2 border-amber-500">
+                    <div class="text-[7px] text-gray-500 dark:text-gray-400 mb-0.5">{% trans "Donusum Orani" %}</div>
+                    <div class="text-[11px] font-bold text-gray-900 dark:text-white">24.6%</div>
+                    <div class="flex items-center gap-1 mt-0.5">
+                        <div class="text-[7px] text-green-600 dark:text-green-400 font-medium">+3.2%</div>
+                        <div class="text-[6px] text-gray-400 dark:text-gray-500">{% trans "vs gecen ay" %}</div>
+                    </div>
+                </div>
+            </div>
+
+            {# Charts Row #}
+            <div class="grid grid-cols-5 gap-2">
+
+                {# Multi-line Chart (wider) #}
+                <div class="col-span-3 bg-gray-50 dark:bg-gray-800 rounded-lg p-2">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <div class="text-[8px] font-semibold text-gray-700 dark:text-gray-300">{% trans "Trafik Analizi" %}</div>
+                        <div class="flex gap-2">
+                            <div class="flex items-center gap-0.5">
+                                <div class="w-1.5 h-1.5 rounded-full bg-primary-500"></div>
+                                <span class="text-[6px] text-gray-500 dark:text-gray-400">{% trans "Goruntulenme" %}</span>
+                            </div>
+                            <div class="flex items-center gap-0.5">
+                                <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                <span class="text-[6px] text-gray-500 dark:text-gray-400">{% trans "Siparis" %}</span>
+                            </div>
+                            <div class="flex items-center gap-0.5">
+                                <div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+                                <span class="text-[6px] text-gray-500 dark:text-gray-400">{% trans "QR Tarama" %}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <svg viewBox="0 0 160 50" class="w-full h-14" xmlns="http://www.w3.org/2000/svg">
+                        {# Grid lines #}
+                        <line x1="0" y1="12.5" x2="160" y2="12.5" class="stroke-gray-200 dark:stroke-gray-700" stroke-width="0.3"/>
+                        <line x1="0" y1="25" x2="160" y2="25" class="stroke-gray-200 dark:stroke-gray-700" stroke-width="0.3"/>
+                        <line x1="0" y1="37.5" x2="160" y2="37.5" class="stroke-gray-200 dark:stroke-gray-700" stroke-width="0.3"/>
+                        {# Primary line (views) #}
+                        <polyline points="0,40 20,35 40,30 60,22 80,25 100,18 120,15 140,12 160,8"
+                                  fill="none" stroke-width="1.5" class="stroke-primary-500"/>
+                        {# Green line (orders) #}
+                        <polyline points="0,42 20,40 40,38 60,35 80,33 100,30 120,28 140,25 160,22"
+                                  fill="none" stroke-width="1.5" class="stroke-emerald-500"/>
+                        {# Amber line (QR scans) #}
+                        <polyline points="0,38 20,42 40,36 60,30 80,34 100,26 120,20 140,18 160,15"
+                                  fill="none" stroke-width="1" stroke-dasharray="2 1" class="stroke-amber-500"/>
+                    </svg>
+                </div>
+
+                {# Top Products Horizontal Bar Chart #}
+                <div class="col-span-2 bg-gray-50 dark:bg-gray-800 rounded-lg p-2">
+                    <div class="text-[8px] font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{% trans "En Cok Gorulen Urunler" %}</div>
+                    <div class="space-y-1.5">
+                        <div>
+                            <div class="flex items-center justify-between text-[6px] mb-0.5">
+                                <span class="text-gray-600 dark:text-gray-400 truncate">{% trans "Izgara Kofte" %}</span>
+                                <span class="text-gray-900 dark:text-white font-semibold">342</span>
+                            </div>
+                            <div class="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full bg-primary-500" style="width:90%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between text-[6px] mb-0.5">
+                                <span class="text-gray-600 dark:text-gray-400 truncate">{% trans "Karisik Salata" %}</span>
+                                <span class="text-gray-900 dark:text-white font-semibold">287</span>
+                            </div>
+                            <div class="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full bg-primary-400" style="width:75%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between text-[6px] mb-0.5">
+                                <span class="text-gray-600 dark:text-gray-400 truncate">{% trans "Adana Kebap" %}</span>
+                                <span class="text-gray-900 dark:text-white font-semibold">234</span>
+                            </div>
+                            <div class="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full bg-primary-300 dark:bg-primary-600" style="width:62%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between text-[6px] mb-0.5">
+                                <span class="text-gray-600 dark:text-gray-400 truncate">{% trans "Kunefe" %}</span>
+                                <span class="text-gray-900 dark:text-white font-semibold">198</span>
+                            </div>
+                            <div class="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full bg-primary-200 dark:bg-primary-700" style="width:52%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between text-[6px] mb-0.5">
+                                <span class="text-gray-600 dark:text-gray-400 truncate">{% trans "Turk Kahvesi" %}</span>
+                                <span class="text-gray-900 dark:text-white font-semibold">165</span>
+                            </div>
+                            <div class="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full bg-primary-200 dark:bg-primary-800" style="width:43%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

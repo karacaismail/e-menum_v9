@@ -17,12 +17,20 @@
         <div class="{% if not forloop.last %}mb-24{% endif %}" data-reveal>
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 {% if cat.layout_reversed %}
-                <div class="order-2 lg:order-1 rounded-2xl aspect-video overflow-hidden">
-                    {% cycle "photo-1556742049-0cfed4f6a45d" "photo-1551288049-bebda4e38f71" "photo-1556910103-1c02745aae4d" "photo-1512941937669-90a1b58e7e9c" "photo-1555396273-367ea4eb4db5" "photo-1546069901-ba9599a7e63c" as feature_img silent %}
-                    <img src="https://images.unsplash.com/{{ feature_img }}?w=640&h=360&fit=crop&auto=format"
-                         alt="{{ cat.image_alt|default:cat.title }}"
-                         class="w-full h-full object-cover rounded-2xl"
-                         loading="lazy">
+                <div class="order-2 lg:order-1">
+                    {% if forloop.counter == 1 %}
+                        {% include "website/partials/mockups/_menu_mockup.html" %}
+                    {% elif forloop.counter == 2 %}
+                        {% include "website/partials/mockups/_analytics_mockup.html" %}
+                    {% elif forloop.counter == 3 %}
+                        {% include "website/partials/mockups/_qr_mockup.html" %}
+                    {% elif forloop.counter == 4 %}
+                        {% include "website/partials/mockups/_orders_mockup.html" %}
+                    {% elif forloop.counter == 5 %}
+                        {% include "website/partials/mockups/_dashboard_mockup.html" %}
+                    {% else %}
+                        {% include "website/partials/mockups/_mobile_menu_mockup.html" %}
+                    {% endif %}
                 </div>
                 <div class="order-1 lg:order-2">
                 {% else %}
@@ -56,12 +64,20 @@
                     {% endwith %}
                 </div>
                 {% if not cat.layout_reversed %}
-                <div class="rounded-2xl aspect-video overflow-hidden">
-                    {% cycle "photo-1517248135467-4c7edcad34c4" "photo-1414235077428-338989a2e8c0" "photo-1501339847302-ac426a4a7cbb" "photo-1559339352-11d035aa65de" "photo-1522071820081-009f0129c71c" "photo-1504674900247-0877df9cc836" as feature_img_norm silent %}
-                    <img src="https://images.unsplash.com/{{ feature_img_norm }}?w=640&h=360&fit=crop&auto=format"
-                         alt="{{ cat.image_alt|default:cat.title }}"
-                         class="w-full h-full object-cover rounded-2xl"
-                         loading="lazy">
+                <div>
+                    {% if forloop.counter == 1 %}
+                        {% include "website/partials/mockups/_dashboard_mockup.html" %}
+                    {% elif forloop.counter == 2 %}
+                        {% include "website/partials/mockups/_menu_mockup.html" %}
+                    {% elif forloop.counter == 3 %}
+                        {% include "website/partials/mockups/_orders_mockup.html" %}
+                    {% elif forloop.counter == 4 %}
+                        {% include "website/partials/mockups/_analytics_mockup.html" %}
+                    {% elif forloop.counter == 5 %}
+                        {% include "website/partials/mockups/_qr_mockup.html" %}
+                    {% else %}
+                        {% include "website/partials/mockups/_mobile_menu_mockup.html" %}
+                    {% endif %}
                 </div>
                 {% endif %}
             </div>

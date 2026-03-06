@@ -76,6 +76,42 @@
 </section>
 {% endif %}
 
+{% comment %}PLATFORM SHOWCASE{% endcomment %}
+<section class="py-16 lg:py-24 bg-white dark:bg-gray-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16" data-reveal>
+            <div class="inline-flex items-center px-4 py-1.5 mb-6 text-xs font-bold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/50 rounded-full tracking-wide uppercase">
+                {% trans "Platform Ön İzleme" %}
+            </div>
+            <h2 class="heading-sans text-3xl sm:text-4xl text-gray-900 dark:text-white mb-4 text-balance">
+                {% trans "Güçlü Yönetim Paneli, Şık Müşteri Deneyimi" %}
+            </h2>
+            <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                {% trans "İşletme sahibi paneli ile her şeyi tek noktadan yönetin. Müşterileriniz ise mobil cihazlarından şık menünüzü görüntülesin." %}
+            </p>
+        </div>
+
+        <div class="grid lg:grid-cols-5 gap-8 items-center">
+            {# Dashboard - takes 3/5 of width #}
+            <div class="lg:col-span-3" data-reveal>
+                {% include "website/partials/mockups/_dashboard_mockup.html" %}
+                <p class="text-center mt-4 text-sm font-medium text-gray-600 dark:text-gray-400">
+                    <i class="ph ph-monitor mr-1"></i>{% trans "İşletme Yönetim Paneli" %}
+                </p>
+            </div>
+            {# Mobile Menu - takes 2/5 of width #}
+            <div class="lg:col-span-2 flex justify-center" data-reveal>
+                <div class="max-w-[220px]">
+                    {% include "website/partials/mockups/_mobile_menu_mockup.html" %}
+                    <p class="text-center mt-4 text-sm font-medium text-gray-600 dark:text-gray-400">
+                        <i class="ph ph-device-mobile mr-1"></i>{% trans "Müşteri QR Menü" %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 {% comment %}HOW IT WORKS{% endcomment %}
 {% if how_it_works_steps %}
 <section class="py-16 lg:py-24 bg-white dark:bg-gray-950">
@@ -101,12 +137,14 @@
                 <p class="text-sm text-gray-700 dark:text-gray-300 mb-4">
                     {{ step.description }}
                 </p>
-                <div class="rounded-xl overflow-hidden aspect-[4/3] max-w-xs mx-auto">
-                    {% cycle "photo-1504674900247-0877df9cc836" "photo-1556742049-0cfed4f6a45d" "photo-1414235077428-338989a2e8c0" as step_img silent %}
-                    <img src="https://images.unsplash.com/{{ step_img }}?w=320&h=240&fit=crop&auto=format"
-                         alt="{{ step.title }}"
-                         class="w-full h-full object-cover"
-                         loading="lazy">
+                <div class="max-w-xs mx-auto">
+                    {% if forloop.counter == 1 %}
+                        {% include "website/partials/mockups/_menu_mockup.html" %}
+                    {% elif forloop.counter == 2 %}
+                        {% include "website/partials/mockups/_qr_mockup.html" %}
+                    {% else %}
+                        {% include "website/partials/mockups/_analytics_mockup.html" %}
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
