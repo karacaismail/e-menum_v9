@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('core', '0008_create_support_tickets'),
+        ('core', '0008_add_username_to_user'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
