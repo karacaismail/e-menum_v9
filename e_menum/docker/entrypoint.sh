@@ -27,9 +27,10 @@ fi
 
 # ─── Wait for database ──────────────────────────────────────
 # Ensure .env has DATABASE_URL when created from .env.example (Docker injects it; persist for Django)
+# When /app is volume-mounted from host, .env may be root-owned → write can fail; then we rely on env vars only.
 if [ -n "$DATABASE_URL" ] && [ -f /app/.env ]; then
     if ! grep -q '^DATABASE_URL=' /app/.env 2>/dev/null; then
-        echo "DATABASE_URL=$DATABASE_URL" >> /app/.env
+        ( echo "DATABASE_URL=$DATABASE_URL" >> /app/.env ) 2>/dev/null || true
     fi
 fi
 # Debug: show which DB host we use (no password)

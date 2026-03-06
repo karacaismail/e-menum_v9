@@ -88,10 +88,11 @@ services:
       # Seed data: set to "true" for first deploy, auto-skips if data exists
       DJANGO_SEED_DATA: ${DJANGO_SEED_DATA:-true}
     volumes:
-      # NOTE: Do NOT mount a volume over /app/staticfiles!
-      # WhiteNoise serves static files directly from the image.
-      # A volume mount would mask the files collected during docker build.
+      # Host kodu container'da gosterilir: git pull + deploy_info.json footer icin gerekli (yedekteki gibi)
+      - .:/app
       - media_volume:/app/media
+      # staticfiles volume: collectstatic container icinde buraya yazar; image'daki static'ler maskelenir
+      - staticfiles_volume:/app/staticfiles
     ports:
       - "${WEB_PORT:-8000}:8000"
     depends_on:
@@ -186,3 +187,5 @@ volumes:
     name: emenum_redis_data
   media_volume:
     name: emenum_media
+  staticfiles_volume:
+    name: emenum_staticfiles
