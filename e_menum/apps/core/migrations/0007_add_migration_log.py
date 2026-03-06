@@ -9,7 +9,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0006_add_file_and_hash'),
+        ('core', '0004_organization_plan_organization_subscription'),
     ]
 
     operations = [
