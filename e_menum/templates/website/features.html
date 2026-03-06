@@ -1,8 +1,8 @@
 {% extends "layouts/marketing.html" %}
 {% load static i18n %}
 
-{% block page_title %}{% if hero %}{{ hero.title }}{% else %}{% trans "Ozellikler" %}{% endif %}{% endblock %}
-{% block meta_description %}{% trans "E-Menum'un 50'den fazla ozelligi. QR menu, siparis yonetimi, AI icerik uretimi, analitik, coklu sube yonetimi ve daha fazlasi." %}{% endblock %}
+{% block page_title %}{% if hero %}{{ hero.title }}{% else %}{% trans "Özellikler" %}{% endif %}{% endblock %}
+{% block meta_description %}{% trans "E-Menum'un 50'den fazla özelliği. QR menü, sipariş yönetimi, AI içerik üretimi, analitik, çoklu şube yönetimi ve daha fazlası." %}{% endblock %}
 
 {% block content %}
 
@@ -17,11 +17,12 @@
         <div class="{% if not forloop.last %}mb-24{% endif %}" data-reveal>
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 {% if cat.layout_reversed %}
-                <div class="order-2 lg:order-1 bg-gray-100 dark:bg-gray-800 rounded-2xl aspect-video flex items-center justify-center">
-                    <div class="text-center text-gray-400 dark:text-gray-600">
-                        <i class="ph ph-image text-5xl mb-2"></i>
-                        <p class="text-sm">{{ cat.image_alt|default:cat.title }}</p>
-                    </div>
+                <div class="order-2 lg:order-1 rounded-2xl aspect-video overflow-hidden">
+                    {% cycle "photo-1556742049-0cfed4f6a45d" "photo-1551288049-bebda4e38f71" "photo-1556910103-1c02745aae4d" "photo-1512941937669-90a1b58e7e9c" "photo-1555396273-367ea4eb4db5" "photo-1546069901-ba9599a7e63c" as feature_img silent %}
+                    <img src="https://images.unsplash.com/{{ feature_img }}?w=640&h=360&fit=crop&auto=format"
+                         alt="{{ cat.image_alt|default:cat.title }}"
+                         class="w-full h-full object-cover rounded-2xl"
+                         loading="lazy">
                 </div>
                 <div class="order-1 lg:order-2">
                 {% else %}
@@ -46,7 +47,7 @@
                         {% for bullet in bullets %}
                         {% if bullet.is_active %}
                         <li class="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                            <i class="ph ph-check-circle text-green-500 mr-2 text-lg"></i>{{ bullet.text }}
+                            <i class="ph ph-check-circle text-green-600 dark:text-green-400 mr-2 text-lg"></i>{{ bullet.text }}
                         </li>
                         {% endif %}
                         {% endfor %}
@@ -55,11 +56,12 @@
                     {% endwith %}
                 </div>
                 {% if not cat.layout_reversed %}
-                <div class="bg-gray-100 dark:bg-gray-800 rounded-2xl aspect-video flex items-center justify-center">
-                    <div class="text-center text-gray-400 dark:text-gray-600">
-                        <i class="ph ph-image text-5xl mb-2"></i>
-                        <p class="text-sm">{{ cat.image_alt|default:cat.title }}</p>
-                    </div>
+                <div class="rounded-2xl aspect-video overflow-hidden">
+                    {% cycle "photo-1517248135467-4c7edcad34c4" "photo-1414235077428-338989a2e8c0" "photo-1501339847302-ac426a4a7cbb" "photo-1559339352-11d035aa65de" "photo-1522071820081-009f0129c71c" "photo-1504674900247-0877df9cc836" as feature_img_norm silent %}
+                    <img src="https://images.unsplash.com/{{ feature_img_norm }}?w=640&h=360&fit=crop&auto=format"
+                         alt="{{ cat.image_alt|default:cat.title }}"
+                         class="w-full h-full object-cover rounded-2xl"
+                         loading="lazy">
                 </div>
                 {% endif %}
             </div>
@@ -73,6 +75,6 @@
 {% include "website/partials/_stats_counter.html" %}
 
 {# CTA #}
-{% include "website/partials/_cta_banner.html" with title="Tum Ozellikleri Kesfetmek Ister Misiniz?" subtitle="14 gun ucretsiz deneme. Kredi karti gerekmez. 2 dakikada kurulum." button_text="14 Gun Ucretsiz Basla" button_url="website:demo" secondary_text="Canli Demo Izle" secondary_url="website:demo" %}
+{% include "website/partials/_cta_banner.html" with title="Tüm Özellikleri Keşfetmek İster Misiniz?" subtitle="14 gün ücretsiz deneme. Kredi kartı gerekmez. 2 dakikada kurulum." button_text="14 Gün Ücretsiz Başla" button_url="website:demo" secondary_text="Canlı Demo İzle" secondary_url="website:demo" %}
 
 {% endblock %}

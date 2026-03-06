@@ -37,13 +37,13 @@
 
                     {% if marketing.announcement_url %}
                     <a href="{{ marketing.announcement_url }}"
-                       class="text-xs text-gray-300 hover:text-white transition-colors truncate inline-flex items-center gap-1"
+                       class="text-xs text-gray-100 hover:text-white transition-colors truncate inline-flex items-center gap-1"
                     >
                         {{ marketing.announcement_text }}
                         <i class="ph ph-arrow-right text-[10px] shrink-0"></i>
                     </a>
                     {% else %}
-                    <span class="text-xs text-gray-300 truncate">
+                    <span class="text-xs text-gray-100 truncate">
                         {{ marketing.announcement_text }}
                     </span>
                     {% endif %}
@@ -61,7 +61,7 @@
             </div>
 
             {# Right side — Utility links #}
-            <div class="flex items-center gap-3 text-xs text-gray-400 shrink-0">
+            <div class="flex items-center gap-3 text-xs text-gray-200 shrink-0">
                 {# Status page #}
                 <a href="{{ marketing.status_page_url }}"
                    class="inline-flex items-center gap-1.5 hover:text-white transition-colors"
@@ -75,7 +75,7 @@
                     {% trans "Status" %}
                 </a>
 
-                <span class="text-gray-700">|</span>
+                <span class="text-gray-500">|</span>
 
                 {# Email #}
                 <a href="mailto:{{ marketing.email }}"
@@ -85,7 +85,7 @@
                     {{ marketing.email }}
                 </a>
 
-                <span class="text-gray-700">|</span>
+                <span class="text-gray-500">|</span>
 
                 {# Phone #}
                 <a href="tel:{{ marketing.phone }}"

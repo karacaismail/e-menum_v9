@@ -17,6 +17,8 @@ All admin classes implement:
 - Dark theme compatible styling
 """
 
+import io
+
 from django.contrib import admin
 from django.db.models import Count, Q
 from django.utils import timezone
@@ -32,6 +34,7 @@ from apps.subscriptions.choices import (
 )
 from apps.subscriptions.models import (
     Feature,
+    FeaturePermission,
     Invoice,
     OrganizationUsage,
     Plan,
@@ -188,6 +191,19 @@ class OrganizationUsageInline(admin.TabularInline):
 
 
 # =============================================================================
+# FEATURE PERMISSION INLINE
+# =============================================================================
+
+class FeaturePermissionInline(admin.TabularInline):
+    """Inline for managing permissions gated by a feature."""
+    model = FeaturePermission
+    extra = 1
+    autocomplete_fields = ['permission']
+    verbose_name = _('Gated Permission')
+    verbose_name_plural = _('Gated Permissions')
+
+
+# =============================================================================
 # FEATURE ADMIN
 # =============================================================================
 
@@ -210,6 +226,7 @@ class FeatureAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     ordering = ['category', 'sort_order', 'name']
     list_per_page = 50
     list_editable = ['sort_order', 'is_active']
+    inlines = [FeaturePermissionInline]
 
     fieldsets = (
         (None, {
@@ -654,6 +671,7 @@ class PlanAdmin(EMenumPermissionMixin, admin.ModelAdmin):
             '<i class="ph ph-{icon}" style="font-size:24px;color:{color};"></i>'
             '<h3 style="color:{color};font-size:16px;margin:6px 0 2px;">{name}</h3>'
             '<div style="color:#e2e8f0;font-size:24px;font-weight:800;">{price}</div>'
+            '<div style="color:#94a3b8;font-size:12px;margin-top:2px;">{yearly_info}</div>'
             '<div style="color:#6b7280;font-size:11px;">{short}</div>'
             '</div>'
             '<div style="border-top:1px solid rgba(148,163,184,0.1);padding-top:10px;margin-top:10px;">'
@@ -671,6 +689,12 @@ class PlanAdmin(EMenumPermissionMixin, admin.ModelAdmin):
             color=color,
             name=obj.name,
             price=obj.formatted_price_monthly,
+            yearly_info=(
+                f'Yearly: {obj.formatted_price_yearly}/yr '
+                f'(₺{obj.yearly_per_month}/mo, -{obj.yearly_discount_percentage}%)'
+                if obj.price_yearly and obj.price_yearly > 0
+                else ''
+            ),
             short=obj.short_description or '',
             limits=format_html(limits_html),
             features=format_html(features_html),
@@ -1298,7 +1322,7 @@ class InvoiceAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     invoice_summary.short_description = _('Summary')
 
     # Custom actions
-    actions = ['mark_as_paid', 'mark_as_void', 'finalize_invoices']
+    actions = ['mark_as_paid', 'mark_as_void', 'finalize_invoices', 'export_pdf']
 
     @admin.action(description=_('Mark as paid'))
     def mark_as_paid(self, request, queryset):
@@ -1320,6 +1344,50 @@ class InvoiceAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     def finalize_invoices(self, request, queryset):
         count = queryset.filter(status=InvoiceStatus.DRAFT).update(status=InvoiceStatus.PENDING)
         self.message_user(request, _('%d invoice(s) finalized.') % count)
+
+    @admin.action(description=_('Export PDF'))
+    def export_pdf(self, request, queryset):
+        """Export selected invoices as PDF. Single → direct PDF download,
+        multiple → ZIP archive."""
+        import zipfile
+        from django.http import HttpResponse
+
+        from apps.subscriptions.services.invoice_pdf import generate_invoice_pdf
+
+        invoices = list(
+            queryset.select_related(
+                'organization', 'subscription', 'subscription__plan'
+            )
+        )
+
+        if len(invoices) == 1:
+            inv = invoices[0]
+            pdf = generate_invoice_pdf(inv)
+            if not pdf:
+                self.message_user(
+                    request,
+                    _('PDF oluşturulamadı. xhtml2pdf kurulu olduğundan emin olun.'),
+                    level='error',
+                )
+                return
+            response = HttpResponse(pdf.read(), content_type='application/pdf')
+            response['Content-Disposition'] = (
+                f'attachment; filename="fatura-{inv.invoice_number}.pdf"'
+            )
+            return response
+
+        # Multiple invoices → ZIP
+        zip_buffer = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zf:
+            for inv in invoices:
+                pdf = generate_invoice_pdf(inv)
+                if pdf:
+                    zf.writestr(f'fatura-{inv.invoice_number}.pdf', pdf.read())
+
+        zip_buffer.seek(0)
+        response = HttpResponse(zip_buffer.read(), content_type='application/zip')
+        response['Content-Disposition'] = 'attachment; filename="faturalar.zip"'
+        return response
 
 
 # =============================================================================
@@ -1434,3 +1502,34 @@ class OrganizationUsageAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     def reset_usage(self, request, queryset):
         count = queryset.update(current_usage=0, last_reset_at=timezone.now())
         self.message_user(request, _('%d usage record(s) reset.') % count)
+
+
+# =============================================================================
+# FEATURE PERMISSION ADMIN
+# =============================================================================
+
+@admin.register(FeaturePermission)
+class FeaturePermissionAdmin(EMenumPermissionMixin, admin.ModelAdmin):
+    """Admin interface for Feature-Permission mappings."""
+    list_display = ['feature_code', 'permission_display', 'created_at']
+    list_filter = ['feature__category', 'feature__code']
+    search_fields = ['feature__code', 'feature__name', 'permission__resource', 'permission__action']
+    autocomplete_fields = ['feature', 'permission']
+    readonly_fields = ['id', 'created_at', 'updated_at']
+    list_per_page = 50
+
+    def feature_code(self, obj):
+        return format_html(
+            '<code style="background:#1e293b;color:#38bdf8;padding:2px 6px;border-radius:4px;">{}</code>',
+            obj.feature.code
+        )
+    feature_code.short_description = _('Feature')
+    feature_code.admin_order_field = 'feature__code'
+
+    def permission_display(self, obj):
+        return format_html(
+            '<code style="background:#1e293b;color:#a78bfa;padding:2px 6px;border-radius:4px;">{}.{}</code>',
+            obj.permission.resource, obj.permission.action
+        )
+    permission_display.short_description = _('Permission')
+    permission_display.admin_order_field = 'permission__resource'

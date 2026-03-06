@@ -4,24 +4,32 @@
 
    Usage:
    {% include "website/partials/_cta_banner.html" with
-       title="Dijital Menunuzu Bugun Olusturun"
-       subtitle="14 gun ucretsiz deneme, kredi karti gerekmez."
-       button_text="Hemen Basla"
+       title="Dijital Menünüzü Bugün Oluşturun"
+       subtitle="14 gün ücretsiz deneme, kredi kartı gerekmez."
+       button_text="Hemen Başla"
        button_url="website:demo"
    %}
    ============================================================================{% endcomment %}
 
-<section class="relative bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 overflow-hidden">
+<section class="relative overflow-hidden">
+    {# Background Image #}
+    <div class="absolute inset-0">
+        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1440&h=480&fit=crop&auto=format"
+             alt="{% trans 'Restoran iç mekan' %}"
+             class="w-full h-full object-cover"
+             loading="lazy">
+        <div class="absolute inset-0 bg-primary-900/80 dark:bg-primary-950/90"></div>
+    </div>
     {# Background Pattern #}
-    <div class="absolute inset-0 pattern-grid opacity-30"></div>
+    <div class="absolute inset-0 pattern-grid opacity-20"></div>
     <div class="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-3xl"></div>
 
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20 relative z-10 text-center">
         <h2 class="heading-sans text-3xl sm:text-4xl text-white mb-4 text-balance">
-            {{ title|default:"Dijital Menunuzu Bugun Olusturun" }}
+            {{ title|default:"Dijital Menünüzü Bugün Oluşturun" }}
         </h2>
         {% if subtitle %}
-        <p class="text-lg text-primary-100 mb-8 max-w-2xl mx-auto">
+        <p class="text-lg text-white mb-8 max-w-2xl mx-auto">
             {{ subtitle }}
         </p>
         {% endif %}
@@ -29,7 +37,7 @@
             <a href="{% url button_url|default:'website:demo' %}"
                class="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-primary-700 bg-white hover:bg-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5"
             >
-                {{ button_text|default:"Hemen Basla" }}
+                {{ button_text|default:"Hemen Başla" }}
                 <i class="ph ph-arrow-right ml-2"></i>
             </a>
             {% if secondary_text %}

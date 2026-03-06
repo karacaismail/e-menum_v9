@@ -146,7 +146,7 @@
                     <div x-show="open" x-collapse x-cloak class="pl-4 space-y-1 mt-1">
                         {% for child in item.children %}
                         <a href="{{ child.url|resolve_nav_url }}"
-                           class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-lg"
+                           class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-lg"
                            @click="mobileOpen = false"
                         >
                             <i class="ph {{ child.icon }} text-lg text-primary-500 dark:text-primary-400"></i>
@@ -168,7 +168,7 @@
 
             {# Mobile language selector #}
             <div class="px-4 py-2">
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{% trans "Dil" %}</p>
+                <p class="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider mb-2">{% trans "Dil" %}</p>
                 <div class="flex flex-wrap gap-2">
                     {% get_available_languages as mobile_languages %}
                     {% for lang_code, lang_name in mobile_languages %}
@@ -199,7 +199,7 @@
                 {{ marketing.cta_primary_text }}
             </a>
             <a href="tel:{{ marketing.phone }}"
-               class="block px-4 py-3 text-sm text-center text-gray-500 dark:text-gray-400"
+               class="block px-4 py-3 text-sm text-center text-gray-600 dark:text-gray-300"
             >
                 <i class="ph ph-phone mr-1"></i>{{ marketing.phone }}
             </a>

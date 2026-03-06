@@ -10,7 +10,7 @@
                     <h3 class="text-lg font-bold text-white font-heading">
                         {% trans "Bültenimize Katılın" %}
                     </h3>
-                    <p class="text-sm text-gray-400 mt-1">
+                    <p class="text-sm text-gray-300 mt-1">
                         {% trans "Yeniliklerden ve kampanyalardan ilk siz haberdar olun." %}
                     </p>
                 </div>
@@ -82,21 +82,21 @@
                     </div>
                     <span class="text-lg font-bold text-white font-heading">E-Menum</span>
                 </a>
-                <p class="text-sm text-gray-400 mb-5 leading-relaxed">
+                <p class="text-sm text-gray-300 mb-5 leading-relaxed">
                     {{ marketing.description }}
                 </p>
                 {# Social Links #}
                 <div class="flex gap-3">
-                    <a href="{{ marketing.social.instagram }}" target="_blank" rel="noopener" aria-label="Instagram" class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 transition-colors">
+                    <a href="{{ marketing.social.instagram }}" target="_blank" rel="noopener" aria-label="Instagram" class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
                         <i class="ph ph-instagram-logo text-lg"></i>
                     </a>
-                    <a href="{{ marketing.social.twitter }}" target="_blank" rel="noopener" aria-label="Twitter" class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 transition-colors">
+                    <a href="{{ marketing.social.twitter }}" target="_blank" rel="noopener" aria-label="Twitter" class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
                         <i class="ph ph-twitter-logo text-lg"></i>
                     </a>
-                    <a href="{{ marketing.social.linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn" class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 transition-colors">
+                    <a href="{{ marketing.social.linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn" class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
                         <i class="ph ph-linkedin-logo text-lg"></i>
                     </a>
-                    <a href="{{ marketing.social.youtube }}" target="_blank" rel="noopener" aria-label="YouTube" class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 transition-colors">
+                    <a href="{{ marketing.social.youtube }}" target="_blank" rel="noopener" aria-label="YouTube" class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
                         <i class="ph ph-youtube-logo text-lg"></i>
                     </a>
                 </div>
@@ -108,7 +108,7 @@
                 <ul class="space-y-2.5">
                     {% for link in marketing.footer_product_links %}
                     <li>
-                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-400 hover:text-white transition-colors">
+                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-300 hover:text-white transition-colors">
                             {{ link.label }}
                         </a>
                     </li>
@@ -122,7 +122,7 @@
                 <ul class="space-y-2.5">
                     {% for link in marketing.footer_solutions_links %}
                     <li>
-                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-400 hover:text-white transition-colors">
+                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-300 hover:text-white transition-colors">
                             {{ link.label }}
                         </a>
                     </li>
@@ -136,7 +136,7 @@
                 <ul class="space-y-2.5">
                     {% for link in marketing.footer_resources_links %}
                     <li>
-                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-400 hover:text-white transition-colors">
+                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-300 hover:text-white transition-colors">
                             {{ link.label }}
                         </a>
                     </li>
@@ -150,7 +150,7 @@
                 <ul class="space-y-2.5">
                     {% for link in marketing.footer_company_links %}
                     <li>
-                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-400 hover:text-white transition-colors">
+                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-300 hover:text-white transition-colors">
                             {{ link.label }}
                         </a>
                     </li>
@@ -164,7 +164,7 @@
                 <ul class="space-y-2.5">
                     {% for link in marketing.footer_legal_links %}
                     <li>
-                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-400 hover:text-white transition-colors">
+                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-300 hover:text-white transition-colors">
                             {{ link.label }}
                         </a>
                     </li>
@@ -178,23 +178,23 @@
     <div class="border-t border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div class="flex flex-wrap items-center justify-center gap-6 lg:gap-10">
-                <div class="flex items-center gap-2 text-sm text-gray-400">
+                <div class="flex items-center gap-2 text-sm text-gray-300">
                     <i class="ph ph-shield-check text-lg text-green-500"></i>
                     <span>{% trans "256-bit SSL" %}</span>
                 </div>
-                <div class="flex items-center gap-2 text-sm text-gray-400">
+                <div class="flex items-center gap-2 text-sm text-gray-300">
                     <i class="ph ph-lock text-lg text-blue-500"></i>
                     <span>{% trans "KVKK Uyumlu" %}</span>
                 </div>
-                <div class="flex items-center gap-2 text-sm text-gray-400">
+                <div class="flex items-center gap-2 text-sm text-gray-300">
                     <i class="ph ph-chart-line-up text-lg text-primary-500"></i>
                     <span>{% trans "%99.9 Uptime" %}</span>
                 </div>
-                <div class="flex items-center gap-2 text-sm text-gray-400">
+                <div class="flex items-center gap-2 text-sm text-gray-300">
                     <i class="ph ph-globe text-lg text-purple-500"></i>
                     <span>{% trans "GDPR Uyumlu" %}</span>
                 </div>
-                <div class="flex items-center gap-2 text-sm text-gray-400">
+                <div class="flex items-center gap-2 text-sm text-gray-300">
                     <i class="ph ph-headset text-lg text-amber-500"></i>
                     <span>{% trans "7/24 Destek" %}</span>
                 </div>
@@ -206,14 +206,14 @@
     <div class="border-t border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-xs text-gray-500">
+                <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-xs text-gray-300">
                     <span>&copy; {{ marketing.year }} E-Menum. {% trans "Tüm hakları saklıdır." %}</span>
                     {% if marketing.vat_no %}
-                    <span class="hidden sm:inline text-gray-700">|</span>
+                    <span class="hidden sm:inline text-gray-500">|</span>
                     <span>{% trans "VKN" %}: {{ marketing.vat_no }}</span>
                     {% endif %}
                     {% if marketing.mersis_no %}
-                    <span class="hidden sm:inline text-gray-700">|</span>
+                    <span class="hidden sm:inline text-gray-500">|</span>
                     <span>{% trans "MERSİS" %}: {{ marketing.mersis_no }}</span>
                     {% endif %}
                 </div>
@@ -222,7 +222,7 @@
                 <div class="flex items-center gap-3">
                     <button
                         @click="darkMode = !darkMode"
-                        class="p-2 rounded-lg text-gray-500 hover:text-white hover:bg-gray-800 transition-colors"
+                        class="p-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
                         :aria-label="darkMode ? '{% trans 'Açık temaya geç' %}' : '{% trans 'Koyu temaya geç' %}'"
                     >
                         <i class="ph ph-sun text-lg" x-show="darkMode" x-cloak></i>
@@ -237,12 +237,12 @@
                             <input type="hidden" name="language" value="{{ lang_code }}">
                             <input type="hidden" name="next" value="{{ request.get_full_path }}">
                             <button type="submit"
-                                class="px-2 py-1 rounded {% if lang_code == LANGUAGE_CODE %}text-white font-semibold bg-gray-800{% else %}text-gray-500 hover:text-white{% endif %} transition-colors"
+                                class="px-2 py-1 rounded {% if lang_code == LANGUAGE_CODE %}text-white font-semibold bg-gray-800{% else %}text-gray-300 hover:text-white{% endif %} transition-colors"
                             >
                                 {{ lang_code|upper }}
                             </button>
                         </form>
-                        {% if not forloop.last %}<span class="text-gray-700">|</span>{% endif %}
+                        {% if not forloop.last %}<span class="text-gray-500">|</span>{% endif %}
                         {% endfor %}
                     </div>
                 </div>
