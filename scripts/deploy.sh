@@ -190,8 +190,31 @@ run_docker_deploy() {
   log_info "Containers ayakta (up -d)..."
   docker compose -f docker-compose.prod.yml up -d
 
+  # Web container restart loop'taysa exec calismaz; once "running" olmasini bekle
+  log_info "Web container'in ayaga kalkmasini bekleniyor..."
+  WEB_READY=0
+  for _ in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do
+    status=$(docker compose -f docker-compose.prod.yml ps web -q 2>/dev/null | xargs -I{} docker inspect -f '{{.State.Status}}' {} 2>/dev/null || echo "unknown")
+    if [[ "$status" == "running" ]]; then
+      WEB_READY=1
+      log_ok "Web container calisiyor."
+      break
+    fi
+    if [[ "$status" == "restarting" ]]; then
+      log_warn "Web container yeniden baslatiliyor (restart loop olabilir), bekleniyor..."
+    else
+      log_warn "Web container durumu: $status, bekleniyor..."
+    fi
+    sleep 5
+  done
+  if [[ "$WEB_READY" != "1" ]]; then
+    log_err "Web container 100 sn icinde ayaga kalkmadi (muhtemelen restart loop)."
+    log_err "Loglari kontrol edin: docker compose -f docker-compose.prod.yml logs web"
+    exit 1
+  fi
+
   log_info "Migrate ve collectstatic (container icinde)..."
-  sleep 3
+  sleep 2
   MIGRATE_OK=0
   for _ in 1 2 3 4 5; do
     if docker compose -f docker-compose.prod.yml exec -T web python manage.py migrate --noinput; then
@@ -203,6 +226,7 @@ run_docker_deploy() {
   done
   if [[ "$MIGRATE_OK" != "1" ]]; then
     log_err "Migrate basarisiz. Deploy durduruldu."
+    log_err "Web loglari: docker compose -f docker-compose.prod.yml logs web"
     exit 1
   fi
   docker compose -f docker-compose.prod.yml exec -T web python manage.py collectstatic --noinput 2>/dev/null || true
