@@ -1,5 +1,6 @@
 """Pricing page view."""
 import logging
+from collections import OrderedDict
 
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
@@ -24,10 +25,24 @@ def _format_feature_value(value, is_enabled):
 
     # USAGE type: {'credits': 100, 'reset_period': 'monthly'}
     if 'credits' in value:
-        credits = value['credits']
-        if credits == -1:
+        credits_val = value['credits']
+        if credits_val == -1:
             return str(_('Sinirsiz'))
-        return str(credits)
+        # Include period if available (e.g., "250 / ay")
+        period = value.get('reset_period', '')
+        period_labels = {
+            'monthly': str(_('/ ay')),
+            'weekly': str(_('/ hafta')),
+            'daily': str(_('/ gun')),
+        }
+        suffix = period_labels.get(period, '')
+        if suffix:
+            return f"{credits_val} {suffix}"
+        return str(credits_val)
+
+    # TEXT type: {'text': 'E-posta + Chat'}
+    if 'text' in value:
+        return str(value['text'])
 
     # BOOLEAN type: {'enabled': true/false}
     if 'enabled' in value:
@@ -47,26 +62,49 @@ class PricingView(CmsContextMixin, TemplateView):
         # Plans with display features
         try:
             from apps.subscriptions.models import Plan, Feature, PlanFeature
+
             plans = Plan.objects.filter(
                 is_active=True, is_public=True, deleted_at__isnull=True,
             ).prefetch_related('display_features').order_by('sort_order')
             context['plans'] = plans
 
-            # Comparison matrix: list of dicts {feature, values: [plan_value, ...]}
+            # Build comparison matrix grouped by category
             features = Feature.objects.filter(
                 is_active=True, deleted_at__isnull=True,
             ).order_by('category', 'sort_order')
 
-            matrix = []
+            # Pre-fetch all PlanFeatures at once (avoid N+1)
+            plan_ids = list(plans.values_list('id', flat=True))
+            feature_ids = list(features.values_list('id', flat=True))
+            plan_features = PlanFeature.objects.filter(
+                plan_id__in=plan_ids,
+                feature_id__in=feature_ids,
+            ).select_related('feature')
+
+            # Build lookup dict: (plan_id, feature_id) -> PlanFeature
+            pf_lookup = {}
+            for pf in plan_features:
+                pf_lookup[(str(pf.plan_id), str(pf.feature_id))] = pf
+
+            # Group features by category
+            grouped_matrix = OrderedDict()
             for feature in features:
+                cat = feature.category
+                cat_display = feature.get_category_display()
+
+                if cat not in grouped_matrix:
+                    grouped_matrix[cat] = {
+                        'category_key': cat,
+                        'category_display': cat_display,
+                        'rows': [],
+                    }
+
                 row = {
                     'feature': feature,
                     'values': [],
                 }
                 for plan in plans:
-                    pf = PlanFeature.objects.filter(
-                        plan=plan, feature=feature,
-                    ).first()
+                    pf = pf_lookup.get((str(plan.id), str(feature.id)))
                     if pf:
                         row['values'].append({
                             'is_enabled': pf.is_enabled,
@@ -81,11 +119,21 @@ class PricingView(CmsContextMixin, TemplateView):
                             'value': None,
                             'display_value': '',
                         })
-                matrix.append(row)
-            context['comparison_matrix'] = matrix
+                grouped_matrix[cat]['rows'].append(row)
+
+            context['comparison_groups'] = list(grouped_matrix.values())
+
+            # Also provide flat matrix for backward compatibility
+            flat_matrix = []
+            for group in grouped_matrix.values():
+                flat_matrix.extend(group['rows'])
+            context['comparison_matrix'] = flat_matrix
+
         except Exception:
+            logger.exception('Failed to load pricing data')
             context['plans'] = []
             context['comparison_matrix'] = []
+            context['comparison_groups'] = []
 
         # FAQs for pricing page
         context['faqs'] = FAQ.objects.filter(

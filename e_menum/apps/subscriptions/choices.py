@@ -113,15 +113,59 @@ class PlanTier(models.TextChoices):
     Tiers define feature access levels:
     - FREE: Basic features, limited usage (always available)
     - STARTER: Small businesses, essential features (₺2K/ay)
-    - GROWTH: Growing businesses, more features (₺4K/ay)
-    - PROFESSIONAL: Full features, priority support (₺6K/ay)
-    - ENTERPRISE: Custom features, dedicated support (₺8K+/ay)
+    - GROWTH: Growing businesses, more features (₺4.5K/ay)
+    - PROFESSIONAL: Full features, priority support (₺8.5K/ay)
+    - BUSINESS: Multi-branch, white-label (₺15K/ay)
+    - ENTERPRISE: Custom features, dedicated support (özel fiyat)
     """
     FREE = 'FREE', 'Free'
     STARTER = 'STARTER', 'Starter'
     GROWTH = 'GROWTH', 'Growth'
     PROFESSIONAL = 'PROFESSIONAL', 'Professional'
+    BUSINESS = 'BUSINESS', 'Business'
     ENTERPRISE = 'ENTERPRISE', 'Enterprise'
+
+
+class FeatureCategoryType(models.TextChoices):
+    """
+    Category types for grouping features in comparison tables.
+
+    Used by the Feature model's category field to provide
+    display-friendly group headers on the pricing page.
+    """
+    MENUS = 'menus', 'Menü & Ürün Yönetimi'
+    ORDERS = 'orders', 'Sipariş & Ödeme'
+    ANALYTICS = 'analytics', 'Analitik & Raporlama'
+    SUPPORT = 'support', 'Destek & Entegrasyon'
+    AI = 'ai', 'Yapay Zeka'
+    BRANDING = 'branding', 'Marka & Tasarım'
+    INTEGRATIONS = 'integrations', 'Entegrasyonlar'
+    GENERAL = 'general', 'Genel'
+
+
+class PlanCardStyle(models.TextChoices):
+    """CSS class styles for pricing card appearance."""
+    FREE = 'free', 'Free (Slate)'
+    STARTER = 'start', 'Starter (Sky Blue)'
+    GROWTH = 'grow', 'Growth (Emerald)'
+    PROFESSIONAL = 'pro', 'Professional (Accent/Teal)'
+    BUSINESS = 'biz', 'Business (Purple)'
+    ENTERPRISE = 'ent', 'Enterprise (Gold)'
+
+
+class PlanCtaStyle(models.TextChoices):
+    """CTA button style choices for pricing cards."""
+    OUTLINE = 'cta-out', 'Outline'
+    PRIMARY = 'cta-prim', 'Primary (Filled)'
+    ENTERPRISE = 'cta-ent', 'Enterprise (Gold)'
+
+
+class PlanRibbonColor(models.TextChoices):
+    """Ribbon/highlight color choices for pricing cards."""
+    NONE = '', 'Yok'
+    TEAL = 'teal', 'Teal (Accent)'
+    GOLD = 'gold', 'Gold'
+    PURPLE = 'purple', 'Purple'
 
 
 class FeatureType(models.TextChoices):

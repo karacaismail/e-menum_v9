@@ -62,6 +62,7 @@ TIER_COLORS = {
     PlanTier.STARTER: '#3b82f6',     # Blue
     PlanTier.GROWTH: '#22c55e',      # Green
     PlanTier.PROFESSIONAL: '#8b5cf6', # Purple
+    PlanTier.BUSINESS: '#a855f7',    # Purple-violet
     PlanTier.ENTERPRISE: '#f59e0b',  # Amber
 }
 
@@ -70,7 +71,8 @@ TIER_ICONS = {
     PlanTier.STARTER: 'rocket-launch',
     PlanTier.GROWTH: 'trend-up',
     PlanTier.PROFESSIONAL: 'crown',
-    PlanTier.ENTERPRISE: 'buildings',
+    PlanTier.BUSINESS: 'buildings',
+    PlanTier.ENTERPRISE: 'star',
 }
 
 STATUS_COLORS = {
@@ -124,7 +126,7 @@ class PlanDisplayFeatureInline(admin.TabularInline):
     """
     model = PlanDisplayFeature
     extra = 1
-    fields = ['text', 'is_highlighted', 'sort_order', 'is_active']
+    fields = ['text', 'icon_svg', 'is_highlighted', 'sort_order', 'is_active']
     ordering = ['sort_order']
     verbose_name = _('Display Feature (Pricing Card)')
     verbose_name_plural = _('Display Features (Pricing Card)')
@@ -453,6 +455,22 @@ class PlanAdmin(EMenumPermissionMixin, admin.ModelAdmin):
                 'is_active', 'is_public', 'is_default', 'is_custom',
                 'highlight_text', 'sort_order',
             )
+        }),
+        (_('Pricing Card Appearance'), {
+            'fields': (
+                'card_css_class', 'badge_label', 'motto',
+                'ribbon_color', 'has_glow_effect',
+                'cta_text', 'cta_style', 'cta_url',
+                'price_label', 'custom_price_text',
+            ),
+            'description': _(
+                'These fields control how the plan appears on the pricing page cards. '
+                'card_css_class sets the visual theme color. '
+                'badge_label overrides the plan name in the card badge. '
+                'motto is an italic motivational quote. '
+                'ribbon_color sets the color when highlight_text is shown. '
+                'CTA fields control the call-to-action button.'
+            ),
         }),
         (_('Pricing Card Preview'), {
             'fields': ('pricing_card_preview',),

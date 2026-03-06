@@ -32,8 +32,12 @@ from apps.core.models import (
 )
 from apps.subscriptions.choices import (
     BillingPeriod,
+    FeatureCategoryType,
     FeatureType,
     InvoiceStatus,
+    PlanCardStyle,
+    PlanCtaStyle,
+    PlanRibbonColor,
     PlanTier,
     SubscriptionPaymentMethod,
     SubscriptionStatus,
@@ -152,6 +156,7 @@ class Feature(TimeStampedMixin, SoftDeleteMixin, models.Model):
 
     category = models.CharField(
         max_length=50,
+        choices=FeatureCategoryType.choices,
         db_index=True,
         verbose_name=_('Category'),
         help_text=_('Category for grouping features (e.g., menus, orders, ai, analytics)')
@@ -524,7 +529,89 @@ class Plan(TimeStampedMixin, SoftDeleteMixin, models.Model):
         blank=True,
         null=True,
         verbose_name=_('Highlight text'),
-        help_text=_('Optional badge text (e.g., "Most Popular", "Best Value")')
+        help_text=_('Optional badge/ribbon text (e.g., "En Popüler", "Özel Teklif")')
+    )
+
+    # --- Pricing Card Display Fields ---
+    card_css_class = models.CharField(
+        max_length=20,
+        choices=PlanCardStyle.choices,
+        blank=True,
+        default='',
+        verbose_name=_('Card CSS class'),
+        help_text=_('Visual style for the pricing card (free, start, grow, pro, biz, ent)')
+    )
+
+    badge_label = models.CharField(
+        max_length=50,
+        blank=True,
+        default='',
+        verbose_name=_('Badge label'),
+        help_text=_('Badge text shown on card (e.g., "Ücretsiz", "Starter"). Falls back to plan name.')
+    )
+
+    motto = models.CharField(
+        max_length=200,
+        blank=True,
+        default='',
+        verbose_name=_('Motto'),
+        help_text=_('Motivational italic quote on pricing card (e.g., "Her büyük iş küçük bir adımla başlar.")')
+    )
+
+    ribbon_color = models.CharField(
+        max_length=10,
+        choices=PlanRibbonColor.choices,
+        blank=True,
+        default='',
+        verbose_name=_('Ribbon color'),
+        help_text=_('Ribbon color if highlight_text is set (teal, gold, purple)')
+    )
+
+    cta_text = models.CharField(
+        max_length=50,
+        blank=True,
+        default='',
+        verbose_name=_('CTA button text'),
+        help_text=_('Call-to-action button text (e.g., "Ücretsiz Başla", "14 Gün Dene", "İletişime Geçin")')
+    )
+
+    cta_style = models.CharField(
+        max_length=20,
+        choices=PlanCtaStyle.choices,
+        blank=True,
+        default='cta-out',
+        verbose_name=_('CTA button style'),
+        help_text=_('Button appearance: outline, primary (filled), or enterprise (gold)')
+    )
+
+    cta_url = models.CharField(
+        max_length=200,
+        blank=True,
+        default='',
+        verbose_name=_('CTA URL'),
+        help_text=_('URL for the CTA button (Django URL name like "website:demo" or absolute URL)')
+    )
+
+    price_label = models.CharField(
+        max_length=100,
+        blank=True,
+        default='',
+        verbose_name=_('Price label'),
+        help_text=_('Text below price (e.g., "Sonsuza kadar ücretsiz", "Aylık faturalanır")')
+    )
+
+    custom_price_text = models.CharField(
+        max_length=50,
+        blank=True,
+        default='',
+        verbose_name=_('Custom price text'),
+        help_text=_('Custom price display for enterprise plans (e.g., "Özel Fiyat")')
+    )
+
+    has_glow_effect = models.BooleanField(
+        default=False,
+        verbose_name=_('Glow effect'),
+        help_text=_('Show a radial glow effect on the card (used for highlighted/featured plans)')
     )
 
     sort_order = models.PositiveIntegerField(

@@ -22,6 +22,13 @@ class PlanDisplayFeature(TimeStampedModel):
         verbose_name=_('plan'),
     )
     text = models.CharField(_('metin'), max_length=200)
+    icon_svg = models.TextField(
+        _('ikon SVG'),
+        blank=True,
+        default='',
+        help_text=_('SVG markup for the feature icon (e.g., <svg ...>...</svg>). '
+                    'Leave empty for default checkmark icon.')
+    )
     is_highlighted = models.BooleanField(_('vurgulu'), default=False, help_text=_('Kalin yazi ile gosterilir'))
     sort_order = models.PositiveIntegerField(_('siralama'), default=0)
     is_active = models.BooleanField(_('aktif'), default=True)

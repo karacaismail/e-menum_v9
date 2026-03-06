@@ -629,10 +629,25 @@ class PlanDisplayFeatureInline(TranslationTabularInline):
 
 @admin.register(PlanDisplayFeature)
 class PlanDisplayFeatureAdmin(TabbedTranslationAdmin):
-    list_display = ['plan_name', 'text_short', 'is_highlighted', 'sort_order', 'is_active']
+    list_display = ['plan_name', 'text_short', 'has_icon', 'is_highlighted', 'sort_order', 'is_active']
     list_filter = ['plan', 'is_highlighted', 'is_active']
     list_editable = ['sort_order', 'is_active']
     readonly_fields = ['id', 'created_at', 'updated_at']
+
+    fieldsets = (
+        (_('Icerik'), {
+            'fields': ('plan', 'text', 'icon_svg'),
+            'description': _('icon_svg alani: SVG markup yapistirin (orn. <svg ...>...</svg>). '
+                             'Bos birakirsaniz varsayilan onay ikonu kullanilir.'),
+        }),
+        (_('Gorunum'), {
+            'fields': ('is_highlighted', 'sort_order', 'is_active'),
+        }),
+        (_('Sistem'), {
+            'fields': ('id', 'created_at', 'updated_at'),
+            'classes': ('collapse',),
+        }),
+    )
 
     def plan_name(self, obj):
         return obj.plan.name
@@ -641,6 +656,16 @@ class PlanDisplayFeatureAdmin(TabbedTranslationAdmin):
     def text_short(self, obj):
         return obj.text[:50] + ('...' if len(obj.text) > 50 else '')
     text_short.short_description = _('Metin')
+
+    def has_icon(self, obj):
+        if obj.icon_svg:
+            return format_html(
+                '<span style="color:#22c55e;font-weight:700;">✓ SVG</span>'
+            )
+        return format_html(
+            '<span style="color:#6b7280;">—</span>'
+        )
+    has_icon.short_description = _('Ikon')
 
 
 # =============================================================================
