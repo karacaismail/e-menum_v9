@@ -34,7 +34,9 @@ django-celery-beat>=2.7
 # Caching
 django-redis>=5.4
 
-# Media Management
+# Media Management (django-filer + easy-thumbnails for INSTALLED_APPS)
+django-filer>=3.0
+easy-thumbnails>=2.0
 python-magic>=0.4.27
 
 # Model Translation

@@ -37,23 +37,23 @@ if [ -n "$DATABASE_URL" ]; then
     _db_host=$(echo "$DATABASE_URL" | sed -n 's|.*@\([^/]*\)/.*|\1|p')
     echo "Database host: ${_db_host:-unknown}"
 fi
+# Wait for DB using psycopg only (no Django) to avoid loading INSTALLED_APPS (filer, etc.) and "populate() isn't reentrant"
 if [ -n "$DATABASE_URL" ]; then
     echo "Checking database connection..."
     python << 'PYEOF'
+import os
 import sys
 import time
 
+url = os.environ.get("DATABASE_URL")
 max_retries = 30
 retry_interval = 2
 
 for i in range(max_retries):
     try:
-        import django
-        import os
-        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.production')
-        django.setup()
-        from django.db import connection
-        connection.ensure_connection()
+        import psycopg
+        conn = psycopg.connect(url, connect_timeout=5)
+        conn.close()
         print("Database is ready!")
         break
     except Exception as e:
