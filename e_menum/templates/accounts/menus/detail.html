@@ -1,0 +1,558 @@
+{% extends "layouts/panel.html" %}
+{% load static i18n %}
+
+{# =========================================================================
+   Menu Detail Page — Restaurant Owner Portal
+
+   Shows menu info card and its categories.
+   Alpine.js modal for creating/editing categories via AJAX.
+   Each category card links to its products.
+   ========================================================================= #}
+
+{% block page_title %}{{ menu.name }}{% endblock %}
+
+{% block panel_title %}{{ menu.name }}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="flex items-center">
+    <i class="ph ph-caret-right text-xs mx-1"></i>
+    <a href="{% url 'accounts:menu-list' %}" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+        {% trans "Menuler" %}
+    </a>
+</li>
+<li class="flex items-center">
+    <i class="ph ph-caret-right text-xs mx-1"></i>
+    <span class="text-gray-500 dark:text-gray-400">{{ menu.name }}</span>
+</li>
+{% endblock %}
+
+{% block panel_content %}
+<div x-data="categoryManager()">
+
+    {# ── Menu Info Card ── #}
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm mb-6">
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-3 mb-2">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ menu.name }}</h2>
+                    {# Status Badge #}
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold
+                                 {% if menu.is_published %}bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400{% else %}bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300{% endif %}">
+                        {% if menu.is_published %}{% trans "Yayinda" %}{% else %}{% trans "Taslak" %}{% endif %}
+                    </span>
+                    {% if menu.is_default %}
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+                        {% trans "Varsayilan" %}
+                    </span>
+                    {% endif %}
+                </div>
+
+                {% if menu.description %}
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">{{ menu.description }}</p>
+                {% endif %}
+
+                {# Meta Info #}
+                <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
+                    {% if menu.theme %}
+                    <span class="inline-flex items-center gap-1.5">
+                        <i class="ph ph-palette text-base text-primary-500"></i>
+                        {{ menu.theme.name }}
+                    </span>
+                    {% endif %}
+                    <span class="inline-flex items-center gap-1.5">
+                        <i class="ph ph-folders text-base text-primary-500"></i>
+                        {{ categories|length }} {% trans "Kategori" %}
+                    </span>
+                    <a href="/m/{{ menu.slug }}/"
+                       target="_blank"
+                       class="inline-flex items-center gap-1.5 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                        <i class="ph ph-arrow-square-out text-base text-primary-500"></i>
+                        /m/{{ menu.slug }}/
+                    </a>
+                </div>
+            </div>
+
+            {# Action Buttons #}
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <a href="{% url 'accounts:menu-edit' menu.id %}"
+                   class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 inline-flex items-center gap-1.5 transition-all">
+                    <i class="ph ph-pencil-simple text-sm"></i>
+                    {% trans "Menuyu Duzenle" %}
+                </a>
+                <a href="/m/{{ menu.slug }}/"
+                   target="_blank"
+                   class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 inline-flex items-center gap-1.5 transition-all">
+                    <i class="ph ph-eye text-sm"></i>
+                    {% trans "Onizle" %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ── Categories Header ── #}
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
+        <div>
+            <h3 class="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <i class="ph ph-folders text-primary-500"></i>
+                {% trans "Kategoriler" %}
+            </h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                {% trans "Bu menuye ait kategorileri yonetin." %}
+            </p>
+        </div>
+        <button type="button"
+                @click="openCreateModal()"
+                class="px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-all inline-flex items-center gap-2 self-start">
+            <i class="ph ph-plus text-base"></i>
+            {% trans "Kategori Ekle" %}
+        </button>
+    </div>
+
+    {# ── Category Cards ── #}
+    {% if categories %}
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" id="category-grid">
+        {% for category in categories %}
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col"
+             id="category-card-{{ category.id }}">
+
+            {# Category Header #}
+            <div class="flex items-center gap-3 mb-3">
+                {% if category.icon %}
+                <div class="h-10 w-10 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+                    <i class="{{ category.icon }} text-xl text-primary-600 dark:text-primary-400"></i>
+                </div>
+                {% else %}
+                <div class="h-10 w-10 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
+                    <i class="ph ph-folder text-xl text-gray-400 dark:text-gray-500"></i>
+                </div>
+                {% endif %}
+                <div class="flex-1 min-w-0">
+                    <h4 class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ category.name }}</h4>
+                    <div class="flex items-center gap-2 mt-0.5">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">
+                            {{ category.product_count|default:"0" }} {% trans "Urun" %}
+                        </span>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold
+                                     {% if category.is_active %}bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400{% else %}bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300{% endif %}">
+                            {% if category.is_active %}{% trans "Aktif" %}{% else %}{% trans "Pasif" %}{% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {# Category Description #}
+            {% if category.description %}
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-3 line-clamp-2">{{ category.description|truncatewords:15 }}</p>
+            {% endif %}
+
+            {# Category Actions #}
+            <div class="mt-auto pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center gap-2">
+                {# View Products #}
+                <a href="{% url 'accounts:category-products' menu.id category.id %}"
+                   class="px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 inline-flex items-center gap-1 transition-all">
+                    <i class="ph ph-fork-knife text-sm"></i>
+                    {% trans "Urunler" %}
+                </a>
+
+                {# Edit Category #}
+                <button type="button"
+                        @click="openEditModal({{ category.id }}, '{{ category.name|escapejs }}', '{{ category.description|default:''|escapejs }}', '{{ category.icon|default:''|escapejs }}', {{ category.is_active|yesno:'true,false' }}, {{ category.sort_order|default:'0' }})"
+                        class="px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 inline-flex items-center gap-1 transition-all">
+                    <i class="ph ph-pencil-simple text-sm"></i>
+                    {% trans "Duzenle" %}
+                </button>
+
+                {# Delete Category #}
+                <button type="button"
+                        @click="confirmDeleteCategory({{ category.id }}, '{{ category.name|escapejs }}')"
+                        class="px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 border border-red-300 dark:border-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 inline-flex items-center gap-1 transition-all ml-auto">
+                    <i class="ph ph-trash text-sm"></i>
+                    {% trans "Sil" %}
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    {# Empty State #}
+    <div class="flex flex-col items-center justify-center py-12">
+        <div class="h-16 w-16 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-4">
+            <i class="ph ph-folder-plus text-3xl text-gray-400 dark:text-gray-500"></i>
+        </div>
+        <h4 class="text-base font-semibold text-gray-900 dark:text-white mb-1">
+            {% trans "Henuz kategori bulunmuyor" %}
+        </h4>
+        <p class="text-sm text-gray-500 dark:text-gray-400 text-center max-w-sm mb-5">
+            {% trans "Bu menuye kategori ekleyerek urunlerinizi organize edin." %}
+        </p>
+        <button type="button"
+                @click="openCreateModal()"
+                class="px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-all inline-flex items-center gap-2">
+            <i class="ph ph-plus text-base"></i>
+            {% trans "Ilk Kategoriyi Ekle" %}
+        </button>
+    </div>
+    {% endif %}
+
+    {# ── Category Create/Edit Modal ── #}
+    <template x-teleport="body">
+        <div x-show="modalOpen"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+             @keydown.escape.window="modalOpen = false"
+             x-cloak>
+            <div @click.away="modalOpen = false"
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl w-full max-w-lg">
+
+                {# Modal Header #}
+                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                        <i class="ph" :class="isEditing ? 'ph-pencil-simple' : 'ph-plus-circle'" class="text-primary-500"></i>
+                        <span x-text="isEditing ? '{% filter escapejs %}{% trans "Kategori Duzenle" %}{% endfilter %}' : '{% filter escapejs %}{% trans "Kategori Ekle" %}{% endfilter %}'"></span>
+                    </h3>
+                    <button type="button"
+                            @click="modalOpen = false"
+                            class="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="ph ph-x text-lg"></i>
+                    </button>
+                </div>
+
+                {# Modal Body #}
+                <div class="px-6 py-5 space-y-4">
+                    {# Error display #}
+                    <div x-show="formError" x-cloak
+                         class="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                        <p class="text-sm text-red-700 dark:text-red-400 flex items-center gap-2">
+                            <i class="ph ph-warning-circle"></i>
+                            <span x-text="formError"></span>
+                        </p>
+                    </div>
+
+                    {# Name #}
+                    <div>
+                        <label for="category-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            {% trans "Kategori Adi" %} <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text"
+                               id="category-name"
+                               x-model="formData.name"
+                               required
+                               placeholder="{% trans 'orn. Ana Yemekler' %}"
+                               class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
+                    </div>
+
+                    {# Description #}
+                    <div>
+                        <label for="category-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            {% trans "Aciklama" %}
+                        </label>
+                        <textarea id="category-description"
+                                  x-model="formData.description"
+                                  rows="2"
+                                  placeholder="{% trans 'Kategori aciklamasi (istege bagli)' %}"
+                                  class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors resize-none"></textarea>
+                    </div>
+
+                    {# Icon #}
+                    <div>
+                        <label for="category-icon" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            {% trans "Ikon" %}
+                        </label>
+                        <input type="text"
+                               id="category-icon"
+                               x-model="formData.icon"
+                               placeholder="{% trans 'orn. ph ph-coffee' %}"
+                               class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                            {% trans "Phosphor Icons sinif adi kullanin." %}
+                        </p>
+                    </div>
+
+                    {# Sort Order #}
+                    <div>
+                        <label for="category-sort-order" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            {% trans "Siralama" %}
+                        </label>
+                        <input type="number"
+                               id="category-sort-order"
+                               x-model.number="formData.sort_order"
+                               min="0"
+                               placeholder="0"
+                               class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
+                    </div>
+
+                    {# Is Active #}
+                    <div class="flex items-start gap-3">
+                        <div class="flex items-center h-5 mt-0.5">
+                            <input type="checkbox"
+                                   id="category-active"
+                                   x-model="formData.is_active"
+                                   class="h-4 w-4 text-primary-600 border-gray-300 dark:border-gray-600 rounded focus:ring-primary-500">
+                        </div>
+                        <div>
+                            <label for="category-active" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                {% trans "Aktif" %}
+                            </label>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                {% trans "Pasif kategoriler public menude gorunmez." %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Modal Footer #}
+                <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                    <button type="button"
+                            @click="modalOpen = false"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
+                        {% trans "Iptal" %}
+                    </button>
+                    <button type="button"
+                            @click="submitCategory()"
+                            :disabled="submitting"
+                            class="px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-all inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="ph ph-floppy-disk text-base" x-show="!submitting"></i>
+                        <i class="ph ph-spinner animate-spin text-base" x-show="submitting" x-cloak></i>
+                        {% trans "Kaydet" %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    {# ── Delete Category Confirmation Dialog ── #}
+    <template x-teleport="body">
+        <div x-show="deleteOpen"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+             @keydown.escape.window="deleteOpen = false"
+             x-cloak>
+            <div @click.away="deleteOpen = false"
+                 class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl w-full max-w-md p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="h-10 w-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
+                        <i class="ph ph-warning text-xl text-red-600 dark:text-red-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-semibold text-gray-900 dark:text-white">{% trans "Kategori Sil" %}</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                            <span x-text="deleteCategoryName"></span> {% trans "kategorisini silmek istediginize emin misiniz?" %}
+                        </p>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-5">
+                    {% trans "Bu islem geri alinamaz. Kategoriye ait urun baglantilari kaldirilacaktir." %}
+                </p>
+                <div class="flex items-center justify-end gap-3">
+                    <button type="button"
+                            @click="deleteOpen = false"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">
+                        {% trans "Iptal" %}
+                    </button>
+                    <button type="button"
+                            @click="executeDeleteCategory()"
+                            class="px-4 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-sm transition-all">
+                        {% trans "Evet, Sil" %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+document.addEventListener('alpine:init', function() {
+
+    /**
+     * Utility: fetch wrapper with CSRF token
+     */
+    function fetchWithCsrf(url, options) {
+        options = options || {};
+        var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')
+            ? document.querySelector('[name=csrfmiddlewaretoken]').value
+            : (document.cookie.split(';').find(function(c) { return c.trim().startsWith('csrftoken='); }) || '').split('=')[1] || '';
+
+        options.headers = Object.assign({
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+            'X-Requested-With': 'XMLHttpRequest'
+        }, options.headers || {});
+
+        return fetch(url, options);
+    }
+
+    /**
+     * Category manager — handles CRUD for categories within a menu
+     */
+    Alpine.data('categoryManager', function() {
+        return {
+            // Modal state
+            modalOpen: false,
+            isEditing: false,
+            editingId: null,
+            submitting: false,
+            formError: '',
+            formData: {
+                name: '',
+                description: '',
+                icon: '',
+                is_active: true,
+                sort_order: 0
+            },
+
+            // Delete dialog state
+            deleteOpen: false,
+            deleteCategoryId: null,
+            deleteCategoryName: '',
+
+            // Reset form to defaults
+            resetForm: function() {
+                this.formData = {
+                    name: '',
+                    description: '',
+                    icon: '',
+                    is_active: true,
+                    sort_order: 0
+                };
+                this.formError = '';
+                this.isEditing = false;
+                this.editingId = null;
+            },
+
+            // Open create modal
+            openCreateModal: function() {
+                this.resetForm();
+                this.modalOpen = true;
+                var self = this;
+                setTimeout(function() {
+                    var input = document.getElementById('category-name');
+                    if (input) input.focus();
+                }, 100);
+            },
+
+            // Open edit modal with existing data
+            openEditModal: function(id, name, description, icon, isActive, sortOrder) {
+                this.resetForm();
+                this.isEditing = true;
+                this.editingId = id;
+                this.formData.name = name;
+                this.formData.description = description || '';
+                this.formData.icon = icon || '';
+                this.formData.is_active = isActive;
+                this.formData.sort_order = sortOrder || 0;
+                this.modalOpen = true;
+                var self = this;
+                setTimeout(function() {
+                    var input = document.getElementById('category-name');
+                    if (input) input.focus();
+                }, 100);
+            },
+
+            // Submit create or edit
+            submitCategory: function() {
+                var self = this;
+
+                // Client-side validation
+                if (!self.formData.name.trim()) {
+                    self.formError = '{% filter escapejs %}{% trans "Kategori adi zorunludur." %}{% endfilter %}';
+                    return;
+                }
+
+                self.submitting = true;
+                self.formError = '';
+
+                var menuId = {{ menu.id }};
+                var url, method;
+
+                if (self.isEditing) {
+                    url = '/account/menus/' + menuId + '/categories/' + self.editingId + '/edit/';
+                    method = 'POST';
+                } else {
+                    url = '/account/menus/' + menuId + '/categories/create/';
+                    method = 'POST';
+                }
+
+                fetchWithCsrf(url, {
+                    method: method,
+                    body: JSON.stringify(self.formData)
+                })
+                .then(function(resp) {
+                    if (!resp.ok) {
+                        return resp.json().then(function(data) {
+                            throw new Error(data.error || '{% filter escapejs %}{% trans "Bir hata olustu." %}{% endfilter %}');
+                        });
+                    }
+                    return resp.json();
+                })
+                .then(function(data) {
+                    self.modalOpen = false;
+                    self.submitting = false;
+                    // Reload to show updated categories
+                    window.location.reload();
+                })
+                .catch(function(err) {
+                    self.formError = err.message;
+                    self.submitting = false;
+                });
+            },
+
+            // Confirm delete category
+            confirmDeleteCategory: function(id, name) {
+                this.deleteCategoryId = id;
+                this.deleteCategoryName = name;
+                this.deleteOpen = true;
+            },
+
+            // Execute delete
+            executeDeleteCategory: function() {
+                var self = this;
+                var menuId = {{ menu.id }};
+
+                fetchWithCsrf('/account/menus/' + menuId + '/categories/' + self.deleteCategoryId + '/delete/', {
+                    method: 'POST'
+                })
+                .then(function(resp) {
+                    if (!resp.ok) throw new Error('Delete failed');
+                    var card = document.getElementById('category-card-' + self.deleteCategoryId);
+                    if (card) {
+                        card.style.transition = 'opacity 300ms ease, transform 300ms ease';
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.95)';
+                        setTimeout(function() { card.remove(); }, 300);
+                    }
+                    self.deleteOpen = false;
+                })
+                .catch(function(err) {
+                    console.error('Delete error:', err);
+                    alert('{% filter escapejs %}{% trans "Silme islemi basarisiz oldu." %}{% endfilter %}');
+                    self.deleteOpen = false;
+                });
+            }
+        };
+    });
+});
+</script>
+
+{# Hidden CSRF token for AJAX requests #}
+{% csrf_token %}
+{% endblock %}

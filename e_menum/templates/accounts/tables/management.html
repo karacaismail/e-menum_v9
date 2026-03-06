@@ -1,0 +1,445 @@
+{% extends "layouts/panel.html" %}
+{% load static i18n %}
+
+{# =========================================================================
+   Table & Zone Management Page
+
+   Displays zones with their tables in a grid layout. Supports creating,
+   editing, and deleting zones and tables via Alpine.js modals and AJAX.
+   ========================================================================= #}
+
+{% block page_title %}{% trans "Masa Yonetimi" %}{% endblock %}
+
+{% block panel_title %}{% trans "Masa Yonetimi" %}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="flex items-center">
+    <i class="ph ph-caret-right text-xs mx-1.5"></i>
+    <span class="text-gray-500 dark:text-gray-400 text-sm">{% trans "Masa Yonetimi" %}</span>
+</li>
+{% endblock %}
+
+{% block panel_content %}
+<div x-data="tableManagement()">
+
+    {# ── Summary Cards ── #}
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        {# Total Tables #}
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center">
+                    <i class="ph ph-armchair text-lg text-primary-600 dark:text-primary-400"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Toplam Masa" %}</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ total_tables|default:"0" }}</p>
+                </div>
+            </div>
+        </div>
+
+        {# Available #}
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-lg bg-green-50 dark:bg-green-900/30 flex items-center justify-center">
+                    <i class="ph ph-check-circle text-lg text-green-600 dark:text-green-400"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Musait" %}</p>
+                    <p class="text-2xl font-bold text-green-600 dark:text-green-400">{{ available_tables|default:"0" }}</p>
+                </div>
+            </div>
+        </div>
+
+        {# Occupied #}
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-lg bg-red-50 dark:bg-red-900/30 flex items-center justify-center">
+                    <i class="ph ph-prohibit text-lg text-red-600 dark:text-red-400"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Dolu" %}</p>
+                    <p class="text-2xl font-bold text-red-600 dark:text-red-400">{{ occupied_tables|default:"0" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ── Add Zone Button ── #}
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{% trans "Bolgeler" %}</h3>
+        <button
+            @click="openZoneModal()"
+            class="px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors"
+        >
+            <i class="ph ph-plus mr-1"></i>{% trans "Yeni Bolge" %}
+        </button>
+    </div>
+
+    {# ── Zones & Tables Grid ── #}
+    {% for zone in zones %}
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mb-6">
+        {# Zone Header #}
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-3">
+                <div class="h-3 w-3 rounded-full" style="background-color: {{ zone.color|default:'#6366f1' }};"></div>
+                <h4 class="text-sm font-semibold text-gray-900 dark:text-white">{{ zone.name }}</h4>
+                <span class="text-xs text-gray-400 dark:text-gray-500">({{ zone.tables.count }} {% trans "masa" %})</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <button
+                    @click="openZoneModal({{ zone.pk }}, '{{ zone.name|escapejs }}', '{{ zone.color|default:'#6366f1' }}')"
+                    class="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                    title="{% trans 'Bolgeyi Duzenle' %}"
+                >
+                    <i class="ph ph-pencil-simple text-sm"></i>
+                </button>
+                <button
+                    @click="deleteZone({{ zone.pk }}, '{{ zone.name|escapejs }}')"
+                    class="p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                    title="{% trans 'Bolgeyi Sil' %}"
+                >
+                    <i class="ph ph-trash text-sm"></i>
+                </button>
+            </div>
+        </div>
+
+        {# Table Grid #}
+        <div class="p-5">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                {% for table in zone.tables.all %}
+                <div class="relative group bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 p-4 text-center hover:shadow-md transition-all">
+                    {# Table Status Indicator #}
+                    <div class="absolute top-2 right-2">
+                        <span class="h-2.5 w-2.5 rounded-full inline-block
+                            {% if table.status == 'AVAILABLE' %}bg-green-500
+                            {% elif table.status == 'OCCUPIED' %}bg-red-500
+                            {% elif table.status == 'RESERVED' %}bg-yellow-500
+                            {% else %}bg-gray-400
+                            {% endif %}">
+                        </span>
+                    </div>
+
+                    {# Table Icon #}
+                    <i class="ph ph-armchair text-2xl text-gray-400 dark:text-gray-500 mb-2 block"></i>
+
+                    {# Table Name/Number #}
+                    <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ table.name|default:table.number }}</p>
+
+                    {# Capacity #}
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                        <i class="ph ph-users text-xs"></i> {{ table.capacity }} {% trans "kisi" %}
+                    </p>
+
+                    {# Status Badge #}
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold mt-2
+                        {% if table.status == 'AVAILABLE' %}bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400
+                        {% elif table.status == 'OCCUPIED' %}bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400
+                        {% elif table.status == 'RESERVED' %}bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400
+                        {% else %}bg-gray-100 text-gray-700 dark:bg-gray-600 dark:text-gray-300
+                        {% endif %}">
+                        {{ table.get_status_display|default:table.status }}
+                    </span>
+
+                    {# Actions (visible on hover) #}
+                    <div class="absolute inset-x-0 bottom-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-b-xl px-2 py-2 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                            @click="openTableModal({{ zone.pk }}, {{ table.pk }}, '{{ table.name|escapejs }}', {{ table.capacity }}, '{{ table.status }}')"
+                            class="p-1.5 text-gray-500 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors"
+                            title="{% trans 'Duzenle' %}"
+                        >
+                            <i class="ph ph-pencil-simple text-sm"></i>
+                        </button>
+                        <button
+                            @click="deleteTable({{ table.pk }}, '{{ table.name|escapejs }}')"
+                            class="p-1.5 text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                            title="{% trans 'Sil' %}"
+                        >
+                            <i class="ph ph-trash text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {# Add Table Button #}
+                <button
+                    @click="openTableModal({{ zone.pk }})"
+                    class="flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-700/30 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 text-gray-400 dark:text-gray-500 hover:text-primary-500 dark:hover:text-primary-400 hover:border-primary-300 dark:hover:border-primary-600 transition-colors min-h-[120px]"
+                >
+                    <i class="ph ph-plus-circle text-2xl mb-1"></i>
+                    <span class="text-xs font-medium">{% trans "Masa Ekle" %}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-12 shadow-sm text-center">
+        <i class="ph ph-map-pin text-5xl text-gray-300 dark:text-gray-600 mb-3 block"></i>
+        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">{% trans "Henuz bolge olusturulmamis." %}</p>
+        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1 mb-4">{% trans "Masalari gruplamak icin bir bolge olusturun." %}</p>
+        <button
+            @click="openZoneModal()"
+            class="px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors"
+        >
+            <i class="ph ph-plus mr-1"></i>{% trans "Ilk Bolgeyi Olustur" %}
+        </button>
+    </div>
+    {% endfor %}
+
+    {# ── Zone Modal ── #}
+    <template x-teleport="body">
+        <div
+            x-show="zoneModalOpen"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+            @keydown.escape.window="zoneModalOpen = false"
+            x-cloak
+        >
+            <div
+                @click.away="zoneModalOpen = false"
+                class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl w-full max-w-md"
+            >
+                <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white" x-text="zoneForm.id ? '{% trans "Bolge Duzenle" %}' : '{% trans "Yeni Bolge" %}'"></h3>
+                    <button @click="zoneModalOpen = false" class="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg">
+                        <i class="ph ph-x text-lg"></i>
+                    </button>
+                </div>
+                <div class="p-5 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{% trans "Bolge Adi" %}</label>
+                        <input
+                            type="text"
+                            x-model="zoneForm.name"
+                            placeholder="{% trans 'orn. Teras, Ic Mekan, Bahce' %}"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{% trans "Renk" %}</label>
+                        <input
+                            type="color"
+                            x-model="zoneForm.color"
+                            class="h-10 w-16 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer"
+                        >
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-3 px-5 py-4 border-t border-gray-200 dark:border-gray-700">
+                    <button
+                        @click="zoneModalOpen = false"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                    >
+                        {% trans "Vazgec" %}
+                    </button>
+                    <button
+                        @click="saveZone()"
+                        :disabled="loading"
+                        class="px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors disabled:opacity-50"
+                    >
+                        <i class="ph ph-floppy-disk mr-1"></i>
+                        <span x-text="loading ? '{% trans "Kaydediliyor..." %}' : '{% trans "Kaydet" %}'"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    {# ── Table Modal ── #}
+    <template x-teleport="body">
+        <div
+            x-show="tableModalOpen"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+            @keydown.escape.window="tableModalOpen = false"
+            x-cloak
+        >
+            <div
+                @click.away="tableModalOpen = false"
+                class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl w-full max-w-md"
+            >
+                <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white" x-text="tableForm.id ? '{% trans "Masa Duzenle" %}' : '{% trans "Masa Ekle" %}'"></h3>
+                    <button @click="tableModalOpen = false" class="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg">
+                        <i class="ph ph-x text-lg"></i>
+                    </button>
+                </div>
+                <div class="p-5 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{% trans "Masa Adi / Numarasi" %}</label>
+                        <input
+                            type="text"
+                            x-model="tableForm.name"
+                            placeholder="{% trans 'orn. Masa 1, VIP-A' %}"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{% trans "Kapasite" %}</label>
+                        <input
+                            type="number"
+                            x-model.number="tableForm.capacity"
+                            min="1"
+                            max="50"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        >
+                    </div>
+                    <div x-show="tableForm.id">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{% trans "Durum" %}</label>
+                        <select
+                            x-model="tableForm.status"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-primary-500"
+                        >
+                            <option value="AVAILABLE">{% trans "Musait" %}</option>
+                            <option value="OCCUPIED">{% trans "Dolu" %}</option>
+                            <option value="RESERVED">{% trans "Rezerve" %}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-3 px-5 py-4 border-t border-gray-200 dark:border-gray-700">
+                    <button
+                        @click="tableModalOpen = false"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                    >
+                        {% trans "Vazgec" %}
+                    </button>
+                    <button
+                        @click="saveTable()"
+                        :disabled="loading"
+                        class="px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors disabled:opacity-50"
+                    >
+                        <i class="ph ph-floppy-disk mr-1"></i>
+                        <span x-text="loading ? '{% trans "Kaydediliyor..." %}' : '{% trans "Kaydet" %}'"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('tableManagement', () => ({
+        loading: false,
+
+        // Zone modal
+        zoneModalOpen: false,
+        zoneForm: { id: null, name: '', color: '#6366f1' },
+
+        // Table modal
+        tableModalOpen: false,
+        tableForm: { id: null, zone_id: null, name: '', capacity: 4, status: 'AVAILABLE' },
+
+        openZoneModal(id, name, color) {
+            this.zoneForm = {
+                id: id || null,
+                name: name || '',
+                color: color || '#6366f1'
+            };
+            this.zoneModalOpen = true;
+        },
+
+        openTableModal(zoneId, tableId, name, capacity, status) {
+            this.tableForm = {
+                id: tableId || null,
+                zone_id: zoneId,
+                name: name || '',
+                capacity: capacity || 4,
+                status: status || 'AVAILABLE'
+            };
+            this.tableModalOpen = true;
+        },
+
+        async saveZone() {
+            if (!this.zoneForm.name.trim()) return;
+            this.loading = true;
+            try {
+                const url = this.zoneForm.id
+                    ? `/account/api/zones/${this.zoneForm.id}/`
+                    : '/account/api/zones/';
+                const method = this.zoneForm.id ? 'PUT' : 'POST';
+                const resp = await fetchWithCsrf(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: this.zoneForm.name,
+                        color: this.zoneForm.color
+                    })
+                });
+                const data = await resp.json();
+                if (data.success) {
+                    window.location.reload();
+                }
+            } catch (err) {
+                console.error('Zone save error:', err);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async deleteZone(id, name) {
+            if (!confirm('{% trans "Bu bolgeyi silmek istediginizden emin misiniz?" %}\n\n' + name)) return;
+            try {
+                const resp = await fetchWithCsrf(`/account/api/zones/${id}/`, { method: 'DELETE' });
+                const data = await resp.json();
+                if (data.success) window.location.reload();
+            } catch (err) {
+                console.error('Zone delete error:', err);
+            }
+        },
+
+        async saveTable() {
+            if (!this.tableForm.name.trim()) return;
+            this.loading = true;
+            try {
+                const url = this.tableForm.id
+                    ? `/account/api/tables/${this.tableForm.id}/`
+                    : '/account/api/tables/';
+                const method = this.tableForm.id ? 'PUT' : 'POST';
+                const resp = await fetchWithCsrf(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        zone_id: this.tableForm.zone_id,
+                        name: this.tableForm.name,
+                        capacity: this.tableForm.capacity,
+                        status: this.tableForm.status
+                    })
+                });
+                const data = await resp.json();
+                if (data.success) {
+                    window.location.reload();
+                }
+            } catch (err) {
+                console.error('Table save error:', err);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async deleteTable(id, name) {
+            if (!confirm('{% trans "Bu masayi silmek istediginizden emin misiniz?" %}\n\n' + name)) return;
+            try {
+                const resp = await fetchWithCsrf(`/account/api/tables/${id}/`, { method: 'DELETE' });
+                const data = await resp.json();
+                if (data.success) window.location.reload();
+            } catch (err) {
+                console.error('Table delete error:', err);
+            }
+        }
+    }));
+});
+</script>
+{% endblock %}

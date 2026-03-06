@@ -1,0 +1,410 @@
+{% extends "layouts/panel.html" %}
+{% load static i18n %}
+
+{% block panel_title %}{% if theme %}{% trans "Edit Theme" %}{% else %}{% trans "Create Theme" %}{% endif %}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="flex items-center">
+    <i class="ph ph-caret-right mx-1"></i>
+    <a href="{% url 'accounts:theme-list' %}" class="hover:text-primary-600 dark:hover:text-primary-400">{% trans "Themes" %}</a>
+</li>
+<li class="flex items-center">
+    <i class="ph ph-caret-right mx-1"></i>
+    <span class="text-gray-700 dark:text-gray-200 font-medium">
+        {% if theme %}{% trans "Edit Theme" %}{% else %}{% trans "Create Theme" %}{% endif %}
+    </span>
+</li>
+{% endblock %}
+
+{% block panel_content %}
+<div x-data="themeForm()" x-cloak>
+
+    {# ── Page Header ── #}
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+                {% if theme %}{% trans "Edit Theme" %}{% else %}{% trans "Create Theme" %}{% endif %}
+            </h2>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                {% if theme %}
+                {% trans "Update your theme colors, typography, and layout settings." %}
+                {% else %}
+                {% trans "Design a new color scheme and typography for your menu." %}
+                {% endif %}
+            </p>
+        </div>
+        <a href="{% url 'accounts:theme-list' %}"
+           class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors">
+            <i class="ph ph-arrow-left text-lg"></i>
+            {% trans "Back to Themes" %}
+        </a>
+    </div>
+
+    {# ── Display form errors ── #}
+    {% if form.errors %}
+    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 mb-6">
+        <div class="flex items-center gap-2 mb-2">
+            <i class="ph ph-warning-circle text-red-600 dark:text-red-400 text-lg"></i>
+            <h4 class="text-sm font-semibold text-red-800 dark:text-red-300">{% trans "Please correct the errors below:" %}</h4>
+        </div>
+        <ul class="text-sm text-red-700 dark:text-red-400 list-disc list-inside space-y-1">
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                <li>{{ field }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {# ── Form ── #}
+    <form method="post"
+          action="{% if theme %}{% url 'accounts:theme-edit' theme.id %}{% else %}{% url 'accounts:theme-create' %}{% endif %}"
+          class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {% csrf_token %}
+
+        {# ── Left Column: Settings ── #}
+        <div class="space-y-6">
+
+            {# Theme Name #}
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <i class="ph ph-tag text-primary-500"></i>
+                    {% trans "Theme Name" %}
+                </h3>
+
+                <div>
+                    <label for="id_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                        {% trans "Name" %} <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text"
+                           id="id_name"
+                           name="name"
+                           value="{{ form.name.value|default:'' }}"
+                           required
+                           placeholder="{% trans 'e.g. Dark Elegance' %}"
+                           class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                </div>
+            </div>
+
+            {# Colors Section #}
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <i class="ph ph-palette text-primary-500"></i>
+                    {% trans "Colors" %}
+                </h3>
+
+                <div class="space-y-4">
+                    {# Primary Color #}
+                    <div>
+                        <label for="id_color_primary" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            {% trans "Primary Color" %}
+                        </label>
+                        <div class="flex items-center gap-3">
+                            <input type="color"
+                                   id="id_color_primary"
+                                   name="color_primary"
+                                   x-model="colors.primary"
+                                   class="w-12 h-12 rounded-xl border border-gray-300 dark:border-gray-600 cursor-pointer p-1">
+                            <input type="text"
+                                   x-model="colors.primary"
+                                   @input="colors.primary = $event.target.value"
+                                   placeholder="#6366f1"
+                                   class="flex-1 px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm font-mono">
+                        </div>
+                    </div>
+
+                    {# Secondary Color #}
+                    <div>
+                        <label for="id_color_secondary" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            {% trans "Secondary Color" %}
+                        </label>
+                        <div class="flex items-center gap-3">
+                            <input type="color"
+                                   id="id_color_secondary"
+                                   name="color_secondary"
+                                   x-model="colors.secondary"
+                                   class="w-12 h-12 rounded-xl border border-gray-300 dark:border-gray-600 cursor-pointer p-1">
+                            <input type="text"
+                                   x-model="colors.secondary"
+                                   @input="colors.secondary = $event.target.value"
+                                   placeholder="#8b5cf6"
+                                   class="flex-1 px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm font-mono">
+                        </div>
+                    </div>
+
+                    {# Background Color #}
+                    <div>
+                        <label for="id_color_background" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            {% trans "Background Color" %}
+                        </label>
+                        <div class="flex items-center gap-3">
+                            <input type="color"
+                                   id="id_color_background"
+                                   name="color_background"
+                                   x-model="colors.background"
+                                   class="w-12 h-12 rounded-xl border border-gray-300 dark:border-gray-600 cursor-pointer p-1">
+                            <input type="text"
+                                   x-model="colors.background"
+                                   @input="colors.background = $event.target.value"
+                                   placeholder="#ffffff"
+                                   class="flex-1 px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm font-mono">
+                        </div>
+                    </div>
+
+                    {# Text Color #}
+                    <div>
+                        <label for="id_color_text" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            {% trans "Text Color" %}
+                        </label>
+                        <div class="flex items-center gap-3">
+                            <input type="color"
+                                   id="id_color_text"
+                                   name="color_text"
+                                   x-model="colors.text"
+                                   class="w-12 h-12 rounded-xl border border-gray-300 dark:border-gray-600 cursor-pointer p-1">
+                            <input type="text"
+                                   x-model="colors.text"
+                                   @input="colors.text = $event.target.value"
+                                   placeholder="#1f2937"
+                                   class="flex-1 px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm font-mono">
+                        </div>
+                    </div>
+
+                    {# Accent Color #}
+                    <div>
+                        <label for="id_color_accent" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            {% trans "Accent Color" %}
+                        </label>
+                        <div class="flex items-center gap-3">
+                            <input type="color"
+                                   id="id_color_accent"
+                                   name="color_accent"
+                                   x-model="colors.accent"
+                                   class="w-12 h-12 rounded-xl border border-gray-300 dark:border-gray-600 cursor-pointer p-1">
+                            <input type="text"
+                                   x-model="colors.accent"
+                                   @input="colors.accent = $event.target.value"
+                                   placeholder="#f59e0b"
+                                   class="flex-1 px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm font-mono">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Typography & Layout #}
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <i class="ph ph-text-aa text-primary-500"></i>
+                    {% trans "Typography & Layout" %}
+                </h3>
+
+                <div class="space-y-4">
+                    {# Font Family #}
+                    <div>
+                        <label for="id_font_family" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            {% trans "Font Family" %}
+                        </label>
+                        <input type="text"
+                               id="id_font_family"
+                               name="font_family"
+                               x-model="fontFamily"
+                               value="{{ form.font_family.value|default:'Inter' }}"
+                               placeholder="{% trans 'e.g. Inter, Poppins, Playfair Display' %}"
+                               class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                        <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                            {% trans "Use any Google Fonts name. Multiple fonts can be separated by commas." %}
+                        </p>
+                    </div>
+
+                    {# Logo Position #}
+                    <div>
+                        <label for="id_logo_position" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            {% trans "Logo Position" %}
+                        </label>
+                        <select id="id_logo_position"
+                                name="logo_position"
+                                x-model="logoPosition"
+                                class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                            <option value="left" {% if form.logo_position.value == "left" %}selected{% endif %}>{% trans "Left" %}</option>
+                            <option value="center" {% if form.logo_position.value == "center" or not form.logo_position.value %}selected{% endif %}>{% trans "Center" %}</option>
+                            <option value="right" {% if form.logo_position.value == "right" %}selected{% endif %}>{% trans "Right" %}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {# Submit Actions #}
+            <div class="flex items-center gap-3">
+                <button type="submit"
+                        class="px-6 py-3 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors flex items-center gap-2">
+                    <i class="ph ph-check-circle text-lg"></i>
+                    {% if theme %}{% trans "Update Theme" %}{% else %}{% trans "Create Theme" %}{% endif %}
+                </button>
+                <a href="{% url 'accounts:theme-list' %}"
+                   class="px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors">
+                    {% trans "Cancel" %}
+                </a>
+            </div>
+        </div>
+
+        {# ── Right Column: Live Preview ── #}
+        <div class="space-y-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm sticky top-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <i class="ph ph-eye text-primary-500"></i>
+                    {% trans "Live Preview" %}
+                </h3>
+
+                {# Preview Container #}
+                <div class="rounded-xl border border-gray-200 dark:border-gray-600 overflow-hidden"
+                     :style="'background-color:' + colors.background">
+
+                    {# Preview Header #}
+                    <div class="px-5 py-4 flex items-center"
+                         :class="logoPosition === 'center' ? 'justify-center' : logoPosition === 'right' ? 'justify-end' : 'justify-start'"
+                         :style="'background-color:' + colors.primary">
+                        <div class="flex items-center gap-2">
+                            <i class="ph ph-storefront text-xl" :style="'color:' + colors.background"></i>
+                            <span class="text-lg font-bold" :style="'color:' + colors.background + ';font-family:' + fontFamily + ', sans-serif'">
+                                {% trans "My Restaurant" %}
+                            </span>
+                        </div>
+                    </div>
+
+                    {# Preview Content #}
+                    <div class="p-5 space-y-4">
+
+                        {# Category Title #}
+                        <h4 class="text-base font-bold"
+                            :style="'color:' + colors.text + ';font-family:' + fontFamily + ', sans-serif'">
+                            {% trans "Main Courses" %}
+                        </h4>
+
+                        {# Preview Item 1 #}
+                        <div class="flex items-start justify-between gap-3 pb-3"
+                             :style="'border-bottom: 1px solid ' + colors.secondary + '33'">
+                            <div class="flex-1">
+                                <p class="font-semibold text-sm"
+                                   :style="'color:' + colors.text + ';font-family:' + fontFamily + ', sans-serif'">
+                                    {% trans "Grilled Chicken" %}
+                                </p>
+                                <p class="text-xs mt-0.5 opacity-70"
+                                   :style="'color:' + colors.text + ';font-family:' + fontFamily + ', sans-serif'">
+                                    {% trans "Served with seasonal vegetables" %}
+                                </p>
+                            </div>
+                            <span class="text-sm font-bold shrink-0"
+                                  :style="'color:' + colors.accent + ';font-family:' + fontFamily + ', sans-serif'">
+                                &#8378;185
+                            </span>
+                        </div>
+
+                        {# Preview Item 2 #}
+                        <div class="flex items-start justify-between gap-3 pb-3"
+                             :style="'border-bottom: 1px solid ' + colors.secondary + '33'">
+                            <div class="flex-1">
+                                <p class="font-semibold text-sm"
+                                   :style="'color:' + colors.text + ';font-family:' + fontFamily + ', sans-serif'">
+                                    {% trans "Caesar Salad" %}
+                                </p>
+                                <p class="text-xs mt-0.5 opacity-70"
+                                   :style="'color:' + colors.text + ';font-family:' + fontFamily + ', sans-serif'">
+                                    {% trans "Romaine lettuce, croutons, parmesan" %}
+                                </p>
+                            </div>
+                            <span class="text-sm font-bold shrink-0"
+                                  :style="'color:' + colors.accent + ';font-family:' + fontFamily + ', sans-serif'">
+                                &#8378;120
+                            </span>
+                        </div>
+
+                        {# Preview Item 3 (Featured) #}
+                        <div class="rounded-lg p-3"
+                             :style="'background-color:' + colors.primary + '15; border: 1px solid ' + colors.primary + '30'">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-1.5">
+                                        <p class="font-semibold text-sm"
+                                           :style="'color:' + colors.text + ';font-family:' + fontFamily + ', sans-serif'">
+                                            {% trans "Truffle Pasta" %}
+                                        </p>
+                                        <i class="ph ph-star-fill text-xs" :style="'color:' + colors.accent"></i>
+                                    </div>
+                                    <p class="text-xs mt-0.5 opacity-70"
+                                       :style="'color:' + colors.text + ';font-family:' + fontFamily + ', sans-serif'">
+                                        {% trans "Chef's recommendation" %}
+                                    </p>
+                                </div>
+                                <span class="text-sm font-bold shrink-0"
+                                      :style="'color:' + colors.accent + ';font-family:' + fontFamily + ', sans-serif'">
+                                    &#8378;220
+                                </span>
+                            </div>
+                        </div>
+
+                        {# Preview Button #}
+                        <div class="pt-2">
+                            <div class="w-full py-2.5 rounded-lg text-center text-sm font-semibold"
+                                 :style="'background-color:' + colors.secondary + ';color:' + colors.background + ';font-family:' + fontFamily + ', sans-serif'">
+                                {% trans "View Full Menu" %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Color Swatch Summary #}
+                <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">{% trans "Color Palette" %}</p>
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 text-center">
+                            <div class="w-full h-8 rounded-md border border-gray-200 dark:border-gray-600"
+                                 :style="'background-color:' + colors.primary"></div>
+                            <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">{% trans "Primary" %}</p>
+                        </div>
+                        <div class="flex-1 text-center">
+                            <div class="w-full h-8 rounded-md border border-gray-200 dark:border-gray-600"
+                                 :style="'background-color:' + colors.secondary"></div>
+                            <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">{% trans "Secondary" %}</p>
+                        </div>
+                        <div class="flex-1 text-center">
+                            <div class="w-full h-8 rounded-md border border-gray-200 dark:border-gray-600"
+                                 :style="'background-color:' + colors.background"></div>
+                            <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">{% trans "Background" %}</p>
+                        </div>
+                        <div class="flex-1 text-center">
+                            <div class="w-full h-8 rounded-md border border-gray-200 dark:border-gray-600"
+                                 :style="'background-color:' + colors.text"></div>
+                            <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">{% trans "Text" %}</p>
+                        </div>
+                        <div class="flex-1 text-center">
+                            <div class="w-full h-8 rounded-md border border-gray-200 dark:border-gray-600"
+                                 :style="'background-color:' + colors.accent"></div>
+                            <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">{% trans "Accent" %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+function themeForm() {
+    return {
+        colors: {
+            primary:    '{{ form.color_primary.value|default:"#6366f1" }}',
+            secondary:  '{{ form.color_secondary.value|default:"#8b5cf6" }}',
+            background: '{{ form.color_background.value|default:"#ffffff" }}',
+            text:       '{{ form.color_text.value|default:"#1f2937" }}',
+            accent:     '{{ form.color_accent.value|default:"#f59e0b" }}',
+        },
+        fontFamily: '{{ form.font_family.value|default:"Inter" }}',
+        logoPosition: '{{ form.logo_position.value|default:"center" }}',
+    };
+}
+</script>
+{% endblock %}

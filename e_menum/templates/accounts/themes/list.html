@@ -1,0 +1,195 @@
+{% extends "layouts/panel.html" %}
+{% load static i18n %}
+
+{% block panel_title %}{% trans "Themes" %}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="flex items-center">
+    <i class="ph ph-caret-right mx-1"></i>
+    <span class="text-gray-700 dark:text-gray-200 font-medium">{% trans "Themes" %}</span>
+</li>
+{% endblock %}
+
+{% block panel_content %}
+<div x-data="themeList()" x-cloak>
+
+    {# ── Page Header ── #}
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{% trans "Themes" %}</h2>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                {% trans "Customize how your menu looks with color themes and typography." %}
+            </p>
+        </div>
+        <a href="{% url 'accounts:theme-create' %}"
+           class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors">
+            <i class="ph ph-plus text-lg"></i>
+            {% trans "New Theme" %}
+        </a>
+    </div>
+
+    {# ── Theme Grid ── #}
+    {% if themes %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for theme in themes %}
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm hover:shadow-md transition-shadow group relative">
+
+            {# Default Badge #}
+            {% if theme.is_default %}
+            <div class="absolute top-3 right-3">
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400">
+                    <i class="ph ph-check-circle text-xs"></i>
+                    {% trans "Default" %}
+                </span>
+            </div>
+            {% endif %}
+
+            {# Color Swatches #}
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full border-2 border-white dark:border-gray-700 shadow-sm"
+                     style="background-color: {{ theme.color_primary|default:'#6366f1' }};"
+                     title="{% trans 'Primary' %}"></div>
+                <div class="w-10 h-10 rounded-full border-2 border-white dark:border-gray-700 shadow-sm"
+                     style="background-color: {{ theme.color_secondary|default:'#8b5cf6' }};"
+                     title="{% trans 'Secondary' %}"></div>
+                <div class="w-10 h-10 rounded-full border-2 border-white dark:border-gray-700 shadow-sm"
+                     style="background-color: {{ theme.color_background|default:'#ffffff' }};"
+                     title="{% trans 'Background' %}"></div>
+                <div class="w-10 h-10 rounded-full border-2 border-white dark:border-gray-700 shadow-sm"
+                     style="background-color: {{ theme.color_text|default:'#1f2937' }};"
+                     title="{% trans 'Text' %}"></div>
+                <div class="w-10 h-10 rounded-full border-2 border-white dark:border-gray-700 shadow-sm"
+                     style="background-color: {{ theme.color_accent|default:'#f59e0b' }};"
+                     title="{% trans 'Accent' %}"></div>
+            </div>
+
+            {# Theme Name & Font #}
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ theme.name }}</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                <i class="ph ph-text-aa mr-1"></i>
+                {{ theme.font_family|default:"System Default" }}
+            </p>
+
+            {# Color Preview Bar #}
+            <div class="flex rounded-lg overflow-hidden h-3 mb-4">
+                <div class="flex-1" style="background-color: {{ theme.color_primary|default:'#6366f1' }};"></div>
+                <div class="flex-1" style="background-color: {{ theme.color_secondary|default:'#8b5cf6' }};"></div>
+                <div class="flex-1" style="background-color: {{ theme.color_background|default:'#ffffff' }};"></div>
+                <div class="flex-1" style="background-color: {{ theme.color_text|default:'#1f2937' }};"></div>
+                <div class="flex-1" style="background-color: {{ theme.color_accent|default:'#f59e0b' }};"></div>
+            </div>
+
+            {# Actions #}
+            <div class="flex items-center gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <a href="{% url 'accounts:theme-edit' theme.id %}"
+                   class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors">
+                    <i class="ph ph-pencil-simple"></i>
+                    {% trans "Edit" %}
+                </a>
+
+                {% if not theme.is_default %}
+                <form method="post" action="{% url 'accounts:theme-set-default' theme.id %}" class="flex-1">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium text-primary-700 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded-lg transition-colors">
+                        <i class="ph ph-check"></i>
+                        {% trans "Set Default" %}
+                    </button>
+                </form>
+                {% endif %}
+
+                {% if not theme.is_default %}
+                <button @click="confirmDelete({{ theme.id }}, '{{ theme.name|escapejs }}')"
+                        type="button"
+                        class="p-2 rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+                        title="{% trans 'Delete' %}">
+                    <i class="ph ph-trash text-lg"></i>
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    {# ── Empty State ── #}
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-12 shadow-sm text-center">
+        <div class="mx-auto w-16 h-16 rounded-full bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center mb-4">
+            <i class="ph ph-palette text-3xl text-primary-500"></i>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            {% trans "No themes yet" %}
+        </h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">
+            {% trans "Create your first theme to customize the look and feel of your digital menu." %}
+        </p>
+        <a href="{% url 'accounts:theme-create' %}"
+           class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors">
+            <i class="ph ph-plus text-lg"></i>
+            {% trans "Create First Theme" %}
+        </a>
+    </div>
+    {% endif %}
+
+    {# ── Delete Confirmation Modal ── #}
+    <div x-show="showDeleteModal"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+         @keydown.escape.window="showDeleteModal = false"
+         x-cloak>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full p-6"
+             @click.away="showDeleteModal = false">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                    <i class="ph ph-warning text-xl text-red-600 dark:text-red-400"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{% trans "Delete Theme" %}</h3>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                {% trans "Are you sure you want to delete" %}
+                <strong class="text-gray-900 dark:text-white" x-text="deleteThemeName"></strong>?
+                {% trans "This action cannot be undone." %}
+            </p>
+            <div class="flex items-center justify-end gap-3">
+                <button @click="showDeleteModal = false"
+                        type="button"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors">
+                    {% trans "Cancel" %}
+                </button>
+                <form :action="deleteUrl" method="post" class="inline">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="px-4 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
+                        {% trans "Delete" %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+function themeList() {
+    return {
+        showDeleteModal: false,
+        deleteThemeName: '',
+        deleteUrl: '',
+
+        confirmDelete(id, name) {
+            this.deleteThemeName = name;
+            this.deleteUrl = '{% url "accounts:theme-list" %}' + id + '/delete/';
+            this.showDeleteModal = true;
+        }
+    };
+}
+</script>
+{% endblock %}

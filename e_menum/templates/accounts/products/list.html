@@ -1,0 +1,341 @@
+{% extends "layouts/panel.html" %}
+{% load static i18n %}
+
+{% block panel_title %}{% trans "Products" %}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="flex items-center">
+    <i class="ph ph-caret-right mx-1"></i>
+    <span class="text-gray-700 dark:text-gray-200 font-medium">{% trans "Products" %}</span>
+</li>
+{% endblock %}
+
+{% block panel_content %}
+<div x-data="productList()" x-cloak>
+
+    {# ── Page Header ── #}
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{% trans "Products" %}</h2>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                {% trans "Manage your menu products, pricing and availability." %}
+            </p>
+        </div>
+        <a href="{% url 'accounts:product-create' %}"
+           class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors">
+            <i class="ph ph-plus text-lg"></i>
+            {% trans "New Product" %}
+        </a>
+    </div>
+
+    {# ── Filter Bar ── #}
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm mb-6">
+        <form method="get" action="" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {# Search #}
+            <div class="relative">
+                <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text"
+                       name="q"
+                       value="{{ request.GET.q|default:'' }}"
+                       placeholder="{% trans 'Search products...' %}"
+                       class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+            </div>
+
+            {# Menu Filter #}
+            <div>
+                <select name="menu"
+                        class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                    <option value="">{% trans "All Menus" %}</option>
+                    {% for menu in menus %}
+                    <option value="{{ menu.id }}" {% if request.GET.menu == menu.id|stringformat:"s" %}selected{% endif %}>
+                        {{ menu.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            {# Category Filter #}
+            <div>
+                <select name="category"
+                        class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                    <option value="">{% trans "All Categories" %}</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            {# Status Filter #}
+            <div>
+                <select name="status"
+                        class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                    <option value="">{% trans "All Statuses" %}</option>
+                    <option value="active" {% if request.GET.status == "active" %}selected{% endif %}>{% trans "Active" %}</option>
+                    <option value="inactive" {% if request.GET.status == "inactive" %}selected{% endif %}>{% trans "Inactive" %}</option>
+                    <option value="featured" {% if request.GET.status == "featured" %}selected{% endif %}>{% trans "Featured" %}</option>
+                </select>
+            </div>
+
+            {# Apply Button #}
+            <div>
+                <button type="submit"
+                        class="w-full px-4 py-3 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-xl transition-colors">
+                    <i class="ph ph-funnel mr-1"></i>
+                    {% trans "Apply Filters" %}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {# ── Products Table ── #}
+    {% if products %}
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
+                    <tr>
+                        <th class="px-5 py-3.5 font-semibold text-gray-600 dark:text-gray-300">{% trans "Image" %}</th>
+                        <th class="px-5 py-3.5 font-semibold text-gray-600 dark:text-gray-300">{% trans "Name" %}</th>
+                        <th class="px-5 py-3.5 font-semibold text-gray-600 dark:text-gray-300">{% trans "Category" %}</th>
+                        <th class="px-5 py-3.5 font-semibold text-gray-600 dark:text-gray-300 text-right">{% trans "Price" %}</th>
+                        <th class="px-5 py-3.5 font-semibold text-gray-600 dark:text-gray-300 text-center">{% trans "Status" %}</th>
+                        <th class="px-5 py-3.5 font-semibold text-gray-600 dark:text-gray-300 text-center">{% trans "Featured" %}</th>
+                        <th class="px-5 py-3.5 font-semibold text-gray-600 dark:text-gray-300 text-right">{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                    {% for product in products %}
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors" data-row-id="{{ product.id }}">
+                        {# Image #}
+                        <td class="px-5 py-3">
+                            {% if product.image %}
+                            <img src="{{ product.image.url }}"
+                                 alt="{{ product.name }}"
+                                 class="h-10 w-10 rounded-lg object-cover border border-gray-200 dark:border-gray-600">
+                            {% else %}
+                            <div class="h-10 w-10 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                                <i class="ph ph-image text-gray-400 text-lg"></i>
+                            </div>
+                            {% endif %}
+                        </td>
+
+                        {# Name #}
+                        <td class="px-5 py-3">
+                            <a href="{% url 'accounts:product-detail' product.id %}"
+                               class="font-medium text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                                {{ product.name }}
+                            </a>
+                            {% if product.short_description %}
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate max-w-xs">
+                                {{ product.short_description }}
+                            </p>
+                            {% endif %}
+                        </td>
+
+                        {# Category #}
+                        <td class="px-5 py-3 text-gray-600 dark:text-gray-400">
+                            {{ product.category.name|default:"-" }}
+                        </td>
+
+                        {# Price #}
+                        <td class="px-5 py-3 text-right font-medium text-gray-900 dark:text-white">
+                            &#8378;{{ product.base_price|floatformat:2 }}
+                        </td>
+
+                        {# Status Toggle #}
+                        <td class="px-5 py-3 text-center">
+                            <button @click="toggleStatus({{ product.id }}, 'is_active', $event)"
+                                    type="button"
+                                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-colors
+                                           {% if product.is_active %}bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400{% else %}bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400{% endif %}"
+                                    title="{% trans 'Toggle active status' %}">
+                                <i class="ph ph-circle{% if product.is_active %}-fill{% endif %} text-xs"></i>
+                                {% if product.is_active %}{% trans "Active" %}{% else %}{% trans "Inactive" %}{% endif %}
+                            </button>
+                        </td>
+
+                        {# Featured Toggle #}
+                        <td class="px-5 py-3 text-center">
+                            <button @click="toggleStatus({{ product.id }}, 'is_featured', $event)"
+                                    type="button"
+                                    class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                    title="{% trans 'Toggle featured' %}">
+                                <i class="ph {% if product.is_featured %}ph-star-fill text-amber-500{% else %}ph-star text-gray-400{% endif %} text-xl"></i>
+                            </button>
+                        </td>
+
+                        {# Actions #}
+                        <td class="px-5 py-3 text-right">
+                            <div class="flex items-center justify-end gap-1">
+                                <a href="{% url 'accounts:product-detail' product.id %}"
+                                   class="p-2 rounded-lg text-gray-500 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                   title="{% trans 'View' %}">
+                                    <i class="ph ph-eye text-lg"></i>
+                                </a>
+                                <a href="{% url 'accounts:product-edit' product.id %}"
+                                   class="p-2 rounded-lg text-gray-500 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                   title="{% trans 'Edit' %}">
+                                    <i class="ph ph-pencil-simple text-lg"></i>
+                                </a>
+                                <button @click="confirmDelete({{ product.id }}, '{{ product.name|escapejs }}')"
+                                        type="button"
+                                        class="p-2 rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+                                        title="{% trans 'Delete' %}">
+                                    <i class="ph ph-trash text-lg"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {# ── Pagination ── #}
+        {% if is_paginated %}
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                {% blocktrans with start=page_obj.start_index end=page_obj.end_index total=paginator.count %}
+                Showing {{ start }} - {{ end }} of {{ total }} products
+                {% endblocktrans %}
+            </p>
+            <nav class="flex items-center gap-1" aria-label="{% trans 'Pagination' %}">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.menu %}&menu={{ request.GET.menu }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}"
+                   class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <i class="ph ph-caret-left"></i>
+                </a>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <span class="px-3 py-1.5 rounded-lg bg-primary-600 text-white text-sm font-medium">{{ num }}</span>
+                    {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                    <a href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.menu %}&menu={{ request.GET.menu }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}"
+                       class="px-3 py-1.5 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        {{ num }}
+                    </a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.menu %}&menu={{ request.GET.menu }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}"
+                   class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <i class="ph ph-caret-right"></i>
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+
+    {% else %}
+    {# ── Empty State ── #}
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-12 shadow-sm text-center">
+        <div class="mx-auto w-16 h-16 rounded-full bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center mb-4">
+            <i class="ph ph-bowl-food text-3xl text-primary-500"></i>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            {% trans "No products yet" %}
+        </h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">
+            {% trans "Start building your menu by adding your first product. You can add details, pricing, and images." %}
+        </p>
+        <a href="{% url 'accounts:product-create' %}"
+           class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors">
+            <i class="ph ph-plus text-lg"></i>
+            {% trans "Add First Product" %}
+        </a>
+    </div>
+    {% endif %}
+
+    {# ── Delete Confirmation Modal ── #}
+    <div x-show="showDeleteModal"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+         @keydown.escape.window="showDeleteModal = false"
+         x-cloak>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full p-6"
+             @click.away="showDeleteModal = false">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                    <i class="ph ph-warning text-xl text-red-600 dark:text-red-400"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{% trans "Delete Product" %}</h3>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                {% trans "Are you sure you want to delete" %}
+                <strong class="text-gray-900 dark:text-white" x-text="deleteProductName"></strong>?
+                {% trans "This action cannot be undone." %}
+            </p>
+            <div class="flex items-center justify-end gap-3">
+                <button @click="showDeleteModal = false"
+                        type="button"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors">
+                    {% trans "Cancel" %}
+                </button>
+                <form :action="deleteUrl" method="post" class="inline">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="px-4 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
+                        {% trans "Delete" %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+function productList() {
+    return {
+        showDeleteModal: false,
+        deleteProductName: '',
+        deleteUrl: '',
+
+        confirmDelete(id, name) {
+            this.deleteProductName = name;
+            this.deleteUrl = '{% url "accounts:product-list" %}' + id + '/delete/';
+            this.showDeleteModal = true;
+        },
+
+        async toggleStatus(productId, field, event) {
+            const btn = event.currentTarget;
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('{% url "accounts:product-list" %}' + productId + '/toggle/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ field: field }),
+                });
+
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    console.error('Toggle failed');
+                }
+            } catch (err) {
+                console.error('Toggle error:', err);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+    };
+}
+</script>
+{% endblock %}

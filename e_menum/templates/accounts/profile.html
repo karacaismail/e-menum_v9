@@ -1,0 +1,106 @@
+{% extends "layouts/panel.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Profil" %}{% endblock %}
+
+{% block panel_content %}
+<div class="max-w-2xl mx-auto py-10 px-4">
+    {# Page Header #}
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <i class="ph ph-user-circle text-primary-500"></i>
+            {% trans "Profil Bilgileri" %}
+        </h1>
+        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            {% trans "Kişisel bilgilerinizi görüntüleyin ve güncelleyin." %}
+        </p>
+    </div>
+
+    {# Avatar + User Info Header #}
+    <div class="flex items-center space-x-4 mb-8 p-5 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+        {% if user.avatar %}
+        <img src="{{ user.avatar }}" alt="" class="h-20 w-20 rounded-full object-cover ring-4 ring-gray-100 dark:ring-gray-700">
+        {% else %}
+        <div class="h-20 w-20 rounded-full bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center ring-4 ring-gray-100 dark:ring-gray-700">
+            <i class="ph ph-user text-3xl text-primary-600 dark:text-primary-400"></i>
+        </div>
+        {% endif %}
+        <div>
+            <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ user.get_full_name|default:"—" }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{{ user.email }}</p>
+            {% if user.username %}
+            <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">@{{ user.username }}</p>
+            {% endif %}
+            {% if user.organization %}
+            <p class="text-xs text-primary-600 dark:text-primary-400 mt-1 flex items-center gap-1">
+                <i class="ph ph-buildings"></i>{{ user.organization.name }}
+            </p>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Profile Form Card #}
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+            <i class="ph ph-pencil-simple text-primary-500"></i>
+            {% trans "Bilgileri Düzenle" %}
+        </h2>
+
+        <form method="post" action="{% url 'accounts:profile' %}" class="space-y-5">
+            {% csrf_token %}
+
+            {# Two-column grid for name fields #}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {% for field in form.visible_fields %}
+                {% if field.name == 'first_name' or field.name == 'last_name' %}
+                <div>
+                    <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <p class="mt-1 text-sm text-red-500">{{ field.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+
+            {# Phone and Avatar as full-width #}
+            {% for field in form.visible_fields %}
+            {% if field.name != 'first_name' and field.name != 'last_name' %}
+            <div>
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+                {% if field.help_text %}
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ field.help_text }}</p>
+                {% endif %}
+                {% if field.errors %}
+                <p class="mt-1 text-sm text-red-500">{{ field.errors.0 }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+            {% endfor %}
+
+            {# Non-field Errors #}
+            {% if form.non_field_errors %}
+            <div class="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-600 dark:text-red-400">
+                {{ form.non_field_errors.0 }}
+            </div>
+            {% endif %}
+
+            {# Submit Button #}
+            <div class="pt-2">
+                <button type="submit"
+                        class="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3 text-base font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-xl shadow-md hover:shadow-lg transition-all">
+                    <i class="ph ph-floppy-disk"></i>
+                    {% trans "Kaydet" %}
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

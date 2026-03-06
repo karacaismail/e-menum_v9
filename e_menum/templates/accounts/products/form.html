@@ -1,0 +1,507 @@
+{% extends "layouts/panel.html" %}
+{% load static i18n %}
+
+{% block panel_title %}{% if product %}{% trans "Edit Product" %}{% else %}{% trans "Add Product" %}{% endif %}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="flex items-center">
+    <i class="ph ph-caret-right mx-1"></i>
+    <a href="{% url 'accounts:product-list' %}" class="hover:text-primary-600 dark:hover:text-primary-400">{% trans "Products" %}</a>
+</li>
+<li class="flex items-center">
+    <i class="ph ph-caret-right mx-1"></i>
+    <span class="text-gray-700 dark:text-gray-200 font-medium">
+        {% if product %}{% trans "Edit Product" %}{% else %}{% trans "Add Product" %}{% endif %}
+    </span>
+</li>
+{% endblock %}
+
+{% block panel_content %}
+<div x-data="productForm()" x-cloak>
+
+    {# ── Page Header ── #}
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+                {% if product %}{% trans "Edit Product" %}{% else %}{% trans "Add Product" %}{% endif %}
+            </h2>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                {% if product %}
+                {% trans "Update product details, pricing, and options." %}
+                {% else %}
+                {% trans "Fill in the details to create a new product for your menu." %}
+                {% endif %}
+            </p>
+        </div>
+        <a href="{% url 'accounts:product-list' %}"
+           class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors">
+            <i class="ph ph-arrow-left text-lg"></i>
+            {% trans "Back to List" %}
+        </a>
+    </div>
+
+    {# ── Form ── #}
+    <form method="post"
+          action="{% if product %}{% url 'accounts:product-edit' product.id %}{% else %}{% url 'accounts:product-create' %}{% endif %}"
+          enctype="multipart/form-data"
+          class="space-y-6">
+        {% csrf_token %}
+
+        {# ── Display form errors ── #}
+        {% if form.errors %}
+        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+            <div class="flex items-center gap-2 mb-2">
+                <i class="ph ph-warning-circle text-red-600 dark:text-red-400 text-lg"></i>
+                <h4 class="text-sm font-semibold text-red-800 dark:text-red-300">{% trans "Please correct the errors below:" %}</h4>
+            </div>
+            <ul class="text-sm text-red-700 dark:text-red-400 list-disc list-inside space-y-1">
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                    <li>{{ field }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            {# ── Left Column (2/3) ── #}
+            <div class="lg:col-span-2 space-y-6">
+
+                {# Section 1: Basic Information #}
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="ph ph-info text-primary-500"></i>
+                        {% trans "Basic Information" %}
+                    </h3>
+
+                    <div class="space-y-4">
+                        {# Name #}
+                        <div>
+                            <label for="id_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                                {% trans "Product Name" %} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text"
+                                   id="id_name"
+                                   name="name"
+                                   value="{{ form.name.value|default:'' }}"
+                                   required
+                                   placeholder="{% trans 'e.g. Margherita Pizza' %}"
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                        </div>
+
+                        {# Short Description #}
+                        <div>
+                            <label for="id_short_description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                                {% trans "Short Description" %}
+                            </label>
+                            <input type="text"
+                                   id="id_short_description"
+                                   name="short_description"
+                                   value="{{ form.short_description.value|default:'' }}"
+                                   maxlength="160"
+                                   placeholder="{% trans 'Brief description for listing pages' %}"
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                        </div>
+
+                        {# Description #}
+                        <div>
+                            <label for="id_description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                                {% trans "Description" %}
+                            </label>
+                            <textarea id="id_description"
+                                      name="description"
+                                      rows="4"
+                                      placeholder="{% trans 'Detailed product description...' %}"
+                                      class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm resize-y">{{ form.description.value|default:'' }}</textarea>
+                        </div>
+
+                        {# Category #}
+                        <div>
+                            <label for="id_category" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                                {% trans "Category" %} <span class="text-red-500">*</span>
+                            </label>
+                            <select id="id_category"
+                                    name="category"
+                                    required
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                                <option value="">{% trans "Select a category" %}</option>
+                                {% for category in categories %}
+                                <option value="{{ category.id }}" {% if form.category.value == category.id|stringformat:"s" or product.category_id == category.id %}selected{% endif %}>
+                                    {{ category.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {# Section 2: Pricing #}
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="ph ph-currency-circle-dollar text-primary-500"></i>
+                        {% trans "Pricing" %}
+                    </h3>
+
+                    <div>
+                        <label for="id_base_price" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            {% trans "Base Price" %} (&#8378;) <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 font-medium">&#8378;</span>
+                            <input type="number"
+                                   id="id_base_price"
+                                   name="base_price"
+                                   value="{{ form.base_price.value|default:'0.00' }}"
+                                   required
+                                   step="0.01"
+                                   min="0"
+                                   class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                {# Section 3: Media #}
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="ph ph-image text-primary-500"></i>
+                        {% trans "Media" %}
+                    </h3>
+
+                    <div>
+                        <label for="id_image_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            {% trans "Image URL" %}
+                        </label>
+                        <input type="url"
+                               id="id_image_url"
+                               name="image_url"
+                               value="{{ form.image_url.value|default:'' }}"
+                               placeholder="https://example.com/image.jpg"
+                               class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                        <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                            {% trans "Enter a direct URL to the product image. Recommended size: 800x600px." %}
+                        </p>
+                    </div>
+
+                    {# Image Preview #}
+                    {% if product and product.image %}
+                    <div class="mt-4">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{% trans "Current Image" %}</p>
+                        <img src="{{ product.image.url }}"
+                             alt="{{ product.name }}"
+                             class="h-32 w-32 rounded-xl object-cover border border-gray-200 dark:border-gray-600">
+                    </div>
+                    {% endif %}
+                </div>
+
+                {# Section 5: Details #}
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="ph ph-list-bullets text-primary-500"></i>
+                        {% trans "Details" %}
+                    </h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        {# Preparation Time #}
+                        <div>
+                            <label for="id_preparation_time" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                                {% trans "Preparation Time (min)" %}
+                            </label>
+                            <input type="number"
+                                   id="id_preparation_time"
+                                   name="preparation_time"
+                                   value="{{ form.preparation_time.value|default:'' }}"
+                                   min="0"
+                                   placeholder="15"
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                        </div>
+
+                        {# Calories #}
+                        <div>
+                            <label for="id_calories" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                                {% trans "Calories (kcal)" %}
+                            </label>
+                            <input type="number"
+                                   id="id_calories"
+                                   name="calories"
+                                   value="{{ form.calories.value|default:'' }}"
+                                   min="0"
+                                   placeholder="450"
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                        </div>
+
+                        {# Spicy Level #}
+                        <div>
+                            <label for="id_spicy_level" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                                {% trans "Spicy Level" %}
+                            </label>
+                            <select id="id_spicy_level"
+                                    name="spicy_level"
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                                <option value="0" {% if form.spicy_level.value == "0" or not form.spicy_level.value %}selected{% endif %}>{% trans "Not Spicy" %}</option>
+                                <option value="1" {% if form.spicy_level.value == "1" %}selected{% endif %}>{% trans "Mild" %}</option>
+                                <option value="2" {% if form.spicy_level.value == "2" %}selected{% endif %}>{% trans "Medium" %}</option>
+                                <option value="3" {% if form.spicy_level.value == "3" %}selected{% endif %}>{% trans "Hot" %}</option>
+                                <option value="4" {% if form.spicy_level.value == "4" %}selected{% endif %}>{% trans "Extra Hot" %}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {# Tags #}
+                    <div class="mt-4">
+                        <label for="id_tags" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            {% trans "Tags" %}
+                        </label>
+                        <input type="text"
+                               id="id_tags"
+                               name="tags"
+                               value="{{ form.tags.value|default:'' }}"
+                               placeholder="{% trans 'e.g. vegan, gluten-free, popular (comma separated)' %}"
+                               class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                        <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                            {% trans "Separate tags with commas." %}
+                        </p>
+                    </div>
+                </div>
+
+                {# Section 6: Variants (Dynamic with Alpine.js) #}
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="ph ph-stack text-primary-500"></i>
+                        {% trans "Variants" %}
+                    </h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                        {% trans "Add size or portion variants with different prices (e.g., Small, Medium, Large)." %}
+                    </p>
+
+                    <div x-data="{ variants: {{ variants_json|default:'[{&quot;name&quot;:&quot;&quot;,&quot;price&quot;:0}]' }} }">
+                        <div class="space-y-2">
+                            <template x-for="(v, i) in variants" :key="i">
+                                <div class="grid grid-cols-12 gap-3 items-end">
+                                    <div class="col-span-5">
+                                        <label x-show="i === 0" class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{% trans "Variant Name" %}</label>
+                                        <input :name="'variant_name_' + i"
+                                               x-model="v.name"
+                                               type="text"
+                                               placeholder="{% trans 'e.g. Large' %}"
+                                               class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                                    </div>
+                                    <div class="col-span-5">
+                                        <label x-show="i === 0" class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{% trans "Price" %} (&#8378;)</label>
+                                        <input :name="'variant_price_' + i"
+                                               x-model="v.price"
+                                               type="number"
+                                               step="0.01"
+                                               min="0"
+                                               placeholder="0.00"
+                                               class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                                    </div>
+                                    <div class="col-span-2">
+                                        <label x-show="i === 0" class="block text-xs font-medium text-transparent mb-1">&nbsp;</label>
+                                        <button @click="variants.splice(i, 1)"
+                                                type="button"
+                                                x-show="variants.length > 1"
+                                                class="w-full px-3 py-3 rounded-xl text-sm font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
+                                            <i class="ph ph-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        {# Hidden field to track count #}
+                        <input type="hidden" name="variant_count" :value="variants.length">
+
+                        <button @click="variants.push({ name: '', price: 0 })"
+                                type="button"
+                                class="mt-3 inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded-lg transition-colors">
+                            <i class="ph ph-plus"></i>
+                            {% trans "Add Variant" %}
+                        </button>
+                    </div>
+                </div>
+
+                {# Section 7: Modifiers (Dynamic with Alpine.js) #}
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="ph ph-sliders text-primary-500"></i>
+                        {% trans "Modifiers" %}
+                    </h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                        {% trans "Add optional extras or customizations (e.g., Extra Cheese, No Onion)." %}
+                    </p>
+
+                    <div x-data="{ modifiers: {{ modifiers_json|default:'[{&quot;name&quot;:&quot;&quot;,&quot;price&quot;:0}]' }} }">
+                        <div class="space-y-2">
+                            <template x-for="(m, i) in modifiers" :key="i">
+                                <div class="grid grid-cols-12 gap-3 items-end">
+                                    <div class="col-span-5">
+                                        <label x-show="i === 0" class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{% trans "Modifier Name" %}</label>
+                                        <input :name="'modifier_name_' + i"
+                                               x-model="m.name"
+                                               type="text"
+                                               placeholder="{% trans 'e.g. Extra Cheese' %}"
+                                               class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                                    </div>
+                                    <div class="col-span-5">
+                                        <label x-show="i === 0" class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{% trans "Extra Price" %} (&#8378;)</label>
+                                        <input :name="'modifier_price_' + i"
+                                               x-model="m.price"
+                                               type="number"
+                                               step="0.01"
+                                               min="0"
+                                               placeholder="0.00"
+                                               class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                                    </div>
+                                    <div class="col-span-2">
+                                        <label x-show="i === 0" class="block text-xs font-medium text-transparent mb-1">&nbsp;</label>
+                                        <button @click="modifiers.splice(i, 1)"
+                                                type="button"
+                                                x-show="modifiers.length > 1"
+                                                class="w-full px-3 py-3 rounded-xl text-sm font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
+                                            <i class="ph ph-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        {# Hidden field to track count #}
+                        <input type="hidden" name="modifier_count" :value="modifiers.length">
+
+                        <button @click="modifiers.push({ name: '', price: 0 })"
+                                type="button"
+                                class="mt-3 inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded-lg transition-colors">
+                            <i class="ph ph-plus"></i>
+                            {% trans "Add Modifier" %}
+                        </button>
+                    </div>
+                </div>
+
+                {# Section 8: Allergens #}
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="ph ph-warning-diamond text-primary-500"></i>
+                        {% trans "Allergens" %}
+                    </h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                        {% trans "Select all allergens that apply to this product." %}
+                    </p>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                        {% for allergen in allergens %}
+                        <label class="flex items-center gap-2.5 p-3 rounded-xl border border-gray-200 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-600 cursor-pointer transition-colors has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50 dark:has-[:checked]:bg-primary-950/30">
+                            <input type="checkbox"
+                                   name="allergens"
+                                   value="{{ allergen.id }}"
+                                   {% if allergen.id in selected_allergens %}checked{% endif %}
+                                   class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500">
+                            <span class="text-sm text-gray-700 dark:text-gray-300">{{ allergen.name }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+
+                    {% if not allergens %}
+                    <p class="text-sm text-gray-500 dark:text-gray-400 italic">
+                        {% trans "No allergens defined yet. You can add them from the admin panel." %}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# ── Right Column (1/3) ── #}
+            <div class="space-y-6">
+
+                {# Section 4: Status #}
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="ph ph-toggle-left text-primary-500"></i>
+                        {% trans "Status" %}
+                    </h3>
+
+                    <div class="space-y-4">
+                        {# is_active #}
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-gray-200 dark:border-gray-600 cursor-pointer hover:border-primary-300 dark:hover:border-primary-600 transition-colors">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900 dark:text-white">{% trans "Active" %}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Product is visible on the menu" %}</p>
+                            </div>
+                            <input type="checkbox"
+                                   name="is_active"
+                                   value="true"
+                                   {% if form.is_active.value or not product %}checked{% endif %}
+                                   class="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500">
+                        </label>
+
+                        {# is_available #}
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-gray-200 dark:border-gray-600 cursor-pointer hover:border-primary-300 dark:hover:border-primary-600 transition-colors">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900 dark:text-white">{% trans "Available" %}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Product is currently orderable" %}</p>
+                            </div>
+                            <input type="checkbox"
+                                   name="is_available"
+                                   value="true"
+                                   {% if form.is_available.value or not product %}checked{% endif %}
+                                   class="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500">
+                        </label>
+
+                        {# is_featured #}
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-gray-200 dark:border-gray-600 cursor-pointer hover:border-primary-300 dark:hover:border-primary-600 transition-colors">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900 dark:text-white">{% trans "Featured" %}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Highlighted on the menu" %}</p>
+                            </div>
+                            <input type="checkbox"
+                                   name="is_featured"
+                                   value="true"
+                                   {% if form.is_featured.value %}checked{% endif %}
+                                   class="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500">
+                        </label>
+
+                        {# is_chef_recommended #}
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-gray-200 dark:border-gray-600 cursor-pointer hover:border-primary-300 dark:hover:border-primary-600 transition-colors">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900 dark:text-white">{% trans "Chef's Pick" %}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Recommended by the chef" %}</p>
+                            </div>
+                            <input type="checkbox"
+                                   name="is_chef_recommended"
+                                   value="true"
+                                   {% if form.is_chef_recommended.value %}checked{% endif %}
+                                   class="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500">
+                        </label>
+                    </div>
+                </div>
+
+                {# Submit Actions #}
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+                    <div class="space-y-3">
+                        <button type="submit"
+                                class="w-full px-4 py-3 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2">
+                            <i class="ph ph-check-circle text-lg"></i>
+                            {% if product %}{% trans "Update Product" %}{% else %}{% trans "Create Product" %}{% endif %}
+                        </button>
+                        <a href="{% url 'accounts:product-list' %}"
+                           class="w-full px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors flex items-center justify-center gap-2">
+                            {% trans "Cancel" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+function productForm() {
+    return {
+        // Form-level Alpine.js state can be extended here
+    };
+}
+</script>
+{% endblock %}

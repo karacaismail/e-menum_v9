@@ -1,0 +1,276 @@
+{% extends "layouts/panel.html" %}
+{% load static i18n %}
+
+{# =========================================================================
+   Customer Detail Page
+
+   Shows customer profile info, stats cards, and tabbed sections
+   (Orders, Visits, Feedback) using Alpine.js.
+   ========================================================================= #}
+
+{% block page_title %}{{ customer.name }} - {% trans "Musteri" %}{% endblock %}
+
+{% block panel_title %}{% trans "Musteri Detayi" %}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="flex items-center">
+    <i class="ph ph-caret-right text-xs mx-1.5"></i>
+    <a href="{% url 'accounts:customer-list' %}" class="text-gray-500 dark:text-gray-400 text-sm hover:text-primary-600 dark:hover:text-primary-400">{% trans "Musteriler" %}</a>
+</li>
+<li class="flex items-center">
+    <i class="ph ph-caret-right text-xs mx-1.5"></i>
+    <span class="text-gray-500 dark:text-gray-400 text-sm">{{ customer.name }}</span>
+</li>
+{% endblock %}
+
+{% block panel_content %}
+<div x-data="{ activeTab: 'orders' }">
+
+    {# ── Customer Header ── #}
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm mb-6">
+        <div class="flex items-center gap-4">
+            {% if customer.avatar %}
+            <img src="{{ customer.avatar }}" alt="{{ customer.name }}" class="h-16 w-16 rounded-full object-cover ring-4 ring-gray-100 dark:ring-gray-700">
+            {% else %}
+            <div class="h-16 w-16 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center ring-4 ring-gray-100 dark:ring-gray-700 flex-shrink-0">
+                <span class="text-2xl font-bold text-primary-600 dark:text-primary-400">{{ customer.name|first|upper }}</span>
+            </div>
+            {% endif %}
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ customer.name }}</h2>
+                <div class="flex flex-wrap items-center gap-3 mt-1">
+                    {% if customer.email %}
+                    <span class="inline-flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+                        <i class="ph ph-envelope text-sm"></i>{{ customer.email }}
+                    </span>
+                    {% endif %}
+                    {% if customer.phone %}
+                    <span class="inline-flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+                        <i class="ph ph-phone text-sm"></i>{{ customer.phone }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ── Stats Cards ── #}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {# Total Orders #}
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
+                    <i class="ph ph-receipt text-lg text-blue-600 dark:text-blue-400"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Toplam Siparis" %}</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stats.total_orders|default:"0" }}</p>
+                </div>
+            </div>
+        </div>
+
+        {# Total Spent #}
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-lg bg-green-50 dark:bg-green-900/30 flex items-center justify-center">
+                    <i class="ph ph-currency-circle-dollar text-lg text-green-600 dark:text-green-400"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Toplam Harcama" %}</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white tabular-nums">&#8378;{{ stats.total_spent|floatformat:0|default:"0" }}</p>
+                </div>
+            </div>
+        </div>
+
+        {# Loyalty Points #}
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-lg bg-yellow-50 dark:bg-yellow-900/30 flex items-center justify-center">
+                    <i class="ph ph-star text-lg text-yellow-600 dark:text-yellow-400"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Sadakat Puani" %}</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white tabular-nums">{{ stats.loyalty_points|default:"0" }}</p>
+                </div>
+            </div>
+        </div>
+
+        {# Last Visit #}
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-lg bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center">
+                    <i class="ph ph-calendar-check text-lg text-purple-600 dark:text-purple-400"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Son Ziyaret" %}</p>
+                    <p class="text-sm font-bold text-gray-900 dark:text-white">{{ stats.last_visit|date:"d.m.Y"|default:"-" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ── Tabs ── #}
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+        {# Tab Navigation #}
+        <div class="flex items-center border-b border-gray-200 dark:border-gray-700 px-5">
+            <button
+                @click="activeTab = 'orders'"
+                :class="activeTab === 'orders' ? 'border-primary-500 text-primary-600 dark:text-primary-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
+                class="flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px"
+            >
+                <i class="ph ph-receipt"></i>{% trans "Siparisler" %}
+            </button>
+            <button
+                @click="activeTab = 'visits'"
+                :class="activeTab === 'visits' ? 'border-primary-500 text-primary-600 dark:text-primary-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
+                class="flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px"
+            >
+                <i class="ph ph-map-pin"></i>{% trans "Ziyaretler" %}
+            </button>
+            <button
+                @click="activeTab = 'feedback'"
+                :class="activeTab === 'feedback' ? 'border-primary-500 text-primary-600 dark:text-primary-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
+                class="flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px"
+            >
+                <i class="ph ph-chat-circle-text"></i>{% trans "Geri Bildirim" %}
+            </button>
+        </div>
+
+        {# ── Orders Tab ── #}
+        <div x-show="activeTab === 'orders'" class="p-0">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-100 dark:border-gray-700">
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Siparis #" %}</th>
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Tarih" %}</th>
+                            <th class="px-5 py-3 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Tutar" %}</th>
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Durum" %}</th>
+                            <th class="px-5 py-3 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Islem" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                        {% for order in orders %}
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <td class="px-5 py-3 text-sm font-medium text-gray-900 dark:text-white">#{{ order.order_number }}</td>
+                            <td class="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">{{ order.created_at|date:"d.m.Y H:i" }}</td>
+                            <td class="px-5 py-3 text-sm font-medium text-gray-900 dark:text-white text-right tabular-nums">&#8378;{{ order.total_amount|floatformat:2 }}</td>
+                            <td class="px-5 py-3">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold
+                                    {% if order.status == 'PENDING' %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400
+                                    {% elif order.status == 'CONFIRMED' %}bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400
+                                    {% elif order.status == 'PREPARING' %}bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400
+                                    {% elif order.status == 'READY' %}bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-400
+                                    {% elif order.status == 'DELIVERED' %}bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-400
+                                    {% elif order.status == 'COMPLETED' %}bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400
+                                    {% elif order.status == 'CANCELLED' %}bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400
+                                    {% else %}bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300
+                                    {% endif %}">
+                                    {{ order.get_status_display|default:order.status }}
+                                </span>
+                            </td>
+                            <td class="px-5 py-3 text-right">
+                                <a href="{% url 'accounts:order-detail' order.pk %}" class="text-xs text-primary-600 hover:text-primary-700 dark:text-primary-400">
+                                    <i class="ph ph-arrow-right"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="px-5 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                                {% trans "Bu musterinin henuz siparisi bulunmuyor." %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {# ── Visits Tab ── #}
+        <div x-show="activeTab === 'visits'" x-cloak class="p-0">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-100 dark:border-gray-700">
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Tarih" %}</th>
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Masa" %}</th>
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Sure" %}</th>
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Kaynak" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                        {% for visit in visits %}
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <td class="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">{{ visit.visited_at|date:"d.m.Y H:i" }}</td>
+                            <td class="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">{{ visit.table_name|default:"-" }}</td>
+                            <td class="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">{{ visit.duration|default:"-" }}</td>
+                            <td class="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">
+                                {% if visit.source == 'QR' %}
+                                    <span class="inline-flex items-center gap-1"><i class="ph ph-qr-code text-sm"></i>QR</span>
+                                {% elif visit.source == 'DIRECT' %}
+                                    <span class="inline-flex items-center gap-1"><i class="ph ph-link text-sm"></i>{% trans "Direkt" %}</span>
+                                {% else %}
+                                    {{ visit.source|default:"-" }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="px-5 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                                {% trans "Bu musterinin henuz ziyaret kaydai bulunmuyor." %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {# ── Feedback Tab ── #}
+        <div x-show="activeTab === 'feedback'" x-cloak class="p-5">
+            <div class="space-y-4">
+                {% for fb in feedback %}
+                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        {# Star Rating #}
+                        <div class="flex items-center gap-0.5">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= fb.rating %}
+                                <i class="ph-fill ph-star text-yellow-400 text-sm"></i>
+                                {% else %}
+                                <i class="ph ph-star text-gray-300 dark:text-gray-500 text-sm"></i>
+                                {% endif %}
+                            {% endfor %}
+                            <span class="text-xs text-gray-500 dark:text-gray-400 ml-1">{{ fb.rating }}/5</span>
+                        </div>
+                        <span class="text-xs text-gray-400 dark:text-gray-500">{{ fb.created_at|date:"d.m.Y" }}</span>
+                    </div>
+                    {% if fb.comment %}
+                    <p class="text-sm text-gray-700 dark:text-gray-300">{{ fb.comment }}</p>
+                    {% endif %}
+                    {% if fb.order %}
+                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">
+                        {% trans "Siparis" %}: <a href="{% url 'accounts:order-detail' fb.order.pk %}" class="text-primary-600 hover:text-primary-700 dark:text-primary-400">#{{ fb.order.order_number }}</a>
+                    </p>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <div class="text-center py-8">
+                    <i class="ph ph-chat-circle-text text-4xl text-gray-300 dark:text-gray-600 mb-2 block"></i>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Bu musteriden henuz geri bildirim alinmamis." %}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {# ── Back Link ── #}
+    <div class="mt-6">
+        <a href="{% url 'accounts:customer-list' %}" class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+            <i class="ph ph-arrow-left"></i>{% trans "Musterilere Don" %}
+        </a>
+    </div>
+
+</div>
+{% endblock %}

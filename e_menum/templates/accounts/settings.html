@@ -1,0 +1,193 @@
+{% extends "layouts/panel.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Hesap Ayarları" %}{% endblock %}
+
+{% block panel_content %}
+<div class="max-w-2xl mx-auto py-10 px-4 space-y-8">
+    {# Page Header #}
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <i class="ph ph-gear text-primary-500"></i>
+            {% trans "Hesap Ayarları" %}
+        </h1>
+        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            {% trans "Hesap bilgilerinizi ve güvenlik ayarlarınızı yönetin." %}
+        </p>
+    </div>
+
+    {# ── Section 1: Email (Read-only) ── #}
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <i class="ph ph-envelope-simple text-primary-500"></i>
+            {% trans "E-posta Adresi" %}
+        </h2>
+        <div class="flex items-center gap-3">
+            <div class="flex-1">
+                <input type="email"
+                       value="{{ user.email }}"
+                       disabled
+                       class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 cursor-not-allowed">
+            </div>
+            <span class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-950/30 rounded-full border border-green-200 dark:border-green-800">
+                <i class="ph ph-check-circle"></i>
+                {% trans "Doğrulanmış" %}
+            </span>
+        </div>
+        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+            {% trans "E-posta adresinizi değiştirmek için destek ile iletişime geçin." %}
+        </p>
+    </div>
+
+    {# ── Section 2: Username ── #}
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <i class="ph ph-at text-primary-500"></i>
+            {% trans "Kullanıcı Adı" %}
+        </h2>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-5">
+            {% trans "Kullanıcı adınızı belirleyin veya değiştirin. Giriş yaparken e-posta yerine kullanabilirsiniz." %}
+        </p>
+
+        <form method="post" action="{% url 'accounts:settings' %}" class="space-y-4">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="change_username">
+
+            {% for field in username_form.visible_fields %}
+            <div>
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                    {{ field.label }}
+                </label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">@</span>
+                    <input type="text"
+                           name="{{ field.html_name }}"
+                           id="{{ field.id_for_label }}"
+                           value="{{ field.value|default:'' }}"
+                           placeholder="{% trans 'ornek_kullanici' %}"
+                           class="w-full pl-9 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                </div>
+                {% if field.help_text %}
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ field.help_text }}</p>
+                {% endif %}
+                {% if field.errors %}
+                <p class="mt-1 text-sm text-red-500">{{ field.errors.0 }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            {% if username_form.non_field_errors %}
+            <div class="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-600 dark:text-red-400">
+                {{ username_form.non_field_errors.0 }}
+            </div>
+            {% endif %}
+
+            <button type="submit"
+                    class="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-xl shadow-md hover:shadow-lg transition-all">
+                <i class="ph ph-floppy-disk"></i>
+                {% trans "Kullanıcı Adını Kaydet" %}
+            </button>
+        </form>
+    </div>
+
+    {# ── Section 3: Password Change ── #}
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <i class="ph ph-lock-key text-primary-500"></i>
+            {% trans "Şifre Değiştir" %}
+        </h2>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-5">
+            {% trans "Güvenliğiniz için güçlü ve benzersiz bir şifre kullanın." %}
+        </p>
+
+        <form method="post" action="{% url 'accounts:settings' %}" class="space-y-5">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="change_password">
+
+            {% for field in password_form.visible_fields %}
+            <div>
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+                {% if field.help_text %}
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ field.help_text }}</p>
+                {% endif %}
+                {% if field.errors %}
+                <p class="mt-1 text-sm text-red-500">{{ field.errors.0 }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            {% if password_form.non_field_errors %}
+            <div class="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-600 dark:text-red-400">
+                {{ password_form.non_field_errors.0 }}
+            </div>
+            {% endif %}
+
+            <button type="submit"
+                    class="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-xl shadow-md hover:shadow-lg transition-all">
+                <i class="ph ph-key"></i>
+                {% trans "Şifreyi Değiştir" %}
+            </button>
+        </form>
+    </div>
+
+    {# ── Section 4: Active Sessions ── #}
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <i class="ph ph-devices text-primary-500"></i>
+            {% trans "Aktif Oturumlar" %}
+        </h2>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-5">
+            {% trans "Hesabınıza bağlı aktif cihaz ve oturumları görüntüleyin." %}
+        </p>
+
+        {% if sessions %}
+        <div class="space-y-3">
+            {% for session in sessions %}
+            <div class="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-100 dark:border-gray-600">
+                <div class="flex-shrink-0 mt-0.5">
+                    {% if 'Mobile' in session.user_agent or 'Android' in session.user_agent or 'iPhone' in session.user_agent %}
+                    <i class="ph ph-device-mobile text-xl text-gray-500 dark:text-gray-400"></i>
+                    {% else %}
+                    <i class="ph ph-desktop text-xl text-gray-500 dark:text-gray-400"></i>
+                    {% endif %}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                        <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                            {{ session.user_agent|truncatechars:60|default:"—" }}
+                        </p>
+                        {% if forloop.first %}
+                        <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-950/30 rounded-full">
+                            {% trans "Mevcut" %}
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
+                        <span class="inline-flex items-center gap-1">
+                            <i class="ph ph-globe"></i>
+                            {{ session.ip_address|default:"—" }}
+                        </span>
+                        <span class="inline-flex items-center gap-1">
+                            <i class="ph ph-clock"></i>
+                            {{ session.created_at|timesince }} {% trans "önce" %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-8">
+            <i class="ph ph-shield-check text-4xl text-gray-300 dark:text-gray-600"></i>
+            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                {% trans "Aktif oturum bilgisi bulunamadı." %}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

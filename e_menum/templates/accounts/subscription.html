@@ -1,0 +1,92 @@
+{% extends "layouts/panel.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Subscription" %}{% endblock %}
+
+{% block panel_content %}
+<div class="max-w-2xl mx-auto">
+    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">
+        <i class="ph ph-credit-card"></i> {% trans "Subscription & Plan" %}
+    </h2>
+
+    {# Current Plan #}
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+        <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase mb-4">{% trans "Current Plan" %}</h3>
+
+        {% if plan %}
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ plan.name }}</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">{{ plan.description|default:"" }}</p>
+            </div>
+            <div class="text-right">
+                <p class="text-2xl font-bold text-primary-600 dark:text-primary-400">
+                    {{ plan.price_monthly }} {{ plan.currency|default:"TRY" }}
+                </p>
+                <p class="text-xs text-gray-500">{% trans "/month" %}</p>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-gray-500 dark:text-gray-400">{% trans "No active plan." %}</p>
+        {% endif %}
+
+        {% if subscription %}
+        <div class="grid grid-cols-2 gap-4 text-sm border-t border-gray-200 dark:border-gray-700 pt-4">
+            <div>
+                <span class="text-gray-500 dark:text-gray-400">{% trans "Status" %}</span>
+                <p class="font-medium text-gray-900 dark:text-white">
+                    <span class="px-2 py-0.5 rounded text-xs font-semibold
+                        {% if subscription.status == 'ACTIVE' %}bg-green-100 text-green-800
+                        {% elif subscription.status == 'TRIALING' %}bg-blue-100 text-blue-800
+                        {% elif subscription.status == 'PAST_DUE' %}bg-yellow-100 text-yellow-800
+                        {% else %}bg-gray-100 text-gray-600{% endif %}">
+                        {{ subscription.get_status_display|default:subscription.status }}
+                    </span>
+                </p>
+            </div>
+            <div>
+                <span class="text-gray-500 dark:text-gray-400">{% trans "Billing Period" %}</span>
+                <p class="font-medium text-gray-900 dark:text-white">{{ subscription.billing_period|default:"MONTHLY" }}</p>
+            </div>
+            {% if subscription.current_period_end %}
+            <div>
+                <span class="text-gray-500 dark:text-gray-400">{% trans "Next Billing" %}</span>
+                <p class="font-medium text-gray-900 dark:text-white">{{ subscription.current_period_end|date:"d M Y" }}</p>
+            </div>
+            {% endif %}
+            {% if subscription.trial_ends_at %}
+            <div>
+                <span class="text-gray-500 dark:text-gray-400">{% trans "Trial Ends" %}</span>
+                <p class="font-medium text-gray-900 dark:text-white">{{ subscription.trial_ends_at|date:"d M Y" }}</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    {# Usage Summary #}
+    {% if usage_items %}
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase mb-4">{% trans "Usage" %}</h3>
+        <div class="space-y-4">
+            {% for usage in usage_items %}
+            <div>
+                <div class="flex items-center justify-between text-sm mb-1">
+                    <span class="text-gray-700 dark:text-gray-300">{{ usage.feature.name|default:"Feature" }}</span>
+                    <span class="text-gray-500">
+                        {{ usage.current_usage }} / {% if usage.usage_limit == -1 %}∞{% else %}{{ usage.usage_limit }}{% endif %}
+                    </span>
+                </div>
+                {% if usage.usage_limit > 0 %}
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div class="h-2 rounded-full {% if usage.current_usage >= usage.usage_limit %}bg-red-500{% elif usage.current_usage > usage.usage_limit|floatformat:"0"|add:"-20" %}bg-yellow-500{% else %}bg-primary-500{% endif %}"
+                         style="width: {% widthratio usage.current_usage usage.usage_limit 100 %}%"></div>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock panel_content %}
