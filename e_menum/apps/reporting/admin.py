@@ -11,10 +11,11 @@ from apps.reporting.models import (
     ReportFavorite,
     ReportSchedule,
 )
+from shared.permissions.admin_permission_mixin import EMenumPermissionMixin
 
 
 @admin.register(ReportDefinition)
-class ReportDefinitionAdmin(admin.ModelAdmin):
+class ReportDefinitionAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     """Admin for report catalog."""
 
     list_display = [
@@ -28,7 +29,7 @@ class ReportDefinitionAdmin(admin.ModelAdmin):
 
 
 @admin.register(ReportExecution)
-class ReportExecutionAdmin(admin.ModelAdmin):
+class ReportExecutionAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     """Admin for report execution records."""
 
     list_display = [
@@ -60,7 +61,7 @@ class ReportExecutionAdmin(admin.ModelAdmin):
 
 
 @admin.register(ReportSchedule)
-class ReportScheduleAdmin(admin.ModelAdmin):
+class ReportScheduleAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     """Admin for report schedules."""
 
     list_display = [
@@ -86,7 +87,7 @@ class ReportScheduleAdmin(admin.ModelAdmin):
 
 
 @admin.register(ReportFavorite)
-class ReportFavoriteAdmin(admin.ModelAdmin):
+class ReportFavoriteAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     """Admin for report favorites."""
 
     list_display = ['user', 'feature_key', 'custom_name', 'display_order']

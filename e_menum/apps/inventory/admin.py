@@ -16,10 +16,11 @@ from apps.inventory.models import (
     StockMovement,
     Supplier,
 )
+from shared.permissions.admin_permission_mixin import EMenumPermissionMixin
 
 
 @admin.register(Supplier)
-class SupplierAdmin(admin.ModelAdmin):
+class SupplierAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     list_display = ['name', 'contact_person', 'email', 'phone', 'rating', 'is_active', 'organization']
     list_filter = ['is_active', 'rating', 'organization']
     search_fields = ['name', 'contact_person', 'email', 'tax_id']
@@ -28,7 +29,7 @@ class SupplierAdmin(admin.ModelAdmin):
 
 
 @admin.register(InventoryItem)
-class InventoryItemAdmin(admin.ModelAdmin):
+class InventoryItemAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     list_display = [
         'name', 'sku', 'category', 'unit_type', 'current_stock',
         'min_stock_level', 'cost_per_unit', 'is_active', 'organization',
@@ -40,7 +41,7 @@ class InventoryItemAdmin(admin.ModelAdmin):
 
 
 @admin.register(StockMovement)
-class StockMovementAdmin(admin.ModelAdmin):
+class StockMovementAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     list_display = [
         'inventory_item', 'movement_type', 'quantity', 'unit_cost',
         'total_cost', 'reference_number', 'created_by', 'created_at',
@@ -52,7 +53,7 @@ class StockMovementAdmin(admin.ModelAdmin):
 
 
 @admin.register(PurchaseOrder)
-class PurchaseOrderAdmin(admin.ModelAdmin):
+class PurchaseOrderAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     list_display = [
         'order_number', 'supplier', 'status', 'order_date',
         'expected_delivery', 'total_amount', 'organization',
@@ -64,7 +65,7 @@ class PurchaseOrderAdmin(admin.ModelAdmin):
 
 
 @admin.register(PurchaseOrderItem)
-class PurchaseOrderItemAdmin(admin.ModelAdmin):
+class PurchaseOrderItemAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     list_display = [
         'purchase_order', 'inventory_item', 'quantity_ordered',
         'quantity_received', 'unit_cost', 'total_cost',
@@ -76,7 +77,7 @@ class PurchaseOrderItemAdmin(admin.ModelAdmin):
 
 
 @admin.register(Recipe)
-class RecipeAdmin(admin.ModelAdmin):
+class RecipeAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     list_display = [
         'name', 'product', 'yield_quantity', 'yield_unit',
         'preparation_time_minutes', 'is_active', 'organization',
@@ -88,7 +89,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
 
 @admin.register(RecipeIngredient)
-class RecipeIngredientAdmin(admin.ModelAdmin):
+class RecipeIngredientAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     list_display = [
         'recipe', 'inventory_item', 'quantity_required',
         'unit_type', 'waste_percentage',

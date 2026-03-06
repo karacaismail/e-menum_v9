@@ -64,9 +64,41 @@ ADMIN_URL_TO_RESOURCE = {
     '/admin/subscriptions/plan/': 'plan',
     '/admin/subscriptions/feature/': 'plan',
     '/admin/subscriptions/planfeature/': 'plan',
+    '/admin/subscriptions/featurepermission/': 'plan',
     '/admin/subscriptions/subscription/': 'subscription',
     '/admin/subscriptions/invoice/': 'invoice',
     '/admin/subscriptions/organizationusage/': 'subscription',
+
+    # ── Inventory ──
+    '/admin/inventory/supplier/': 'inventory',
+    '/admin/inventory/inventoryitem/': 'inventory',
+    '/admin/inventory/stockmovement/': 'inventory',
+    '/admin/inventory/purchaseorder/': 'inventory',
+    '/admin/inventory/purchaseorderitem/': 'inventory',
+    '/admin/inventory/recipe/': 'inventory',
+    '/admin/inventory/recipeingredient/': 'inventory',
+
+    # ── Campaigns ──
+    '/admin/campaigns/campaign/': 'campaign',
+    '/admin/campaigns/coupon/': 'campaign',
+    '/admin/campaigns/couponusage/': 'campaign',
+    '/admin/campaigns/referral/': 'campaign',
+
+    # ── Analytics ──
+    '/admin/analytics/dashboardmetric/': 'analytics',
+    '/admin/analytics/salesaggregation/': 'analytics',
+    '/admin/analytics/productperformance/': 'analytics',
+    '/admin/analytics/customermetric/': 'analytics',
+
+    # ── Dashboard ──
+    '/admin/dashboard/dashboardinsight/': 'dashboard',
+    '/admin/dashboard/userpreference/': 'dashboard',
+
+    # ── Reporting ──
+    '/admin/reporting/reportdefinition/': 'report',
+    '/admin/reporting/reportexecution/': 'report',
+    '/admin/reporting/reportschedule/': 'report',
+    '/admin/reporting/reportfavorite/': 'report',
 
     # ── AI ──
     '/admin/ai/aiproviderconfig/': 'ai_generation',
@@ -78,7 +110,42 @@ ADMIN_URL_TO_RESOURCE = {
 
     # ── Notifications ──
     '/admin/notifications/notification/': 'notification',
-    '/admin/notifications/notificationtemplate/': 'notification',
+
+    # ── SEO ──
+    '/admin/seo/redirect/': 'settings',
+    '/admin/seo/notfound404log/': 'settings',
+    '/admin/seo/brokenlink/': 'settings',
+    '/admin/seo/crawlreport/': 'settings',
+    '/admin/seo/txtfileconfig/': 'settings',
+    '/admin/seo/authorprofile/': 'settings',
+    '/admin/seo/pseotemplate/': 'settings',
+    '/admin/seo/pseopage/': 'settings',
+
+    # ── SEO Shield ──
+    '/admin/seo_shield/botwhitelist/': 'settings',
+    '/admin/seo_shield/ipriskscore/': 'settings',
+    '/admin/seo_shield/ruleset/': 'settings',
+    '/admin/seo_shield/blocklog/': 'settings',
+
+    # ── Website CMS ──
+    '/admin/website/sitesettings/': 'settings',
+    '/admin/website/pagehero/': 'settings',
+    '/admin/website/homesection/': 'settings',
+    '/admin/website/navigationlink/': 'settings',
+    '/admin/website/featurecategory/': 'settings',
+    '/admin/website/testimonial/': 'settings',
+    '/admin/website/trustbadge/': 'settings',
+    '/admin/website/trustlocation/': 'settings',
+    '/admin/website/teammember/': 'settings',
+    '/admin/website/companyvalue/': 'settings',
+    '/admin/website/companystat/': 'settings',
+    '/admin/website/faq/': 'settings',
+    '/admin/website/blogpost/': 'settings',
+    '/admin/website/legalpage/': 'settings',
+    '/admin/website/plandisplayfeature/': 'settings',
+    '/admin/website/contactsubmission/': 'settings',
+    '/admin/website/demorequest/': 'settings',
+    '/admin/website/newslettersubscriber/': 'settings',
 }
 
 # Resources that only platform-level (superuser/admin) roles should see.

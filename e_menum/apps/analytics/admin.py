@@ -11,10 +11,11 @@ from apps.analytics.models import (
     ProductPerformance,
     SalesAggregation,
 )
+from shared.permissions.admin_permission_mixin import EMenumPermissionMixin
 
 
 @admin.register(DashboardMetric)
-class DashboardMetricAdmin(admin.ModelAdmin):
+class DashboardMetricAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     list_display = (
         'organization', 'metric_type', 'period_type',
         'period_start', 'period_end', 'value', 'change_percent',
@@ -30,7 +31,7 @@ class DashboardMetricAdmin(admin.ModelAdmin):
 
 
 @admin.register(SalesAggregation)
-class SalesAggregationAdmin(admin.ModelAdmin):
+class SalesAggregationAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     list_display = (
         'organization', 'date', 'granularity',
         'gross_revenue', 'order_count', 'customer_count',
@@ -46,7 +47,7 @@ class SalesAggregationAdmin(admin.ModelAdmin):
 
 
 @admin.register(ProductPerformance)
-class ProductPerformanceAdmin(admin.ModelAdmin):
+class ProductPerformanceAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     list_display = (
         'organization', 'product', 'period_type',
         'period_start', 'quantity_sold', 'revenue', 'profit_margin',
@@ -62,7 +63,7 @@ class ProductPerformanceAdmin(admin.ModelAdmin):
 
 
 @admin.register(CustomerMetric)
-class CustomerMetricAdmin(admin.ModelAdmin):
+class CustomerMetricAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     list_display = (
         'organization', 'date', 'total_customers',
         'new_customers', 'returning_customers', 'nps_score',

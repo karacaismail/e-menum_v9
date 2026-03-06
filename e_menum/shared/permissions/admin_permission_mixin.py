@@ -56,7 +56,38 @@ DJANGO_MODEL_TO_RESOURCE = {
     # ── Subscriptions ──
     'feature': 'plan',
     'planfeature': 'plan',
+    'featurepermission': 'plan',
     'organizationusage': 'subscription',
+
+    # ── Inventory ──
+    'inventoryitem': 'inventory',
+    'stockmovement': 'inventory',
+    'purchaseorder': 'inventory',
+    'purchaseorderitem': 'inventory',
+    'recipe': 'inventory',
+    'recipeingredient': 'inventory',
+    'supplier': 'inventory',
+
+    # ── Campaigns ──
+    'coupon': 'campaign',
+    'couponusage': 'campaign',
+    'referral': 'campaign',
+
+    # ── Analytics ──
+    'dashboardmetric': 'analytics',
+    'salesaggregation': 'analytics',
+    'productperformance': 'analytics',
+    'customermetric': 'analytics',
+
+    # ── Dashboard ──
+    'dashboardinsight': 'dashboard',
+    'userpreference': 'dashboard',
+
+    # ── Reporting ──
+    'reportdefinition': 'report',
+    'reportexecution': 'report',
+    'reportschedule': 'report',
+    'reportfavorite': 'report',
 
     # ── Media ──
     'mediafolder': 'media',
@@ -65,8 +96,41 @@ DJANGO_MODEL_TO_RESOURCE = {
     'aigeneration': 'ai_generation',
     'aiproviderconfig': 'ai_generation',
 
-    # ── Notifications ──
-    'notificationtemplate': 'notification',
+    # ── SEO ──
+    'redirect': 'settings',
+    'notfound404log': 'settings',
+    'brokenlink': 'settings',
+    'crawlreport': 'settings',
+    'txtfileconfig': 'settings',
+    'authorprofile': 'settings',
+    'pseotemplate': 'settings',
+    'pseopage': 'settings',
+
+    # ── SEO Shield ──
+    'botwhitelist': 'settings',
+    'ipriskscore': 'settings',
+    'ruleset': 'settings',
+    'blocklog': 'settings',
+
+    # ── Website CMS ──
+    'sitesettings': 'settings',
+    'pagehero': 'settings',
+    'homesection': 'settings',
+    'navigationlink': 'settings',
+    'featurecategory': 'settings',
+    'testimonial': 'settings',
+    'trustbadge': 'settings',
+    'trustlocation': 'settings',
+    'teammember': 'settings',
+    'companyvalue': 'settings',
+    'companystat': 'settings',
+    'faq': 'settings',
+    'blogpost': 'settings',
+    'legalpage': 'settings',
+    'plandisplayfeature': 'settings',
+    'contactsubmission': 'settings',
+    'demorequest': 'settings',
+    'newslettersubscriber': 'settings',
 }
 
 

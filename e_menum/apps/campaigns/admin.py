@@ -13,10 +13,11 @@ from apps.campaigns.models import (
     CouponUsage,
     Referral,
 )
+from shared.permissions.admin_permission_mixin import EMenumPermissionMixin
 
 
 @admin.register(Campaign)
-class CampaignAdmin(admin.ModelAdmin):
+class CampaignAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     list_display = [
         'name', 'campaign_type', 'status', 'discount_value',
         'discount_type', 'start_date', 'end_date', 'usage_count',
@@ -29,7 +30,7 @@ class CampaignAdmin(admin.ModelAdmin):
 
 
 @admin.register(Coupon)
-class CouponAdmin(admin.ModelAdmin):
+class CouponAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     list_display = [
         'code', 'campaign', 'discount_value', 'discount_type',
         'max_uses', 'used_count', 'valid_from', 'valid_until',
@@ -42,7 +43,7 @@ class CouponAdmin(admin.ModelAdmin):
 
 
 @admin.register(CouponUsage)
-class CouponUsageAdmin(admin.ModelAdmin):
+class CouponUsageAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     list_display = [
         'coupon', 'order', 'customer', 'discount_applied', 'used_at',
         'organization',
@@ -54,7 +55,7 @@ class CouponUsageAdmin(admin.ModelAdmin):
 
 
 @admin.register(Referral)
-class ReferralAdmin(admin.ModelAdmin):
+class ReferralAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     list_display = [
         'referral_code', 'referrer', 'referred', 'reward_type',
         'reward_value', 'is_completed', 'completed_at', 'organization',

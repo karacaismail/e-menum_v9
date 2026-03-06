@@ -9,10 +9,11 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
 from apps.dashboard.models import DashboardInsight, UserPreference
+from shared.permissions.admin_permission_mixin import EMenumPermissionMixin
 
 
 @admin.register(DashboardInsight)
-class DashboardInsightAdmin(admin.ModelAdmin):
+class DashboardInsightAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     """Admin configuration for DashboardInsight model."""
 
     list_display = [
@@ -47,7 +48,7 @@ class DashboardInsightAdmin(admin.ModelAdmin):
 
 
 @admin.register(UserPreference)
-class UserPreferenceAdmin(admin.ModelAdmin):
+class UserPreferenceAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     """Admin configuration for UserPreference model."""
 
     list_display = ['user', 'key', 'created_at', 'updated_at']
