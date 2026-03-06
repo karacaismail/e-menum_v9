@@ -272,17 +272,27 @@ def deploy_info_context(request):
     Footer'da build ✓ - at - commit · #build formatinda gosterilir.
     """
     import json
+    from pathlib import Path
     from django.conf import settings
 
+    def _read(path):
+        try:
+            if path.exists():
+                with open(path, 'r') as f:
+                    return json.load(f)
+        except (json.JSONDecodeError, OSError):
+            pass
+        return None
+
+    # 1) BASE_DIR/deploy_info.json (normal)
     base_dir = getattr(settings, 'BASE_DIR', None)
-    if not base_dir:
-        return {}
-    path = base_dir / 'deploy_info.json'
-    try:
-        if path.exists():
-            with open(path, 'r') as f:
-                data = json.load(f)
+    if base_dir is not None:
+        p = (base_dir / 'deploy_info.json') if isinstance(base_dir, Path) else (Path(base_dir) / 'deploy_info.json')
+        data = _read(p)
+        if data:
             return {'deploy_info': data}
-    except (json.JSONDecodeError, OSError):
-        pass
+    # 2) Container'da /app sabit yol (deploy.sh docker cp ile buraya yazar)
+    data = _read(Path('/app/deploy_info.json'))
+    if data:
+        return {'deploy_info': data}
     return {}
