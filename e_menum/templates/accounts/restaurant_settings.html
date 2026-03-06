@@ -1,0 +1,255 @@
+{% extends "layouts/panel.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Restoran Ayarları" %}{% endblock %}
+{% block panel_title %}{% trans "Restoran Ayarları" %}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="flex items-center">
+    <i class="ph ph-caret-right mx-1.5 text-xs"></i>
+    <span class="text-gray-700 dark:text-gray-300 font-medium">{% trans "Restoran Ayarları" %}</span>
+</li>
+{% endblock %}
+
+{% block panel_content %}
+<div class="max-w-5xl mx-auto py-10 px-4">
+    {# Page Header #}
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <i class="ph ph-storefront text-primary-500"></i>
+            {% trans "Restoran Ayarları" %}
+        </h1>
+        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            {% trans "İşletme bilgilerinizi ve adres detaylarınızı güncelleyin." %}
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        {# ── Left Column: Settings Form (2/3) ── #}
+        <div class="lg:col-span-2">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                    <i class="ph ph-pencil-simple text-primary-500"></i>
+                    {% trans "İşletme Bilgileri" %}
+                </h2>
+
+                <form method="post" action="{% url 'accounts:restaurant-settings' %}" class="space-y-5">
+                    {% csrf_token %}
+
+                    {# Organization Name #}
+                    <div>
+                        <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            {{ form.name.label }}
+                        </label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                        <p class="mt-1 text-sm text-red-500">{{ form.name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    {# Two-column grid for email and phone #}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                                {{ form.email.label }}
+                            </label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <p class="mt-1 text-sm text-red-500">{{ form.email.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="{{ form.phone.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                                {{ form.phone.label }}
+                            </label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                            <p class="mt-1 text-sm text-red-500">{{ form.phone.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Logo URL #}
+                    <div>
+                        <label for="{{ form.logo.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            {{ form.logo.label }}
+                        </label>
+                        {{ form.logo }}
+                        {% if form.logo.help_text %}
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ form.logo.help_text }}</p>
+                        {% endif %}
+                        {% if form.logo.errors %}
+                        <p class="mt-1 text-sm text-red-500">{{ form.logo.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    {# Separator #}
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-5">
+                        <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                            <i class="ph ph-map-pin text-primary-500"></i>
+                            {% trans "Adres Bilgileri" %}
+                        </h3>
+                    </div>
+
+                    {# Address #}
+                    <div>
+                        <label for="{{ form.address.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            {{ form.address.label }}
+                        </label>
+                        {{ form.address }}
+                        {% if form.address.errors %}
+                        <p class="mt-1 text-sm text-red-500">{{ form.address.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    {# Two-column grid for city and district #}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label for="{{ form.city.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                                {{ form.city.label }}
+                            </label>
+                            {{ form.city }}
+                            {% if form.city.errors %}
+                            <p class="mt-1 text-sm text-red-500">{{ form.city.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="{{ form.district.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                                {{ form.district.label }}
+                            </label>
+                            {{ form.district }}
+                            {% if form.district.errors %}
+                            <p class="mt-1 text-sm text-red-500">{{ form.district.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Non-field Errors #}
+                    {% if form.non_field_errors %}
+                    <div class="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-600 dark:text-red-400">
+                        {{ form.non_field_errors.0 }}
+                    </div>
+                    {% endif %}
+
+                    {# Submit Button #}
+                    <div class="pt-2">
+                        <button type="submit"
+                                class="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3 text-base font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-xl shadow-md hover:shadow-lg transition-all">
+                            <i class="ph ph-floppy-disk"></i>
+                            {% trans "Kaydet" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {# ── Right Column: Info Card (1/3) ── #}
+        <div class="lg:col-span-1 space-y-6">
+
+            {# Current Info Card #}
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6">
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <i class="ph ph-info text-primary-500"></i>
+                    {% trans "Mevcut Bilgiler" %}
+                </h3>
+
+                {# Logo Preview #}
+                <div class="flex justify-center mb-5">
+                    {% if organization.logo %}
+                    <img src="{{ organization.logo }}" alt="{{ organization.name }}" class="h-24 w-24 rounded-xl object-cover ring-4 ring-gray-100 dark:ring-gray-700 shadow-sm">
+                    {% else %}
+                    <div class="h-24 w-24 rounded-xl bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center ring-4 ring-gray-100 dark:ring-gray-700">
+                        <i class="ph ph-storefront text-4xl text-primary-600 dark:text-primary-400"></i>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {# Organization Details #}
+                <div class="text-center mb-5">
+                    <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ organization.name }}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ organization.email }}</p>
+                    {% if organization.phone %}
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ organization.phone }}</p>
+                    {% endif %}
+                </div>
+
+                {# Plan Badge #}
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Plan" %}</span>
+                        {% if organization.plan %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-300">
+                            {{ organization.plan.name }}
+                        </span>
+                        {% else %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                            {% trans "Free" %}
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    {# Trial Status #}
+                    {% if organization.trial_ends_at %}
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Deneme" %}</span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
+                            <i class="ph ph-clock mr-1"></i>
+                            {{ organization.trial_ends_at|date:"d M Y" }}
+                        </span>
+                    </div>
+                    {% endif %}
+
+                    {# Status #}
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Durum" %}</span>
+                        {% if organization.status == 'ACTIVE' %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                            <i class="ph ph-check-circle mr-1"></i>
+                            {% trans "Aktif" %}
+                        </span>
+                        {% else %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">
+                            {{ organization.get_status_display }}
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    {# Slug #}
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "URL" %}</span>
+                        <span class="text-sm text-gray-900 dark:text-white font-mono">{{ organization.slug }}</span>
+                    </div>
+                </div>
+            </div>
+
+            {# Branch Info (if exists) #}
+            {% if branch %}
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6">
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <i class="ph ph-map-pin text-primary-500"></i>
+                    {% trans "Şube Bilgisi" %}
+                </h3>
+                <div class="space-y-2 text-sm">
+                    {% if branch.address %}
+                    <div class="flex items-start gap-2">
+                        <i class="ph ph-house-line text-gray-400 mt-0.5"></i>
+                        <span class="text-gray-700 dark:text-gray-300">{{ branch.address }}</span>
+                    </div>
+                    {% endif %}
+                    {% if branch.city or branch.district %}
+                    <div class="flex items-center gap-2">
+                        <i class="ph ph-buildings text-gray-400"></i>
+                        <span class="text-gray-700 dark:text-gray-300">
+                            {% if branch.district %}{{ branch.district }}, {% endif %}{{ branch.city }}
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}

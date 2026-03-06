@@ -14,10 +14,10 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
             <h2 class="heading-sans text-3xl sm:text-4xl text-gray-900 dark:text-white mb-4">
-                {% trans "Musterilerimiz Ne Diyor?" %}
+                {% trans "Müşterilerimiz Ne Diyor?" %}
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                {% trans "Binlerce isletme E-Menum ile dijital donusumunu tamamladi." %}
+                {% trans "Binlerce işletme E-Menum ile dijital dönüşümünü tamamladı." %}
             </p>
         </div>
 
@@ -29,7 +29,7 @@
                     {% if forloop.counter <= t.rating %}
                     <i class="ph-fill ph-star text-yellow-400 text-lg"></i>
                     {% else %}
-                    <i class="ph ph-star text-gray-300 text-lg"></i>
+                    <i class="ph ph-star text-gray-400 text-lg"></i>
                     {% endif %}
                     {% endfor %}
                 </div>
@@ -37,12 +37,13 @@
                     {{ t.quote }}
                 </p>
                 <div class="flex items-center">
-                    <div class="w-12 h-12 bg-{{ t.avatar_color|default:'primary' }}-100 dark:bg-{{ t.avatar_color|default:'primary' }}-900 rounded-full flex items-center justify-center mr-4">
-                        <span class="text-{{ t.avatar_color|default:'primary' }}-600 dark:text-{{ t.avatar_color|default:'primary' }}-400 font-bold">{{ t.initials }}</span>
-                    </div>
+                    <img src="https://i.pravatar.cc/80?img={{ forloop.counter|add:10 }}"
+                         alt="{{ t.author_name }}"
+                         class="w-12 h-12 rounded-full object-cover mr-4"
+                         loading="lazy">
                     <div>
                         <p class="font-semibold text-gray-900 dark:text-white">{{ t.author_name }}</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-300">
+                        <p class="text-sm text-gray-600 dark:text-gray-300">
                             {{ t.author_role_or_business }}{% if t.author_location %} · {{ t.author_location }}{% endif %}
                         </p>
                         {% if t.business_type_label %}

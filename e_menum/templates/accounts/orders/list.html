@@ -1,0 +1,211 @@
+{% extends "layouts/panel.html" %}
+{% load static i18n %}
+
+{# =========================================================================
+   Order List Page
+
+   Displays a filterable, paginated table of orders with status badges,
+   search by order number, and dropdown filters for status and type.
+   ========================================================================= #}
+
+{% block page_title %}{% trans "Siparisler" %}{% endblock %}
+
+{% block panel_title %}{% trans "Siparisler" %}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="flex items-center">
+    <i class="ph ph-caret-right text-xs mx-1.5"></i>
+    <span class="text-gray-500 dark:text-gray-400 text-sm">{% trans "Siparisler" %}</span>
+</li>
+{% endblock %}
+
+{% block panel_content %}
+<div x-data="{
+    search: '{{ request.GET.search|default:'' }}',
+    status: '{{ request.GET.status|default:'' }}',
+    type: '{{ request.GET.type|default:'' }}',
+    applyFilters() {
+        const params = new URLSearchParams();
+        if (this.search) params.set('search', this.search);
+        if (this.status) params.set('status', this.status);
+        if (this.type) params.set('type', this.type);
+        window.location.search = params.toString();
+    }
+}">
+
+    {# ── Filter Bar ── #}
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm mb-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            {# Search #}
+            <div class="relative flex-1 w-full sm:max-w-xs">
+                <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input
+                    type="text"
+                    x-model="search"
+                    @keydown.enter="applyFilters()"
+                    placeholder="{% trans 'Siparis numarasi ara...' %}"
+                    class="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                >
+            </div>
+
+            {# Status Filter #}
+            <select
+                x-model="status"
+                @change="applyFilters()"
+                class="text-sm border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-primary-500"
+            >
+                <option value="">{% trans "Tum Durumlar" %}</option>
+                <option value="PENDING">{% trans "Beklemede" %}</option>
+                <option value="CONFIRMED">{% trans "Onaylandi" %}</option>
+                <option value="PREPARING">{% trans "Hazirlaniyor" %}</option>
+                <option value="READY">{% trans "Hazir" %}</option>
+                <option value="DELIVERED">{% trans "Teslim Edildi" %}</option>
+                <option value="COMPLETED">{% trans "Tamamlandi" %}</option>
+                <option value="CANCELLED">{% trans "Iptal" %}</option>
+            </select>
+
+            {# Type Filter #}
+            <select
+                x-model="type"
+                @change="applyFilters()"
+                class="text-sm border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-primary-500"
+            >
+                <option value="">{% trans "Tum Tipler" %}</option>
+                <option value="DINE_IN">{% trans "Restoranda" %}</option>
+                <option value="TAKEAWAY">{% trans "Paket" %}</option>
+                <option value="DELIVERY">{% trans "Kurye" %}</option>
+            </select>
+
+            {# Search Button #}
+            <button
+                @click="applyFilters()"
+                class="px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors"
+            >
+                <i class="ph ph-funnel mr-1"></i>{% trans "Filtrele" %}
+            </button>
+        </div>
+    </div>
+
+    {# ── Orders Table ── #}
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b border-gray-100 dark:border-gray-700">
+                        <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Siparis #" %}</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Musteri" %}</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Masa" %}</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Tip" %}</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Tutar" %}</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Durum" %}</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Tarih" %}</th>
+                        <th class="px-5 py-3 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Islemler" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                    {% for order in orders %}
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                        <td class="px-5 py-3 text-sm font-medium text-gray-900 dark:text-white">
+                            #{{ order.order_number }}
+                        </td>
+                        <td class="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">
+                            {{ order.customer_name|default:"-" }}
+                        </td>
+                        <td class="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">
+                            {{ order.table_name|default:"-" }}
+                        </td>
+                        <td class="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">
+                            {% if order.order_type == 'DINE_IN' %}
+                                <span class="inline-flex items-center gap-1"><i class="ph ph-fork-knife"></i>{% trans "Restoranda" %}</span>
+                            {% elif order.order_type == 'TAKEAWAY' %}
+                                <span class="inline-flex items-center gap-1"><i class="ph ph-bag"></i>{% trans "Paket" %}</span>
+                            {% elif order.order_type == 'DELIVERY' %}
+                                <span class="inline-flex items-center gap-1"><i class="ph ph-moped"></i>{% trans "Kurye" %}</span>
+                            {% else %}
+                                {{ order.order_type|default:"-" }}
+                            {% endif %}
+                        </td>
+                        <td class="px-5 py-3 text-sm font-medium text-gray-900 dark:text-white tabular-nums">
+                            &#8378;{{ order.total_amount|floatformat:2 }}
+                        </td>
+                        <td class="px-5 py-3">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold
+                                {% if order.status == 'PENDING' %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400
+                                {% elif order.status == 'CONFIRMED' %}bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400
+                                {% elif order.status == 'PREPARING' %}bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400
+                                {% elif order.status == 'READY' %}bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-400
+                                {% elif order.status == 'DELIVERED' %}bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-400
+                                {% elif order.status == 'COMPLETED' %}bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400
+                                {% elif order.status == 'CANCELLED' %}bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400
+                                {% else %}bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300
+                                {% endif %}">
+                                {{ order.get_status_display|default:order.status }}
+                            </span>
+                        </td>
+                        <td class="px-5 py-3 text-sm text-gray-500 dark:text-gray-400">
+                            {{ order.created_at|date:"d.m.Y H:i" }}
+                        </td>
+                        <td class="px-5 py-3 text-right">
+                            <a
+                                href="{% url 'accounts:order-detail' order.pk %}"
+                                class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-900/40 rounded-lg transition-colors"
+                            >
+                                <i class="ph ph-eye"></i>{% trans "Detay" %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="px-5 py-16 text-center">
+                            <div class="flex flex-col items-center">
+                                <i class="ph ph-receipt text-5xl text-gray-300 dark:text-gray-600 mb-3"></i>
+                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">{% trans "Henuz siparis bulunmuyor." %}</p>
+                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">{% trans "Siparisler burada listelenecektir." %}</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {# ── Pagination ── #}
+        {% if page_obj and page_obj.paginator.num_pages > 1 %}
+        <div class="flex items-center justify-between px-5 py-4 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+                {% blocktrans with start=page_obj.start_index end=page_obj.end_index total=page_obj.paginator.count %}
+                    {{ start }}-{{ end }} / {{ total }} sonuc
+                {% endblocktrans %}
+            </p>
+            <nav class="flex items-center gap-1" aria-label="{% trans 'Sayfalama' %}">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}"
+                   class="p-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                    <i class="ph ph-caret-left"></i>
+                </a>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                    <span class="px-3 py-1.5 text-sm font-medium text-white bg-primary-600 rounded-lg">{{ num }}</span>
+                    {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                    <a href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}"
+                       class="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                        {{ num }}
+                    </a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}"
+                   class="p-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                    <i class="ph ph-caret-right"></i>
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

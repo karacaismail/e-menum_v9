@@ -1,8 +1,14 @@
 {% extends "layouts/marketing.html" %}
-{% load static i18n %}
+{% load static i18n seo_tags %}
 
-{% block page_title %}{% if hero %}{{ hero.title }}{% else %}{% trans "Fiyatlandirma" %}{% endif %}{% endblock %}
-{% block meta_description %}{% trans "E-Menum fiyatlandirma planlari. Ucretsiz baslatin, isletmeniz buyudukce yükseltin. 14 gun ucretsiz deneme." %}{% endblock %}
+{% block page_title %}{% if hero %}{{ hero.title }}{% else %}{% trans "Fiyatlandırma" %}{% endif %}{% endblock %}
+{% block meta_description %}{% trans "E-Menum fiyatlandırma planları. Ücretsiz başlatın, işletmeniz büyüdükçe yükseltin. 14 gün ücretsiz deneme." %}{% endblock %}
+
+{% block extra_head %}
+{{ block.super }}
+{% seo_jsonld "product" %}
+{% seo_jsonld "faq" %}
+{% endblock %}
 
 {% block content %}
 
@@ -18,7 +24,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
             <h2 class="heading-sans text-3xl text-gray-900 dark:text-white mb-4">
-                {% trans "Detayli Karsilastirma" %}
+                {% trans "Detaylı Karşılaştırma" %}
             </h2>
         </div>
 
@@ -26,7 +32,7 @@
             <table class="w-full text-sm">
                 <thead>
                     <tr class="border-b border-gray-200 dark:border-gray-800">
-                        <th class="text-left py-4 px-4 font-semibold text-gray-900 dark:text-white">{% trans "Ozellik" %}</th>
+                        <th class="text-left py-4 px-4 font-semibold text-gray-900 dark:text-white">{% trans "Özellik" %}</th>
                         {% for plan in plans %}
                         <th class="text-center py-4 px-3 font-semibold {% if plan.highlight_text %}text-primary-600 dark:text-primary-400{% else %}text-gray-900 dark:text-white{% endif %}">
                             {{ plan.name }}
@@ -43,9 +49,9 @@
                             {% if val.value %}
                                 <span class="text-gray-600 dark:text-gray-300">{{ val.value }}</span>
                             {% elif val.is_enabled %}
-                                <i class="ph ph-check text-green-500"></i>
+                                <i class="ph ph-check text-green-600 dark:text-green-400"></i>
                             {% else %}
-                                <i class="ph ph-x text-gray-400"></i>
+                                <i class="ph ph-x text-gray-500 dark:text-gray-500"></i>
                             {% endif %}
                         </td>
                         {% endfor %}
@@ -62,6 +68,6 @@
 {% include "website/partials/_faq_accordion.html" %}
 
 {# CTA #}
-{% include "website/partials/_cta_banner.html" with title="14 Gun Ucretsiz Deneyin" subtitle="Kredi karti gerekmez. Istediginiz zaman iptal edin. 2 dakikada kurulum." button_text="14 Gun Ucretsiz Basla" button_url="website:demo" secondary_text="Canli Demo Izle" secondary_url="website:demo" %}
+{% include "website/partials/_cta_banner.html" with title="14 Gün Ücretsiz Deneyin" subtitle="Kredi kartı gerekmez. İstediğiniz zaman iptal edin. 2 dakikada kurulum." button_text="14 Gün Ücretsiz Başla" button_url="website:demo" secondary_text="Canlı Demo İzle" secondary_url="website:demo" %}
 
 {% endblock %}

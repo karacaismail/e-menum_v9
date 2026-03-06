@@ -6,20 +6,20 @@
    {% include "website/partials/_feature_card.html" with
        icon="ph-qr-code"
        title="QR Menu"
-       description="Kisa aciklama..."
+       description="Kısa açıklama..."
        color="primary"
    %}
    ============================================================================{% endcomment %}
 
 <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 card-hover" data-reveal>
     <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4
-         {% if color == 'primary' %}bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400
-         {% elif color == 'green' %}bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400
-         {% elif color == 'purple' %}bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400
-         {% elif color == 'amber' %}bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400
-         {% elif color == 'rose' %}bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-400
-         {% elif color == 'cyan' %}bg-cyan-100 dark:bg-cyan-900/50 text-cyan-600 dark:text-cyan-400
-         {% else %}bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400
+         {% if color == 'primary' %}bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-400
+         {% elif color == 'green' %}bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400
+         {% elif color == 'purple' %}bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-400
+         {% elif color == 'amber' %}bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400
+         {% elif color == 'rose' %}bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-400
+         {% elif color == 'cyan' %}bg-cyan-100 dark:bg-cyan-900/50 text-cyan-700 dark:text-cyan-400
+         {% else %}bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-400
          {% endif %}"
     >
         <i class="ph {{ icon|default:'ph-star' }} text-2xl"></i>

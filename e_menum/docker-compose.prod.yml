@@ -1,12 +1,10 @@
 # =============================================================================
 # E-Menum Docker Compose - Production (AMD64 Linux / Hetzner)
 # =============================================================================
-# Kod host'tan mount edilir: repo guncellenince container yeni kodu gorur (rebuild gerekmez).
-# Dinamik veriler disarda: media ve staticfiles named volume'da.
-#
 # Usage:
-#   Build:  docker compose -f docker-compose.prod.yml build   # sadece DEPLOY_BUILD=1 ile
+#   Build:  docker compose -f docker-compose.prod.yml build
 #   Start:  docker compose -f docker-compose.prod.yml up -d
+#   Stop:   docker compose -f docker-compose.prod.yml down
 #   Logs:   docker compose -f docker-compose.prod.yml logs -f web
 # =============================================================================
 
@@ -90,11 +88,10 @@ services:
       # Seed data: set to "true" for first deploy, auto-skips if data exists
       DJANGO_SEED_DATA: ${DJANGO_SEED_DATA:-true}
     volumes:
-      # Kod host'tan: git pull = container'da guncel kod (restart ile yuklenir)
-      - .:/app
-      # Dinamik veriler disarda (image icinde degil)
+      # NOTE: Do NOT mount a volume over /app/staticfiles!
+      # WhiteNoise serves static files directly from the image.
+      # A volume mount would mask the files collected during docker build.
       - media_volume:/app/media
-      - staticfiles_volume:/app/staticfiles
     ports:
       - "${WEB_PORT:-8000}:8000"
     depends_on:
@@ -132,9 +129,7 @@ services:
       DATABASE_SSL_REQUIRE: "false"
       TZ: ${TZ:-Europe/Istanbul}
     volumes:
-      - .:/app
       - media_volume:/app/media
-      - staticfiles_volume:/app/staticfiles
     depends_on:
       db:
         condition: service_healthy
@@ -163,10 +158,6 @@ services:
       CELERY_RESULT_BACKEND: redis://redis:6379/1
       DATABASE_SSL_REQUIRE: "false"
       TZ: ${TZ:-Europe/Istanbul}
-    volumes:
-      - .:/app
-      - media_volume:/app/media
-      - staticfiles_volume:/app/staticfiles
     depends_on:
       db:
         condition: service_healthy
@@ -195,5 +186,3 @@ volumes:
     name: emenum_redis_data
   media_volume:
     name: emenum_media
-  staticfiles_volume:
-    name: emenum_staticfiles

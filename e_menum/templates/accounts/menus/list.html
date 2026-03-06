@@ -1,0 +1,387 @@
+{% extends "layouts/panel.html" %}
+{% load static i18n %}
+
+{# =========================================================================
+   Menu List Page — Restaurant Owner Portal
+
+   Displays all menus belonging to the current organization as cards.
+   Supports AJAX publish/unpublish toggle and set-default actions.
+   ========================================================================= #}
+
+{% block page_title %}{% trans "Menuler" %}{% endblock %}
+
+{% block panel_title %}{% trans "Menuler" %}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="flex items-center">
+    <i class="ph ph-caret-right text-xs mx-1"></i>
+    <span class="text-gray-500 dark:text-gray-400">{% trans "Menuler" %}</span>
+</li>
+{% endblock %}
+
+{% block panel_content %}
+
+{# ── Top Bar: Title + New Menu Button ── #}
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+        <h2 class="text-lg font-bold text-gray-900 dark:text-white">{% trans "Menuler" %}</h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+            {% trans "Restoraniniza ait tum menuleri buradan yonetebilirsiniz." %}
+        </p>
+    </div>
+    <a href="{% url 'accounts:menu-create' %}"
+       class="px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-all inline-flex items-center gap-2 self-start">
+        <i class="ph ph-plus text-base"></i>
+        {% trans "Yeni Menu" %}
+    </a>
+</div>
+
+{# ── Menu Cards Grid ── #}
+{% if menus %}
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"
+     x-data="menuListManager()">
+
+    {% for menu in menus %}
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col"
+         id="menu-card-{{ menu.id }}">
+
+        {# Card Header: Name + Badges #}
+        <div class="flex items-start justify-between mb-3">
+            <div class="flex-1 min-w-0">
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white truncate">
+                    {{ menu.name }}
+                </h3>
+                {% if menu.description %}
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                    {{ menu.description|truncatewords:20 }}
+                </p>
+                {% endif %}
+            </div>
+            <div class="flex items-center gap-1.5 ml-3 flex-shrink-0">
+                {# Published / Draft Badge #}
+                <span id="badge-publish-{{ menu.id }}"
+                      class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold
+                             {% if menu.is_published %}bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400{% else %}bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300{% endif %}">
+                    {% if menu.is_published %}{% trans "Yayinda" %}{% else %}{% trans "Taslak" %}{% endif %}
+                </span>
+                {# Default Badge #}
+                {% if menu.is_default %}
+                <span id="badge-default-{{ menu.id }}"
+                      class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+                    {% trans "Varsayilan" %}
+                </span>
+                {% endif %}
+            </div>
+        </div>
+
+        {# Card Meta #}
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-gray-400 mb-4">
+            <span class="inline-flex items-center gap-1">
+                <i class="ph ph-folders text-sm"></i>
+                {{ menu.category_count|default:"0" }} {% trans "Kategori" %}
+            </span>
+            {% if menu.theme %}
+            <span class="inline-flex items-center gap-1">
+                <i class="ph ph-palette text-sm"></i>
+                {{ menu.theme.name }}
+            </span>
+            {% endif %}
+        </div>
+
+        {# Public Link #}
+        <div class="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500 mb-4 p-2 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
+            <i class="ph ph-link text-sm"></i>
+            <a href="/m/{{ menu.slug }}/"
+               target="_blank"
+               class="hover:text-primary-600 dark:hover:text-primary-400 truncate transition-colors">
+                /m/{{ menu.slug }}/
+            </a>
+            <button type="button"
+                    @click="copyToClipboard('/m/{{ menu.slug }}/')"
+                    class="ml-auto p-1 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                    title="{% trans 'Linki Kopyala' %}">
+                <i class="ph ph-copy text-sm"></i>
+            </button>
+        </div>
+
+        {# Card Actions #}
+        <div class="mt-auto pt-3 border-t border-gray-100 dark:border-gray-700 flex flex-wrap items-center gap-2">
+            {# Edit #}
+            <a href="{% url 'accounts:menu-edit' menu.id %}"
+               class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 inline-flex items-center gap-1.5 transition-all">
+                <i class="ph ph-pencil-simple text-sm"></i>
+                {% trans "Duzenle" %}
+            </a>
+
+            {# Detail / Categories #}
+            <a href="{% url 'accounts:menu-detail' menu.id %}"
+               class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 inline-flex items-center gap-1.5 transition-all">
+                <i class="ph ph-list-bullets text-sm"></i>
+                {% trans "Kategoriler" %}
+            </a>
+
+            {# Publish / Unpublish Toggle #}
+            <button type="button"
+                    @click="togglePublish({{ menu.id }}, {{ menu.is_published|yesno:'true,false' }})"
+                    class="px-3 py-2 text-sm font-medium rounded-lg border transition-all inline-flex items-center gap-1.5
+                           {% if menu.is_published %}text-yellow-700 dark:text-yellow-300 border-yellow-300 dark:border-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20{% else %}text-green-700 dark:text-green-300 border-green-300 dark:border-green-600 hover:bg-green-50 dark:hover:bg-green-900/20{% endif %}"
+                    id="btn-publish-{{ menu.id }}"
+                    title="{% if menu.is_published %}{% trans 'Yayindan Kaldir' %}{% else %}{% trans 'Yayinla' %}{% endif %}">
+                <i class="ph {% if menu.is_published %}ph-eye-slash{% else %}ph-eye{% endif %} text-sm"
+                   id="icon-publish-{{ menu.id }}"></i>
+                <span id="text-publish-{{ menu.id }}">
+                    {% if menu.is_published %}{% trans "Kaldir" %}{% else %}{% trans "Yayinla" %}{% endif %}
+                </span>
+            </button>
+
+            {# Set Default #}
+            {% if not menu.is_default %}
+            <button type="button"
+                    @click="setDefault({{ menu.id }})"
+                    class="px-3 py-2 text-sm font-medium text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all inline-flex items-center gap-1.5"
+                    id="btn-default-{{ menu.id }}"
+                    title="{% trans 'Varsayilan Yap' %}">
+                <i class="ph ph-star text-sm"></i>
+                {% trans "Varsayilan" %}
+            </button>
+            {% endif %}
+
+            {# Delete #}
+            <button type="button"
+                    @click="confirmDelete({{ menu.id }}, '{{ menu.name|escapejs }}')"
+                    class="px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 border border-red-300 dark:border-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-all inline-flex items-center gap-1.5 ml-auto"
+                    title="{% trans 'Sil' %}">
+                <i class="ph ph-trash text-sm"></i>
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{# ── Delete Confirmation Dialog ── #}
+<div x-data="deleteDialog()" x-cloak>
+    <template x-teleport="body">
+        <div x-show="open"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+             @keydown.escape.window="open = false">
+            <div @click.away="open = false"
+                 class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl w-full max-w-md p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="h-10 w-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
+                        <i class="ph ph-warning text-xl text-red-600 dark:text-red-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-semibold text-gray-900 dark:text-white">{% trans "Menu Sil" %}</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                            <span x-text="menuName"></span> {% trans "menusunu silmek istediginize emin misiniz?" %}
+                        </p>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-5">
+                    {% trans "Bu islem geri alinamaz. Menuye ait tum kategoriler ve urun baglantilari kaldirilacaktir." %}
+                </p>
+                <div class="flex items-center justify-end gap-3">
+                    <button type="button"
+                            @click="open = false"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">
+                        {% trans "Iptal" %}
+                    </button>
+                    <button type="button"
+                            @click="executeDelete()"
+                            class="px-4 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-sm transition-all">
+                        {% trans "Evet, Sil" %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+</div>
+
+{% else %}
+
+{# ── Empty State ── #}
+<div class="flex flex-col items-center justify-center py-16">
+    <div class="h-20 w-20 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-5">
+        <i class="ph ph-book-open text-4xl text-gray-400 dark:text-gray-500"></i>
+    </div>
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+        {% trans "Henuz menu bulunmuyor" %}
+    </h3>
+    <p class="text-sm text-gray-500 dark:text-gray-400 text-center max-w-sm mb-6">
+        {% trans "Ilk menunuzu olusturarak baslayin. Menuler kategoriler ve urunler ile doldurulabilir." %}
+    </p>
+    <a href="{% url 'accounts:menu-create' %}"
+       class="px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-all inline-flex items-center gap-2">
+        <i class="ph ph-plus text-base"></i>
+        {% trans "Ilk Menunuzu Olusturun" %}
+    </a>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+document.addEventListener('alpine:init', function() {
+
+    /**
+     * Utility: fetch wrapper with CSRF token
+     */
+    function fetchWithCsrf(url, options) {
+        options = options || {};
+        var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')
+            ? document.querySelector('[name=csrfmiddlewaretoken]').value
+            : (document.cookie.split(';').find(function(c) { return c.trim().startsWith('csrftoken='); }) || '').split('=')[1] || '';
+
+        options.headers = Object.assign({
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+            'X-Requested-With': 'XMLHttpRequest'
+        }, options.headers || {});
+
+        return fetch(url, options);
+    }
+
+    /**
+     * Menu list manager — handles publish toggle, set-default, copy link
+     */
+    Alpine.data('menuListManager', function() {
+        return {
+            copyToClipboard: function(text) {
+                var fullUrl = window.location.origin + text;
+                navigator.clipboard.writeText(fullUrl).then(function() {
+                    // Visual feedback could be added here
+                });
+            },
+
+            togglePublish: function(menuId, currentlyPublished) {
+                var newState = !currentlyPublished;
+                fetchWithCsrf('/account/menus/' + menuId + '/toggle-publish/', {
+                    method: 'POST',
+                    body: JSON.stringify({ is_published: newState })
+                })
+                .then(function(resp) {
+                    if (!resp.ok) throw new Error('Request failed');
+                    return resp.json();
+                })
+                .then(function(data) {
+                    // Update badge
+                    var badge = document.getElementById('badge-publish-' + menuId);
+                    if (badge) {
+                        if (newState) {
+                            badge.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
+                            badge.textContent = '{% filter escapejs %}{% trans "Yayinda" %}{% endfilter %}';
+                        } else {
+                            badge.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300';
+                            badge.textContent = '{% filter escapejs %}{% trans "Taslak" %}{% endfilter %}';
+                        }
+                    }
+                    // Update button icon and text
+                    var icon = document.getElementById('icon-publish-' + menuId);
+                    var text = document.getElementById('text-publish-' + menuId);
+                    if (icon) {
+                        icon.className = newState ? 'ph ph-eye-slash text-sm' : 'ph ph-eye text-sm';
+                    }
+                    if (text) {
+                        text.textContent = newState
+                            ? '{% filter escapejs %}{% trans "Kaldir" %}{% endfilter %}'
+                            : '{% filter escapejs %}{% trans "Yayinla" %}{% endfilter %}';
+                    }
+                    // Reload to get clean state for subsequent toggles
+                    window.location.reload();
+                })
+                .catch(function(err) {
+                    console.error('Publish toggle error:', err);
+                    alert('{% filter escapejs %}{% trans "Islem basarisiz oldu. Lutfen tekrar deneyin." %}{% endfilter %}');
+                });
+            },
+
+            setDefault: function(menuId) {
+                fetchWithCsrf('/account/menus/' + menuId + '/set-default/', {
+                    method: 'POST'
+                })
+                .then(function(resp) {
+                    if (!resp.ok) throw new Error('Request failed');
+                    return resp.json();
+                })
+                .then(function() {
+                    // Reload to reflect all badge changes across cards
+                    window.location.reload();
+                })
+                .catch(function(err) {
+                    console.error('Set default error:', err);
+                    alert('{% filter escapejs %}{% trans "Islem basarisiz oldu. Lutfen tekrar deneyin." %}{% endfilter %}');
+                });
+            },
+
+            confirmDelete: function(menuId, menuName) {
+                window.dispatchEvent(new CustomEvent('open-delete-dialog', {
+                    detail: { menuId: menuId, menuName: menuName }
+                }));
+            }
+        };
+    });
+
+    /**
+     * Delete confirmation dialog
+     */
+    Alpine.data('deleteDialog', function() {
+        return {
+            open: false,
+            menuId: null,
+            menuName: '',
+
+            init: function() {
+                var self = this;
+                window.addEventListener('open-delete-dialog', function(e) {
+                    self.menuId = e.detail.menuId;
+                    self.menuName = e.detail.menuName;
+                    self.open = true;
+                });
+            },
+
+            executeDelete: function() {
+                var self = this;
+                var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')
+                    ? document.querySelector('[name=csrfmiddlewaretoken]').value
+                    : (document.cookie.split(';').find(function(c) { return c.trim().startsWith('csrftoken='); }) || '').split('=')[1] || '';
+
+                fetch('/account/menus/' + self.menuId + '/delete/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(function(resp) {
+                    if (!resp.ok) throw new Error('Delete failed');
+                    var card = document.getElementById('menu-card-' + self.menuId);
+                    if (card) {
+                        card.style.transition = 'opacity 300ms ease, transform 300ms ease';
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.95)';
+                        setTimeout(function() { card.remove(); }, 300);
+                    }
+                    self.open = false;
+                })
+                .catch(function(err) {
+                    console.error('Delete error:', err);
+                    alert('{% filter escapejs %}{% trans "Silme islemi basarisiz oldu." %}{% endfilter %}');
+                    self.open = false;
+                });
+            }
+        };
+    });
+});
+</script>
+
+{# Hidden CSRF token for AJAX requests #}
+{% csrf_token %}
+{% endblock %}

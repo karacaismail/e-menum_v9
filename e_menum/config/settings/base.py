@@ -232,7 +232,6 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'shared.context_processors.admin_sidebar_permissions',
                 'apps.website.context_processors.marketing_context',
-                'apps.website.context_processors.deploy_test_context',
                 'apps.seo.context_processors.seo_context',
             ],
         },

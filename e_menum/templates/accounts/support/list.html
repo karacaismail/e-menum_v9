@@ -1,0 +1,158 @@
+{% extends "layouts/panel.html" %}
+{% load static i18n %}
+
+{# =========================================================================
+   Support Ticket List Page
+
+   Displays the restaurant owner's support tickets with status filter tabs,
+   priority badges, and category labels.
+   ========================================================================= #}
+
+{% block page_title %}{% trans "Destek Talepleri" %}{% endblock %}
+
+{% block panel_title %}{% trans "Destek Talepleri" %}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="flex items-center">
+    <i class="ph ph-caret-right text-xs mx-1.5"></i>
+    <span class="text-gray-500 dark:text-gray-400 text-sm">{% trans "Destek Talepleri" %}</span>
+</li>
+{% endblock %}
+
+{% block panel_content %}
+<div>
+    {# ── Header with New Ticket Button ── #}
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+            {% trans "Destek taleplerinizi buradan takip edebilirsiniz." %}
+        </p>
+        <a
+            href="{% url 'accounts:support-create' %}"
+            class="inline-flex items-center px-4 py-2.5 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors"
+        >
+            <i class="ph ph-plus mr-2"></i>
+            {% trans "Yeni Talep" %}
+        </a>
+    </div>
+
+    {# ── Status Filter Tabs ── #}
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mb-6">
+        <div class="flex flex-wrap gap-1 p-2">
+            <a
+                href="{% url 'accounts:support-list' %}"
+                class="px-4 py-2 text-sm font-medium rounded-lg transition-colors {% if not current_status %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %}"
+            >
+                {% trans "Tumunu Goster" %}
+            </a>
+            <a
+                href="{% url 'accounts:support-list' %}?status=OPEN"
+                class="px-4 py-2 text-sm font-medium rounded-lg transition-colors {% if current_status == 'OPEN' %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %}"
+            >
+                {% trans "Acik" %}
+            </a>
+            <a
+                href="{% url 'accounts:support-list' %}?status=IN_PROGRESS"
+                class="px-4 py-2 text-sm font-medium rounded-lg transition-colors {% if current_status == 'IN_PROGRESS' %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %}"
+            >
+                {% trans "Isleniyor" %}
+            </a>
+            <a
+                href="{% url 'accounts:support-list' %}?status=RESOLVED"
+                class="px-4 py-2 text-sm font-medium rounded-lg transition-colors {% if current_status == 'RESOLVED' %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %}"
+            >
+                {% trans "Cozuldu" %}
+            </a>
+        </div>
+    </div>
+
+    {# ── Ticket List ── #}
+    {% if tickets %}
+    <div class="space-y-4">
+        {% for ticket in tickets %}
+        <a
+            href="{% url 'accounts:support-detail' ticket_id=ticket.id %}"
+            class="block bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-5 hover:border-primary-300 dark:hover:border-primary-600 transition-colors"
+        >
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                {# Ticket Subject & Info #}
+                <div class="flex-1 min-w-0">
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-white truncate">
+                        {{ ticket.subject }}
+                    </h3>
+                    <div class="flex flex-wrap items-center gap-2 mt-2">
+                        {# Status Badge #}
+                        {% if ticket.status == 'OPEN' %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                            <i class="ph ph-circle text-[8px] mr-1"></i>{% trans "Acik" %}
+                        </span>
+                        {% elif ticket.status == 'IN_PROGRESS' %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
+                            <i class="ph ph-spinner text-[8px] mr-1"></i>{% trans "Isleniyor" %}
+                        </span>
+                        {% elif ticket.status == 'RESOLVED' %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                            <i class="ph ph-check-circle text-[8px] mr-1"></i>{% trans "Cozuldu" %}
+                        </span>
+                        {% elif ticket.status == 'CLOSED' %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                            <i class="ph ph-x-circle text-[8px] mr-1"></i>{% trans "Kapatildi" %}
+                        </span>
+                        {% endif %}
+
+                        {# Priority Badge #}
+                        {% if ticket.priority == 'LOW' %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">
+                            {% trans "Dusuk" %}
+                        </span>
+                        {% elif ticket.priority == 'MEDIUM' %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
+                            {% trans "Orta" %}
+                        </span>
+                        {% elif ticket.priority == 'HIGH' %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300">
+                            {% trans "Yuksek" %}
+                        </span>
+                        {% elif ticket.priority == 'URGENT' %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300">
+                            {% trans "Acil" %}
+                        </span>
+                        {% endif %}
+
+                        {# Category #}
+                        <span class="text-xs text-gray-500 dark:text-gray-400">
+                            {{ ticket.get_category_display }}
+                        </span>
+                    </div>
+                </div>
+
+                {# Date #}
+                <div class="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                    {{ ticket.created_at|date:"d.m.Y H:i" }}
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    {# ── Empty State ── #}
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-12 text-center">
+        <div class="mx-auto w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-4">
+            <i class="ph ph-headset text-3xl text-gray-400 dark:text-gray-500"></i>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            {% trans "Henuz destek talebiniz yok" %}
+        </h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+            {% trans "Bir sorunuz veya sorununuz mu var? Yeni bir destek talebi olusturun." %}
+        </p>
+        <a
+            href="{% url 'accounts:support-create' %}"
+            class="inline-flex items-center px-4 py-2.5 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors"
+        >
+            <i class="ph ph-plus mr-2"></i>
+            {% trans "Yeni Talep Olustur" %}
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

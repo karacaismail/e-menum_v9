@@ -2,7 +2,7 @@
 
 ## deploy.sh – CI/CD Deploy 
 
-GitHub’a commit atıldığında sunucuda güncel kodu çekip migration, build ve restart işlemlerini yapan script.
+GitHub'a commit atıldığında sunucuda güncel kodu çekip migration, build ve restart işlemlerini yapan script.
 
 ### Sunucuda kullanım
 
@@ -11,7 +11,7 @@ GitHub’a commit atıldığında sunucuda güncel kodu çekip migration, build 
 ./scripts/deploy.sh
 ```
 
-- **Docker (varsayilan: build yok, sadece up + migrate):** Kod host'tan mount; deploy: git pull, host'ta Tailwind, up -d, migrate, collectstatic, restart. Image her seferinde derlenmez. Migrate ve collectstatic container entrypoint’te zaten çalışır.
+- **Docker (varsayilan: build yok, sadece up + migrate):** Kod host'tan mount; deploy: git pull, host'ta Tailwind, up -d, migrate, collectstatic, restart. Image her seferinde derlenmez. Migrate ve collectstatic container entrypoint'te zaten çalışır.
 - **Bare metal (Gunicorn):** venv, `pip install`, `migrate`, Tailwind `css:build`, `collectstatic`, ardından Gunicorn restart (systemctl veya HUP).
 
 ### Ortam değişkenleri
@@ -27,7 +27,7 @@ GitHub’a commit atıldığında sunucuda güncel kodu çekip migration, build 
 | `DEPLOY_GRACEFUL`| `0` ise tam container restart (varsayilan: 1 = HUP/pool_restart) |
 | `DEPLOY_LOG`     | Log dosyasi (varsayilan: `/var/log/deploy.log`) |
 | `DEPLOY_DEBUG` | `1` ise test modu: tum adimlar + deploy_test.json + health check (footer badge) |
-| `VENV_PATH`    | Bare metal’de venv yolu (varsayılan: repo kökünde `.venv`) |
+| `VENV_PATH`    | Bare metal'de venv yolu (varsayılan: repo kökünde `.venv`) |
 
 **Lock:** Script `flock` ile aynı anda yalnızca bir deploy calisir. Dakikada bir tetikleseniz bile, onceki deploy bitene kadar yeni cagri kilit alinamadigi icin sessizce cikar (exit 0).
 
@@ -55,9 +55,9 @@ DEPLOY_DEBUG=1 ./scripts/deploy.sh
 
 ### GitHub ile otomatik tetikleme
 
-1. **GitHub Actions:** `.github/workflows/deploy.yml` push (main) sonrası isteğe bağlı webhook çağırır.
-2. **Secret:** Repo → Settings → Secrets and variables → Actions → `DEPLOY_WEBHOOK_URL` (webhook.sh veya kendi webhook URL’iniz).
-3. **Sunucuda:** Webhook geldiğinde `./scripts/deploy.sh` çalıştırılacak şekilde ayarlayın (webhook.sh “Deploy” webhook’u veya küçük bir webhook sunucusu).
+1. **Sunucuda:** `./scripts/webhook.sh` ile kurulum (detay: asagidaki webhook.sh bolumu).
+2. **GitHub Actions:** `.github/workflows/deploy.yml` push (main) sonrasi webhook URL'ine POST atar.
+3. **Secret:** Repo → Settings → Secrets and variables → Actions → `DEPLOY_WEBHOOK_URL` = script ciktisindaki tam URL.
 
 Webhook kullanmıyorsanız: sunucuda elle `git pull && ./scripts/deploy.sh` veya SSH ile tek komut çalıştırabilirsiniz.
 
@@ -72,7 +72,7 @@ GitHub push sonrasi deploy tetikleyen webhook servisini kurar (adnanh/webhook).
 ### Kurulum
 
 ```bash
-cd /opt/emenum-src
+cd /opt/emenum-src   # veya repo kokunuz
 
 # Ilk kurulum: secret verilmezse rasgele uretilir, ciktisini kaydedin
 ./scripts/webhook.sh

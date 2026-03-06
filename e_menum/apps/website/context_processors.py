@@ -264,25 +264,3 @@ def _default_context():
         'login_url': '/admin/',
         'year': datetime.now().year,
     }
-
-
-def deploy_test_context(request):
-    """
-    Deploy bilgisi: deploy_info.json (her basarili deploy sonrasi yazilir).
-    Footer'da build ✓ - at - commit · #build formatinda gosterilir.
-    """
-    import json
-    from django.conf import settings
-
-    path = getattr(settings, 'BASE_DIR', None)
-    if not path:
-        return {}
-    path = path / 'deploy_info.json'
-    try:
-        if path.exists():
-            with open(path, 'r') as f:
-                data = json.load(f)
-            return {'deploy_info': data}
-    except (json.JSONDecodeError, OSError):
-        pass
-    return {}

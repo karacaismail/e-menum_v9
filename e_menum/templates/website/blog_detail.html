@@ -1,8 +1,13 @@
 {% extends "layouts/marketing.html" %}
-{% load static i18n %}
+{% load static i18n seo_tags %}
 
 {% block page_title %}{{ post.title }}{% endblock %}
 {% block meta_description %}{{ post.meta_description|default:post.excerpt }}{% endblock %}
+
+{% block extra_head %}
+{{ block.super }}
+{% seo_jsonld "article" %}
+{% endblock %}
 
 {% block content %}
 
@@ -28,7 +33,7 @@
             </p>
             {% endif %}
 
-            <div class="flex items-center justify-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+            <div class="flex items-center justify-center gap-4 text-sm text-gray-600 dark:text-gray-300">
                 {% if post.author_name %}
                 <span class="flex items-center gap-1">
                     <i class="ph ph-user"></i> {{ post.author_name }}
@@ -50,7 +55,7 @@
         {# Back to Blog #}
         <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 text-center">
             <a href="{% url 'website:blog' %}" class="inline-flex items-center gap-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
-                <i class="ph ph-arrow-left"></i> {% trans "Tum Yazilar" %}
+                <i class="ph ph-arrow-left"></i> {% trans "Tüm Yazılar" %}
             </a>
         </div>
     </div>

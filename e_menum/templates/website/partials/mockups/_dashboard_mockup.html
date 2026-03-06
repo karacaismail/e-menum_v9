@@ -1,0 +1,193 @@
+{% load i18n %}
+{% comment %}============================================================================
+   DASHBOARD MOCKUP — Miniature CSS representation of the owner dashboard
+
+   Usage:
+   {% include "website/partials/mockups/_dashboard_mockup.html" %}
+
+   Displays inside a laptop device frame with:
+   - KPI cards (QR scans, orders, revenue)
+   - Line chart + bar chart
+   - Recent orders mini table
+   ============================================================================{% endcomment %}
+
+<div class="rounded-xl overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800">
+
+    {# ── Laptop Top Bar ──────────────────────────────────────────────────── #}
+    <div class="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700">
+        <div class="flex gap-1.5">
+            <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>
+        </div>
+        <div class="flex-1 mx-4">
+            <div class="bg-white dark:bg-gray-600 rounded-md px-3 py-1 text-[10px] text-gray-500 dark:text-gray-300 font-mono truncate">
+                e-menum.com/account/dashboard/
+            </div>
+        </div>
+    </div>
+
+    {# ── Dashboard Content ───────────────────────────────────────────────── #}
+    <div class="flex bg-white dark:bg-gray-900">
+
+        {# ── Mini Sidebar ────────────────────────────────────────────────── #}
+        <div class="w-12 bg-gray-900 dark:bg-gray-950 py-3 flex flex-col items-center gap-3 flex-shrink-0">
+            <div class="w-6 h-6 rounded-lg bg-primary-500/30 flex items-center justify-center">
+                <div class="w-3 h-3 rounded bg-primary-400"></div>
+            </div>
+            <div class="w-5 h-5 rounded bg-primary-600"></div>
+            <div class="w-5 h-5 rounded bg-gray-700"></div>
+            <div class="w-5 h-5 rounded bg-gray-700"></div>
+            <div class="w-5 h-5 rounded bg-gray-700"></div>
+            <div class="w-5 h-5 rounded bg-gray-700"></div>
+            <div class="mt-auto w-5 h-5 rounded bg-gray-700"></div>
+        </div>
+
+        {# ── Main Content ────────────────────────────────────────────────── #}
+        <div class="flex-1 p-3 space-y-3 min-w-0">
+
+            {# Page Header #}
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="text-[9px] font-bold text-gray-900 dark:text-white">{% trans "Dashboard" %}</div>
+                    <div class="text-[7px] text-gray-500 dark:text-gray-400">{% trans "Son 30 gun" %}</div>
+                </div>
+                <div class="flex gap-1">
+                    <div class="px-2 py-0.5 bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded text-[7px] font-medium">{% trans "Bugun" %}</div>
+                    <div class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded text-[7px]">{% trans "Hafta" %}</div>
+                    <div class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded text-[7px]">{% trans "Ay" %}</div>
+                </div>
+            </div>
+
+            {# KPI Cards Row #}
+            <div class="grid grid-cols-4 gap-2">
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-2">
+                    <div class="text-[7px] text-gray-500 dark:text-gray-400 mb-0.5">{% trans "QR Tarama" %}</div>
+                    <div class="text-sm font-bold text-gray-900 dark:text-white">1,247</div>
+                    <div class="text-[7px] text-green-600 dark:text-green-400 font-medium mt-0.5">
+                        <span class="inline-block w-0 h-0 border-l-[3px] border-l-transparent border-r-[3px] border-r-transparent border-b-[4px] border-b-green-500 mr-0.5"></span>
+                        12.4%
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-2">
+                    <div class="text-[7px] text-gray-500 dark:text-gray-400 mb-0.5">{% trans "Siparis" %}</div>
+                    <div class="text-sm font-bold text-gray-900 dark:text-white">89</div>
+                    <div class="text-[7px] text-green-600 dark:text-green-400 font-medium mt-0.5">
+                        <span class="inline-block w-0 h-0 border-l-[3px] border-l-transparent border-r-[3px] border-r-transparent border-b-[4px] border-b-green-500 mr-0.5"></span>
+                        8.2%
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-2">
+                    <div class="text-[7px] text-gray-500 dark:text-gray-400 mb-0.5">{% trans "Gelir" %}</div>
+                    <div class="text-sm font-bold text-primary-600 dark:text-primary-400">&#8378;24.5K</div>
+                    <div class="text-[7px] text-green-600 dark:text-green-400 font-medium mt-0.5">
+                        <span class="inline-block w-0 h-0 border-l-[3px] border-l-transparent border-r-[3px] border-r-transparent border-b-[4px] border-b-green-500 mr-0.5"></span>
+                        15.1%
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-2">
+                    <div class="text-[7px] text-gray-500 dark:text-gray-400 mb-0.5">{% trans "Musteri" %}</div>
+                    <div class="text-sm font-bold text-gray-900 dark:text-white">342</div>
+                    <div class="text-[7px] text-green-600 dark:text-green-400 font-medium mt-0.5">
+                        <span class="inline-block w-0 h-0 border-l-[3px] border-l-transparent border-r-[3px] border-r-transparent border-b-[4px] border-b-green-500 mr-0.5"></span>
+                        5.7%
+                    </div>
+                </div>
+            </div>
+
+            {# Charts Row #}
+            <div class="grid grid-cols-2 gap-2">
+                {# Line Chart Mockup #}
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-2">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <div class="text-[8px] font-semibold text-gray-700 dark:text-gray-300">{% trans "QR Tarama Trendi" %}</div>
+                        <div class="flex gap-2">
+                            <div class="flex items-center gap-0.5">
+                                <div class="w-1.5 h-1.5 rounded-full bg-primary-500"></div>
+                                <span class="text-[6px] text-gray-500 dark:text-gray-400">{% trans "Bu hafta" %}</span>
+                            </div>
+                            <div class="flex items-center gap-0.5">
+                                <div class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+                                <span class="text-[6px] text-gray-500 dark:text-gray-400">{% trans "Gecen hafta" %}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <svg viewBox="0 0 120 40" class="w-full h-12" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="dashGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="rgb(var(--color-primary-500, 99 102 241))" stop-opacity="0.2"/>
+                                <stop offset="100%" stop-color="rgb(var(--color-primary-500, 99 102 241))" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                        <polyline points="0,35 15,28 30,32 45,20 60,24 75,15 90,18 105,8 120,12"
+                                  fill="none" stroke-width="1.5"
+                                  class="stroke-primary-500"/>
+                        <polygon points="0,35 15,28 30,32 45,20 60,24 75,15 90,18 105,8 120,12 120,40 0,40"
+                                 class="fill-primary-500/10"/>
+                        <polyline points="0,32 15,35 30,28 45,30 60,25 75,28 90,22 105,20 120,24"
+                                  fill="none" stroke-width="1" stroke-dasharray="3 2"
+                                  class="stroke-gray-300 dark:stroke-gray-600"/>
+                    </svg>
+                </div>
+
+                {# Bar Chart Mockup #}
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-2">
+                    <div class="text-[8px] font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{% trans "Gunluk Gelir" %}</div>
+                    <div class="flex items-end gap-1 h-12">
+                        <div class="flex-1 rounded-t bg-primary-200 dark:bg-primary-800" style="height:40%"></div>
+                        <div class="flex-1 rounded-t bg-primary-300 dark:bg-primary-700" style="height:60%"></div>
+                        <div class="flex-1 rounded-t bg-primary-400 dark:bg-primary-600" style="height:45%"></div>
+                        <div class="flex-1 rounded-t bg-primary-500" style="height:80%"></div>
+                        <div class="flex-1 rounded-t bg-primary-400 dark:bg-primary-600" style="height:70%"></div>
+                        <div class="flex-1 rounded-t bg-primary-300 dark:bg-primary-700" style="height:55%"></div>
+                        <div class="flex-1 rounded-t bg-primary-600" style="height:90%"></div>
+                    </div>
+                    <div class="flex gap-1 mt-1">
+                        <div class="flex-1 text-[5px] text-gray-400 dark:text-gray-500 text-center">Pzt</div>
+                        <div class="flex-1 text-[5px] text-gray-400 dark:text-gray-500 text-center">Sal</div>
+                        <div class="flex-1 text-[5px] text-gray-400 dark:text-gray-500 text-center">Car</div>
+                        <div class="flex-1 text-[5px] text-gray-400 dark:text-gray-500 text-center">Per</div>
+                        <div class="flex-1 text-[5px] text-gray-400 dark:text-gray-500 text-center">Cum</div>
+                        <div class="flex-1 text-[5px] text-gray-400 dark:text-gray-500 text-center">Cmt</div>
+                        <div class="flex-1 text-[5px] text-gray-400 dark:text-gray-500 text-center">Paz</div>
+                    </div>
+                </div>
+            </div>
+
+            {# Recent Orders Mini Table #}
+            <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-2">
+                <div class="flex items-center justify-between mb-1.5">
+                    <div class="text-[8px] font-semibold text-gray-700 dark:text-gray-300">{% trans "Son Siparisler" %}</div>
+                    <div class="text-[7px] text-primary-600 dark:text-primary-400 font-medium">{% trans "Tumunu Gor" %}</div>
+                </div>
+                <div class="space-y-1">
+                    <div class="flex items-center justify-between text-[7px] py-0.5">
+                        <span class="text-gray-600 dark:text-gray-400 font-mono">#1042</span>
+                        <span class="text-gray-500 dark:text-gray-400">Masa 5</span>
+                        <span class="px-1.5 py-0.5 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 rounded text-[6px] font-medium">{% trans "Tamamlandi" %}</span>
+                        <span class="font-semibold text-gray-900 dark:text-white">&#8378;245</span>
+                    </div>
+                    <div class="flex items-center justify-between text-[7px] py-0.5">
+                        <span class="text-gray-600 dark:text-gray-400 font-mono">#1041</span>
+                        <span class="text-gray-500 dark:text-gray-400">Masa 12</span>
+                        <span class="px-1.5 py-0.5 bg-yellow-100 dark:bg-yellow-900/50 text-yellow-700 dark:text-yellow-400 rounded text-[6px] font-medium">{% trans "Hazirlaniyor" %}</span>
+                        <span class="font-semibold text-gray-900 dark:text-white">&#8378;180</span>
+                    </div>
+                    <div class="flex items-center justify-between text-[7px] py-0.5">
+                        <span class="text-gray-600 dark:text-gray-400 font-mono">#1040</span>
+                        <span class="text-gray-500 dark:text-gray-400">Masa 3</span>
+                        <span class="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 rounded text-[6px] font-medium">{% trans "Onaylandi" %}</span>
+                        <span class="font-semibold text-gray-900 dark:text-white">&#8378;312</span>
+                    </div>
+                    <div class="flex items-center justify-between text-[7px] py-0.5">
+                        <span class="text-gray-600 dark:text-gray-400 font-mono">#1039</span>
+                        <span class="text-gray-500 dark:text-gray-400">Masa 8</span>
+                        <span class="px-1.5 py-0.5 bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-400 rounded text-[6px] font-medium">{% trans "Yeni" %}</span>
+                        <span class="font-semibold text-gray-900 dark:text-white">&#8378;156</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

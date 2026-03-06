@@ -1,0 +1,112 @@
+{% load i18n %}
+{% comment %}============================================================================
+   DEVICE FRAME — Reusable device frame wrapper for CSS mockups
+
+   This template is NOT used directly via include. Instead, each mockup
+   template copies the relevant frame structure (laptop/tablet/mobile).
+
+   Reference structures for each device type:
+
+   LAPTOP FRAME:
+   - Outer: rounded-xl overflow-hidden shadow-2xl border
+   - Top bar: browser dots (red/yellow/green) + address bar
+   - Content: flex with sidebar + main area
+
+   TABLET FRAME:
+   - Outer: rounded-2xl overflow-hidden shadow-2xl border, max-w-xs mx-auto
+   - Top bar: centered camera dot
+   - Content: padded area
+
+   MOBILE FRAME:
+   - Outer: rounded-[2rem] overflow-hidden shadow-2xl border, max-w-[200px] mx-auto
+   - Top bar: centered notch pill
+   - Content: padded area
+   - Bottom: home indicator bar
+
+   Usage in mockup templates:
+   Copy the frame skeleton from here, then fill content area.
+
+   Laptop:
+   {% include "website/partials/mockups/_dashboard_mockup.html" %}
+
+   Tablet:
+   {% include "website/partials/mockups/_analytics_mockup.html" %}
+
+   Mobile:
+   {% include "website/partials/mockups/_mobile_menu_mockup.html" %}
+   ============================================================================{% endcomment %}
+
+{# ── LAPTOP FRAME SKELETON ─────────────────────────────────────────────── #}
+{# Copy this into laptop-based mockups                                      #}
+{#                                                                          #}
+{#  <div class="rounded-xl overflow-hidden shadow-2xl border               #}
+{#              border-gray-200 dark:border-gray-700                        #}
+{#              bg-gray-100 dark:bg-gray-800">                              #}
+{#                                                                          #}
+{#      <!-- Laptop Top Bar -->                                             #}
+{#      <div class="flex items-center gap-2 px-4 py-2                      #}
+{#                  bg-gray-200 dark:bg-gray-700">                          #}
+{#          <div class="flex gap-1.5">                                      #}
+{#              <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>     #}
+{#              <div class="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>  #}
+{#              <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>   #}
+{#          </div>                                                          #}
+{#          <div class="flex-1 mx-4">                                       #}
+{#              <div class="bg-white dark:bg-gray-600 rounded-md            #}
+{#                          px-3 py-1 text-[10px] text-gray-500            #}
+{#                          dark:text-gray-300 font-mono truncate">         #}
+{#                  e-menum.com/account/...                                 #}
+{#              </div>                                                      #}
+{#          </div>                                                          #}
+{#      </div>                                                              #}
+{#                                                                          #}
+{#      <!-- Content Area -->                                               #}
+{#      <div class="flex bg-white dark:bg-gray-900">                        #}
+{#          <!-- Sidebar + Main go here -->                                 #}
+{#      </div>                                                              #}
+{#  </div>                                                                  #}
+{#                                                                          #}
+{# ── TABLET FRAME SKELETON ─────────────────────────────────────────────── #}
+{#                                                                          #}
+{#  <div class="rounded-2xl overflow-hidden shadow-2xl border              #}
+{#              border-gray-200 dark:border-gray-700                        #}
+{#              bg-gray-100 dark:bg-gray-800 max-w-xs mx-auto">            #}
+{#                                                                          #}
+{#      <!-- Tablet Top Bar -->                                             #}
+{#      <div class="flex justify-center py-2                                #}
+{#                  bg-gray-200 dark:bg-gray-700">                          #}
+{#          <div class="w-2 h-2 rounded-full                                #}
+{#                      bg-gray-400 dark:bg-gray-500"></div>                #}
+{#      </div>                                                              #}
+{#                                                                          #}
+{#      <!-- Content Area -->                                               #}
+{#      <div class="bg-white dark:bg-gray-900 p-3">                        #}
+{#          ...                                                             #}
+{#      </div>                                                              #}
+{#  </div>                                                                  #}
+{#                                                                          #}
+{# ── MOBILE FRAME SKELETON ─────────────────────────────────────────────── #}
+{#                                                                          #}
+{#  <div class="rounded-[2rem] overflow-hidden shadow-2xl border           #}
+{#              border-gray-200 dark:border-gray-700                        #}
+{#              bg-gray-100 dark:bg-gray-800 max-w-[200px] mx-auto">       #}
+{#                                                                          #}
+{#      <!-- Phone Top Bar (Notch) -->                                      #}
+{#      <div class="flex justify-center pt-2 pb-1                           #}
+{#                  bg-gray-900 dark:bg-black">                             #}
+{#          <div class="w-16 h-4 rounded-full                               #}
+{#                      bg-black dark:bg-gray-900"></div>                   #}
+{#      </div>                                                              #}
+{#                                                                          #}
+{#      <!-- Content Area -->                                               #}
+{#      <div class="bg-white dark:bg-gray-900">                            #}
+{#          ...                                                             #}
+{#      </div>                                                              #}
+{#                                                                          #}
+{#      <!-- Home Indicator -->                                             #}
+{#      <div class="flex justify-center py-1.5                              #}
+{#                  bg-white dark:bg-gray-900">                             #}
+{#          <div class="w-20 h-1 rounded-full                               #}
+{#                      bg-gray-300 dark:bg-gray-600"></div>                #}
+{#      </div>                                                              #}
+{#  </div>                                                                  #}

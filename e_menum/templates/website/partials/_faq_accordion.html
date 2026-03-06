@@ -14,10 +14,10 @@
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
             <h2 class="heading-sans text-3xl sm:text-4xl text-gray-900 dark:text-white mb-4">
-                {% trans "Sikca Sorulan Sorular" %}
+                {% trans "Sıkça Sorulan Sorular" %}
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-300">
-                {% trans "Merak ettiginiz sorularin cevaplari burada." %}
+                {% trans "Merak ettiğiniz soruların cevapları burada." %}
             </p>
         </div>
 
@@ -30,7 +30,7 @@
                     :aria-expanded="openItem === {{ forloop.counter }}"
                 >
                     <span class="font-semibold text-gray-900 dark:text-white">{{ faq.question }}</span>
-                    <i class="ph ph-caret-down text-gray-400 transition-transform" :class="openItem === {{ forloop.counter }} && 'rotate-180'"></i>
+                    <i class="ph ph-caret-down text-gray-600 dark:text-gray-300 transition-transform" :class="openItem === {{ forloop.counter }} && 'rotate-180'"></i>
                 </button>
                 <div x-show="openItem === {{ forloop.counter }}" x-collapse x-cloak class="px-6 pb-4 text-gray-600 dark:text-gray-300 leading-relaxed">
                     {{ faq.answer }}

@@ -1,8 +1,8 @@
 {% extends "layouts/marketing.html" %}
 {% load static i18n %}
 
-{% block page_title %}{% if hero %}{{ hero.title }}{% else %}{% trans "Hakkimizda" %}{% endif %}{% endblock %}
-{% block meta_description %}{% trans "E-Menum - Turkiye'nin yapay zeka destekli dijital menu platformu. Misyonumuz, ekibimiz ve degerlerimiz." %}{% endblock %}
+{% block page_title %}{% if hero %}{{ hero.title }}{% else %}{% trans "Hakkımızda" %}{% endif %}{% endblock %}
+{% block meta_description %}{% trans "E-Menum - Türkiye'nin yapay zeka destekli dijital menü platformu. Misyonumuz, ekibimiz ve değerlerimiz." %}{% endblock %}
 
 {% block content %}
 
@@ -11,18 +11,26 @@
 
 {# Story Section #}
 <section class="py-16 lg:py-24 bg-white dark:bg-gray-950">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16" data-reveal>
-            <h2 class="heading-sans text-3xl text-gray-900 dark:text-white mb-6">
-                {% trans "Hikayemiz" %}
-            </h2>
-            <div class="prose prose-lg dark:prose-invert mx-auto text-gray-600 dark:text-gray-300 leading-relaxed space-y-4">
-                <p>
-                    {% trans "E-Menum, restoran ve kafe sahiplerinin dijital menulere gecis surecinde yasadiklari zorluklar gozetilerek kurulmustur. Basili menulerin pahali, guncellenmesi zor ve hijyenik olarak riskli oldugunu gorduk." %}
-                </p>
-                <p>
-                    {% trans "Yapay zeka teknolojisini gastronomi sektoruyle birlestirerek, isletmelerin sadece dijital menu degil, veri odakli kararlar alabilecekleri bir platform gelistirdik." %}
-                </p>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 items-center" data-reveal>
+            <div>
+                <h2 class="heading-sans text-3xl text-gray-900 dark:text-white mb-6">
+                    {% trans "Hikayemiz" %}
+                </h2>
+                <div class="prose prose-lg dark:prose-invert text-gray-700 dark:text-gray-300 leading-relaxed space-y-4">
+                    <p>
+                        {% trans "E-Menum, restoran ve kafe sahiplerinin dijital menülere geçiş sürecinde yaşadıkları zorluklar gözetilerek kurulmuştur. Basılı menülerin pahalı, güncellenmesi zor ve hijyenik olarak riskli olduğunu gördük." %}
+                    </p>
+                    <p>
+                        {% trans "Yapay zeka teknolojisini gastronomi sektörüyle birleştirerek, işletmelerin sadece dijital menü değil, veri odaklı kararlar alabilecekleri bir platform geliştirdik." %}
+                    </p>
+                </div>
+            </div>
+            <div class="rounded-2xl overflow-hidden aspect-video">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=640&h=360&fit=crop&auto=format"
+                     alt="{% trans 'E-Menum ekibi birlikte çalışırken' %}"
+                     class="w-full h-full object-cover"
+                     loading="lazy">
             </div>
         </div>
     </div>
@@ -53,18 +61,19 @@
                 {% trans "Ekibimiz" %}
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-300">
-                {% trans "Gastronomi ve teknoloji tutkunlari." %}
+                {% trans "Gastronomi ve teknoloji tutkunları." %}
             </p>
         </div>
 
         <div class="grid sm:grid-cols-2 lg:grid-cols-{{ team_members|length|default:'5' }} gap-8">
             {% for member in team_members %}
             <div class="text-center" data-reveal>
-                <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-{{ member.avatar_color|default:'primary' }}-100 dark:bg-{{ member.avatar_color|default:'primary' }}-900/50 flex items-center justify-center">
-                    <span class="text-2xl font-bold text-{{ member.avatar_color|default:'primary' }}-600 dark:text-{{ member.avatar_color|default:'primary' }}-400">{{ member.initials }}</span>
-                </div>
+                <img src="https://i.pravatar.cc/96?img={{ forloop.counter|add:30 }}"
+                     alt="{{ member.name }}"
+                     class="w-24 h-24 mx-auto mb-4 rounded-full object-cover"
+                     loading="lazy">
                 <h3 class="font-semibold text-gray-900 dark:text-white">{{ member.name }}</h3>
-                <p class="text-sm text-gray-500 dark:text-gray-300">{{ member.title }}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-300">{{ member.title }}</p>
             </div>
             {% endfor %}
         </div>
@@ -78,7 +87,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12" data-reveal>
             <h2 class="heading-sans text-3xl text-gray-900 dark:text-white mb-4">
-                {% trans "Degerlerimiz" %}
+                {% trans "Değerlerimiz" %}
             </h2>
         </div>
 
@@ -92,6 +101,6 @@
 {% endif %}
 
 {# CTA #}
-{% include "website/partials/_cta_banner.html" with title="Ekibimizle Tanisin" subtitle="Demo talep edin, platformumuzu birlikte kesfedelim. 14 gun ucretsiz." button_text="14 Gun Ucretsiz Basla" button_url="website:demo" secondary_text="Canli Demo Izle" secondary_url="website:demo" %}
+{% include "website/partials/_cta_banner.html" with title="Ekibimizle Tanışın" subtitle="Demo talep edin, platformumuzu birlikte keşfedelim. 14 gün ücretsiz." button_text="14 Gün Ücretsiz Başla" button_url="website:demo" secondary_text="Canlı Demo İzle" secondary_url="website:demo" %}
 
 {% endblock %}

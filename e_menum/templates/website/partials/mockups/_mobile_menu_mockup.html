@@ -1,0 +1,158 @@
+{% load i18n %}
+{% comment %}============================================================================
+   MOBILE MENU MOCKUP — Customer-facing QR menu inside a phone frame
+
+   Usage:
+   {% include "website/partials/mockups/_mobile_menu_mockup.html" %}
+
+   Displays inside a mobile phone device frame with:
+   - Restaurant logo/name header
+   - Category tabs (horizontal scroll)
+   - Product cards with images, prices, add-to-cart buttons
+   ============================================================================{% endcomment %}
+
+<div class="rounded-[2rem] overflow-hidden shadow-2xl border-4 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 max-w-[220px] mx-auto">
+
+    {# ── Phone Top Bar (Status bar + Notch) ──────────────────────────────── #}
+    <div class="bg-white dark:bg-gray-900 px-4 pt-2 pb-1">
+        <div class="flex items-center justify-between mb-1">
+            <div class="text-[7px] font-semibold text-gray-900 dark:text-white">9:41</div>
+            <div class="w-16 h-5 rounded-full bg-gray-900 dark:bg-black mx-auto"></div>
+            <div class="flex items-center gap-1">
+                <div class="flex gap-0.5">
+                    <div class="w-0.5 h-1.5 rounded-full bg-gray-900 dark:bg-white"></div>
+                    <div class="w-0.5 h-2 rounded-full bg-gray-900 dark:bg-white"></div>
+                    <div class="w-0.5 h-2.5 rounded-full bg-gray-900 dark:bg-white"></div>
+                    <div class="w-0.5 h-3 rounded-full bg-gray-400 dark:bg-gray-500"></div>
+                </div>
+                <div class="w-4 h-2 rounded-sm border border-gray-900 dark:border-white relative">
+                    <div class="absolute inset-0.5 bg-gray-900 dark:bg-white rounded-sm" style="width:60%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ── Menu Content ────────────────────────────────────────────────────── #}
+    <div class="bg-white dark:bg-gray-900">
+
+        {# Restaurant Header #}
+        <div class="px-3 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 dark:from-primary-700 dark:to-primary-800">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                    <div class="w-4 h-4 rounded-full bg-white/60"></div>
+                </div>
+                <div>
+                    <div class="text-[9px] font-bold text-white">Lezzet Duragi</div>
+                    <div class="text-[7px] text-white/70">{% trans "Turk Mutfagi" %} &middot; {% trans "Kebap" %}</div>
+                </div>
+            </div>
+            {# Search bar #}
+            <div class="mt-2 bg-white/10 rounded-lg px-2 py-1 flex items-center gap-1">
+                <div class="w-2.5 h-2.5 rounded-full border border-white/40"></div>
+                <span class="text-[7px] text-white/50">{% trans "Menu'de ara..." %}</span>
+            </div>
+        </div>
+
+        {# Category Tabs #}
+        <div class="flex gap-1 px-3 py-2 overflow-hidden border-b border-gray-100 dark:border-gray-800">
+            <div class="px-2 py-0.5 bg-primary-600 text-white rounded-full text-[7px] font-medium whitespace-nowrap flex-shrink-0">{% trans "Baslangiclar" %}</div>
+            <div class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full text-[7px] whitespace-nowrap flex-shrink-0">{% trans "Ana Yemekler" %}</div>
+            <div class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full text-[7px] whitespace-nowrap flex-shrink-0">{% trans "Icecekler" %}</div>
+            <div class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 rounded-full text-[7px] whitespace-nowrap flex-shrink-0">{% trans "Tatli" %}</div>
+        </div>
+
+        {# Product Cards #}
+        <div class="px-3 py-2 space-y-2">
+
+            {# Product Card 1 — With Image #}
+            <div class="flex gap-2 bg-gray-50 dark:bg-gray-800 rounded-lg p-2 border border-gray-100 dark:border-gray-700">
+                <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-amber-200 to-amber-400 dark:from-amber-700 dark:to-amber-900 flex-shrink-0 flex items-center justify-center">
+                    <div class="w-8 h-6 rounded bg-amber-600/30 dark:bg-amber-400/30"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-[8px] font-bold text-gray-900 dark:text-white">{% trans "Mercimek Corbasi" %}</div>
+                    <div class="text-[6px] text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">{% trans "Geleneksel Turk mercimek corbasi, taze limon ile servis edilir" %}</div>
+                    <div class="flex items-center justify-between mt-1.5">
+                        <div class="text-[9px] font-bold text-primary-600 dark:text-primary-400">&#8378;45</div>
+                        <div class="w-5 h-5 rounded-full bg-primary-600 flex items-center justify-center">
+                            <span class="text-white text-[8px] font-bold leading-none">+</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Product Card 2 — With Image #}
+            <div class="flex gap-2 bg-gray-50 dark:bg-gray-800 rounded-lg p-2 border border-gray-100 dark:border-gray-700">
+                <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-green-200 to-green-400 dark:from-green-700 dark:to-green-900 flex-shrink-0 flex items-center justify-center">
+                    <div class="w-8 h-6 rounded bg-green-600/30 dark:bg-green-400/30"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-[8px] font-bold text-gray-900 dark:text-white">{% trans "Humus" %}</div>
+                    <div class="text-[6px] text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">{% trans "Nohut ezmesi, tahin, zeytinyagi ve baharat ile" %}</div>
+                    <div class="flex items-center justify-between mt-1.5">
+                        <div class="text-[9px] font-bold text-primary-600 dark:text-primary-400">&#8378;55</div>
+                        <div class="w-5 h-5 rounded-full bg-primary-600 flex items-center justify-center">
+                            <span class="text-white text-[8px] font-bold leading-none">+</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Product Card 3 — Popular badge #}
+            <div class="flex gap-2 bg-gray-50 dark:bg-gray-800 rounded-lg p-2 border border-primary-200 dark:border-primary-800 relative">
+                <div class="absolute -top-1 left-2 px-1.5 py-0.5 bg-primary-600 text-white rounded text-[5px] font-bold">{% trans "Populer" %}</div>
+                <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-red-200 to-red-400 dark:from-red-700 dark:to-red-900 flex-shrink-0 flex items-center justify-center">
+                    <div class="w-8 h-6 rounded bg-red-600/30 dark:bg-red-400/30"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-[8px] font-bold text-gray-900 dark:text-white">{% trans "Sigara Boregi" %}</div>
+                    <div class="text-[6px] text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">{% trans "Beyaz peynirli, el acmasi ince borek, 6 adet" %}</div>
+                    <div class="flex items-center justify-between mt-1.5">
+                        <div class="text-[9px] font-bold text-primary-600 dark:text-primary-400">&#8378;65</div>
+                        <div class="w-5 h-5 rounded-full bg-primary-600 flex items-center justify-center">
+                            <span class="text-white text-[8px] font-bold leading-none">+</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Product Card 4 — Simple #}
+            <div class="flex gap-2 bg-gray-50 dark:bg-gray-800 rounded-lg p-2 border border-gray-100 dark:border-gray-700">
+                <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-orange-200 to-orange-400 dark:from-orange-700 dark:to-orange-900 flex-shrink-0 flex items-center justify-center">
+                    <div class="w-8 h-6 rounded bg-orange-600/30 dark:bg-orange-400/30"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-[8px] font-bold text-gray-900 dark:text-white">{% trans "Patates Kizartmasi" %}</div>
+                    <div class="text-[6px] text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">{% trans "Citir patates, ozel baharat ile" %}</div>
+                    <div class="flex items-center justify-between mt-1.5">
+                        <div class="text-[9px] font-bold text-primary-600 dark:text-primary-400">&#8378;35</div>
+                        <div class="w-5 h-5 rounded-full bg-primary-600 flex items-center justify-center">
+                            <span class="text-white text-[8px] font-bold leading-none">+</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        {# Cart Float Button #}
+        <div class="px-3 pb-2">
+            <div class="bg-primary-600 rounded-xl px-3 py-1.5 flex items-center justify-between">
+                <div class="flex items-center gap-1.5">
+                    <div class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+                        <span class="text-white text-[7px] font-bold">3</span>
+                    </div>
+                    <span class="text-[8px] font-medium text-white">{% trans "Sepeti Gor" %}</span>
+                </div>
+                <span class="text-[9px] font-bold text-white">&#8378;165</span>
+            </div>
+        </div>
+
+    </div>
+
+    {# ── Home Indicator ──────────────────────────────────────────────────── #}
+    <div class="flex justify-center py-1.5 bg-white dark:bg-gray-900">
+        <div class="w-20 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+    </div>
+
+</div>

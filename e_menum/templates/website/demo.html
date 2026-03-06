@@ -1,13 +1,13 @@
 {% extends "layouts/marketing.html" %}
 {% load static i18n %}
 
-{% block page_title %}{% trans "Demo Iste" %}{% endblock %}
-{% block meta_description %}{% trans "E-Menum platformunu canli gorun. Ucretsiz demo talep edin, ekibimiz sizinle iletisime gecsin." %}{% endblock %}
+{% block page_title %}{% trans "Demo İste" %}{% endblock %}
+{% block meta_description %}{% trans "E-Menum platformunu canlı görün. Ücretsiz demo talep edin, ekibimiz sizinle iletişime geçsin." %}{% endblock %}
 
 {% block content %}
 
 {# Hero #}
-{% include "website/partials/_hero.html" with title="Platformumuzu Canli Gorun" subtitle="Isletmeniz icin en uygun cozumu birlikte kesfedelim. Demo suremiz yaklasik 30 dakika." gradient_class="hero-gradient" %}
+{% include "website/partials/_hero.html" with title="Platformumuzu Canlı Görün" subtitle="İşletmeniz için en uygun çözümü birlikte keşfedelim. Demo süremiz yaklaşık 30 dakika." gradient_class="hero-gradient" %}
 
 {# Demo Form + Benefits #}
 <section class="py-16 lg:py-24 bg-white dark:bg-gray-950">
@@ -53,8 +53,8 @@
                         <i class="ph ph-paper-plane-right ml-2"></i>
                     </button>
 
-                    <p class="text-xs text-gray-500 dark:text-gray-300 text-center">
-                        {% trans "Bilgileriniz guvenle saklanir ve ucuncu taraflarla paylasilmaz." %}
+                    <p class="text-xs text-gray-600 dark:text-gray-300 text-center">
+                        {% trans "Bilgileriniz güvenle saklanır ve üçüncü taraflarla paylaşılmaz." %}
                     </p>
                 </form>
             </div>
@@ -62,7 +62,7 @@
             {# Benefits Side #}
             <div class="lg:pl-8">
                 <h2 class="heading-sans text-2xl text-gray-900 dark:text-white mb-8">
-                    {% trans "Demo'da Neler Goreceksiniz?" %}
+                    {% trans "Demo'da Neler Göreceksiniz?" %}
                 </h2>
 
                 <div class="space-y-6">
@@ -71,8 +71,8 @@
                             <i class="ph ph-monitor-play text-2xl text-primary-600 dark:text-primary-400"></i>
                         </div>
                         <div>
-                            <h3 class="font-semibold text-gray-900 dark:text-white mb-1">{% trans "Canli Platform Turu" %}</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-300">{% trans "Admin paneli, menu olusturma ve QR kod surecini canli gorun." %}</p>
+                            <h3 class="font-semibold text-gray-900 dark:text-white mb-1">{% trans "Canlı Platform Turu" %}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">{% trans "Admin paneli, menü oluşturma ve QR kod sürecini canlı görün." %}</p>
                         </div>
                     </div>
 
@@ -81,8 +81,8 @@
                             <i class="ph ph-buildings text-2xl text-green-600 dark:text-green-400"></i>
                         </div>
                         <div>
-                            <h3 class="font-semibold text-gray-900 dark:text-white mb-1">{% trans "Sektorunuze Ozel Cozum" %}</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-300">{% trans "Isletme tipinize ozel ozellikleri ve kullanim senaryolarini inceleyin." %}</p>
+                            <h3 class="font-semibold text-gray-900 dark:text-white mb-1">{% trans "Sektörünüze Özel Çözüm" %}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">{% trans "İşletme tipinize özel özellikleri ve kullanım senaryolarını inceleyin." %}</p>
                         </div>
                     </div>
 
@@ -92,7 +92,7 @@
                         </div>
                         <div>
                             <h3 class="font-semibold text-gray-900 dark:text-white mb-1">{% trans "ROI Hesaplama" %}</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-300">{% trans "E-Menum'un isletmenize saglayacagi tasarrufu ve gelir artisini hesaplayin." %}</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">{% trans "E-Menum'un işletmenize sağlayacağı tasarrufu ve gelir artışını hesaplayın." %}</p>
                         </div>
                     </div>
 
@@ -101,25 +101,30 @@
                             <i class="ph ph-handshake text-2xl text-amber-600 dark:text-amber-400"></i>
                         </div>
                         <div>
-                            <h3 class="font-semibold text-gray-900 dark:text-white mb-1">{% trans "Plan Danismanligi" %}</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-300">{% trans "Sube sayiniza ve ihtiyaclariniza gore en uygun plani birlikte belirleyelim." %}</p>
+                            <h3 class="font-semibold text-gray-900 dark:text-white mb-1">{% trans "Plan Danışmanlığı" %}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">{% trans "Şube sayınıza ve ihtiyaçlarınıza göre en uygun planı birlikte belirleyelim." %}</p>
                         </div>
                     </div>
+                </div>
+
+                {# Platform Preview — Dashboard Mockup #}
+                <div class="mt-8" data-reveal>
+                    {% include "website/partials/mockups/_dashboard_mockup.html" %}
                 </div>
 
                 {# Trust Badges #}
                 <div class="mt-10 p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl">
                     <div class="flex items-center gap-6 text-sm text-gray-600 dark:text-gray-300">
                         <div class="flex items-center gap-2">
-                            <i class="ph ph-shield-check text-green-500 text-xl"></i>
-                            {% trans "SSL Guvenli" %}
+                            <i class="ph ph-shield-check text-green-600 dark:text-green-400 text-xl"></i>
+                            {% trans "SSL Güvenli" %}
                         </div>
                         <div class="flex items-center gap-2">
-                            <i class="ph ph-lock text-green-500 text-xl"></i>
+                            <i class="ph ph-lock text-green-600 dark:text-green-400 text-xl"></i>
                             {% trans "KVKK Uyumlu" %}
                         </div>
                         <div class="flex items-center gap-2">
-                            <i class="ph ph-headset text-green-500 text-xl"></i>
+                            <i class="ph ph-headset text-green-600 dark:text-green-400 text-xl"></i>
                             {% trans "7/24 Destek" %}
                         </div>
                     </div>

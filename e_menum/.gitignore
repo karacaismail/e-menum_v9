@@ -9,9 +9,6 @@
 node_modules/
 package-lock.json
 
-# Deploy bilgisi (her basarili deploy sonrasi olusturulur)
-deploy_info.json
-
 # Python Bytecode and Cache
 # -----------------------------------------------------------------------------
 __pycache__/

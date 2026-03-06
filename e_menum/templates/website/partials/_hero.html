@@ -32,7 +32,7 @@
 
                 {% firstof hero.subtitle subtitle "" as hero_subtitle %}
                 {% if hero_subtitle %}
-                <p class="text-lg sm:text-xl text-gray-300 mb-8 leading-relaxed {% if not show_image %}max-w-2xl mx-auto{% else %}max-w-lg{% endif %}">
+                <p class="text-lg sm:text-xl text-gray-100 mb-8 leading-relaxed {% if not show_image %}max-w-2xl mx-auto{% else %}max-w-lg{% endif %}">
                     {{ hero_subtitle }}
                 </p>
                 {% endif %}
@@ -53,7 +53,7 @@
                     {% endif %}
                     {% if cta2 %}
                     <a href="{{ cta2_url|resolve_nav_url }}"
-                       class="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white border-2 border-white/40 hover:border-white/80 rounded-xl transition-all hover:bg-white/10 bg-white/[0.06]"
+                       class="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white border-2 border-white/60 hover:border-white/80 rounded-xl transition-all hover:bg-white/10 bg-white/[0.06]"
                     >
                         {{ cta2 }}
                     </a>
@@ -61,27 +61,18 @@
                 </div>
                 {% firstof hero.trust_text trust_text marketing.cta_trust_text "" as hero_trust %}
                 {% if hero_trust %}
-                <p class="mt-4 text-sm text-gray-400 {% if not show_image %}text-center{% endif %}">
+                <p class="mt-4 text-sm text-gray-200 {% if not show_image %}text-center{% endif %}">
                     <i class="ph ph-shield-check mr-1 text-emerald-400"></i>{{ hero_trust }}
                 </p>
                 {% endif %}
                 {% endif %}
             </div>
 
-            {# Hero Image (optional) #}
+            {# Hero Image — Platform Mockup #}
             {% if show_image %}
             <div class="hidden lg:block relative" data-reveal>
                 <div class="relative animate-float">
-                    <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 shadow-2xl border border-white/10">
-                        <div class="bg-gray-900 rounded-xl overflow-hidden aspect-[4/3]">
-                            <div class="w-full h-full flex items-center justify-center text-gray-600">
-                                <div class="text-center">
-                                    <i class="ph ph-device-tablet text-6xl mb-2 text-primary-400"></i>
-                                    <p class="text-sm text-gray-400">{% trans "Platform Onizleme" %}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {% include "website/partials/mockups/_dashboard_mockup.html" %}
                     {# Decorative Elements #}
                     <div class="absolute -top-4 -right-4 w-20 h-20 bg-primary-500/20 rounded-full blur-2xl"></div>
                     <div class="absolute -bottom-6 -left-6 w-28 h-28 bg-secondary-500/20 rounded-full blur-2xl"></div>

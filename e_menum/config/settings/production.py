@@ -155,7 +155,7 @@ if EMAIL_BACKEND == 'django.core.mail.backends.smtp.EmailBackend':
     if not os.environ.get('EMAIL_HOST'):
         import logging
         logger = logging.getLogger(__name__)
-        logger.debug('EMAIL_HOST not set. Email sending may fail.')
+        logger.warning('EMAIL_HOST not set. Email sending may fail.')
 
 
 # =============================================================================
@@ -381,8 +381,9 @@ if SENTRY_DSN:
 else:
     import logging
     logger = logging.getLogger(__name__)
-    logger.debug(
-        'SENTRY_DSN not set in production. Error tracking disabled.'
+    logger.warning(
+        'SENTRY_DSN not set in production. Error tracking disabled. '
+        'This is not recommended for production deployments.'
     )
 
 

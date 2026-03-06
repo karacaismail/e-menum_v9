@@ -1,0 +1,293 @@
+{% extends "layouts/panel.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Subscription" %}{% endblock %}
+
+{% block panel_content %}
+<div class="max-w-4xl mx-auto" x-data="{ showCancelModal: false }">
+    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">
+        <i class="ph ph-credit-card"></i> {% trans "Subscription & Plan" %}
+    </h2>
+
+    {# Current Plan #}
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+        <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase mb-4">{% trans "Current Plan" %}</h3>
+
+        {% if plan %}
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ plan.name }}</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">{{ plan.description|default:"" }}</p>
+            </div>
+            <div class="text-right">
+                <p class="text-2xl font-bold text-primary-600 dark:text-primary-400">
+                    {{ plan.price_monthly }} {{ plan.currency|default:"TRY" }}
+                </p>
+                <p class="text-xs text-gray-500">{% trans "/month" %}</p>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-gray-500 dark:text-gray-400">{% trans "No active plan." %}</p>
+        {% endif %}
+
+        {% if subscription %}
+        <div class="grid grid-cols-2 gap-4 text-sm border-t border-gray-200 dark:border-gray-700 pt-4">
+            <div>
+                <span class="text-gray-500 dark:text-gray-400">{% trans "Status" %}</span>
+                <p class="font-medium text-gray-900 dark:text-white">
+                    <span class="px-2 py-0.5 rounded text-xs font-semibold
+                        {% if subscription.status == 'ACTIVE' %}bg-green-100 text-green-800
+                        {% elif subscription.status == 'TRIALING' %}bg-blue-100 text-blue-800
+                        {% elif subscription.status == 'PAST_DUE' %}bg-yellow-100 text-yellow-800
+                        {% elif subscription.status == 'CANCELLED' %}bg-red-100 text-red-800
+                        {% else %}bg-gray-100 text-gray-600{% endif %}">
+                        {{ subscription.get_status_display|default:subscription.status }}
+                    </span>
+                </p>
+            </div>
+            <div>
+                <span class="text-gray-500 dark:text-gray-400">{% trans "Billing Period" %}</span>
+                <p class="font-medium text-gray-900 dark:text-white">{{ subscription.get_billing_period_display|default:subscription.billing_period }}</p>
+            </div>
+            {% if subscription.current_period_end %}
+            <div>
+                <span class="text-gray-500 dark:text-gray-400">{% trans "Next Billing" %}</span>
+                <p class="font-medium text-gray-900 dark:text-white">{{ subscription.current_period_end|date:"d M Y" }}</p>
+            </div>
+            {% endif %}
+            {% if subscription.trial_ends_at %}
+            <div>
+                <span class="text-gray-500 dark:text-gray-400">{% trans "Trial Ends" %}</span>
+                <p class="font-medium text-gray-900 dark:text-white">{{ subscription.trial_ends_at|date:"d M Y" }}</p>
+            </div>
+            {% endif %}
+            {% if subscription.cancelled_at %}
+            <div class="col-span-2">
+                <span class="text-gray-500 dark:text-gray-400">{% trans "Cancellation" %}</span>
+                <p class="font-medium text-red-600 dark:text-red-400">
+                    {% trans "Dönem sonunda iptal edilecek" %} ({{ subscription.cancelled_at|date:"d M Y" }})
+                </p>
+            </div>
+            {% endif %}
+        </div>
+
+        {# Action Buttons #}
+        <div class="flex flex-wrap gap-3 mt-5 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <a
+                href="{% url 'accounts:subscription-eft' %}"
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+            >
+                <i class="ph ph-bank"></i>
+                {% trans "EFT Bilgileri" %}
+            </a>
+            <a
+                href="{% url 'accounts:invoices' %}"
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+            >
+                <i class="ph ph-receipt"></i>
+                {% trans "Fatura Geçmişi" %}
+            </a>
+            {% if not subscription.cancelled_at %}
+            <button
+                type="button"
+                @click="showCancelModal = true"
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-700 border border-red-300 dark:border-red-700 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            >
+                <i class="ph ph-x-circle"></i>
+                {% trans "Aboneliği İptal Et" %}
+            </button>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    {# Usage Summary #}
+    {% if usage_items %}
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+        <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase mb-4">{% trans "Usage" %}</h3>
+        <div class="space-y-4">
+            {% for usage in usage_items %}
+            <div>
+                <div class="flex items-center justify-between text-sm mb-1">
+                    <span class="text-gray-700 dark:text-gray-300">{{ usage.feature.name|default:"Feature" }}</span>
+                    <span class="text-gray-500">
+                        {{ usage.current_usage }} / {% if usage.usage_limit == -1 %}&#8734;{% else %}{{ usage.usage_limit }}{% endif %}
+                    </span>
+                </div>
+                {% if usage.usage_limit > 0 %}
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div class="h-2 rounded-full {% if usage.current_usage >= usage.usage_limit %}bg-red-500{% elif usage.current_usage > usage.usage_limit|floatformat:"0"|add:"-20" %}bg-yellow-500{% else %}bg-primary-500{% endif %}"
+                         style="width: {% widthratio usage.current_usage usage.usage_limit 100 %}%"></div>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {# Available Plans for Upgrade #}
+    {% if available_plans %}
+    <div class="mb-6">
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">
+            <i class="ph ph-arrows-clockwise"></i> {% trans "Available Plans" %}
+        </h3>
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {% for p in available_plans %}
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border {% if plan and p.id == plan.id %}border-primary-400 dark:border-primary-500 ring-2 ring-primary-200 dark:ring-primary-800{% else %}border-gray-200 dark:border-gray-700{% endif %} p-5 flex flex-col">
+
+                {# Highlight badge #}
+                {% if p.highlight_text %}
+                <div class="mb-2">
+                    <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300">
+                        {{ p.highlight_text }}
+                    </span>
+                </div>
+                {% endif %}
+
+                {# Plan name & tier #}
+                <h4 class="text-lg font-bold text-gray-900 dark:text-white">{{ p.name }}</h4>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">{{ p.short_description|default:p.tier }}</p>
+
+                {# Price #}
+                <div class="mb-4">
+                    {% if p.price_monthly == 0 %}
+                    <span class="text-2xl font-bold text-gray-900 dark:text-white">{% trans "Ücretsiz" %}</span>
+                    {% else %}
+                    <span class="text-2xl font-bold text-gray-900 dark:text-white">{{ p.formatted_price_monthly }}</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">/{% trans "ay" %}</span>
+                    {% endif %}
+                </div>
+
+                {# Key limits #}
+                <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1.5 mb-5 flex-1">
+                    {% if p.limits.max_menus %}
+                    <li class="flex items-center gap-2">
+                        <i class="ph ph-check text-green-500"></i>
+                        {% if p.limits.max_menus == -1 %}{% trans "Sınırsız menü" %}{% else %}{{ p.limits.max_menus }} {% trans "menü" %}{% endif %}
+                    </li>
+                    {% endif %}
+                    {% if p.limits.max_products %}
+                    <li class="flex items-center gap-2">
+                        <i class="ph ph-check text-green-500"></i>
+                        {% if p.limits.max_products == -1 %}{% trans "Sınırsız ürün" %}{% else %}{{ p.limits.max_products }} {% trans "ürün" %}{% endif %}
+                    </li>
+                    {% endif %}
+                    {% if p.limits.max_qr_codes %}
+                    <li class="flex items-center gap-2">
+                        <i class="ph ph-check text-green-500"></i>
+                        {% if p.limits.max_qr_codes == -1 %}{% trans "Sınırsız QR kod" %}{% else %}{{ p.limits.max_qr_codes }} {% trans "QR kod" %}{% endif %}
+                    </li>
+                    {% endif %}
+                    {% if p.limits.max_users %}
+                    <li class="flex items-center gap-2">
+                        <i class="ph ph-check text-green-500"></i>
+                        {% if p.limits.max_users == -1 %}{% trans "Sınırsız kullanıcı" %}{% else %}{{ p.limits.max_users }} {% trans "kullanıcı" %}{% endif %}
+                    </li>
+                    {% endif %}
+                    {% if p.limits.ai_credits_monthly %}
+                    <li class="flex items-center gap-2">
+                        <i class="ph ph-check text-green-500"></i>
+                        {% if p.limits.ai_credits_monthly == -1 %}{% trans "Sınırsız AI kredisi" %}{% else %}{{ p.limits.ai_credits_monthly }} {% trans "AI kredisi/ay" %}{% endif %}
+                    </li>
+                    {% endif %}
+                </ul>
+
+                {# Action Button #}
+                {% if plan and p.id == plan.id %}
+                <span class="block text-center py-2.5 px-4 text-sm font-semibold text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-900/30 rounded-lg">
+                    <i class="ph ph-check-circle"></i> {% trans "Mevcut Plan" %}
+                </span>
+                {% elif plan and p.tier == 'FREE' and plan.tier != 'FREE' %}
+                {# Don't show downgrade to free -- cancel flow handles this #}
+                <span class="block text-center py-2.5 px-4 text-sm font-medium text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-700/50 rounded-lg cursor-not-allowed">
+                    {% trans "Ücretsiz Plan" %}
+                </span>
+                {% else %}
+                <form method="post" action="{% url 'accounts:subscription-upgrade' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="plan_id" value="{{ p.id }}">
+                    <button
+                        type="submit"
+                        class="w-full py-2.5 px-4 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                        onclick="return confirm('{% trans "Bu plana geçmek istediğinizden emin misiniz?" %}')"
+                    >
+                        <i class="ph ph-arrow-up"></i> {% trans "Yükselt" %}
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {# Cancellation Modal #}
+    <div
+        x-show="showCancelModal"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+        @keydown.escape.window="showCancelModal = false"
+        x-cloak
+    >
+        <div
+            @click.away="showCancelModal = false"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full mx-4 p-6"
+        >
+            <div class="flex items-center gap-3 mb-4">
+                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                    <i class="ph ph-warning text-xl text-red-600 dark:text-red-400"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+                    {% trans "Aboneliği İptal Et" %}
+                </h3>
+            </div>
+
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                {% trans "Aboneliğiniz mevcut dönem sonunda iptal edilecektir. Dönem sonuna kadar tüm özelliklere erişiminiz devam eder." %}
+            </p>
+
+            <form method="post" action="{% url 'accounts:subscription-cancel' %}">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="cancel_reason" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        {% trans "İptal sebebi (isteğe bağlı)" %}
+                    </label>
+                    <textarea
+                        id="cancel_reason"
+                        name="cancel_reason"
+                        rows="3"
+                        class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 text-sm focus:ring-primary-500 focus:border-primary-500"
+                        placeholder="{% trans "Neden iptal etmek istediğinizi belirtebilirsiniz..." %}"
+                    ></textarea>
+                </div>
+
+                <div class="flex gap-3 justify-end">
+                    <button
+                        type="button"
+                        @click="showCancelModal = false"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                    >
+                        {% trans "Vazgeç" %}
+                    </button>
+                    <button
+                        type="submit"
+                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                    >
+                        <i class="ph ph-x-circle"></i> {% trans "İptal Et" %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock panel_content %}

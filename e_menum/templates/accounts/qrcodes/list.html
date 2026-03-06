@@ -1,0 +1,288 @@
+{% extends "layouts/panel.html" %}
+{% load static i18n %}
+
+{# =========================================================================
+   QR Code List Page
+
+   Displays QR codes in a grid layout with type filter tabs, scan counts,
+   active/inactive toggle, and a create modal.
+   ========================================================================= #}
+
+{% block page_title %}{% trans "QR Kodlar" %}{% endblock %}
+
+{% block panel_title %}{% trans "QR Kodlar" %}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="flex items-center">
+    <i class="ph ph-caret-right text-xs mx-1.5"></i>
+    <span class="text-gray-500 dark:text-gray-400 text-sm">{% trans "QR Kodlar" %}</span>
+</li>
+{% endblock %}
+
+{% block panel_content %}
+<div x-data="qrCodeList()">
+
+    {# ── Header with Create Button ── #}
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{% trans "QR Kodlar" %}</h3>
+        <button
+            @click="createModalOpen = true"
+            class="px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors"
+        >
+            <i class="ph ph-plus mr-1"></i>{% trans "QR Olustur" %}
+        </button>
+    </div>
+
+    {# ── Type Filter Tabs ── #}
+    <div class="flex items-center gap-2 mb-6 overflow-x-auto pb-1">
+        <a href="?type="
+           class="px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap
+               {% if not request.GET.type %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %}">
+            {% trans "Tumu" %}
+        </a>
+        <a href="?type=MENU"
+           class="px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap
+               {% if request.GET.type == 'MENU' %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %}">
+            <i class="ph ph-book-open mr-1"></i>{% trans "Menu" %}
+        </a>
+        <a href="?type=TABLE"
+           class="px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap
+               {% if request.GET.type == 'TABLE' %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %}">
+            <i class="ph ph-armchair mr-1"></i>{% trans "Masa" %}
+        </a>
+        <a href="?type=CAMPAIGN"
+           class="px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap
+               {% if request.GET.type == 'CAMPAIGN' %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %}">
+            <i class="ph ph-megaphone mr-1"></i>{% trans "Kampanya" %}
+        </a>
+    </div>
+
+    {# ── QR Code Grid ── #}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for qr in qrcodes %}
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm hover:shadow-md transition-shadow"
+             x-data="{ active: {{ qr.is_active|yesno:'true,false' }} }">
+
+            {# Card Header #}
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex-1 min-w-0">
+                    <h4 class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ qr.name }}</h4>
+                    <p class="text-xs text-gray-400 dark:text-gray-500 font-mono mt-0.5">{{ qr.code }}</p>
+                </div>
+
+                {# Type Badge #}
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold ml-2 flex-shrink-0
+                    {% if qr.qr_type == 'MENU' %}bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400
+                    {% elif qr.qr_type == 'TABLE' %}bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
+                    {% elif qr.qr_type == 'CAMPAIGN' %}bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400
+                    {% else %}bg-gray-100 text-gray-700 dark:bg-gray-600 dark:text-gray-300
+                    {% endif %}">
+                    {{ qr.get_qr_type_display|default:qr.qr_type }}
+                </span>
+            </div>
+
+            {# Stats Row #}
+            <div class="flex items-center gap-4 mb-4 text-xs text-gray-500 dark:text-gray-400">
+                <span class="flex items-center gap-1">
+                    <i class="ph ph-scan text-sm"></i>{{ qr.scan_count|default:"0" }} {% trans "tarama" %}
+                </span>
+                {% if qr.last_scanned_at %}
+                <span class="flex items-center gap-1">
+                    <i class="ph ph-clock text-sm"></i>{{ qr.last_scanned_at|date:"d.m.Y" }}
+                </span>
+                {% endif %}
+            </div>
+
+            {# Status Toggle + Actions #}
+            <div class="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
+                {# Active Toggle #}
+                <button
+                    @click="toggleActive({{ qr.pk }}, active)"
+                    class="flex items-center gap-2 text-xs font-medium transition-colors"
+                    :class="active ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500'"
+                >
+                    <div class="relative w-9 h-5 rounded-full transition-colors"
+                         :class="active ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'">
+                        <div class="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform"
+                             :class="active ? 'left-[18px]' : 'left-0.5'"></div>
+                    </div>
+                    <span x-text="active ? '{% trans "Aktif" %}' : '{% trans "Pasif" %}'"></span>
+                </button>
+
+                {# View Detail #}
+                <a
+                    href="{% url 'accounts:qrcode-detail' qr.pk %}"
+                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-900/40 rounded-lg transition-colors"
+                >
+                    <i class="ph ph-eye"></i>{% trans "Detay" %}
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-12 shadow-sm text-center">
+            <i class="ph ph-qr-code text-5xl text-gray-300 dark:text-gray-600 mb-3 block"></i>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">{% trans "Henuz QR kod bulunmuyor." %}</p>
+            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1 mb-4">{% trans "Ilk QR kodunuzu olusturun." %}</p>
+            <button
+                @click="createModalOpen = true"
+                class="px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors"
+            >
+                <i class="ph ph-plus mr-1"></i>{% trans "QR Olustur" %}
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+
+    {# ── Create Modal ── #}
+    <template x-teleport="body">
+        <div
+            x-show="createModalOpen"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+            @keydown.escape.window="createModalOpen = false"
+            x-cloak
+        >
+            <div
+                @click.away="createModalOpen = false"
+                class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl w-full max-w-md"
+            >
+                <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white">{% trans "Yeni QR Kod" %}</h3>
+                    <button @click="createModalOpen = false" class="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg">
+                        <i class="ph ph-x text-lg"></i>
+                    </button>
+                </div>
+                <div class="p-5 space-y-4">
+                    {# Type #}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{% trans "Tip" %}</label>
+                        <select
+                            x-model="createForm.qr_type"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-primary-500"
+                        >
+                            <option value="MENU">{% trans "Menu" %}</option>
+                            <option value="TABLE">{% trans "Masa" %}</option>
+                            <option value="CAMPAIGN">{% trans "Kampanya" %}</option>
+                        </select>
+                    </div>
+
+                    {# Name #}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{% trans "QR Kod Adi" %}</label>
+                        <input
+                            type="text"
+                            x-model="createForm.name"
+                            placeholder="{% trans 'orn. Ana Menu QR, Masa-5 QR' %}"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        >
+                    </div>
+
+                    {# Menu Select (shown for MENU type) #}
+                    <div x-show="createForm.qr_type === 'MENU'">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{% trans "Menu" %}</label>
+                        <select
+                            x-model="createForm.menu_id"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-primary-500"
+                        >
+                            <option value="">{% trans "Menu seciniz..." %}</option>
+                            {% for menu in menus %}
+                            <option value="{{ menu.pk }}">{{ menu.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    {# Table Select (shown for TABLE type) #}
+                    <div x-show="createForm.qr_type === 'TABLE'">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{% trans "Masa" %}</label>
+                        <select
+                            x-model="createForm.table_id"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-primary-500"
+                        >
+                            <option value="">{% trans "Masa seciniz..." %}</option>
+                            {% for table in tables %}
+                            <option value="{{ table.pk }}">{{ table.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-3 px-5 py-4 border-t border-gray-200 dark:border-gray-700">
+                    <button
+                        @click="createModalOpen = false"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                    >
+                        {% trans "Vazgec" %}
+                    </button>
+                    <button
+                        @click="createQR()"
+                        :disabled="loading"
+                        class="px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors disabled:opacity-50"
+                    >
+                        <i class="ph ph-qr-code mr-1"></i>
+                        <span x-text="loading ? '{% trans "Olusturuluyor..." %}' : '{% trans "Olustur" %}'"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('qrCodeList', () => ({
+        loading: false,
+        createModalOpen: false,
+        createForm: {
+            qr_type: 'MENU',
+            name: '',
+            menu_id: '',
+            table_id: ''
+        },
+
+        async toggleActive(id, currentState) {
+            try {
+                const resp = await fetchWithCsrf(`/account/api/qrcodes/${id}/toggle/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await resp.json();
+                if (data.success) {
+                    // Alpine reactivity will handle the UI update via x-data on each card
+                    window.location.reload();
+                }
+            } catch (err) {
+                console.error('Toggle error:', err);
+            }
+        },
+
+        async createQR() {
+            if (!this.createForm.name.trim()) return;
+            this.loading = true;
+            try {
+                const resp = await fetchWithCsrf('/account/api/qrcodes/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(this.createForm)
+                });
+                const data = await resp.json();
+                if (data.success) {
+                    window.location.reload();
+                }
+            } catch (err) {
+                console.error('QR create error:', err);
+            } finally {
+                this.loading = false;
+            }
+        }
+    }));
+});
+</script>
+{% endblock %}
