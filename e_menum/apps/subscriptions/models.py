@@ -25,6 +25,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from apps.core.models import (
+    Permission,
     SoftDeleteManager,
     SoftDeleteMixin,
     TimeStampedMixin,
@@ -263,6 +264,55 @@ class Feature(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         self.metadata[key] = value
         self.save(update_fields=['metadata', 'updated_at'])
+
+
+class FeaturePermission(TimeStampedMixin, models.Model):
+    """
+    FeaturePermission - links a Feature to a Permission (plan-gated permission).
+
+    When an organization's plan has a feature, the permissions linked here
+    are granted (e.g. feature 'ai_content_generation' gates permission 'ai_generation.create').
+    Platform-level; no organization FK.
+    """
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'),
+        help_text=_('Unique identifier (UUID)'),
+    )
+    feature = models.ForeignKey(
+        Feature,
+        on_delete=models.CASCADE,
+        related_name='feature_permissions',
+        verbose_name=_('Feature'),
+        help_text=_('Feature that gates this permission'),
+    )
+    permission = models.ForeignKey(
+        Permission,
+        on_delete=models.CASCADE,
+        related_name='feature_permissions',
+        verbose_name=_('Permission'),
+        help_text=_('Permission gated by the feature'),
+    )
+
+    class Meta:
+        db_table = 'feature_permissions'
+        verbose_name = _('Feature Permission')
+        verbose_name_plural = _('Feature Permissions')
+        ordering = ['feature', 'permission']
+        unique_together = [['feature', 'permission']]
+        indexes = [
+            models.Index(fields=['feature'], name='featperm_feature_idx'),
+            models.Index(fields=['permission'], name='featperm_permission_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.feature.code} → {self.permission.code}"
+
+    def __repr__(self) -> str:
+        return f"<FeaturePermission(feature='{self.feature.code}', permission='{self.permission.code}')>"
 
 
 class Plan(TimeStampedMixin, SoftDeleteMixin, models.Model):
