@@ -19,7 +19,7 @@
 #   GIT_BRANCH    Çekilecek branch (varsayılan: mevcut branch)
 #   SKIP_PULL     1 ise git pull yapılmaz
 #   LOCK_FILE     Kilit dosyasi (varsayılan: /tmp/emenum-deploy.lock)
-#   DEPLOY_BUILD  1 ise Docker image yeniden derlenir (varsayılan: 0)
+#   DEPLOY_BUILD  1 ise Docker image her zaman derlenir; 0 ise sadece ilgili dosya degistiğinde (varsayılan: 0)
 #   FORCE_DEPLOY  1 ise degisiklik olmasa da islemler yapilir (varsayılan: 0)
 #   DEPLOY_DEBUG  1 ise deploy sonrasi health check ekler (degisiklik/FORCE yoksa calismaz)
 #   DEPLOY_GRACEFUL 0 ise container restart (varsayilan: 1 = HUP/pool_restart ile kesintisiz)
@@ -110,6 +110,28 @@ if [[ "$SKIP_PULL" != "1" ]]; then
   log_ok "Code updated (branch: $BRANCH)"
 else
   log_info "SKIP_PULL=1, skipping git pull"
+  PREV_HEAD=""
+fi
+
+# -----------------------------------------------------------------------------
+# 1b. Commit'e gore akilli karar: full build gerekli mi? (sadece Docker modunda)
+#     Dockerfile, requirements*.txt, package.json, docker/ degisti mi?
+# -----------------------------------------------------------------------------
+NEED_FULL_BUILD=0
+if [[ "$DEPLOY_MODE" == "docker" && ("$NEED_RESTART" == "1" || "$FORCE_DEPLOY" == "1") ]]; then
+  if [[ "$DEPLOY_BUILD" == "1" ]]; then
+    NEED_FULL_BUILD=1
+    log_info "DEPLOY_BUILD=1: tam image derlemesi yapilacak."
+  elif [[ -n "$PREV_HEAD" ]]; then
+    changed_files=$(git diff --name-only "$PREV_HEAD" HEAD 2>/dev/null || true)
+    if echo "$changed_files" | grep -qE '^e_menum/(Dockerfile(\.[^/]*)?|requirements(-dev)?\.txt|package(-lock)?\.json|tailwind\.config\.|docker/|docker-compose\.prod\.yml)'; then
+      NEED_FULL_BUILD=1
+      log_info "Derleme gerektiren dosya degisti (Dockerfile/requirements/package/docker): tam build yapilacak."
+    fi
+  fi
+  if [[ "$NEED_FULL_BUILD" != "1" ]]; then
+    log_info "Sadece kod degisti: build atlanacak, minimal kesinti ile guncellenecek."
+  fi
 fi
 
 # -----------------------------------------------------------------------------
@@ -145,16 +167,18 @@ fi
 run_docker_deploy() {
   cd "$APP_ROOT"
 
-  if [[ "$DEPLOY_BUILD" == "1" ]]; then
+  # Tam build: Dockerfile/requirements/package/docker degisti veya DEPLOY_BUILD=1
+  if [[ "$NEED_FULL_BUILD" == "1" ]]; then
     log_info "Docker image derleniyor (web, celery_worker, celery_beat)..."
     docker compose -f docker-compose.prod.yml build web celery_worker celery_beat
+    log_ok "Image derleme tamamlandi."
   else
-    log_info "Docker build atlaniyor (kod volume'dan, tam build icin DEPLOY_BUILD=1)"
+    log_info "Docker build atlaniyor (sadece kod degisti, volume'dan guncel)."
   fi
 
-  # Tailwind container icinde derlenir (host'ta Node gerekmez)
+  # Tailwind: her deploy'da (kod/static degisti mi bilmiyoruz, guvenli olsun)
   if [[ -f package.json ]] && [[ -f static/css/input.css ]]; then
-    log_info "Tailwind CSS (Node container icinde) derleniyor..."
+    log_info "Tailwind CSS derleniyor..."
     docker run --rm \
       -v "$(pwd):/app" -w /app \
       node:20-slim \
@@ -162,6 +186,7 @@ run_docker_deploy() {
     log_ok "Tailwind tamamlandi."
   fi
 
+  # Full build yaptiysak up -d container'lari yeni image ile acar; yapmadiysak mevcut container'lar ayakta kalir
   log_info "Containers ayakta (up -d)..."
   docker compose -f docker-compose.prod.yml up -d
 
@@ -182,10 +207,11 @@ run_docker_deploy() {
   fi
   docker compose -f docker-compose.prod.yml exec -T web python manage.py collectstatic --noinput 2>/dev/null || true
 
-  if [[ "$NEED_RESTART" == "1" || "$DEPLOY_BUILD" == "1" || "$FORCE_DEPLOY" == "1" || "$DEPLOY_DEBUG" == "1" ]]; then
-    if [[ "$DEPLOY_BUILD" == "1" ]]; then
-      log_info "Image yeniden derlendi, container'lar up -d ile zaten guncel. Restart atlaniyor."
-    elif [[ "${DEPLOY_GRACEFUL:-1}" == "0" ]]; then
+  # Restart: full build yaptiysak up -d zaten yeni container'lari baslatti, tekrar restart gerekmez
+  if [[ "$NEED_FULL_BUILD" == "1" ]]; then
+    log_info "Tam build yapildi, container'lar up -d ile zaten guncel. Ek restart yok."
+  elif [[ "$NEED_RESTART" == "1" || "$FORCE_DEPLOY" == "1" || "$DEPLOY_DEBUG" == "1" ]]; then
+    if [[ "${DEPLOY_GRACEFUL:-1}" == "0" ]]; then
       log_info "DEPLOY_GRACEFUL=0, tam restart..."
       docker compose -f docker-compose.prod.yml restart web celery_worker celery_beat
     else
@@ -196,7 +222,7 @@ run_docker_deploy() {
       log_ok "Celery beat: restart (graceful desteklenmiyor)"
     fi
   else
-    log_info "Restart atlaniyor."
+    log_info "Restart atlaniyor (degisiklik yok veya zaten tam build ile guncellendi)."
   fi
 
   # Her basarili deploy'da deploy_info.json yaz (footer'da build bilgisi)

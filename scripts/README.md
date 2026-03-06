@@ -11,7 +11,10 @@ GitHub'a commit atıldığında sunucuda güncel kodu çekip migration, build ve
 ./scripts/deploy.sh
 ```
 
-- **Docker (varsayilan: build yok, sadece up + migrate):** Kod host'tan mount; deploy: git pull, host'ta Tailwind, up -d, migrate, collectstatic, restart. Image her seferinde derlenmez. Migrate ve collectstatic container entrypoint'te zaten çalışır.
+- **Docker (akıllı mod):** Commit'e göre karar verir:
+  - **Sadece kod değiştiyse:** Image derlenmez, Tailwind + up -d + migrate + collectstatic + **graceful reload** (Gunicorn HUP, Celery pool_restart) → minimal kesinti.
+  - **Dockerfile, requirements*.txt, package.json, docker/, docker-compose.prod.yml değiştiyse:** **Tam image build** + up -d + migrate + collectstatic → container'lar yeni image ile ayağa kalkar, ek restart yok.
+  - **DEPLOY_BUILD=1** verirseniz: Her seferinde tam build (manuel zorunlu build için).
 - **Bare metal (Gunicorn):** venv, `pip install`, `migrate`, Tailwind `css:build`, `collectstatic`, ardından Gunicorn restart (systemctl veya HUP).
 
 ### Ortam değişkenleri
@@ -22,7 +25,7 @@ GitHub'a commit atıldığında sunucuda güncel kodu çekip migration, build ve
 | `GIT_BRANCH`   | Çekilecek branch (varsayılan: mevcut branch) |
 | `SKIP_PULL`    | `1` ise `git pull` atlanır |
 | `LOCK_FILE`    | Kilit dosyası (varsayılan: `/tmp/emenum-deploy.lock`) |
-| `DEPLOY_BUILD` | `1` ise Docker image derlenir (varsayılan: atlanır) |
+| `DEPLOY_BUILD` | `1` ise her deploy'da Docker image derlenir; `0` ise sadece ilgili dosya değiştiğinde (varsayılan: 0) |
 | `FORCE_DEPLOY`   | `1` ise degisiklik olmasa da islemler yapilir |
 | `DEPLOY_GRACEFUL`| `0` ise tam container restart (varsayilan: 1 = HUP/pool_restart) |
 | `DEPLOY_LOG`     | Log dosyasi (varsayilan: `/var/log/deploy.log`) |
