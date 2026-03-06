@@ -34,11 +34,9 @@
                     {% else %}bg-gray-100 text-gray-600{% endif %}">
                     {{ invoice.get_status_display|default:invoice.status }}
                 </span>
-                {% if invoice.pdf_url %}
-                <a href="{{ invoice.pdf_url }}" class="text-primary-600 hover:text-primary-700 text-sm">
+                <a href="{% url 'accounts:invoice-download-pdf' invoice_id=invoice.id %}" class="text-primary-600 hover:text-primary-700 text-sm" title="{% trans 'PDF İndir' %}">
                     <i class="ph ph-download-simple"></i>
                 </a>
-                {% endif %}
             </div>
         </div>
         {% endfor %}

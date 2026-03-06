@@ -67,10 +67,16 @@
             </form>
         </div>
 
-        {# Footer Link #}
+        {# Footer Links #}
         <p class="text-center mt-6 text-sm text-gray-500 dark:text-gray-400">
             {% trans "Henüz hesabınız yok mu?" %}
-            <a href="{% url 'website:demo' %}" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">
+            <a href="{% url 'accounts:register' %}" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">
+                {% trans "Ücretsiz Deneyin" %}
+            </a>
+        </p>
+        <p class="text-center mt-2 text-xs text-gray-400 dark:text-gray-500">
+            {% trans "veya" %}
+            <a href="{% url 'website:demo' %}" class="text-gray-500 dark:text-gray-400 hover:underline">
                 {% trans "Demo İsteyin" %}
             </a>
         </p>

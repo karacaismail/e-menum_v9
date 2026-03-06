@@ -18,6 +18,7 @@ import logging
 
 from django.contrib import messages
 from django.contrib.auth import login, logout, update_session_auth_hash
+from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext_lazy as _
@@ -309,10 +310,36 @@ class SubscriptionView(LoginRequiredMixin, View):
         except Exception:
             pass
 
+        # Load available plans for upgrade comparison
+        available_plans = []
+        try:
+            from apps.subscriptions.models import Plan
+            available_plans = list(
+                Plan.objects.filter(
+                    is_active=True,
+                    is_public=True,
+                    deleted_at__isnull=True,
+                ).order_by('sort_order', 'price_monthly')
+            )
+        except Exception:
+            pass
+
+        # Determine current plan tier order for upgrade logic
+        tier_order = ['FREE', 'STARTER', 'GROWTH', 'PROFESSIONAL', 'ENTERPRISE']
+        current_tier_index = -1
+        if plan:
+            try:
+                current_tier_index = tier_order.index(plan.tier)
+            except ValueError:
+                current_tier_index = -1
+
         context = {
             'subscription': subscription,
             'plan': plan,
             'usage_items': usage_items,
+            'available_plans': available_plans,
+            'current_tier_index': current_tier_index,
+            'tier_order': tier_order,
         }
         return render(request, self.template_name, context)
 
@@ -348,3 +375,140 @@ class InvoicesView(LoginRequiredMixin, View):
             'invoices': invoices,
         }
         return render(request, self.template_name, context)
+
+
+# =============================================================================
+# SELF-SERVICE REGISTRATION
+# =============================================================================
+
+class RegisterView(FormView):
+    """
+    Self-service registration for restaurant owners.
+
+    Creates User + Organization + Subscription(TRIALING) atomically.
+    Auto-logs in the user and redirects to dashboard.
+    """
+
+    template_name = 'accounts/register.html'
+    form_class = None  # Will import RegistrationForm
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('accounts:dashboard')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form_class(self):
+        from .forms import RegistrationForm
+        return RegistrationForm
+
+    def form_valid(self, form):
+        from django.db import transaction
+        from django.utils.text import slugify
+        from datetime import timedelta
+        from apps.core.models import Organization, User
+        from apps.core.choices import UserStatus
+
+        data = form.cleaned_data
+
+        with transaction.atomic():
+            # Create organization
+            base_slug = slugify(data['business_name'])[:80] or 'restaurant'
+            slug = base_slug
+            counter = 1
+            while Organization.objects.filter(slug=slug).exists():
+                slug = f'{base_slug}-{counter}'
+                counter += 1
+
+            org = Organization.objects.create(
+                name=data['business_name'],
+                slug=slug,
+                email=data['email'],
+                phone=data.get('phone', ''),
+                settings={'currency': 'TRY', 'language': 'tr'},
+            )
+
+            # Set trial period
+            org.trial_ends_at = timezone.now() + timedelta(days=14)
+            org.save(update_fields=['trial_ends_at'])
+
+            # Create user
+            user = User.objects.create_user(
+                email=data['email'],
+                password=data['password'],
+                first_name=data['first_name'],
+                last_name=data['last_name'],
+                phone=data.get('phone', ''),
+                status=UserStatus.ACTIVE,
+                organization=org,
+            )
+
+            # Create trial subscription
+            try:
+                from apps.subscriptions.models import Subscription, Plan
+                from apps.subscriptions.choices import SubscriptionStatus
+
+                # Get default/free plan
+                plan = Plan.objects.filter(
+                    is_active=True, is_default=True, deleted_at__isnull=True
+                ).first()
+                if not plan:
+                    plan = Plan.objects.filter(
+                        is_active=True, deleted_at__isnull=True
+                    ).order_by('price_monthly').first()
+
+                if plan:
+                    sub = Subscription.objects.create(
+                        organization=org,
+                        plan=plan,
+                        status=SubscriptionStatus.TRIALING if hasattr(SubscriptionStatus, 'TRIALING') else 'TRIALING',
+                        trial_ends_at=org.trial_ends_at,
+                        current_period_start=timezone.now(),
+                        current_period_end=org.trial_ends_at,
+                    )
+                    org.subscription = sub
+                    org.save(update_fields=['subscription'])
+            except Exception as e:
+                logger.warning(f'Could not create trial subscription: {e}')
+
+            # Assign owner role
+            try:
+                from apps.core.models import Role, UserRole
+                from apps.core.choices import RoleScope
+                owner_role = Role.objects.filter(
+                    name='owner', scope=RoleScope.ORGANIZATION
+                ).first()
+                if owner_role:
+                    UserRole.objects.create(
+                        user=user,
+                        role=owner_role,
+                        organization=org,
+                        granted_by=user,
+                    )
+            except Exception as e:
+                logger.warning(f'Could not assign owner role: {e}')
+
+            # Audit log
+            AuditLog.log_action(
+                action=AuditAction.CREATE,
+                resource='registration',
+                resource_id=str(user.id),
+                user=user,
+                organization=org,
+                description=f'New registration: {user.email} / {org.name}',
+                ip_address=get_client_ip(self.request),
+                user_agent=self.request.META.get('HTTP_USER_AGENT', '')[:500],
+            )
+
+        # Auto-login
+        login(
+            self.request,
+            user,
+            backend='apps.core.backends.EmailOrUsernameBackend',
+        )
+
+        messages.success(self.request, _('Hesabınız oluşturuldu! 14 günlük deneme süreniz başladı.'))
+        return redirect('accounts:dashboard')
+
+    def form_invalid(self, form):
+        messages.error(self.request, _('Lütfen formdaki hataları düzeltiniz.'))
+        return super().form_invalid(form)

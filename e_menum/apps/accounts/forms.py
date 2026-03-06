@@ -203,3 +203,147 @@ class UsernameForm(forms.ModelForm):
                     _('Kullanıcı adı 3-30 karakter, sadece küçük harf, rakam ve alt çizgi içermelidir.')
                 )
         return username or None  # Store NULL if empty
+
+
+class RegistrationForm(forms.Form):
+    """Self-service registration form for restaurant owners."""
+
+    first_name = forms.CharField(
+        label=_('Ad'),
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            'class': INPUT_CSS,
+            'placeholder': _('Adınız'),
+        }),
+    )
+    last_name = forms.CharField(
+        label=_('Soyad'),
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            'class': INPUT_CSS,
+            'placeholder': _('Soyadınız'),
+        }),
+    )
+    email = forms.EmailField(
+        label=_('E-posta'),
+        widget=forms.EmailInput(attrs={
+            'class': INPUT_CSS,
+            'placeholder': _('ornek@email.com'),
+        }),
+    )
+    phone = forms.CharField(
+        label=_('Telefon'),
+        max_length=20,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': INPUT_CSS,
+            'placeholder': _('0555 123 4567'),
+        }),
+    )
+    business_name = forms.CharField(
+        label=_('İşletme Adı'),
+        max_length=255,
+        widget=forms.TextInput(attrs={
+            'class': INPUT_CSS,
+            'placeholder': _('Restoran / Kafe adınız'),
+        }),
+    )
+    password = forms.CharField(
+        label=_('Şifre'),
+        min_length=12,
+        widget=forms.PasswordInput(attrs={
+            'class': INPUT_CSS,
+            'placeholder': _('En az 12 karakter'),
+            'autocomplete': 'new-password',
+        }),
+        help_text=_('En az 12 karakter olmalıdır.'),
+    )
+    confirm_password = forms.CharField(
+        label=_('Şifre (Tekrar)'),
+        widget=forms.PasswordInput(attrs={
+            'class': INPUT_CSS,
+            'placeholder': _('Şifrenizi tekrar giriniz'),
+            'autocomplete': 'new-password',
+        }),
+    )
+
+    def clean_email(self):
+        email = self.cleaned_data['email'].lower().strip()
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError(_('Bu e-posta adresi zaten kayıtlı.'))
+        return email
+
+    def clean(self):
+        cleaned = super().clean()
+        pw = cleaned.get('password')
+        confirm = cleaned.get('confirm_password')
+        if pw and confirm and pw != confirm:
+            raise forms.ValidationError(
+                {'confirm_password': _('Şifreler eşleşmiyor.')}
+            )
+        return cleaned
+
+
+class RestaurantSettingsForm(forms.Form):
+    """Restaurant/organization settings form for owners."""
+
+    name = forms.CharField(
+        label=_('İşletme Adı'),
+        max_length=255,
+        widget=forms.TextInput(attrs={
+            'class': INPUT_CSS,
+            'placeholder': _('Restoran / Kafe adınız'),
+        }),
+    )
+    email = forms.EmailField(
+        label=_('İletişim E-posta'),
+        widget=forms.EmailInput(attrs={
+            'class': INPUT_CSS,
+            'placeholder': _('info@restoran.com'),
+        }),
+    )
+    phone = forms.CharField(
+        label=_('Telefon'),
+        max_length=20,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': INPUT_CSS,
+            'placeholder': _('0212 123 4567'),
+        }),
+    )
+    logo = forms.URLField(
+        label=_('Logo URL'),
+        max_length=500,
+        required=False,
+        widget=forms.URLInput(attrs={
+            'class': INPUT_CSS,
+            'placeholder': _('https://...'),
+        }),
+    )
+    address = forms.CharField(
+        label=_('Adres'),
+        required=False,
+        widget=forms.Textarea(attrs={
+            'class': INPUT_CSS,
+            'rows': 3,
+            'placeholder': _('Restoran adresi'),
+        }),
+    )
+    city = forms.CharField(
+        label=_('Şehir'),
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': INPUT_CSS,
+            'placeholder': _('İstanbul'),
+        }),
+    )
+    district = forms.CharField(
+        label=_('İlçe'),
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': INPUT_CSS,
+            'placeholder': _('Kadıköy'),
+        }),
+    )

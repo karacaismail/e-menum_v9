@@ -15,12 +15,17 @@ from . import table_views
 from . import qr_views
 from . import customer_views
 from . import analytics_views
+from . import subscription_views
+from . import support_views
+from . import team_views
+from . import restaurant_views
 
 app_name = 'accounts'
 
 urlpatterns = [
     # ── Auth ──────────────────────────────────────────────────────────────
     path('login/', views.AccountLoginView.as_view(), name='login'),
+    path('register/', views.RegisterView.as_view(), name='register'),
     path('logout/', views.AccountLogoutView.as_view(), name='logout'),
 
     # ── Dashboard ─────────────────────────────────────────────────────────
@@ -100,9 +105,28 @@ urlpatterns = [
     path('api/analytics/products/', analytics_views.analytics_products_api, name='analytics-products-api'),
     path('api/analytics/customers/', analytics_views.analytics_customers_api, name='analytics-customers-api'),
 
+    # ── Team Management ──────────────────────────────────────────────────
+    path('team/', team_views.team_list, name='team-list'),
+    path('team/invite/', team_views.team_invite, name='team-invite'),
+    path('team/<uuid:user_id>/assign-role/', team_views.team_assign_role, name='team-assign-role'),
+    path('team/<uuid:user_id>/remove/', team_views.team_remove, name='team-remove'),
+
+    # ── Support Tickets ──────────────────────────────────────────────────
+    path('support/', support_views.support_list, name='support-list'),
+    path('support/create/', support_views.support_create, name='support-create'),
+    path('support/<uuid:ticket_id>/', support_views.support_detail, name='support-detail'),
+    path('support/<uuid:ticket_id>/comment/', support_views.support_add_comment, name='support-add-comment'),
+
     # ── Account (existing) ────────────────────────────────────────────────
     path('profile/', views.ProfileView.as_view(), name='profile'),
     path('settings/', views.AccountSettingsView.as_view(), name='settings'),
+    path('restaurant-settings/', restaurant_views.restaurant_settings, name='restaurant-settings'),
     path('subscription/', views.SubscriptionView.as_view(), name='subscription'),
     path('invoices/', views.InvoicesView.as_view(), name='invoices'),
+
+    # ── Subscription Actions ───────────────────────────────────────────
+    path('subscription/upgrade/', subscription_views.subscription_upgrade, name='subscription-upgrade'),
+    path('subscription/eft/', subscription_views.subscription_eft_info, name='subscription-eft'),
+    path('subscription/cancel/', subscription_views.subscription_cancel, name='subscription-cancel'),
+    path('invoices/<uuid:invoice_id>/pdf/', subscription_views.invoice_download_pdf, name='invoice-download-pdf'),
 ]

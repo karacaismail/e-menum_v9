@@ -1,0 +1,399 @@
+{% extends "layouts/panel.html" %}
+{% load static i18n %}
+
+{# =========================================================================
+   Team Management Page
+
+   Displays team members with roles, status badges, invite form,
+   role assignment, and member removal functionality.
+   ========================================================================= #}
+
+{% block page_title %}{% trans "Ekip Yonetimi" %}{% endblock %}
+
+{% block panel_title %}{% trans "Ekip Yonetimi" %}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="flex items-center">
+    <i class="ph ph-caret-right text-xs mx-1.5"></i>
+    <span class="text-gray-500 dark:text-gray-400 text-sm">{% trans "Ekip Yonetimi" %}</span>
+</li>
+{% endblock %}
+
+{% block panel_content %}
+<div x-data="{ showInviteForm: false, confirmRemove: null, roleModal: null }">
+
+    {# ── Header with Invite Button ── #}
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <div>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">{% trans "Ekip Uyeleri" %}</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                {% blocktrans with count=members|length %}{{ count }} uye{% endblocktrans %}
+            </p>
+        </div>
+        <button
+            @click="showInviteForm = !showInviteForm"
+            class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-xl shadow-sm transition-colors"
+        >
+            <i class="ph ph-user-plus text-lg"></i>
+            {% trans "Davet Et" %}
+        </button>
+    </div>
+
+    {# ── Invite Form (Collapsible) ── #}
+    <div
+        x-show="showInviteForm"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 -translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 -translate-y-2"
+        x-cloak
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm mb-6"
+    >
+        <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-4">
+            <i class="ph ph-envelope-simple mr-2"></i>{% trans "Yeni Uye Davet Et" %}
+        </h3>
+        <form method="post" action="{% url 'accounts:team-invite' %}">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {# First Name #}
+                <div>
+                    <label for="invite_first_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                        {% trans "Ad" %} <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="invite_first_name"
+                        name="first_name"
+                        required
+                        placeholder="{% trans 'Ad' %}"
+                        class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    >
+                </div>
+
+                {# Last Name #}
+                <div>
+                    <label for="invite_last_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                        {% trans "Soyad" %} <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="invite_last_name"
+                        name="last_name"
+                        required
+                        placeholder="{% trans 'Soyad' %}"
+                        class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    >
+                </div>
+
+                {# Email #}
+                <div>
+                    <label for="invite_email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                        {% trans "E-posta" %} <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="email"
+                        id="invite_email"
+                        name="email"
+                        required
+                        placeholder="{% trans 'ornek@email.com' %}"
+                        class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    >
+                </div>
+
+                {# Role #}
+                <div>
+                    <label for="invite_role" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                        {% trans "Rol" %}
+                    </label>
+                    <select
+                        id="invite_role"
+                        name="role_id"
+                        class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    >
+                        <option value="">{% trans "Rol sec..." %}</option>
+                        {% for role in available_roles %}
+                        <option value="{{ role.id }}">{{ role.display_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 mt-5">
+                <button
+                    type="submit"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-xl shadow-sm transition-colors"
+                >
+                    <i class="ph ph-paper-plane-tilt"></i>
+                    {% trans "Davet Gonder" %}
+                </button>
+                <button
+                    type="button"
+                    @click="showInviteForm = false"
+                    class="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl transition-colors"
+                >
+                    {% trans "Iptal" %}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {# ── Members Table ── #}
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b border-gray-100 dark:border-gray-700">
+                        <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Ad Soyad" %}</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "E-posta" %}</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Rol" %}</th>
+                        <th class="px-5 py-3 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Durum" %}</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Katilma Tarihi" %}</th>
+                        <th class="px-5 py-3 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{% trans "Islemler" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                    {% for member in members %}
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors" data-row-id="{{ member.id }}">
+                        {# Name + Avatar #}
+                        <td class="px-5 py-3">
+                            <div class="flex items-center gap-3">
+                                {% if member.avatar %}
+                                <img src="{{ member.avatar }}" alt="{{ member.get_full_name }}" class="h-9 w-9 rounded-full object-cover">
+                                {% else %}
+                                <div class="h-9 w-9 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+                                    <span class="text-xs font-semibold text-primary-600 dark:text-primary-400">{{ member.first_name|first|upper }}{{ member.last_name|first|upper }}</span>
+                                </div>
+                                {% endif %}
+                                <div class="min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                        {{ member.get_full_name|default:member.email }}
+                                    </p>
+                                    {% if member.id == request.user.id %}
+                                    <span class="text-xs text-primary-600 dark:text-primary-400 font-medium">{% trans "Siz" %}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+
+                        {# Email #}
+                        <td class="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">
+                            {{ member.email }}
+                        </td>
+
+                        {# Role Badge #}
+                        <td class="px-5 py-3">
+                            <div class="flex flex-wrap gap-1.5">
+                                {% for role in member.assigned_roles %}
+                                    {% if role.name == 'owner' %}
+                                    <span class="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+                                        {{ role.display_name }}
+                                    </span>
+                                    {% elif role.name == 'manager' %}
+                                    <span class="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                                        {{ role.display_name }}
+                                    </span>
+                                    {% elif role.name == 'staff' %}
+                                    <span class="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                        {{ role.display_name }}
+                                    </span>
+                                    {% elif role.name == 'viewer' %}
+                                    <span class="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">
+                                        {{ role.display_name }}
+                                    </span>
+                                    {% else %}
+                                    <span class="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">
+                                        {{ role.display_name }}
+                                    </span>
+                                    {% endif %}
+                                {% empty %}
+                                <span class="text-xs text-gray-400 dark:text-gray-500 italic">{% trans "Rol atanmamis" %}</span>
+                                {% endfor %}
+                            </div>
+                        </td>
+
+                        {# Status Badge #}
+                        <td class="px-5 py-3 text-center">
+                            {% if member.status == 'ACTIVE' %}
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                {% trans "Aktif" %}
+                            </span>
+                            {% elif member.status == 'INVITED' %}
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+                                <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                                {% trans "Davetli" %}
+                            </span>
+                            {% elif member.status == 'SUSPENDED' %}
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                {% trans "Askida" %}
+                            </span>
+                            {% else %}
+                            <span class="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">
+                                {{ member.status }}
+                            </span>
+                            {% endif %}
+                        </td>
+
+                        {# Join Date #}
+                        <td class="px-5 py-3 text-sm text-gray-500 dark:text-gray-400">
+                            {{ member.created_at|date:"d.m.Y" }}
+                        </td>
+
+                        {# Actions #}
+                        <td class="px-5 py-3 text-right">
+                            {% if member.id != request.user.id %}
+                            <div class="flex items-center justify-end gap-2">
+                                {# Change Role Button #}
+                                <button
+                                    @click="roleModal = '{{ member.id }}'"
+                                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 rounded-lg transition-colors"
+                                    title="{% trans 'Rol Degistir' %}"
+                                >
+                                    <i class="ph ph-shield-check"></i>
+                                    {% trans "Rol" %}
+                                </button>
+
+                                {# Remove Button #}
+                                <button
+                                    @click="confirmRemove = '{{ member.id }}'"
+                                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-lg transition-colors"
+                                    title="{% trans 'Cikar' %}"
+                                >
+                                    <i class="ph ph-user-minus"></i>
+                                    {% trans "Cikar" %}
+                                </button>
+                            </div>
+                            {% else %}
+                            <span class="text-xs text-gray-400 dark:text-gray-500">-</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="px-5 py-16 text-center">
+                            <div class="flex flex-col items-center">
+                                <i class="ph ph-users-three text-5xl text-gray-300 dark:text-gray-600 mb-3"></i>
+                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">{% trans "Henuz ekip uyesi bulunmuyor." %}</p>
+                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">{% trans "Yukaridaki Davet Et butonunu kullanarak ekibinize uye ekleyin." %}</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {# ── Role Assignment Modal ── #}
+    <template x-if="roleModal">
+        <div
+            class="fixed inset-0 z-50 flex items-center justify-center p-4"
+            x-transition
+        >
+            {# Backdrop #}
+            <div class="absolute inset-0 bg-gray-900/50 dark:bg-gray-900/70" @click="roleModal = null"></div>
+
+            {# Modal Content #}
+            <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 w-full max-w-md p-6"
+                 @click.away="roleModal = null">
+                <div class="flex items-center justify-between mb-5">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        <i class="ph ph-shield-check mr-2 text-blue-500"></i>{% trans "Rol Degistir" %}
+                    </h3>
+                    <button @click="roleModal = null" class="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="ph ph-x text-lg"></i>
+                    </button>
+                </div>
+
+                <form :action="'/account/team/' + roleModal + '/assign-role/'" method="post">
+                    {% csrf_token %}
+                    <div class="mb-5">
+                        <label for="modal_role_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            {% trans "Yeni Rol" %}
+                        </label>
+                        <select
+                            id="modal_role_id"
+                            name="role_id"
+                            required
+                            class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        >
+                            <option value="">{% trans "Rol sec..." %}</option>
+                            {% for role in available_roles %}
+                            <option value="{{ role.id }}">{{ role.display_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <button
+                            type="submit"
+                            class="flex-1 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm transition-colors"
+                        >
+                            <i class="ph ph-check"></i>
+                            {% trans "Ata" %}
+                        </button>
+                        <button
+                            type="button"
+                            @click="roleModal = null"
+                            class="flex-1 px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl transition-colors"
+                        >
+                            {% trans "Iptal" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </template>
+
+    {# ── Remove Confirmation Modal ── #}
+    <template x-if="confirmRemove">
+        <div
+            class="fixed inset-0 z-50 flex items-center justify-center p-4"
+            x-transition
+        >
+            {# Backdrop #}
+            <div class="absolute inset-0 bg-gray-900/50 dark:bg-gray-900/70" @click="confirmRemove = null"></div>
+
+            {# Modal Content #}
+            <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 w-full max-w-sm p-6"
+                 @click.away="confirmRemove = null">
+                <div class="text-center mb-5">
+                    <div class="mx-auto w-14 h-14 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-4">
+                        <i class="ph ph-warning text-2xl text-red-600 dark:text-red-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                        {% trans "Ekip Uyesini Cikar" %}
+                    </h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        {% trans "Bu uye ekipten cikarilacak ve sisteme erisimi kapatilacaktir. Bu islem geri alinamaz." %}
+                    </p>
+                </div>
+
+                <form :action="'/account/team/' + confirmRemove + '/remove/'" method="post">
+                    {% csrf_token %}
+                    <div class="flex items-center gap-3">
+                        <button
+                            type="submit"
+                            class="flex-1 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-sm transition-colors"
+                        >
+                            <i class="ph ph-user-minus"></i>
+                            {% trans "Cikar" %}
+                        </button>
+                        <button
+                            type="button"
+                            @click="confirmRemove = null"
+                            class="flex-1 px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl transition-colors"
+                        >
+                            {% trans "Iptal" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </template>
+
+</div>
+{% endblock %}

@@ -32,10 +32,13 @@
 {% url 'accounts:table-management' as table_management_url %}
 {% url 'accounts:qrcode-list' as qrcode_list_url %}
 {% url 'accounts:customer-list' as customer_list_url %}
+{% url 'accounts:team-list' as team_list_url %}
 {% url 'accounts:analytics' as analytics_url %}
 {% url 'accounts:profile' as profile_url %}
 {% url 'accounts:settings' as settings_url %}
+{% url 'accounts:restaurant-settings' as restaurant_settings_url %}
 {% url 'accounts:subscription' as subscription_url %}
+{% url 'accounts:support-list' as support_list_url %}
 
 <div class="flex h-screen overflow-hidden">
 
@@ -195,7 +198,16 @@
                 {% trans "Customers" %}
             </a>
 
-            {# 6. Analytics #}
+            {# 6. Team Management #}
+            <a
+                href="{{ team_list_url }}"
+                class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/team' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+            >
+                <i class="ph ph-users-three mr-3 text-xl"></i>
+                {% trans "Team" %}
+            </a>
+
+            {# 7. Analytics #}
             <a
                 href="{{ analytics_url }}"
                 class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/analytics' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
@@ -216,7 +228,16 @@
                 {% trans "Profile" %}
             </a>
 
-            {# 9. Settings #}
+            {# 9. Restaurant Settings #}
+            <a
+                href="{{ restaurant_settings_url }}"
+                class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/restaurant-settings' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+            >
+                <i class="ph ph-storefront mr-3 text-xl"></i>
+                {% trans "Restaurant" %}
+            </a>
+
+            {# 10. Account Settings #}
             <a
                 href="{{ settings_url }}"
                 class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/settings' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
@@ -232,6 +253,15 @@
             >
                 <i class="ph ph-credit-card mr-3 text-xl"></i>
                 {% trans "Subscription" %}
+            </a>
+
+            {# 11. Support Tickets #}
+            <a
+                href="{{ support_list_url }}"
+                class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/support' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+            >
+                <i class="ph ph-headset mr-3 text-xl"></i>
+                {% trans "Support" %}
             </a>
 
         </nav>

@@ -1,0 +1,143 @@
+{% extends "layouts/panel.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "EFT / Havale Bilgileri" %}{% endblock %}
+
+{% block panel_title %}{% trans "EFT / Havale Bilgileri" %}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="flex items-center">
+    <i class="ph ph-caret-right mx-1"></i>
+    <a href="{% url 'accounts:subscription' %}" class="hover:text-primary-600 dark:hover:text-primary-400">{% trans "Subscription" %}</a>
+</li>
+<li class="flex items-center">
+    <i class="ph ph-caret-right mx-1"></i>
+    <span class="text-gray-700 dark:text-gray-300">{% trans "EFT / Havale" %}</span>
+</li>
+{% endblock %}
+
+{% block panel_content %}
+<div class="max-w-2xl mx-auto">
+    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">
+        <i class="ph ph-bank"></i> {% trans "EFT / Havale Bilgileri" %}
+    </h2>
+
+    {# Bank Info Card #}
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+        <div class="space-y-5">
+
+            {# Bank Name #}
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">
+                    {% trans "Banka" %}
+                </label>
+                <p class="text-lg font-medium text-gray-900 dark:text-white">{{ bank_info.bank_name }}</p>
+            </div>
+
+            {# Account Holder #}
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">
+                    {% trans "Hesap Sahibi" %}
+                </label>
+                <p class="text-lg font-medium text-gray-900 dark:text-white">{{ bank_info.account_holder }}</p>
+            </div>
+
+            {# IBAN with copy button #}
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">
+                    {% trans "IBAN" %}
+                </label>
+                <div class="flex items-center gap-3" x-data="{ copied: false }">
+                    <p class="text-lg font-mono font-bold text-gray-900 dark:text-white tracking-wider" id="iban-value">{{ bank_info.iban }}</p>
+                    <button
+                        type="button"
+                        @click="
+                            navigator.clipboard.writeText('{{ bank_info.iban|escapejs }}');
+                            copied = true;
+                            setTimeout(() => copied = false, 2000);
+                        "
+                        class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors"
+                        :class="copied
+                            ? 'bg-green-50 text-green-700 border-green-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-700'
+                            : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600'"
+                    >
+                        <i class="ph" :class="copied ? 'ph-check' : 'ph-copy'"></i>
+                        <span x-text="copied ? '{% trans "Kopyalandı" %}' : '{% trans "Kopyala" %}'"></span>
+                    </button>
+                </div>
+            </div>
+
+            {# Branch Code #}
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">
+                        {% trans "Şube Kodu" %}
+                    </label>
+                    <p class="text-lg font-medium text-gray-900 dark:text-white">{{ bank_info.branch_code }}</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">
+                        {% trans "Hesap Numarası" %}
+                    </label>
+                    <p class="text-lg font-medium text-gray-900 dark:text-white">{{ bank_info.account_number }}</p>
+                </div>
+            </div>
+
+            {# Currency #}
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">
+                    {% trans "Para Birimi" %}
+                </label>
+                <p class="text-lg font-medium text-gray-900 dark:text-white">{{ bank_info.currency }}</p>
+            </div>
+
+        </div>
+    </div>
+
+    {# Reference Warning #}
+    <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl p-4 mb-6">
+        <div class="flex gap-3">
+            <div class="flex-shrink-0">
+                <i class="ph ph-warning text-xl text-amber-600 dark:text-amber-400"></i>
+            </div>
+            <div>
+                <h4 class="text-sm font-semibold text-amber-800 dark:text-amber-300 mb-1">
+                    {% trans "Önemli Not" %}
+                </h4>
+                <p class="text-sm text-amber-700 dark:text-amber-400">
+                    {{ bank_info.reference_note }}
+                </p>
+                {% if organization %}
+                <div class="mt-2 flex items-center gap-2" x-data="{ copied: false }">
+                    <code class="px-2 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-200 rounded text-sm font-mono">
+                        {{ organization.id }}
+                    </code>
+                    <button
+                        type="button"
+                        @click="
+                            navigator.clipboard.writeText('{{ organization.id }}');
+                            copied = true;
+                            setTimeout(() => copied = false, 2000);
+                        "
+                        class="text-xs text-amber-700 dark:text-amber-400 hover:underline"
+                    >
+                        <span x-text="copied ? '{% trans "Kopyalandı!" %}' : '{% trans "ID Kopyala" %}'"></span>
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# Back button #}
+    <div class="flex justify-start">
+        <a
+            href="{% url 'accounts:subscription' %}"
+            class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        >
+            <i class="ph ph-arrow-left"></i>
+            {% trans "Abonelik Sayfasına Dön" %}
+        </a>
+    </div>
+</div>
+{% endblock panel_content %}
