@@ -1,6 +1,6 @@
 # E-Menum Scripts
 
-## deploy.sh – CI/CD Deploy 
+## deploy.sh – CI/CD Deploy  #1
 
 GitHub'a commit atıldığında sunucuda güncel kodu çekip migration, build ve restart işlemlerini yapan script.
 
