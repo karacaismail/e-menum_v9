@@ -1,0 +1,36 @@
+# =============================================================================
+# E-Menum CD - Continuous Deployment
+# =============================================================================
+# Push (main) + CI basarili -> webhook'a POST atar, sunucuda deploy.sh calisir
+# Secret: DEPLOY_WEBHOOK_URL (ornek: http://SUNUCU:9000/hooks/emenum-deploy-SECRET)
+# =============================================================================
+
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Trigger Deploy Webhook
+    runs-on: ubuntu-latest
+    # Sadece CI basarili oldugunda ve push (PR degil) oldugunda
+    if: |
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push'
+    steps:
+      - name: Trigger deploy webhook
+        run: |
+          if [ -z "$DEPLOY_WEBHOOK_URL" ]; then
+            echo "::warning::DEPLOY_WEBHOOK_URL secret tanimli degil. Deploy atlandi."
+            exit 0
+          fi
+          curl -sf -X POST "$DEPLOY_WEBHOOK_URL" && echo "Deploy tetiklendi." || {
+            echo "::error::Webhook cagirilamadi. URL ve sunucu erisimini kontrol edin."
+            exit 1
+          }
+        env:
+          DEPLOY_WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK_URL }}

@@ -1,0 +1,59 @@
+# =============================================================================
+# E-Menum CI - Continuous Integration
+# =============================================================================
+# Push veya PR (main) -> lint, migration check, tests
+# =============================================================================
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    name: Lint, Migration Check, Tests
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: e_menum
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: e_menum/requirements*.txt
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      - name: Ruff (lint)
+        run: ruff check . --output-format=github
+
+      - name: Black (format check)
+        run: black --check .
+
+      - name: Migration check
+        run: python manage.py makemigrations --check --dry-run
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.development
+
+      - name: Django check
+        run: python manage.py check
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.development
+
+      - name: Pytest
+        run: pytest -v --tb=short -x
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.development

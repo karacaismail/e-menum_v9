@@ -56,11 +56,12 @@ FORCE_DEPLOY=1 ./scripts/deploy.sh
 DEPLOY_DEBUG=1 ./scripts/deploy.sh
 ```
 
-### GitHub ile otomatik tetikleme
+### GitHub ile otomatik tetikleme (CI + CD)
 
-1. **Sunucuda:** `./scripts/webhook.sh` ile kurulum (detay: asagidaki webhook.sh bolumu).
-2. **GitHub Actions:** `.github/workflows/deploy.yml` push (main) sonrasi webhook URL'ine POST atar.
-3. **Secret:** Repo → Settings → Secrets and variables → Actions → `DEPLOY_WEBHOOK_URL` = script ciktisindaki tam URL.
+1. **CI** (`.github/workflows/ci.yml`): Push/PR → main'de: ruff, black, makemigrations --check, django check, pytest.
+2. **CD** (`.github/workflows/deploy.yml`): CI basarili + push main → webhook'a POST → sunucuda `deploy.sh`.
+3. **Sunucuda:** `./scripts/webhook.sh` ile webhook kurulumu (detay: asagidaki webhook.sh bolumu).
+4. **Secret:** Repo → Settings → Secrets and variables → Actions → `DEPLOY_WEBHOOK_URL` = webhook tam URL (orn. `http://SUNUCU:9000/hooks/emenum-deploy-SECRET`).
 
 Webhook kullanmıyorsanız: sunucuda elle `git pull && ./scripts/deploy.sh` veya SSH ile tek komut çalıştırabilirsiniz.
 
