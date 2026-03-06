@@ -245,6 +245,11 @@
                         {% if not forloop.last %}<span class="text-gray-500">|</span>{% endif %}
                         {% endfor %}
                     </div>
+                    {% if deploy_info %}
+                    <span class="text-xs text-green-400/90" title="Build: {{ deploy_info.at }}{% if deploy_info.commit %} | {{ deploy_info.commit }}{% endif %}">
+                        build ✓ {{ deploy_info.at|slice:":16" }}{% if deploy_info.commit %} - {{ deploy_info.commit }}{% endif %}{% if deploy_info.build %} · #{{ deploy_info.build }}{% endif %}
+                    </span>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -207,7 +207,12 @@ run_docker_deploy() {
   DEPLOY_AT=$(date -Iseconds 2>/dev/null || date '+%Y-%m-%dT%H:%M:%S')
   BUILD_NUM=$(date '+%Y%m%d-%H%M' 2>/dev/null || echo "")
   echo "{\"at\":\"$DEPLOY_AT\",\"status\":\"ok\",\"mode\":\"docker\",\"commit\":\"$GIT_COMMIT\",\"branch\":\"$GIT_BRANCH_NAME\",\"build\":\"$BUILD_NUM\"}" > "$APP_ROOT/deploy_info.json"
-  log_info "deploy_info.json yazildi (footer build bilgisi)"
+  # Container icinde /app image'dan; dosyayi container'a kopyala ki footer okuyabilsin
+  if docker compose -f docker-compose.prod.yml cp "$APP_ROOT/deploy_info.json" web:/app/deploy_info.json 2>/dev/null; then
+    log_ok "deploy_info.json container'a kopyalandi (footer build bilgisi)"
+  else
+    log_info "deploy_info.json host'ta yazildi (container'a kopya atlandi)"
+  fi
 
   if [[ "$DEPLOY_DEBUG" == "1" ]]; then
     sleep 5
