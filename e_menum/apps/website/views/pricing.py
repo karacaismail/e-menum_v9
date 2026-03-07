@@ -65,15 +65,13 @@ class PricingView(CmsContextMixin, TemplateView):
         try:
             from apps.subscriptions.models import Plan, Feature, PlanFeature
 
-            plans = list(
-                Plan.objects.filter(
+            plans_qs = Plan.objects.filter(
                     is_active=True,
                     is_public=True,
                     deleted_at__isnull=True,
-                )
-                .prefetch_related("display_features")
-                .order_by("sort_order")
-            )
+                ).order_by("sort_order")
+
+            plans = list(plans_qs.prefetch_related("display_features"))
             context["plans"] = plans
 
             # Build comparison matrix grouped by category
@@ -83,8 +81,8 @@ class PricingView(CmsContextMixin, TemplateView):
             ).order_by("category", "sort_order")
 
             # Pre-fetch all PlanFeatures at once (avoid N+1)
-            plan_ids = list(plans.values_list("id", flat=True))
-            feature_ids = list(features.values_list("id", flat=True))
+            plan_ids = [p.id for p in plans]
+            feature_ids = [f.id for f in features]
             plan_features = PlanFeature.objects.filter(
                 plan_id__in=plan_ids,
                 feature_id__in=feature_ids,
@@ -152,7 +150,6 @@ class PricingView(CmsContextMixin, TemplateView):
         # FAQs for pricing page
         context["faqs"] = FAQ.objects.filter(
             is_active=True,
-            deleted_at__isnull=True,
             page__in=["pricing", "both"],
         ).order_by("sort_order")
 
