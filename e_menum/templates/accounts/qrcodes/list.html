@@ -72,12 +72,12 @@
 
                 {# Type Badge #}
                 <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold ml-2 flex-shrink-0
-                    {% if qr.qr_type == 'MENU' %}bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400
-                    {% elif qr.qr_type == 'TABLE' %}bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
-                    {% elif qr.qr_type == 'CAMPAIGN' %}bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400
+                    {% if qr.type == 'MENU' %}bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400
+                    {% elif qr.type == 'TABLE' %}bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
+                    {% elif qr.type == 'CAMPAIGN' %}bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400
                     {% else %}bg-gray-100 text-gray-700 dark:bg-gray-600 dark:text-gray-300
                     {% endif %}">
-                    {{ qr.get_qr_type_display|default:qr.qr_type }}
+                    {{ qr.get_type_display|default:qr.type }}
                 </span>
             </div>
 
