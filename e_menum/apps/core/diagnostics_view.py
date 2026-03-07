@@ -129,14 +129,11 @@ def diagnostics_view(request):
         }
         if resp.status_code != 200 and hasattr(resp, "exc_info") and resp.exc_info:
             exc_type, exc_val, exc_tb = resp.exc_info
-            import traceback as tb_module
-
             pricing_result["traceback"] = "".join(
-                tb_module.format_exception(exc_type, exc_val, exc_tb)
+                traceback.format_exception(exc_type, exc_val, exc_tb)
             )
         result["pricing_render"] = pricing_result
     except Exception:
         result["pricing_render"] = {"error": traceback.format_exc()}
 
     return JsonResponse(result, json_dumps_params={"indent": 2})
-
