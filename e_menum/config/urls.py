@@ -573,15 +573,16 @@ if settings.DEBUG:
         else settings.STATIC_ROOT,
     )
 
-    # Django Debug Toolbar
-    try:
-        import debug_toolbar
+    # Django Debug Toolbar (only when in INSTALLED_APPS)
+    if "debug_toolbar" in settings.INSTALLED_APPS:
+        try:
+            import debug_toolbar
 
-        urlpatterns = [
-            path("__debug__/", include(debug_toolbar.urls)),
-        ] + urlpatterns
-    except ImportError:
-        pass
+            urlpatterns = [
+                path("__debug__/", include(debug_toolbar.urls)),
+            ] + urlpatterns
+        except ImportError:
+            pass
 
     # DRF Browsable API authentication (for development convenience)
     urlpatterns += [
