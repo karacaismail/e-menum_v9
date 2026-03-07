@@ -313,11 +313,8 @@ class RegistrationTests(BaseTestCase):
         }
         self.client.post(REGISTER_URL, data, follow=True)
         user = User.objects.get(email="autologin@example.com")
-        # After login, session should contain the user's pk
-        self.assertEqual(
-            int(self.client.session.get("_auth_user_id", 0) or 0) or str(user.pk),
-            str(user.pk),
-        )
+        # After login, session should contain the user's pk (UUID as string)
+        self.assertEqual(self.client.session.get("_auth_user_id"), str(user.pk))
 
     def test_registration_redirects_to_dashboard(self):
         """After successful registration, user should be redirected to dashboard."""
