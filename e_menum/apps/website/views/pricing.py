@@ -66,10 +66,10 @@ class PricingView(CmsContextMixin, TemplateView):
             from apps.subscriptions.models import Plan, Feature, PlanFeature
 
             plans_qs = Plan.objects.filter(
-                    is_active=True,
-                    is_public=True,
-                    deleted_at__isnull=True,
-                ).order_by("sort_order")
+                is_active=True,
+                is_public=True,
+                deleted_at__isnull=True,
+            ).order_by("sort_order")
 
             plans = list(plans_qs.prefetch_related("display_features"))
             context["plans"] = plans
