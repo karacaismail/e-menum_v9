@@ -299,7 +299,7 @@ AUTH_USER_MODEL = "core.User"
 
 # Authentication backends (including django-guardian for object-level permissions)
 AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
+    "apps.core.backends.EmailOrUsernameBackend",  # Email OR username login
     "guardian.backends.ObjectPermissionBackend",
 ]
 
