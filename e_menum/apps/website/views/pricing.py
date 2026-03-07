@@ -63,9 +63,11 @@ class PricingView(CmsContextMixin, TemplateView):
         try:
             from apps.subscriptions.models import Plan, Feature, PlanFeature
 
-            plans = Plan.objects.filter(
-                is_active=True, is_public=True, deleted_at__isnull=True,
-            ).prefetch_related('display_features').order_by('sort_order')
+            plans = list(
+                Plan.objects.filter(
+                    is_active=True, is_public=True, deleted_at__isnull=True,
+                ).prefetch_related('display_features').order_by('sort_order')
+            )
             context['plans'] = plans
 
             # Build comparison matrix grouped by category
