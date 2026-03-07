@@ -22,7 +22,7 @@ DEBUG = False
 
 # SECURITY WARNING: Set this to your actual production domain(s)
 # Defaults derive from SITE_DOMAIN (set in base.py via env var).
-ALLOWED_HOSTS = env.list(
+ALLOWED_HOSTS = env.list(  # noqa: F405
     "ALLOWED_HOSTS",
     default=[  # noqa: F405
         SITE_DOMAIN,  # noqa: F405
@@ -44,7 +44,7 @@ if _server_ip and _server_ip not in ALLOWED_HOSTS:
 # CSRF trusted origins for production
 # Include both http:// and https:// so the app works behind a proxy that
 # terminates SSL (Django sees HTTP) as well as direct HTTPS.
-CSRF_TRUSTED_ORIGINS = env.list(
+CSRF_TRUSTED_ORIGINS = env.list(  # noqa: F405
     "CSRF_TRUSTED_ORIGINS",
     default=[  # noqa: F405
         f"https://{SITE_DOMAIN}",  # noqa: F405
@@ -244,7 +244,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"  # noqa: F405
 # =============================================================================
 
 # Production CORS settings - strict whitelist
-CORS_ALLOWED_ORIGINS = env.list(
+CORS_ALLOWED_ORIGINS = env.list(  # noqa: F405
     "CORS_ALLOWED_ORIGINS",
     default=[  # noqa: F405
         f"https://{SITE_DOMAIN}",  # noqa: F405

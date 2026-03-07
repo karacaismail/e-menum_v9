@@ -20,7 +20,7 @@ from .base import *  # noqa: F401, F403
 DEBUG = False
 
 # SECURITY WARNING: Set this to your actual staging domain(s)
-ALLOWED_HOSTS = env.list(
+ALLOWED_HOSTS = env.list(  # noqa: F405
     "ALLOWED_HOSTS",
     default=[  # noqa: F405
         f"staging.{SITE_DOMAIN}",  # noqa: F405
@@ -29,7 +29,7 @@ ALLOWED_HOSTS = env.list(
 )
 
 # CSRF trusted origins for staging
-CSRF_TRUSTED_ORIGINS = env.list(
+CSRF_TRUSTED_ORIGINS = env.list(  # noqa: F405
     "CSRF_TRUSTED_ORIGINS",
     default=[  # noqa: F405
         f"https://staging.{SITE_DOMAIN}",  # noqa: F405
@@ -162,7 +162,7 @@ CSRF_COOKIE_HTTPONLY = True
 # =============================================================================
 
 # Staging-specific CORS settings
-CORS_ALLOWED_ORIGINS = env.list(
+CORS_ALLOWED_ORIGINS = env.list(  # noqa: F405
     "CORS_ALLOWED_ORIGINS",
     default=[  # noqa: F405
         f"https://staging.{SITE_DOMAIN}",  # noqa: F405
