@@ -21,7 +21,7 @@ class OrganizationAdminForm(forms.ModelForm):
 
     class Meta:
         model = Organization
-        fields = '__all__'
+        fields = "__all__"
         widgets = {
-            'logo': ImageUploadWidget(subfolder='logos'),
+            "logo": ImageUploadWidget(subfolder="logos"),
         }

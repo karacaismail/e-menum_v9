@@ -30,20 +30,20 @@ class NotificationListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = [
-            'id',
-            'notification_type',
-            'status',
-            'priority',
-            'channel',
-            'title',
-            'message',
-            'is_read',
-            'is_expired',
-            'is_urgent',
-            'action_url',
-            'image_url',
-            'read_at',
-            'created_at',
+            "id",
+            "notification_type",
+            "status",
+            "priority",
+            "channel",
+            "title",
+            "message",
+            "is_read",
+            "is_expired",
+            "is_urgent",
+            "action_url",
+            "image_url",
+            "read_at",
+            "created_at",
         ]
         read_only_fields = fields
 
@@ -75,28 +75,28 @@ class NotificationDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = [
-            'id',
-            'notification_type',
-            'status',
-            'priority',
-            'channel',
-            'title',
-            'message',
-            'data',
-            'metadata',
-            'is_read',
-            'is_expired',
-            'is_urgent',
-            'is_sent',
-            'action_url',
-            'image_url',
-            'read_at',
-            'sent_at',
-            'delivered_at',
-            'scheduled_for',
-            'expires_at',
-            'created_at',
-            'updated_at',
+            "id",
+            "notification_type",
+            "status",
+            "priority",
+            "channel",
+            "title",
+            "message",
+            "data",
+            "metadata",
+            "is_read",
+            "is_expired",
+            "is_urgent",
+            "is_sent",
+            "action_url",
+            "image_url",
+            "read_at",
+            "sent_at",
+            "delivered_at",
+            "scheduled_for",
+            "expires_at",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = fields
 
@@ -118,6 +118,6 @@ class NotificationDetailSerializer(serializers.ModelSerializer):
 # =============================================================================
 
 __all__ = [
-    'NotificationListSerializer',
-    'NotificationDetailSerializer',
+    "NotificationListSerializer",
+    "NotificationDetailSerializer",
 ]

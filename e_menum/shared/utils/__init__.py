@@ -43,11 +43,11 @@ from shared.utils.exceptions import (
 )
 
 __all__ = [
-    'ErrorCodes',
-    'AppException',
-    'AuthenticationException',
-    'PermissionException',
-    'ResourceNotFoundException',
-    'BusinessLogicException',
-    'custom_exception_handler',
+    "ErrorCodes",
+    "AppException",
+    "AuthenticationException",
+    "PermissionException",
+    "ResourceNotFoundException",
+    "BusinessLogicException",
+    "custom_exception_handler",
 ]

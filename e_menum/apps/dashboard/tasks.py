@@ -19,8 +19,8 @@ logger = logging.getLogger(__name__)
 
 @shared_task(
     bind=True,
-    name='apps.dashboard.tasks.generate_dashboard_insights',
-    queue='analytics',
+    name="apps.dashboard.tasks.generate_dashboard_insights",
+    queue="analytics",
     max_retries=3,
     default_retry_delay=120,
     soft_time_limit=300,
@@ -51,7 +51,7 @@ def generate_dashboard_insights(self):
     ).update(is_active=False)
 
     if expired_count:
-        logger.info('Deactivated %d expired insights', expired_count)
+        logger.info("Deactivated %d expired insights", expired_count)
 
     # ─── Query 1: Churn Risk ─────────────────────────────────
     try:
@@ -73,7 +73,7 @@ def generate_dashboard_insights(self):
                 created_at__gte=thirty_days_ago,
                 qr_code__organization__isnull=False,
             )
-            .values_list('qr_code__organization_id', flat=True)
+            .values_list("qr_code__organization_id", flat=True)
             .distinct()
         )
 
@@ -84,25 +84,25 @@ def generate_dashboard_insights(self):
 
         if inactive_orgs_count > 0:
             DashboardInsight.objects.update_or_create(
-                title='Churn Riski',
+                title="Churn Riski",
                 type=InsightType.WARNING,
                 is_active=True,
                 expires_at__gte=now,
                 deleted_at__isnull=True,
                 defaults={
-                    'body': f'{inactive_orgs_count} organizasyon son 30 gündür aktif değil.',
-                    'metric_value': inactive_orgs_count,
-                    'metric_label': 'organizasyon',
-                    'action_label': 'Görüntüle',
-                    'action_url': '/admin/core/organization/?status=ACTIVE',
-                    'priority': 90,
-                    'is_active': True,
-                    'expires_at': now + timedelta(hours=24),
+                    "body": f"{inactive_orgs_count} organizasyon son 30 gündür aktif değil.",
+                    "metric_value": inactive_orgs_count,
+                    "metric_label": "organizasyon",
+                    "action_label": "Görüntüle",
+                    "action_url": "/admin/core/organization/?status=ACTIVE",
+                    "priority": 90,
+                    "is_active": True,
+                    "expires_at": now + timedelta(hours=24),
                 },
             )
             insights_created += 1
     except Exception as exc:
-        logger.error('Churn risk insight failed: %s', exc, exc_info=True)
+        logger.error("Churn risk insight failed: %s", exc, exc_info=True)
 
     # ─── Query 2: Expiring Subscriptions ─────────────────────
     try:
@@ -121,25 +121,25 @@ def generate_dashboard_insights(self):
 
         if expiring > 0:
             DashboardInsight.objects.update_or_create(
-                title='Süresi Dolmak Üzere',
+                title="Süresi Dolmak Üzere",
                 type=InsightType.WARNING,
                 is_active=True,
                 expires_at__gte=now,
                 deleted_at__isnull=True,
                 defaults={
-                    'body': f'{expiring} aboneliğin süresi 7 gün içinde doluyor.',
-                    'metric_value': expiring,
-                    'metric_label': 'abonelik',
-                    'action_label': 'Abonelikleri Gör',
-                    'action_url': '/admin/subscriptions/subscription/',
-                    'priority': 85,
-                    'is_active': True,
-                    'expires_at': now + timedelta(hours=24),
+                    "body": f"{expiring} aboneliğin süresi 7 gün içinde doluyor.",
+                    "metric_value": expiring,
+                    "metric_label": "abonelik",
+                    "action_label": "Abonelikleri Gör",
+                    "action_url": "/admin/subscriptions/subscription/",
+                    "priority": 85,
+                    "is_active": True,
+                    "expires_at": now + timedelta(hours=24),
                 },
             )
             insights_created += 1
     except Exception as exc:
-        logger.error('Expiring plans insight failed: %s', exc, exc_info=True)
+        logger.error("Expiring plans insight failed: %s", exc, exc_info=True)
 
     # ─── Query 3: Growth Opportunity ─────────────────────────
     try:
@@ -147,7 +147,9 @@ def generate_dashboard_insights(self):
 
         this_month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         last_month_end = this_month_start - timedelta(seconds=1)
-        last_month_start = last_month_end.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        last_month_start = last_month_end.replace(
+            day=1, hour=0, minute=0, second=0, microsecond=0
+        )
 
         this_month_count = Organization.objects.filter(
             created_at__gte=this_month_start,
@@ -161,56 +163,60 @@ def generate_dashboard_insights(self):
         ).count()
 
         if last_month_count > 0:
-            growth_pct = ((this_month_count - last_month_count) / last_month_count) * 100
+            growth_pct = (
+                (this_month_count - last_month_count) / last_month_count
+            ) * 100
             if growth_pct > 20:
                 DashboardInsight.objects.update_or_create(
-                    title='Büyüme Fırsatı',
+                    title="Büyüme Fırsatı",
                     type=InsightType.OPPORTUNITY,
                     is_active=True,
                     expires_at__gte=now,
                     deleted_at__isnull=True,
                     defaults={
-                        'body': f'Bu ay kayıtlarda %{growth_pct:.0f} artış var! Geçen ay: {last_month_count}, bu ay: {this_month_count}.',
-                        'metric_value': growth_pct,
-                        'metric_label': 'büyüme',
-                        'action_label': 'Analiz Et',
-                        'action_url': '/admin/core/organization/',
-                        'priority': 70,
-                        'is_active': True,
-                        'expires_at': now + timedelta(hours=24),
+                        "body": f"Bu ay kayıtlarda %{growth_pct:.0f} artış var! Geçen ay: {last_month_count}, bu ay: {this_month_count}.",
+                        "metric_value": growth_pct,
+                        "metric_label": "büyüme",
+                        "action_label": "Analiz Et",
+                        "action_url": "/admin/core/organization/",
+                        "priority": 70,
+                        "is_active": True,
+                        "expires_at": now + timedelta(hours=24),
                     },
                 )
                 insights_created += 1
     except Exception as exc:
-        logger.error('Growth opportunity insight failed: %s', exc, exc_info=True)
+        logger.error("Growth opportunity insight failed: %s", exc, exc_info=True)
 
     # ─── Query 4: Pending Translations (if available) ────────
     try:
         # Check if translation model exists
         from django.apps import apps as django_apps
-        if django_apps.is_installed('apps.website'):
+
+        if django_apps.is_installed("apps.website"):
             # Try to check for pending content that might need translation
             from apps.website.models import BlogPost
+
             drafts = BlogPost.objects.filter(
-                status='DRAFT',
+                status="DRAFT",
                 deleted_at__isnull=True,
             ).count()
             if drafts > 10:
                 DashboardInsight.objects.update_or_create(
-                    title='Bekleyen İçerik',
+                    title="Bekleyen İçerik",
                     type=InsightType.INFO,
                     is_active=True,
                     expires_at__gte=now,
                     deleted_at__isnull=True,
                     defaults={
-                        'body': f'{drafts} taslak blog yazısı yayınlanmayı bekliyor.',
-                        'metric_value': drafts,
-                        'metric_label': 'taslak',
-                        'action_label': 'İçerikleri Gör',
-                        'action_url': '/admin/website/blogpost/?status=DRAFT',
-                        'priority': 50,
-                        'is_active': True,
-                        'expires_at': now + timedelta(hours=24),
+                        "body": f"{drafts} taslak blog yazısı yayınlanmayı bekliyor.",
+                        "metric_value": drafts,
+                        "metric_label": "taslak",
+                        "action_label": "İçerikleri Gör",
+                        "action_url": "/admin/website/blogpost/?status=DRAFT",
+                        "priority": 50,
+                        "is_active": True,
+                        "expires_at": now + timedelta(hours=24),
                     },
                 )
                 insights_created += 1
@@ -218,19 +224,20 @@ def generate_dashboard_insights(self):
         pass  # Module not available, skip
 
     logger.info(
-        'Dashboard insights generated: created=%d, expired_deactivated=%d',
-        insights_created, expired_count,
+        "Dashboard insights generated: created=%d, expired_deactivated=%d",
+        insights_created,
+        expired_count,
     )
     return {
-        'created': insights_created,
-        'expired_deactivated': expired_count,
+        "created": insights_created,
+        "expired_deactivated": expired_count,
     }
 
 
 @shared_task(
     bind=True,
-    name='apps.dashboard.tasks.warm_kpi_cache',
-    queue='analytics',
+    name="apps.dashboard.tasks.warm_kpi_cache",
+    queue="analytics",
     max_retries=1,
     default_retry_delay=30,
     soft_time_limit=120,
@@ -247,4 +254,4 @@ def warm_kpi_cache(self):
 
     service = KPIService()
     service.warm_all_caches()
-    return {'status': 'ok'}
+    return {"status": "ok"}

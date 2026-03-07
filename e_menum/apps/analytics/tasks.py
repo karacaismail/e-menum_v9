@@ -36,7 +36,7 @@ def _get_active_org_ids():
         Organization.objects.filter(
             deleted_at__isnull=True,
             is_active=True,
-        ).values_list('id', flat=True)
+        ).values_list("id", flat=True)
     )
 
 
@@ -44,10 +44,11 @@ def _get_active_org_ids():
 # HOURLY TASKS
 # =============================================================================
 
+
 @shared_task(
     bind=True,
-    name='apps.analytics.tasks.aggregate_hourly_analytics',
-    queue='analytics',
+    name="apps.analytics.tasks.aggregate_hourly_analytics",
+    queue="analytics",
     max_retries=3,
     default_retry_delay=60,
     soft_time_limit=300,
@@ -78,20 +79,26 @@ def aggregate_hourly_analytics(self):
         except Exception as exc:
             error_count += 1
             logger.error(
-                'Hourly aggregation failed for org=%s date=%s hour=%s: %s',
-                org_id, target_date, target_hour, str(exc),
+                "Hourly aggregation failed for org=%s date=%s hour=%s: %s",
+                org_id,
+                target_date,
+                target_hour,
+                str(exc),
                 exc_info=True,
             )
 
     logger.info(
-        'Hourly aggregation complete: date=%s hour=%s success=%d errors=%d',
-        target_date, target_hour, success_count, error_count,
+        "Hourly aggregation complete: date=%s hour=%s success=%d errors=%d",
+        target_date,
+        target_hour,
+        success_count,
+        error_count,
     )
     return {
-        'date': str(target_date),
-        'hour': target_hour,
-        'success': success_count,
-        'errors': error_count,
+        "date": str(target_date),
+        "hour": target_hour,
+        "success": success_count,
+        "errors": error_count,
     }
 
 
@@ -99,10 +106,11 @@ def aggregate_hourly_analytics(self):
 # DAILY TASKS
 # =============================================================================
 
+
 @shared_task(
     bind=True,
-    name='apps.analytics.tasks.generate_daily_summary',
-    queue='analytics',
+    name="apps.analytics.tasks.generate_daily_summary",
+    queue="analytics",
     max_retries=3,
     default_retry_delay=120,
     soft_time_limit=600,
@@ -129,26 +137,30 @@ def generate_daily_summary(self):
         except Exception as exc:
             error_count += 1
             logger.error(
-                'Daily sales aggregation failed for org=%s date=%s: %s',
-                org_id, yesterday, str(exc),
+                "Daily sales aggregation failed for org=%s date=%s: %s",
+                org_id,
+                yesterday,
+                str(exc),
                 exc_info=True,
             )
 
     logger.info(
-        'Daily sales aggregation complete: date=%s success=%d errors=%d',
-        yesterday, success_count, error_count,
+        "Daily sales aggregation complete: date=%s success=%d errors=%d",
+        yesterday,
+        success_count,
+        error_count,
     )
     return {
-        'date': str(yesterday),
-        'success': success_count,
-        'errors': error_count,
+        "date": str(yesterday),
+        "success": success_count,
+        "errors": error_count,
     }
 
 
 @shared_task(
     bind=True,
-    name='apps.analytics.tasks.aggregate_product_performance',
-    queue='analytics',
+    name="apps.analytics.tasks.aggregate_product_performance",
+    queue="analytics",
     max_retries=3,
     default_retry_delay=120,
     soft_time_limit=600,
@@ -181,26 +193,30 @@ def aggregate_product_performance(self):
         except Exception as exc:
             error_count += 1
             logger.error(
-                'Product performance aggregation failed for org=%s date=%s: %s',
-                org_id, yesterday, str(exc),
+                "Product performance aggregation failed for org=%s date=%s: %s",
+                org_id,
+                yesterday,
+                str(exc),
                 exc_info=True,
             )
 
     logger.info(
-        'Product performance aggregation complete: date=%s success=%d errors=%d',
-        yesterday, success_count, error_count,
+        "Product performance aggregation complete: date=%s success=%d errors=%d",
+        yesterday,
+        success_count,
+        error_count,
     )
     return {
-        'date': str(yesterday),
-        'success': success_count,
-        'errors': error_count,
+        "date": str(yesterday),
+        "success": success_count,
+        "errors": error_count,
     }
 
 
 @shared_task(
     bind=True,
-    name='apps.analytics.tasks.aggregate_customer_metrics',
-    queue='analytics',
+    name="apps.analytics.tasks.aggregate_customer_metrics",
+    queue="analytics",
     max_retries=3,
     default_retry_delay=120,
     soft_time_limit=600,
@@ -226,26 +242,30 @@ def aggregate_customer_metrics(self):
         except Exception as exc:
             error_count += 1
             logger.error(
-                'Customer metrics aggregation failed for org=%s date=%s: %s',
-                org_id, yesterday, str(exc),
+                "Customer metrics aggregation failed for org=%s date=%s: %s",
+                org_id,
+                yesterday,
+                str(exc),
                 exc_info=True,
             )
 
     logger.info(
-        'Customer metrics aggregation complete: date=%s success=%d errors=%d',
-        yesterday, success_count, error_count,
+        "Customer metrics aggregation complete: date=%s success=%d errors=%d",
+        yesterday,
+        success_count,
+        error_count,
     )
     return {
-        'date': str(yesterday),
-        'success': success_count,
-        'errors': error_count,
+        "date": str(yesterday),
+        "success": success_count,
+        "errors": error_count,
     }
 
 
 @shared_task(
     bind=True,
-    name='apps.analytics.tasks.aggregate_dashboard_metrics',
-    queue='analytics',
+    name="apps.analytics.tasks.aggregate_dashboard_metrics",
+    queue="analytics",
     max_retries=3,
     default_retry_delay=120,
     soft_time_limit=600,
@@ -275,18 +295,21 @@ def aggregate_dashboard_metrics(self):
             except Exception as exc:
                 error_count += 1
                 logger.error(
-                    'Dashboard metrics aggregation failed for org=%s period=%s: %s',
-                    org_id, period_type, str(exc),
+                    "Dashboard metrics aggregation failed for org=%s period=%s: %s",
+                    org_id,
+                    period_type,
+                    str(exc),
                     exc_info=True,
                 )
 
     logger.info(
-        'Dashboard metrics aggregation complete: success=%d errors=%d',
-        success_count, error_count,
+        "Dashboard metrics aggregation complete: success=%d errors=%d",
+        success_count,
+        error_count,
     )
     return {
-        'success': success_count,
-        'errors': error_count,
+        "success": success_count,
+        "errors": error_count,
     }
 
 
@@ -294,10 +317,11 @@ def aggregate_dashboard_metrics(self):
 # WEEKLY TASKS
 # =============================================================================
 
+
 @shared_task(
     bind=True,
-    name='apps.analytics.tasks.aggregate_weekly_performance',
-    queue='analytics',
+    name="apps.analytics.tasks.aggregate_weekly_performance",
+    queue="analytics",
     max_retries=3,
     default_retry_delay=120,
     soft_time_limit=900,
@@ -332,20 +356,24 @@ def aggregate_weekly_performance(self):
         except Exception as exc:
             error_count += 1
             logger.error(
-                'Weekly product performance failed for org=%s: %s',
-                org_id, str(exc),
+                "Weekly product performance failed for org=%s: %s",
+                org_id,
+                str(exc),
                 exc_info=True,
             )
 
     logger.info(
-        'Weekly product performance complete: %s to %s success=%d errors=%d',
-        week_start, week_end, success_count, error_count,
+        "Weekly product performance complete: %s to %s success=%d errors=%d",
+        week_start,
+        week_end,
+        success_count,
+        error_count,
     )
     return {
-        'week_start': str(week_start),
-        'week_end': str(week_end),
-        'success': success_count,
-        'errors': error_count,
+        "week_start": str(week_start),
+        "week_end": str(week_end),
+        "success": success_count,
+        "errors": error_count,
     }
 
 
@@ -353,10 +381,11 @@ def aggregate_weekly_performance(self):
 # BACKFILL (MANUAL TRIGGER)
 # =============================================================================
 
+
 @shared_task(
     bind=True,
-    name='apps.analytics.tasks.backfill_aggregations',
-    queue='analytics',
+    name="apps.analytics.tasks.backfill_aggregations",
+    queue="analytics",
     max_retries=0,
     soft_time_limit=3600,
     time_limit=7200,
@@ -415,8 +444,11 @@ def backfill_aggregations(self, org_id=None, start_date_str=None, end_date_str=N
     total_days = (end - start).days + 1
 
     logger.info(
-        'Starting backfill: orgs=%d days=%d (%s to %s)',
-        len(org_ids), total_days, start, end,
+        "Starting backfill: orgs=%d days=%d (%s to %s)",
+        len(org_ids),
+        total_days,
+        start,
+        end,
     )
 
     for org_id_item in org_ids:
@@ -445,8 +477,10 @@ def backfill_aggregations(self, org_id=None, start_date_str=None, end_date_str=N
             except Exception as exc:
                 total_errors += 1
                 logger.error(
-                    'Backfill failed for org=%s date=%s: %s',
-                    org_id_item, current_date, str(exc),
+                    "Backfill failed for org=%s date=%s: %s",
+                    org_id_item,
+                    current_date,
+                    str(exc),
                     exc_info=True,
                 )
 
@@ -458,18 +492,21 @@ def backfill_aggregations(self, org_id=None, start_date_str=None, end_date_str=N
                 service.aggregate_dashboard_metrics(org_id_item, pt)
         except Exception as exc:
             logger.error(
-                'Backfill dashboard metrics failed for org=%s: %s',
-                org_id_item, str(exc),
+                "Backfill dashboard metrics failed for org=%s: %s",
+                org_id_item,
+                str(exc),
                 exc_info=True,
             )
 
     logger.info(
-        'Backfill complete: orgs=%d days_success=%d days_error=%d',
-        len(org_ids), total_success, total_errors,
+        "Backfill complete: orgs=%d days_success=%d days_error=%d",
+        len(org_ids),
+        total_success,
+        total_errors,
     )
     return {
-        'orgs_processed': len(org_ids),
-        'days_success': total_success,
-        'days_error': total_errors,
-        'date_range': f'{start} to {end}',
+        "orgs_processed": len(org_ids),
+        "days_success": total_success,
+        "days_error": total_errors,
+        "date_range": f"{start} to {end}",
     }

@@ -29,15 +29,15 @@ class MigrationLog(models.Model):
     """
 
     class Direction(models.TextChoices):
-        FORWARD = 'forward', 'Forward'
-        BACKWARD = 'backward', 'Backward'
+        FORWARD = "forward", "Forward"
+        BACKWARD = "backward", "Backward"
 
     class Status(models.TextChoices):
-        PENDING = 'pending', 'Pending'
-        RUNNING = 'running', 'Running'
-        SUCCESS = 'success', 'Success'
-        FAILED = 'failed', 'Failed'
-        SKIPPED = 'skipped', 'Skipped'
+        PENDING = "pending", "Pending"
+        RUNNING = "running", "Running"
+        SUCCESS = "success", "Success"
+        FAILED = "failed", "Failed"
+        SKIPPED = "skipped", "Skipped"
 
     id = models.UUIDField(
         primary_key=True,
@@ -51,7 +51,7 @@ class MigrationLog(models.Model):
     )
     migration_name = models.CharField(
         max_length=255,
-        help_text='Migration file name without .py extension.',
+        help_text="Migration file name without .py extension.",
     )
     direction = models.CharField(
         max_length=10,
@@ -73,45 +73,47 @@ class MigrationLog(models.Model):
     duration_ms = models.IntegerField(
         null=True,
         blank=True,
-        help_text='Elapsed time in milliseconds.',
+        help_text="Elapsed time in milliseconds.",
     )
     error_message = models.TextField(
         blank=True,
-        default='',
+        default="",
     )
     applied_by = models.CharField(
         max_length=100,
-        default='system',
-        help_text='User or process that triggered the migration.',
+        default="system",
+        help_text="User or process that triggered the migration.",
     )
     server_hostname = models.CharField(
         max_length=255,
         blank=True,
-        default='',
-        help_text='Hostname of the server that ran the migration.',
+        default="",
+        help_text="Hostname of the server that ran the migration.",
     )
     is_dangerous = models.BooleanField(
         default=False,
-        help_text='True if the migration was flagged as potentially dangerous.',
+        help_text="True if the migration was flagged as potentially dangerous.",
     )
     dry_run = models.BooleanField(
         default=False,
-        help_text='True if this was a dry-run execution (no actual changes).',
+        help_text="True if this was a dry-run execution (no actual changes).",
     )
 
     class Meta:
-        db_table = 'core_migration_log'
-        ordering = ['-started_at']
-        verbose_name = 'Migration Log'
-        verbose_name_plural = 'Migration Logs'
+        db_table = "core_migration_log"
+        ordering = ["-started_at"]
+        verbose_name = "Migration Log"
+        verbose_name_plural = "Migration Logs"
         indexes = [
-            models.Index(fields=['app_name', 'migration_name'], name='idx_miglog_app_migration'),
-            models.Index(fields=['status'], name='idx_miglog_status'),
-            models.Index(fields=['started_at'], name='idx_miglog_started'),
+            models.Index(
+                fields=["app_name", "migration_name"], name="idx_miglog_app_migration"
+            ),
+            models.Index(fields=["status"], name="idx_miglog_status"),
+            models.Index(fields=["started_at"], name="idx_miglog_started"),
         ]
 
     def __str__(self):
-        return f'{self.app_name}.{self.migration_name} [{self.status}]'
+        return f"{self.app_name}.{self.migration_name} [{self.status}]"
 
     def save(self, *args, **kwargs):
         if not self.server_hostname:
@@ -121,7 +123,7 @@ class MigrationLog(models.Model):
     def mark_running(self):
         """Transition this log entry to running status."""
         self.status = self.Status.RUNNING
-        self.save(update_fields=['status'])
+        self.save(update_fields=["status"])
 
     def mark_success(self):
         """Transition this log entry to success status with timing."""
@@ -130,7 +132,7 @@ class MigrationLog(models.Model):
         self.completed_at = now
         if self.started_at:
             self.duration_ms = int((now - self.started_at).total_seconds() * 1000)
-        self.save(update_fields=['status', 'completed_at', 'duration_ms'])
+        self.save(update_fields=["status", "completed_at", "duration_ms"])
 
     def mark_failed(self, error_message: str):
         """Transition this log entry to failed status with error details."""
@@ -140,4 +142,6 @@ class MigrationLog(models.Model):
         self.error_message = str(error_message)[:5000]  # Truncate very long errors
         if self.started_at:
             self.duration_ms = int((now - self.started_at).total_seconds() * 1000)
-        self.save(update_fields=['status', 'completed_at', 'duration_ms', 'error_message'])
+        self.save(
+            update_fields=["status", "completed_at", "duration_ms", "error_message"]
+        )

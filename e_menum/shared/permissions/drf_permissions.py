@@ -74,27 +74,28 @@ logger = logging.getLogger(__name__)
 # These are re-exported from abilities.py for cleaner imports
 __all__ = [
     # Core DRF permission classes
-    'HasOrganizationPermission',
-    'HasPlatformPermission',
-    'IsTenantMember',
-    'IsOwnerOrReadOnly',
-    'IsAuthenticatedOrReadOnly',
-    'AllowPublicRead',
+    "HasOrganizationPermission",
+    "HasPlatformPermission",
+    "IsTenantMember",
+    "IsOwnerOrReadOnly",
+    "IsAuthenticatedOrReadOnly",
+    "AllowPublicRead",
     # Action-based permission classes
-    'OrganizationScopedPermission',
-    'ActionBasedPermission',
+    "OrganizationScopedPermission",
+    "ActionBasedPermission",
     # Factory functions
-    'make_organization_permission',
-    'make_platform_permission',
-    'make_composite_permission',
+    "make_organization_permission",
+    "make_platform_permission",
+    "make_composite_permission",
     # Utility functions
-    'get_action_permission_code',
+    "get_action_permission_code",
 ]
 
 
 # =============================================================================
 # Action-Based Permission Classes
 # =============================================================================
+
 
 class OrganizationScopedPermission(permissions.BasePermission):
     """
@@ -137,12 +138,12 @@ class OrganizationScopedPermission(permissions.BasePermission):
 
     # Default mapping from DRF actions to permission action names
     DEFAULT_ACTION_MAP = {
-        'list': 'view',
-        'retrieve': 'view',
-        'create': 'create',
-        'update': 'update',
-        'partial_update': 'update',
-        'destroy': 'delete',
+        "list": "view",
+        "retrieve": "view",
+        "create": "create",
+        "update": "update",
+        "partial_update": "update",
+        "destroy": "delete",
     }
 
     def has_permission(self, request: Request, view: APIView) -> bool:
@@ -171,27 +172,23 @@ class OrganizationScopedPermission(permissions.BasePermission):
             # No permission defined for this action - deny by default
             logger.warning(
                 "No permission defined for action '%s' on view '%s'",
-                getattr(view, 'action', 'unknown'),
-                view.__class__.__name__
+                getattr(view, "action", "unknown"),
+                view.__class__.__name__,
             )
             return False
 
         # Get organization context
-        organization = getattr(request, 'organization', None)
+        organization = getattr(request, "organization", None)
 
         # Check permission
-        has_perm = check_permission(
-            request.user,
-            permission_code,
-            organization
-        )
+        has_perm = check_permission(request.user, permission_code, organization)
 
         if not has_perm:
             logger.debug(
                 "Permission denied: user=%s, permission=%s, org=%s",
                 request.user.email,
                 permission_code,
-                organization.id if organization else None
+                organization.id if organization else None,
             )
 
         return has_perm
@@ -219,24 +216,21 @@ class OrganizationScopedPermission(permissions.BasePermission):
         if not permission_code:
             return False
 
-        organization = getattr(request, 'organization', None)
+        organization = getattr(request, "organization", None)
 
         # Verify object belongs to the same organization
-        if hasattr(obj, 'organization_id'):
+        if hasattr(obj, "organization_id"):
             obj_org_id = obj.organization_id
             if organization and str(obj_org_id) != str(organization.id):
                 logger.warning(
                     "Object organization mismatch: obj_org=%s, request_org=%s",
                     obj_org_id,
-                    organization.id
+                    organization.id,
                 )
                 return False
 
         return check_permission(
-            request.user,
-            permission_code,
-            organization,
-            subject=obj
+            request.user, permission_code, organization, subject=obj
         )
 
     def _get_permission_code(self, view: APIView) -> Optional[str]:
@@ -249,15 +243,15 @@ class OrganizationScopedPermission(permissions.BasePermission):
         Returns:
             str or None: The permission code to check
         """
-        action = getattr(view, 'action', None)
+        action = getattr(view, "action", None)
 
         # Try explicit action_permissions first
-        action_permissions = getattr(view, 'action_permissions', {})
+        action_permissions = getattr(view, "action_permissions", {})
         if action and action in action_permissions:
             return action_permissions[action]
 
         # Fall back to resource-based permission
-        resource = getattr(view, 'permission_resource', None)
+        resource = getattr(view, "permission_resource", None)
         if resource and action:
             permission_action = self.DEFAULT_ACTION_MAP.get(action, action)
             return f"{resource}.{permission_action}"
@@ -301,21 +295,21 @@ class ActionBasedPermission(permissions.BasePermission):
         if request.user.is_superuser:
             return True
 
-        action = getattr(view, 'action', None)
+        action = getattr(view, "action", None)
         if not action:
             return True
 
-        permission_map = getattr(view, 'action_permission_map', {})
+        permission_map = getattr(view, "action_permission_map", {})
         action_config = permission_map.get(action)
 
         if not action_config:
             return True  # No specific permissions required
 
-        permissions_list = action_config.get('permissions', [])
-        operator = action_config.get('operator', 'all')
-        organization = getattr(request, 'organization', None)
+        permissions_list = action_config.get("permissions", [])
+        operator = action_config.get("operator", "all")
+        organization = getattr(request, "organization", None)
 
-        if operator == 'all':
+        if operator == "all":
             return all(
                 check_permission(request.user, perm, organization)
                 for perm in permissions_list
@@ -331,9 +325,9 @@ class ActionBasedPermission(permissions.BasePermission):
 # Factory Functions
 # =============================================================================
 
+
 def make_organization_permission(
-    permission_code: str,
-    message: str = None
+    permission_code: str, message: str = None
 ) -> Type[permissions.BasePermission]:
     """
     Factory function to create an organization-scoped permission class.
@@ -374,12 +368,8 @@ def make_organization_permission(
             if request.user.is_superuser:
                 return True
 
-            organization = getattr(request, 'organization', None)
-            return check_permission(
-                request.user,
-                self.permission_code,
-                organization
-            )
+            organization = getattr(request, "organization", None)
+            return check_permission(request.user, self.permission_code, organization)
 
         def has_object_permission(self, request: Request, view: APIView, obj) -> bool:
             if not request.user or not request.user.is_authenticated:
@@ -388,24 +378,22 @@ def make_organization_permission(
             if request.user.is_superuser:
                 return True
 
-            organization = getattr(request, 'organization', None)
+            organization = getattr(request, "organization", None)
             return check_permission(
-                request.user,
-                self.permission_code,
-                organization,
-                subject=obj
+                request.user, self.permission_code, organization, subject=obj
             )
 
     # Set a descriptive name
-    DynamicOrganizationPermission.__name__ = f'HasPermission_{permission_code.replace(".", "_")}'
+    DynamicOrganizationPermission.__name__ = (
+        f"HasPermission_{permission_code.replace('.', '_')}"
+    )
     DynamicOrganizationPermission.__qualname__ = DynamicOrganizationPermission.__name__
 
     return DynamicOrganizationPermission
 
 
 def make_platform_permission(
-    permission_code: str,
-    message: str = None
+    permission_code: str, message: str = None
 ) -> Type[permissions.BasePermission]:
     """
     Factory function to create a platform-level permission class.
@@ -444,21 +432,20 @@ def make_platform_permission(
 
             # Platform permissions don't use organization context
             return check_permission(
-                request.user,
-                self.permission_code,
-                organization=None
+                request.user, self.permission_code, organization=None
             )
 
     # Set a descriptive name
-    DynamicPlatformPermission.__name__ = f'HasPlatformPermission_{permission_code.replace(".", "_")}'
+    DynamicPlatformPermission.__name__ = (
+        f"HasPlatformPermission_{permission_code.replace('.', '_')}"
+    )
     DynamicPlatformPermission.__qualname__ = DynamicPlatformPermission.__name__
 
     return DynamicPlatformPermission
 
 
 def make_composite_permission(
-    permission_classes: List[Type[permissions.BasePermission]],
-    operator: str = 'all'
+    permission_classes: List[Type[permissions.BasePermission]], operator: str = "all"
 ) -> Type[permissions.BasePermission]:
     """
     Factory function to create a composite permission from multiple classes.
@@ -493,11 +480,10 @@ def make_composite_permission(
 
         def has_permission(self, request: Request, view: APIView) -> bool:
             results = [
-                perm().has_permission(request, view)
-                for perm in permission_classes
+                perm().has_permission(request, view) for perm in permission_classes
             ]
 
-            if operator == 'all':
+            if operator == "all":
                 return all(results)
             return any(results)
 
@@ -507,14 +493,14 @@ def make_composite_permission(
                 for perm in permission_classes
             ]
 
-            if operator == 'all':
+            if operator == "all":
                 return all(results)
             return any(results)
 
     # Set a descriptive name
     class_names = [cls.__name__ for cls in permission_classes]
-    op_symbol = " & " if operator == 'all' else " | "
-    CompositePermission.__name__ = f'Composite({op_symbol.join(class_names)})'
+    op_symbol = " & " if operator == "all" else " | "
+    CompositePermission.__name__ = f"Composite({op_symbol.join(class_names)})"
     CompositePermission.__qualname__ = CompositePermission.__name__
 
     return CompositePermission
@@ -524,10 +510,9 @@ def make_composite_permission(
 # Utility Functions
 # =============================================================================
 
+
 def get_action_permission_code(
-    resource: str,
-    action: str,
-    action_map: Dict[str, str] = None
+    resource: str, action: str, action_map: Dict[str, str] = None
 ) -> str:
     """
     Generate a permission code from resource and action.
@@ -547,12 +532,12 @@ def get_action_permission_code(
         code = get_action_permission_code('menu', 'create')  # 'menu.create'
     """
     default_map = {
-        'list': 'view',
-        'retrieve': 'view',
-        'create': 'create',
-        'update': 'update',
-        'partial_update': 'update',
-        'destroy': 'delete',
+        "list": "view",
+        "retrieve": "view",
+        "create": "create",
+        "update": "update",
+        "partial_update": "update",
+        "destroy": "delete",
     }
 
     mapping = {**default_map, **(action_map or {})}

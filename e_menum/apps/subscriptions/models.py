@@ -116,28 +116,30 @@ class Feature(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     code = models.CharField(
         max_length=100,
         unique=True,
-        verbose_name=_('Code'),
-        help_text=_('Unique identifier code for feature lookup (e.g., max_menus, ai_enabled)')
+        verbose_name=_("Code"),
+        help_text=_(
+            "Unique identifier code for feature lookup (e.g., max_menus, ai_enabled)"
+        ),
     )
 
     name = models.CharField(
         max_length=200,
-        verbose_name=_('Name'),
-        help_text=_('Human-readable display name for the feature')
+        verbose_name=_("Name"),
+        help_text=_("Human-readable display name for the feature"),
     )
 
     description = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Description'),
-        help_text=_('Detailed description of what this feature provides')
+        verbose_name=_("Description"),
+        help_text=_("Detailed description of what this feature provides"),
     )
 
     feature_type = models.CharField(
@@ -145,43 +147,47 @@ class Feature(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=FeatureType.choices,
         default=FeatureType.BOOLEAN,
         db_index=True,
-        verbose_name=_('Feature type'),
-        help_text=_('Type of feature: BOOLEAN (on/off), LIMIT (max count), USAGE (metered)')
+        verbose_name=_("Feature type"),
+        help_text=_(
+            "Type of feature: BOOLEAN (on/off), LIMIT (max count), USAGE (metered)"
+        ),
     )
 
     default_value = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Default value'),
-        help_text=_('Default value for the feature (JSON format)')
+        verbose_name=_("Default value"),
+        help_text=_("Default value for the feature (JSON format)"),
     )
 
     category = models.CharField(
         max_length=50,
         choices=FeatureCategoryType.choices,
         db_index=True,
-        verbose_name=_('Category'),
-        help_text=_('Category for grouping features (e.g., menus, orders, ai, analytics)')
+        verbose_name=_("Category"),
+        help_text=_(
+            "Category for grouping features (e.g., menus, orders, ai, analytics)"
+        ),
     )
 
     sort_order = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Sort order'),
-        help_text=_('Display order within category (lower numbers appear first)')
+        verbose_name=_("Sort order"),
+        help_text=_("Display order within category (lower numbers appear first)"),
     )
 
     is_active = models.BooleanField(
         default=True,
         db_index=True,
-        verbose_name=_('Is active'),
-        help_text=_('Whether the feature is currently available')
+        verbose_name=_("Is active"),
+        help_text=_("Whether the feature is currently available"),
     )
 
     metadata = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Metadata'),
-        help_text=_('Additional metadata for the feature (JSON)')
+        verbose_name=_("Metadata"),
+        help_text=_("Additional metadata for the feature (JSON)"),
     )
 
     # Managers
@@ -189,15 +195,19 @@ class Feature(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'features'
-        verbose_name = _('Feature')
-        verbose_name_plural = _('Features')
-        ordering = ['category', 'sort_order', 'name']
+        db_table = "features"
+        verbose_name = _("Feature")
+        verbose_name_plural = _("Features")
+        ordering = ["category", "sort_order", "name"]
         indexes = [
-            models.Index(fields=['code'], name='feature_code_idx'),
-            models.Index(fields=['category', 'sort_order'], name='feature_cat_sort_idx'),
-            models.Index(fields=['feature_type'], name='feature_type_idx'),
-            models.Index(fields=['is_active', 'deleted_at'], name='feature_active_del_idx'),
+            models.Index(fields=["code"], name="feature_code_idx"),
+            models.Index(
+                fields=["category", "sort_order"], name="feature_cat_sort_idx"
+            ),
+            models.Index(fields=["feature_type"], name="feature_type_idx"),
+            models.Index(
+                fields=["is_active", "deleted_at"], name="feature_active_del_idx"
+            ),
         ]
 
     def __str__(self) -> str:
@@ -235,7 +245,7 @@ class Feature(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         if not self.is_limit:
             return 0
-        return self.default_value.get('limit', 0)
+        return self.default_value.get("limit", 0)
 
     def get_default_enabled(self) -> bool:
         """
@@ -246,7 +256,7 @@ class Feature(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         if not self.is_boolean:
             return False
-        return self.default_value.get('enabled', False)
+        return self.default_value.get("enabled", False)
 
     def get_metadata(self, key: str, default=None):
         """
@@ -270,7 +280,7 @@ class Feature(TimeStampedMixin, SoftDeleteMixin, models.Model):
             value: The value to set
         """
         self.metadata[key] = value
-        self.save(update_fields=['metadata', 'updated_at'])
+        self.save(update_fields=["metadata", "updated_at"])
 
 
 class FeaturePermission(TimeStampedMixin, models.Model):
@@ -286,33 +296,33 @@ class FeaturePermission(TimeStampedMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)'),
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
     feature = models.ForeignKey(
         Feature,
         on_delete=models.CASCADE,
-        related_name='feature_permissions',
-        verbose_name=_('Feature'),
-        help_text=_('Feature that gates this permission'),
+        related_name="feature_permissions",
+        verbose_name=_("Feature"),
+        help_text=_("Feature that gates this permission"),
     )
     permission = models.ForeignKey(
         Permission,
         on_delete=models.CASCADE,
-        related_name='feature_permissions',
-        verbose_name=_('Permission'),
-        help_text=_('Permission gated by the feature'),
+        related_name="feature_permissions",
+        verbose_name=_("Permission"),
+        help_text=_("Permission gated by the feature"),
     )
 
     class Meta:
-        db_table = 'feature_permissions'
-        verbose_name = _('Feature Permission')
-        verbose_name_plural = _('Feature Permissions')
-        ordering = ['feature', 'permission']
-        unique_together = [['feature', 'permission']]
+        db_table = "feature_permissions"
+        verbose_name = _("Feature Permission")
+        verbose_name_plural = _("Feature Permissions")
+        ordering = ["feature", "permission"]
+        unique_together = [["feature", "permission"]]
         indexes = [
-            models.Index(fields=['feature'], name='featperm_feature_idx'),
-            models.Index(fields=['permission'], name='featperm_permission_idx'),
+            models.Index(fields=["feature"], name="featperm_feature_idx"),
+            models.Index(fields=["permission"], name="featperm_permission_idx"),
         ]
 
     def __str__(self) -> str:
@@ -405,44 +415,44 @@ class Plan(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     name = models.CharField(
         max_length=100,
-        verbose_name=_('Name'),
-        help_text=_('Display name of the plan (e.g., Starter, Professional)')
+        verbose_name=_("Name"),
+        help_text=_("Display name of the plan (e.g., Starter, Professional)"),
     )
 
     slug = models.SlugField(
         max_length=100,
         unique=True,
-        verbose_name=_('Slug'),
-        help_text=_('URL-friendly identifier (globally unique)')
+        verbose_name=_("Slug"),
+        help_text=_("URL-friendly identifier (globally unique)"),
     )
 
     tier = models.CharField(
         max_length=20,
         choices=PlanTier.choices,
         db_index=True,
-        verbose_name=_('Tier'),
-        help_text=_('Plan tier level (FREE, STARTER, GROWTH, etc.)')
+        verbose_name=_("Tier"),
+        help_text=_("Plan tier level (FREE, STARTER, GROWTH, etc.)"),
     )
 
     description = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Description'),
-        help_text=_('Detailed description of the plan and its features')
+        verbose_name=_("Description"),
+        help_text=_("Detailed description of the plan and its features"),
     )
 
     short_description = models.CharField(
         max_length=200,
         blank=True,
         null=True,
-        verbose_name=_('Short description'),
-        help_text=_('Brief tagline for the plan (shown on pricing cards)')
+        verbose_name=_("Short description"),
+        help_text=_("Brief tagline for the plan (shown on pricing cards)"),
     )
 
     # Pricing
@@ -450,79 +460,79 @@ class Plan(TimeStampedMixin, SoftDeleteMixin, models.Model):
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Monthly price'),
-        help_text=_('Monthly subscription price')
+        verbose_name=_("Monthly price"),
+        help_text=_("Monthly subscription price"),
     )
 
     price_yearly = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Yearly price'),
-        help_text=_('Yearly subscription price (typically with discount)')
+        verbose_name=_("Yearly price"),
+        help_text=_("Yearly subscription price (typically with discount)"),
     )
 
     currency = models.CharField(
         max_length=3,
-        default='TRY',
-        verbose_name=_('Currency'),
-        help_text=_('Currency code for pricing (e.g., TRY, USD, EUR)')
+        default="TRY",
+        verbose_name=_("Currency"),
+        help_text=_("Currency code for pricing (e.g., TRY, USD, EUR)"),
     )
 
     # Limits and Features (JSON fields for flexibility)
     limits = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Limits'),
+        verbose_name=_("Limits"),
         help_text=_(
             'Plan limits as JSON (e.g., {"max_menus": 3, "max_products": 200, '
             '"max_qr_codes": 10, "max_users": 5, "storage_mb": 500})'
-        )
+        ),
     )
 
     feature_flags = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Feature flags'),
+        verbose_name=_("Feature flags"),
         help_text=_(
             'Boolean feature flags as JSON (e.g., {"ai_enabled": true, '
             '"custom_domain": false, "api_access": false})'
-        )
+        ),
     )
 
     # Trial
     trial_days = models.PositiveIntegerField(
         default=14,
-        verbose_name=_('Trial days'),
-        help_text=_('Number of trial days for this plan (0 for no trial)')
+        verbose_name=_("Trial days"),
+        help_text=_("Number of trial days for this plan (0 for no trial)"),
     )
 
     # Status flags
     is_active = models.BooleanField(
         default=True,
         db_index=True,
-        verbose_name=_('Is active'),
-        help_text=_('Whether the plan is available for subscription')
+        verbose_name=_("Is active"),
+        help_text=_("Whether the plan is available for subscription"),
     )
 
     is_default = models.BooleanField(
         default=False,
         db_index=True,
-        verbose_name=_('Is default'),
-        help_text=_('Whether this is the default plan for new organizations')
+        verbose_name=_("Is default"),
+        help_text=_("Whether this is the default plan for new organizations"),
     )
 
     is_public = models.BooleanField(
         default=True,
         db_index=True,
-        verbose_name=_('Is public'),
-        help_text=_('Whether the plan is visible on the public pricing page')
+        verbose_name=_("Is public"),
+        help_text=_("Whether the plan is visible on the public pricing page"),
     )
 
     is_custom = models.BooleanField(
         default=False,
-        verbose_name=_('Is custom'),
-        help_text=_('Whether this is a custom enterprise plan')
+        verbose_name=_("Is custom"),
+        help_text=_("Whether this is a custom enterprise plan"),
     )
 
     # Display
@@ -530,8 +540,8 @@ class Plan(TimeStampedMixin, SoftDeleteMixin, models.Model):
         max_length=50,
         blank=True,
         null=True,
-        verbose_name=_('Highlight text'),
-        help_text=_('Optional badge/ribbon text (e.g., "En Popüler", "Özel Teklif")')
+        verbose_name=_("Highlight text"),
+        help_text=_('Optional badge/ribbon text (e.g., "En Popüler", "Özel Teklif")'),
     )
 
     # --- Pricing Card Display Fields ---
@@ -539,95 +549,111 @@ class Plan(TimeStampedMixin, SoftDeleteMixin, models.Model):
         max_length=20,
         choices=PlanCardStyle.choices,
         blank=True,
-        default='',
-        verbose_name=_('Card CSS class'),
-        help_text=_('Visual style for the pricing card (free, start, grow, pro, biz, ent)')
+        default="",
+        verbose_name=_("Card CSS class"),
+        help_text=_(
+            "Visual style for the pricing card (free, start, grow, pro, biz, ent)"
+        ),
     )
 
     badge_label = models.CharField(
         max_length=50,
         blank=True,
-        default='',
-        verbose_name=_('Badge label'),
-        help_text=_('Badge text shown on card (e.g., "Ücretsiz", "Starter"). Falls back to plan name.')
+        default="",
+        verbose_name=_("Badge label"),
+        help_text=_(
+            'Badge text shown on card (e.g., "Ücretsiz", "Starter"). Falls back to plan name.'
+        ),
     )
 
     motto = models.CharField(
         max_length=200,
         blank=True,
-        default='',
-        verbose_name=_('Motto'),
-        help_text=_('Motivational italic quote on pricing card (e.g., "Her büyük iş küçük bir adımla başlar.")')
+        default="",
+        verbose_name=_("Motto"),
+        help_text=_(
+            'Motivational italic quote on pricing card (e.g., "Her büyük iş küçük bir adımla başlar.")'
+        ),
     )
 
     ribbon_color = models.CharField(
         max_length=10,
         choices=PlanRibbonColor.choices,
         blank=True,
-        default='',
-        verbose_name=_('Ribbon color'),
-        help_text=_('Ribbon color if highlight_text is set (teal, gold, purple)')
+        default="",
+        verbose_name=_("Ribbon color"),
+        help_text=_("Ribbon color if highlight_text is set (teal, gold, purple)"),
     )
 
     cta_text = models.CharField(
         max_length=50,
         blank=True,
-        default='',
-        verbose_name=_('CTA button text'),
-        help_text=_('Call-to-action button text (e.g., "Ücretsiz Başla", "14 Gün Dene", "İletişime Geçin")')
+        default="",
+        verbose_name=_("CTA button text"),
+        help_text=_(
+            'Call-to-action button text (e.g., "Ücretsiz Başla", "14 Gün Dene", "İletişime Geçin")'
+        ),
     )
 
     cta_style = models.CharField(
         max_length=20,
         choices=PlanCtaStyle.choices,
         blank=True,
-        default='cta-out',
-        verbose_name=_('CTA button style'),
-        help_text=_('Button appearance: outline, primary (filled), or enterprise (gold)')
+        default="cta-out",
+        verbose_name=_("CTA button style"),
+        help_text=_(
+            "Button appearance: outline, primary (filled), or enterprise (gold)"
+        ),
     )
 
     cta_url = models.CharField(
         max_length=200,
         blank=True,
-        default='',
-        verbose_name=_('CTA URL'),
-        help_text=_('URL for the CTA button (Django URL name like "website:demo" or absolute URL)')
+        default="",
+        verbose_name=_("CTA URL"),
+        help_text=_(
+            'URL for the CTA button (Django URL name like "website:demo" or absolute URL)'
+        ),
     )
 
     price_label = models.CharField(
         max_length=100,
         blank=True,
-        default='',
-        verbose_name=_('Price label'),
-        help_text=_('Text below price (e.g., "Sonsuza kadar ücretsiz", "Aylık faturalanır")')
+        default="",
+        verbose_name=_("Price label"),
+        help_text=_(
+            'Text below price (e.g., "Sonsuza kadar ücretsiz", "Aylık faturalanır")'
+        ),
     )
 
     custom_price_text = models.CharField(
         max_length=50,
         blank=True,
-        default='',
-        verbose_name=_('Custom price text'),
-        help_text=_('Custom price display for enterprise plans (e.g., "Özel Fiyat")')
+        default="",
+        verbose_name=_("Custom price text"),
+        help_text=_('Custom price display for enterprise plans (e.g., "Özel Fiyat")'),
     )
 
     has_glow_effect = models.BooleanField(
         default=False,
-        verbose_name=_('Glow effect'),
-        help_text=_('Show a radial glow effect on the card (used for highlighted/featured plans)')
+        verbose_name=_("Glow effect"),
+        help_text=_(
+            "Show a radial glow effect on the card (used for highlighted/featured plans)"
+        ),
     )
 
     sort_order = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Sort order'),
-        help_text=_('Display order on pricing page (lower numbers appear first)')
+        verbose_name=_("Sort order"),
+        help_text=_("Display order on pricing page (lower numbers appear first)"),
     )
 
     # Additional metadata
     metadata = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Metadata'),
-        help_text=_('Additional plan metadata (JSON)')
+        verbose_name=_("Metadata"),
+        help_text=_("Additional plan metadata (JSON)"),
     )
 
     # Managers
@@ -635,17 +661,19 @@ class Plan(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'plans'
-        verbose_name = _('Plan')
-        verbose_name_plural = _('Plans')
-        ordering = ['sort_order', 'price_monthly']
+        db_table = "plans"
+        verbose_name = _("Plan")
+        verbose_name_plural = _("Plans")
+        ordering = ["sort_order", "price_monthly"]
         indexes = [
-            models.Index(fields=['tier'], name='plan_tier_idx'),
-            models.Index(fields=['slug'], name='plan_slug_idx'),
-            models.Index(fields=['is_active', 'is_public'], name='plan_active_public_idx'),
-            models.Index(fields=['is_default'], name='plan_default_idx'),
-            models.Index(fields=['sort_order'], name='plan_sort_idx'),
-            models.Index(fields=['deleted_at'], name='plan_deleted_idx'),
+            models.Index(fields=["tier"], name="plan_tier_idx"),
+            models.Index(fields=["slug"], name="plan_slug_idx"),
+            models.Index(
+                fields=["is_active", "is_public"], name="plan_active_public_idx"
+            ),
+            models.Index(fields=["is_default"], name="plan_default_idx"),
+            models.Index(fields=["sort_order"], name="plan_sort_idx"),
+            models.Index(fields=["deleted_at"], name="plan_deleted_idx"),
         ]
 
     def __str__(self) -> str:
@@ -710,34 +738,37 @@ class Plan(TimeStampedMixin, SoftDeleteMixin, models.Model):
         if self.price_yearly == 0:
             return 0
         from decimal import Decimal, ROUND_DOWN
-        return int((self.price_yearly / Decimal('12')).to_integral_value(rounding=ROUND_DOWN))
+
+        return int(
+            (self.price_yearly / Decimal("12")).to_integral_value(rounding=ROUND_DOWN)
+        )
 
     @property
     def formatted_price_monthly(self) -> str:
         """Return formatted monthly price with currency symbol."""
         currency_symbols = {
-            'TRY': '₺',
-            'USD': '$',
-            'EUR': '€',
-            'GBP': '£',
+            "TRY": "₺",
+            "USD": "$",
+            "EUR": "€",
+            "GBP": "£",
         }
         symbol = currency_symbols.get(self.currency, self.currency)
         if self.price_monthly == 0:
-            return _('Free')
+            return _("Free")
         return f"{symbol}{self.price_monthly:,.0f}"
 
     @property
     def formatted_price_yearly(self) -> str:
         """Return formatted yearly price with currency symbol."""
         currency_symbols = {
-            'TRY': '₺',
-            'USD': '$',
-            'EUR': '€',
-            'GBP': '£',
+            "TRY": "₺",
+            "USD": "$",
+            "EUR": "€",
+            "GBP": "£",
         }
         symbol = currency_symbols.get(self.currency, self.currency)
         if self.price_yearly == 0:
-            return _('Free')
+            return _("Free")
         return f"{symbol}{self.price_yearly:,.0f}"
 
     def get_limit(self, key: str, default: int = 0) -> int:
@@ -820,13 +851,15 @@ class Plan(TimeStampedMixin, SoftDeleteMixin, models.Model):
         Clears is_default flag on all other plans and sets this plan as default.
         """
         # Clear default flag on other plans
-        Plan.objects.filter(is_default=True).exclude(pk=self.pk).update(is_default=False)
+        Plan.objects.filter(is_default=True).exclude(pk=self.pk).update(
+            is_default=False
+        )
 
         # Set this plan as default
         self.is_default = True
-        self.save(update_fields=['is_default', 'updated_at'])
+        self.save(update_fields=["is_default", "updated_at"])
 
-    def compare_to(self, other_plan: 'Plan') -> dict:
+    def compare_to(self, other_plan: "Plan") -> dict:
         """
         Compare this plan to another plan.
 
@@ -837,8 +870,8 @@ class Plan(TimeStampedMixin, SoftDeleteMixin, models.Model):
             Dictionary with comparison results for limits and features
         """
         comparison = {
-            'limits': {},
-            'features': {},
+            "limits": {},
+            "features": {},
         }
 
         # Compare limits
@@ -846,20 +879,24 @@ class Plan(TimeStampedMixin, SoftDeleteMixin, models.Model):
         for key in all_limit_keys:
             self_value = self.get_limit(key)
             other_value = other_plan.get_limit(key)
-            comparison['limits'][key] = {
-                'self': self_value,
-                'other': other_value,
-                'difference': self_value - other_value if (self_value != -1 and other_value != -1) else None,
+            comparison["limits"][key] = {
+                "self": self_value,
+                "other": other_value,
+                "difference": self_value - other_value
+                if (self_value != -1 and other_value != -1)
+                else None,
             }
 
         # Compare feature flags
-        all_feature_keys = set(self.feature_flags.keys()) | set(other_plan.feature_flags.keys())
+        all_feature_keys = set(self.feature_flags.keys()) | set(
+            other_plan.feature_flags.keys()
+        )
         for key in all_feature_keys:
             self_value = self.get_feature_flag(key)
             other_value = other_plan.get_feature_flag(key)
-            comparison['features'][key] = {
-                'self': self_value,
-                'other': other_value,
+            comparison["features"][key] = {
+                "self": self_value,
+                "other": other_value,
             }
 
         return comparison
@@ -886,7 +923,7 @@ class Plan(TimeStampedMixin, SoftDeleteMixin, models.Model):
             value: The value to set
         """
         self.metadata[key] = value
-        self.save(update_fields=['metadata', 'updated_at'])
+        self.save(update_fields=["metadata", "updated_at"])
 
     @classmethod
     def get_default_limits(cls) -> dict:
@@ -897,14 +934,14 @@ class Plan(TimeStampedMixin, SoftDeleteMixin, models.Model):
             Dictionary with standard limit keys and default values
         """
         return {
-            'max_menus': 1,
-            'max_products': 50,
-            'max_categories': 10,
-            'max_qr_codes': 3,
-            'max_users': 2,
-            'max_branches': 1,
-            'storage_mb': 100,
-            'ai_credits_monthly': 0,
+            "max_menus": 1,
+            "max_products": 50,
+            "max_categories": 10,
+            "max_qr_codes": 3,
+            "max_users": 2,
+            "max_branches": 1,
+            "storage_mb": 100,
+            "ai_credits_monthly": 0,
         }
 
     @classmethod
@@ -916,16 +953,16 @@ class Plan(TimeStampedMixin, SoftDeleteMixin, models.Model):
             Dictionary with standard feature flag keys and default values
         """
         return {
-            'ai_content_generation': False,
-            'analytics_basic': True,
-            'analytics_advanced': False,
-            'custom_domain': False,
-            'api_access': False,
-            'white_label': False,
-            'priority_support': False,
-            'multi_language': False,
-            'order_management': True,
-            'qr_code_customization': False,
+            "ai_content_generation": False,
+            "analytics_basic": True,
+            "analytics_advanced": False,
+            "custom_domain": False,
+            "api_access": False,
+            "white_label": False,
+            "priority_support": False,
+            "multi_language": False,
+            "order_management": True,
+            "qr_code_customization": False,
         }
 
 
@@ -1000,24 +1037,24 @@ class Subscription(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
-        'core.Organization',
+        "core.Organization",
         on_delete=models.CASCADE,
-        related_name='subscriptions',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this subscription belongs to')
+        related_name="subscriptions",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this subscription belongs to"),
     )
 
     plan = models.ForeignKey(
         Plan,
         on_delete=models.PROTECT,
-        related_name='subscriptions',
-        verbose_name=_('Plan'),
-        help_text=_('Subscription plan')
+        related_name="subscriptions",
+        verbose_name=_("Plan"),
+        help_text=_("Subscription plan"),
     )
 
     status = models.CharField(
@@ -1025,16 +1062,16 @@ class Subscription(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=SubscriptionStatus.choices,
         default=SubscriptionStatus.TRIALING,
         db_index=True,
-        verbose_name=_('Status'),
-        help_text=_('Current subscription status')
+        verbose_name=_("Status"),
+        help_text=_("Current subscription status"),
     )
 
     billing_period = models.CharField(
         max_length=20,
         choices=BillingPeriod.choices,
         default=BillingPeriod.MONTHLY,
-        verbose_name=_('Billing period'),
-        help_text=_('Billing cycle (MONTHLY or YEARLY)')
+        verbose_name=_("Billing period"),
+        help_text=_("Billing cycle (MONTHLY or YEARLY)"),
     )
 
     payment_method = models.CharField(
@@ -1042,8 +1079,8 @@ class Subscription(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=SubscriptionPaymentMethod.choices,
         blank=True,
         null=True,
-        verbose_name=_('Payment method'),
-        help_text=_('How the subscription is paid')
+        verbose_name=_("Payment method"),
+        help_text=_("How the subscription is paid"),
     )
 
     # Pricing locked at subscription time
@@ -1051,15 +1088,15 @@ class Subscription(TimeStampedMixin, SoftDeleteMixin, models.Model):
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Current price'),
-        help_text=_('Locked-in price at subscription time')
+        verbose_name=_("Current price"),
+        help_text=_("Locked-in price at subscription time"),
     )
 
     currency = models.CharField(
         max_length=3,
-        default='TRY',
-        verbose_name=_('Currency'),
-        help_text=_('Currency code for pricing (e.g., TRY, USD, EUR)')
+        default="TRY",
+        verbose_name=_("Currency"),
+        help_text=_("Currency code for pricing (e.g., TRY, USD, EUR)"),
     )
 
     # Trial management
@@ -1067,53 +1104,53 @@ class Subscription(TimeStampedMixin, SoftDeleteMixin, models.Model):
         null=True,
         blank=True,
         db_index=True,
-        verbose_name=_('Trial ends at'),
-        help_text=_('When the trial period ends (null if no trial)')
+        verbose_name=_("Trial ends at"),
+        help_text=_("When the trial period ends (null if no trial)"),
     )
 
     # Billing period tracking
     current_period_start = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Current period start'),
-        help_text=_('Start of the current billing period')
+        verbose_name=_("Current period start"),
+        help_text=_("Start of the current billing period"),
     )
 
     current_period_end = models.DateTimeField(
         null=True,
         blank=True,
         db_index=True,
-        verbose_name=_('Current period end'),
-        help_text=_('End of the current billing period')
+        verbose_name=_("Current period end"),
+        help_text=_("End of the current billing period"),
     )
 
     next_billing_date = models.DateTimeField(
         null=True,
         blank=True,
         db_index=True,
-        verbose_name=_('Next billing date'),
-        help_text=_('When next payment will be charged')
+        verbose_name=_("Next billing date"),
+        help_text=_("When next payment will be charged"),
     )
 
     # Cancellation tracking
     cancelled_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Cancelled at'),
-        help_text=_('When cancellation was requested')
+        verbose_name=_("Cancelled at"),
+        help_text=_("When cancellation was requested"),
     )
 
     cancel_reason = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Cancel reason'),
-        help_text=_('User-provided reason for cancellation')
+        verbose_name=_("Cancel reason"),
+        help_text=_("User-provided reason for cancellation"),
     )
 
     cancel_at_period_end = models.BooleanField(
         default=False,
-        verbose_name=_('Cancel at period end'),
-        help_text=_('If true, subscription will cancel at end of current period')
+        verbose_name=_("Cancel at period end"),
+        help_text=_("If true, subscription will cancel at end of current period"),
     )
 
     # External payment provider IDs (for Iyzico integration)
@@ -1122,8 +1159,8 @@ class Subscription(TimeStampedMixin, SoftDeleteMixin, models.Model):
         blank=True,
         null=True,
         db_index=True,
-        verbose_name=_('External subscription ID'),
-        help_text=_('Subscription ID from payment provider (e.g., Iyzico)')
+        verbose_name=_("External subscription ID"),
+        help_text=_("Subscription ID from payment provider (e.g., Iyzico)"),
     )
 
     external_customer_id = models.CharField(
@@ -1131,24 +1168,26 @@ class Subscription(TimeStampedMixin, SoftDeleteMixin, models.Model):
         blank=True,
         null=True,
         db_index=True,
-        verbose_name=_('External customer ID'),
-        help_text=_('Customer ID from payment provider')
+        verbose_name=_("External customer ID"),
+        help_text=_("Customer ID from payment provider"),
     )
 
     # Payment details (masked card info, etc.)
     payment_details = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Payment details'),
-        help_text=_('Masked payment method details (e.g., {"last4": "4242", "brand": "visa"})')
+        verbose_name=_("Payment details"),
+        help_text=_(
+            'Masked payment method details (e.g., {"last4": "4242", "brand": "visa"})'
+        ),
     )
 
     # Additional metadata
     metadata = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Metadata'),
-        help_text=_('Additional subscription metadata (JSON)')
+        verbose_name=_("Metadata"),
+        help_text=_("Additional subscription metadata (JSON)"),
     )
 
     # Managers
@@ -1156,18 +1195,24 @@ class Subscription(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'subscriptions'
-        verbose_name = _('Subscription')
-        verbose_name_plural = _('Subscriptions')
-        ordering = ['-created_at']
+        db_table = "subscriptions"
+        verbose_name = _("Subscription")
+        verbose_name_plural = _("Subscriptions")
+        ordering = ["-created_at"]
         indexes = [
-            models.Index(fields=['organization', 'status'], name='sub_org_status_idx'),
-            models.Index(fields=['status', 'current_period_end'], name='sub_status_period_idx'),
-            models.Index(fields=['status', 'next_billing_date'], name='sub_status_billing_idx'),
-            models.Index(fields=['trial_ends_at'], name='sub_trial_ends_idx'),
-            models.Index(fields=['external_subscription_id'], name='sub_ext_sub_id_idx'),
-            models.Index(fields=['external_customer_id'], name='sub_ext_cust_id_idx'),
-            models.Index(fields=['deleted_at'], name='sub_deleted_idx'),
+            models.Index(fields=["organization", "status"], name="sub_org_status_idx"),
+            models.Index(
+                fields=["status", "current_period_end"], name="sub_status_period_idx"
+            ),
+            models.Index(
+                fields=["status", "next_billing_date"], name="sub_status_billing_idx"
+            ),
+            models.Index(fields=["trial_ends_at"], name="sub_trial_ends_idx"),
+            models.Index(
+                fields=["external_subscription_id"], name="sub_ext_sub_id_idx"
+            ),
+            models.Index(fields=["external_customer_id"], name="sub_ext_cust_id_idx"),
+            models.Index(fields=["deleted_at"], name="sub_deleted_idx"),
         ]
 
     def __str__(self) -> str:
@@ -1189,7 +1234,9 @@ class Subscription(TimeStampedMixin, SoftDeleteMixin, models.Model):
     @property
     def is_cancelled(self) -> bool:
         """Check if subscription has been cancelled."""
-        return self.status == SubscriptionStatus.CANCELLED or self.cancelled_at is not None
+        return (
+            self.status == SubscriptionStatus.CANCELLED or self.cancelled_at is not None
+        )
 
     @property
     def is_expired(self) -> bool:
@@ -1254,14 +1301,14 @@ class Subscription(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def formatted_price(self) -> str:
         """Return formatted current price with currency symbol."""
         currency_symbols = {
-            'TRY': '₺',
-            'USD': '$',
-            'EUR': '€',
-            'GBP': '£',
+            "TRY": "₺",
+            "USD": "$",
+            "EUR": "€",
+            "GBP": "£",
         }
         symbol = currency_symbols.get(self.currency, self.currency)
         if self.current_price == 0:
-            return _('Free')
+            return _("Free")
         return f"{symbol}{self.current_price:,.0f}"
 
     def activate(self, payment_details: dict = None) -> None:
@@ -1275,12 +1322,12 @@ class Subscription(TimeStampedMixin, SoftDeleteMixin, models.Model):
         self.status = SubscriptionStatus.ACTIVE
         if payment_details:
             self.payment_details = payment_details
-        self.save(update_fields=['status', 'payment_details', 'updated_at'])
+        self.save(update_fields=["status", "payment_details", "updated_at"])
 
     def mark_past_due(self) -> None:
         """Mark subscription as past due after failed payment."""
         self.status = SubscriptionStatus.PAST_DUE
-        self.save(update_fields=['status', 'updated_at'])
+        self.save(update_fields=["status", "updated_at"])
 
     def cancel(self, reason: str = None, at_period_end: bool = True) -> None:
         """
@@ -1301,15 +1348,20 @@ class Subscription(TimeStampedMixin, SoftDeleteMixin, models.Model):
         else:
             self.status = SubscriptionStatus.EXPIRED
 
-        self.save(update_fields=[
-            'status', 'cancelled_at', 'cancel_reason',
-            'cancel_at_period_end', 'updated_at'
-        ])
+        self.save(
+            update_fields=[
+                "status",
+                "cancelled_at",
+                "cancel_reason",
+                "cancel_at_period_end",
+                "updated_at",
+            ]
+        )
 
     def expire(self) -> None:
         """Mark subscription as expired."""
         self.status = SubscriptionStatus.EXPIRED
-        self.save(update_fields=['status', 'updated_at'])
+        self.save(update_fields=["status", "updated_at"])
 
     def suspend(self, reason: str = None) -> None:
         """
@@ -1320,9 +1372,9 @@ class Subscription(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         self.status = SubscriptionStatus.SUSPENDED
         if reason:
-            self.metadata['suspension_reason'] = reason
-            self.metadata['suspended_at'] = timezone.now().isoformat()
-        self.save(update_fields=['status', 'metadata', 'updated_at'])
+            self.metadata["suspension_reason"] = reason
+            self.metadata["suspended_at"] = timezone.now().isoformat()
+        self.save(update_fields=["status", "metadata", "updated_at"])
 
     def reactivate(self) -> None:
         """Reactivate a suspended or cancelled subscription."""
@@ -1330,14 +1382,20 @@ class Subscription(TimeStampedMixin, SoftDeleteMixin, models.Model):
         self.cancelled_at = None
         self.cancel_reason = None
         self.cancel_at_period_end = False
-        self.metadata.pop('suspension_reason', None)
-        self.metadata.pop('suspended_at', None)
-        self.save(update_fields=[
-            'status', 'cancelled_at', 'cancel_reason',
-            'cancel_at_period_end', 'metadata', 'updated_at'
-        ])
+        self.metadata.pop("suspension_reason", None)
+        self.metadata.pop("suspended_at", None)
+        self.save(
+            update_fields=[
+                "status",
+                "cancelled_at",
+                "cancel_reason",
+                "cancel_at_period_end",
+                "metadata",
+                "updated_at",
+            ]
+        )
 
-    def renew(self, new_period_end: 'datetime' = None) -> None:
+    def renew(self, new_period_end: "datetime" = None) -> None:
         """
         Renew the subscription for a new billing period.
 
@@ -1354,16 +1412,23 @@ class Subscription(TimeStampedMixin, SoftDeleteMixin, models.Model):
         else:
             # Calculate based on billing period
             if self.billing_period == BillingPeriod.YEARLY:
-                self.current_period_end = self.current_period_start + timedelta(days=365)
+                self.current_period_end = self.current_period_start + timedelta(
+                    days=365
+                )
             else:
                 self.current_period_end = self.current_period_start + timedelta(days=30)
 
         self.next_billing_date = self.current_period_end
         self.status = SubscriptionStatus.ACTIVE
-        self.save(update_fields=[
-            'current_period_start', 'current_period_end',
-            'next_billing_date', 'status', 'updated_at'
-        ])
+        self.save(
+            update_fields=[
+                "current_period_start",
+                "current_period_end",
+                "next_billing_date",
+                "status",
+                "updated_at",
+            ]
+        )
 
     def change_plan(self, new_plan: Plan, prorate: bool = True) -> None:
         """
@@ -1383,11 +1448,11 @@ class Subscription(TimeStampedMixin, SoftDeleteMixin, models.Model):
             self.current_price = new_plan.price_monthly
 
         # Store upgrade/downgrade info in metadata
-        self.metadata['previous_plan'] = str(old_plan.id)
-        self.metadata['plan_changed_at'] = timezone.now().isoformat()
-        self.metadata['proration_applied'] = prorate
+        self.metadata["previous_plan"] = str(old_plan.id)
+        self.metadata["plan_changed_at"] = timezone.now().isoformat()
+        self.metadata["proration_applied"] = prorate
 
-        self.save(update_fields=['plan', 'current_price', 'metadata', 'updated_at'])
+        self.save(update_fields=["plan", "current_price", "metadata", "updated_at"])
 
     def get_metadata(self, key: str, default=None):
         """Get a value from subscription metadata."""
@@ -1396,7 +1461,7 @@ class Subscription(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def set_metadata(self, key: str, value) -> None:
         """Set a value in subscription metadata."""
         self.metadata[key] = value
-        self.save(update_fields=['metadata', 'updated_at'])
+        self.save(update_fields=["metadata", "updated_at"])
 
 
 class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
@@ -1471,16 +1536,16 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
-        'core.Organization',
+        "core.Organization",
         on_delete=models.CASCADE,
-        related_name='invoices',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this invoice belongs to')
+        related_name="invoices",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this invoice belongs to"),
     )
 
     subscription = models.ForeignKey(
@@ -1488,15 +1553,15 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='invoices',
-        verbose_name=_('Subscription'),
-        help_text=_('Related subscription (null for one-time purchases)')
+        related_name="invoices",
+        verbose_name=_("Subscription"),
+        help_text=_("Related subscription (null for one-time purchases)"),
     )
 
     invoice_number = models.CharField(
         max_length=50,
-        verbose_name=_('Invoice number'),
-        help_text=_('Unique invoice number within organization')
+        verbose_name=_("Invoice number"),
+        help_text=_("Unique invoice number within organization"),
     )
 
     status = models.CharField(
@@ -1504,8 +1569,8 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=InvoiceStatus.choices,
         default=InvoiceStatus.DRAFT,
         db_index=True,
-        verbose_name=_('Status'),
-        help_text=_('Current invoice status')
+        verbose_name=_("Status"),
+        help_text=_("Current invoice status"),
     )
 
     # Financial amounts
@@ -1513,47 +1578,47 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Subtotal'),
-        help_text=_('Amount before tax')
+        verbose_name=_("Subtotal"),
+        help_text=_("Amount before tax"),
     )
 
     amount_tax = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Tax amount'),
-        help_text=_('Tax amount')
+        verbose_name=_("Tax amount"),
+        help_text=_("Tax amount"),
     )
 
     amount_total = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Total'),
-        help_text=_('Total amount due')
+        verbose_name=_("Total"),
+        help_text=_("Total amount due"),
     )
 
     amount_paid = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Amount paid'),
-        help_text=_('Amount actually paid')
+        verbose_name=_("Amount paid"),
+        help_text=_("Amount actually paid"),
     )
 
     amount_refunded = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Amount refunded'),
-        help_text=_('Amount refunded')
+        verbose_name=_("Amount refunded"),
+        help_text=_("Amount refunded"),
     )
 
     currency = models.CharField(
         max_length=3,
-        default='TRY',
-        verbose_name=_('Currency'),
-        help_text=_('Currency code for this invoice')
+        default="TRY",
+        verbose_name=_("Currency"),
+        help_text=_("Currency code for this invoice"),
     )
 
     # Dates
@@ -1561,51 +1626,53 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
         null=True,
         blank=True,
         db_index=True,
-        verbose_name=_('Due date'),
-        help_text=_('When payment is due')
+        verbose_name=_("Due date"),
+        help_text=_("When payment is due"),
     )
 
     paid_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Paid at'),
-        help_text=_('When payment was received')
+        verbose_name=_("Paid at"),
+        help_text=_("When payment was received"),
     )
 
     period_start = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Period start'),
-        help_text=_('Start of billing period covered')
+        verbose_name=_("Period start"),
+        help_text=_("Start of billing period covered"),
     )
 
     period_end = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Period end'),
-        help_text=_('End of billing period covered')
+        verbose_name=_("Period end"),
+        help_text=_("End of billing period covered"),
     )
 
     # Invoice details
     description = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Description'),
-        help_text=_('Invoice description or memo')
+        verbose_name=_("Description"),
+        help_text=_("Invoice description or memo"),
     )
 
     line_items = models.JSONField(
         default=list,
         blank=True,
-        verbose_name=_('Line items'),
-        help_text=_('Array of line items: [{description, quantity, unit_price, amount}]')
+        verbose_name=_("Line items"),
+        help_text=_(
+            "Array of line items: [{description, quantity, unit_price, amount}]"
+        ),
     )
 
     billing_address = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Billing address'),
-        help_text=_('Billing address details (JSON)')
+        verbose_name=_("Billing address"),
+        help_text=_("Billing address details (JSON)"),
     )
 
     # External payment provider integration
@@ -1614,8 +1681,8 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
         blank=True,
         null=True,
         db_index=True,
-        verbose_name=_('External invoice ID'),
-        help_text=_('Invoice ID from payment provider')
+        verbose_name=_("External invoice ID"),
+        help_text=_("Invoice ID from payment provider"),
     )
 
     external_payment_id = models.CharField(
@@ -1623,15 +1690,15 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
         blank=True,
         null=True,
         db_index=True,
-        verbose_name=_('External payment ID'),
-        help_text=_('Payment transaction ID from provider')
+        verbose_name=_("External payment ID"),
+        help_text=_("Payment transaction ID from provider"),
     )
 
     payment_details = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Payment details'),
-        help_text=_('Masked payment method details')
+        verbose_name=_("Payment details"),
+        help_text=_("Masked payment method details"),
     )
 
     # Generated invoice PDF
@@ -1639,16 +1706,16 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
         blank=True,
         null=True,
         max_length=500,
-        verbose_name=_('PDF URL'),
-        help_text=_('URL to generated PDF invoice')
+        verbose_name=_("PDF URL"),
+        help_text=_("URL to generated PDF invoice"),
     )
 
     # Additional metadata
     metadata = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Metadata'),
-        help_text=_('Additional invoice metadata (JSON)')
+        verbose_name=_("Metadata"),
+        help_text=_("Additional invoice metadata (JSON)"),
     )
 
     # Managers
@@ -1656,23 +1723,27 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'invoices'
-        verbose_name = _('Invoice')
-        verbose_name_plural = _('Invoices')
-        ordering = ['-created_at']
-        unique_together = [['organization', 'invoice_number']]
+        db_table = "invoices"
+        verbose_name = _("Invoice")
+        verbose_name_plural = _("Invoices")
+        ordering = ["-created_at"]
+        unique_together = [["organization", "invoice_number"]]
         indexes = [
-            models.Index(fields=['organization', 'status'], name='invoice_org_status_idx'),
-            models.Index(fields=['status', 'due_date'], name='invoice_status_due_idx'),
-            models.Index(fields=['subscription'], name='invoice_subscription_idx'),
-            models.Index(fields=['invoice_number'], name='invoice_number_idx'),
-            models.Index(fields=['external_invoice_id'], name='invoice_ext_inv_id_idx'),
-            models.Index(fields=['external_payment_id'], name='invoice_ext_pay_id_idx'),
-            models.Index(fields=['deleted_at'], name='invoice_deleted_idx'),
+            models.Index(
+                fields=["organization", "status"], name="invoice_org_status_idx"
+            ),
+            models.Index(fields=["status", "due_date"], name="invoice_status_due_idx"),
+            models.Index(fields=["subscription"], name="invoice_subscription_idx"),
+            models.Index(fields=["invoice_number"], name="invoice_number_idx"),
+            models.Index(fields=["external_invoice_id"], name="invoice_ext_inv_id_idx"),
+            models.Index(fields=["external_payment_id"], name="invoice_ext_pay_id_idx"),
+            models.Index(fields=["deleted_at"], name="invoice_deleted_idx"),
         ]
 
     def __str__(self) -> str:
-        return f"Invoice {self.invoice_number} - {self.organization.name} ({self.status})"
+        return (
+            f"Invoice {self.invoice_number} - {self.organization.name} ({self.status})"
+        )
 
     def __repr__(self) -> str:
         return f"<Invoice(id={self.id}, number='{self.invoice_number}', status={self.status}, total={self.amount_total})>"
@@ -1712,7 +1783,7 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
         return timezone.now() > self.due_date
 
     @property
-    def amount_due(self) -> 'Decimal':
+    def amount_due(self) -> "Decimal":
         """Calculate remaining amount due."""
         return self.amount_total - self.amount_paid + self.amount_refunded
 
@@ -1720,10 +1791,10 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def formatted_total(self) -> str:
         """Return formatted total with currency symbol."""
         currency_symbols = {
-            'TRY': '₺',
-            'USD': '$',
-            'EUR': '€',
-            'GBP': '£',
+            "TRY": "₺",
+            "USD": "$",
+            "EUR": "€",
+            "GBP": "£",
         }
         symbol = currency_symbols.get(self.currency, self.currency)
         return f"{symbol}{self.amount_total:,.2f}"
@@ -1733,13 +1804,13 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
         if self.status != InvoiceStatus.DRAFT:
             return
         self.status = InvoiceStatus.PENDING
-        self.save(update_fields=['status', 'updated_at'])
+        self.save(update_fields=["status", "updated_at"])
 
     def mark_paid(
         self,
         payment_id: str = None,
         payment_details: dict = None,
-        amount: 'Decimal' = None
+        amount: "Decimal" = None,
     ) -> None:
         """
         Mark invoice as paid.
@@ -1760,10 +1831,16 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
         if payment_details:
             self.payment_details = payment_details
 
-        self.save(update_fields=[
-            'status', 'paid_at', 'amount_paid',
-            'external_payment_id', 'payment_details', 'updated_at'
-        ])
+        self.save(
+            update_fields=[
+                "status",
+                "paid_at",
+                "amount_paid",
+                "external_payment_id",
+                "payment_details",
+                "updated_at",
+            ]
+        )
 
     def void(self, reason: str = None) -> None:
         """
@@ -1774,11 +1851,11 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         self.status = InvoiceStatus.VOID
         if reason:
-            self.metadata['void_reason'] = reason
-            self.metadata['voided_at'] = timezone.now().isoformat()
-        self.save(update_fields=['status', 'metadata', 'updated_at'])
+            self.metadata["void_reason"] = reason
+            self.metadata["voided_at"] = timezone.now().isoformat()
+        self.save(update_fields=["status", "metadata", "updated_at"])
 
-    def refund(self, amount: 'Decimal' = None, reason: str = None) -> None:
+    def refund(self, amount: "Decimal" = None, reason: str = None) -> None:
         """
         Process a refund for this invoice.
 
@@ -1792,13 +1869,11 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
         self.amount_refunded = refund_amount
         self.status = InvoiceStatus.REFUNDED
 
-        self.metadata['refund_reason'] = reason
-        self.metadata['refunded_at'] = timezone.now().isoformat()
-        self.metadata['refund_amount'] = str(refund_amount)
+        self.metadata["refund_reason"] = reason
+        self.metadata["refunded_at"] = timezone.now().isoformat()
+        self.metadata["refund_amount"] = str(refund_amount)
 
-        self.save(update_fields=[
-            'status', 'amount_refunded', 'metadata', 'updated_at'
-        ])
+        self.save(update_fields=["status", "amount_refunded", "metadata", "updated_at"])
 
     def mark_uncollectible(self, reason: str = None) -> None:
         """
@@ -1809,16 +1884,16 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         self.status = InvoiceStatus.UNCOLLECTIBLE
         if reason:
-            self.metadata['uncollectible_reason'] = reason
-            self.metadata['marked_uncollectible_at'] = timezone.now().isoformat()
-        self.save(update_fields=['status', 'metadata', 'updated_at'])
+            self.metadata["uncollectible_reason"] = reason
+            self.metadata["marked_uncollectible_at"] = timezone.now().isoformat()
+        self.save(update_fields=["status", "metadata", "updated_at"])
 
     def add_line_item(
         self,
         description: str,
         quantity: int = 1,
-        unit_price: 'Decimal' = None,
-        amount: 'Decimal' = None
+        unit_price: "Decimal" = None,
+        amount: "Decimal" = None,
     ) -> None:
         """
         Add a line item to the invoice.
@@ -1832,34 +1907,34 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
         from decimal import Decimal
 
         if unit_price is None:
-            unit_price = Decimal('0.00')
+            unit_price = Decimal("0.00")
         if amount is None:
             amount = Decimal(str(quantity)) * unit_price
 
         line_item = {
-            'description': description,
-            'quantity': quantity,
-            'unit_price': str(unit_price),
-            'amount': str(amount),
+            "description": description,
+            "quantity": quantity,
+            "unit_price": str(unit_price),
+            "amount": str(amount),
         }
 
         self.line_items.append(line_item)
-        self.save(update_fields=['line_items', 'updated_at'])
+        self.save(update_fields=["line_items", "updated_at"])
 
     def recalculate_totals(self) -> None:
         """Recalculate subtotal and total from line items."""
         from decimal import Decimal
 
-        subtotal = Decimal('0.00')
+        subtotal = Decimal("0.00")
         for item in self.line_items:
-            subtotal += Decimal(str(item.get('amount', '0')))
+            subtotal += Decimal(str(item.get("amount", "0")))
 
         self.amount_subtotal = subtotal
         self.amount_total = subtotal + self.amount_tax
-        self.save(update_fields=['amount_subtotal', 'amount_total', 'updated_at'])
+        self.save(update_fields=["amount_subtotal", "amount_total", "updated_at"])
 
     @classmethod
-    def generate_number(cls, organization, prefix: str = 'INV') -> str:
+    def generate_number(cls, organization, prefix: str = "INV") -> str:
         """
         Generate a unique invoice number for organization.
 
@@ -1874,8 +1949,7 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
 
         year = timezone.now().year
         count = cls.objects.filter(
-            organization=organization,
-            invoice_number__startswith=f'{prefix}-{year}'
+            organization=organization, invoice_number__startswith=f"{prefix}-{year}"
         ).count()
 
         return f"{prefix}-{year}-{str(count + 1).zfill(5)}"
@@ -1887,7 +1961,7 @@ class Invoice(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def set_metadata(self, key: str, value) -> None:
         """Set a value in invoice metadata."""
         self.metadata[key] = value
-        self.save(update_fields=['metadata', 'updated_at'])
+        self.save(update_fields=["metadata", "updated_at"])
 
 
 class PlanFeature(TimeStampedMixin, models.Model):
@@ -1947,67 +2021,69 @@ class PlanFeature(TimeStampedMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     plan = models.ForeignKey(
         Plan,
         on_delete=models.CASCADE,
-        related_name='plan_features',
-        verbose_name=_('Plan'),
-        help_text=_('Plan that includes this feature')
+        related_name="plan_features",
+        verbose_name=_("Plan"),
+        help_text=_("Plan that includes this feature"),
     )
 
     feature = models.ForeignKey(
         Feature,
         on_delete=models.CASCADE,
-        related_name='plan_features',
-        verbose_name=_('Feature'),
-        help_text=_('Feature included in the plan')
+        related_name="plan_features",
+        verbose_name=_("Feature"),
+        help_text=_("Feature included in the plan"),
     )
 
     value = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Value'),
+        verbose_name=_("Value"),
         help_text=_(
-            'Plan-specific feature configuration (JSON). '
+            "Plan-specific feature configuration (JSON). "
             'For LIMIT: {"limit": 10}, for BOOLEAN: {"enabled": true}, '
             'for USAGE: {"credits": 100, "reset_period": "monthly"}'
-        )
+        ),
     )
 
     is_enabled = models.BooleanField(
         default=True,
         db_index=True,
-        verbose_name=_('Is enabled'),
-        help_text=_('Whether this feature is enabled for this plan')
+        verbose_name=_("Is enabled"),
+        help_text=_("Whether this feature is enabled for this plan"),
     )
 
     sort_order = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Sort order'),
-        help_text=_('Display order within plan (lower numbers appear first)')
+        verbose_name=_("Sort order"),
+        help_text=_("Display order within plan (lower numbers appear first)"),
     )
 
     metadata = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Metadata'),
-        help_text=_('Additional metadata for this plan-feature relationship (JSON)')
+        verbose_name=_("Metadata"),
+        help_text=_("Additional metadata for this plan-feature relationship (JSON)"),
     )
 
     class Meta:
-        db_table = 'plan_features'
-        verbose_name = _('Plan Feature')
-        verbose_name_plural = _('Plan Features')
-        ordering = ['plan', 'sort_order', 'feature__category']
-        unique_together = [['plan', 'feature']]
+        db_table = "plan_features"
+        verbose_name = _("Plan Feature")
+        verbose_name_plural = _("Plan Features")
+        ordering = ["plan", "sort_order", "feature__category"]
+        unique_together = [["plan", "feature"]]
         indexes = [
-            models.Index(fields=['plan', 'is_enabled'], name='planfeat_plan_enabled_idx'),
-            models.Index(fields=['feature'], name='planfeat_feature_idx'),
-            models.Index(fields=['plan', 'sort_order'], name='planfeat_plan_sort_idx'),
+            models.Index(
+                fields=["plan", "is_enabled"], name="planfeat_plan_enabled_idx"
+            ),
+            models.Index(fields=["feature"], name="planfeat_feature_idx"),
+            models.Index(fields=["plan", "sort_order"], name="planfeat_plan_sort_idx"),
         ]
 
     def __str__(self) -> str:
@@ -2043,7 +2119,7 @@ class PlanFeature(TimeStampedMixin, models.Model):
             True if the feature is enabled
         """
         if self.is_boolean:
-            return self.value.get('enabled', False) and self.is_enabled
+            return self.value.get("enabled", False) and self.is_enabled
         return self.is_enabled
 
     def get_limit(self, default: int = 0) -> int:
@@ -2058,7 +2134,7 @@ class PlanFeature(TimeStampedMixin, models.Model):
         """
         if not self.is_limit:
             return default
-        return self.value.get('limit', default)
+        return self.value.get("limit", default)
 
     def get_credits(self, default: int = 0) -> int:
         """
@@ -2072,7 +2148,7 @@ class PlanFeature(TimeStampedMixin, models.Model):
         """
         if not self.is_usage:
             return default
-        return self.value.get('credits', default)
+        return self.value.get("credits", default)
 
     def get_reset_period(self) -> str:
         """
@@ -2082,8 +2158,8 @@ class PlanFeature(TimeStampedMixin, models.Model):
             The reset period ('monthly', 'weekly', 'daily', or 'never')
         """
         if not self.is_usage:
-            return 'never'
-        return self.value.get('reset_period', 'monthly')
+            return "never"
+        return self.value.get("reset_period", "monthly")
 
     def get_value(self, key: str, default=None):
         """
@@ -2107,7 +2183,7 @@ class PlanFeature(TimeStampedMixin, models.Model):
             val: The value to set
         """
         self.value[key] = val
-        self.save(update_fields=['value', 'updated_at'])
+        self.save(update_fields=["value", "updated_at"])
 
     def get_metadata(self, key: str, default=None):
         """Get a value from plan-feature metadata."""
@@ -2116,7 +2192,7 @@ class PlanFeature(TimeStampedMixin, models.Model):
     def set_metadata(self, key: str, value) -> None:
         """Set a value in plan-feature metadata."""
         self.metadata[key] = value
-        self.save(update_fields=['metadata', 'updated_at'])
+        self.save(update_fields=["metadata", "updated_at"])
 
 
 class OrganizationUsage(TimeStampedMixin, models.Model):
@@ -2179,84 +2255,90 @@ class OrganizationUsage(TimeStampedMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
-        'core.Organization',
+        "core.Organization",
         on_delete=models.CASCADE,
-        related_name='usage_records',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this usage belongs to')
+        related_name="usage_records",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this usage belongs to"),
     )
 
     feature = models.ForeignKey(
         Feature,
         on_delete=models.CASCADE,
-        related_name='usage_records',
-        verbose_name=_('Feature'),
-        help_text=_('Feature being tracked')
+        related_name="usage_records",
+        verbose_name=_("Feature"),
+        help_text=_("Feature being tracked"),
     )
 
     current_usage = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Current usage'),
-        help_text=_('Current usage count for this period')
+        verbose_name=_("Current usage"),
+        help_text=_("Current usage count for this period"),
     )
 
     usage_limit = models.IntegerField(
         default=-1,
-        verbose_name=_('Usage limit'),
-        help_text=_('Limit from plan (-1 = unlimited)')
+        verbose_name=_("Usage limit"),
+        help_text=_("Limit from plan (-1 = unlimited)"),
     )
 
     period_start = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Period start'),
-        help_text=_('Start of current tracking period')
+        verbose_name=_("Period start"),
+        help_text=_("Start of current tracking period"),
     )
 
     period_end = models.DateTimeField(
         null=True,
         blank=True,
         db_index=True,
-        verbose_name=_('Period end'),
-        help_text=_('End of current tracking period')
+        verbose_name=_("Period end"),
+        help_text=_("End of current tracking period"),
     )
 
     last_reset_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Last reset at'),
-        help_text=_('When usage was last reset')
+        verbose_name=_("Last reset at"),
+        help_text=_("When usage was last reset"),
     )
 
     last_usage_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Last usage at'),
-        help_text=_('When usage was last recorded')
+        verbose_name=_("Last usage at"),
+        help_text=_("When usage was last recorded"),
     )
 
     metadata = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Metadata'),
-        help_text=_('Additional usage metadata (e.g., usage breakdown, history)')
+        verbose_name=_("Metadata"),
+        help_text=_("Additional usage metadata (e.g., usage breakdown, history)"),
     )
 
     class Meta:
-        db_table = 'organization_usage'
-        verbose_name = _('Organization Usage')
-        verbose_name_plural = _('Organization Usage')
-        ordering = ['-updated_at']
-        unique_together = [['organization', 'feature']]
+        db_table = "organization_usage"
+        verbose_name = _("Organization Usage")
+        verbose_name_plural = _("Organization Usage")
+        ordering = ["-updated_at"]
+        unique_together = [["organization", "feature"]]
         indexes = [
-            models.Index(fields=['organization', 'feature'], name='orgusage_org_feat_idx'),
-            models.Index(fields=['organization', 'period_end'], name='orgusage_org_period_idx'),
-            models.Index(fields=['feature', 'period_end'], name='orgusage_feat_period_idx'),
+            models.Index(
+                fields=["organization", "feature"], name="orgusage_org_feat_idx"
+            ),
+            models.Index(
+                fields=["organization", "period_end"], name="orgusage_org_period_idx"
+            ),
+            models.Index(
+                fields=["feature", "period_end"], name="orgusage_feat_period_idx"
+            ),
         ]
 
     def __str__(self) -> str:
@@ -2337,7 +2419,7 @@ class OrganizationUsage(TimeStampedMixin, models.Model):
 
         self.current_usage += amount
         self.last_usage_at = timezone.now()
-        self.save(update_fields=['current_usage', 'last_usage_at', 'updated_at'])
+        self.save(update_fields=["current_usage", "last_usage_at", "updated_at"])
         return True
 
     def decrement(self, amount: int = 1) -> None:
@@ -2348,7 +2430,7 @@ class OrganizationUsage(TimeStampedMixin, models.Model):
             amount: Amount to decrement (default: 1)
         """
         self.current_usage = max(0, self.current_usage - amount)
-        self.save(update_fields=['current_usage', 'updated_at'])
+        self.save(update_fields=["current_usage", "updated_at"])
 
     def set_usage(self, count: int) -> None:
         """
@@ -2359,9 +2441,9 @@ class OrganizationUsage(TimeStampedMixin, models.Model):
         """
         self.current_usage = max(0, count)
         self.last_usage_at = timezone.now()
-        self.save(update_fields=['current_usage', 'last_usage_at', 'updated_at'])
+        self.save(update_fields=["current_usage", "last_usage_at", "updated_at"])
 
-    def reset(self, new_period_end: 'datetime' = None) -> None:
+    def reset(self, new_period_end: "datetime" = None) -> None:
         """
         Reset usage count (typically at start of new billing period).
 
@@ -2388,18 +2470,26 @@ class OrganizationUsage(TimeStampedMixin, models.Model):
                 self.period_end = self.period_start + timedelta(days=30)
 
         # Store reset history in metadata
-        reset_history = self.metadata.get('reset_history', [])
-        reset_history.append({
-            'reset_at': timezone.now().isoformat(),
-            'previous_usage': old_usage,
-        })
+        reset_history = self.metadata.get("reset_history", [])
+        reset_history.append(
+            {
+                "reset_at": timezone.now().isoformat(),
+                "previous_usage": old_usage,
+            }
+        )
         # Keep only last 12 resets
-        self.metadata['reset_history'] = reset_history[-12:]
+        self.metadata["reset_history"] = reset_history[-12:]
 
-        self.save(update_fields=[
-            'current_usage', 'period_start', 'period_end',
-            'last_reset_at', 'metadata', 'updated_at'
-        ])
+        self.save(
+            update_fields=[
+                "current_usage",
+                "period_start",
+                "period_end",
+                "last_reset_at",
+                "metadata",
+                "updated_at",
+            ]
+        )
 
     def update_limit(self, new_limit: int) -> None:
         """
@@ -2409,7 +2499,7 @@ class OrganizationUsage(TimeStampedMixin, models.Model):
             new_limit: New usage limit (-1 for unlimited)
         """
         self.usage_limit = new_limit
-        self.save(update_fields=['usage_limit', 'updated_at'])
+        self.save(update_fields=["usage_limit", "updated_at"])
 
     def can_use(self, amount: int = 1) -> bool:
         """
@@ -2432,4 +2522,4 @@ class OrganizationUsage(TimeStampedMixin, models.Model):
     def set_metadata(self, key: str, value) -> None:
         """Set a value in usage metadata."""
         self.metadata[key] = value
-        self.save(update_fields=['metadata', 'updated_at'])
+        self.save(update_fields=["metadata", "updated_at"])

@@ -18,14 +18,14 @@ class OrganizationRequiredMixin(LoginRequiredMixin):
     - Redirects users without an organization to /account/profile/
     """
 
-    login_url = '/account/login/'
+    login_url = "/account/login/"
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return self.handle_no_permission()
-        if not getattr(request.user, 'organization', None):
-            messages.error(request, _('Hesabiniza bagli bir organizasyon bulunamadi.'))
-            return redirect('accounts:profile')
+        if not getattr(request.user, "organization", None):
+            messages.error(request, _("Hesabiniza bagli bir organizasyon bulunamadi."))
+            return redirect("accounts:profile")
         return super().dispatch(request, *args, **kwargs)
 
     def get_organization(self):

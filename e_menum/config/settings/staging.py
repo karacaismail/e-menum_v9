@@ -20,16 +20,22 @@ from .base import *  # noqa: F401, F403
 DEBUG = False
 
 # SECURITY WARNING: Set this to your actual staging domain(s)
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[  # noqa: F405
-    f'staging.{SITE_DOMAIN}',      # noqa: F405
-    f'staging-api.{SITE_DOMAIN}',  # noqa: F405
-])
+ALLOWED_HOSTS = env.list(
+    "ALLOWED_HOSTS",
+    default=[  # noqa: F405
+        f"staging.{SITE_DOMAIN}",  # noqa: F405
+        f"staging-api.{SITE_DOMAIN}",  # noqa: F405
+    ],
+)
 
 # CSRF trusted origins for staging
-CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[  # noqa: F405
-    f'https://staging.{SITE_DOMAIN}',      # noqa: F405
-    f'https://staging-api.{SITE_DOMAIN}',  # noqa: F405
-])
+CSRF_TRUSTED_ORIGINS = env.list(
+    "CSRF_TRUSTED_ORIGINS",
+    default=[  # noqa: F405
+        f"https://staging.{SITE_DOMAIN}",  # noqa: F405
+        f"https://staging-api.{SITE_DOMAIN}",  # noqa: F405
+    ],
+)
 
 
 # =============================================================================
@@ -39,8 +45,8 @@ CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[  # noqa: F405
 # SECURITY WARNING: keep the secret key used in production secret!
 # In staging, this should be set via environment variable
 SECRET_KEY = os.environ.get(
-    'DJANGO_SECRET_KEY',
-    'django-insecure-staging-key-change-this-via-environment-variable'
+    "DJANGO_SECRET_KEY",
+    "django-insecure-staging-key-change-this-via-environment-variable",
 )
 
 
@@ -50,13 +56,14 @@ SECRET_KEY = os.environ.get(
 
 # Staging uses PostgreSQL via DATABASE_URL
 # If DATABASE_URL is not set, fallback to SQLite for testing
-DATABASE_URL = os.environ.get('DATABASE_URL')
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if DATABASE_URL:
     try:
         import dj_database_url
+
         DATABASES = {
-            'default': dj_database_url.config(
+            "default": dj_database_url.config(
                 default=DATABASE_URL,
                 conn_max_age=60,
                 conn_health_checks=True,
@@ -64,15 +71,15 @@ if DATABASE_URL:
         }
     except ImportError:
         # Use fallback parser from base.py
-        db_config = env.db_url() if hasattr(env, 'db_url') else None  # noqa: F405
+        db_config = env.db_url() if hasattr(env, "db_url") else None  # noqa: F405
         if db_config:
-            DATABASES = {'default': db_config}
+            DATABASES = {"default": db_config}
 else:
     # Fallback to SQLite if no DATABASE_URL (for testing)
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db_staging.sqlite3',  # noqa: F405
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db_staging.sqlite3",  # noqa: F405
         }
     }
 
@@ -82,26 +89,26 @@ else:
 # =============================================================================
 
 # Staging uses Redis for caching if available
-REDIS_URL = os.environ.get('REDIS_URL')
+REDIS_URL = os.environ.get("REDIS_URL")
 
 if REDIS_URL:
     CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-            'LOCATION': REDIS_URL,
-            'KEY_PREFIX': 'emenum_staging',
-            'OPTIONS': {
-                'socket_connect_timeout': 5,
-                'socket_timeout': 5,
-            }
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": REDIS_URL,
+            "KEY_PREFIX": "emenum_staging",
+            "OPTIONS": {
+                "socket_connect_timeout": 5,
+                "socket_timeout": 5,
+            },
         }
     }
 else:
     # Fallback to local memory cache
     CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-            'LOCATION': 'emenum-staging-cache',
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "emenum-staging-cache",
         }
     }
 
@@ -112,8 +119,7 @@ else:
 
 # Staging email configuration - use actual SMTP but consider using a test inbox
 EMAIL_BACKEND = os.environ.get(
-    'EMAIL_BACKEND',
-    'django.core.mail.backends.smtp.EmailBackend'
+    "EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend"
 )
 
 
@@ -124,11 +130,11 @@ EMAIL_BACKEND = os.environ.get(
 # Enable security features for staging (mimics production)
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
-X_FRAME_OPTIONS = 'DENY'
+X_FRAME_OPTIONS = "DENY"
 
 # HTTPS settings - enable if staging uses HTTPS
-SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=True)  # noqa: F405
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=True)  # noqa: F405
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # HSTS settings (shorter duration for staging)
 SECURE_HSTS_SECONDS = 3600  # 1 hour (shorter than production)
@@ -156,9 +162,12 @@ CSRF_COOKIE_HTTPONLY = True
 # =============================================================================
 
 # Staging-specific CORS settings
-CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[  # noqa: F405
-    f'https://staging.{SITE_DOMAIN}',  # noqa: F405
-])
+CORS_ALLOWED_ORIGINS = env.list(
+    "CORS_ALLOWED_ORIGINS",
+    default=[  # noqa: F405
+        f"https://staging.{SITE_DOMAIN}",  # noqa: F405
+    ],
+)
 
 
 # =============================================================================
@@ -166,17 +175,17 @@ CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[  # noqa: F405
 # =============================================================================
 
 # Staging logging - more verbose than production, less than development
-LOGGING['root']['level'] = 'INFO'  # noqa: F405
-LOGGING['loggers']['django']['level'] = 'INFO'  # noqa: F405
-LOGGING['loggers']['apps']['level'] = 'DEBUG'  # noqa: F405
+LOGGING["root"]["level"] = "INFO"  # noqa: F405
+LOGGING["loggers"]["django"]["level"] = "INFO"  # noqa: F405
+LOGGING["loggers"]["apps"]["level"] = "DEBUG"  # noqa: F405
 
 # Add file logging for staging
-LOGGING['handlers']['file'] = {  # noqa: F405
-    'class': 'logging.handlers.RotatingFileHandler',
-    'filename': os.path.join(BASE_DIR.parent, 'logs', 'staging.log'),  # noqa: F405
-    'maxBytes': 10 * 1024 * 1024,  # 10 MB
-    'backupCount': 5,
-    'formatter': 'verbose',  # noqa: F405
+LOGGING["handlers"]["file"] = {  # noqa: F405
+    "class": "logging.handlers.RotatingFileHandler",
+    "filename": os.path.join(BASE_DIR.parent, "logs", "staging.log"),  # noqa: F405
+    "maxBytes": 10 * 1024 * 1024,  # 10 MB
+    "backupCount": 5,
+    "formatter": "verbose",  # noqa: F405
 }
 
 
@@ -185,7 +194,7 @@ LOGGING['handlers']['file'] = {  # noqa: F405
 # =============================================================================
 
 # Celery configuration for staging
-CELERY_TASK_ALWAYS_EAGER = env.bool('CELERY_TASK_ALWAYS_EAGER', default=False)  # noqa: F405
+CELERY_TASK_ALWAYS_EAGER = env.bool("CELERY_TASK_ALWAYS_EAGER", default=False)  # noqa: F405
 
 
 # =============================================================================
@@ -193,7 +202,7 @@ CELERY_TASK_ALWAYS_EAGER = env.bool('CELERY_TASK_ALWAYS_EAGER', default=False)  
 # =============================================================================
 
 # Sentry configuration for staging
-SENTRY_DSN = os.environ.get('SENTRY_DSN')
+SENTRY_DSN = os.environ.get("SENTRY_DSN")
 if SENTRY_DSN:
     try:
         import sentry_sdk
@@ -208,7 +217,7 @@ if SENTRY_DSN:
                 CeleryIntegration(),
                 RedisIntegration(),
             ],
-            environment='staging',
+            environment="staging",
             traces_sample_rate=0.2,  # 20% of transactions for performance monitoring
             send_default_pii=False,  # Don't send PII data
         )
@@ -221,13 +230,14 @@ if SENTRY_DSN:
 # =============================================================================
 
 # Allow debug toolbar for specific IPs in staging
-STAGING_DEBUG_IPS = env.list('STAGING_DEBUG_IPS', default=[])  # noqa: F405
+STAGING_DEBUG_IPS = env.list("STAGING_DEBUG_IPS", default=[])  # noqa: F405
 
 if STAGING_DEBUG_IPS:
     try:
         import debug_toolbar  # noqa: F401
-        INSTALLED_APPS += ['debug_toolbar']  # noqa: F405
-        MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')  # noqa: F405
+
+        INSTALLED_APPS += ["debug_toolbar"]  # noqa: F405
+        MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")  # noqa: F405
         INTERNAL_IPS = STAGING_DEBUG_IPS
     except ImportError:
         pass

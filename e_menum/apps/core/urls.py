@@ -62,7 +62,7 @@ from apps.core.views import (
 )
 
 
-app_name = 'core'
+app_name = "core"
 
 
 # =============================================================================
@@ -70,8 +70,8 @@ app_name = 'core'
 # =============================================================================
 
 router = DefaultRouter()
-router.register(r'organizations', OrganizationViewSet, basename='organization')
-router.register(r'users', UserViewSet, basename='user')
+router.register(r"organizations", OrganizationViewSet, basename="organization")
+router.register(r"users", UserViewSet, basename="user")
 
 
 # =============================================================================
@@ -80,21 +80,26 @@ router.register(r'users', UserViewSet, basename='user')
 
 auth_urlpatterns = [
     # Login/Logout
-    path('login/', LoginView.as_view(), name='login'),
-    path('logout/', LogoutView.as_view(), name='logout'),
-
+    path("login/", LoginView.as_view(), name="login"),
+    path("logout/", LogoutView.as_view(), name="logout"),
     # Token management
-    path('refresh/', TokenRefreshView.as_view(), name='token-refresh'),
-    path('verify/', TokenVerifyView.as_view(), name='token-verify'),
-
+    path("refresh/", TokenRefreshView.as_view(), name="token-refresh"),
+    path("verify/", TokenVerifyView.as_view(), name="token-verify"),
     # User profile
-    path('me/', UserMeView.as_view(), name='user-me'),
-    path('password/', PasswordChangeView.as_view(), name='password-change'),
-
+    path("me/", UserMeView.as_view(), name="user-me"),
+    path("password/", PasswordChangeView.as_view(), name="password-change"),
     # Session management
-    path('sessions/', SessionListView.as_view(), name='session-list'),
-    path('sessions/<uuid:session_id>/', SessionRevokeView.as_view(), name='session-revoke'),
-    path('sessions/revoke-all/', SessionRevokeAllView.as_view(), name='session-revoke-all'),
+    path("sessions/", SessionListView.as_view(), name="session-list"),
+    path(
+        "sessions/<uuid:session_id>/",
+        SessionRevokeView.as_view(),
+        name="session-revoke",
+    ),
+    path(
+        "sessions/revoke-all/",
+        SessionRevokeAllView.as_view(),
+        name="session-revoke-all",
+    ),
 ]
 
 

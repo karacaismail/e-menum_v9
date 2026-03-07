@@ -4,15 +4,42 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('website', '0001_initial'),
+        ("website", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='demorequest',
-            name='business_type',
-            field=models.CharField(choices=[('restaurant', 'Restoran'), ('lokanta', 'Lokanta / Ev Yemekleri'), ('fine_dining', 'Fine Dining'), ('meyhane', 'Meyhane / Balik Restoran'), ('steakhouse', 'Steakhouse / Izgara'), ('fast_food', 'Fast Food'), ('kebab', 'Kebapci / Pideci / Lahmacuncu'), ('doner', 'Donerci / Cigerci'), ('borek', 'Borekci / Mantici'), ('bakery', 'Pastane / Firincilik'), ('cafe', 'Kafe / Kahve Dukkani'), ('nargile', 'Nargile Kafe'), ('pub_bar', 'Pub / Bar / Biraevi'), ('smoothie', 'Smoothie / Juice Bar'), ('beach_club', 'Beach Club / Havuz Bar'), ('hotel', 'Otel / Tatil Koyu'), ('chain', 'Zincir Isletme'), ('franchise', 'Franchise'), ('catering', 'Catering / Toplu Yemek'), ('kantin', 'Kantin / Yemekhane'), ('food_court', 'Food Court'), ('other', 'Diger')], default='restaurant', max_length=50, verbose_name='isletme tipi'),
+            model_name="demorequest",
+            name="business_type",
+            field=models.CharField(
+                choices=[
+                    ("restaurant", "Restoran"),
+                    ("lokanta", "Lokanta / Ev Yemekleri"),
+                    ("fine_dining", "Fine Dining"),
+                    ("meyhane", "Meyhane / Balik Restoran"),
+                    ("steakhouse", "Steakhouse / Izgara"),
+                    ("fast_food", "Fast Food"),
+                    ("kebab", "Kebapci / Pideci / Lahmacuncu"),
+                    ("doner", "Donerci / Cigerci"),
+                    ("borek", "Borekci / Mantici"),
+                    ("bakery", "Pastane / Firincilik"),
+                    ("cafe", "Kafe / Kahve Dukkani"),
+                    ("nargile", "Nargile Kafe"),
+                    ("pub_bar", "Pub / Bar / Biraevi"),
+                    ("smoothie", "Smoothie / Juice Bar"),
+                    ("beach_club", "Beach Club / Havuz Bar"),
+                    ("hotel", "Otel / Tatil Koyu"),
+                    ("chain", "Zincir Isletme"),
+                    ("franchise", "Franchise"),
+                    ("catering", "Catering / Toplu Yemek"),
+                    ("kantin", "Kantin / Yemekhane"),
+                    ("food_court", "Food Court"),
+                    ("other", "Diger"),
+                ],
+                default="restaurant",
+                max_length=50,
+                verbose_name="isletme tipi",
+            ),
         ),
     ]

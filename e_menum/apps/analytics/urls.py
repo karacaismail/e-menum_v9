@@ -12,12 +12,18 @@ from apps.analytics.views import (
     SalesAggregationListView,
 )
 
-app_name = 'analytics'
+app_name = "analytics"
 
 urlpatterns = [
-    path('metrics/', DashboardMetricListView.as_view(), name='metric-list'),
-    path('metrics/<uuid:pk>/', DashboardMetricDetailView.as_view(), name='metric-detail'),
-    path('sales/', SalesAggregationListView.as_view(), name='sales-list'),
-    path('products/', ProductPerformanceListView.as_view(), name='product-performance-list'),
-    path('customers/', CustomerMetricListView.as_view(), name='customer-metric-list'),
+    path("metrics/", DashboardMetricListView.as_view(), name="metric-list"),
+    path(
+        "metrics/<uuid:pk>/", DashboardMetricDetailView.as_view(), name="metric-detail"
+    ),
+    path("sales/", SalesAggregationListView.as_view(), name="sales-list"),
+    path(
+        "products/",
+        ProductPerformanceListView.as_view(),
+        name="product-performance-list",
+    ),
+    path("customers/", CustomerMetricListView.as_view(), name="customer-metric-list"),
 ]

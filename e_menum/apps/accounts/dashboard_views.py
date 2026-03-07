@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 class DashboardView(OrganizationRequiredMixin, View):
     """Restaurant owner dashboard — KPIs, charts, recent orders, quick actions."""
 
-    template_name = 'accounts/dashboard.html'
+    template_name = "accounts/dashboard.html"
 
     def get(self, request):
         org = self.get_organization()
@@ -32,20 +32,21 @@ class DashboardView(OrganizationRequiredMixin, View):
         recent_orders = service.get_recent_orders(limit=5)
 
         context = {
-            'kpis': kpis,
-            'recent_orders': recent_orders,
-            'kpis_json': json.dumps(kpis, default=str),
+            "kpis": kpis,
+            "recent_orders": recent_orders,
+            "kpis_json": json.dumps(kpis, default=str),
         }
         return render(request, self.template_name, context)
 
 
 # ─── API endpoints (AJAX / JSON) ────────────────────────────────────────────
 
+
 def _get_org_or_403(request):
     """Helper: return organization or None (caller returns 403)."""
     if not request.user.is_authenticated:
         return None
-    return getattr(request.user, 'organization', None)
+    return getattr(request.user, "organization", None)
 
 
 @require_GET
@@ -53,7 +54,7 @@ def dashboard_kpis_api(request):
     """GET /account/api/dashboard/kpis/ — all KPI cards."""
     org = _get_org_or_403(request)
     if not org:
-        return JsonResponse({'error': 'Unauthorized'}, status=403)
+        return JsonResponse({"error": "Unauthorized"}, status=403)
     service = OwnerKPIService(org)
     return JsonResponse(service.get_all_kpis())
 
@@ -63,8 +64,8 @@ def dashboard_qr_trend_api(request):
     """GET /account/api/dashboard/qr-trend/ — daily QR scan counts."""
     org = _get_org_or_403(request)
     if not org:
-        return JsonResponse({'error': 'Unauthorized'}, status=403)
-    days = int(request.GET.get('days', 30))
+        return JsonResponse({"error": "Unauthorized"}, status=403)
+    days = int(request.GET.get("days", 30))
     days = min(days, 90)
     service = OwnerKPIService(org)
     return JsonResponse(service.get_qr_scan_trend(days=days))
@@ -75,8 +76,8 @@ def dashboard_revenue_api(request):
     """GET /account/api/dashboard/revenue/ — daily revenue totals."""
     org = _get_org_or_403(request)
     if not org:
-        return JsonResponse({'error': 'Unauthorized'}, status=403)
-    days = int(request.GET.get('days', 30))
+        return JsonResponse({"error": "Unauthorized"}, status=403)
+    days = int(request.GET.get("days", 30))
     days = min(days, 90)
     service = OwnerKPIService(org)
     return JsonResponse(service.get_revenue_trend(days=days))
@@ -87,7 +88,7 @@ def dashboard_orders_chart_api(request):
     """GET /account/api/dashboard/orders-chart/ — order status distribution."""
     org = _get_org_or_403(request)
     if not org:
-        return JsonResponse({'error': 'Unauthorized'}, status=403)
+        return JsonResponse({"error": "Unauthorized"}, status=403)
     service = OwnerKPIService(org)
     return JsonResponse(service.get_order_status_distribution())
 
@@ -97,9 +98,9 @@ def dashboard_top_products_api(request):
     """GET /account/api/dashboard/top-products/ — top 10 products by orders."""
     org = _get_org_or_403(request)
     if not org:
-        return JsonResponse({'error': 'Unauthorized'}, status=403)
+        return JsonResponse({"error": "Unauthorized"}, status=403)
     service = OwnerKPIService(org)
-    return JsonResponse({'products': service.get_top_products()}, safe=False)
+    return JsonResponse({"products": service.get_top_products()}, safe=False)
 
 
 @require_GET
@@ -107,6 +108,6 @@ def dashboard_recent_orders_api(request):
     """GET /account/api/dashboard/recent-orders/ — last 10 orders."""
     org = _get_org_or_403(request)
     if not org:
-        return JsonResponse({'error': 'Unauthorized'}, status=403)
+        return JsonResponse({"error": "Unauthorized"}, status=403)
     service = OwnerKPIService(org)
-    return JsonResponse({'orders': service.get_recent_orders()})
+    return JsonResponse({"orders": service.get_recent_orders()})

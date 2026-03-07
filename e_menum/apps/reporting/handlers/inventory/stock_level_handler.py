@@ -31,7 +31,7 @@ def _to_float(val) -> float:
     return float(val)
 
 
-@register_handler('RPT-INV-001')
+@register_handler("RPT-INV-001")
 class StockLevelHandler(BaseReportHandler):
     """
     Stock level report handler.
@@ -46,35 +46,43 @@ class StockLevelHandler(BaseReportHandler):
         low_stock_only: bool - Show only low/critical stock items (default: False)
     """
 
-    feature_key = 'RPT-INV-001'
+    feature_key = "RPT-INV-001"
 
     def get_required_permissions(self) -> List[str]:
-        return ['reporting.view', 'inventory.view']
+        return ["reporting.view", "inventory.view"]
 
     def get_default_parameters(self) -> dict:
         return {
-            'category': None,
-            'include_inactive': False,
-            'low_stock_only': False,
+            "category": None,
+            "include_inactive": False,
+            "low_stock_only": False,
         }
 
     def validate_parameters(self, parameters: dict) -> dict:
         merged = {**self.get_default_parameters(), **parameters}
 
         # Coerce booleans
-        if isinstance(merged['include_inactive'], str):
-            merged['include_inactive'] = merged['include_inactive'].lower() in ('true', '1', 'yes')
-        if isinstance(merged['low_stock_only'], str):
-            merged['low_stock_only'] = merged['low_stock_only'].lower() in ('true', '1', 'yes')
+        if isinstance(merged["include_inactive"], str):
+            merged["include_inactive"] = merged["include_inactive"].lower() in (
+                "true",
+                "1",
+                "yes",
+            )
+        if isinstance(merged["low_stock_only"], str):
+            merged["low_stock_only"] = merged["low_stock_only"].lower() in (
+                "true",
+                "1",
+                "yes",
+            )
 
         return merged
 
     def generate(self, org_id: str, parameters: dict) -> dict:
         from apps.inventory.models import InventoryItem, StockMovement
 
-        category = parameters.get('category')
-        include_inactive = parameters.get('include_inactive', False)
-        low_stock_only = parameters.get('low_stock_only', False)
+        category = parameters.get("category")
+        include_inactive = parameters.get("include_inactive", False)
+        low_stock_only = parameters.get("low_stock_only", False)
 
         # ---- Base queryset with tenant filtering ----
         qs = InventoryItem.objects.filter(
@@ -89,79 +97,85 @@ class StockLevelHandler(BaseReportHandler):
             qs = qs.filter(category=category)
 
         if low_stock_only:
-            qs = qs.filter(current_stock__lte=F('min_stock_level'))
+            qs = qs.filter(current_stock__lte=F("min_stock_level"))
 
         # ---- Summary metrics ----
         summary = qs.aggregate(
-            total_items=Count('id'),
-            total_stock_value=Sum(F('current_stock') * F('cost_per_unit')),
-            avg_stock_value=Avg(F('current_stock') * F('cost_per_unit')),
+            total_items=Count("id"),
+            total_stock_value=Sum(F("current_stock") * F("cost_per_unit")),
+            avg_stock_value=Avg(F("current_stock") * F("cost_per_unit")),
             critical_count=Count(
-                'id',
-                filter=Q(current_stock__lte=F('min_stock_level') * Decimal('0.5')),
+                "id",
+                filter=Q(current_stock__lte=F("min_stock_level") * Decimal("0.5")),
             ),
             low_count=Count(
-                'id',
+                "id",
                 filter=Q(
-                    current_stock__gt=F('min_stock_level') * Decimal('0.5'),
-                    current_stock__lte=F('min_stock_level'),
+                    current_stock__gt=F("min_stock_level") * Decimal("0.5"),
+                    current_stock__lte=F("min_stock_level"),
                 ),
             ),
             normal_count=Count(
-                'id',
+                "id",
                 filter=Q(
-                    current_stock__gt=F('min_stock_level'),
-                    current_stock__lte=F('max_stock_level'),
+                    current_stock__gt=F("min_stock_level"),
+                    current_stock__lte=F("max_stock_level"),
                 ),
             ),
             excess_count=Count(
-                'id',
+                "id",
                 filter=Q(
                     max_stock_level__gt=0,
-                    current_stock__gt=F('max_stock_level'),
+                    current_stock__gt=F("max_stock_level"),
                 ),
             ),
         )
 
         # ---- Category breakdown ----
         category_breakdown = list(
-            qs.values('category')
+            qs.values("category")
             .annotate(
-                item_count=Count('id'),
-                total_value=Sum(F('current_stock') * F('cost_per_unit')),
+                item_count=Count("id"),
+                total_value=Sum(F("current_stock") * F("cost_per_unit")),
                 low_stock_count=Count(
-                    'id',
-                    filter=Q(current_stock__lte=F('min_stock_level')),
+                    "id",
+                    filter=Q(current_stock__lte=F("min_stock_level")),
                 ),
             )
-            .order_by('-total_value')
+            .order_by("-total_value")
         )
 
         for row in category_breakdown:
-            row['category'] = row['category'] or 'Uncategorized'
-            row['total_value'] = _to_float(row['total_value'])
+            row["category"] = row["category"] or "Uncategorized"
+            row["total_value"] = _to_float(row["total_value"])
 
         # ---- Low / critical items list ----
         alert_items = list(
-            qs.filter(current_stock__lte=F('min_stock_level'))
+            qs.filter(current_stock__lte=F("min_stock_level"))
             .values(
-                'id', 'name', 'sku', 'category', 'unit_type',
-                'current_stock', 'min_stock_level', 'cost_per_unit',
+                "id",
+                "name",
+                "sku",
+                "category",
+                "unit_type",
+                "current_stock",
+                "min_stock_level",
+                "cost_per_unit",
             )
-            .order_by('current_stock')[:50]
+            .order_by("current_stock")[:50]
         )
 
         for item in alert_items:
-            item['id'] = str(item['id'])
-            item['current_stock'] = _to_float(item['current_stock'])
-            item['min_stock_level'] = _to_float(item['min_stock_level'])
-            item['cost_per_unit'] = _to_float(item['cost_per_unit'])
-            item['stock_value'] = item['current_stock'] * item['cost_per_unit']
+            item["id"] = str(item["id"])
+            item["current_stock"] = _to_float(item["current_stock"])
+            item["min_stock_level"] = _to_float(item["min_stock_level"])
+            item["cost_per_unit"] = _to_float(item["cost_per_unit"])
+            item["stock_value"] = item["current_stock"] * item["cost_per_unit"]
             # Classify level
-            if item['current_stock'] <= item['min_stock_level'] * 0.5:
-                item['level'] = 'CRITICAL'
+            if item["current_stock"] <= item["min_stock_level"] * 0.5:
+                item["level"] = "CRITICAL"
             else:
-                item['level'] = 'LOW'
+                item["level"] = "LOW"
 
         # ---- Recent movements summary (last 7 days) ----
         seven_days_ago = date.today() - timedelta(days=7)
@@ -171,35 +185,35 @@ class StockLevelHandler(BaseReportHandler):
                 deleted_at__isnull=True,
                 created_at__date__gte=seven_days_ago,
             )
-            .values('movement_type')
+            .values("movement_type")
             .annotate(
-                count=Count('id'),
-                total_quantity=Sum('quantity'),
-                total_cost=Sum('total_cost'),
+                count=Count("id"),
+                total_quantity=Sum("quantity"),
+                total_cost=Sum("total_cost"),
             )
-            .order_by('movement_type')
+            .order_by("movement_type")
         )
 
         for row in movement_summary:
-            row['total_quantity'] = _to_float(row['total_quantity'])
-            row['total_cost'] = _to_float(row['total_cost'])
+            row["total_quantity"] = _to_float(row["total_quantity"])
+            row["total_cost"] = _to_float(row["total_cost"])
 
         return {
-            'summary': {
-                'total_items': summary['total_items'] or 0,
-                'total_stock_value': _to_float(summary['total_stock_value']),
-                'avg_stock_value': _to_float(summary['avg_stock_value']),
-                'stock_levels': {
-                    'critical': summary['critical_count'] or 0,
-                    'low': summary['low_count'] or 0,
-                    'normal': summary['normal_count'] or 0,
-                    'excess': summary['excess_count'] or 0,
+            "summary": {
+                "total_items": summary["total_items"] or 0,
+                "total_stock_value": _to_float(summary["total_stock_value"]),
+                "avg_stock_value": _to_float(summary["avg_stock_value"]),
+                "stock_levels": {
+                    "critical": summary["critical_count"] or 0,
+                    "low": summary["low_count"] or 0,
+                    "normal": summary["normal_count"] or 0,
+                    "excess": summary["excess_count"] or 0,
                 },
             },
-            'category_breakdown': category_breakdown,
-            'alert_items': alert_items,
-            'recent_movements': {
-                'period_days': 7,
-                'data': movement_summary,
+            "category_breakdown": category_breakdown,
+            "alert_items": alert_items,
+            "recent_movements": {
+                "period_days": 7,
+                "data": movement_summary,
             },
         }

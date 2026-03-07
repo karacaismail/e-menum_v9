@@ -51,80 +51,80 @@ class Supplier(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)'),
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='suppliers',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this supplier belongs to'),
+        related_name="suppliers",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this supplier belongs to"),
     )
 
     name = models.CharField(
         max_length=255,
-        verbose_name=_('Name'),
-        help_text=_('Supplier company name'),
+        verbose_name=_("Name"),
+        help_text=_("Supplier company name"),
     )
 
     contact_person = models.CharField(
         max_length=255,
         blank=True,
         null=True,
-        verbose_name=_('Contact person'),
-        help_text=_('Primary contact person at the supplier'),
+        verbose_name=_("Contact person"),
+        help_text=_("Primary contact person at the supplier"),
     )
 
     email = models.EmailField(
         blank=True,
         null=True,
-        verbose_name=_('Email'),
-        help_text=_('Supplier contact email'),
+        verbose_name=_("Email"),
+        help_text=_("Supplier contact email"),
     )
 
     phone = models.CharField(
         max_length=20,
         blank=True,
         null=True,
-        verbose_name=_('Phone'),
-        help_text=_('Supplier contact phone'),
+        verbose_name=_("Phone"),
+        help_text=_("Supplier contact phone"),
     )
 
     address = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Address'),
-        help_text=_('Supplier full address'),
+        verbose_name=_("Address"),
+        help_text=_("Supplier full address"),
     )
 
     tax_id = models.CharField(
         max_length=50,
         blank=True,
         null=True,
-        verbose_name=_('Tax ID'),
-        help_text=_('Supplier tax identification number'),
+        verbose_name=_("Tax ID"),
+        help_text=_("Supplier tax identification number"),
     )
 
     is_active = models.BooleanField(
         default=True,
-        verbose_name=_('Is active'),
-        help_text=_('Whether this supplier is currently active'),
+        verbose_name=_("Is active"),
+        help_text=_("Whether this supplier is currently active"),
     )
 
     rating = models.PositiveSmallIntegerField(
         default=3,
         validators=[MinValueValidator(1), MaxValueValidator(5)],
-        verbose_name=_('Rating'),
-        help_text=_('Supplier rating from 1 to 5'),
+        verbose_name=_("Rating"),
+        help_text=_("Supplier rating from 1 to 5"),
     )
 
     notes = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Notes'),
-        help_text=_('Additional notes about the supplier'),
+        verbose_name=_("Notes"),
+        help_text=_("Additional notes about the supplier"),
     )
 
     # Managers
@@ -132,18 +132,18 @@ class Supplier(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()
 
     class Meta:
-        db_table = 'suppliers'
-        verbose_name = _('Supplier')
-        verbose_name_plural = _('Suppliers')
-        ordering = ['name']
+        db_table = "suppliers"
+        verbose_name = _("Supplier")
+        verbose_name_plural = _("Suppliers")
+        ordering = ["name"]
         indexes = [
             models.Index(
-                fields=['organization', 'deleted_at'],
-                name='supplier_org_deleted_idx',
+                fields=["organization", "deleted_at"],
+                name="supplier_org_deleted_idx",
             ),
             models.Index(
-                fields=['organization', 'is_active'],
-                name='supplier_org_active_idx',
+                fields=["organization", "is_active"],
+                name="supplier_org_active_idx",
             ),
         ]
 
@@ -171,78 +171,78 @@ class InventoryItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)'),
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='inventory_items',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this inventory item belongs to'),
+        related_name="inventory_items",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this inventory item belongs to"),
     )
 
     name = models.CharField(
         max_length=255,
-        verbose_name=_('Name'),
-        help_text=_('Name of the inventory item'),
+        verbose_name=_("Name"),
+        help_text=_("Name of the inventory item"),
     )
 
     sku = models.CharField(
         max_length=100,
         blank=True,
         null=True,
-        verbose_name=_('SKU'),
-        help_text=_('Stock Keeping Unit code'),
+        verbose_name=_("SKU"),
+        help_text=_("Stock Keeping Unit code"),
     )
 
     category = models.CharField(
         max_length=100,
         blank=True,
         null=True,
-        verbose_name=_('Category'),
-        help_text=_('Item category (e.g., Dairy, Produce, Meat)'),
+        verbose_name=_("Category"),
+        help_text=_("Item category (e.g., Dairy, Produce, Meat)"),
     )
 
     unit_type = models.CharField(
         max_length=10,
         choices=UnitType.choices,
         default=UnitType.PIECE,
-        verbose_name=_('Unit type'),
-        help_text=_('Unit of measurement for this item'),
+        verbose_name=_("Unit type"),
+        help_text=_("Unit of measurement for this item"),
     )
 
     current_stock = models.DecimalField(
         max_digits=12,
         decimal_places=3,
         default=0,
-        verbose_name=_('Current stock'),
-        help_text=_('Current stock quantity in the specified unit'),
+        verbose_name=_("Current stock"),
+        help_text=_("Current stock quantity in the specified unit"),
     )
 
     min_stock_level = models.DecimalField(
         max_digits=12,
         decimal_places=3,
         default=0,
-        verbose_name=_('Minimum stock level'),
-        help_text=_('Minimum stock threshold before alert'),
+        verbose_name=_("Minimum stock level"),
+        help_text=_("Minimum stock threshold before alert"),
     )
 
     max_stock_level = models.DecimalField(
         max_digits=12,
         decimal_places=3,
         default=0,
-        verbose_name=_('Maximum stock level'),
-        help_text=_('Maximum recommended stock level'),
+        verbose_name=_("Maximum stock level"),
+        help_text=_("Maximum recommended stock level"),
     )
 
     cost_per_unit = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Cost per unit'),
-        help_text=_('Cost per unit in the base currency'),
+        verbose_name=_("Cost per unit"),
+        help_text=_("Cost per unit in the base currency"),
     )
 
     supplier = models.ForeignKey(
@@ -250,15 +250,15 @@ class InventoryItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='inventory_items',
-        verbose_name=_('Supplier'),
-        help_text=_('Primary supplier for this item'),
+        related_name="inventory_items",
+        verbose_name=_("Supplier"),
+        help_text=_("Primary supplier for this item"),
     )
 
     is_active = models.BooleanField(
         default=True,
-        verbose_name=_('Is active'),
-        help_text=_('Whether this inventory item is actively tracked'),
+        verbose_name=_("Is active"),
+        help_text=_("Whether this inventory item is actively tracked"),
     )
 
     # Managers
@@ -266,26 +266,26 @@ class InventoryItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()
 
     class Meta:
-        db_table = 'inventory_items'
-        verbose_name = _('Inventory Item')
-        verbose_name_plural = _('Inventory Items')
-        ordering = ['name']
+        db_table = "inventory_items"
+        verbose_name = _("Inventory Item")
+        verbose_name_plural = _("Inventory Items")
+        ordering = ["name"]
         indexes = [
             models.Index(
-                fields=['organization', 'deleted_at'],
-                name='invitem_org_deleted_idx',
+                fields=["organization", "deleted_at"],
+                name="invitem_org_deleted_idx",
             ),
             models.Index(
-                fields=['organization', 'is_active'],
-                name='invitem_org_active_idx',
+                fields=["organization", "is_active"],
+                name="invitem_org_active_idx",
             ),
             models.Index(
-                fields=['organization', 'category'],
-                name='invitem_org_category_idx',
+                fields=["organization", "category"],
+                name="invitem_org_category_idx",
             ),
             models.Index(
-                fields=['organization', 'sku'],
-                name='invitem_org_sku_idx',
+                fields=["organization", "sku"],
+                name="invitem_org_sku_idx",
             ),
         ]
 
@@ -329,79 +329,79 @@ class StockMovement(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)'),
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='stock_movements',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this movement belongs to'),
+        related_name="stock_movements",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this movement belongs to"),
     )
 
     inventory_item = models.ForeignKey(
         InventoryItem,
         on_delete=models.CASCADE,
-        related_name='movements',
-        verbose_name=_('Inventory item'),
-        help_text=_('The inventory item affected by this movement'),
+        related_name="movements",
+        verbose_name=_("Inventory item"),
+        help_text=_("The inventory item affected by this movement"),
     )
 
     movement_type = models.CharField(
         max_length=20,
         choices=MovementType.choices,
-        verbose_name=_('Movement type'),
-        help_text=_('Type of stock movement'),
+        verbose_name=_("Movement type"),
+        help_text=_("Type of stock movement"),
     )
 
     quantity = models.DecimalField(
         max_digits=12,
         decimal_places=3,
-        verbose_name=_('Quantity'),
-        help_text=_('Quantity moved (positive for additions, negative for removals)'),
+        verbose_name=_("Quantity"),
+        help_text=_("Quantity moved (positive for additions, negative for removals)"),
     )
 
     unit_cost = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Unit cost'),
-        help_text=_('Cost per unit at the time of movement'),
+        verbose_name=_("Unit cost"),
+        help_text=_("Cost per unit at the time of movement"),
     )
 
     total_cost = models.DecimalField(
         max_digits=12,
         decimal_places=2,
         default=0,
-        verbose_name=_('Total cost'),
-        help_text=_('Total cost of this movement'),
+        verbose_name=_("Total cost"),
+        help_text=_("Total cost of this movement"),
     )
 
     reference_number = models.CharField(
         max_length=100,
         blank=True,
         null=True,
-        verbose_name=_('Reference number'),
-        help_text=_('External reference number (invoice, PO, etc.)'),
+        verbose_name=_("Reference number"),
+        help_text=_("External reference number (invoice, PO, etc.)"),
     )
 
     notes = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Notes'),
-        help_text=_('Additional notes about this movement'),
+        verbose_name=_("Notes"),
+        help_text=_("Additional notes about this movement"),
     )
 
     created_by = models.ForeignKey(
-        'core.User',
+        "core.User",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='stock_movements',
-        verbose_name=_('Created by'),
-        help_text=_('User who created this movement'),
+        related_name="stock_movements",
+        verbose_name=_("Created by"),
+        help_text=_("User who created this movement"),
     )
 
     # Managers
@@ -409,22 +409,22 @@ class StockMovement(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()
 
     class Meta:
-        db_table = 'stock_movements'
-        verbose_name = _('Stock Movement')
-        verbose_name_plural = _('Stock Movements')
-        ordering = ['-created_at']
+        db_table = "stock_movements"
+        verbose_name = _("Stock Movement")
+        verbose_name_plural = _("Stock Movements")
+        ordering = ["-created_at"]
         indexes = [
             models.Index(
-                fields=['organization', 'deleted_at'],
-                name='stockmov_org_deleted_idx',
+                fields=["organization", "deleted_at"],
+                name="stockmov_org_deleted_idx",
             ),
             models.Index(
-                fields=['organization', 'movement_type'],
-                name='stockmov_org_type_idx',
+                fields=["organization", "movement_type"],
+                name="stockmov_org_type_idx",
             ),
             models.Index(
-                fields=['inventory_item', 'created_at'],
-                name='stockmov_item_created_idx',
+                fields=["inventory_item", "created_at"],
+                name="stockmov_item_created_idx",
             ),
         ]
 
@@ -455,30 +455,30 @@ class PurchaseOrder(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)'),
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='purchase_orders',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this purchase order belongs to'),
+        related_name="purchase_orders",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this purchase order belongs to"),
     )
 
     supplier = models.ForeignKey(
         Supplier,
         on_delete=models.CASCADE,
-        related_name='purchase_orders',
-        verbose_name=_('Supplier'),
-        help_text=_('Supplier for this purchase order'),
+        related_name="purchase_orders",
+        verbose_name=_("Supplier"),
+        help_text=_("Supplier for this purchase order"),
     )
 
     order_number = models.CharField(
         max_length=50,
-        verbose_name=_('Order number'),
-        help_text=_('Unique order reference number'),
+        verbose_name=_("Order number"),
+        help_text=_("Unique order reference number"),
     )
 
     status = models.CharField(
@@ -486,78 +486,78 @@ class PurchaseOrder(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=PurchaseOrderStatus.choices,
         default=PurchaseOrderStatus.DRAFT,
         db_index=True,
-        verbose_name=_('Status'),
-        help_text=_('Current status of the purchase order'),
+        verbose_name=_("Status"),
+        help_text=_("Current status of the purchase order"),
     )
 
     order_date = models.DateField(
-        verbose_name=_('Order date'),
-        help_text=_('Date the order was placed'),
+        verbose_name=_("Order date"),
+        help_text=_("Date the order was placed"),
     )
 
     expected_delivery = models.DateField(
         blank=True,
         null=True,
-        verbose_name=_('Expected delivery'),
-        help_text=_('Expected delivery date'),
+        verbose_name=_("Expected delivery"),
+        help_text=_("Expected delivery date"),
     )
 
     actual_delivery = models.DateField(
         blank=True,
         null=True,
-        verbose_name=_('Actual delivery'),
-        help_text=_('Actual delivery date'),
+        verbose_name=_("Actual delivery"),
+        help_text=_("Actual delivery date"),
     )
 
     subtotal = models.DecimalField(
         max_digits=12,
         decimal_places=2,
         default=0,
-        verbose_name=_('Subtotal'),
-        help_text=_('Total before tax'),
+        verbose_name=_("Subtotal"),
+        help_text=_("Total before tax"),
     )
 
     tax_amount = models.DecimalField(
         max_digits=12,
         decimal_places=2,
         default=0,
-        verbose_name=_('Tax amount'),
-        help_text=_('Total tax amount'),
+        verbose_name=_("Tax amount"),
+        help_text=_("Total tax amount"),
     )
 
     total_amount = models.DecimalField(
         max_digits=12,
         decimal_places=2,
         default=0,
-        verbose_name=_('Total amount'),
-        help_text=_('Total order amount including tax'),
+        verbose_name=_("Total amount"),
+        help_text=_("Total order amount including tax"),
     )
 
     notes = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Notes'),
-        help_text=_('Additional notes for this purchase order'),
+        verbose_name=_("Notes"),
+        help_text=_("Additional notes for this purchase order"),
     )
 
     created_by = models.ForeignKey(
-        'core.User',
+        "core.User",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='created_purchase_orders',
-        verbose_name=_('Created by'),
-        help_text=_('User who created this purchase order'),
+        related_name="created_purchase_orders",
+        verbose_name=_("Created by"),
+        help_text=_("User who created this purchase order"),
     )
 
     approved_by = models.ForeignKey(
-        'core.User',
+        "core.User",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='approved_purchase_orders',
-        verbose_name=_('Approved by'),
-        help_text=_('User who approved this purchase order'),
+        related_name="approved_purchase_orders",
+        verbose_name=_("Approved by"),
+        help_text=_("User who approved this purchase order"),
     )
 
     # Managers
@@ -565,22 +565,22 @@ class PurchaseOrder(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()
 
     class Meta:
-        db_table = 'purchase_orders'
-        verbose_name = _('Purchase Order')
-        verbose_name_plural = _('Purchase Orders')
-        ordering = ['-order_date']
+        db_table = "purchase_orders"
+        verbose_name = _("Purchase Order")
+        verbose_name_plural = _("Purchase Orders")
+        ordering = ["-order_date"]
         indexes = [
             models.Index(
-                fields=['organization', 'deleted_at'],
-                name='po_org_deleted_idx',
+                fields=["organization", "deleted_at"],
+                name="po_org_deleted_idx",
             ),
             models.Index(
-                fields=['organization', 'status'],
-                name='po_org_status_idx',
+                fields=["organization", "status"],
+                name="po_org_status_idx",
             ),
             models.Index(
-                fields=['organization', 'supplier'],
-                name='po_org_supplier_idx',
+                fields=["organization", "supplier"],
+                name="po_org_supplier_idx",
             ),
         ]
 
@@ -607,54 +607,54 @@ class PurchaseOrderItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)'),
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     purchase_order = models.ForeignKey(
         PurchaseOrder,
         on_delete=models.CASCADE,
-        related_name='items',
-        verbose_name=_('Purchase order'),
-        help_text=_('Parent purchase order'),
+        related_name="items",
+        verbose_name=_("Purchase order"),
+        help_text=_("Parent purchase order"),
     )
 
     inventory_item = models.ForeignKey(
         InventoryItem,
         on_delete=models.CASCADE,
-        related_name='purchase_order_items',
-        verbose_name=_('Inventory item'),
-        help_text=_('The inventory item being ordered'),
+        related_name="purchase_order_items",
+        verbose_name=_("Inventory item"),
+        help_text=_("The inventory item being ordered"),
     )
 
     quantity_ordered = models.DecimalField(
         max_digits=12,
         decimal_places=3,
-        verbose_name=_('Quantity ordered'),
-        help_text=_('Quantity ordered from supplier'),
+        verbose_name=_("Quantity ordered"),
+        help_text=_("Quantity ordered from supplier"),
     )
 
     quantity_received = models.DecimalField(
         max_digits=12,
         decimal_places=3,
         default=0,
-        verbose_name=_('Quantity received'),
-        help_text=_('Quantity actually received'),
+        verbose_name=_("Quantity received"),
+        help_text=_("Quantity actually received"),
     )
 
     unit_cost = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name=_('Unit cost'),
-        help_text=_('Cost per unit'),
+        verbose_name=_("Unit cost"),
+        help_text=_("Cost per unit"),
     )
 
     total_cost = models.DecimalField(
         max_digits=12,
         decimal_places=2,
         default=0,
-        verbose_name=_('Total cost'),
-        help_text=_('Total line item cost'),
+        verbose_name=_("Total cost"),
+        help_text=_("Total line item cost"),
     )
 
     # Managers
@@ -662,14 +662,14 @@ class PurchaseOrderItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()
 
     class Meta:
-        db_table = 'purchase_order_items'
-        verbose_name = _('Purchase Order Item')
-        verbose_name_plural = _('Purchase Order Items')
-        ordering = ['id']
+        db_table = "purchase_order_items"
+        verbose_name = _("Purchase Order Item")
+        verbose_name_plural = _("Purchase Order Items")
+        ordering = ["id"]
         indexes = [
             models.Index(
-                fields=['purchase_order'],
-                name='poitem_po_idx',
+                fields=["purchase_order"],
+                name="poitem_po_idx",
             ),
         ]
 
@@ -699,65 +699,65 @@ class Recipe(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)'),
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='recipes',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this recipe belongs to'),
+        related_name="recipes",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this recipe belongs to"),
     )
 
     product = models.ForeignKey(
-        'menu.Product',
+        "menu.Product",
         on_delete=models.CASCADE,
-        related_name='recipes',
-        verbose_name=_('Product'),
-        help_text=_('Menu product this recipe produces'),
+        related_name="recipes",
+        verbose_name=_("Product"),
+        help_text=_("Menu product this recipe produces"),
     )
 
     name = models.CharField(
         max_length=255,
-        verbose_name=_('Name'),
-        help_text=_('Recipe name'),
+        verbose_name=_("Name"),
+        help_text=_("Recipe name"),
     )
 
     description = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Description'),
-        help_text=_('Recipe description or preparation instructions'),
+        verbose_name=_("Description"),
+        help_text=_("Recipe description or preparation instructions"),
     )
 
     yield_quantity = models.DecimalField(
         max_digits=10,
         decimal_places=3,
         default=1,
-        verbose_name=_('Yield quantity'),
-        help_text=_('Number of portions/units this recipe produces'),
+        verbose_name=_("Yield quantity"),
+        help_text=_("Number of portions/units this recipe produces"),
     )
 
     yield_unit = models.CharField(
         max_length=10,
         choices=UnitType.choices,
         default=UnitType.PIECE,
-        verbose_name=_('Yield unit'),
-        help_text=_('Unit of measurement for the yield'),
+        verbose_name=_("Yield unit"),
+        help_text=_("Unit of measurement for the yield"),
     )
 
     preparation_time_minutes = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Preparation time (minutes)'),
-        help_text=_('Estimated preparation time in minutes'),
+        verbose_name=_("Preparation time (minutes)"),
+        help_text=_("Estimated preparation time in minutes"),
     )
 
     is_active = models.BooleanField(
         default=True,
-        verbose_name=_('Is active'),
-        help_text=_('Whether this recipe is currently in use'),
+        verbose_name=_("Is active"),
+        help_text=_("Whether this recipe is currently in use"),
     )
 
     # Managers
@@ -765,18 +765,18 @@ class Recipe(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()
 
     class Meta:
-        db_table = 'recipes'
-        verbose_name = _('Recipe')
-        verbose_name_plural = _('Recipes')
-        ordering = ['name']
+        db_table = "recipes"
+        verbose_name = _("Recipe")
+        verbose_name_plural = _("Recipes")
+        ordering = ["name"]
         indexes = [
             models.Index(
-                fields=['organization', 'deleted_at'],
-                name='recipe_org_deleted_idx',
+                fields=["organization", "deleted_at"],
+                name="recipe_org_deleted_idx",
             ),
             models.Index(
-                fields=['organization', 'product'],
-                name='recipe_org_product_idx',
+                fields=["organization", "product"],
+                name="recipe_org_product_idx",
             ),
         ]
 
@@ -803,39 +803,39 @@ class RecipeIngredient(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)'),
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='ingredients',
-        verbose_name=_('Recipe'),
-        help_text=_('Parent recipe'),
+        related_name="ingredients",
+        verbose_name=_("Recipe"),
+        help_text=_("Parent recipe"),
     )
 
     inventory_item = models.ForeignKey(
         InventoryItem,
         on_delete=models.CASCADE,
-        related_name='recipe_ingredients',
-        verbose_name=_('Inventory item'),
-        help_text=_('The inventory item used as ingredient'),
+        related_name="recipe_ingredients",
+        verbose_name=_("Inventory item"),
+        help_text=_("The inventory item used as ingredient"),
     )
 
     quantity_required = models.DecimalField(
         max_digits=10,
         decimal_places=3,
-        verbose_name=_('Quantity required'),
-        help_text=_('Amount of this ingredient required per recipe yield'),
+        verbose_name=_("Quantity required"),
+        help_text=_("Amount of this ingredient required per recipe yield"),
     )
 
     unit_type = models.CharField(
         max_length=10,
         choices=UnitType.choices,
         default=UnitType.G,
-        verbose_name=_('Unit type'),
-        help_text=_('Unit of measurement for this ingredient'),
+        verbose_name=_("Unit type"),
+        help_text=_("Unit of measurement for this ingredient"),
     )
 
     waste_percentage = models.DecimalField(
@@ -843,8 +843,8 @@ class RecipeIngredient(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         default=0,
         validators=[MinValueValidator(0), MaxValueValidator(100)],
-        verbose_name=_('Waste percentage'),
-        help_text=_('Expected waste percentage (0-100)'),
+        verbose_name=_("Waste percentage"),
+        help_text=_("Expected waste percentage (0-100)"),
     )
 
     # Managers
@@ -852,14 +852,14 @@ class RecipeIngredient(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()
 
     class Meta:
-        db_table = 'recipe_ingredients'
-        verbose_name = _('Recipe Ingredient')
-        verbose_name_plural = _('Recipe Ingredients')
-        ordering = ['id']
+        db_table = "recipe_ingredients"
+        verbose_name = _("Recipe Ingredient")
+        verbose_name_plural = _("Recipe Ingredients")
+        ordering = ["id"]
         indexes = [
             models.Index(
-                fields=['recipe'],
-                name='recipeing_recipe_idx',
+                fields=["recipe"],
+                name="recipeing_recipe_idx",
             ),
         ]
 

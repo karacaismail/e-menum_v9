@@ -17,7 +17,7 @@ from django.dispatch import receiver
 logger = logging.getLogger(__name__)
 
 
-@receiver(post_save, sender='core.Organization')
+@receiver(post_save, sender="core.Organization")
 def create_organization_folders(sender, instance, created, **kwargs):
     """
     Auto-create django-filer folder structure for new organizations.
@@ -40,29 +40,25 @@ def create_organization_folders(sender, instance, created, **kwargs):
 
         # Get the owner (first user/admin associated with the org, or None)
         owner = None
-        if hasattr(instance, 'users'):
+        if hasattr(instance, "users"):
             owner = instance.users.first()
 
         # Create root folder using org ID as name
         root_folder, root_created = Folder.objects.get_or_create(
-            name=str(instance.id),
-            parent=None,
-            defaults={'owner': owner}
+            name=str(instance.id), parent=None, defaults={"owner": owner}
         )
 
         if root_created:
             # Create standard subfolders
-            for subfolder_name in ['menu_items', 'logos', 'gallery']:
+            for subfolder_name in ["menu_items", "logos", "gallery"]:
                 Folder.objects.get_or_create(
-                    name=subfolder_name,
-                    parent=root_folder,
-                    defaults={'owner': owner}
+                    name=subfolder_name, parent=root_folder, defaults={"owner": owner}
                 )
 
             logger.info(
                 "Created filer folder structure for organization: %s (%s)",
                 instance.name,
-                instance.id
+                instance.id,
             )
 
     except ImportError:
@@ -73,5 +69,5 @@ def create_organization_folders(sender, instance, created, **kwargs):
         logger.warning(
             "Failed to create filer folders for organization %s: %s",
             instance.id,
-            str(e)
+            str(e),
         )

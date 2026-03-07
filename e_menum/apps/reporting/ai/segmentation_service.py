@@ -49,24 +49,24 @@ logger = logging.getLogger(__name__)
 # Format: segment_name -> (r_min, r_max, f_min, f_max, m_min, m_max)
 SEGMENT_RULES = [
     # name, r_range, f_range, m_range (inclusive)
-    ('Champions', (5, 5), (5, 5), (4, 5)),
-    ('Champions', (5, 5), (4, 5), (5, 5)),
-    ('Loyal Customers', (4, 5), (4, 5), (3, 5)),
-    ('Loyal Customers', (3, 5), (4, 5), (4, 5)),
-    ('Potential Loyalists', (4, 5), (2, 3), (2, 5)),
-    ('Potential Loyalists', (4, 5), (1, 3), (4, 5)),
-    ('New Customers', (5, 5), (1, 1), (1, 5)),
-    ('Promising', (4, 4), (1, 1), (1, 5)),
-    ('Need Attention', (3, 3), (3, 4), (3, 4)),
-    ('Need Attention', (3, 4), (2, 3), (3, 4)),
-    ('About to Sleep', (3, 3), (1, 2), (1, 3)),
-    ('At Risk', (2, 3), (3, 5), (3, 5)),
-    ('At Risk', (2, 3), (4, 5), (2, 5)),
+    ("Champions", (5, 5), (5, 5), (4, 5)),
+    ("Champions", (5, 5), (4, 5), (5, 5)),
+    ("Loyal Customers", (4, 5), (4, 5), (3, 5)),
+    ("Loyal Customers", (3, 5), (4, 5), (4, 5)),
+    ("Potential Loyalists", (4, 5), (2, 3), (2, 5)),
+    ("Potential Loyalists", (4, 5), (1, 3), (4, 5)),
+    ("New Customers", (5, 5), (1, 1), (1, 5)),
+    ("Promising", (4, 4), (1, 1), (1, 5)),
+    ("Need Attention", (3, 3), (3, 4), (3, 4)),
+    ("Need Attention", (3, 4), (2, 3), (3, 4)),
+    ("About to Sleep", (3, 3), (1, 2), (1, 3)),
+    ("At Risk", (2, 3), (3, 5), (3, 5)),
+    ("At Risk", (2, 3), (4, 5), (2, 5)),
     ("Can't Lose Them", (1, 2), (4, 5), (4, 5)),
-    ('Hibernating', (1, 2), (1, 2), (1, 3)),
-    ('Hibernating', (2, 2), (1, 2), (2, 3)),
-    ('Lost', (1, 1), (1, 1), (1, 2)),
-    ('Lost', (1, 1), (1, 2), (1, 1)),
+    ("Hibernating", (1, 2), (1, 2), (1, 3)),
+    ("Hibernating", (2, 2), (1, 2), (2, 3)),
+    ("Lost", (1, 1), (1, 1), (1, 2)),
+    ("Lost", (1, 1), (1, 2), (1, 1)),
 ]
 
 
@@ -107,10 +107,10 @@ class SegmentationService:
 
         if not customer_data:
             return {
-                'total_customers': 0,
-                'segments': {},
-                'updated_count': 0,
-                'rfm_distribution': {},
+                "total_customers": 0,
+                "segments": {},
+                "updated_count": 0,
+                "rfm_distribution": {},
             }
 
         total_customers = len(customer_data)
@@ -120,30 +120,32 @@ class SegmentationService:
         rfm_records = []
 
         for cust in customer_data:
-            customer_id = cust['customer_id']
-            last_order_date = cust['last_order_date']
-            order_count = cust['order_count'] or 0
-            total_spent = float(cust['total_spent'] or 0)
+            customer_id = cust["customer_id"]
+            last_order_date = cust["last_order_date"]
+            order_count = cust["order_count"] or 0
+            total_spent = float(cust["total_spent"] or 0)
 
             # Recency: days since last order (lower is better)
             if last_order_date:
-                if hasattr(last_order_date, 'date'):
+                if hasattr(last_order_date, "date"):
                     last_order_date = last_order_date.date()
                 recency_days = (today - last_order_date).days
             else:
                 recency_days = 365  # Default to 1 year if no orders
 
-            rfm_records.append({
-                'customer_id': customer_id,
-                'recency_days': recency_days,
-                'frequency': order_count,
-                'monetary': total_spent,
-            })
+            rfm_records.append(
+                {
+                    "customer_id": customer_id,
+                    "recency_days": recency_days,
+                    "frequency": order_count,
+                    "monetary": total_spent,
+                }
+            )
 
         # Step 3: Calculate quintile scores
-        recency_values = [r['recency_days'] for r in rfm_records]
-        frequency_values = [r['frequency'] for r in rfm_records]
-        monetary_values = [r['monetary'] for r in rfm_records]
+        recency_values = [r["recency_days"] for r in rfm_records]
+        frequency_values = [r["frequency"] for r in rfm_records]
+        monetary_values = [r["monetary"] for r in rfm_records]
 
         # For recency, LOWER is better, so we REVERSE the scoring
         recency_quintiles = self._calculate_quintiles(recency_values, reverse=True)
@@ -152,14 +154,16 @@ class SegmentationService:
 
         # Assign scores to each customer
         for i, record in enumerate(rfm_records):
-            record['r_score'] = recency_quintiles[i]
-            record['f_score'] = frequency_quintiles[i]
-            record['m_score'] = monetary_quintiles[i]
-            record['rfm_score'] = f"{record['r_score']}{record['f_score']}{record['m_score']}"
-            record['segment'] = self._assign_segment(
-                record['r_score'],
-                record['f_score'],
-                record['m_score'],
+            record["r_score"] = recency_quintiles[i]
+            record["f_score"] = frequency_quintiles[i]
+            record["m_score"] = monetary_quintiles[i]
+            record["rfm_score"] = (
+                f"{record['r_score']}{record['f_score']}{record['m_score']}"
+            )
+            record["segment"] = self._assign_segment(
+                record["r_score"],
+                record["f_score"],
+                record["m_score"],
             )
 
         # Step 4: Build segment summary
@@ -172,10 +176,10 @@ class SegmentationService:
         rfm_distribution = self._build_rfm_distribution(rfm_records)
 
         return {
-            'total_customers': total_customers,
-            'segments': segments,
-            'updated_count': updated_count,
-            'rfm_distribution': rfm_distribution,
+            "total_customers": total_customers,
+            "segments": segments,
+            "updated_count": updated_count,
+            "rfm_distribution": rfm_distribution,
         }
 
     # ─────────────────────────────────────────────────────────
@@ -203,7 +207,7 @@ class SegmentationService:
         valid_order_filter = Q(
             orders__deleted_at__isnull=True,
         ) & ~Q(
-            orders__status='CANCELLED',
+            orders__status="CANCELLED",
         )
 
         # Get all active customers for this organization
@@ -214,29 +218,31 @@ class SegmentationService:
             )
             .annotate(
                 last_order_date=Max(
-                    'orders__placed_at',
+                    "orders__placed_at",
                     filter=valid_order_filter,
                 ),
                 order_count=Count(
-                    'orders',
+                    "orders",
                     filter=valid_order_filter,
                 ),
                 total_spent=Sum(
-                    'orders__total_amount',
+                    "orders__total_amount",
                     filter=valid_order_filter,
                 ),
             )
-            .values('id', 'last_order_date', 'order_count', 'total_spent')
+            .values("id", "last_order_date", "order_count", "total_spent")
         )
 
         result = []
         for cust in customers_with_orders:
-            result.append({
-                'customer_id': cust['id'],
-                'last_order_date': cust['last_order_date'],
-                'order_count': cust['order_count'] or 0,
-                'total_spent': cust['total_spent'] or Decimal('0.00'),
-            })
+            result.append(
+                {
+                    "customer_id": cust["id"],
+                    "last_order_date": cust["last_order_date"],
+                    "order_count": cust["order_count"] or 0,
+                    "total_spent": cust["total_spent"] or Decimal("0.00"),
+                }
+            )
 
         return result
 
@@ -345,21 +351,23 @@ class SegmentationService:
             f_min, f_max = f_range
             m_min, m_max = m_range
 
-            if (r_min <= r_score <= r_max
-                    and f_min <= f_score <= f_max
-                    and m_min <= m_score <= m_max):
+            if (
+                r_min <= r_score <= r_max
+                and f_min <= f_score <= f_max
+                and m_min <= m_score <= m_max
+            ):
                 return name
 
         # Fallback segment based on overall score
         total = r_score + f_score + m_score
         if total >= 12:
-            return 'Loyal Customers'
+            return "Loyal Customers"
         elif total >= 9:
-            return 'Need Attention'
+            return "Need Attention"
         elif total >= 6:
-            return 'Hibernating'
+            return "Hibernating"
         else:
-            return 'Lost'
+            return "Lost"
 
     # ─────────────────────────────────────────────────────────
     # SEGMENT SUMMARY
@@ -383,7 +391,7 @@ class SegmentationService:
         segment_data: Dict[str, List[dict]] = {}
 
         for record in rfm_records:
-            segment = record['segment']
+            segment = record["segment"]
             if segment not in segment_data:
                 segment_data[segment] = []
             segment_data[segment].append(record)
@@ -391,9 +399,9 @@ class SegmentationService:
         summary = {}
         for segment_name, records in sorted(segment_data.items()):
             count = len(records)
-            monetary_values = [r['monetary'] for r in records]
-            frequency_values = [r['frequency'] for r in records]
-            recency_values = [r['recency_days'] for r in records]
+            monetary_values = [r["monetary"] for r in records]
+            frequency_values = [r["frequency"] for r in records]
+            recency_values = [r["recency_days"] for r in records]
 
             avg_value = sum(monetary_values) / count if count > 0 else 0.0
             avg_frequency = sum(frequency_values) / count if count > 0 else 0.0
@@ -402,11 +410,11 @@ class SegmentationService:
             percentage = (count / total_customers * 100) if total_customers > 0 else 0.0
 
             summary[segment_name] = {
-                'count': count,
-                'percentage': round(percentage, 1),
-                'avg_value': round(avg_value, 2),
-                'avg_frequency': round(avg_frequency, 1),
-                'avg_recency_days': round(avg_recency, 0),
+                "count": count,
+                "percentage": round(percentage, 1),
+                "avg_value": round(avg_value, 2),
+                "avg_frequency": round(avg_frequency, 1),
+                "avg_recency_days": round(avg_recency, 0),
             }
 
         return summary
@@ -440,12 +448,12 @@ class SegmentationService:
         # Batch update in chunks to avoid memory issues
         chunk_size = 100
         for i in range(0, len(rfm_records), chunk_size):
-            chunk = rfm_records[i:i + chunk_size]
+            chunk = rfm_records[i : i + chunk_size]
 
             for record in chunk:
                 try:
                     customer = Customer.objects.filter(
-                        id=record['customer_id'],
+                        id=record["customer_id"],
                         organization_id=org_id,
                         deleted_at__isnull=True,
                     ).first()
@@ -455,31 +463,34 @@ class SegmentationService:
 
                     # Update the settings JSON with RFM data
                     settings = customer.settings or {}
-                    settings['rfm'] = {
-                        'r_score': record['r_score'],
-                        'f_score': record['f_score'],
-                        'm_score': record['m_score'],
-                        'rfm_score': record['rfm_score'],
-                        'segment': record['segment'],
-                        'recency_days': record['recency_days'],
-                        'frequency': record['frequency'],
-                        'monetary': record['monetary'],
-                        'calculated_at': timezone.now().isoformat(),
+                    settings["rfm"] = {
+                        "r_score": record["r_score"],
+                        "f_score": record["f_score"],
+                        "m_score": record["m_score"],
+                        "rfm_score": record["rfm_score"],
+                        "segment": record["segment"],
+                        "recency_days": record["recency_days"],
+                        "frequency": record["frequency"],
+                        "monetary": record["monetary"],
+                        "calculated_at": timezone.now().isoformat(),
                     }
 
                     customer.settings = settings
-                    customer.save(update_fields=['settings', 'updated_at'])
+                    customer.save(update_fields=["settings", "updated_at"])
                     updated_count += 1
 
                 except Exception as exc:
                     logger.warning(
-                        'Failed to update RFM for customer %s: %s',
-                        record['customer_id'], exc,
+                        "Failed to update RFM for customer %s: %s",
+                        record["customer_id"],
+                        exc,
                     )
 
         logger.info(
-            'RFM update completed: org=%s total=%d updated=%d',
-            org_id, len(rfm_records), updated_count,
+            "RFM update completed: org=%s total=%d updated=%d",
+            org_id,
+            len(rfm_records),
+            updated_count,
         )
 
         return updated_count
@@ -504,14 +515,12 @@ class SegmentationService:
         m_dist = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
 
         for record in rfm_records:
-            r_dist[record['r_score']] = r_dist.get(record['r_score'], 0) + 1
-            f_dist[record['f_score']] = f_dist.get(record['f_score'], 0) + 1
-            m_dist[record['m_score']] = m_dist.get(record['m_score'], 0) + 1
+            r_dist[record["r_score"]] = r_dist.get(record["r_score"], 0) + 1
+            f_dist[record["f_score"]] = f_dist.get(record["f_score"], 0) + 1
+            m_dist[record["m_score"]] = m_dist.get(record["m_score"], 0) + 1
 
         return {
-            'recency': r_dist,
-            'frequency': f_dist,
-            'monetary': m_dist,
+            "recency": r_dist,
+            "frequency": f_dist,
+            "monetary": m_dist,
         }
-
-

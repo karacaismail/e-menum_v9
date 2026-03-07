@@ -18,16 +18,20 @@ from apps.inventory.views import (
 )
 
 router = DefaultRouter()
-router.register(r'suppliers', SupplierViewSet, basename='supplier')
-router.register(r'items', InventoryItemViewSet, basename='inventory-item')
-router.register(r'movements', StockMovementViewSet, basename='stock-movement')
-router.register(r'purchase-orders', PurchaseOrderViewSet, basename='purchase-order')
-router.register(r'purchase-order-items', PurchaseOrderItemViewSet, basename='purchase-order-item')
-router.register(r'recipes', RecipeViewSet, basename='recipe')
-router.register(r'recipe-ingredients', RecipeIngredientViewSet, basename='recipe-ingredient')
+router.register(r"suppliers", SupplierViewSet, basename="supplier")
+router.register(r"items", InventoryItemViewSet, basename="inventory-item")
+router.register(r"movements", StockMovementViewSet, basename="stock-movement")
+router.register(r"purchase-orders", PurchaseOrderViewSet, basename="purchase-order")
+router.register(
+    r"purchase-order-items", PurchaseOrderItemViewSet, basename="purchase-order-item"
+)
+router.register(r"recipes", RecipeViewSet, basename="recipe")
+router.register(
+    r"recipe-ingredients", RecipeIngredientViewSet, basename="recipe-ingredient"
+)
 
-app_name = 'inventory'
+app_name = "inventory"
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]

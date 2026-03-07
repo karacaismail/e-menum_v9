@@ -23,13 +23,13 @@ class AnalyticsConfig(AppConfig):
     """
 
     # Application identifier - must match the import path
-    name = 'apps.analytics'
+    name = "apps.analytics"
 
     # Human-readable name for admin
-    verbose_name = 'Analytics'
+    verbose_name = "Analytics"
 
     # Use BigAutoField for auto-generated primary keys
-    default_auto_field = 'django.db.models.BigAutoField'
+    default_auto_field = "django.db.models.BigAutoField"
 
     def ready(self):
         """

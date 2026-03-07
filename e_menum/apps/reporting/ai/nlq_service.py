@@ -61,28 +61,28 @@ MAX_QUERY_ROWS = 500
 
 # Models that NLQ is allowed to query, mapped to their import paths
 SUPPORTED_MODELS = {
-    'Order': 'apps.orders.models.Order',
-    'OrderItem': 'apps.orders.models.OrderItem',
-    'Product': 'apps.menu.models.Product',
-    'Category': 'apps.menu.models.Category',
-    'Customer': 'apps.customers.models.Customer',
-    'SalesAggregation': 'apps.analytics.models.SalesAggregation',
-    'DashboardMetric': 'apps.analytics.models.DashboardMetric',
-    'ProductPerformance': 'apps.analytics.models.ProductPerformance',
-    'CustomerMetric': 'apps.analytics.models.CustomerMetric',
+    "Order": "apps.orders.models.Order",
+    "OrderItem": "apps.orders.models.OrderItem",
+    "Product": "apps.menu.models.Product",
+    "Category": "apps.menu.models.Category",
+    "Customer": "apps.customers.models.Customer",
+    "SalesAggregation": "apps.analytics.models.SalesAggregation",
+    "DashboardMetric": "apps.analytics.models.DashboardMetric",
+    "ProductPerformance": "apps.analytics.models.ProductPerformance",
+    "CustomerMetric": "apps.analytics.models.CustomerMetric",
 }
 
 # Allowed aggregation functions (whitelist for safety)
 ALLOWED_AGGREGATIONS = {
-    'sum': Sum,
-    'avg': Avg,
-    'count': Count,
-    'min': Min,
-    'max': Max,
+    "sum": Sum,
+    "avg": Avg,
+    "count": Count,
+    "min": Min,
+    "max": Max,
 }
 
 # Allowed ordering directions
-ALLOWED_ORDERINGS = {'asc', 'desc'}
+ALLOWED_ORDERINGS = {"asc", "desc"}
 
 
 class NLQService:
@@ -128,12 +128,12 @@ class NLQService:
         """
         if not question or not question.strip():
             return {
-                'question': question,
-                'answer': 'Please provide a question about your business data.',
-                'data': [],
-                'visualization_hint': 'text',
-                'query_type': 'error',
-                'confidence': 0.0,
+                "question": question,
+                "answer": "Please provide a question about your business data.",
+                "data": [],
+                "visualization_hint": "text",
+                "query_type": "error",
+                "confidence": 0.0,
             }
 
         question = question.strip()
@@ -145,16 +145,16 @@ class NLQService:
         query_plan = self._generate_query_plan(question, schema_context)
         if not query_plan:
             return {
-                'question': question,
-                'answer': (
-                    'I was unable to interpret your question. '
-                    'Please try rephrasing it or ask about revenue, '
-                    'orders, products, or customers.'
+                "question": question,
+                "answer": (
+                    "I was unable to interpret your question. "
+                    "Please try rephrasing it or ask about revenue, "
+                    "orders, products, or customers."
                 ),
-                'data': [],
-                'visualization_hint': 'text',
-                'query_type': 'error',
-                'confidence': 0.0,
+                "data": [],
+                "visualization_hint": "text",
+                "query_type": "error",
+                "confidence": 0.0,
             }
 
         # Step 3: Validate and execute the query plan
@@ -162,31 +162,33 @@ class NLQService:
             data = self._execute_query_plan(org_id, query_plan)
         except Exception as exc:
             logger.warning(
-                'NLQ query execution failed for org=%s question=%r error=%s',
-                org_id, question, exc,
+                "NLQ query execution failed for org=%s question=%r error=%s",
+                org_id,
+                question,
+                exc,
             )
             return {
-                'question': question,
-                'answer': (
-                    'I understood your question but encountered an error '
-                    'running the query. Please try a simpler question.'
+                "question": question,
+                "answer": (
+                    "I understood your question but encountered an error "
+                    "running the query. Please try a simpler question."
                 ),
-                'data': [],
-                'visualization_hint': 'text',
-                'query_type': query_plan.get('query_type', 'unknown'),
-                'confidence': query_plan.get('confidence', 0.0),
+                "data": [],
+                "visualization_hint": "text",
+                "query_type": query_plan.get("query_type", "unknown"),
+                "confidence": query_plan.get("confidence", 0.0),
             }
 
         # Step 4: Generate a natural language answer from the results
         answer = self._generate_answer(question, data, query_plan)
 
         return {
-            'question': question,
-            'answer': answer or self._fallback_answer(data, query_plan),
-            'data': data,
-            'visualization_hint': query_plan.get('visualization', 'table'),
-            'query_type': query_plan.get('query_type', 'query'),
-            'confidence': query_plan.get('confidence', 0.7),
+            "question": question,
+            "answer": answer or self._fallback_answer(data, query_plan),
+            "data": data,
+            "visualization_hint": query_plan.get("visualization", "table"),
+            "query_type": query_plan.get("query_type", "query"),
+            "confidence": query_plan.get("confidence", 0.7),
         }
 
     # ─────────────────────────────────────────────────────────
@@ -310,7 +312,9 @@ Available models and their key fields:
     # AI QUERY PLAN GENERATION
     # ─────────────────────────────────────────────────────────
 
-    def _generate_query_plan(self, question: str, schema_context: str) -> Optional[dict]:
+    def _generate_query_plan(
+        self, question: str, schema_context: str
+    ) -> Optional[dict]:
         """
         Use AI to convert a natural language question into a structured query plan.
 
@@ -358,7 +362,7 @@ Examples:
 - "How many orders today" -> model: SalesAggregation, filters: {{"date": "today", "granularity": "DAILY"}}, query_type: "single_value", annotations: {{"total": {{"func": "sum", "field": "order_count"}}}}
 """
 
-        user_prompt = f"Convert this question to a query plan:\n\n\"{question}\""
+        user_prompt = f'Convert this question to a query plan:\n\n"{question}"'
 
         response_text = self._call_ai(system_prompt, user_prompt)
         if not response_text:
@@ -385,7 +389,7 @@ Examples:
             str: Natural language answer, or None if AI is not available
         """
         if not data:
-            return 'No data found matching your query for the specified time period.'
+            return "No data found matching your query for the specified time period."
 
         # Truncate data for the AI prompt to avoid token limits
         data_preview = data[:20] if len(data) > 20 else data
@@ -400,7 +404,7 @@ If the data is a list, summarize the key findings.
 Respond in the same language as the question."""
 
         user_prompt = (
-            f"Question: \"{question}\"\n\n"
+            f'Question: "{question}"\n\n'
             f"Query type: {query_plan.get('query_type', 'query')}\n"
             f"Results ({len(data)} rows):\n{data_str}"
         )
@@ -427,38 +431,38 @@ Respond in the same language as the question."""
         Raises:
             ValueError: If the model name is not in the supported list
         """
-        model_name = query_plan.get('model', '')
+        model_name = query_plan.get("model", "")
         if model_name not in SUPPORTED_MODELS:
-            raise ValueError(f'Unsupported model: {model_name}')
+            raise ValueError(f"Unsupported model: {model_name}")
 
         model_class = self._get_model_class(model_name)
         if model_class is None:
-            raise ValueError(f'Could not import model: {model_name}')
+            raise ValueError(f"Could not import model: {model_name}")
 
         # Start with base queryset -- ALWAYS org-scoped and soft-delete aware
         qs = model_class.objects.filter(deleted_at__isnull=True)
 
         # Apply organization filter
         # Some models have organization_id directly, OrderItem uses order__organization_id
-        if model_name == 'OrderItem':
+        if model_name == "OrderItem":
             qs = qs.filter(order__organization_id=org_id)
         else:
             qs = qs.filter(organization_id=org_id)
 
         # Apply user-specified filters
-        filters = query_plan.get('filters', {})
+        filters = query_plan.get("filters", {})
         resolved_filters = self._resolve_filters(filters)
         if resolved_filters:
             qs = qs.filter(**resolved_filters)
 
         # Apply annotations (aggregations)
-        annotations = query_plan.get('annotations', {})
+        annotations = query_plan.get("annotations", {})
         orm_annotations = self._build_annotations(annotations)
         if orm_annotations:
             qs = qs.annotate(**orm_annotations)
 
         # Apply values (GROUP BY)
-        values = query_plan.get('values', [])
+        values = query_plan.get("values", [])
         if values:
             safe_values = self._validate_field_names(values)
             qs = qs.values(*safe_values)
@@ -472,14 +476,14 @@ Respond in the same language as the question."""
             return [self._serialize_row(result)]
 
         # Apply ordering
-        order_by = query_plan.get('order_by', [])
+        order_by = query_plan.get("order_by", [])
         if order_by:
             safe_order = self._validate_order_fields(order_by)
             qs = qs.order_by(*safe_order)
 
         # Apply limit
         limit = min(
-            int(query_plan.get('limit', MAX_QUERY_ROWS)),
+            int(query_plan.get("limit", MAX_QUERY_ROWS)),
             MAX_QUERY_ROWS,
         )
         qs = qs[:limit]
@@ -506,14 +510,15 @@ Respond in the same language as the question."""
             return None
 
         try:
-            module_path, class_name = model_path.rsplit('.', 1)
+            module_path, class_name = model_path.rsplit(".", 1)
             from importlib import import_module
+
             module = import_module(module_path)
             model_class = getattr(module, class_name)
             self._model_cache[model_name] = model_class
             return model_class
         except (ImportError, AttributeError) as exc:
-            logger.error('Failed to import model %s: %s', model_name, exc)
+            logger.error("Failed to import model %s: %s", model_name, exc)
             return None
 
     def _resolve_filters(self, filters: dict) -> dict:
@@ -533,34 +538,34 @@ Respond in the same language as the question."""
         resolved = {}
 
         date_keywords = {
-            'today': today,
-            'yesterday': today - timedelta(days=1),
-            'last_7_days': today - timedelta(days=7),
-            'last_14_days': today - timedelta(days=14),
-            'last_30_days': today - timedelta(days=30),
-            'last_90_days': today - timedelta(days=90),
-            'this_month': today.replace(day=1),
-            'last_month': (today.replace(day=1) - timedelta(days=1)).replace(day=1),
-            'this_year': today.replace(month=1, day=1),
+            "today": today,
+            "yesterday": today - timedelta(days=1),
+            "last_7_days": today - timedelta(days=7),
+            "last_14_days": today - timedelta(days=14),
+            "last_30_days": today - timedelta(days=30),
+            "last_90_days": today - timedelta(days=90),
+            "this_month": today.replace(day=1),
+            "last_month": (today.replace(day=1) - timedelta(days=1)).replace(day=1),
+            "this_year": today.replace(month=1, day=1),
         }
 
         for key, value in filters.items():
             # Validate the field name part (before __lookup)
-            field_base = key.split('__')[0]
-            if not field_base.replace('_', '').isalnum():
-                logger.warning('Skipping suspicious filter key: %s', key)
+            field_base = key.split("__")[0]
+            if not field_base.replace("_", "").isalnum():
+                logger.warning("Skipping suspicious filter key: %s", key)
                 continue
 
             if isinstance(value, str) and value in date_keywords:
                 # For __gte lookups with range keywords, use the start date
-                if key.endswith('__gte') or key.endswith('__gt'):
+                if key.endswith("__gte") or key.endswith("__gt"):
                     resolved[key] = date_keywords[value]
-                elif key.endswith('__lte') or key.endswith('__lt'):
+                elif key.endswith("__lte") or key.endswith("__lt"):
                     resolved[key] = date_keywords.get(value, value)
                 else:
                     # Exact match
                     resolved[key] = date_keywords[value]
-            elif isinstance(value, str) and value.startswith('last_month_end'):
+            elif isinstance(value, str) and value.startswith("last_month_end"):
                 # End of last month
                 resolved[key] = today.replace(day=1) - timedelta(days=1)
             else:
@@ -584,25 +589,25 @@ Respond in the same language as the question."""
             if not isinstance(spec, dict):
                 continue
 
-            func_name = spec.get('func', '').lower()
-            field_name = spec.get('field', '')
+            func_name = spec.get("func", "").lower()
+            field_name = spec.get("field", "")
 
             if func_name not in ALLOWED_AGGREGATIONS:
-                logger.warning('Skipping unsupported aggregation: %s', func_name)
+                logger.warning("Skipping unsupported aggregation: %s", func_name)
                 continue
 
             if not self._is_safe_field_name(field_name):
-                logger.warning('Skipping suspicious field name: %s', field_name)
+                logger.warning("Skipping suspicious field name: %s", field_name)
                 continue
 
-            safe_alias = alias.replace('-', '_').replace(' ', '_')
+            safe_alias = alias.replace("-", "_").replace(" ", "_")
             if not safe_alias.isidentifier():
-                safe_alias = f'agg_{safe_alias}'
+                safe_alias = f"agg_{safe_alias}"
 
             agg_class = ALLOWED_AGGREGATIONS[func_name]
 
-            if func_name == 'count' and field_name == '*':
-                orm_annotations[safe_alias] = Count('id')
+            if func_name == "count" and field_name == "*":
+                orm_annotations[safe_alias] = Count("id")
             else:
                 orm_annotations[safe_alias] = agg_class(field_name)
 
@@ -623,7 +628,7 @@ Respond in the same language as the question."""
             if isinstance(field, str) and self._is_safe_field_name(field):
                 safe_fields.append(field)
             else:
-                logger.warning('Skipping invalid field name: %s', field)
+                logger.warning("Skipping invalid field name: %s", field)
         return safe_fields
 
     def _validate_order_fields(self, order_by: list) -> list:
@@ -640,10 +645,10 @@ Respond in the same language as the question."""
         for field in order_by:
             if not isinstance(field, str):
                 continue
-            clean = field.lstrip('-')
+            clean = field.lstrip("-")
             if self._is_safe_field_name(clean):
-                prefix = '-' if field.startswith('-') else ''
-                safe_order.append(f'{prefix}{clean}')
+                prefix = "-" if field.startswith("-") else ""
+                safe_order.append(f"{prefix}{clean}")
         return safe_order
 
     @staticmethod
@@ -663,8 +668,8 @@ Respond in the same language as the question."""
         if not name or not isinstance(name, str):
             return False
         # Allow Django's double-underscore lookups
-        parts = name.split('__')
-        return all(part.replace('_', '').isalnum() for part in parts if part)
+        parts = name.split("__")
+        return all(part.replace("_", "").isalnum() for part in parts if part)
 
     @staticmethod
     def _serialize_row(row) -> dict:
@@ -686,14 +691,14 @@ Respond in the same language as the question."""
                     serialized[key] = float(value)
                 elif isinstance(value, (date, datetime)):
                     serialized[key] = value.isoformat()
-                elif hasattr(value, 'hex'):
+                elif hasattr(value, "hex"):
                     # UUID
                     serialized[key] = str(value)
                 else:
                     serialized[key] = value
             return serialized
         # Model instance -- convert relevant fields
-        return {'id': str(row.pk), 'str': str(row)}
+        return {"id": str(row.pk), "str": str(row)}
 
     # ─────────────────────────────────────────────────────────
     # FALLBACK KEYWORD PLAN
@@ -712,80 +717,87 @@ Respond in the same language as the question."""
         q = question.lower()
 
         # Revenue / sales questions
-        if any(kw in q for kw in ['revenue', 'gelir', 'ciro', 'satis', 'sales']):
+        if any(kw in q for kw in ["revenue", "gelir", "ciro", "satis", "sales"]):
             plan = {
-                'model': 'SalesAggregation',
-                'query_type': 'aggregation',
-                'filters': {'granularity': 'DAILY'},
-                'annotations': {
-                    'total_revenue': {'func': 'sum', 'field': 'net_revenue'},
+                "model": "SalesAggregation",
+                "query_type": "aggregation",
+                "filters": {"granularity": "DAILY"},
+                "annotations": {
+                    "total_revenue": {"func": "sum", "field": "net_revenue"},
                 },
-                'values': [],
-                'order_by': [],
-                'limit': 1,
-                'visualization': 'number',
-                'confidence': 0.4,
+                "values": [],
+                "order_by": [],
+                "limit": 1,
+                "visualization": "number",
+                "confidence": 0.4,
             }
             # Time range detection
-            if any(kw in q for kw in ['today', 'bugun', 'bugunku']):
-                plan['filters']['date'] = 'today'
-            elif any(kw in q for kw in ['yesterday', 'dun', 'dunku']):
-                plan['filters']['date'] = 'yesterday'
-            elif any(kw in q for kw in ['week', 'hafta']):
-                plan['filters']['date__gte'] = 'last_7_days'
-            elif any(kw in q for kw in ['month', 'ay']):
-                plan['filters']['date__gte'] = 'last_30_days'
+            if any(kw in q for kw in ["today", "bugun", "bugunku"]):
+                plan["filters"]["date"] = "today"
+            elif any(kw in q for kw in ["yesterday", "dun", "dunku"]):
+                plan["filters"]["date"] = "yesterday"
+            elif any(kw in q for kw in ["week", "hafta"]):
+                plan["filters"]["date__gte"] = "last_7_days"
+            elif any(kw in q for kw in ["month", "ay"]):
+                plan["filters"]["date__gte"] = "last_30_days"
             else:
-                plan['filters']['date__gte'] = 'last_30_days'
+                plan["filters"]["date__gte"] = "last_30_days"
             return plan
 
         # Order count questions
-        if any(kw in q for kw in ['order', 'siparis', 'how many orders', 'kac siparis']):
+        if any(
+            kw in q for kw in ["order", "siparis", "how many orders", "kac siparis"]
+        ):
             plan = {
-                'model': 'SalesAggregation',
-                'query_type': 'aggregation',
-                'filters': {'granularity': 'DAILY'},
-                'annotations': {
-                    'total_orders': {'func': 'sum', 'field': 'order_count'},
+                "model": "SalesAggregation",
+                "query_type": "aggregation",
+                "filters": {"granularity": "DAILY"},
+                "annotations": {
+                    "total_orders": {"func": "sum", "field": "order_count"},
                 },
-                'values': [],
-                'order_by': [],
-                'limit': 1,
-                'visualization': 'number',
-                'confidence': 0.4,
+                "values": [],
+                "order_by": [],
+                "limit": 1,
+                "visualization": "number",
+                "confidence": 0.4,
             }
-            if any(kw in q for kw in ['today', 'bugun']):
-                plan['filters']['date'] = 'today'
+            if any(kw in q for kw in ["today", "bugun"]):
+                plan["filters"]["date"] = "today"
             else:
-                plan['filters']['date__gte'] = 'last_7_days'
+                plan["filters"]["date__gte"] = "last_7_days"
             return plan
 
         # Top products
-        if any(kw in q for kw in ['top', 'best', 'en cok', 'populer', 'popular']):
+        if any(kw in q for kw in ["top", "best", "en cok", "populer", "popular"]):
             return {
-                'model': 'ProductPerformance',
-                'query_type': 'list',
-                'filters': {'period_type': 'MONTHLY'},
-                'annotations': {},
-                'values': ['product__name', 'revenue', 'quantity_sold'],
-                'order_by': ['-revenue'],
-                'limit': 10,
-                'visualization': 'bar',
-                'confidence': 0.3,
+                "model": "ProductPerformance",
+                "query_type": "list",
+                "filters": {"period_type": "MONTHLY"},
+                "annotations": {},
+                "values": ["product__name", "revenue", "quantity_sold"],
+                "order_by": ["-revenue"],
+                "limit": 10,
+                "visualization": "bar",
+                "confidence": 0.3,
             }
 
         # Customer questions
-        if any(kw in q for kw in ['customer', 'musteri', 'musteriler']):
+        if any(kw in q for kw in ["customer", "musteri", "musteriler"]):
             return {
-                'model': 'CustomerMetric',
-                'query_type': 'list',
-                'filters': {'date__gte': 'last_30_days'},
-                'annotations': {},
-                'values': ['date', 'total_customers', 'new_customers', 'returning_customers'],
-                'order_by': ['-date'],
-                'limit': 30,
-                'visualization': 'line',
-                'confidence': 0.3,
+                "model": "CustomerMetric",
+                "query_type": "list",
+                "filters": {"date__gte": "last_30_days"},
+                "annotations": {},
+                "values": [
+                    "date",
+                    "total_customers",
+                    "new_customers",
+                    "returning_customers",
+                ],
+                "order_by": ["-date"],
+                "limit": 30,
+                "visualization": "line",
+                "confidence": 0.3,
             }
 
         return None
@@ -802,21 +814,24 @@ Respond in the same language as the question."""
             str: Simple text summary of the results
         """
         if not data:
-            return 'No data found for your query.'
+            return "No data found for your query."
 
-        if len(data) == 1 and query_plan.get('query_type') in ('aggregation', 'single_value'):
+        if len(data) == 1 and query_plan.get("query_type") in (
+            "aggregation",
+            "single_value",
+        ):
             row = data[0]
             parts = []
             for key, value in row.items():
-                if key in ('id', 'str'):
+                if key in ("id", "str"):
                     continue
                 if isinstance(value, float):
-                    parts.append(f'{key}: {value:,.2f}')
+                    parts.append(f"{key}: {value:,.2f}")
                 else:
-                    parts.append(f'{key}: {value}')
-            return 'Result: ' + ', '.join(parts) if parts else str(row)
+                    parts.append(f"{key}: {value}")
+            return "Result: " + ", ".join(parts) if parts else str(row)
 
-        return f'Found {len(data)} results. Check the data field for details.'
+        return f"Found {len(data)} results. Check the data field for details."
 
     # ─────────────────────────────────────────────────────────
     # AI CALL HELPER
@@ -838,20 +853,23 @@ Respond in the same language as the question."""
         """
         try:
             from apps.ai.services.content_generator import AIContentService
+
             ai_svc = AIContentService()
 
             if not ai_svc.api_key:
-                logger.info('NLQ: No AI API key configured, using fallback')
+                logger.info("NLQ: No AI API key configured, using fallback")
                 return None
 
-            result = ai_svc._call_llm_with_system(system_prompt, user_prompt, max_tokens=1000)
-            return result.get('text') if result else None
+            result = ai_svc._call_llm_with_system(
+                system_prompt, user_prompt, max_tokens=1000
+            )
+            return result.get("text") if result else None
 
         except AttributeError:
             # _call_llm_with_system doesn't exist; use direct provider calls
             pass
         except Exception as exc:
-            logger.warning('NLQ AI call via AIContentService failed: %s', exc)
+            logger.warning("NLQ AI call via AIContentService failed: %s", exc)
 
         # Direct provider fallback
         return self._call_ai_direct(system_prompt, user_prompt)
@@ -876,6 +894,7 @@ Respond in the same language as the question."""
 
         try:
             from apps.ai.models import AIProviderConfig
+
             config = AIProviderConfig.get_active_text_provider()
             if config and config.has_api_key:
                 api_key = config.get_api_key()
@@ -885,76 +904,96 @@ Respond in the same language as the question."""
             pass
 
         if not api_key:
-            api_key = getattr(settings, 'OPENAI_API_KEY', None) or getattr(settings, 'AI_API_KEY', '')
-            provider = getattr(settings, 'AI_PROVIDER', 'openai')
-            model = getattr(settings, 'AI_MODEL', 'gpt-4o-mini')
+            api_key = getattr(settings, "OPENAI_API_KEY", None) or getattr(
+                settings, "AI_API_KEY", ""
+            )
+            provider = getattr(settings, "AI_PROVIDER", "openai")
+            model = getattr(settings, "AI_MODEL", "gpt-4o-mini")
 
         if not api_key:
             return None
 
         try:
-            if provider == 'anthropic':
-                return self._call_anthropic_direct(api_key, model, system_prompt, user_prompt)
-            elif provider == 'openai':
-                return self._call_openai_direct(api_key, model, system_prompt, user_prompt)
-            elif provider == 'gemini':
-                return self._call_gemini_direct(api_key, model, system_prompt, user_prompt)
+            if provider == "anthropic":
+                return self._call_anthropic_direct(
+                    api_key, model, system_prompt, user_prompt
+                )
+            elif provider == "openai":
+                return self._call_openai_direct(
+                    api_key, model, system_prompt, user_prompt
+                )
+            elif provider == "gemini":
+                return self._call_gemini_direct(
+                    api_key, model, system_prompt, user_prompt
+                )
         except Exception as exc:
-            logger.error('NLQ direct AI call failed (%s): %s', provider, exc)
+            logger.error("NLQ direct AI call failed (%s): %s", provider, exc)
 
         return None
 
     @staticmethod
     def _call_anthropic_direct(
-        api_key: str, model: str, system_prompt: str, user_prompt: str,
+        api_key: str,
+        model: str,
+        system_prompt: str,
+        user_prompt: str,
     ) -> Optional[str]:
         """Call Anthropic Messages API directly."""
         try:
             import anthropic
+
             client = anthropic.Anthropic(api_key=api_key)
             response = client.messages.create(
-                model=model or 'claude-3-haiku-20240307',
+                model=model or "claude-3-haiku-20240307",
                 max_tokens=1000,
                 system=system_prompt,
-                messages=[{'role': 'user', 'content': user_prompt}],
+                messages=[{"role": "user", "content": user_prompt}],
             )
             return response.content[0].text.strip()
         except ImportError:
-            logger.warning('anthropic package not installed')
+            logger.warning("anthropic package not installed")
             return None
 
     @staticmethod
     def _call_openai_direct(
-        api_key: str, model: str, system_prompt: str, user_prompt: str,
+        api_key: str,
+        model: str,
+        system_prompt: str,
+        user_prompt: str,
     ) -> Optional[str]:
         """Call OpenAI Chat Completions API directly."""
         try:
             import openai
+
             client = openai.OpenAI(api_key=api_key)
             response = client.chat.completions.create(
-                model=model or 'gpt-4o-mini',
+                model=model or "gpt-4o-mini",
                 messages=[
-                    {'role': 'system', 'content': system_prompt},
-                    {'role': 'user', 'content': user_prompt},
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
                 ],
                 max_tokens=1000,
                 temperature=0.3,
             )
             return response.choices[0].message.content.strip()
         except ImportError:
-            logger.warning('openai package not installed')
+            logger.warning("openai package not installed")
             return None
 
     @staticmethod
     def _call_gemini_direct(
-        api_key: str, model: str, system_prompt: str, user_prompt: str,
+        api_key: str,
+        model: str,
+        system_prompt: str,
+        user_prompt: str,
     ) -> Optional[str]:
         """Call Google Generative AI (Gemini) API directly."""
         try:
             import google.generativeai as genai
+
             genai.configure(api_key=api_key)
             gen_model = genai.GenerativeModel(
-                model or 'gemini-1.5-flash',
+                model or "gemini-1.5-flash",
                 system_instruction=system_prompt,
             )
             response = gen_model.generate_content(
@@ -966,7 +1005,7 @@ Respond in the same language as the question."""
             )
             return response.text.strip()
         except ImportError:
-            logger.warning('google-generativeai package not installed')
+            logger.warning("google-generativeai package not installed")
             return None
 
     # ─────────────────────────────────────────────────────────
@@ -990,14 +1029,14 @@ Respond in the same language as the question."""
         cleaned = text.strip()
 
         # Strip markdown code fences
-        if cleaned.startswith('```'):
-            lines = cleaned.split('\n')
+        if cleaned.startswith("```"):
+            lines = cleaned.split("\n")
             # Remove first line (```json) and last line (```)
             start = 1
             end = len(lines)
-            if lines[-1].strip().startswith('```'):
+            if lines[-1].strip().startswith("```"):
                 end = -1
-            cleaned = '\n'.join(lines[start:end]).strip()
+            cleaned = "\n".join(lines[start:end]).strip()
 
         try:
             data = json.loads(cleaned)
@@ -1005,13 +1044,13 @@ Respond in the same language as the question."""
                 return data
         except (json.JSONDecodeError, ValueError):
             # Try to find JSON within the text
-            brace_start = cleaned.find('{')
-            brace_end = cleaned.rfind('}')
+            brace_start = cleaned.find("{")
+            brace_end = cleaned.rfind("}")
             if brace_start != -1 and brace_end > brace_start:
                 try:
-                    return json.loads(cleaned[brace_start:brace_end + 1])
+                    return json.loads(cleaned[brace_start : brace_end + 1])
                 except (json.JSONDecodeError, ValueError):
                     pass
 
-        logger.warning('Failed to parse AI response as JSON: %s', text[:200])
+        logger.warning("Failed to parse AI response as JSON: %s", text[:200])
         return None

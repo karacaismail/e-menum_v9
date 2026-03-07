@@ -21,12 +21,13 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from django.utils.safestring import mark_safe
 
-logger = logging.getLogger('apps.seo')
+logger = logging.getLogger("apps.seo")
 
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Base
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class SchemaBuilder:
     """
@@ -38,13 +39,13 @@ class SchemaBuilder:
     rendering.
     """
 
-    schema_type: str = 'Thing'
+    schema_type: str = "Thing"
 
     def _base_context(self) -> Dict[str, Any]:
         """Return the ``@context`` and ``@type`` envelope."""
         return {
-            '@context': 'https://schema.org',
-            '@type': self.schema_type,
+            "@context": "https://schema.org",
+            "@type": self.schema_type,
         }
 
     def to_dict(self) -> Dict[str, Any]:
@@ -52,7 +53,7 @@ class SchemaBuilder:
 
         Subclasses **must** override this method.
         """
-        raise NotImplementedError('Subclasses must implement to_dict()')
+        raise NotImplementedError("Subclasses must implement to_dict()")
 
     def to_json_ld(self) -> str:
         """
@@ -63,9 +64,7 @@ class SchemaBuilder:
         """
         data = self.to_dict()
         json_str = json.dumps(data, ensure_ascii=False, indent=2)
-        return mark_safe(
-            f'<script type="application/ld+json">\n{json_str}\n</script>'
-        )
+        return mark_safe(f'<script type="application/ld+json">\n{json_str}\n</script>')
 
     @staticmethod
     def _clean(value: Any) -> Optional[str]:
@@ -80,13 +79,14 @@ class SchemaBuilder:
 # OrganizationSchema
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class OrganizationSchema(SchemaBuilder):
     """
     Build an ``Organization`` JSON-LD from a
     :class:`apps.website.models.SiteSettings` instance.
     """
 
-    schema_type = 'Organization'
+    schema_type = "Organization"
 
     def __init__(self, site_settings) -> None:
         """
@@ -100,39 +100,44 @@ class OrganizationSchema(SchemaBuilder):
     def to_dict(self) -> Dict[str, Any]:
         s = self.settings
         data = self._base_context()
-        data['name'] = self._clean(s.company_name) or 'E-Menum'
+        data["name"] = self._clean(s.company_name) or "E-Menum"
         if self._clean(s.description):
-            data['description'] = self._clean(s.description)
+            data["description"] = self._clean(s.description)
         if self._clean(s.phone):
-            data['telephone'] = self._clean(s.phone)
+            data["telephone"] = self._clean(s.phone)
         if self._clean(s.email):
-            data['email'] = self._clean(s.email)
+            data["email"] = self._clean(s.email)
         if self._clean(s.address):
-            data['address'] = {
-                '@type': 'PostalAddress',
-                'addressLocality': self._clean(s.address),
+            data["address"] = {
+                "@type": "PostalAddress",
+                "addressLocality": self._clean(s.address),
             }
 
         # Social profiles
         same_as = []
-        for attr in ('social_instagram', 'social_twitter', 'social_linkedin', 'social_youtube'):
-            url = self._clean(getattr(s, attr, ''))
+        for attr in (
+            "social_instagram",
+            "social_twitter",
+            "social_linkedin",
+            "social_youtube",
+        ):
+            url = self._clean(getattr(s, attr, ""))
             if url:
                 same_as.append(url)
         if same_as:
-            data['sameAs'] = same_as
+            data["sameAs"] = same_as
 
         # Contact point
         if self._clean(s.phone) or self._clean(s.email):
             contact_point = {
-                '@type': 'ContactPoint',
-                'contactType': 'customer service',
+                "@type": "ContactPoint",
+                "contactType": "customer service",
             }
             if self._clean(s.phone):
-                contact_point['telephone'] = self._clean(s.phone)
+                contact_point["telephone"] = self._clean(s.phone)
             if self._clean(s.email):
-                contact_point['email'] = self._clean(s.email)
-            data['contactPoint'] = contact_point
+                contact_point["email"] = self._clean(s.email)
+            data["contactPoint"] = contact_point
 
         return data
 
@@ -141,15 +146,16 @@ class OrganizationSchema(SchemaBuilder):
 # ArticleSchema
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class ArticleSchema(SchemaBuilder):
     """
     Build an ``Article`` JSON-LD from a
     :class:`apps.website.models.BlogPost` instance.
     """
 
-    schema_type = 'Article'
+    schema_type = "Article"
 
-    def __init__(self, blog_post, *, base_url: str = '') -> None:
+    def __init__(self, blog_post, *, base_url: str = "") -> None:
         """
         Parameters
         ----------
@@ -159,54 +165,56 @@ class ArticleSchema(SchemaBuilder):
             Absolute scheme + host prefix (e.g. ``https://e-menum.net``).
         """
         self.post = blog_post
-        self.base_url = base_url.rstrip('/')
+        self.base_url = base_url.rstrip("/")
 
     def to_dict(self) -> Dict[str, Any]:
         p = self.post
         data = self._base_context()
-        data['headline'] = self._clean(p.title) or ''
+        data["headline"] = self._clean(p.title) or ""
         if self._clean(p.excerpt):
-            data['description'] = self._clean(p.excerpt)
+            data["description"] = self._clean(p.excerpt)
 
         # URL
         if p.slug:
-            data['url'] = f'{self.base_url}/blog/{p.slug}/'
-            data['mainEntityOfPage'] = {
-                '@type': 'WebPage',
-                '@id': data['url'],
+            data["url"] = f"{self.base_url}/blog/{p.slug}/"
+            data["mainEntityOfPage"] = {
+                "@type": "WebPage",
+                "@id": data["url"],
             }
 
         # Dates
         if p.published_at:
-            data['datePublished'] = p.published_at.isoformat()
-        if hasattr(p, 'updated_at') and p.updated_at:
-            data['dateModified'] = p.updated_at.isoformat()
+            data["datePublished"] = p.published_at.isoformat()
+        if hasattr(p, "updated_at") and p.updated_at:
+            data["dateModified"] = p.updated_at.isoformat()
 
         # Author
-        author_name = self._clean(getattr(p, 'author_name', ''))
+        author_name = self._clean(getattr(p, "author_name", ""))
         if author_name:
-            data['author'] = {
-                '@type': 'Person',
-                'name': author_name,
+            data["author"] = {
+                "@type": "Person",
+                "name": author_name,
             }
 
         # Image
-        og_url = ''
-        if hasattr(p, 'get_og_image_url'):
+        og_url = ""
+        if hasattr(p, "get_og_image_url"):
             og_url = p.get_og_image_url()
         if og_url:
-            data['image'] = f'{self.base_url}{og_url}' if og_url.startswith('/') else og_url
+            data["image"] = (
+                f"{self.base_url}{og_url}" if og_url.startswith("/") else og_url
+            )
 
         # Publisher (generic)
-        data['publisher'] = {
-            '@type': 'Organization',
-            'name': 'E-Menum',
+        data["publisher"] = {
+            "@type": "Organization",
+            "name": "E-Menum",
         }
 
         # Word count estimate (rough)
-        content = self._clean(p.content) or ''
+        content = self._clean(p.content) or ""
         if content:
-            data['wordCount'] = len(content.split())
+            data["wordCount"] = len(content.split())
 
         return data
 
@@ -215,6 +223,7 @@ class ArticleSchema(SchemaBuilder):
 # FAQPageSchema
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class FAQPageSchema(SchemaBuilder):
     """
     Build a ``FAQPage`` JSON-LD from a queryset (or iterable) of FAQ objects.
@@ -222,7 +231,7 @@ class FAQPageSchema(SchemaBuilder):
     Each FAQ object must have ``question`` and ``answer`` attributes.
     """
 
-    schema_type = 'FAQPage'
+    schema_type = "FAQPage"
 
     def __init__(self, faq_queryset) -> None:
         """
@@ -240,21 +249,24 @@ class FAQPageSchema(SchemaBuilder):
             question = self._clean(faq.question)
             answer = self._clean(faq.answer)
             if question and answer:
-                main_entities.append({
-                    '@type': 'Question',
-                    'name': question,
-                    'acceptedAnswer': {
-                        '@type': 'Answer',
-                        'text': answer,
-                    },
-                })
-        data['mainEntity'] = main_entities
+                main_entities.append(
+                    {
+                        "@type": "Question",
+                        "name": question,
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": answer,
+                        },
+                    }
+                )
+        data["mainEntity"] = main_entities
         return data
 
 
 # ──────────────────────────────────────────────────────────────────────────────
 # BreadcrumbListSchema
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class BreadcrumbListSchema(SchemaBuilder):
     """
@@ -266,7 +278,7 @@ class BreadcrumbListSchema(SchemaBuilder):
         schema = BreadcrumbListSchema(crumbs)
     """
 
-    schema_type = 'BreadcrumbList'
+    schema_type = "BreadcrumbList"
 
     def __init__(self, crumbs: List[Tuple[str, str]]) -> None:
         """
@@ -281,19 +293,22 @@ class BreadcrumbListSchema(SchemaBuilder):
         data = self._base_context()
         items: List[Dict[str, Any]] = []
         for position, (name, url) in enumerate(self.crumbs, start=1):
-            items.append({
-                '@type': 'ListItem',
-                'position': position,
-                'name': name,
-                'item': url,
-            })
-        data['itemListElement'] = items
+            items.append(
+                {
+                    "@type": "ListItem",
+                    "position": position,
+                    "name": name,
+                    "item": url,
+                }
+            )
+        data["itemListElement"] = items
         return data
 
 
 # ──────────────────────────────────────────────────────────────────────────────
 # LocalBusinessSchema
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class LocalBusinessSchema(SchemaBuilder):
     """
@@ -304,7 +319,7 @@ class LocalBusinessSchema(SchemaBuilder):
     fields suitable for a local listing.
     """
 
-    schema_type = 'LocalBusiness'
+    schema_type = "LocalBusiness"
 
     def __init__(
         self,
@@ -312,7 +327,7 @@ class LocalBusinessSchema(SchemaBuilder):
         *,
         latitude: Optional[float] = None,
         longitude: Optional[float] = None,
-        price_range: str = '',
+        price_range: str = "",
         opening_hours: Optional[List[str]] = None,
     ) -> None:
         """
@@ -337,46 +352,51 @@ class LocalBusinessSchema(SchemaBuilder):
     def to_dict(self) -> Dict[str, Any]:
         s = self.settings
         data = self._base_context()
-        data['name'] = self._clean(s.company_name) or 'E-Menum'
+        data["name"] = self._clean(s.company_name) or "E-Menum"
         if self._clean(s.description):
-            data['description'] = self._clean(s.description)
+            data["description"] = self._clean(s.description)
         if self._clean(s.phone):
-            data['telephone'] = self._clean(s.phone)
+            data["telephone"] = self._clean(s.phone)
         if self._clean(s.email):
-            data['email'] = self._clean(s.email)
+            data["email"] = self._clean(s.email)
 
         # Address
         if self._clean(s.address):
-            data['address'] = {
-                '@type': 'PostalAddress',
-                'addressLocality': self._clean(s.address),
-                'addressCountry': 'TR',
+            data["address"] = {
+                "@type": "PostalAddress",
+                "addressLocality": self._clean(s.address),
+                "addressCountry": "TR",
             }
 
         # Geo
         if self.latitude is not None and self.longitude is not None:
-            data['geo'] = {
-                '@type': 'GeoCoordinates',
-                'latitude': self.latitude,
-                'longitude': self.longitude,
+            data["geo"] = {
+                "@type": "GeoCoordinates",
+                "latitude": self.latitude,
+                "longitude": self.longitude,
             }
 
         # Price range
         if self._clean(self.price_range):
-            data['priceRange'] = self.price_range
+            data["priceRange"] = self.price_range
 
         # Opening hours
         if self.opening_hours:
-            data['openingHours'] = self.opening_hours
+            data["openingHours"] = self.opening_hours
 
         # Social profiles
         same_as = []
-        for attr in ('social_instagram', 'social_twitter', 'social_linkedin', 'social_youtube'):
-            url = self._clean(getattr(s, attr, ''))
+        for attr in (
+            "social_instagram",
+            "social_twitter",
+            "social_linkedin",
+            "social_youtube",
+        ):
+            url = self._clean(getattr(s, attr, ""))
             if url:
                 same_as.append(url)
         if same_as:
-            data['sameAs'] = same_as
+            data["sameAs"] = same_as
 
         return data
 
@@ -384,6 +404,7 @@ class LocalBusinessSchema(SchemaBuilder):
 # ──────────────────────────────────────────────────────────────────────────────
 # WebPageSchema
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class WebPageSchema(SchemaBuilder):
     """
@@ -393,18 +414,18 @@ class WebPageSchema(SchemaBuilder):
     schema type.
     """
 
-    schema_type = 'WebPage'
+    schema_type = "WebPage"
 
     def __init__(
         self,
         *,
-        name: str = '',
-        description: str = '',
-        url: str = '',
+        name: str = "",
+        description: str = "",
+        url: str = "",
         breadcrumbs: Optional[List[Tuple[str, str]]] = None,
         date_published: Optional[str] = None,
         date_modified: Optional[str] = None,
-        in_language: str = 'tr',
+        in_language: str = "tr",
     ) -> None:
         self.name = name
         self.description = description
@@ -417,28 +438,28 @@ class WebPageSchema(SchemaBuilder):
     def to_dict(self) -> Dict[str, Any]:
         data = self._base_context()
         if self._clean(self.name):
-            data['name'] = self._clean(self.name)
+            data["name"] = self._clean(self.name)
         if self._clean(self.description):
-            data['description'] = self._clean(self.description)
+            data["description"] = self._clean(self.description)
         if self._clean(self.url):
-            data['url'] = self._clean(self.url)
-            data['@id'] = self._clean(self.url)
+            data["url"] = self._clean(self.url)
+            data["@id"] = self._clean(self.url)
         if self.in_language:
-            data['inLanguage'] = self.in_language
+            data["inLanguage"] = self.in_language
         if self.date_published:
-            data['datePublished'] = self.date_published
+            data["datePublished"] = self.date_published
         if self.date_modified:
-            data['dateModified'] = self.date_modified
+            data["dateModified"] = self.date_modified
 
         # Embed breadcrumbs when provided
         if self.breadcrumbs:
             breadcrumb_schema = BreadcrumbListSchema(self.breadcrumbs)
-            data['breadcrumb'] = breadcrumb_schema.to_dict()
+            data["breadcrumb"] = breadcrumb_schema.to_dict()
 
         # Publisher
-        data['publisher'] = {
-            '@type': 'Organization',
-            'name': 'E-Menum',
+        data["publisher"] = {
+            "@type": "Organization",
+            "name": "E-Menum",
         }
 
         return data
@@ -448,6 +469,7 @@ class WebPageSchema(SchemaBuilder):
 # ProductSchema
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class ProductSchema(SchemaBuilder):
     """
     Build a ``Product`` JSON-LD suitable for pricing plan display.
@@ -455,20 +477,20 @@ class ProductSchema(SchemaBuilder):
     Parameters map to a subscription plan's customer-facing attributes.
     """
 
-    schema_type = 'Product'
+    schema_type = "Product"
 
     def __init__(
         self,
         *,
-        name: str = '',
-        description: str = '',
+        name: str = "",
+        description: str = "",
         price: Optional[float] = None,
-        currency: str = 'TRY',
-        url: str = '',
-        sku: str = '',
-        brand: str = 'E-Menum',
-        availability: str = 'https://schema.org/InStock',
-        price_valid_until: str = '',
+        currency: str = "TRY",
+        url: str = "",
+        sku: str = "",
+        brand: str = "E-Menum",
+        availability: str = "https://schema.org/InStock",
+        price_valid_until: str = "",
     ) -> None:
         self.name = name
         self.description = description
@@ -483,29 +505,29 @@ class ProductSchema(SchemaBuilder):
     def to_dict(self) -> Dict[str, Any]:
         data = self._base_context()
         if self._clean(self.name):
-            data['name'] = self._clean(self.name)
+            data["name"] = self._clean(self.name)
         if self._clean(self.description):
-            data['description'] = self._clean(self.description)
+            data["description"] = self._clean(self.description)
         if self._clean(self.sku):
-            data['sku'] = self._clean(self.sku)
+            data["sku"] = self._clean(self.sku)
         if self._clean(self.brand):
-            data['brand'] = {
-                '@type': 'Brand',
-                'name': self._clean(self.brand),
+            data["brand"] = {
+                "@type": "Brand",
+                "name": self._clean(self.brand),
             }
 
         # Offers
         if self.price is not None:
             offer: Dict[str, Any] = {
-                '@type': 'Offer',
-                'price': str(self.price),
-                'priceCurrency': self.currency,
-                'availability': self.availability,
+                "@type": "Offer",
+                "price": str(self.price),
+                "priceCurrency": self.currency,
+                "availability": self.availability,
             }
             if self._clean(self.url):
-                offer['url'] = self._clean(self.url)
+                offer["url"] = self._clean(self.url)
             if self._clean(self.price_valid_until):
-                offer['priceValidUntil'] = self._clean(self.price_valid_until)
-            data['offers'] = offer
+                offer["priceValidUntil"] = self._clean(self.price_valid_until)
+            data["offers"] = offer
 
         return data

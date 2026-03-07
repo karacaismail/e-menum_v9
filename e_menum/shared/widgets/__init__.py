@@ -23,6 +23,6 @@ from shared.widgets.image_upload import ImageUploadWidget
 from shared.widgets.gallery_upload import GalleryUploadWidget
 
 __all__ = [
-    'ImageUploadWidget',
-    'GalleryUploadWidget',
+    "ImageUploadWidget",
+    "GalleryUploadWidget",
 ]

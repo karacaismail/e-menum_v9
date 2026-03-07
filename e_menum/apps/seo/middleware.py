@@ -22,12 +22,13 @@ from django.http import (
 )
 from django.utils import timezone
 
-logger = logging.getLogger('apps.seo')
+logger = logging.getLogger("apps.seo")
 
 
 # ──────────────────────────────────────────────────────────────────────────────
 # RedirectMiddleware
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class RedirectMiddleware:
     """
@@ -72,11 +73,13 @@ class RedirectMiddleware:
         # Increment hit counter
         try:
             Redirect.objects.filter(pk=rule.pk).update(
-                hit_count=models_F('hit_count') + 1,
+                hit_count=models_F("hit_count") + 1,
                 last_hit=timezone.now(),
             )
         except Exception:
-            logger.debug('Failed to update redirect hit counter for %s', rule.source_path)
+            logger.debug(
+                "Failed to update redirect hit counter for %s", rule.source_path
+            )
 
         target = rule.target_path
 
@@ -90,12 +93,14 @@ class RedirectMiddleware:
 def models_F(field_name):
     """Lazy import helper for ``django.db.models.F``."""
     from django.db.models import F
+
     return F(field_name)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
 # CanonicalDomainMiddleware
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class CanonicalDomainMiddleware:
     """
@@ -115,42 +120,42 @@ class CanonicalDomainMiddleware:
     """
 
     # Hosts that should never be redirected (internal / health checks)
-    SKIP_HOSTS = {'localhost', '127.0.0.1', '0.0.0.0'}
+    SKIP_HOSTS = {"localhost", "127.0.0.1", "0.0.0.0"}
 
     def __init__(self, get_response):
         self.get_response = get_response
-        self.canonical_domain = getattr(settings, 'SEO_CANONICAL_DOMAIN', '')
+        self.canonical_domain = getattr(settings, "SEO_CANONICAL_DOMAIN", "")
         # Also skip the configured server IP
-        server_ip = os.environ.get('SERVER_IP', '')
+        server_ip = os.environ.get("SERVER_IP", "")
         if server_ip:
             self.SKIP_HOSTS = self.SKIP_HOSTS | {server_ip}
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         # --- Canonical domain redirect ---
         if self.canonical_domain:
-            host = request.get_host().split(':')[0]  # Strip port
-            canonical = self.canonical_domain.split(':')[0]
+            host = request.get_host().split(":")[0]  # Strip port
+            canonical = self.canonical_domain.split(":")[0]
 
             # Skip redirect for internal/health-check hosts and IP access
             if host != canonical and host not in self.SKIP_HOSTS:
                 # Preserve scheme, path, and query string
-                scheme = 'https' if request.is_secure() else request.scheme
-                new_url = f'{scheme}://{self.canonical_domain}{request.get_full_path()}'
+                scheme = "https" if request.is_secure() else request.scheme
+                new_url = f"{scheme}://{self.canonical_domain}{request.get_full_path()}"
                 return HttpResponsePermanentRedirect(new_url)
 
         # --- Trailing-slash normalisation ---
-        if getattr(settings, 'APPEND_SLASH', True):
+        if getattr(settings, "APPEND_SLASH", True):
             path = request.path
             if (
-                not path.endswith('/')
-                and '.' not in path.rsplit('/', 1)[-1]  # skip files like .css .js
-                and not path.startswith('/api/')  # skip API endpoints
-                and not path.startswith('/admin/')  # let Django handle admin
+                not path.endswith("/")
+                and "." not in path.rsplit("/", 1)[-1]  # skip files like .css .js
+                and not path.startswith("/api/")  # skip API endpoints
+                and not path.startswith("/admin/")  # let Django handle admin
             ):
-                new_path = path + '/'
-                query = request.META.get('QUERY_STRING', '')
+                new_path = path + "/"
+                query = request.META.get("QUERY_STRING", "")
                 if query:
-                    new_path = f'{new_path}?{query}'
+                    new_path = f"{new_path}?{query}"
                 return HttpResponsePermanentRedirect(new_path)
 
         return self.get_response(request)
@@ -159,6 +164,7 @@ class CanonicalDomainMiddleware:
 # ──────────────────────────────────────────────────────────────────────────────
 # SEOHeadersMiddleware
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class SEOHeadersMiddleware:
     """
@@ -185,27 +191,27 @@ class SEOHeadersMiddleware:
         response = self.get_response(request)
 
         # Skip non-HTML responses (API, static files, etc.)
-        content_type = response.get('Content-Type', '')
-        if 'text/html' not in content_type:
+        content_type = response.get("Content-Type", "")
+        if "text/html" not in content_type:
             return response
 
         # --- X-Robots-Tag ---
-        robots = getattr(request, 'seo_robots', None)
+        robots = getattr(request, "seo_robots", None)
         if robots:
-            response['X-Robots-Tag'] = robots
+            response["X-Robots-Tag"] = robots
         else:
             # Default: allow indexing for public pages
             path = request.path
-            if path.startswith('/admin/') or path.startswith('/api/'):
-                response['X-Robots-Tag'] = 'noindex, nofollow'
+            if path.startswith("/admin/") or path.startswith("/api/"):
+                response["X-Robots-Tag"] = "noindex, nofollow"
 
         # --- Link canonical ---
-        canonical = getattr(request, 'seo_canonical', None)
+        canonical = getattr(request, "seo_canonical", None)
         if canonical:
-            response['Link'] = f'<{canonical}>; rel="canonical"'
+            response["Link"] = f'<{canonical}>; rel="canonical"'
 
         # --- Permissions-Policy (opt out of FLoC / Topics) ---
-        response['Permissions-Policy'] = 'interest-cohort=()'
+        response["Permissions-Policy"] = "interest-cohort=()"
 
         return response
 
@@ -213,6 +219,7 @@ class SEOHeadersMiddleware:
 # ──────────────────────────────────────────────────────────────────────────────
 # Track404Middleware
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class Track404Middleware:
     """
@@ -224,7 +231,7 @@ class Track404Middleware:
     Static files, media, admin, and API paths are skipped.
     """
 
-    SKIP_PREFIXES = ('/static/', '/media/', '/admin/', '/api/', '/__debug__/')
+    SKIP_PREFIXES = ("/static/", "/media/", "/admin/", "/api/", "/__debug__/")
 
     def __init__(self, get_response):
         self.get_response = get_response
@@ -245,42 +252,42 @@ class Track404Middleware:
             return
 
         # Skip paths with file extensions (static assets requested without /static/)
-        if '.' in path.rsplit('/', 1)[-1]:
+        if "." in path.rsplit("/", 1)[-1]:
             return
 
         try:
             from apps.seo.models import NotFound404Log
 
             today = date.today()
-            user_agent = request.META.get('HTTP_USER_AGENT', '')[:500]
-            referer = request.META.get('HTTP_REFERER', '')[:500]
+            user_agent = request.META.get("HTTP_USER_AGENT", "")[:500]
+            referer = request.META.get("HTTP_REFERER", "")[:500]
             ip = self._get_client_ip(request)
 
             obj, created = NotFound404Log.objects.get_or_create(
                 path=path,
                 date=today,
                 defaults={
-                    'hit_count': 1,
-                    'last_user_agent': user_agent,
-                    'last_referer': referer,
-                    'last_ip': ip,
+                    "hit_count": 1,
+                    "last_user_agent": user_agent,
+                    "last_referer": referer,
+                    "last_ip": ip,
                 },
             )
 
             if not created:
                 NotFound404Log.objects.filter(pk=obj.pk).update(
-                    hit_count=F('hit_count') + 1,
+                    hit_count=F("hit_count") + 1,
                     last_user_agent=user_agent,
                     last_referer=referer,
                     last_ip=ip,
                 )
         except Exception:
-            logger.debug('Failed to log 404 for path: %s', path, exc_info=True)
+            logger.debug("Failed to log 404 for path: %s", path, exc_info=True)
 
     @staticmethod
     def _get_client_ip(request: HttpRequest) -> str:
         """Extract client IP from X-Forwarded-For or REMOTE_ADDR."""
-        xff = request.META.get('HTTP_X_FORWARDED_FOR')
+        xff = request.META.get("HTTP_X_FORWARDED_FOR")
         if xff:
-            return xff.split(',')[0].strip()
-        return request.META.get('REMOTE_ADDR', '')
+            return xff.split(",")[0].strip()
+        return request.META.get("REMOTE_ADDR", "")

@@ -5,21 +5,36 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('core', '0003_shift_staffmetric_staffschedule_and_more'),
-        ('subscriptions', '0002_remove_invoice_invoice_org_number_uniq_and_more'),
+        ("core", "0003_shift_staffmetric_staffschedule_and_more"),
+        ("subscriptions", "0002_remove_invoice_invoice_org_number_uniq_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='organization',
-            name='plan',
-            field=models.ForeignKey(blank=True, help_text='Current subscription plan', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='organizations', to='subscriptions.plan', verbose_name='Plan'),
+            model_name="organization",
+            name="plan",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="Current subscription plan",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="organizations",
+                to="subscriptions.plan",
+                verbose_name="Plan",
+            ),
         ),
         migrations.AddField(
-            model_name='organization',
-            name='subscription',
-            field=models.OneToOneField(blank=True, help_text='Active subscription for this organization', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='organization_link', to='subscriptions.subscription', verbose_name='Subscription'),
+            model_name="organization",
+            name="subscription",
+            field=models.OneToOneField(
+                blank=True,
+                help_text="Active subscription for this organization",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="organization_link",
+                to="subscriptions.subscription",
+                verbose_name="Subscription",
+            ),
         ),
     ]

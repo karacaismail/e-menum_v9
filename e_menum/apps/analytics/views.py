@@ -32,40 +32,40 @@ logger = logging.getLogger(__name__)
 
 
 class DashboardMetricFilter(filters.FilterSet):
-    metric_type = filters.CharFilter(field_name='metric_type')
-    period_type = filters.CharFilter(field_name='period_type')
-    date_from = filters.DateFilter(field_name='period_start', lookup_expr='gte')
-    date_to = filters.DateFilter(field_name='period_end', lookup_expr='lte')
+    metric_type = filters.CharFilter(field_name="metric_type")
+    period_type = filters.CharFilter(field_name="period_type")
+    date_from = filters.DateFilter(field_name="period_start", lookup_expr="gte")
+    date_to = filters.DateFilter(field_name="period_end", lookup_expr="lte")
 
     class Meta:
         model = DashboardMetric
-        fields = ['metric_type', 'period_type']
+        fields = ["metric_type", "period_type"]
 
 
 class SalesAggregationFilter(filters.FilterSet):
-    granularity = filters.CharFilter(field_name='granularity')
-    date_from = filters.DateFilter(field_name='date', lookup_expr='gte')
-    date_to = filters.DateFilter(field_name='date', lookup_expr='lte')
+    granularity = filters.CharFilter(field_name="granularity")
+    date_from = filters.DateFilter(field_name="date", lookup_expr="gte")
+    date_to = filters.DateFilter(field_name="date", lookup_expr="lte")
 
     class Meta:
         model = SalesAggregation
-        fields = ['granularity']
+        fields = ["granularity"]
 
 
 class ProductPerformanceFilter(filters.FilterSet):
-    period_type = filters.CharFilter(field_name='period_type')
-    product = filters.UUIDFilter(field_name='product_id')
-    date_from = filters.DateFilter(field_name='period_start', lookup_expr='gte')
-    date_to = filters.DateFilter(field_name='period_end', lookup_expr='lte')
+    period_type = filters.CharFilter(field_name="period_type")
+    product = filters.UUIDFilter(field_name="product_id")
+    date_from = filters.DateFilter(field_name="period_start", lookup_expr="gte")
+    date_to = filters.DateFilter(field_name="period_end", lookup_expr="lte")
 
     class Meta:
         model = ProductPerformance
-        fields = ['period_type', 'product']
+        fields = ["period_type", "product"]
 
 
 class CustomerMetricFilter(filters.FilterSet):
-    date_from = filters.DateFilter(field_name='date', lookup_expr='gte')
-    date_to = filters.DateFilter(field_name='date', lookup_expr='lte')
+    date_from = filters.DateFilter(field_name="date", lookup_expr="gte")
+    date_to = filters.DateFilter(field_name="date", lookup_expr="lte")
 
     class Meta:
         model = CustomerMetric
@@ -79,11 +79,12 @@ class CustomerMetricFilter(filters.FilterSet):
 
 class TenantAnalyticsMixin:
     """Filter analytics data by the requesting user's organization."""
+
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         qs = super().get_queryset()
-        organization = getattr(self.request, 'organization', None)
+        organization = getattr(self.request, "organization", None)
         if organization:
             return qs.filter(organization=organization)
         return qs.none()
@@ -100,13 +101,15 @@ class DashboardMetricListView(TenantAnalyticsMixin, generics.ListAPIView):
 
     Filters: metric_type, period_type, date_from, date_to
     """
-    queryset = DashboardMetric.objects.all().order_by('-period_start')
+
+    queryset = DashboardMetric.objects.all().order_by("-period_start")
     serializer_class = DashboardMetricSerializer
     filterset_class = DashboardMetricFilter
 
 
 class DashboardMetricDetailView(TenantAnalyticsMixin, generics.RetrieveAPIView):
     """Retrieve a single dashboard metric."""
+
     queryset = DashboardMetric.objects.all()
     serializer_class = DashboardMetricSerializer
 
@@ -117,7 +120,8 @@ class SalesAggregationListView(TenantAnalyticsMixin, generics.ListAPIView):
 
     Filters: granularity (daily/hourly), date_from, date_to
     """
-    queryset = SalesAggregation.objects.all().order_by('-date')
+
+    queryset = SalesAggregation.objects.all().order_by("-date")
     serializer_class = SalesAggregationSerializer
     filterset_class = SalesAggregationFilter
 
@@ -128,12 +132,13 @@ class ProductPerformanceListView(TenantAnalyticsMixin, generics.ListAPIView):
 
     Filters: period_type, product, date_from, date_to
     """
-    queryset = ProductPerformance.objects.all().order_by('-revenue')
+
+    queryset = ProductPerformance.objects.all().order_by("-revenue")
     serializer_class = ProductPerformanceSerializer
     filterset_class = ProductPerformanceFilter
 
     def get_queryset(self):
-        return super().get_queryset().select_related('product')
+        return super().get_queryset().select_related("product")
 
 
 class CustomerMetricListView(TenantAnalyticsMixin, generics.ListAPIView):
@@ -142,6 +147,7 @@ class CustomerMetricListView(TenantAnalyticsMixin, generics.ListAPIView):
 
     Filters: date_from, date_to
     """
-    queryset = CustomerMetric.objects.all().order_by('-date')
+
+    queryset = CustomerMetric.objects.all().order_by("-date")
     serializer_class = CustomerMetricSerializer
     filterset_class = CustomerMetricFilter

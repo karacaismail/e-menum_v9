@@ -16,7 +16,7 @@ from django.dispatch import receiver
 logger = logging.getLogger(__name__)
 
 
-@receiver(post_save, sender='orders.QRCode')
+@receiver(post_save, sender="orders.QRCode")
 def auto_generate_qr_image(sender, instance, created, **kwargs):
     """
     Automatically generate a QR code image after saving a QRCode instance.
@@ -32,13 +32,15 @@ def auto_generate_qr_image(sender, instance, created, **kwargs):
     if not instance.qr_image_url:
         try:
             from apps.orders.services.qr_generator import QRGeneratorService
+
             QRGeneratorService.generate_and_save(instance, force=False)
             logger.info(
                 "Auto-generated QR image for %s (code=%s, created=%s)",
-                instance.name, instance.code, created
+                instance.name,
+                instance.code,
+                created,
             )
         except Exception as e:
             logger.error(
-                "Failed to auto-generate QR image for %s: %s",
-                instance.code, str(e)
+                "Failed to auto-generate QR image for %s: %s", instance.code, str(e)
             )

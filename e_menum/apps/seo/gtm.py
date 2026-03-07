@@ -20,7 +20,7 @@ class GTMManager:
     """
 
     def __init__(self, gtm_id=None):
-        self.gtm_id = gtm_id or getattr(settings, 'SEO_GTM_CONTAINER_ID', '')
+        self.gtm_id = gtm_id or getattr(settings, "SEO_GTM_CONTAINER_ID", "")
 
     def get_head_snippet(self):
         """
@@ -29,7 +29,7 @@ class GTMManager:
         Returns an empty string if no GTM container ID is configured.
         """
         if not self.gtm_id:
-            return ''
+            return ""
 
         snippet = (
             "<!-- Google Tag Manager -->\n"
@@ -49,7 +49,7 @@ class GTMManager:
         Returns an empty string if no GTM container ID is configured.
         """
         if not self.gtm_id:
-            return ''
+            return ""
 
         snippet = (
             "<!-- Google Tag Manager (noscript) -->\n"
@@ -72,7 +72,7 @@ class GTMManager:
         Returns an empty string if no data is provided.
         """
         if not kwargs:
-            return ''
+            return ""
 
         data_json = json.dumps(kwargs, ensure_ascii=False)
         snippet = (

@@ -52,7 +52,7 @@ logger = logging.getLogger(__name__)
 MIN_SAMPLE_SIZE = 5
 
 # Default region
-DEFAULT_REGION = 'TR'
+DEFAULT_REGION = "TR"
 
 
 class BenchmarkService:
@@ -72,8 +72,8 @@ class BenchmarkService:
         metric_name: str,
         category: str,
         region: str = DEFAULT_REGION,
-        period_type: str = 'MONTHLY',
-    ) -> Optional['IndustryBenchmark']:
+        period_type: str = "MONTHLY",
+    ) -> Optional["IndustryBenchmark"]:
         """
         Get the latest benchmark for a specific metric and category.
 
@@ -89,16 +89,22 @@ class BenchmarkService:
         from apps.reporting.models import IndustryBenchmark
 
         try:
-            return IndustryBenchmark.objects.filter(
-                metric_name=metric_name,
-                category=category,
-                region=region,
-                period_type=period_type,
-            ).order_by('-period_start').first()
+            return (
+                IndustryBenchmark.objects.filter(
+                    metric_name=metric_name,
+                    category=category,
+                    region=region,
+                    period_type=period_type,
+                )
+                .order_by("-period_start")
+                .first()
+            )
         except Exception as exc:
             logger.error(
-                'Failed to get benchmark: metric=%s category=%s error=%s',
-                metric_name, category, exc,
+                "Failed to get benchmark: metric=%s category=%s error=%s",
+                metric_name,
+                category,
+                exc,
             )
             return None
 
@@ -110,7 +116,7 @@ class BenchmarkService:
         self,
         org_id,
         metric_name: str,
-        period: str = 'MONTHLY',
+        period: str = "MONTHLY",
     ) -> Dict[str, Any]:
         """
         Compare an organization's metric value against the industry benchmark.
@@ -155,35 +161,36 @@ class BenchmarkService:
         )
 
         result = {
-            'metric_name': metric_name,
-            'org_value': float(org_value) if org_value is not None else None,
-            'benchmark_value': None,
-            'benchmark_median': None,
-            'percentile_rank': 'unknown',
-            'performance': 'unknown',
-            'category': category,
-            'period_type': period,
-            'sample_size': 0,
-            'message': '',
+            "metric_name": metric_name,
+            "org_value": float(org_value) if org_value is not None else None,
+            "benchmark_value": None,
+            "benchmark_median": None,
+            "percentile_rank": "unknown",
+            "performance": "unknown",
+            "category": category,
+            "period_type": period,
+            "sample_size": 0,
+            "message": "",
         }
 
         if benchmark is None:
-            result['message'] = (
-                f'No benchmark data available for {metric_name} '
-                f'in {category}/{period} category.'
+            result["message"] = (
+                f"No benchmark data available for {metric_name} "
+                f"in {category}/{period} category."
             )
             return result
 
-        result['benchmark_value'] = float(benchmark.value)
-        result['benchmark_median'] = (
+        result["benchmark_value"] = float(benchmark.value)
+        result["benchmark_median"] = (
             float(benchmark.percentile_50)
-            if benchmark.percentile_50 is not None else None
+            if benchmark.percentile_50 is not None
+            else None
         )
-        result['sample_size'] = benchmark.sample_size
+        result["sample_size"] = benchmark.sample_size
 
         if org_value is None:
-            result['message'] = (
-                f'No data available for your organization for {metric_name}.'
+            result["message"] = (
+                f"No data available for your organization for {metric_name}."
             )
             return result
 
@@ -192,14 +199,14 @@ class BenchmarkService:
             org_value=org_value,
             benchmark=benchmark,
         )
-        result['percentile_rank'] = percentile_rank
+        result["percentile_rank"] = percentile_rank
 
         # Determine performance level
         performance = self._determine_performance(percentile_rank)
-        result['performance'] = performance
+        result["performance"] = performance
 
         # Generate human-readable message
-        result['message'] = self._generate_comparison_message(
+        result["message"] = self._generate_comparison_message(
             metric_name=metric_name,
             org_value=org_value,
             benchmark_value=benchmark.value,
@@ -218,7 +225,7 @@ class BenchmarkService:
         self,
         period_type: str,
         period_start: date,
-    ) -> List['IndustryBenchmark']:
+    ) -> List["IndustryBenchmark"]:
         """
         Generate industry benchmarks from aggregated platform data.
 
@@ -235,8 +242,9 @@ class BenchmarkService:
         """
 
         logger.info(
-            'Generating benchmarks: period_type=%s period_start=%s',
-            period_type, period_start,
+            "Generating benchmarks: period_type=%s period_start=%s",
+            period_type,
+            period_start,
         )
 
         created_benchmarks = []
@@ -244,28 +252,28 @@ class BenchmarkService:
         # Define metrics to benchmark
         metric_configs = [
             {
-                'metric_name': 'daily_revenue',
-                'source': 'analytics.SalesAggregation',
-                'field': 'net_revenue',
-                'aggregation': 'avg',
+                "metric_name": "daily_revenue",
+                "source": "analytics.SalesAggregation",
+                "field": "net_revenue",
+                "aggregation": "avg",
             },
             {
-                'metric_name': 'avg_order_value',
-                'source': 'analytics.SalesAggregation',
-                'field': 'avg_order_value',
-                'aggregation': 'avg',
+                "metric_name": "avg_order_value",
+                "source": "analytics.SalesAggregation",
+                "field": "avg_order_value",
+                "aggregation": "avg",
             },
             {
-                'metric_name': 'daily_order_count',
-                'source': 'analytics.SalesAggregation',
-                'field': 'order_count',
-                'aggregation': 'avg',
+                "metric_name": "daily_order_count",
+                "source": "analytics.SalesAggregation",
+                "field": "order_count",
+                "aggregation": "avg",
             },
             {
-                'metric_name': 'daily_customer_count',
-                'source': 'analytics.SalesAggregation',
-                'field': 'customer_count',
-                'aggregation': 'avg',
+                "metric_name": "daily_customer_count",
+                "source": "analytics.SalesAggregation",
+                "field": "customer_count",
+                "aggregation": "avg",
             },
         ]
 
@@ -283,12 +291,13 @@ class BenchmarkService:
                 created_benchmarks.extend(benchmarks)
             except Exception as exc:
                 logger.error(
-                    'Failed to generate benchmark for %s: %s',
-                    metric_config['metric_name'], exc,
+                    "Failed to generate benchmark for %s: %s",
+                    metric_config["metric_name"],
+                    exc,
                 )
 
         logger.info(
-            'Benchmark generation complete: created=%d',
+            "Benchmark generation complete: created=%d",
             len(created_benchmarks),
         )
 
@@ -318,17 +327,17 @@ class BenchmarkService:
         period_start = self._get_default_period_start(period_type)
 
         metric_calculators = {
-            'daily_revenue': self._calc_org_revenue,
-            'avg_order_value': self._calc_org_avg_order_value,
-            'daily_order_count': self._calc_org_order_count,
-            'daily_customer_count': self._calc_org_customer_count,
+            "daily_revenue": self._calc_org_revenue,
+            "avg_order_value": self._calc_org_avg_order_value,
+            "daily_order_count": self._calc_org_order_count,
+            "daily_customer_count": self._calc_org_customer_count,
         }
 
         calculator = metric_calculators.get(metric_name)
         if calculator:
             return calculator(org_id, period_start)
 
-        logger.warning('Unknown metric for calculation: %s', metric_name)
+        logger.warning("Unknown metric for calculation: %s", metric_name)
         return None
 
     @staticmethod
@@ -336,13 +345,14 @@ class BenchmarkService:
         """Calculate average daily revenue for an org."""
         try:
             from apps.analytics.models import SalesAggregation
+
             result = SalesAggregation.objects.filter(
                 organization_id=org_id,
                 date__gte=period_start,
-                granularity='DAILY',
+                granularity="DAILY",
                 deleted_at__isnull=True,
-            ).aggregate(avg_value=Avg('net_revenue'))
-            return result.get('avg_value')
+            ).aggregate(avg_value=Avg("net_revenue"))
+            return result.get("avg_value")
         except Exception:
             return None
 
@@ -351,13 +361,14 @@ class BenchmarkService:
         """Calculate average order value for an org."""
         try:
             from apps.analytics.models import SalesAggregation
+
             result = SalesAggregation.objects.filter(
                 organization_id=org_id,
                 date__gte=period_start,
-                granularity='DAILY',
+                granularity="DAILY",
                 deleted_at__isnull=True,
-            ).aggregate(avg_value=Avg('avg_order_value'))
-            return result.get('avg_value')
+            ).aggregate(avg_value=Avg("avg_order_value"))
+            return result.get("avg_value")
         except Exception:
             return None
 
@@ -366,13 +377,14 @@ class BenchmarkService:
         """Calculate average daily order count for an org."""
         try:
             from apps.analytics.models import SalesAggregation
+
             result = SalesAggregation.objects.filter(
                 organization_id=org_id,
                 date__gte=period_start,
-                granularity='DAILY',
+                granularity="DAILY",
                 deleted_at__isnull=True,
-            ).aggregate(avg_value=Avg('order_count'))
-            value = result.get('avg_value')
+            ).aggregate(avg_value=Avg("order_count"))
+            value = result.get("avg_value")
             return Decimal(str(value)) if value is not None else None
         except Exception:
             return None
@@ -382,13 +394,14 @@ class BenchmarkService:
         """Calculate average daily customer count for an org."""
         try:
             from apps.analytics.models import SalesAggregation
+
             result = SalesAggregation.objects.filter(
                 organization_id=org_id,
                 date__gte=period_start,
-                granularity='DAILY',
+                granularity="DAILY",
                 deleted_at__isnull=True,
-            ).aggregate(avg_value=Avg('customer_count'))
-            value = result.get('avg_value')
+            ).aggregate(avg_value=Avg("customer_count"))
+            value = result.get("avg_value")
             return Decimal(str(value)) if value is not None else None
         except Exception:
             return None
@@ -403,7 +416,7 @@ class BenchmarkService:
         period_type: str,
         period_start: date,
         period_end: date,
-    ) -> List['IndustryBenchmark']:
+    ) -> List["IndustryBenchmark"]:
         """
         Generate benchmark data for a single metric across all categories.
 
@@ -418,8 +431,8 @@ class BenchmarkService:
         """
         from apps.reporting.models import IndustryBenchmark
 
-        metric_name = metric_config['metric_name']
-        field_name = metric_config['field']
+        metric_name = metric_config["metric_name"]
+        field_name = metric_config["field"]
 
         # Get per-organization aggregated values
         org_values = self._get_per_org_values(
@@ -430,8 +443,10 @@ class BenchmarkService:
 
         if len(org_values) < MIN_SAMPLE_SIZE:
             logger.info(
-                'Insufficient sample size for %s: %d (min: %d)',
-                metric_name, len(org_values), MIN_SAMPLE_SIZE,
+                "Insufficient sample size for %s: %d (min: %d)",
+                metric_name,
+                len(org_values),
+                MIN_SAMPLE_SIZE,
             )
             return []
 
@@ -449,25 +464,28 @@ class BenchmarkService:
         # In a real implementation, this would be grouped by org category
         benchmark, created = IndustryBenchmark.objects.update_or_create(
             metric_name=metric_name,
-            category='restaurant',
+            category="restaurant",
             region=DEFAULT_REGION,
             period_type=period_type,
             period_start=period_start,
             defaults={
-                'value': Decimal(str(round(avg_value, 4))),
-                'sample_size': sample_size,
-                'percentile_25': Decimal(str(round(p25, 4))),
-                'percentile_50': Decimal(str(round(p50, 4))),
-                'percentile_75': Decimal(str(round(p75, 4))),
-                'percentile_90': Decimal(str(round(p90, 4))),
+                "value": Decimal(str(round(avg_value, 4))),
+                "sample_size": sample_size,
+                "percentile_25": Decimal(str(round(p25, 4))),
+                "percentile_50": Decimal(str(round(p50, 4))),
+                "percentile_75": Decimal(str(round(p75, 4))),
+                "percentile_90": Decimal(str(round(p90, 4))),
             },
         )
 
-        action = 'Created' if created else 'Updated'
+        action = "Created" if created else "Updated"
         logger.info(
-            '%s benchmark: metric=%s category=restaurant '
-            'avg=%.2f p50=%.2f sample=%d',
-            action, metric_name, avg_value, p50, sample_size,
+            "%s benchmark: metric=%s category=restaurant avg=%.2f p50=%.2f sample=%d",
+            action,
+            metric_name,
+            avg_value,
+            p50,
+            sample_size,
         )
 
         return [benchmark]
@@ -498,22 +516,22 @@ class BenchmarkService:
                 SalesAggregation.objects.filter(
                     date__gte=period_start,
                     date__lte=period_end,
-                    granularity='DAILY',
+                    granularity="DAILY",
                     deleted_at__isnull=True,
                 )
-                .values('organization_id')
+                .values("organization_id")
                 .annotate(avg_value=Avg(field_name))
                 .filter(avg_value__isnull=False)
             )
 
             return [
-                float(r['avg_value'])
-                for r in results
-                if r['avg_value'] is not None
+                float(r["avg_value"]) for r in results if r["avg_value"] is not None
             ]
         except Exception as exc:
             logger.error(
-                'Failed to get per-org values for %s: %s', field_name, exc,
+                "Failed to get per-org values for %s: %s",
+                field_name,
+                exc,
             )
             return []
 
@@ -534,15 +552,16 @@ class BenchmarkService:
         """
         try:
             from apps.core.models import Organization
+
             org = Organization.objects.filter(
                 id=org_id,
                 deleted_at__isnull=True,
             ).first()
             if org and org.settings:
-                return org.settings.get('category', 'restaurant')
+                return org.settings.get("category", "restaurant")
         except Exception:
             pass
-        return 'restaurant'
+        return "restaurant"
 
     @staticmethod
     def _get_default_period_start(period_type: str) -> date:
@@ -556,11 +575,11 @@ class BenchmarkService:
             date: Period start date
         """
         today = timezone.localdate()
-        if period_type == 'DAILY':
+        if period_type == "DAILY":
             return today - timedelta(days=1)
-        elif period_type == 'WEEKLY':
+        elif period_type == "WEEKLY":
             return today - timedelta(weeks=1)
-        elif period_type == 'MONTHLY':
+        elif period_type == "MONTHLY":
             return today.replace(day=1)
         return today - timedelta(days=30)
 
@@ -576,15 +595,17 @@ class BenchmarkService:
         Returns:
             date: Period end date
         """
-        if period_type == 'DAILY':
+        if period_type == "DAILY":
             return period_start
-        elif period_type == 'WEEKLY':
+        elif period_type == "WEEKLY":
             return period_start + timedelta(days=6)
-        elif period_type == 'MONTHLY':
+        elif period_type == "MONTHLY":
             # End of month
             if period_start.month == 12:
                 return date(period_start.year + 1, 1, 1) - timedelta(days=1)
-            return date(period_start.year, period_start.month + 1, 1) - timedelta(days=1)
+            return date(period_start.year, period_start.month + 1, 1) - timedelta(
+                days=1
+            )
         return period_start + timedelta(days=30)
 
     @staticmethod
@@ -611,7 +632,7 @@ class BenchmarkService:
     @staticmethod
     def _calculate_percentile_rank(
         org_value: Decimal,
-        benchmark: 'IndustryBenchmark',
+        benchmark: "IndustryBenchmark",
     ) -> str:
         """
         Determine which percentile band the org value falls into.
@@ -625,15 +646,23 @@ class BenchmarkService:
         """
         org_float = float(org_value)
 
-        if benchmark.percentile_25 is not None and org_float < float(benchmark.percentile_25):
-            return 'below_25'
-        if benchmark.percentile_50 is not None and org_float < float(benchmark.percentile_50):
-            return '25_50'
-        if benchmark.percentile_75 is not None and org_float < float(benchmark.percentile_75):
-            return '50_75'
-        if benchmark.percentile_90 is not None and org_float < float(benchmark.percentile_90):
-            return '75_90'
-        return 'above_90'
+        if benchmark.percentile_25 is not None and org_float < float(
+            benchmark.percentile_25
+        ):
+            return "below_25"
+        if benchmark.percentile_50 is not None and org_float < float(
+            benchmark.percentile_50
+        ):
+            return "25_50"
+        if benchmark.percentile_75 is not None and org_float < float(
+            benchmark.percentile_75
+        ):
+            return "50_75"
+        if benchmark.percentile_90 is not None and org_float < float(
+            benchmark.percentile_90
+        ):
+            return "75_90"
+        return "above_90"
 
     @staticmethod
     def _determine_performance(percentile_rank: str) -> str:
@@ -647,13 +676,13 @@ class BenchmarkService:
             str: Performance label
         """
         mapping = {
-            'below_25': 'below_average',
-            '25_50': 'average',
-            '50_75': 'above_average',
-            '75_90': 'above_average',
-            'above_90': 'top_performer',
+            "below_25": "below_average",
+            "25_50": "average",
+            "50_75": "above_average",
+            "75_90": "above_average",
+            "above_90": "top_performer",
         }
-        return mapping.get(percentile_rank, 'unknown')
+        return mapping.get(percentile_rank, "unknown")
 
     @staticmethod
     def _generate_comparison_message(
@@ -683,24 +712,24 @@ class BenchmarkService:
 
         if bench_float > 0:
             diff_pct = ((org_float - bench_float) / bench_float) * 100
-            direction = 'above' if diff_pct > 0 else 'below'
+            direction = "above" if diff_pct > 0 else "below"
             diff_pct_abs = abs(diff_pct)
         else:
             diff_pct_abs = 0
-            direction = 'at'
+            direction = "at"
 
         performance_labels = {
-            'below_average': 'below the industry average',
-            'average': 'at the industry average',
-            'above_average': 'above the industry average',
-            'top_performer': 'among the top performers',
+            "below_average": "below the industry average",
+            "average": "at the industry average",
+            "above_average": "above the industry average",
+            "top_performer": "among the top performers",
         }
-        perf_label = performance_labels.get(performance, 'comparable to the industry')
+        perf_label = performance_labels.get(performance, "comparable to the industry")
 
         return (
-            f'Your {metric_name.replace("_", " ")} is '
-            f'{org_float:,.2f}, which is {diff_pct_abs:.1f}% {direction} '
-            f'the industry average of {bench_float:,.2f}. '
-            f'You are {perf_label} '
-            f'(based on {sample_size} businesses).'
+            f"Your {metric_name.replace('_', ' ')} is "
+            f"{org_float:,.2f}, which is {diff_pct_abs:.1f}% {direction} "
+            f"the industry average of {bench_float:,.2f}. "
+            f"You are {perf_label} "
+            f"(based on {sample_size} businesses)."
         )

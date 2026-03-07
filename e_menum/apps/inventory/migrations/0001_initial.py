@@ -8,246 +8,1080 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('core', '0003_shift_staffmetric_staffschedule_and_more'),
-        ('menu', '0003_add_icon_discount_rating'),
+        ("core", "0003_shift_staffmetric_staffschedule_and_more"),
+        ("menu", "0003_add_icon_discount_rating"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='InventoryItem',
+            name="InventoryItem",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier (UUID)', primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='Name of the inventory item', max_length=255, verbose_name='Name')),
-                ('sku', models.CharField(blank=True, help_text='Stock Keeping Unit code', max_length=100, null=True, verbose_name='SKU')),
-                ('category', models.CharField(blank=True, help_text='Item category (e.g., Dairy, Produce, Meat)', max_length=100, null=True, verbose_name='Category')),
-                ('unit_type', models.CharField(choices=[('KG', 'Kilogram'), ('G', 'Gram'), ('L', 'Liter'), ('ML', 'Milliliter'), ('PIECE', 'Piece'), ('PACK', 'Pack'), ('BOX', 'Box')], default='PIECE', help_text='Unit of measurement for this item', max_length=10, verbose_name='Unit type')),
-                ('current_stock', models.DecimalField(decimal_places=3, default=0, help_text='Current stock quantity in the specified unit', max_digits=12, verbose_name='Current stock')),
-                ('min_stock_level', models.DecimalField(decimal_places=3, default=0, help_text='Minimum stock threshold before alert', max_digits=12, verbose_name='Minimum stock level')),
-                ('max_stock_level', models.DecimalField(decimal_places=3, default=0, help_text='Maximum recommended stock level', max_digits=12, verbose_name='Maximum stock level')),
-                ('cost_per_unit', models.DecimalField(decimal_places=2, default=0, help_text='Cost per unit in the base currency', max_digits=10, verbose_name='Cost per unit')),
-                ('is_active', models.BooleanField(default=True, help_text='Whether this inventory item is actively tracked', verbose_name='Is active')),
-                ('organization', models.ForeignKey(help_text='Organization this inventory item belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='inventory_items', to='core.organization', verbose_name='Organization')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier (UUID)",
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="Name of the inventory item",
+                        max_length=255,
+                        verbose_name="Name",
+                    ),
+                ),
+                (
+                    "sku",
+                    models.CharField(
+                        blank=True,
+                        help_text="Stock Keeping Unit code",
+                        max_length=100,
+                        null=True,
+                        verbose_name="SKU",
+                    ),
+                ),
+                (
+                    "category",
+                    models.CharField(
+                        blank=True,
+                        help_text="Item category (e.g., Dairy, Produce, Meat)",
+                        max_length=100,
+                        null=True,
+                        verbose_name="Category",
+                    ),
+                ),
+                (
+                    "unit_type",
+                    models.CharField(
+                        choices=[
+                            ("KG", "Kilogram"),
+                            ("G", "Gram"),
+                            ("L", "Liter"),
+                            ("ML", "Milliliter"),
+                            ("PIECE", "Piece"),
+                            ("PACK", "Pack"),
+                            ("BOX", "Box"),
+                        ],
+                        default="PIECE",
+                        help_text="Unit of measurement for this item",
+                        max_length=10,
+                        verbose_name="Unit type",
+                    ),
+                ),
+                (
+                    "current_stock",
+                    models.DecimalField(
+                        decimal_places=3,
+                        default=0,
+                        help_text="Current stock quantity in the specified unit",
+                        max_digits=12,
+                        verbose_name="Current stock",
+                    ),
+                ),
+                (
+                    "min_stock_level",
+                    models.DecimalField(
+                        decimal_places=3,
+                        default=0,
+                        help_text="Minimum stock threshold before alert",
+                        max_digits=12,
+                        verbose_name="Minimum stock level",
+                    ),
+                ),
+                (
+                    "max_stock_level",
+                    models.DecimalField(
+                        decimal_places=3,
+                        default=0,
+                        help_text="Maximum recommended stock level",
+                        max_digits=12,
+                        verbose_name="Maximum stock level",
+                    ),
+                ),
+                (
+                    "cost_per_unit",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        help_text="Cost per unit in the base currency",
+                        max_digits=10,
+                        verbose_name="Cost per unit",
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Whether this inventory item is actively tracked",
+                        verbose_name="Is active",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization this inventory item belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="inventory_items",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Inventory Item',
-                'verbose_name_plural': 'Inventory Items',
-                'db_table': 'inventory_items',
-                'ordering': ['name'],
+                "verbose_name": "Inventory Item",
+                "verbose_name_plural": "Inventory Items",
+                "db_table": "inventory_items",
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='Recipe',
+            name="Recipe",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier (UUID)', primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='Recipe name', max_length=255, verbose_name='Name')),
-                ('description', models.TextField(blank=True, help_text='Recipe description or preparation instructions', null=True, verbose_name='Description')),
-                ('yield_quantity', models.DecimalField(decimal_places=3, default=1, help_text='Number of portions/units this recipe produces', max_digits=10, verbose_name='Yield quantity')),
-                ('yield_unit', models.CharField(choices=[('KG', 'Kilogram'), ('G', 'Gram'), ('L', 'Liter'), ('ML', 'Milliliter'), ('PIECE', 'Piece'), ('PACK', 'Pack'), ('BOX', 'Box')], default='PIECE', help_text='Unit of measurement for the yield', max_length=10, verbose_name='Yield unit')),
-                ('preparation_time_minutes', models.PositiveIntegerField(default=0, help_text='Estimated preparation time in minutes', verbose_name='Preparation time (minutes)')),
-                ('is_active', models.BooleanField(default=True, help_text='Whether this recipe is currently in use', verbose_name='Is active')),
-                ('organization', models.ForeignKey(help_text='Organization this recipe belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='recipes', to='core.organization', verbose_name='Organization')),
-                ('product', models.ForeignKey(help_text='Menu product this recipe produces', on_delete=django.db.models.deletion.CASCADE, related_name='recipes', to='menu.product', verbose_name='Product')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier (UUID)",
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="Recipe name", max_length=255, verbose_name="Name"
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(
+                        blank=True,
+                        help_text="Recipe description or preparation instructions",
+                        null=True,
+                        verbose_name="Description",
+                    ),
+                ),
+                (
+                    "yield_quantity",
+                    models.DecimalField(
+                        decimal_places=3,
+                        default=1,
+                        help_text="Number of portions/units this recipe produces",
+                        max_digits=10,
+                        verbose_name="Yield quantity",
+                    ),
+                ),
+                (
+                    "yield_unit",
+                    models.CharField(
+                        choices=[
+                            ("KG", "Kilogram"),
+                            ("G", "Gram"),
+                            ("L", "Liter"),
+                            ("ML", "Milliliter"),
+                            ("PIECE", "Piece"),
+                            ("PACK", "Pack"),
+                            ("BOX", "Box"),
+                        ],
+                        default="PIECE",
+                        help_text="Unit of measurement for the yield",
+                        max_length=10,
+                        verbose_name="Yield unit",
+                    ),
+                ),
+                (
+                    "preparation_time_minutes",
+                    models.PositiveIntegerField(
+                        default=0,
+                        help_text="Estimated preparation time in minutes",
+                        verbose_name="Preparation time (minutes)",
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Whether this recipe is currently in use",
+                        verbose_name="Is active",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization this recipe belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="recipes",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
+                (
+                    "product",
+                    models.ForeignKey(
+                        help_text="Menu product this recipe produces",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="recipes",
+                        to="menu.product",
+                        verbose_name="Product",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Recipe',
-                'verbose_name_plural': 'Recipes',
-                'db_table': 'recipes',
-                'ordering': ['name'],
+                "verbose_name": "Recipe",
+                "verbose_name_plural": "Recipes",
+                "db_table": "recipes",
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='RecipeIngredient',
+            name="RecipeIngredient",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier (UUID)', primary_key=True, serialize=False, verbose_name='ID')),
-                ('quantity_required', models.DecimalField(decimal_places=3, help_text='Amount of this ingredient required per recipe yield', max_digits=10, verbose_name='Quantity required')),
-                ('unit_type', models.CharField(choices=[('KG', 'Kilogram'), ('G', 'Gram'), ('L', 'Liter'), ('ML', 'Milliliter'), ('PIECE', 'Piece'), ('PACK', 'Pack'), ('BOX', 'Box')], default='G', help_text='Unit of measurement for this ingredient', max_length=10, verbose_name='Unit type')),
-                ('waste_percentage', models.DecimalField(decimal_places=2, default=0, help_text='Expected waste percentage (0-100)', max_digits=5, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(100)], verbose_name='Waste percentage')),
-                ('inventory_item', models.ForeignKey(help_text='The inventory item used as ingredient', on_delete=django.db.models.deletion.CASCADE, related_name='recipe_ingredients', to='inventory.inventoryitem', verbose_name='Inventory item')),
-                ('recipe', models.ForeignKey(help_text='Parent recipe', on_delete=django.db.models.deletion.CASCADE, related_name='ingredients', to='inventory.recipe', verbose_name='Recipe')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier (UUID)",
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "quantity_required",
+                    models.DecimalField(
+                        decimal_places=3,
+                        help_text="Amount of this ingredient required per recipe yield",
+                        max_digits=10,
+                        verbose_name="Quantity required",
+                    ),
+                ),
+                (
+                    "unit_type",
+                    models.CharField(
+                        choices=[
+                            ("KG", "Kilogram"),
+                            ("G", "Gram"),
+                            ("L", "Liter"),
+                            ("ML", "Milliliter"),
+                            ("PIECE", "Piece"),
+                            ("PACK", "Pack"),
+                            ("BOX", "Box"),
+                        ],
+                        default="G",
+                        help_text="Unit of measurement for this ingredient",
+                        max_length=10,
+                        verbose_name="Unit type",
+                    ),
+                ),
+                (
+                    "waste_percentage",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        help_text="Expected waste percentage (0-100)",
+                        max_digits=5,
+                        validators=[
+                            django.core.validators.MinValueValidator(0),
+                            django.core.validators.MaxValueValidator(100),
+                        ],
+                        verbose_name="Waste percentage",
+                    ),
+                ),
+                (
+                    "inventory_item",
+                    models.ForeignKey(
+                        help_text="The inventory item used as ingredient",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="recipe_ingredients",
+                        to="inventory.inventoryitem",
+                        verbose_name="Inventory item",
+                    ),
+                ),
+                (
+                    "recipe",
+                    models.ForeignKey(
+                        help_text="Parent recipe",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="ingredients",
+                        to="inventory.recipe",
+                        verbose_name="Recipe",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Recipe Ingredient',
-                'verbose_name_plural': 'Recipe Ingredients',
-                'db_table': 'recipe_ingredients',
-                'ordering': ['id'],
+                "verbose_name": "Recipe Ingredient",
+                "verbose_name_plural": "Recipe Ingredients",
+                "db_table": "recipe_ingredients",
+                "ordering": ["id"],
             },
         ),
         migrations.CreateModel(
-            name='StockMovement',
+            name="StockMovement",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier (UUID)', primary_key=True, serialize=False, verbose_name='ID')),
-                ('movement_type', models.CharField(choices=[('PURCHASE', 'Purchase'), ('SALE', 'Sale'), ('WASTE', 'Waste'), ('ADJUSTMENT', 'Adjustment'), ('TRANSFER', 'Transfer'), ('RETURN', 'Return')], help_text='Type of stock movement', max_length=20, verbose_name='Movement type')),
-                ('quantity', models.DecimalField(decimal_places=3, help_text='Quantity moved (positive for additions, negative for removals)', max_digits=12, verbose_name='Quantity')),
-                ('unit_cost', models.DecimalField(decimal_places=2, default=0, help_text='Cost per unit at the time of movement', max_digits=10, verbose_name='Unit cost')),
-                ('total_cost', models.DecimalField(decimal_places=2, default=0, help_text='Total cost of this movement', max_digits=12, verbose_name='Total cost')),
-                ('reference_number', models.CharField(blank=True, help_text='External reference number (invoice, PO, etc.)', max_length=100, null=True, verbose_name='Reference number')),
-                ('notes', models.TextField(blank=True, help_text='Additional notes about this movement', null=True, verbose_name='Notes')),
-                ('created_by', models.ForeignKey(blank=True, help_text='User who created this movement', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='stock_movements', to=settings.AUTH_USER_MODEL, verbose_name='Created by')),
-                ('inventory_item', models.ForeignKey(help_text='The inventory item affected by this movement', on_delete=django.db.models.deletion.CASCADE, related_name='movements', to='inventory.inventoryitem', verbose_name='Inventory item')),
-                ('organization', models.ForeignKey(help_text='Organization this movement belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='stock_movements', to='core.organization', verbose_name='Organization')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier (UUID)",
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "movement_type",
+                    models.CharField(
+                        choices=[
+                            ("PURCHASE", "Purchase"),
+                            ("SALE", "Sale"),
+                            ("WASTE", "Waste"),
+                            ("ADJUSTMENT", "Adjustment"),
+                            ("TRANSFER", "Transfer"),
+                            ("RETURN", "Return"),
+                        ],
+                        help_text="Type of stock movement",
+                        max_length=20,
+                        verbose_name="Movement type",
+                    ),
+                ),
+                (
+                    "quantity",
+                    models.DecimalField(
+                        decimal_places=3,
+                        help_text="Quantity moved (positive for additions, negative for removals)",
+                        max_digits=12,
+                        verbose_name="Quantity",
+                    ),
+                ),
+                (
+                    "unit_cost",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        help_text="Cost per unit at the time of movement",
+                        max_digits=10,
+                        verbose_name="Unit cost",
+                    ),
+                ),
+                (
+                    "total_cost",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        help_text="Total cost of this movement",
+                        max_digits=12,
+                        verbose_name="Total cost",
+                    ),
+                ),
+                (
+                    "reference_number",
+                    models.CharField(
+                        blank=True,
+                        help_text="External reference number (invoice, PO, etc.)",
+                        max_length=100,
+                        null=True,
+                        verbose_name="Reference number",
+                    ),
+                ),
+                (
+                    "notes",
+                    models.TextField(
+                        blank=True,
+                        help_text="Additional notes about this movement",
+                        null=True,
+                        verbose_name="Notes",
+                    ),
+                ),
+                (
+                    "created_by",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="User who created this movement",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="stock_movements",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Created by",
+                    ),
+                ),
+                (
+                    "inventory_item",
+                    models.ForeignKey(
+                        help_text="The inventory item affected by this movement",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="movements",
+                        to="inventory.inventoryitem",
+                        verbose_name="Inventory item",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization this movement belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="stock_movements",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Stock Movement',
-                'verbose_name_plural': 'Stock Movements',
-                'db_table': 'stock_movements',
-                'ordering': ['-created_at'],
+                "verbose_name": "Stock Movement",
+                "verbose_name_plural": "Stock Movements",
+                "db_table": "stock_movements",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='Supplier',
+            name="Supplier",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier (UUID)', primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='Supplier company name', max_length=255, verbose_name='Name')),
-                ('contact_person', models.CharField(blank=True, help_text='Primary contact person at the supplier', max_length=255, null=True, verbose_name='Contact person')),
-                ('email', models.EmailField(blank=True, help_text='Supplier contact email', max_length=254, null=True, verbose_name='Email')),
-                ('phone', models.CharField(blank=True, help_text='Supplier contact phone', max_length=20, null=True, verbose_name='Phone')),
-                ('address', models.TextField(blank=True, help_text='Supplier full address', null=True, verbose_name='Address')),
-                ('tax_id', models.CharField(blank=True, help_text='Supplier tax identification number', max_length=50, null=True, verbose_name='Tax ID')),
-                ('is_active', models.BooleanField(default=True, help_text='Whether this supplier is currently active', verbose_name='Is active')),
-                ('rating', models.PositiveSmallIntegerField(default=3, help_text='Supplier rating from 1 to 5', validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(5)], verbose_name='Rating')),
-                ('notes', models.TextField(blank=True, help_text='Additional notes about the supplier', null=True, verbose_name='Notes')),
-                ('organization', models.ForeignKey(help_text='Organization this supplier belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='suppliers', to='core.organization', verbose_name='Organization')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier (UUID)",
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="Supplier company name",
+                        max_length=255,
+                        verbose_name="Name",
+                    ),
+                ),
+                (
+                    "contact_person",
+                    models.CharField(
+                        blank=True,
+                        help_text="Primary contact person at the supplier",
+                        max_length=255,
+                        null=True,
+                        verbose_name="Contact person",
+                    ),
+                ),
+                (
+                    "email",
+                    models.EmailField(
+                        blank=True,
+                        help_text="Supplier contact email",
+                        max_length=254,
+                        null=True,
+                        verbose_name="Email",
+                    ),
+                ),
+                (
+                    "phone",
+                    models.CharField(
+                        blank=True,
+                        help_text="Supplier contact phone",
+                        max_length=20,
+                        null=True,
+                        verbose_name="Phone",
+                    ),
+                ),
+                (
+                    "address",
+                    models.TextField(
+                        blank=True,
+                        help_text="Supplier full address",
+                        null=True,
+                        verbose_name="Address",
+                    ),
+                ),
+                (
+                    "tax_id",
+                    models.CharField(
+                        blank=True,
+                        help_text="Supplier tax identification number",
+                        max_length=50,
+                        null=True,
+                        verbose_name="Tax ID",
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Whether this supplier is currently active",
+                        verbose_name="Is active",
+                    ),
+                ),
+                (
+                    "rating",
+                    models.PositiveSmallIntegerField(
+                        default=3,
+                        help_text="Supplier rating from 1 to 5",
+                        validators=[
+                            django.core.validators.MinValueValidator(1),
+                            django.core.validators.MaxValueValidator(5),
+                        ],
+                        verbose_name="Rating",
+                    ),
+                ),
+                (
+                    "notes",
+                    models.TextField(
+                        blank=True,
+                        help_text="Additional notes about the supplier",
+                        null=True,
+                        verbose_name="Notes",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization this supplier belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="suppliers",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Supplier',
-                'verbose_name_plural': 'Suppliers',
-                'db_table': 'suppliers',
-                'ordering': ['name'],
+                "verbose_name": "Supplier",
+                "verbose_name_plural": "Suppliers",
+                "db_table": "suppliers",
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='PurchaseOrder',
+            name="PurchaseOrder",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier (UUID)', primary_key=True, serialize=False, verbose_name='ID')),
-                ('order_number', models.CharField(help_text='Unique order reference number', max_length=50, verbose_name='Order number')),
-                ('status', models.CharField(choices=[('DRAFT', 'Draft'), ('SUBMITTED', 'Submitted'), ('APPROVED', 'Approved'), ('RECEIVED', 'Received'), ('CANCELLED', 'Cancelled')], db_index=True, default='DRAFT', help_text='Current status of the purchase order', max_length=20, verbose_name='Status')),
-                ('order_date', models.DateField(help_text='Date the order was placed', verbose_name='Order date')),
-                ('expected_delivery', models.DateField(blank=True, help_text='Expected delivery date', null=True, verbose_name='Expected delivery')),
-                ('actual_delivery', models.DateField(blank=True, help_text='Actual delivery date', null=True, verbose_name='Actual delivery')),
-                ('subtotal', models.DecimalField(decimal_places=2, default=0, help_text='Total before tax', max_digits=12, verbose_name='Subtotal')),
-                ('tax_amount', models.DecimalField(decimal_places=2, default=0, help_text='Total tax amount', max_digits=12, verbose_name='Tax amount')),
-                ('total_amount', models.DecimalField(decimal_places=2, default=0, help_text='Total order amount including tax', max_digits=12, verbose_name='Total amount')),
-                ('notes', models.TextField(blank=True, help_text='Additional notes for this purchase order', null=True, verbose_name='Notes')),
-                ('approved_by', models.ForeignKey(blank=True, help_text='User who approved this purchase order', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='approved_purchase_orders', to=settings.AUTH_USER_MODEL, verbose_name='Approved by')),
-                ('created_by', models.ForeignKey(blank=True, help_text='User who created this purchase order', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='created_purchase_orders', to=settings.AUTH_USER_MODEL, verbose_name='Created by')),
-                ('organization', models.ForeignKey(help_text='Organization this purchase order belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='purchase_orders', to='core.organization', verbose_name='Organization')),
-                ('supplier', models.ForeignKey(help_text='Supplier for this purchase order', on_delete=django.db.models.deletion.CASCADE, related_name='purchase_orders', to='inventory.supplier', verbose_name='Supplier')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier (UUID)",
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "order_number",
+                    models.CharField(
+                        help_text="Unique order reference number",
+                        max_length=50,
+                        verbose_name="Order number",
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("DRAFT", "Draft"),
+                            ("SUBMITTED", "Submitted"),
+                            ("APPROVED", "Approved"),
+                            ("RECEIVED", "Received"),
+                            ("CANCELLED", "Cancelled"),
+                        ],
+                        db_index=True,
+                        default="DRAFT",
+                        help_text="Current status of the purchase order",
+                        max_length=20,
+                        verbose_name="Status",
+                    ),
+                ),
+                (
+                    "order_date",
+                    models.DateField(
+                        help_text="Date the order was placed", verbose_name="Order date"
+                    ),
+                ),
+                (
+                    "expected_delivery",
+                    models.DateField(
+                        blank=True,
+                        help_text="Expected delivery date",
+                        null=True,
+                        verbose_name="Expected delivery",
+                    ),
+                ),
+                (
+                    "actual_delivery",
+                    models.DateField(
+                        blank=True,
+                        help_text="Actual delivery date",
+                        null=True,
+                        verbose_name="Actual delivery",
+                    ),
+                ),
+                (
+                    "subtotal",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        help_text="Total before tax",
+                        max_digits=12,
+                        verbose_name="Subtotal",
+                    ),
+                ),
+                (
+                    "tax_amount",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        help_text="Total tax amount",
+                        max_digits=12,
+                        verbose_name="Tax amount",
+                    ),
+                ),
+                (
+                    "total_amount",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        help_text="Total order amount including tax",
+                        max_digits=12,
+                        verbose_name="Total amount",
+                    ),
+                ),
+                (
+                    "notes",
+                    models.TextField(
+                        blank=True,
+                        help_text="Additional notes for this purchase order",
+                        null=True,
+                        verbose_name="Notes",
+                    ),
+                ),
+                (
+                    "approved_by",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="User who approved this purchase order",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="approved_purchase_orders",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Approved by",
+                    ),
+                ),
+                (
+                    "created_by",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="User who created this purchase order",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="created_purchase_orders",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Created by",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization this purchase order belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="purchase_orders",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
+                (
+                    "supplier",
+                    models.ForeignKey(
+                        help_text="Supplier for this purchase order",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="purchase_orders",
+                        to="inventory.supplier",
+                        verbose_name="Supplier",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Purchase Order',
-                'verbose_name_plural': 'Purchase Orders',
-                'db_table': 'purchase_orders',
-                'ordering': ['-order_date'],
+                "verbose_name": "Purchase Order",
+                "verbose_name_plural": "Purchase Orders",
+                "db_table": "purchase_orders",
+                "ordering": ["-order_date"],
             },
         ),
         migrations.AddField(
-            model_name='inventoryitem',
-            name='supplier',
-            field=models.ForeignKey(blank=True, help_text='Primary supplier for this item', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='inventory_items', to='inventory.supplier', verbose_name='Supplier'),
+            model_name="inventoryitem",
+            name="supplier",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="Primary supplier for this item",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="inventory_items",
+                to="inventory.supplier",
+                verbose_name="Supplier",
+            ),
         ),
         migrations.CreateModel(
-            name='PurchaseOrderItem',
+            name="PurchaseOrderItem",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier (UUID)', primary_key=True, serialize=False, verbose_name='ID')),
-                ('quantity_ordered', models.DecimalField(decimal_places=3, help_text='Quantity ordered from supplier', max_digits=12, verbose_name='Quantity ordered')),
-                ('quantity_received', models.DecimalField(decimal_places=3, default=0, help_text='Quantity actually received', max_digits=12, verbose_name='Quantity received')),
-                ('unit_cost', models.DecimalField(decimal_places=2, help_text='Cost per unit', max_digits=10, verbose_name='Unit cost')),
-                ('total_cost', models.DecimalField(decimal_places=2, default=0, help_text='Total line item cost', max_digits=12, verbose_name='Total cost')),
-                ('inventory_item', models.ForeignKey(help_text='The inventory item being ordered', on_delete=django.db.models.deletion.CASCADE, related_name='purchase_order_items', to='inventory.inventoryitem', verbose_name='Inventory item')),
-                ('purchase_order', models.ForeignKey(help_text='Parent purchase order', on_delete=django.db.models.deletion.CASCADE, related_name='items', to='inventory.purchaseorder', verbose_name='Purchase order')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier (UUID)",
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "quantity_ordered",
+                    models.DecimalField(
+                        decimal_places=3,
+                        help_text="Quantity ordered from supplier",
+                        max_digits=12,
+                        verbose_name="Quantity ordered",
+                    ),
+                ),
+                (
+                    "quantity_received",
+                    models.DecimalField(
+                        decimal_places=3,
+                        default=0,
+                        help_text="Quantity actually received",
+                        max_digits=12,
+                        verbose_name="Quantity received",
+                    ),
+                ),
+                (
+                    "unit_cost",
+                    models.DecimalField(
+                        decimal_places=2,
+                        help_text="Cost per unit",
+                        max_digits=10,
+                        verbose_name="Unit cost",
+                    ),
+                ),
+                (
+                    "total_cost",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        help_text="Total line item cost",
+                        max_digits=12,
+                        verbose_name="Total cost",
+                    ),
+                ),
+                (
+                    "inventory_item",
+                    models.ForeignKey(
+                        help_text="The inventory item being ordered",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="purchase_order_items",
+                        to="inventory.inventoryitem",
+                        verbose_name="Inventory item",
+                    ),
+                ),
+                (
+                    "purchase_order",
+                    models.ForeignKey(
+                        help_text="Parent purchase order",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="items",
+                        to="inventory.purchaseorder",
+                        verbose_name="Purchase order",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Purchase Order Item',
-                'verbose_name_plural': 'Purchase Order Items',
-                'db_table': 'purchase_order_items',
-                'ordering': ['id'],
-                'indexes': [models.Index(fields=['purchase_order'], name='poitem_po_idx')],
+                "verbose_name": "Purchase Order Item",
+                "verbose_name_plural": "Purchase Order Items",
+                "db_table": "purchase_order_items",
+                "ordering": ["id"],
+                "indexes": [
+                    models.Index(fields=["purchase_order"], name="poitem_po_idx")
+                ],
             },
         ),
         migrations.AddIndex(
-            model_name='recipe',
-            index=models.Index(fields=['organization', 'deleted_at'], name='recipe_org_deleted_idx'),
+            model_name="recipe",
+            index=models.Index(
+                fields=["organization", "deleted_at"], name="recipe_org_deleted_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='recipe',
-            index=models.Index(fields=['organization', 'product'], name='recipe_org_product_idx'),
+            model_name="recipe",
+            index=models.Index(
+                fields=["organization", "product"], name="recipe_org_product_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='recipeingredient',
-            index=models.Index(fields=['recipe'], name='recipeing_recipe_idx'),
+            model_name="recipeingredient",
+            index=models.Index(fields=["recipe"], name="recipeing_recipe_idx"),
         ),
         migrations.AddIndex(
-            model_name='stockmovement',
-            index=models.Index(fields=['organization', 'deleted_at'], name='stockmov_org_deleted_idx'),
+            model_name="stockmovement",
+            index=models.Index(
+                fields=["organization", "deleted_at"], name="stockmov_org_deleted_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='stockmovement',
-            index=models.Index(fields=['organization', 'movement_type'], name='stockmov_org_type_idx'),
+            model_name="stockmovement",
+            index=models.Index(
+                fields=["organization", "movement_type"], name="stockmov_org_type_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='stockmovement',
-            index=models.Index(fields=['inventory_item', 'created_at'], name='stockmov_item_created_idx'),
+            model_name="stockmovement",
+            index=models.Index(
+                fields=["inventory_item", "created_at"],
+                name="stockmov_item_created_idx",
+            ),
         ),
         migrations.AddIndex(
-            model_name='supplier',
-            index=models.Index(fields=['organization', 'deleted_at'], name='supplier_org_deleted_idx'),
+            model_name="supplier",
+            index=models.Index(
+                fields=["organization", "deleted_at"], name="supplier_org_deleted_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='supplier',
-            index=models.Index(fields=['organization', 'is_active'], name='supplier_org_active_idx'),
+            model_name="supplier",
+            index=models.Index(
+                fields=["organization", "is_active"], name="supplier_org_active_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='purchaseorder',
-            index=models.Index(fields=['organization', 'deleted_at'], name='po_org_deleted_idx'),
+            model_name="purchaseorder",
+            index=models.Index(
+                fields=["organization", "deleted_at"], name="po_org_deleted_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='purchaseorder',
-            index=models.Index(fields=['organization', 'status'], name='po_org_status_idx'),
+            model_name="purchaseorder",
+            index=models.Index(
+                fields=["organization", "status"], name="po_org_status_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='purchaseorder',
-            index=models.Index(fields=['organization', 'supplier'], name='po_org_supplier_idx'),
+            model_name="purchaseorder",
+            index=models.Index(
+                fields=["organization", "supplier"], name="po_org_supplier_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='inventoryitem',
-            index=models.Index(fields=['organization', 'deleted_at'], name='invitem_org_deleted_idx'),
+            model_name="inventoryitem",
+            index=models.Index(
+                fields=["organization", "deleted_at"], name="invitem_org_deleted_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='inventoryitem',
-            index=models.Index(fields=['organization', 'is_active'], name='invitem_org_active_idx'),
+            model_name="inventoryitem",
+            index=models.Index(
+                fields=["organization", "is_active"], name="invitem_org_active_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='inventoryitem',
-            index=models.Index(fields=['organization', 'category'], name='invitem_org_category_idx'),
+            model_name="inventoryitem",
+            index=models.Index(
+                fields=["organization", "category"], name="invitem_org_category_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='inventoryitem',
-            index=models.Index(fields=['organization', 'sku'], name='invitem_org_sku_idx'),
+            model_name="inventoryitem",
+            index=models.Index(
+                fields=["organization", "sku"], name="invitem_org_sku_idx"
+            ),
         ),
     ]

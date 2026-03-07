@@ -22,16 +22,17 @@ from celery import shared_task
 from django.conf import settings
 from django.utils import timezone
 
-logger = logging.getLogger('apps.seo')
+logger = logging.getLogger("apps.seo")
 
 
 # =============================================================================
 # BROKEN LINK CHECK
 # =============================================================================
 
+
 @shared_task(
     bind=True,
-    name='seo.check_broken_links',
+    name="seo.check_broken_links",
     max_retries=2,
     default_retry_delay=300,
     soft_time_limit=1800,
@@ -52,30 +53,31 @@ def check_broken_links(self):
     from apps.seo.internal_links import BrokenLinkChecker
 
     # Determine base URL
-    base_url = getattr(settings, 'SITE_URL', None)
+    base_url = getattr(settings, "SITE_URL", None)
     if not base_url:
         try:
             from apps.website.models import SiteSettings
+
             site_settings = SiteSettings.load()
-            base_url = getattr(site_settings, 'website_url', None)
+            base_url = getattr(site_settings, "website_url", None)
         except Exception:
             pass
 
     if not base_url:
         base_url = settings.SITE_URL
         logger.warning(
-            'No SITE_URL or SiteSettings.website_url configured, '
-            'falling back to %s',
+            "No SITE_URL or SiteSettings.website_url configured, falling back to %s",
             base_url,
         )
 
-    logger.info('Starting broken link check for base URL: %s', base_url)
+    logger.info("Starting broken link check for base URL: %s", base_url)
 
     # Create CrawlReport record
     from apps.seo.models import CrawlReport
+
     report = CrawlReport.objects.create(
         started_at=timezone.now(),
-        status='running',
+        status="running",
     )
 
     try:
@@ -107,31 +109,31 @@ def check_broken_links(self):
         report.broken_count = total_broken
         report.redirected_count = total_redirected
         report.healthy_count = total_healthy
-        report.status = 'completed'
+        report.status = "completed"
         report.save()
 
         summary = {
-            'pages_crawled': len(results),
-            'broken_links_found': total_broken,
-            'broken_links_saved': saved,
-            'crawl_report_id': str(report.pk),
+            "pages_crawled": len(results),
+            "broken_links_found": total_broken,
+            "broken_links_saved": saved,
+            "crawl_report_id": str(report.pk),
         }
         logger.info(
-            'Broken link check complete: %d pages crawled, '
-            '%d broken links found, %d records saved',
-            summary['pages_crawled'],
-            summary['broken_links_found'],
-            summary['broken_links_saved'],
+            "Broken link check complete: %d pages crawled, "
+            "%d broken links found, %d records saved",
+            summary["pages_crawled"],
+            summary["broken_links_found"],
+            summary["broken_links_saved"],
         )
         return summary
 
     except Exception as exc:
         # Mark report as failed
         report.finished_at = timezone.now()
-        report.status = 'failed'
+        report.status = "failed"
         report.error_message = str(exc)[:1000]
         report.save()
-        logger.exception('Broken link check failed: %s', exc)
+        logger.exception("Broken link check failed: %s", exc)
         raise self.retry(exc=exc)
 
 
@@ -139,9 +141,10 @@ def check_broken_links(self):
 # SEO SCORE RECALCULATION
 # =============================================================================
 
+
 @shared_task(
     bind=True,
-    name='seo.recalculate_seo_scores',
+    name="seo.recalculate_seo_scores",
     max_retries=2,
     default_retry_delay=120,
     soft_time_limit=600,
@@ -167,21 +170,27 @@ def recalculate_seo_scores(self):
     # -- BlogPosts --
     try:
         from apps.website.models import BlogPost
+
         blogposts = BlogPost.objects.filter(deleted_at__isnull=True)
 
         for post in blogposts.iterator():
             try:
                 post.calculate_seo_score()
                 post.last_seo_analysis = now
-                post.save(update_fields=['seo_score', 'last_seo_analysis', 'updated_at'])
+                post.save(
+                    update_fields=["seo_score", "last_seo_analysis", "updated_at"]
+                )
                 blogpost_count += 1
             except Exception as exc:
                 logger.error(
-                    'Failed to recalculate SEO score for BlogPost %s: %s',
-                    post.pk, exc,
+                    "Failed to recalculate SEO score for BlogPost %s: %s",
+                    post.pk,
+                    exc,
                 )
     except ImportError:
-        logger.warning('BlogPost model not available, skipping blog SEO score recalculation')
+        logger.warning(
+            "BlogPost model not available, skipping blog SEO score recalculation"
+        )
 
     # -- PSEOPages --
     pseo_pages = PSEOPage.objects.filter(deleted_at__isnull=True)
@@ -190,21 +199,23 @@ def recalculate_seo_scores(self):
         try:
             page.calculate_seo_score()
             page.last_seo_analysis = now
-            page.save(update_fields=['seo_score', 'last_seo_analysis', 'updated_at'])
+            page.save(update_fields=["seo_score", "last_seo_analysis", "updated_at"])
             pseo_count += 1
         except Exception as exc:
             logger.error(
-                'Failed to recalculate SEO score for PSEOPage %s: %s',
-                page.pk, exc,
+                "Failed to recalculate SEO score for PSEOPage %s: %s",
+                page.pk,
+                exc,
             )
 
     summary = {
-        'blogposts_processed': blogpost_count,
-        'pseo_pages_processed': pseo_count,
+        "blogposts_processed": blogpost_count,
+        "pseo_pages_processed": pseo_count,
     }
     logger.info(
-        'SEO score recalculation complete: %d blog posts, %d pSEO pages processed',
-        blogpost_count, pseo_count,
+        "SEO score recalculation complete: %d blog posts, %d pSEO pages processed",
+        blogpost_count,
+        pseo_count,
     )
     return summary
 
@@ -213,9 +224,10 @@ def recalculate_seo_scores(self):
 # PSEO PAGE GENERATION
 # =============================================================================
 
+
 @shared_task(
     bind=True,
-    name='seo.generate_pseo_pages',
+    name="seo.generate_pseo_pages",
     max_retries=1,
     default_retry_delay=60,
     soft_time_limit=600,
@@ -246,27 +258,29 @@ def generate_pseo_pages(self, template_id: str):
         )
     except PSEOTemplate.DoesNotExist:
         logger.error(
-            'PSEOTemplate %s not found or inactive — skipping generation',
+            "PSEOTemplate %s not found or inactive — skipping generation",
             template_id,
         )
-        return {'template_id': template_id, 'error': 'Template not found or inactive'}
+        return {"template_id": template_id, "error": "Template not found or inactive"}
 
-    logger.info('Starting pSEO page generation for template: %s', template.name)
+    logger.info("Starting pSEO page generation for template: %s", template.name)
 
     engine = PSEOEngine()
     variables_list = generate_city_sector_combinations()
     pages_created = engine.generate_pages(template, variables_list)
 
     summary = {
-        'template_name': template.name,
-        'template_id': str(template_id),
-        'pages_created': pages_created,
-        'total_combinations': len(variables_list),
+        "template_name": template.name,
+        "template_id": str(template_id),
+        "pages_created": pages_created,
+        "total_combinations": len(variables_list),
     }
     logger.info(
         'pSEO generation complete for template "%s": %d pages created '
-        'from %d combinations',
-        template.name, pages_created, len(variables_list),
+        "from %d combinations",
+        template.name,
+        pages_created,
+        len(variables_list),
     )
     return summary
 
@@ -275,9 +289,10 @@ def generate_pseo_pages(self, template_id: str):
 # REDIRECT CLEANUP
 # =============================================================================
 
+
 @shared_task(
     bind=True,
-    name='seo.cleanup_old_redirects',
+    name="seo.cleanup_old_redirects",
     max_retries=1,
     default_retry_delay=60,
     soft_time_limit=300,
@@ -310,15 +325,16 @@ def cleanup_old_redirects(self):
         now = timezone.now()
         stale_redirects.update(deleted_at=now)
         logger.info(
-            'Soft-deleted %d stale redirects (hit_count=0, created before %s)',
-            count, cutoff_date.strftime('%Y-%m-%d'),
+            "Soft-deleted %d stale redirects (hit_count=0, created before %s)",
+            count,
+            cutoff_date.strftime("%Y-%m-%d"),
         )
     else:
-        logger.info('No stale redirects found for cleanup')
+        logger.info("No stale redirects found for cleanup")
 
     return {
-        'redirects_cleaned': count,
-        'cutoff_date': cutoff_date.strftime('%Y-%m-%d'),
+        "redirects_cleaned": count,
+        "cutoff_date": cutoff_date.strftime("%Y-%m-%d"),
     }
 
 
@@ -326,9 +342,10 @@ def cleanup_old_redirects(self):
 # TXT FILE REGENERATION
 # =============================================================================
 
+
 @shared_task(
     bind=True,
-    name='seo.generate_txt_files',
+    name="seo.generate_txt_files",
     max_retries=2,
     default_retry_delay=60,
     soft_time_limit=120,
@@ -365,26 +382,28 @@ def generate_txt_files(self):
             if content:
                 config.content = content
                 config.last_generated = now
-                config.save(update_fields=['content', 'last_generated', 'updated_at'])
+                config.save(update_fields=["content", "last_generated", "updated_at"])
                 updated_files.append(config.file_type)
                 logger.debug(
-                    'Regenerated %s.txt content (%d chars)',
-                    config.file_type, len(content),
+                    "Regenerated %s.txt content (%d chars)",
+                    config.file_type,
+                    len(content),
                 )
         except Exception as exc:
             logger.error(
-                'Failed to regenerate %s.txt: %s',
-                config.file_type, exc,
+                "Failed to regenerate %s.txt: %s",
+                config.file_type,
+                exc,
             )
 
     summary = {
-        'files_updated': len(updated_files),
-        'file_types': updated_files,
+        "files_updated": len(updated_files),
+        "file_types": updated_files,
     }
     logger.info(
-        'TXT file regeneration complete: %d files updated (%s)',
+        "TXT file regeneration complete: %d files updated (%s)",
         len(updated_files),
-        ', '.join(updated_files) if updated_files else 'none',
+        ", ".join(updated_files) if updated_files else "none",
     )
     return summary
 
@@ -404,101 +423,114 @@ def _generate_txt_content(file_type: str) -> str:
     from datetime import datetime
 
     host = settings.SITE_DOMAIN
-    scheme = 'https'
+    scheme = "https"
 
-    if file_type == 'robots':
-        sitemap_url = f'{scheme}://{host}/sitemap.xml'
-        return '\n'.join([
-            'User-agent: *',
-            'Disallow: /admin/',
-            'Disallow: /api/',
-            'Disallow: /media/filer/',
-            'Disallow: /static/admin/',
-            '',
-            'User-agent: GPTBot',
-            'Disallow: /',
-            '',
-            'User-agent: CCBot',
-            'Disallow: /',
-            '',
-            f'Sitemap: {sitemap_url}',
-        ])
+    if file_type == "robots":
+        sitemap_url = f"{scheme}://{host}/sitemap.xml"
+        return "\n".join(
+            [
+                "User-agent: *",
+                "Disallow: /admin/",
+                "Disallow: /api/",
+                "Disallow: /media/filer/",
+                "Disallow: /static/admin/",
+                "",
+                "User-agent: GPTBot",
+                "Disallow: /",
+                "",
+                "User-agent: CCBot",
+                "Disallow: /",
+                "",
+                f"Sitemap: {sitemap_url}",
+            ]
+        )
 
-    elif file_type == 'humans':
-        now = timezone.now().strftime('%Y-%m-%d')
-        return '\n'.join([
-            '/* TEAM */',
-            'Product: E-Menum - Enterprise QR Menu SaaS',
-            f'Site: {scheme}://{host}',
-            'Location: Istanbul, Turkey',
-            '',
-            '/* THANKS */',
-            'Django: https://www.djangoproject.com/',
-            'Tailwind CSS: https://tailwindcss.com/',
-            'Alpine.js: https://alpinejs.dev/',
-            '',
-            '/* SITE */',
-            f'Last update: {now}',
-            'Language: Turkish / English',
-            'Standards: HTML5, CSS3, ES6+',
-            'Framework: Django 5.x',
-            'Database: PostgreSQL',
-            'Cache: Redis',
-        ])
+    elif file_type == "humans":
+        now = timezone.now().strftime("%Y-%m-%d")
+        return "\n".join(
+            [
+                "/* TEAM */",
+                "Product: E-Menum - Enterprise QR Menu SaaS",
+                f"Site: {scheme}://{host}",
+                "Location: Istanbul, Turkey",
+                "",
+                "/* THANKS */",
+                "Django: https://www.djangoproject.com/",
+                "Tailwind CSS: https://tailwindcss.com/",
+                "Alpine.js: https://alpinejs.dev/",
+                "",
+                "/* SITE */",
+                f"Last update: {now}",
+                "Language: Turkish / English",
+                "Standards: HTML5, CSS3, ES6+",
+                "Framework: Django 5.x",
+                "Database: PostgreSQL",
+                "Cache: Redis",
+            ]
+        )
 
-    elif file_type == 'security':
-        canonical = f'{scheme}://{host}/.well-known/security.txt'
-        expires = (datetime.utcnow() + timedelta(days=365)).strftime('%Y-%m-%dT%H:%M:%Sz')
+    elif file_type == "security":
+        canonical = f"{scheme}://{host}/.well-known/security.txt"
+        expires = (datetime.utcnow() + timedelta(days=365)).strftime(
+            "%Y-%m-%dT%H:%M:%Sz"
+        )
         contact_email = settings.DEFAULT_FROM_EMAIL
-        return '\n'.join([
-            f'Contact: mailto:{contact_email}',
-            f'Expires: {expires}',
-            'Preferred-Languages: tr, en',
-            f'Canonical: {canonical}',
-            f'Policy: {scheme}://{host}/guvenlik-politikasi/',
-        ])
+        return "\n".join(
+            [
+                f"Contact: mailto:{contact_email}",
+                f"Expires: {expires}",
+                "Preferred-Languages: tr, en",
+                f"Canonical: {canonical}",
+                f"Policy: {scheme}://{host}/guvenlik-politikasi/",
+            ]
+        )
 
-    elif file_type == 'ads':
-        return '\n'.join([
-            '# ads.txt - E-Menum',
-            '# No authorized digital sellers at this time.',
-            '# Configure via admin -> SEO -> TXT File Configs',
-        ])
+    elif file_type == "ads":
+        return "\n".join(
+            [
+                "# ads.txt - E-Menum",
+                "# No authorized digital sellers at this time.",
+                "# Configure via admin -> SEO -> TXT File Configs",
+            ]
+        )
 
-    elif file_type == 'llms':
-        return '\n'.join([
-            '# E-Menum - Enterprise QR Menu SaaS',
-            f'# {scheme}://{host}',
-            '',
-            '## About',
-            'E-Menum is a SaaS platform providing AI-powered digital QR menus',
-            'for restaurants, cafes, and food & beverage businesses in Turkey.',
-            '',
-            '## Usage Policy',
-            'You may reference publicly available information from this site',
-            'for informational purposes. Do not scrape user-generated content',
-            'or private data.',
-            '',
-            '## Attribution',
-            'When citing information from this site, please attribute to',
-            f'"E-Menum ({scheme}://{host})".',
-            '',
-            '## Contact',
-            'For questions about AI/LLM usage of our content, contact',
-            f'info@{settings.SITE_DOMAIN}',
-        ])
+    elif file_type == "llms":
+        return "\n".join(
+            [
+                "# E-Menum - Enterprise QR Menu SaaS",
+                f"# {scheme}://{host}",
+                "",
+                "## About",
+                "E-Menum is a SaaS platform providing AI-powered digital QR menus",
+                "for restaurants, cafes, and food & beverage businesses in Turkey.",
+                "",
+                "## Usage Policy",
+                "You may reference publicly available information from this site",
+                "for informational purposes. Do not scrape user-generated content",
+                "or private data.",
+                "",
+                "## Attribution",
+                "When citing information from this site, please attribute to",
+                f'"E-Menum ({scheme}://{host})".',
+                "",
+                "## Contact",
+                "For questions about AI/LLM usage of our content, contact",
+                f"info@{settings.SITE_DOMAIN}",
+            ]
+        )
 
-    logger.warning('Unknown TXT file type: %s', file_type)
-    return ''
+    logger.warning("Unknown TXT file type: %s", file_type)
+    return ""
 
 
 # =============================================================================
 # REDIRECT CHAIN & LOOP DETECTION
 # =============================================================================
 
+
 @shared_task(
     bind=True,
-    name='seo.detect_redirect_chains',
+    name="seo.detect_redirect_chains",
     max_retries=1,
     default_retry_delay=60,
     soft_time_limit=300,
@@ -547,27 +579,27 @@ def detect_redirect_chains(self):
 
     for chain in chains:
         logger.warning(
-            'Redirect chain detected (%d hops): %s',
+            "Redirect chain detected (%d hops): %s",
             len(chain) - 1,
-            ' → '.join(chain),
+            " → ".join(chain),
         )
 
     for loop in loops:
         logger.error(
-            'Redirect loop detected: %s',
-            ' → '.join(loop),
+            "Redirect loop detected: %s",
+            " → ".join(loop),
         )
 
     summary = {
-        'total_redirects': len(redirects),
-        'chains_found': len(chains),
-        'loops_found': len(loops),
+        "total_redirects": len(redirects),
+        "chains_found": len(chains),
+        "loops_found": len(loops),
     }
     logger.info(
-        'Redirect chain detection complete: %d redirects checked, '
-        '%d chains, %d loops found',
-        summary['total_redirects'],
-        summary['chains_found'],
-        summary['loops_found'],
+        "Redirect chain detection complete: %d redirects checked, "
+        "%d chains, %d loops found",
+        summary["total_redirects"],
+        summary["chains_found"],
+        summary["loops_found"],
     )
     return summary

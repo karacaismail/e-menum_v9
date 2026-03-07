@@ -21,13 +21,13 @@ class NotificationsConfig(AppConfig):
     """
 
     # Application identifier - must match the import path
-    name = 'apps.notifications'
+    name = "apps.notifications"
 
     # Human-readable name for admin
-    verbose_name = 'Notification Management'
+    verbose_name = "Notification Management"
 
     # Use BigAutoField for auto-generated primary keys
-    default_auto_field = 'django.db.models.BigAutoField'
+    default_auto_field = "django.db.models.BigAutoField"
 
     def ready(self):
         """

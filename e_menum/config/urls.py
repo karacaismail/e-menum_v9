@@ -39,6 +39,7 @@ from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from django.http import JsonResponse
 from django.utils import timezone
+
 # RedirectView no longer needed — root now served by website app
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
@@ -58,19 +59,22 @@ from shared.views.admin_upload import admin_upload_view
 # HEALTH CHECK & UTILITY VIEWS
 # =============================================================================
 
+
 def health_check(request):
     """
     Health check endpoint for monitoring and load balancers.
     Returns basic service status and version information.
     """
-    return JsonResponse({
-        'success': True,
-        'data': {
-            'status': 'healthy',
-            'service': 'e-menum',
-            'version': getattr(settings, 'EMENUM_API_VERSION', 'v1'),
+    return JsonResponse(
+        {
+            "success": True,
+            "data": {
+                "status": "healthy",
+                "service": "e-menum",
+                "version": getattr(settings, "EMENUM_API_VERSION", "v1"),
+            },
         }
-    })
+    )
 
 
 @staff_member_required
@@ -83,15 +87,15 @@ def admin_reports(request):
     from apps.orders.models import Order
 
     context = {
-        'title': 'Reports',
-        'total_users': User.objects.filter(deleted_at__isnull=True).count(),
-        'total_menus': Menu.objects.filter(deleted_at__isnull=True).count(),
-        'total_products': Product.objects.filter(deleted_at__isnull=True).count(),
-        'total_orders': Order.objects.filter(deleted_at__isnull=True).count(),
-        'is_nav_sidebar_enabled': False,
-        'has_permission': True,
+        "title": "Reports",
+        "total_users": User.objects.filter(deleted_at__isnull=True).count(),
+        "total_menus": Menu.objects.filter(deleted_at__isnull=True).count(),
+        "total_products": Product.objects.filter(deleted_at__isnull=True).count(),
+        "total_orders": Order.objects.filter(deleted_at__isnull=True).count(),
+        "is_nav_sidebar_enabled": False,
+        "has_permission": True,
     }
-    return render(request, 'admin/reports.html', context)
+    return render(request, "admin/reports.html", context)
 
 
 @staff_member_required
@@ -112,51 +116,55 @@ def admin_seo_dashboard(request):
         is_active=True, deleted_at__isnull=True
     ).count()
     total_broken_links = BrokenLink.objects.filter(is_resolved=False).count()
-    today_404s = NotFound404Log.objects.filter(date=today).aggregate(
-        total=Sum('hit_count')
-    )['total'] or 0
+    today_404s = (
+        NotFound404Log.objects.filter(date=today).aggregate(total=Sum("hit_count"))[
+            "total"
+        ]
+        or 0
+    )
 
     # Average SEO score from BlogPosts
     avg_seo_score = None
     try:
         from apps.website.models import BlogPost
-        result = BlogPost.objects.filter(
-            deleted_at__isnull=True
-        ).aggregate(avg=Avg('seo_score'))
-        if result['avg'] is not None:
-            avg_seo_score = round(result['avg'])
+
+        result = BlogPost.objects.filter(deleted_at__isnull=True).aggregate(
+            avg=Avg("seo_score")
+        )
+        if result["avg"] is not None:
+            avg_seo_score = round(result["avg"])
     except (ImportError, Exception):
         pass
 
     # Top 404 paths (last 30 days, aggregated by path)
     top_404s = (
         NotFound404Log.objects.filter(date__gte=thirty_days_ago)
-        .values('path')
-        .annotate(total_hits=Sum('hit_count'), last_date=Max('date'))
-        .order_by('-total_hits')[:10]
+        .values("path")
+        .annotate(total_hits=Sum("hit_count"), last_date=Max("date"))
+        .order_by("-total_hits")[:10]
     )
 
     # Recent unresolved broken links
-    recent_broken_links = BrokenLink.objects.filter(
-        is_resolved=False
-    ).order_by('-first_detected')[:10]
+    recent_broken_links = BrokenLink.objects.filter(is_resolved=False).order_by(
+        "-first_detected"
+    )[:10]
 
     # Last crawl report
     last_crawl = CrawlReport.objects.first()
 
     context = {
-        'title': 'SEO Dashboard',
-        'total_redirects': total_redirects,
-        'total_broken_links': total_broken_links,
-        'today_404s': today_404s,
-        'avg_seo_score': avg_seo_score,
-        'top_404s': top_404s,
-        'recent_broken_links': recent_broken_links,
-        'last_crawl': last_crawl,
-        'is_nav_sidebar_enabled': False,
-        'has_permission': True,
+        "title": "SEO Dashboard",
+        "total_redirects": total_redirects,
+        "total_broken_links": total_broken_links,
+        "today_404s": today_404s,
+        "avg_seo_score": avg_seo_score,
+        "top_404s": top_404s,
+        "recent_broken_links": recent_broken_links,
+        "last_crawl": last_crawl,
+        "is_nav_sidebar_enabled": False,
+        "has_permission": True,
     }
-    return render(request, 'admin/seo_dashboard.html', context)
+    return render(request, "admin/seo_dashboard.html", context)
 
 
 @staff_member_required
@@ -174,9 +182,7 @@ def admin_shield_dashboard(request):
         from apps.seo_shield.models import BlockLog, IPRiskScore
 
         # Stats
-        blocked_today = BlockLog.objects.filter(
-            created_at__date=today
-        ).count()
+        blocked_today = BlockLog.objects.filter(created_at__date=today).count()
         blocked_7d = BlockLog.objects.filter(
             created_at__gte=now - timedelta(days=7)
         ).count()
@@ -191,39 +197,39 @@ def admin_shield_dashboard(request):
         # Top block reasons (last 30 days)
         top_reasons = (
             BlockLog.objects.filter(created_at__gte=now - timedelta(days=30))
-            .values('reason')
-            .annotate(count=Count('id'))
-            .order_by('-count')[:10]
+            .values("reason")
+            .annotate(count=Count("id"))
+            .order_by("-count")[:10]
         )
 
         # Top blocked IPs (last 7 days)
         top_blocked_ips = (
             BlockLog.objects.filter(created_at__gte=now - timedelta(days=7))
-            .values('ip_address', 'country_code')
-            .annotate(count=Count('id'))
-            .order_by('-count')[:10]
+            .values("ip_address", "country_code")
+            .annotate(count=Count("id"))
+            .order_by("-count")[:10]
         )
 
         # Recent block logs
-        recent_logs = BlockLog.objects.order_by('-created_at')[:20]
+        recent_logs = BlockLog.objects.order_by("-created_at")[:20]
 
     except (ImportError, Exception):
         blocked_today = blocked_7d = blocked_30d = high_risk_ips = 0
         top_reasons = top_blocked_ips = recent_logs = []
 
     context = {
-        'title': 'Shield Dashboard',
-        'blocked_today': blocked_today,
-        'blocked_7d': blocked_7d,
-        'blocked_30d': blocked_30d,
-        'high_risk_ips': high_risk_ips,
-        'top_reasons': top_reasons,
-        'top_blocked_ips': top_blocked_ips,
-        'recent_logs': recent_logs,
-        'is_nav_sidebar_enabled': False,
-        'has_permission': True,
+        "title": "Shield Dashboard",
+        "blocked_today": blocked_today,
+        "blocked_7d": blocked_7d,
+        "blocked_30d": blocked_30d,
+        "high_risk_ips": high_risk_ips,
+        "top_reasons": top_reasons,
+        "top_blocked_ips": top_blocked_ips,
+        "recent_logs": recent_logs,
+        "is_nav_sidebar_enabled": False,
+        "has_permission": True,
     }
-    return render(request, 'admin/shield_dashboard.html', context)
+    return render(request, "admin/shield_dashboard.html", context)
 
 
 @staff_member_required
@@ -235,11 +241,11 @@ def admin_settings(request):
     permission matrix, subscription plans, and other settings.
     """
     context = {
-        'title': 'Settings',
-        'is_nav_sidebar_enabled': False,
-        'has_permission': True,
+        "title": "Settings",
+        "is_nav_sidebar_enabled": False,
+        "has_permission": True,
     }
-    return render(request, 'admin/settings.html', context)
+    return render(request, "admin/settings.html", context)
 
 
 @staff_member_required
@@ -255,23 +261,23 @@ def permission_matrix(request):
     from apps.core.models import Permission, Role, RolePermission
 
     # Scope filter
-    scope_filter = request.GET.get('scope', 'all')
+    scope_filter = request.GET.get("scope", "all")
 
     # Fetch roles
-    roles_qs = Role.objects.all().order_by('scope', 'name')
-    if scope_filter == 'platform':
-        roles_qs = roles_qs.filter(scope='PLATFORM')
-    elif scope_filter == 'organization':
-        roles_qs = roles_qs.filter(scope='ORGANIZATION')
+    roles_qs = Role.objects.all().order_by("scope", "name")
+    if scope_filter == "platform":
+        roles_qs = roles_qs.filter(scope="PLATFORM")
+    elif scope_filter == "organization":
+        roles_qs = roles_qs.filter(scope="ORGANIZATION")
 
     roles = list(roles_qs)
 
     # Fetch all permissions grouped by resource
-    permissions = Permission.objects.all().order_by('resource', 'action')
+    permissions = Permission.objects.all().order_by("resource", "action")
 
     # Build role-permission lookup: {(role_id, perm_id): has_conditions}
     role_perm_map = {}
-    for rp in RolePermission.objects.all().select_related('permission'):
+    for rp in RolePermission.objects.all().select_related("permission"):
         has_conditions = bool(rp.conditions)
         role_perm_map[(str(rp.role_id), str(rp.permission_id))] = has_conditions
 
@@ -287,90 +293,94 @@ def permission_matrix(request):
             key = (str(role.id), str(perm.id))
             if key in role_perm_map:
                 if role_perm_map[key]:
-                    role_checks.append('conditional')
+                    role_checks.append("conditional")
                 else:
-                    role_checks.append('yes')
+                    role_checks.append("yes")
             else:
-                role_checks.append('no')
+                role_checks.append("no")
 
-        matrix[perm.resource].append({
-            'code': perm.code,
-            'action': perm.action,
-            'action_lower': perm.action.lower(),
-            'description': perm.description or '',
-            'role_checks': role_checks,
-        })
+        matrix[perm.resource].append(
+            {
+                "code": perm.code,
+                "action": perm.action,
+                "action_lower": perm.action.lower(),
+                "description": perm.description or "",
+                "role_checks": role_checks,
+            }
+        )
 
     context = {
-        'title': 'Permission Matrix',
-        'roles': roles,
-        'matrix': matrix,
-        'scope_filter': scope_filter,
-        'col_count': len(roles) + 1,
-        'total_roles': len(roles),
-        'total_permissions': permissions.count(),
-        'total_resources': len(matrix),
-        'total_assignments': len(role_perm_map),
-        'is_nav_sidebar_enabled': False,
-        'has_permission': True,
+        "title": "Permission Matrix",
+        "roles": roles,
+        "matrix": matrix,
+        "scope_filter": scope_filter,
+        "col_count": len(roles) + 1,
+        "total_roles": len(roles),
+        "total_permissions": permissions.count(),
+        "total_resources": len(matrix),
+        "total_assignments": len(role_perm_map),
+        "is_nav_sidebar_enabled": False,
+        "has_permission": True,
     }
-    return render(request, 'admin/permission_matrix.html', context)
+    return render(request, "admin/permission_matrix.html", context)
 
 
 def api_root(request):
     """
     API root endpoint providing information about available endpoints.
     """
-    return JsonResponse({
-        'success': True,
-        'data': {
-            'message': 'Welcome to E-Menum API',
-            'version': 'v1',
-            'documentation': '/api/docs/',
-            'endpoints': {
-                # Core module
-                'auth': '/api/v1/auth/',
-                'organizations': '/api/v1/organizations/',
-                'users': '/api/v1/users/',
-                # Menu module
-                'themes': '/api/v1/themes/',
-                'menus': '/api/v1/menus/',
-                'categories': '/api/v1/categories/',
-                'products': '/api/v1/products/',
-                'allergens': '/api/v1/allergens/',
-                # Orders module
-                'zones': '/api/v1/zones/',
-                'tables': '/api/v1/tables/',
-                'qr_codes': '/api/v1/qr-codes/',
-                'orders': '/api/v1/orders/',
-                'service_requests': '/api/v1/service-requests/',
-                # Subscriptions module
-                'features': '/api/v1/features/',
-                'plans': '/api/v1/plans/',
-                'subscriptions': '/api/v1/subscriptions/',
-                'invoices': '/api/v1/invoices/',
-                'plan_features': '/api/v1/plan-features/',
-                'usage': '/api/v1/usage/',
-                # Reporting module
-                'report_catalog': '/api/v1/reports/catalog/',
-                'report_run': '/api/v1/reports/run/',
-                'report_executions': '/api/v1/reports/executions/',
-                'report_schedules': '/api/v1/reports/schedules/',
-                'report_favorites': '/api/v1/reports/favorites/',
-                'dashboard_metrics': '/api/v1/dashboard/metrics/',
-                # Inventory module
-                'inventory_items': '/api/v1/inventory/items/',
-                'stock_movements': '/api/v1/inventory/movements/',
-                'suppliers': '/api/v1/inventory/suppliers/',
-                'purchase_orders': '/api/v1/inventory/purchase-orders/',
-                'recipes': '/api/v1/inventory/recipes/',
-                # Campaigns module
-                'campaigns': '/api/v1/campaigns/',
-                'coupons': '/api/v1/coupons/',
-                'referrals': '/api/v1/referrals/',
-            }
+    return JsonResponse(
+        {
+            "success": True,
+            "data": {
+                "message": "Welcome to E-Menum API",
+                "version": "v1",
+                "documentation": "/api/docs/",
+                "endpoints": {
+                    # Core module
+                    "auth": "/api/v1/auth/",
+                    "organizations": "/api/v1/organizations/",
+                    "users": "/api/v1/users/",
+                    # Menu module
+                    "themes": "/api/v1/themes/",
+                    "menus": "/api/v1/menus/",
+                    "categories": "/api/v1/categories/",
+                    "products": "/api/v1/products/",
+                    "allergens": "/api/v1/allergens/",
+                    # Orders module
+                    "zones": "/api/v1/zones/",
+                    "tables": "/api/v1/tables/",
+                    "qr_codes": "/api/v1/qr-codes/",
+                    "orders": "/api/v1/orders/",
+                    "service_requests": "/api/v1/service-requests/",
+                    # Subscriptions module
+                    "features": "/api/v1/features/",
+                    "plans": "/api/v1/plans/",
+                    "subscriptions": "/api/v1/subscriptions/",
+                    "invoices": "/api/v1/invoices/",
+                    "plan_features": "/api/v1/plan-features/",
+                    "usage": "/api/v1/usage/",
+                    # Reporting module
+                    "report_catalog": "/api/v1/reports/catalog/",
+                    "report_run": "/api/v1/reports/run/",
+                    "report_executions": "/api/v1/reports/executions/",
+                    "report_schedules": "/api/v1/reports/schedules/",
+                    "report_favorites": "/api/v1/reports/favorites/",
+                    "dashboard_metrics": "/api/v1/dashboard/metrics/",
+                    # Inventory module
+                    "inventory_items": "/api/v1/inventory/items/",
+                    "stock_movements": "/api/v1/inventory/movements/",
+                    "suppliers": "/api/v1/inventory/suppliers/",
+                    "purchase_orders": "/api/v1/inventory/purchase-orders/",
+                    "recipes": "/api/v1/inventory/recipes/",
+                    # Campaigns module
+                    "campaigns": "/api/v1/campaigns/",
+                    "coupons": "/api/v1/coupons/",
+                    "referrals": "/api/v1/referrals/",
+                },
+            },
         }
-    })
+    )
 
 
 # =============================================================================
@@ -379,83 +389,80 @@ def api_root(request):
 
 api_v1_patterns = [
     # API root information
-    path('', api_root, name='api-root'),
-
+    path("", api_root, name="api-root"),
     # -------------------------------------------------------------------------
     # Core Module - Authentication endpoints
     # -------------------------------------------------------------------------
     # Auth endpoints at /api/v1/auth/ (login, logout, refresh, verify, me, etc.)
-    path('auth/', include((core_auth_urlpatterns, 'core'), namespace='auth')),
-
+    path("auth/", include((core_auth_urlpatterns, "core"), namespace="auth")),
     # Core resources (organizations, users) at root level
-    path('', include(core_router.urls)),
-
+    path("", include(core_router.urls)),
     # -------------------------------------------------------------------------
     # Menu Module
     # -------------------------------------------------------------------------
     # themes/, menus/, categories/, products/, allergens/
     # Also includes nested routes: products/<id>/variants/, products/<id>/modifiers/
-    path('', include(('apps.menu.urls', 'menu'), namespace='menu')),
-
+    path("", include(("apps.menu.urls", "menu"), namespace="menu")),
     # -------------------------------------------------------------------------
     # Orders Module
     # -------------------------------------------------------------------------
     # zones/, tables/, qr-codes/, orders/, service-requests/
-    path('', include(('apps.orders.urls', 'orders'), namespace='orders')),
-
+    path("", include(("apps.orders.urls", "orders"), namespace="orders")),
     # -------------------------------------------------------------------------
     # Subscriptions Module
     # -------------------------------------------------------------------------
     # features/, plans/, plan-features/, subscriptions/, invoices/, usage/
-    path('', include(('apps.subscriptions.urls', 'subscriptions'), namespace='subscriptions')),
-
+    path(
+        "",
+        include(
+            ("apps.subscriptions.urls", "subscriptions"), namespace="subscriptions"
+        ),
+    ),
     # -------------------------------------------------------------------------
     # Notifications Module
     # -------------------------------------------------------------------------
     # notifications/ (list, detail, read, read-all, archive)
-    path('', include(('apps.notifications.urls', 'notifications'), namespace='notifications')),
-
+    path(
+        "",
+        include(
+            ("apps.notifications.urls", "notifications"), namespace="notifications"
+        ),
+    ),
     # -------------------------------------------------------------------------
     # Media Module
     # -------------------------------------------------------------------------
     # media/folders/, media/files/ (upload, CRUD, move)
-    path('', include(('apps.media.urls', 'media'), namespace='media')),
-
+    path("", include(("apps.media.urls", "media"), namespace="media")),
     # -------------------------------------------------------------------------
     # Customers Module
     # -------------------------------------------------------------------------
     # customers/, customers/feedback/ (CRUD, loyalty-history, respond, etc.)
-    path('', include(('apps.customers.urls', 'customers'), namespace='customers')),
-
+    path("", include(("apps.customers.urls", "customers"), namespace="customers")),
     # -------------------------------------------------------------------------
     # Reporting Module
     # -------------------------------------------------------------------------
     # reports/catalog/, reports/run/, reports/executions/, reports/schedules/,
     # reports/favorites/, dashboard/metrics/
-    path('', include(('apps.reporting.urls', 'reporting'), namespace='reporting')),
-
+    path("", include(("apps.reporting.urls", "reporting"), namespace="reporting")),
     # -------------------------------------------------------------------------
     # Inventory Module
     # -------------------------------------------------------------------------
     # inventory/items/, inventory/movements/, inventory/suppliers/,
     # inventory/purchase-orders/, inventory/recipes/
-    path('', include(('apps.inventory.urls', 'inventory'), namespace='inventory')),
-
+    path("", include(("apps.inventory.urls", "inventory"), namespace="inventory")),
     # -------------------------------------------------------------------------
     # Campaigns Module
     # -------------------------------------------------------------------------
     # campaigns/, coupons/, referrals/
-    path('', include(('apps.campaigns.urls', 'campaigns'), namespace='campaigns')),
-
+    path("", include(("apps.campaigns.urls", "campaigns"), namespace="campaigns")),
     # -------------------------------------------------------------------------
     # Analytics Module (STUB - not yet implemented)
     # -------------------------------------------------------------------------
     # path('', include(('apps.analytics.urls', 'analytics'), namespace='analytics')),
-
     # -------------------------------------------------------------------------
     # AI Module
     # -------------------------------------------------------------------------
-    path('ai/', include(('apps.ai.urls', 'ai'), namespace='ai')),
+    path("ai/", include(("apps.ai.urls", "ai"), namespace="ai")),
 ]
 
 
@@ -467,73 +474,68 @@ urlpatterns = [
     # -------------------------------------------------------------------------
     # SEO URLs (robots.txt, sitemap.xml, etc.) — must be before i18n/admin
     # -------------------------------------------------------------------------
-    path('', include('apps.seo.urls')),
-
+    path("", include("apps.seo.urls")),
     # -------------------------------------------------------------------------
     # Language switching view (non-prefixed)
     # -------------------------------------------------------------------------
-    path('i18n/', include('django.conf.urls.i18n')),
-
+    path("i18n/", include("django.conf.urls.i18n")),
     # -------------------------------------------------------------------------
     # Custom Admin Pages (must be BEFORE admin/ catch-all)
     # -------------------------------------------------------------------------
-    path('admin/settings/', admin_settings, name='admin-settings'),
-    path('admin/reports/', admin_reports, name='admin-reports'),
-    path('admin/permission-matrix/', permission_matrix, name='admin-permission-matrix'),
-    path('admin/seo-dashboard/', admin_seo_dashboard, name='admin-seo-dashboard'),
-    path('admin/shield-dashboard/', admin_shield_dashboard, name='admin-shield-dashboard'),
-
+    path("admin/settings/", admin_settings, name="admin-settings"),
+    path("admin/reports/", admin_reports, name="admin-reports"),
+    path("admin/permission-matrix/", permission_matrix, name="admin-permission-matrix"),
+    path("admin/seo-dashboard/", admin_seo_dashboard, name="admin-seo-dashboard"),
+    path(
+        "admin/shield-dashboard/", admin_shield_dashboard, name="admin-shield-dashboard"
+    ),
     # Admin AJAX upload endpoint for image upload widgets
-    path('admin/api/upload/', admin_upload_view, name='admin-upload'),
-
+    path("admin/api/upload/", admin_upload_view, name="admin-upload"),
     # -------------------------------------------------------------------------
     # Dashboard App (mainboard + API endpoints)
     # -------------------------------------------------------------------------
-    path('admin/', include(('apps.dashboard.urls', 'dashboard'), namespace='dashboard')),
-
+    path(
+        "admin/", include(("apps.dashboard.urls", "dashboard"), namespace="dashboard")
+    ),
     # -------------------------------------------------------------------------
     # User Impersonation (django-impersonate)
     # -------------------------------------------------------------------------
-    path('impersonate/', include('impersonate.urls')),
-
+    path("impersonate/", include("impersonate.urls")),
     # -------------------------------------------------------------------------
     # Django Admin
     # -------------------------------------------------------------------------
-    path('admin/', admin.site.urls),
-
+    path("admin/", admin.site.urls),
     # -------------------------------------------------------------------------
     # Restaurant Owner Portal (/account/)
     # -------------------------------------------------------------------------
-    path('account/', include(('apps.accounts.urls', 'accounts'), namespace='accounts')),
-
+    path("account/", include(("apps.accounts.urls", "accounts"), namespace="accounts")),
     # -------------------------------------------------------------------------
     # Health Check (for monitoring, load balancers)
     # -------------------------------------------------------------------------
-    path('health/', health_check, name='health-check'),
-    path('healthz/', health_check, name='health-check-k8s'),  # Kubernetes style
-
+    path("health/", health_check, name="health-check"),
+    path("healthz/", health_check, name="health-check-k8s"),  # Kubernetes style
     # -------------------------------------------------------------------------
     # API Versioned Routes
     # -------------------------------------------------------------------------
     # Current API version (v1)
-    path('api/v1/', include((api_v1_patterns, 'api'), namespace='api-v1')),
-
+    path("api/v1/", include((api_v1_patterns, "api"), namespace="api-v1")),
     # Future versions can be added like:
     # path('api/v2/', include((api_v2_patterns, 'api'), namespace='api-v2')),
-
     # -------------------------------------------------------------------------
     # API Documentation (OpenAPI/Swagger)
     # -------------------------------------------------------------------------
     # Will be configured with drf-spectacular or similar
     # path('api/docs/', include('drf_spectacular.urls')),
-
     # -------------------------------------------------------------------------
     # Public Menu Views (Server-Side Rendered)
     # -------------------------------------------------------------------------
     # Public menu display (no authentication required) - accessed via QR code
-    path('m/<slug:menu_slug>/', PublicMenuView.as_view(), name='public-menu'),
-    path('m/<slug:menu_slug>/product/<uuid:product_id>/', PublicMenuDetailView.as_view(), name='public-menu-product'),
-
+    path("m/<slug:menu_slug>/", PublicMenuView.as_view(), name="public-menu"),
+    path(
+        "m/<slug:menu_slug>/product/<uuid:product_id>/",
+        PublicMenuDetailView.as_view(),
+        name="public-menu-product",
+    ),
     # -------------------------------------------------------------------------
     # JWT Token endpoints (Simple JWT)
     # -------------------------------------------------------------------------
@@ -552,7 +554,7 @@ urlpatterns = [
 # =============================================================================
 # Website marketing pages with language prefix: /tr/, /en/, /ar/, /uk/, /fa/
 urlpatterns += i18n_patterns(
-    path('', include(('apps.website.urls', 'website'), namespace='website')),
+    path("", include(("apps.website.urls", "website"), namespace="website")),
     prefix_default_language=True,
 )
 
@@ -564,20 +566,26 @@ urlpatterns += i18n_patterns(
 if settings.DEBUG:
     # Serve media files in development
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0] if settings.STATICFILES_DIRS else settings.STATIC_ROOT)
+    urlpatterns += static(
+        settings.STATIC_URL,
+        document_root=settings.STATICFILES_DIRS[0]
+        if settings.STATICFILES_DIRS
+        else settings.STATIC_ROOT,
+    )
 
     # Django Debug Toolbar
     try:
         import debug_toolbar
+
         urlpatterns = [
-            path('__debug__/', include(debug_toolbar.urls)),
+            path("__debug__/", include(debug_toolbar.urls)),
         ] + urlpatterns
     except ImportError:
         pass
 
     # DRF Browsable API authentication (for development convenience)
     urlpatterns += [
-        path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+        path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     ]
 
 
@@ -585,6 +593,6 @@ if settings.DEBUG:
 # CUSTOMIZE ADMIN SITE
 # =============================================================================
 
-admin.site.site_header = 'E-Menum Administration'
-admin.site.site_title = 'E-Menum Admin'
-admin.site.index_title = 'Dashboard'
+admin.site.site_header = "E-Menum Administration"
+admin.site.site_title = "E-Menum Admin"
+admin.site.index_title = "Dashboard"

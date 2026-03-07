@@ -74,6 +74,7 @@ logger = logging.getLogger(__name__)
 # BASE SERIALIZERS
 # =============================================================================
 
+
 class BaseModelSerializer(serializers.ModelSerializer):
     """
     Base serializer for all model serializers in E-Menum.
@@ -110,8 +111,8 @@ class BaseModelSerializer(serializers.ModelSerializer):
         fields = super().get_field_names(declared_fields, info)
 
         # Move 'id' to the beginning if present
-        if 'id' in fields:
-            fields = ['id'] + [f for f in fields if f != 'id']
+        if "id" in fields:
+            fields = ["id"] + [f for f in fields if f != "id"]
 
         return fields
 
@@ -134,15 +135,13 @@ class SoftDeleteModelSerializer(BaseModelSerializer):
     """
 
     is_deleted = serializers.SerializerMethodField(
-        help_text=_('Whether this record has been soft-deleted')
+        help_text=_("Whether this record has been soft-deleted")
     )
 
     class Meta:
         abstract = True
         # Exclude deleted_at by default - add 'is_deleted' instead
-        extra_kwargs = {
-            'deleted_at': {'write_only': True, 'required': False}
-        }
+        extra_kwargs = {"deleted_at": {"write_only": True, "required": False}}
 
     def get_is_deleted(self, obj) -> bool:
         """
@@ -154,7 +153,7 @@ class SoftDeleteModelSerializer(BaseModelSerializer):
         Returns:
             bool: True if deleted_at is set
         """
-        return getattr(obj, 'deleted_at', None) is not None
+        return getattr(obj, "deleted_at", None) is not None
 
 
 class AuditModelSerializer(SoftDeleteModelSerializer):
@@ -176,12 +175,10 @@ class AuditModelSerializer(SoftDeleteModelSerializer):
     """
 
     created_at = serializers.DateTimeField(
-        read_only=True,
-        help_text=_('Timestamp when record was created')
+        read_only=True, help_text=_("Timestamp when record was created")
     )
     updated_at = serializers.DateTimeField(
-        read_only=True,
-        help_text=_('Timestamp when record was last updated')
+        read_only=True, help_text=_("Timestamp when record was last updated")
     )
 
     class Meta(SoftDeleteModelSerializer.Meta):
@@ -219,19 +216,17 @@ class TenantModelSerializer(AuditModelSerializer):
 
     # Display organization_id instead of nested organization object
     organization_id = serializers.UUIDField(
-        source='organization.id',
-        read_only=True,
-        help_text=_('Organization UUID')
+        source="organization.id", read_only=True, help_text=_("Organization UUID")
     )
 
     class Meta(AuditModelSerializer.Meta):
         abstract = True
         extra_kwargs = {
-            'organization': {
-                'read_only': True,
-                'required': False,
+            "organization": {
+                "read_only": True,
+                "required": False,
             },
-            'deleted_at': {'write_only': True, 'required': False},
+            "deleted_at": {"write_only": True, "required": False},
         }
 
     def validate(self, attrs: Dict[str, Any]) -> Dict[str, Any]:
@@ -254,8 +249,8 @@ class TenantModelSerializer(AuditModelSerializer):
         attrs = super().validate(attrs)
 
         # Get organization from context
-        request = self.context.get('request')
-        organization = getattr(request, 'organization', None) if request else None
+        request = self.context.get("request")
+        organization = getattr(request, "organization", None) if request else None
 
         if organization:
             # Validate related tenant-scoped objects
@@ -264,9 +259,7 @@ class TenantModelSerializer(AuditModelSerializer):
         return attrs
 
     def _validate_tenant_relations(
-        self,
-        attrs: Dict[str, Any],
-        organization: 'Organization'
+        self, attrs: Dict[str, Any], organization: "Organization"
     ) -> Dict[str, Any]:
         """
         Validate that related objects belong to the same organization.
@@ -286,18 +279,22 @@ class TenantModelSerializer(AuditModelSerializer):
                 continue
 
             # Check if the value is a model instance with organization
-            if hasattr(value, 'organization_id'):
+            if hasattr(value, "organization_id"):
                 if str(value.organization_id) != str(organization.id):
                     logger.warning(
                         "Cross-tenant reference detected: field=%s, "
                         "value_org=%s, request_org=%s",
                         field_name,
                         value.organization_id,
-                        organization.id
+                        organization.id,
                     )
-                    raise ValidationError({
-                        field_name: _('This resource does not belong to your organization.')
-                    })
+                    raise ValidationError(
+                        {
+                            field_name: _(
+                                "This resource does not belong to your organization."
+                            )
+                        }
+                    )
 
         return attrs
 
@@ -316,10 +313,10 @@ class TenantModelSerializer(AuditModelSerializer):
         """
         # Organization should be passed via save() in the viewset
         # This is just a safety check
-        request = self.context.get('request')
-        if request and hasattr(request, 'organization'):
-            if 'organization' not in validated_data and request.organization:
-                validated_data['organization'] = request.organization
+        request = self.context.get("request")
+        if request and hasattr(request, "organization"):
+            if "organization" not in validated_data and request.organization:
+                validated_data["organization"] = request.organization
 
         return super().create(validated_data)
 
@@ -327,6 +324,7 @@ class TenantModelSerializer(AuditModelSerializer):
 # =============================================================================
 # RESPONSE WRAPPER SERIALIZERS
 # =============================================================================
+
 
 class StandardResponseSerializer(serializers.Serializer):
     """
@@ -343,13 +341,9 @@ class StandardResponseSerializer(serializers.Serializer):
     """
 
     success = serializers.BooleanField(
-        default=True,
-        help_text=_('Whether the request was successful')
+        default=True, help_text=_("Whether the request was successful")
     )
-    data = serializers.DictField(
-        allow_empty=True,
-        help_text=_('The response data')
-    )
+    data = serializers.DictField(allow_empty=True, help_text=_("The response data"))
 
 
 class PaginatedResponseSerializer(serializers.Serializer):
@@ -370,15 +364,10 @@ class PaginatedResponseSerializer(serializers.Serializer):
     """
 
     success = serializers.BooleanField(
-        default=True,
-        help_text=_('Whether the request was successful')
+        default=True, help_text=_("Whether the request was successful")
     )
-    data = serializers.ListField(
-        help_text=_('The list of items')
-    )
-    meta = serializers.DictField(
-        help_text=_('Pagination metadata')
-    )
+    data = serializers.ListField(help_text=_("The list of items"))
+    meta = serializers.DictField(help_text=_("Pagination metadata"))
 
 
 class ErrorDetailSerializer(serializers.Serializer):
@@ -393,16 +382,12 @@ class ErrorDetailSerializer(serializers.Serializer):
         }
     """
 
-    code = serializers.CharField(
-        help_text=_('Machine-readable error code')
-    )
-    message = serializers.CharField(
-        help_text=_('Human-readable error message')
-    )
+    code = serializers.CharField(help_text=_("Machine-readable error code"))
+    message = serializers.CharField(help_text=_("Human-readable error message"))
     details = serializers.DictField(
         required=False,
         allow_empty=True,
-        help_text=_('Additional error details (validation errors, etc.)')
+        help_text=_("Additional error details (validation errors, etc.)"),
     )
 
 
@@ -422,17 +407,15 @@ class ErrorResponseSerializer(serializers.Serializer):
     """
 
     success = serializers.BooleanField(
-        default=False,
-        help_text=_('Always false for error responses')
+        default=False, help_text=_("Always false for error responses")
     )
-    error = ErrorDetailSerializer(
-        help_text=_('Error details')
-    )
+    error = ErrorDetailSerializer(help_text=_("Error details"))
 
 
 # =============================================================================
 # UTILITY SERIALIZERS
 # =============================================================================
+
 
 class IDListSerializer(serializers.Serializer):
     """
@@ -453,7 +436,7 @@ class IDListSerializer(serializers.Serializer):
         child=serializers.UUIDField(),
         min_length=1,
         max_length=100,
-        help_text=_('List of UUIDs to operate on (max 100)')
+        help_text=_("List of UUIDs to operate on (max 100)"),
     )
 
 
@@ -472,12 +455,12 @@ class BulkActionResponseSerializer(serializers.Serializer):
     """
 
     affected_count = serializers.IntegerField(
-        help_text=_('Number of items successfully affected')
+        help_text=_("Number of items successfully affected")
     )
     failed_ids = serializers.ListField(
         child=serializers.UUIDField(),
         required=False,
-        help_text=_('List of IDs that failed (if any)')
+        help_text=_("List of IDs that failed (if any)"),
     )
 
 
@@ -491,14 +474,14 @@ class SlugLookupSerializer(serializers.Serializer):
     """
 
     slug = serializers.SlugField(
-        max_length=100,
-        help_text=_('URL-friendly unique identifier')
+        max_length=100, help_text=_("URL-friendly unique identifier")
     )
 
 
 # =============================================================================
 # NESTED SERIALIZER HELPERS
 # =============================================================================
+
 
 class MinimalSerializer(serializers.ModelSerializer):
     """
@@ -520,12 +503,11 @@ class MinimalSerializer(serializers.ModelSerializer):
     class Meta:
         abstract = True
         # Minimal serializers are always read-only
-        read_only_fields = '__all__'
+        read_only_fields = "__all__"
 
 
 def create_minimal_serializer(
-    model_class: Type[models.Model],
-    fields: List[str] = None
+    model_class: Type[models.Model], fields: List[str] = None
 ) -> Type[MinimalSerializer]:
     """
     Factory function to create a minimal serializer for a model.
@@ -546,14 +528,14 @@ def create_minimal_serializer(
             category = CategoryMinimal(read_only=True)
     """
     if fields is None:
-        fields = ['id', 'name']
+        fields = ["id", "name"]
 
     class DynamicMinimalSerializer(MinimalSerializer):
         class Meta:
             model = model_class
             fields = fields
 
-    DynamicMinimalSerializer.__name__ = f'{model_class.__name__}MinimalSerializer'
+    DynamicMinimalSerializer.__name__ = f"{model_class.__name__}MinimalSerializer"
     DynamicMinimalSerializer.__qualname__ = DynamicMinimalSerializer.__name__
 
     return DynamicMinimalSerializer
@@ -565,20 +547,20 @@ def create_minimal_serializer(
 
 __all__ = [
     # Base serializers
-    'BaseModelSerializer',
-    'SoftDeleteModelSerializer',
-    'AuditModelSerializer',
-    'TenantModelSerializer',
+    "BaseModelSerializer",
+    "SoftDeleteModelSerializer",
+    "AuditModelSerializer",
+    "TenantModelSerializer",
     # Response wrappers
-    'StandardResponseSerializer',
-    'PaginatedResponseSerializer',
-    'ErrorDetailSerializer',
-    'ErrorResponseSerializer',
+    "StandardResponseSerializer",
+    "PaginatedResponseSerializer",
+    "ErrorDetailSerializer",
+    "ErrorResponseSerializer",
     # Utility serializers
-    'IDListSerializer',
-    'BulkActionResponseSerializer',
-    'SlugLookupSerializer',
+    "IDListSerializer",
+    "BulkActionResponseSerializer",
+    "SlugLookupSerializer",
     # Nested helpers
-    'MinimalSerializer',
-    'create_minimal_serializer',
+    "MinimalSerializer",
+    "create_minimal_serializer",
 ]

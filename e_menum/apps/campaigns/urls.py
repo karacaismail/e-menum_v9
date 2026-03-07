@@ -15,13 +15,13 @@ from apps.campaigns.views import (
 )
 
 router = DefaultRouter()
-router.register(r'campaigns', CampaignViewSet, basename='campaign')
-router.register(r'coupons', CouponViewSet, basename='coupon')
-router.register(r'coupon-usages', CouponUsageViewSet, basename='coupon-usage')
-router.register(r'referrals', ReferralViewSet, basename='referral')
+router.register(r"campaigns", CampaignViewSet, basename="campaign")
+router.register(r"coupons", CouponViewSet, basename="coupon")
+router.register(r"coupon-usages", CouponUsageViewSet, basename="coupon-usage")
+router.register(r"referrals", ReferralViewSet, basename="referral")
 
-app_name = 'campaigns'
+app_name = "campaigns"
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]

@@ -12,4 +12,4 @@ This app provides AI-powered functionality for the E-Menum platform:
 Note: This is a stub module for future implementation.
 """
 
-default_app_config = 'apps.ai.apps.AiConfig'
+default_app_config = "apps.ai.apps.AiConfig"

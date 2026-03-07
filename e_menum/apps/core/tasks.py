@@ -13,7 +13,7 @@ from datetime import timedelta
 logger = logging.getLogger(__name__)
 
 
-@shared_task(name='core.tasks.cleanup_expired_sessions')
+@shared_task(name="core.tasks.cleanup_expired_sessions")
 def cleanup_expired_sessions():
     """
     Remove expired session records from the database.
@@ -26,10 +26,10 @@ def cleanup_expired_sessions():
     count = expired.count()
     expired.delete()
     logger.info("Cleaned up %d expired sessions", count)
-    return {'deleted': count}
+    return {"deleted": count}
 
 
-@shared_task(name='core.tasks.cleanup_soft_deleted_records')
+@shared_task(name="core.tasks.cleanup_soft_deleted_records")
 def cleanup_soft_deleted_records():
     """
     Permanently remove records that have been soft-deleted for more than 30 days.
@@ -44,16 +44,16 @@ def cleanup_soft_deleted_records():
 
     # Find all models with deleted_at field (SoftDeleteMixin)
     for model in apps.get_models():
-        if not hasattr(model, 'deleted_at'):
+        if not hasattr(model, "deleted_at"):
             continue
 
         # Skip audit logs — they should be preserved
-        if model.__name__ == 'AuditLog':
+        if model.__name__ == "AuditLog":
             continue
 
         try:
             # Use all_objects manager to include soft-deleted records
-            manager = getattr(model, 'all_objects', model.objects)
+            manager = getattr(model, "all_objects", model.objects)
             qs = manager.filter(deleted_at__lt=cutoff)
             count = qs.count()
 
@@ -73,4 +73,4 @@ def cleanup_soft_deleted_records():
             )
 
     logger.info("Total permanently deleted: %d records", total_deleted)
-    return {'total_deleted': total_deleted}
+    return {"total_deleted": total_deleted}

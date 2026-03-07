@@ -52,16 +52,16 @@ class ExportService:
         """
         format_upper = format.upper()
 
-        if format_upper == 'EXCEL':
+        if format_upper == "EXCEL":
             return self.export_to_excel(report_data)
-        elif format_upper == 'CSV':
+        elif format_upper == "CSV":
             return self.export_to_csv(report_data)
-        elif format_upper == 'PDF':
+        elif format_upper == "PDF":
             return self.export_to_pdf(report_data)
-        elif format_upper == 'JSON':
+        elif format_upper == "JSON":
             return self.export_to_json(report_data)
         else:
-            raise ValueError(f'Unsupported export format: {format}')
+            raise ValueError(f"Unsupported export format: {format}")
 
     def export_to_json(self, report_data: dict) -> bytes:
         """
@@ -89,7 +89,7 @@ class ExportService:
             indent=2,
             ensure_ascii=False,
         )
-        return content.encode('utf-8')
+        return content.encode("utf-8")
 
     def export_to_csv(self, report_data: dict) -> bytes:
         """
@@ -110,8 +110,8 @@ class ExportService:
         rows = self._extract_rows(report_data)
 
         if not rows:
-            output.write('No data available\n')
-            return output.getvalue().encode('utf-8')
+            output.write("No data available\n")
+            return output.getvalue().encode("utf-8")
 
         # Write CSV
         writer = csv.DictWriter(output, fieldnames=rows[0].keys())
@@ -128,7 +128,7 @@ class ExportService:
                     clean_row[k] = v
             writer.writerow(clean_row)
 
-        return output.getvalue().encode('utf-8')
+        return output.getvalue().encode("utf-8")
 
     def export_to_excel(self, report_data: dict) -> bytes:
         """
@@ -150,27 +150,29 @@ class ExportService:
             from openpyxl.styles import Alignment, Font, PatternFill
             from openpyxl.utils import get_column_letter
         except ImportError:
-            logger.error('openpyxl not installed. Install with: pip install openpyxl')
-            raise ImportError('openpyxl is required for Excel export')
+            logger.error("openpyxl not installed. Install with: pip install openpyxl")
+            raise ImportError("openpyxl is required for Excel export")
 
         wb = Workbook()
 
         # Summary sheet
         ws_summary = wb.active
-        ws_summary.title = 'Summary'
+        ws_summary.title = "Summary"
 
         # Title styling
-        title_font = Font(name='Calibri', size=14, bold=True)
-        header_font = Font(name='Calibri', size=11, bold=True, color='FFFFFF')
-        header_fill = PatternFill(start_color='2563EB', end_color='2563EB', fill_type='solid')
+        title_font = Font(name="Calibri", size=14, bold=True)
+        header_font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+        header_fill = PatternFill(
+            start_color="2563EB", end_color="2563EB", fill_type="solid"
+        )
 
         # Write summary
-        ws_summary['A1'] = report_data.get('title', 'Report')
-        ws_summary['A1'].font = title_font
-        ws_summary['A2'] = f'Generated: {timezone.now().strftime("%Y-%m-%d %H:%M")}'
+        ws_summary["A1"] = report_data.get("title", "Report")
+        ws_summary["A1"].font = title_font
+        ws_summary["A2"] = f"Generated: {timezone.now().strftime('%Y-%m-%d %H:%M')}"
 
         # Write summary metrics
-        summary = report_data.get('summary', {})
+        summary = report_data.get("summary", {})
         row = 4
         for key, value in summary.items():
             ws_summary.cell(row=row, column=1, value=str(key))
@@ -181,7 +183,7 @@ class ExportService:
         # Data sheet
         rows = self._extract_rows(report_data)
         if rows:
-            ws_data = wb.create_sheet('Data')
+            ws_data = wb.create_sheet("Data")
 
             # Headers
             headers = list(rows[0].keys())
@@ -189,12 +191,12 @@ class ExportService:
                 cell = ws_data.cell(row=1, column=col_idx, value=header)
                 cell.font = header_font
                 cell.fill = header_fill
-                cell.alignment = Alignment(horizontal='center')
+                cell.alignment = Alignment(horizontal="center")
 
             # Data rows
             for row_idx, row_data in enumerate(rows, 2):
                 for col_idx, header in enumerate(headers, 1):
-                    value = row_data.get(header, '')
+                    value = row_data.get(header, "")
                     ws_data.cell(
                         row=row_idx,
                         column=col_idx,
@@ -206,13 +208,13 @@ class ExportService:
                 max_width = max(
                     len(str(header)),
                     max(
-                        (len(str(row_data.get(header, ''))) for row_data in rows),
+                        (len(str(row_data.get(header, ""))) for row_data in rows),
                         default=0,
                     ),
                 )
-                ws_data.column_dimensions[
-                    get_column_letter(col_idx)
-                ].width = min(max_width + 2, 50)
+                ws_data.column_dimensions[get_column_letter(col_idx)].width = min(
+                    max_width + 2, 50
+                )
 
         # Save to bytes
         output = io.BytesIO()
@@ -248,8 +250,8 @@ class ExportService:
                 TableStyle,
             )
         except ImportError:
-            logger.error('reportlab not installed. Install with: pip install reportlab')
-            raise ImportError('reportlab is required for PDF export')
+            logger.error("reportlab not installed. Install with: pip install reportlab")
+            raise ImportError("reportlab is required for PDF export")
 
         output = io.BytesIO()
         doc = SimpleDocTemplate(
@@ -265,74 +267,92 @@ class ExportService:
         elements = []
 
         # Title
-        title = report_data.get('title', 'Report')
+        title = report_data.get("title", "Report")
         title_style = ParagraphStyle(
-            'ReportTitle',
-            parent=styles['Title'],
+            "ReportTitle",
+            parent=styles["Title"],
             fontSize=18,
             spaceAfter=12,
         )
         elements.append(Paragraph(title, title_style))
-        elements.append(Paragraph(
-            f'Generated: {timezone.now().strftime("%Y-%m-%d %H:%M")}',
-            styles['Normal'],
-        ))
+        elements.append(
+            Paragraph(
+                f"Generated: {timezone.now().strftime('%Y-%m-%d %H:%M')}",
+                styles["Normal"],
+            )
+        )
         elements.append(Spacer(1, 12))
 
         # Summary section
-        summary = report_data.get('summary', {})
+        summary = report_data.get("summary", {})
         if summary:
-            elements.append(Paragraph('Summary', styles['Heading2']))
-            summary_data = [[str(k), str(self._format_value(v))] for k, v in summary.items()]
+            elements.append(Paragraph("Summary", styles["Heading2"]))
+            summary_data = [
+                [str(k), str(self._format_value(v))] for k, v in summary.items()
+            ]
             if summary_data:
                 t = Table(summary_data, colWidths=[8 * cm, 8 * cm])
-                t.setStyle(TableStyle([
-                    ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-                    ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-                    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-                    ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-                    ('TOPPADDING', (0, 0), (-1, -1), 6),
-                ]))
+                t.setStyle(
+                    TableStyle(
+                        [
+                            ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
+                            ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                            ("TOPPADDING", (0, 0), (-1, -1), 6),
+                        ]
+                    )
+                )
                 elements.append(t)
                 elements.append(Spacer(1, 12))
 
         # Data table
         rows = self._extract_rows(report_data)
         if rows:
-            elements.append(Paragraph('Data', styles['Heading2']))
+            elements.append(Paragraph("Data", styles["Heading2"]))
             headers = list(rows[0].keys())
 
             table_data = [headers]
             for row in rows[:100]:  # Limit to 100 rows for PDF
-                table_data.append([
-                    str(self._format_value(row.get(h, '')))
-                    for h in headers
-                ])
+                table_data.append(
+                    [str(self._format_value(row.get(h, ""))) for h in headers]
+                )
 
             # Calculate column widths
             num_cols = len(headers)
             col_width = min(16 * cm / num_cols, 5 * cm)
 
             t = Table(table_data, colWidths=[col_width] * num_cols)
-            t.setStyle(TableStyle([
-                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2563EB')),
-                ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-                ('FONTSIZE', (0, 0), (-1, -1), 8),
-                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#F3F4F6')]),
-                ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
-                ('TOPPADDING', (0, 0), (-1, -1), 4),
-            ]))
+            t.setStyle(
+                TableStyle(
+                    [
+                        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#2563EB")),
+                        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+                        ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+                        ("FONTSIZE", (0, 0), (-1, -1), 8),
+                        ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                        (
+                            "ROWBACKGROUNDS",
+                            (0, 1),
+                            (-1, -1),
+                            [colors.white, colors.HexColor("#F3F4F6")],
+                        ),
+                        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                        ("TOPPADDING", (0, 0), (-1, -1), 4),
+                    ]
+                )
+            )
             elements.append(t)
 
             if len(rows) > 100:
                 elements.append(Spacer(1, 6))
-                elements.append(Paragraph(
-                    f'Showing 100 of {len(rows)} rows. Export to Excel for full data.',
-                    styles['Italic'],
-                ))
+                elements.append(
+                    Paragraph(
+                        f"Showing 100 of {len(rows)} rows. Export to Excel for full data.",
+                        styles["Italic"],
+                    )
+                )
 
         doc.build(elements)
         return output.getvalue()
@@ -353,7 +373,7 @@ class ExportService:
         Returns:
             list[dict]: List of row dicts
         """
-        for key in ('rows', 'data', 'items', 'results', 'products', 'orders'):
+        for key in ("rows", "data", "items", "results", "products", "orders"):
             if key in report_data and isinstance(report_data[key], list):
                 rows = report_data[key]
                 if rows and isinstance(rows[0], dict):
@@ -373,7 +393,7 @@ class ExportService:
         if isinstance(value, Decimal):
             return float(value)
         if isinstance(value, datetime):
-            return value.strftime('%Y-%m-%d %H:%M')
+            return value.strftime("%Y-%m-%d %H:%M")
         if isinstance(value, (dict, list)):
             return str(value)
         return value

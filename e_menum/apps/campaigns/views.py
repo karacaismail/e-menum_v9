@@ -25,9 +25,9 @@ from apps.campaigns.serializers import (
 class CampaignViewSet(BaseTenantViewSet):
     """ViewSet for Campaign CRUD operations."""
 
-    queryset = Campaign.objects.select_related('created_by').all()
+    queryset = Campaign.objects.select_related("created_by").all()
     serializer_class = CampaignSerializer
-    permission_resource = 'campaign'
+    permission_resource = "campaign"
 
     def perform_create(self, serializer):
         """Auto-set created_by from request user."""
@@ -41,24 +41,26 @@ class CampaignViewSet(BaseTenantViewSet):
 class CouponViewSet(BaseTenantViewSet):
     """ViewSet for Coupon CRUD operations."""
 
-    queryset = Coupon.objects.select_related('campaign').all()
+    queryset = Coupon.objects.select_related("campaign").all()
     serializer_class = CouponSerializer
-    permission_resource = 'campaign'
+    permission_resource = "campaign"
 
 
 class CouponUsageViewSet(BaseTenantReadOnlyViewSet):
     """Read-only ViewSet for CouponUsage records (audit trail)."""
 
     queryset = CouponUsage.objects.select_related(
-        'coupon', 'order', 'customer',
+        "coupon",
+        "order",
+        "customer",
     ).all()
     serializer_class = CouponUsageSerializer
-    permission_resource = 'campaign'
+    permission_resource = "campaign"
 
 
 class ReferralViewSet(BaseTenantViewSet):
     """ViewSet for Referral CRUD operations."""
 
-    queryset = Referral.objects.select_related('referrer', 'referred').all()
+    queryset = Referral.objects.select_related("referrer", "referred").all()
     serializer_class = ReferralSerializer
-    permission_resource = 'campaign'
+    permission_resource = "campaign"

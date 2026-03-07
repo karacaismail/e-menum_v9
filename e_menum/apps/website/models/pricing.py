@@ -16,27 +16,31 @@ class PlanDisplayFeature(TimeStampedModel):
     """
 
     plan = models.ForeignKey(
-        'subscriptions.Plan',
+        "subscriptions.Plan",
         on_delete=models.CASCADE,
-        related_name='display_features',
-        verbose_name=_('plan'),
+        related_name="display_features",
+        verbose_name=_("plan"),
     )
-    text = models.CharField(_('metin'), max_length=200)
+    text = models.CharField(_("metin"), max_length=200)
     icon_svg = models.TextField(
-        _('ikon SVG'),
+        _("ikon SVG"),
         blank=True,
-        default='',
-        help_text=_('SVG markup for the feature icon (e.g., <svg ...>...</svg>). '
-                    'Leave empty for default checkmark icon.')
+        default="",
+        help_text=_(
+            "SVG markup for the feature icon (e.g., <svg ...>...</svg>). "
+            "Leave empty for default checkmark icon."
+        ),
     )
-    is_highlighted = models.BooleanField(_('vurgulu'), default=False, help_text=_('Kalin yazi ile gosterilir'))
-    sort_order = models.PositiveIntegerField(_('siralama'), default=0)
-    is_active = models.BooleanField(_('aktif'), default=True)
+    is_highlighted = models.BooleanField(
+        _("vurgulu"), default=False, help_text=_("Kalin yazi ile gosterilir")
+    )
+    sort_order = models.PositiveIntegerField(_("siralama"), default=0)
+    is_active = models.BooleanField(_("aktif"), default=True)
 
     class Meta:
-        verbose_name = _('Plan Gosterim Ozelligi')
-        verbose_name_plural = _('Plan Gosterim Ozellikleri')
-        ordering = ['plan', 'sort_order']
+        verbose_name = _("Plan Gosterim Ozelligi")
+        verbose_name_plural = _("Plan Gosterim Ozellikleri")
+        ordering = ["plan", "sort_order"]
 
     def __str__(self):
         return f"{self.plan.name} — {self.text[:50]}"

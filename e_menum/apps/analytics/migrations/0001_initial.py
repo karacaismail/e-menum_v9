@@ -6,126 +6,588 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('core', '0003_shift_staffmetric_staffschedule_and_more'),
-        ('menu', '0003_add_icon_discount_rating'),
+        ("core", "0003_shift_staffmetric_staffschedule_and_more"),
+        ("menu", "0003_add_icon_discount_rating"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='CustomerMetric',
+            name="CustomerMetric",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField(verbose_name='Date')),
-                ('total_customers', models.PositiveIntegerField(default=0, verbose_name='Total customers')),
-                ('new_customers', models.PositiveIntegerField(default=0, verbose_name='New customers')),
-                ('returning_customers', models.PositiveIntegerField(default=0, verbose_name='Returning customers')),
-                ('churn_count', models.PositiveIntegerField(default=0, verbose_name='Churn count')),
-                ('avg_visit_frequency', models.DecimalField(blank=True, decimal_places=2, max_digits=8, null=True, verbose_name='Average visit frequency')),
-                ('avg_lifetime_value', models.DecimalField(blank=True, decimal_places=2, max_digits=12, null=True, verbose_name='Average lifetime value')),
-                ('nps_score', models.DecimalField(blank=True, decimal_places=2, max_digits=5, null=True, verbose_name='NPS score')),
-                ('organization', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='customer_metrics', to='core.organization', verbose_name='Organization')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateField(verbose_name="Date")),
+                (
+                    "total_customers",
+                    models.PositiveIntegerField(
+                        default=0, verbose_name="Total customers"
+                    ),
+                ),
+                (
+                    "new_customers",
+                    models.PositiveIntegerField(
+                        default=0, verbose_name="New customers"
+                    ),
+                ),
+                (
+                    "returning_customers",
+                    models.PositiveIntegerField(
+                        default=0, verbose_name="Returning customers"
+                    ),
+                ),
+                (
+                    "churn_count",
+                    models.PositiveIntegerField(default=0, verbose_name="Churn count"),
+                ),
+                (
+                    "avg_visit_frequency",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        max_digits=8,
+                        null=True,
+                        verbose_name="Average visit frequency",
+                    ),
+                ),
+                (
+                    "avg_lifetime_value",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        max_digits=12,
+                        null=True,
+                        verbose_name="Average lifetime value",
+                    ),
+                ),
+                (
+                    "nps_score",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        max_digits=5,
+                        null=True,
+                        verbose_name="NPS score",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="customer_metrics",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Customer Metric',
-                'verbose_name_plural': 'Customer Metrics',
-                'db_table': 'analytics_customer_metrics',
-                'ordering': ['-date'],
-                'indexes': [models.Index(fields=['organization', 'date'], name='cm_org_date_idx'), models.Index(fields=['organization', 'deleted_at'], name='cm_org_deleted_idx')],
-                'unique_together': {('organization', 'date')},
+                "verbose_name": "Customer Metric",
+                "verbose_name_plural": "Customer Metrics",
+                "db_table": "analytics_customer_metrics",
+                "ordering": ["-date"],
+                "indexes": [
+                    models.Index(
+                        fields=["organization", "date"], name="cm_org_date_idx"
+                    ),
+                    models.Index(
+                        fields=["organization", "deleted_at"], name="cm_org_deleted_idx"
+                    ),
+                ],
+                "unique_together": {("organization", "date")},
             },
         ),
         migrations.CreateModel(
-            name='DashboardMetric',
+            name="DashboardMetric",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('metric_type', models.CharField(choices=[('REVENUE', 'Revenue'), ('ORDERS', 'Orders'), ('CUSTOMERS', 'Customers'), ('AVG_ORDER', 'Average Order Value'), ('RATING', 'Rating'), ('NEW_CUSTOMERS', 'New Customers'), ('RETURNING_CUSTOMERS', 'Returning Customers'), ('ITEMS_SOLD', 'Items Sold')], max_length=30, verbose_name='Metric type')),
-                ('period_type', models.CharField(choices=[('DAILY', 'Daily'), ('WEEKLY', 'Weekly'), ('MONTHLY', 'Monthly'), ('QUARTERLY', 'Quarterly'), ('YEARLY', 'Yearly')], max_length=20, verbose_name='Period type')),
-                ('period_start', models.DateField(verbose_name='Period start')),
-                ('period_end', models.DateField(verbose_name='Period end')),
-                ('value', models.DecimalField(decimal_places=2, max_digits=15, verbose_name='Value')),
-                ('previous_value', models.DecimalField(blank=True, decimal_places=2, max_digits=15, null=True, verbose_name='Previous value')),
-                ('change_percent', models.DecimalField(blank=True, decimal_places=2, max_digits=8, null=True, verbose_name='Change percent')),
-                ('metadata', models.JSONField(blank=True, default=dict, verbose_name='Metadata')),
-                ('organization', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='dashboard_metrics', to='core.organization', verbose_name='Organization')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "metric_type",
+                    models.CharField(
+                        choices=[
+                            ("REVENUE", "Revenue"),
+                            ("ORDERS", "Orders"),
+                            ("CUSTOMERS", "Customers"),
+                            ("AVG_ORDER", "Average Order Value"),
+                            ("RATING", "Rating"),
+                            ("NEW_CUSTOMERS", "New Customers"),
+                            ("RETURNING_CUSTOMERS", "Returning Customers"),
+                            ("ITEMS_SOLD", "Items Sold"),
+                        ],
+                        max_length=30,
+                        verbose_name="Metric type",
+                    ),
+                ),
+                (
+                    "period_type",
+                    models.CharField(
+                        choices=[
+                            ("DAILY", "Daily"),
+                            ("WEEKLY", "Weekly"),
+                            ("MONTHLY", "Monthly"),
+                            ("QUARTERLY", "Quarterly"),
+                            ("YEARLY", "Yearly"),
+                        ],
+                        max_length=20,
+                        verbose_name="Period type",
+                    ),
+                ),
+                ("period_start", models.DateField(verbose_name="Period start")),
+                ("period_end", models.DateField(verbose_name="Period end")),
+                (
+                    "value",
+                    models.DecimalField(
+                        decimal_places=2, max_digits=15, verbose_name="Value"
+                    ),
+                ),
+                (
+                    "previous_value",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        max_digits=15,
+                        null=True,
+                        verbose_name="Previous value",
+                    ),
+                ),
+                (
+                    "change_percent",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        max_digits=8,
+                        null=True,
+                        verbose_name="Change percent",
+                    ),
+                ),
+                (
+                    "metadata",
+                    models.JSONField(blank=True, default=dict, verbose_name="Metadata"),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="dashboard_metrics",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Dashboard Metric',
-                'verbose_name_plural': 'Dashboard Metrics',
-                'db_table': 'analytics_dashboard_metrics',
-                'ordering': ['-period_start'],
-                'indexes': [models.Index(fields=['organization', 'period_type', 'period_start'], name='dm_org_period_start_idx'), models.Index(fields=['organization', 'metric_type'], name='dm_org_metric_idx'), models.Index(fields=['organization', 'deleted_at'], name='dm_org_deleted_idx')],
-                'unique_together': {('organization', 'metric_type', 'period_type', 'period_start')},
+                "verbose_name": "Dashboard Metric",
+                "verbose_name_plural": "Dashboard Metrics",
+                "db_table": "analytics_dashboard_metrics",
+                "ordering": ["-period_start"],
+                "indexes": [
+                    models.Index(
+                        fields=["organization", "period_type", "period_start"],
+                        name="dm_org_period_start_idx",
+                    ),
+                    models.Index(
+                        fields=["organization", "metric_type"], name="dm_org_metric_idx"
+                    ),
+                    models.Index(
+                        fields=["organization", "deleted_at"], name="dm_org_deleted_idx"
+                    ),
+                ],
+                "unique_together": {
+                    ("organization", "metric_type", "period_type", "period_start")
+                },
             },
         ),
         migrations.CreateModel(
-            name='ProductPerformance',
+            name="ProductPerformance",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('period_type', models.CharField(choices=[('DAILY', 'Daily'), ('WEEKLY', 'Weekly'), ('MONTHLY', 'Monthly'), ('QUARTERLY', 'Quarterly'), ('YEARLY', 'Yearly')], max_length=20, verbose_name='Period type')),
-                ('period_start', models.DateField(verbose_name='Period start')),
-                ('period_end', models.DateField(verbose_name='Period end')),
-                ('quantity_sold', models.PositiveIntegerField(default=0, verbose_name='Quantity sold')),
-                ('revenue', models.DecimalField(decimal_places=2, default=0, max_digits=15, verbose_name='Revenue')),
-                ('cost', models.DecimalField(blank=True, decimal_places=2, max_digits=15, null=True, verbose_name='Cost')),
-                ('profit_margin', models.DecimalField(blank=True, decimal_places=2, max_digits=8, null=True, verbose_name='Profit margin (%)')),
-                ('sales_mix_percent', models.DecimalField(decimal_places=2, default=0, max_digits=8, verbose_name='Sales mix (%)')),
-                ('avg_rating', models.DecimalField(blank=True, decimal_places=2, max_digits=3, null=True, verbose_name='Average rating')),
-                ('review_count', models.PositiveIntegerField(default=0, verbose_name='Review count')),
-                ('return_count', models.PositiveIntegerField(default=0, verbose_name='Return count')),
-                ('view_count', models.PositiveIntegerField(default=0, verbose_name='View count')),
-                ('organization', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='product_performances', to='core.organization', verbose_name='Organization')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='performance_records', to='menu.product', verbose_name='Product')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "period_type",
+                    models.CharField(
+                        choices=[
+                            ("DAILY", "Daily"),
+                            ("WEEKLY", "Weekly"),
+                            ("MONTHLY", "Monthly"),
+                            ("QUARTERLY", "Quarterly"),
+                            ("YEARLY", "Yearly"),
+                        ],
+                        max_length=20,
+                        verbose_name="Period type",
+                    ),
+                ),
+                ("period_start", models.DateField(verbose_name="Period start")),
+                ("period_end", models.DateField(verbose_name="Period end")),
+                (
+                    "quantity_sold",
+                    models.PositiveIntegerField(
+                        default=0, verbose_name="Quantity sold"
+                    ),
+                ),
+                (
+                    "revenue",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        max_digits=15,
+                        verbose_name="Revenue",
+                    ),
+                ),
+                (
+                    "cost",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        max_digits=15,
+                        null=True,
+                        verbose_name="Cost",
+                    ),
+                ),
+                (
+                    "profit_margin",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        max_digits=8,
+                        null=True,
+                        verbose_name="Profit margin (%)",
+                    ),
+                ),
+                (
+                    "sales_mix_percent",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        max_digits=8,
+                        verbose_name="Sales mix (%)",
+                    ),
+                ),
+                (
+                    "avg_rating",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        max_digits=3,
+                        null=True,
+                        verbose_name="Average rating",
+                    ),
+                ),
+                (
+                    "review_count",
+                    models.PositiveIntegerField(default=0, verbose_name="Review count"),
+                ),
+                (
+                    "return_count",
+                    models.PositiveIntegerField(default=0, verbose_name="Return count"),
+                ),
+                (
+                    "view_count",
+                    models.PositiveIntegerField(default=0, verbose_name="View count"),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="product_performances",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="performance_records",
+                        to="menu.product",
+                        verbose_name="Product",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Product Performance',
-                'verbose_name_plural': 'Product Performances',
-                'db_table': 'analytics_product_performances',
-                'ordering': ['-period_start', '-revenue'],
-                'indexes': [models.Index(fields=['organization', 'period_type', 'period_start'], name='pp_org_period_start_idx'), models.Index(fields=['organization', 'product'], name='pp_org_product_idx'), models.Index(fields=['organization', 'deleted_at'], name='pp_org_deleted_idx')],
-                'unique_together': {('organization', 'product', 'period_type', 'period_start')},
+                "verbose_name": "Product Performance",
+                "verbose_name_plural": "Product Performances",
+                "db_table": "analytics_product_performances",
+                "ordering": ["-period_start", "-revenue"],
+                "indexes": [
+                    models.Index(
+                        fields=["organization", "period_type", "period_start"],
+                        name="pp_org_period_start_idx",
+                    ),
+                    models.Index(
+                        fields=["organization", "product"], name="pp_org_product_idx"
+                    ),
+                    models.Index(
+                        fields=["organization", "deleted_at"], name="pp_org_deleted_idx"
+                    ),
+                ],
+                "unique_together": {
+                    ("organization", "product", "period_type", "period_start")
+                },
             },
         ),
         migrations.CreateModel(
-            name='SalesAggregation',
+            name="SalesAggregation",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField(verbose_name='Date')),
-                ('hour', models.IntegerField(blank=True, help_text='Hour of day (0-23) for hourly granularity', null=True, verbose_name='Hour')),
-                ('granularity', models.CharField(choices=[('HOURLY', 'Hourly'), ('DAILY', 'Daily')], default='DAILY', max_length=10, verbose_name='Granularity')),
-                ('gross_revenue', models.DecimalField(decimal_places=2, default=0, max_digits=15, verbose_name='Gross revenue')),
-                ('net_revenue', models.DecimalField(decimal_places=2, default=0, max_digits=15, verbose_name='Net revenue')),
-                ('order_count', models.PositiveIntegerField(default=0, verbose_name='Order count')),
-                ('item_count', models.PositiveIntegerField(default=0, verbose_name='Item count')),
-                ('avg_order_value', models.DecimalField(decimal_places=2, default=0, max_digits=10, verbose_name='Average order value')),
-                ('customer_count', models.PositiveIntegerField(default=0, verbose_name='Customer count')),
-                ('new_customer_count', models.PositiveIntegerField(default=0, verbose_name='New customer count')),
-                ('payment_breakdown', models.JSONField(blank=True, default=dict, help_text='Breakdown by payment method: {cash: X, card: Y, ...}', verbose_name='Payment breakdown')),
-                ('channel_breakdown', models.JSONField(blank=True, default=dict, help_text='Breakdown by order type: {dine_in: X, takeaway: Y, ...}', verbose_name='Channel breakdown')),
-                ('category_breakdown', models.JSONField(blank=True, default=dict, help_text='Breakdown by category: {cat_id: {revenue: X, qty: Y}, ...}', verbose_name='Category breakdown')),
-                ('organization', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sales_aggregations', to='core.organization', verbose_name='Organization')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateField(verbose_name="Date")),
+                (
+                    "hour",
+                    models.IntegerField(
+                        blank=True,
+                        help_text="Hour of day (0-23) for hourly granularity",
+                        null=True,
+                        verbose_name="Hour",
+                    ),
+                ),
+                (
+                    "granularity",
+                    models.CharField(
+                        choices=[("HOURLY", "Hourly"), ("DAILY", "Daily")],
+                        default="DAILY",
+                        max_length=10,
+                        verbose_name="Granularity",
+                    ),
+                ),
+                (
+                    "gross_revenue",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        max_digits=15,
+                        verbose_name="Gross revenue",
+                    ),
+                ),
+                (
+                    "net_revenue",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        max_digits=15,
+                        verbose_name="Net revenue",
+                    ),
+                ),
+                (
+                    "order_count",
+                    models.PositiveIntegerField(default=0, verbose_name="Order count"),
+                ),
+                (
+                    "item_count",
+                    models.PositiveIntegerField(default=0, verbose_name="Item count"),
+                ),
+                (
+                    "avg_order_value",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        max_digits=10,
+                        verbose_name="Average order value",
+                    ),
+                ),
+                (
+                    "customer_count",
+                    models.PositiveIntegerField(
+                        default=0, verbose_name="Customer count"
+                    ),
+                ),
+                (
+                    "new_customer_count",
+                    models.PositiveIntegerField(
+                        default=0, verbose_name="New customer count"
+                    ),
+                ),
+                (
+                    "payment_breakdown",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text="Breakdown by payment method: {cash: X, card: Y, ...}",
+                        verbose_name="Payment breakdown",
+                    ),
+                ),
+                (
+                    "channel_breakdown",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text="Breakdown by order type: {dine_in: X, takeaway: Y, ...}",
+                        verbose_name="Channel breakdown",
+                    ),
+                ),
+                (
+                    "category_breakdown",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text="Breakdown by category: {cat_id: {revenue: X, qty: Y}, ...}",
+                        verbose_name="Category breakdown",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="sales_aggregations",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Sales Aggregation',
-                'verbose_name_plural': 'Sales Aggregations',
-                'db_table': 'analytics_sales_aggregations',
-                'ordering': ['-date', '-hour'],
-                'indexes': [models.Index(fields=['organization', 'date', 'granularity'], name='sa_org_date_gran_idx'), models.Index(fields=['organization', 'date', 'hour'], name='sa_org_date_hour_idx'), models.Index(fields=['organization', 'deleted_at'], name='sa_org_deleted_idx')],
+                "verbose_name": "Sales Aggregation",
+                "verbose_name_plural": "Sales Aggregations",
+                "db_table": "analytics_sales_aggregations",
+                "ordering": ["-date", "-hour"],
+                "indexes": [
+                    models.Index(
+                        fields=["organization", "date", "granularity"],
+                        name="sa_org_date_gran_idx",
+                    ),
+                    models.Index(
+                        fields=["organization", "date", "hour"],
+                        name="sa_org_date_hour_idx",
+                    ),
+                    models.Index(
+                        fields=["organization", "deleted_at"], name="sa_org_deleted_idx"
+                    ),
+                ],
             },
         ),
     ]

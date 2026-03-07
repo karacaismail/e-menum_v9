@@ -15,10 +15,10 @@ from .base import *  # noqa: F401, F403
 DEBUG = True
 
 # Allow all hosts in development
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 # Development secret key (DO NOT use in production!)
-SECRET_KEY = 'django-insecure-dev-key-for-local-development-only-change-in-prod'
+SECRET_KEY = "django-insecure-dev-key-for-local-development-only-change-in-prod"
 
 
 # =============================================================================
@@ -27,9 +27,9 @@ SECRET_KEY = 'django-insecure-dev-key-for-local-development-only-change-in-prod'
 
 # Database - SQLite for development (easy setup, no external dependencies)
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',  # noqa: F405
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",  # noqa: F405
     }
 }
 
@@ -40,9 +40,9 @@ DATABASES = {
 
 # Use local memory cache in development
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
     }
 }
 
@@ -52,7 +52,7 @@ CACHES = {
 # =============================================================================
 
 # Email backend for development - print to console
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 
 # =============================================================================
@@ -60,8 +60,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # =============================================================================
 
 # Simplified logging for development
-LOGGING['root']['level'] = 'DEBUG'  # noqa: F405
-LOGGING['loggers']['django']['level'] = 'DEBUG'  # noqa: F405
+LOGGING["root"]["level"] = "DEBUG"  # noqa: F405
+LOGGING["loggers"]["django"]["level"] = "DEBUG"  # noqa: F405
 
 
 # =============================================================================
@@ -83,7 +83,7 @@ CSRF_COOKIE_SECURE = False
 # INTERNAL IPS (required for debug context processor → Tailwind CDN in dev)
 # =============================================================================
 
-INTERNAL_IPS = ['127.0.0.1', 'localhost']
+INTERNAL_IPS = ["127.0.0.1", "localhost"]
 
 # DEBUG TOOLBAR (Optional)
 # =============================================================================

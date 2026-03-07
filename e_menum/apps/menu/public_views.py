@@ -70,7 +70,7 @@ class PublicMenuView(View):
         page_description: SEO meta description
     """
 
-    template_name = 'public/menu_v3.html'
+    template_name = "public/menu_v3.html"
 
     def get(self, request, menu_slug, *args, **kwargs):
         """
@@ -86,8 +86,8 @@ class PublicMenuView(View):
         # Fetch published menu by slug
         try:
             menu = Menu.objects.select_related(
-                'organization',
-                'theme',
+                "organization",
+                "theme",
             ).get(
                 slug=menu_slug,
                 is_published=True,
@@ -95,7 +95,7 @@ class PublicMenuView(View):
             )
         except Menu.DoesNotExist:
             logger.warning("Public menu not found: slug=%s", menu_slug)
-            raise Http404(_('Menu not found'))
+            raise Http404(_("Menu not found"))
 
         organization = menu.organization
         theme = menu.theme
@@ -105,26 +105,31 @@ class PublicMenuView(View):
             menu=menu,
             is_active=True,
             deleted_at__isnull=True,
-        ).order_by('sort_order', 'name')
+        ).order_by("sort_order", "name")
 
         # Fetch all active products for this menu in one query
-        products = Product.objects.filter(
-            category__menu=menu,
-            is_active=True,
-            deleted_at__isnull=True,
-        ).select_related(
-            'category',
-        ).prefetch_related(
-            'variants',
-            'modifiers',
-            'product_allergens__allergen',
-        ).order_by('sort_order', 'name')
+        products = (
+            Product.objects.filter(
+                category__menu=menu,
+                is_active=True,
+                deleted_at__isnull=True,
+            )
+            .select_related(
+                "category",
+            )
+            .prefetch_related(
+                "variants",
+                "modifiers",
+                "product_allergens__allergen",
+            )
+            .order_by("sort_order", "name")
+        )
 
         # Fetch platform-level allergens for filter sidebar
         allergens = Allergen.objects.filter(
             is_active=True,
             deleted_at__isnull=True,
-        ).order_by('sort_order', 'name')
+        ).order_by("sort_order", "name")
 
         # Build menu-v3 compatible JSON data
         menu_data = self._build_menu_data(
@@ -139,24 +144,24 @@ class PublicMenuView(View):
         menu_data_json = json.dumps(menu_data, cls=DecimalEncoder, ensure_ascii=False)
 
         context = {
-            'menu': menu,
-            'organization': organization,
-            'theme': theme,
-            'menu_data_json': menu_data_json,
-            'categories_with_products': self._get_categories_with_products(categories, products),
-            'page_title': f"{menu.name} - {organization.name}",
-            'page_description': menu.description or f"{organization.name} dijital menü",
+            "menu": menu,
+            "organization": organization,
+            "theme": theme,
+            "menu_data_json": menu_data_json,
+            "categories_with_products": self._get_categories_with_products(
+                categories, products
+            ),
+            "page_title": f"{menu.name} - {organization.name}",
+            "page_description": menu.description or f"{organization.name} dijital menü",
         }
 
-        logger.info(
-            "Public menu viewed: slug=%s, org=%s",
-            menu_slug,
-            organization.name
-        )
+        logger.info("Public menu viewed: slug=%s, org=%s", menu_slug, organization.name)
 
         return render(request, self.template_name, context)
 
-    def _build_menu_data(self, menu, organization, theme, categories, products, allergens):
+    def _build_menu_data(
+        self, menu, organization, theme, categories, products, allergens
+    ):
         """
         Build menu-v3 compatible data structure.
 
@@ -173,16 +178,20 @@ class PublicMenuView(View):
         categories_data = []
         for cat in categories:
             # Only include categories that have active products
-            product_count = sum(1 for p in products if str(p.category_id) == str(cat.id))
+            product_count = sum(
+                1 for p in products if str(p.category_id) == str(cat.id)
+            )
             if product_count == 0:
                 continue
 
-            categories_data.append({
-                'id': str(cat.id),
-                'name': cat.name,
-                'icon': cat.icon or 'ph-fill ph-fork-knife',
-                'description': cat.description or '',
-            })
+            categories_data.append(
+                {
+                    "id": str(cat.id),
+                    "name": cat.name,
+                    "icon": cat.icon or "ph-fill ph-fork-knife",
+                    "description": cat.description or "",
+                }
+            )
 
         # Serialize products
         products_data = []
@@ -190,13 +199,14 @@ class PublicMenuView(View):
             # Sizes (from variants)
             sizes = []
             for variant in product.variants.filter(
-                deleted_at__isnull=True,
-                is_available=True
-            ).order_by('sort_order', 'name'):
-                sizes.append({
-                    'name': variant.name,
-                    'price': float(variant.price - product.base_price),
-                })
+                deleted_at__isnull=True, is_available=True
+            ).order_by("sort_order", "name"):
+                sizes.append(
+                    {
+                        "name": variant.name,
+                        "price": float(variant.price - product.base_price),
+                    }
+                )
 
             # Extras (modifiers with price > 0)
             extras = []
@@ -204,12 +214,14 @@ class PublicMenuView(View):
             sauces = []
             for modifier in product.modifiers.filter(
                 deleted_at__isnull=True,
-            ).order_by('sort_order', 'name'):
+            ).order_by("sort_order", "name"):
                 if modifier.price > 0:
-                    extras.append({
-                        'name': modifier.name,
-                        'price': float(modifier.price),
-                    })
+                    extras.append(
+                        {
+                            "name": modifier.name,
+                            "price": float(modifier.price),
+                        }
+                    )
                 else:
                     sauces.append(modifier.name)
 
@@ -224,37 +236,45 @@ class PublicMenuView(View):
             tags_lower = [t.lower() for t in tags]
 
             # Determine isNew
-            is_new = product.created_at >= new_threshold if product.created_at else False
+            is_new = (
+                product.created_at >= new_threshold if product.created_at else False
+            )
 
-            products_data.append({
-                'id': str(product.id),
-                'name': product.name,
-                'description': product.description or product.short_description or '',
-                'price': float(product.base_price),
-                'image': product.image or '',
-                'category': str(product.category_id),
-                'rating': float(product.rating),
-                'reviews': product.review_count,
-                'prepTime': product.preparation_time or 15,
-                'calories': product.calories or 0,
-                'popular': product.is_featured,
-                'isNew': is_new,
-                'discount': product.discount_percentage,
-                'vegan': 'vegan' in tags_lower,
-                'vegetarian': 'vegetarian' in tags_lower or 'vejetaryen' in tags_lower,
-                'glutenFree': 'gluten-free' in tags_lower or 'glutensiz' in tags_lower,
-                'spicy': product.spicy_level >= 2,
-                'allergens': product_allergen_ids,
-                'sizes': sizes,
-                'extras': extras,
-                'sauces': sauces,
-            })
+            products_data.append(
+                {
+                    "id": str(product.id),
+                    "name": product.name,
+                    "description": product.description
+                    or product.short_description
+                    or "",
+                    "price": float(product.base_price),
+                    "image": product.image or "",
+                    "category": str(product.category_id),
+                    "rating": float(product.rating),
+                    "reviews": product.review_count,
+                    "prepTime": product.preparation_time or 15,
+                    "calories": product.calories or 0,
+                    "popular": product.is_featured,
+                    "isNew": is_new,
+                    "discount": product.discount_percentage,
+                    "vegan": "vegan" in tags_lower,
+                    "vegetarian": "vegetarian" in tags_lower
+                    or "vejetaryen" in tags_lower,
+                    "glutenFree": "gluten-free" in tags_lower
+                    or "glutensiz" in tags_lower,
+                    "spicy": product.spicy_level >= 2,
+                    "allergens": product_allergen_ids,
+                    "sizes": sizes,
+                    "extras": extras,
+                    "sauces": sauces,
+                }
+            )
 
         # Serialize allergens
         allergens_data = [
             {
-                'id': str(a.id),
-                'name': a.name,
+                "id": str(a.id),
+                "name": a.name,
             }
             for a in allergens
         ]
@@ -264,14 +284,14 @@ class PublicMenuView(View):
         if theme:
             theme_settings = theme.settings or {}
             theme_data = {
-                'primaryColor': theme.primary_color,
-                'secondaryColor': theme.secondary_color,
-                'accentColor': theme.accent_color or theme.secondary_color,
-                'primaryColorRgb': theme.primary_color_rgb,
-                'layout': theme_settings.get('layout', 'wide'),
-                'borderRadius': theme_settings.get('border_radius', 12),
-                'gridColumns': theme_settings.get('grid_columns', 3),
-                'darkMode': theme_settings.get('dark_mode', False),
+                "primaryColor": theme.primary_color,
+                "secondaryColor": theme.secondary_color,
+                "accentColor": theme.accent_color or theme.secondary_color,
+                "primaryColorRgb": theme.primary_color_rgb,
+                "layout": theme_settings.get("layout", "wide"),
+                "borderRadius": theme_settings.get("border_radius", 12),
+                "gridColumns": theme_settings.get("grid_columns", 3),
+                "darkMode": theme_settings.get("dark_mode", False),
             }
 
         # Storefront settings — merge org + menu settings (menu overrides org)
@@ -279,41 +299,43 @@ class PublicMenuView(View):
         menu_settings = menu.settings or {}
 
         # Delivery & order settings
-        delivery_fee = menu_settings.get('delivery_fee',
-                       org_settings.get('delivery_fee', 15))
-        free_delivery_threshold = menu_settings.get('free_delivery_threshold',
-                                  org_settings.get('free_delivery_threshold', 300))
-        tax_rate = menu_settings.get('tax_rate',
-                   org_settings.get('tax_rate', 10))
-        delivery_time = menu_settings.get('delivery_time',
-                        org_settings.get('delivery_time', '30-45 dk'))
+        delivery_fee = menu_settings.get(
+            "delivery_fee", org_settings.get("delivery_fee", 15)
+        )
+        free_delivery_threshold = menu_settings.get(
+            "free_delivery_threshold", org_settings.get("free_delivery_threshold", 300)
+        )
+        tax_rate = menu_settings.get("tax_rate", org_settings.get("tax_rate", 10))
+        delivery_time = menu_settings.get(
+            "delivery_time", org_settings.get("delivery_time", "30-45 dk")
+        )
 
         # Promo banner settings
-        promo_banner = menu_settings.get('promo_banner',
-                       org_settings.get('promo_banner', {}))
+        promo_banner = menu_settings.get(
+            "promo_banner", org_settings.get("promo_banner", {})
+        )
 
         # Coupon codes (admin-defined)
-        coupons = menu_settings.get('coupons',
-                  org_settings.get('coupons', {}))
+        coupons = menu_settings.get("coupons", org_settings.get("coupons", {}))
 
         return {
-            'categories': categories_data,
-            'products': products_data,
-            'allergens': allergens_data,
-            'theme': theme_data,
-            'currency': menu_settings.get('currency', 'TRY'),
-            'locale': 'tr-TR',
-            'organizationName': organization.name,
-            'menuName': menu.name,
-            'menuDescription': menu.description or '',
+            "categories": categories_data,
+            "products": products_data,
+            "allergens": allergens_data,
+            "theme": theme_data,
+            "currency": menu_settings.get("currency", "TRY"),
+            "locale": "tr-TR",
+            "organizationName": organization.name,
+            "menuName": menu.name,
+            "menuDescription": menu.description or "",
             # Storefront config (dynamic, admin-managed)
-            'storefront': {
-                'deliveryFee': float(delivery_fee),
-                'freeDeliveryThreshold': float(free_delivery_threshold),
-                'taxRate': float(tax_rate) / 100,  # Convert percentage to decimal
-                'deliveryTime': str(delivery_time),
-                'promoBanner': promo_banner,
-                'coupons': coupons,
+            "storefront": {
+                "deliveryFee": float(delivery_fee),
+                "freeDeliveryThreshold": float(free_delivery_threshold),
+                "taxRate": float(tax_rate) / 100,  # Convert percentage to decimal
+                "deliveryTime": str(delivery_time),
+                "promoBanner": promo_banner,
+                "coupons": coupons,
             },
         }
 
@@ -328,10 +350,12 @@ class PublicMenuView(View):
         for cat in categories:
             cat_products = [p for p in products if str(p.category_id) == str(cat.id)]
             if cat_products:
-                result.append({
-                    'category': cat,
-                    'products': cat_products,
-                })
+                result.append(
+                    {
+                        "category": cat,
+                        "products": cat_products,
+                    }
+                )
         return result
 
 
@@ -345,49 +369,53 @@ class PublicMenuDetailView(View):
     GET /m/<menu_slug>/product/<product_id>/
     """
 
-    template_name = 'public/menu_detail.html'
+    template_name = "public/menu_detail.html"
 
     def get(self, request, menu_slug, product_id=None, *args, **kwargs):
         """Render the product detail page."""
         try:
             menu = Menu.objects.select_related(
-                'organization',
-                'theme',
+                "organization",
+                "theme",
             ).get(
                 slug=menu_slug,
                 is_published=True,
                 deleted_at__isnull=True,
             )
         except Menu.DoesNotExist:
-            raise Http404(_('Menu not found'))
+            raise Http404(_("Menu not found"))
 
         if product_id:
             try:
-                product = Product.objects.select_related(
-                    'category',
-                    'category__menu',
-                ).prefetch_related(
-                    'variants',
-                    'modifiers',
-                    'product_allergens__allergen',
-                    'nutrition_info',
-                ).get(
-                    id=product_id,
-                    category__menu=menu,
-                    is_active=True,
-                    deleted_at__isnull=True,
+                product = (
+                    Product.objects.select_related(
+                        "category",
+                        "category__menu",
+                    )
+                    .prefetch_related(
+                        "variants",
+                        "modifiers",
+                        "product_allergens__allergen",
+                        "nutrition_info",
+                    )
+                    .get(
+                        id=product_id,
+                        category__menu=menu,
+                        is_active=True,
+                        deleted_at__isnull=True,
+                    )
                 )
             except Product.DoesNotExist:
-                raise Http404(_('Product not found'))
+                raise Http404(_("Product not found"))
         else:
             product = None
 
         context = {
-            'menu': menu,
-            'organization': menu.organization,
-            'product': product,
-            'theme': menu.theme,
-            'page_title': f"{product.name if product else menu.name} - {menu.organization.name}",
+            "menu": menu,
+            "organization": menu.organization,
+            "product": product,
+            "theme": menu.theme,
+            "page_title": f"{product.name if product else menu.name} - {menu.organization.name}",
         }
 
         return render(request, self.template_name, context)
@@ -398,6 +426,6 @@ class PublicMenuDetailView(View):
 # =============================================================================
 
 __all__ = [
-    'PublicMenuView',
-    'PublicMenuDetailView',
+    "PublicMenuView",
+    "PublicMenuDetailView",
 ]

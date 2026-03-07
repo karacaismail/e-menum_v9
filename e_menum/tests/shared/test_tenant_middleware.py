@@ -57,21 +57,21 @@ class TestTenantMiddlewareInitialization:
         get_response = Mock()
         middleware = TenantMiddleware(get_response)
 
-        assert '/admin/' in middleware.PUBLIC_URL_PREFIXES
-        assert '/health/' in middleware.PUBLIC_URL_PREFIXES
-        assert '/api/v1/auth/' in middleware.PUBLIC_URL_PREFIXES
-        assert '/api/v1/public/' in middleware.PUBLIC_URL_PREFIXES
-        assert '/m/' in middleware.PUBLIC_URL_PREFIXES
+        assert "/admin/" in middleware.PUBLIC_URL_PREFIXES
+        assert "/health/" in middleware.PUBLIC_URL_PREFIXES
+        assert "/api/v1/auth/" in middleware.PUBLIC_URL_PREFIXES
+        assert "/api/v1/public/" in middleware.PUBLIC_URL_PREFIXES
+        assert "/m/" in middleware.PUBLIC_URL_PREFIXES
 
     def test_middleware_has_tenant_required_prefixes(self):
         """Test that middleware defines tenant-required URL prefixes."""
         get_response = Mock()
         middleware = TenantMiddleware(get_response)
 
-        assert '/api/v1/menus/' in middleware.TENANT_REQUIRED_PREFIXES
-        assert '/api/v1/categories/' in middleware.TENANT_REQUIRED_PREFIXES
-        assert '/api/v1/products/' in middleware.TENANT_REQUIRED_PREFIXES
-        assert '/api/v1/orders/' in middleware.TENANT_REQUIRED_PREFIXES
+        assert "/api/v1/menus/" in middleware.TENANT_REQUIRED_PREFIXES
+        assert "/api/v1/categories/" in middleware.TENANT_REQUIRED_PREFIXES
+        assert "/api/v1/products/" in middleware.TENANT_REQUIRED_PREFIXES
+        assert "/api/v1/orders/" in middleware.TENANT_REQUIRED_PREFIXES
 
 
 # =============================================================================
@@ -88,19 +88,19 @@ class TestTenantContextInjection:
         get_response = Mock(return_value=Mock())
         middleware = TenantMiddleware(get_response)
 
-        request = RequestFactory().get('/admin/')
+        request = RequestFactory().get("/admin/")
         middleware(request)
 
-        assert hasattr(request, 'organization')
-        assert hasattr(request, 'organization_id')
-        assert hasattr(request, 'is_tenant_aware')
+        assert hasattr(request, "organization")
+        assert hasattr(request, "organization_id")
+        assert hasattr(request, "is_tenant_aware")
 
     def test_public_url_sets_tenant_attributes_to_none(self):
         """Test that public URLs have tenant attributes set to None/False."""
         get_response = Mock(return_value=Mock())
         middleware = TenantMiddleware(get_response)
 
-        request = RequestFactory().get('/admin/')
+        request = RequestFactory().get("/admin/")
         middleware(request)
 
         assert request.organization is None
@@ -115,7 +115,7 @@ class TestTenantContextInjection:
         get_response = Mock(return_value=Mock())
         middleware = TenantMiddleware(get_response)
 
-        request = RequestFactory().get('/api/v1/some-endpoint/')
+        request = RequestFactory().get("/api/v1/some-endpoint/")
         request.user = user
 
         middleware(request)
@@ -132,8 +132,7 @@ class TestTenantContextInjection:
         middleware = TenantMiddleware(get_response)
 
         request = RequestFactory().get(
-            '/api/v1/some-endpoint/',
-            HTTP_X_ORGANIZATION_ID=str(org.id)
+            "/api/v1/some-endpoint/", HTTP_X_ORGANIZATION_ID=str(org.id)
         )
         # Mock unauthenticated user
         request.user = Mock()
@@ -152,8 +151,8 @@ class TestTenantContextInjection:
         get_response = Mock(return_value=Mock())
         middleware = TenantMiddleware(get_response)
 
-        request = RequestFactory().get('/api/v1/some-endpoint/')
-        request.COOKIES['emenum_org_id'] = str(org.id)
+        request = RequestFactory().get("/api/v1/some-endpoint/")
+        request.COOKIES["emenum_org_id"] = str(org.id)
         # Mock unauthenticated user
         request.user = Mock()
         request.user.is_authenticated = False
@@ -184,8 +183,7 @@ class TestOrganizationResolutionPriority:
         middleware = TenantMiddleware(get_response)
 
         request = RequestFactory().get(
-            '/api/v1/some-endpoint/',
-            HTTP_X_ORGANIZATION_ID=str(org2.id)
+            "/api/v1/some-endpoint/", HTTP_X_ORGANIZATION_ID=str(org2.id)
         )
         request.user = user
 
@@ -203,10 +201,9 @@ class TestOrganizationResolutionPriority:
         middleware = TenantMiddleware(get_response)
 
         request = RequestFactory().get(
-            '/api/v1/some-endpoint/',
-            HTTP_X_ORGANIZATION_ID=str(org1.id)
+            "/api/v1/some-endpoint/", HTTP_X_ORGANIZATION_ID=str(org1.id)
         )
-        request.COOKIES['emenum_org_id'] = str(org2.id)
+        request.COOKIES["emenum_org_id"] = str(org2.id)
         # Mock unauthenticated user
         request.user = Mock()
         request.user.is_authenticated = False
@@ -223,8 +220,8 @@ class TestOrganizationResolutionPriority:
         get_response = Mock(return_value=Mock())
         middleware = TenantMiddleware(get_response)
 
-        request = RequestFactory().get('/api/v1/some-endpoint/')
-        request.COOKIES['emenum_org_id'] = str(org.id)
+        request = RequestFactory().get("/api/v1/some-endpoint/")
+        request.COOKIES["emenum_org_id"] = str(org.id)
         # Mock unauthenticated user
         request.user = Mock()
         request.user.is_authenticated = False
@@ -251,14 +248,14 @@ class TestTenantRequiredEndpoints:
 
         # Test all tenant-required prefixes
         tenant_required_paths = [
-            '/api/v1/menus/',
-            '/api/v1/categories/',
-            '/api/v1/products/',
-            '/api/v1/orders/',
-            '/api/v1/tables/',
-            '/api/v1/qr-codes/',
-            '/api/v1/customers/',
-            '/api/v1/analytics/',
+            "/api/v1/menus/",
+            "/api/v1/categories/",
+            "/api/v1/products/",
+            "/api/v1/orders/",
+            "/api/v1/tables/",
+            "/api/v1/qr-codes/",
+            "/api/v1/customers/",
+            "/api/v1/analytics/",
         ]
 
         for path in tenant_required_paths:
@@ -269,7 +266,9 @@ class TestTenantRequiredEndpoints:
 
             response = middleware(request)
 
-            assert isinstance(response, JsonResponse), f"Path {path} should return JsonResponse"
+            assert isinstance(response, JsonResponse), (
+                f"Path {path} should return JsonResponse"
+            )
             assert response.status_code == 403, f"Path {path} should return 403"
 
     def test_tenant_required_403_response_format(self):
@@ -277,20 +276,21 @@ class TestTenantRequiredEndpoints:
         get_response = Mock(return_value=Mock())
         middleware = TenantMiddleware(get_response)
 
-        request = RequestFactory().get('/api/v1/menus/')
+        request = RequestFactory().get("/api/v1/menus/")
         request.user = Mock()
         request.user.is_authenticated = False
 
         response = middleware(request)
 
         import json
+
         data = json.loads(response.content)
 
-        assert data['success'] is False
-        assert 'error' in data
-        assert data['error']['code'] == 'TENANT_CONTEXT_REQUIRED'
-        assert 'message' in data['error']
-        assert 'details' in data['error']
+        assert data["success"] is False
+        assert "error" in data
+        assert data["error"]["code"] == "TENANT_CONTEXT_REQUIRED"
+        assert "message" in data["error"]
+        assert "details" in data["error"]
 
     def test_tenant_required_path_passes_with_valid_context(self):
         """Test that tenant-required paths pass with valid context."""
@@ -301,7 +301,7 @@ class TestTenantRequiredEndpoints:
         get_response = Mock(return_value=mock_response)
         middleware = TenantMiddleware(get_response)
 
-        request = RequestFactory().get('/api/v1/menus/')
+        request = RequestFactory().get("/api/v1/menus/")
         request.user = user
 
         response = middleware(request)
@@ -326,14 +326,14 @@ class TestPublicUrls:
         middleware = TenantMiddleware(get_response)
 
         public_paths = [
-            '/admin/',
-            '/health/',
-            '/healthz/',
-            '/api/v1/auth/login/',
-            '/api/v1/public/menu/',
-            '/static/css/style.css',
-            '/media/images/logo.png',
-            '/m/cafe-istanbul/',
+            "/admin/",
+            "/health/",
+            "/healthz/",
+            "/api/v1/auth/login/",
+            "/api/v1/public/menu/",
+            "/static/css/style.css",
+            "/media/images/logo.png",
+            "/m/cafe-istanbul/",
         ]
 
         for path in public_paths:
@@ -350,7 +350,7 @@ class TestPublicUrls:
         get_response = Mock(return_value=mock_response)
         middleware = TenantMiddleware(get_response)
 
-        request = RequestFactory().get('/api/v1/auth/login/')
+        request = RequestFactory().get("/api/v1/auth/login/")
         response = middleware(request)
 
         assert response == mock_response
@@ -372,8 +372,7 @@ class TestInvalidOrganizationId:
         middleware = TenantMiddleware(get_response)
 
         request = RequestFactory().get(
-            '/api/v1/some-endpoint/',
-            HTTP_X_ORGANIZATION_ID='not-a-valid-uuid'
+            "/api/v1/some-endpoint/", HTTP_X_ORGANIZATION_ID="not-a-valid-uuid"
         )
         request.user = Mock()
         request.user.is_authenticated = False
@@ -392,8 +391,7 @@ class TestInvalidOrganizationId:
         middleware = TenantMiddleware(get_response)
 
         request = RequestFactory().get(
-            '/api/v1/some-endpoint/',
-            HTTP_X_ORGANIZATION_ID=fake_uuid
+            "/api/v1/some-endpoint/", HTTP_X_ORGANIZATION_ID=fake_uuid
         )
         request.user = Mock()
         request.user.is_authenticated = False
@@ -411,8 +409,7 @@ class TestInvalidOrganizationId:
         middleware = TenantMiddleware(get_response)
 
         request = RequestFactory().get(
-            '/api/v1/some-endpoint/',
-            HTTP_X_ORGANIZATION_ID=str(org.id)
+            "/api/v1/some-endpoint/", HTTP_X_ORGANIZATION_ID=str(org.id)
         )
         request.user = Mock()
         request.user.is_authenticated = False
@@ -429,8 +426,7 @@ class TestInvalidOrganizationId:
         middleware = TenantMiddleware(get_response)
 
         request = RequestFactory().get(
-            '/api/v1/some-endpoint/',
-            HTTP_X_ORGANIZATION_ID=str(org.id)
+            "/api/v1/some-endpoint/", HTTP_X_ORGANIZATION_ID=str(org.id)
         )
         request.user = Mock()
         request.user.is_authenticated = False
@@ -457,8 +453,7 @@ class TestOrganizationCache:
         middleware = TenantMiddleware(get_response)
 
         request = RequestFactory().get(
-            '/api/v1/some-endpoint/',
-            HTTP_X_ORGANIZATION_ID=str(org.id)
+            "/api/v1/some-endpoint/", HTTP_X_ORGANIZATION_ID=str(org.id)
         )
         request.user = Mock()
         request.user.is_authenticated = False
@@ -478,8 +473,7 @@ class TestOrganizationCache:
 
         # First request
         request1 = RequestFactory().get(
-            '/api/v1/some-endpoint/',
-            HTTP_X_ORGANIZATION_ID=str(org.id)
+            "/api/v1/some-endpoint/", HTTP_X_ORGANIZATION_ID=str(org.id)
         )
         request1.user = Mock()
         request1.user.is_authenticated = False
@@ -490,13 +484,12 @@ class TestOrganizationCache:
 
         # Second request should use cache
         request2 = RequestFactory().get(
-            '/api/v1/another-endpoint/',
-            HTTP_X_ORGANIZATION_ID=str(org.id)
+            "/api/v1/another-endpoint/", HTTP_X_ORGANIZATION_ID=str(org.id)
         )
         request2.user = Mock()
         request2.user.is_authenticated = False
 
-        with patch.object(Organization.objects, 'get') as mock_get:
+        with patch.object(Organization.objects, "get") as mock_get:
             middleware(request2)
             # Should not call database again
             mock_get.assert_not_called()
@@ -526,6 +519,7 @@ class TestTenantContextMixin:
 
     def test_get_organization_returns_none_when_not_set(self):
         """Test that get_organization returns None when not set."""
+
         class MockView(TenantContextMixin):
             pass
 
@@ -549,6 +543,7 @@ class TestTenantContextMixin:
 
     def test_get_organization_id_returns_none_when_not_set(self):
         """Test that get_organization_id returns None when not set."""
+
         class MockView(TenantContextMixin):
             pass
 
@@ -649,7 +644,7 @@ class TestTenantIsolation:
         get_response = Mock(return_value=Mock())
         middleware = TenantMiddleware(get_response)
 
-        request = RequestFactory().get('/api/v1/menus/')
+        request = RequestFactory().get("/api/v1/menus/")
         request.user = user
 
         middleware(request)
@@ -672,12 +667,12 @@ class TestTenantIsolation:
         middleware = TenantMiddleware(get_response)
 
         # Request for user1
-        request1 = RequestFactory().get('/api/v1/menus/')
+        request1 = RequestFactory().get("/api/v1/menus/")
         request1.user = user1
         middleware(request1)
 
         # Request for user2
-        request2 = RequestFactory().get('/api/v1/menus/')
+        request2 = RequestFactory().get("/api/v1/menus/")
         request2.user = user2
         middleware(request2)
 
@@ -691,7 +686,7 @@ class TestTenantIsolation:
         get_response = Mock(return_value=Mock())
         middleware = TenantMiddleware(get_response)
 
-        request = RequestFactory().get('/api/v1/auth/login/')  # Public URL
+        request = RequestFactory().get("/api/v1/auth/login/")  # Public URL
         request.user = Mock()
         request.user.is_authenticated = False
 
@@ -708,7 +703,7 @@ class TestTenantIsolation:
         get_response = Mock(return_value=Mock())
         middleware = TenantMiddleware(get_response)
 
-        request = RequestFactory().get('/api/v1/some-endpoint/')
+        request = RequestFactory().get("/api/v1/some-endpoint/")
         request.user = user
 
         middleware(request)
@@ -731,8 +726,7 @@ class TestEdgeCases:
         middleware = TenantMiddleware(get_response)
 
         request = RequestFactory().get(
-            '/api/v1/some-endpoint/',
-            HTTP_X_ORGANIZATION_ID=''
+            "/api/v1/some-endpoint/", HTTP_X_ORGANIZATION_ID=""
         )
         request.user = Mock()
         request.user.is_authenticated = False
@@ -747,8 +741,7 @@ class TestEdgeCases:
         middleware = TenantMiddleware(get_response)
 
         request = RequestFactory().get(
-            '/api/v1/some-endpoint/',
-            HTTP_X_ORGANIZATION_ID='   '
+            "/api/v1/some-endpoint/", HTTP_X_ORGANIZATION_ID="   "
         )
         request.user = Mock()
         request.user.is_authenticated = False
@@ -762,7 +755,7 @@ class TestEdgeCases:
         get_response = Mock(return_value=Mock())
         middleware = TenantMiddleware(get_response)
 
-        request = RequestFactory().get('/api/v1/some-endpoint/')
+        request = RequestFactory().get("/api/v1/some-endpoint/")
         # Don't set user attribute at all
 
         # Should not raise an error
@@ -778,8 +771,7 @@ class TestEdgeCases:
         middleware = TenantMiddleware(get_response)
 
         request = RequestFactory().get(
-            '/api/v1/some-endpoint/',
-            HTTP_X_ORGANIZATION_ID=org_id
+            "/api/v1/some-endpoint/", HTTP_X_ORGANIZATION_ID=org_id
         )
         request.user = Mock()
         request.user.is_authenticated = False
@@ -801,7 +793,7 @@ class TestCustomSettings:
 
     def test_custom_header_name_from_settings(self, settings):
         """Test that custom header name from settings is respected."""
-        settings.EMENUM_TENANT_HEADER = 'X-Tenant-ID'
+        settings.EMENUM_TENANT_HEADER = "X-Tenant-ID"
 
         org = OrganizationFactory()
 
@@ -809,8 +801,7 @@ class TestCustomSettings:
         middleware = TenantMiddleware(get_response)
 
         request = RequestFactory().get(
-            '/api/v1/some-endpoint/',
-            HTTP_X_TENANT_ID=str(org.id)
+            "/api/v1/some-endpoint/", HTTP_X_TENANT_ID=str(org.id)
         )
         request.user = Mock()
         request.user.is_authenticated = False
@@ -821,15 +812,15 @@ class TestCustomSettings:
 
     def test_custom_cookie_name_from_settings(self, settings):
         """Test that custom cookie name from settings is respected."""
-        settings.EMENUM_TENANT_COOKIE = 'tenant_id'
+        settings.EMENUM_TENANT_COOKIE = "tenant_id"
 
         org = OrganizationFactory()
 
         get_response = Mock(return_value=Mock())
         middleware = TenantMiddleware(get_response)
 
-        request = RequestFactory().get('/api/v1/some-endpoint/')
-        request.COOKIES['tenant_id'] = str(org.id)
+        request = RequestFactory().get("/api/v1/some-endpoint/")
+        request.COOKIES["tenant_id"] = str(org.id)
         request.user = Mock()
         request.user.is_authenticated = False
 

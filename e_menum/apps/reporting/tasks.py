@@ -17,8 +17,8 @@ logger = logging.getLogger(__name__)
 
 @shared_task(
     bind=True,
-    name='apps.reporting.tasks.execute_report_task',
-    queue='reporting',
+    name="apps.reporting.tasks.execute_report_task",
+    queue="reporting",
     max_retries=2,
     default_retry_delay=30,
     soft_time_limit=300,
@@ -41,36 +41,40 @@ def execute_report_task(self, execution_id: str):
 
     try:
         execution = ReportExecution.objects.select_related(
-            'report_definition', 'organization',
+            "report_definition",
+            "organization",
         ).get(id=execution_id)
     except ReportExecution.DoesNotExist:
-        logger.error('Execution not found: %s', execution_id)
-        return {'error': f'Execution not found: {execution_id}'}
+        logger.error("Execution not found: %s", execution_id)
+        return {"error": f"Execution not found: {execution_id}"}
 
     # Skip if not pending
-    if execution.status != 'PENDING':
+    if execution.status != "PENDING":
         logger.warning(
-            'Execution %s is in status %s, skipping',
-            execution_id, execution.status,
+            "Execution %s is in status %s, skipping",
+            execution_id,
+            execution.status,
         )
-        return {'skipped': True, 'reason': f'Status is {execution.status}'}
+        return {"skipped": True, "reason": f"Status is {execution.status}"}
 
     feature_key = execution.report_definition.feature_key
 
     # Get handler
     handler_class = handler_registry.get(feature_key)
     if not handler_class:
-        execution.status = 'FAILED'
-        execution.error_message = f'No handler registered for {feature_key}'
+        execution.status = "FAILED"
+        execution.error_message = f"No handler registered for {feature_key}"
         execution.completed_at = timezone.now()
-        execution.save(update_fields=['status', 'error_message', 'completed_at', 'updated_at'])
-        logger.error('No handler for %s', feature_key)
-        return {'error': f'No handler for {feature_key}'}
+        execution.save(
+            update_fields=["status", "error_message", "completed_at", "updated_at"]
+        )
+        logger.error("No handler for %s", feature_key)
+        return {"error": f"No handler for {feature_key}"}
 
     # Mark as processing
-    execution.status = 'PROCESSING'
+    execution.status = "PROCESSING"
     execution.started_at = timezone.now()
-    execution.save(update_fields=['status', 'started_at', 'updated_at'])
+    execution.save(update_fields=["status", "started_at", "updated_at"])
 
     # Execute
     handler = handler_class()
@@ -91,43 +95,58 @@ def execute_report_task(self, execution_id: str):
 
         elapsed_ms = int((time.monotonic() - start_time) * 1000)
 
-        execution.status = 'COMPLETED'
+        execution.status = "COMPLETED"
         execution.result_data = result_data
         execution.completed_at = timezone.now()
         execution.duration_ms = elapsed_ms
         execution.credits_consumed = execution.report_definition.credit_cost
-        execution.save(update_fields=[
-            'status', 'result_data', 'completed_at',
-            'duration_ms', 'credits_consumed', 'updated_at',
-        ])
+        execution.save(
+            update_fields=[
+                "status",
+                "result_data",
+                "completed_at",
+                "duration_ms",
+                "credits_consumed",
+                "updated_at",
+            ]
+        )
 
         logger.info(
-            'Async report completed: key=%s org=%s duration=%dms',
-            feature_key, execution.organization_id, elapsed_ms,
+            "Async report completed: key=%s org=%s duration=%dms",
+            feature_key,
+            execution.organization_id,
+            elapsed_ms,
         )
 
         return {
-            'execution_id': str(execution.id),
-            'feature_key': feature_key,
-            'status': 'COMPLETED',
-            'duration_ms': elapsed_ms,
+            "execution_id": str(execution.id),
+            "feature_key": feature_key,
+            "status": "COMPLETED",
+            "duration_ms": elapsed_ms,
         }
 
     except Exception as exc:
         elapsed_ms = int((time.monotonic() - start_time) * 1000)
 
-        execution.status = 'FAILED'
+        execution.status = "FAILED"
         execution.error_message = str(exc)
         execution.completed_at = timezone.now()
         execution.duration_ms = elapsed_ms
-        execution.save(update_fields=[
-            'status', 'error_message', 'completed_at',
-            'duration_ms', 'updated_at',
-        ])
+        execution.save(
+            update_fields=[
+                "status",
+                "error_message",
+                "completed_at",
+                "duration_ms",
+                "updated_at",
+            ]
+        )
 
         logger.error(
-            'Async report failed: key=%s org=%s error=%s',
-            feature_key, execution.organization_id, str(exc),
+            "Async report failed: key=%s org=%s error=%s",
+            feature_key,
+            execution.organization_id,
+            str(exc),
             exc_info=True,
         )
 
@@ -136,17 +155,17 @@ def execute_report_task(self, execution_id: str):
             raise self.retry(exc=exc)
 
         return {
-            'execution_id': str(execution.id),
-            'feature_key': feature_key,
-            'status': 'FAILED',
-            'error': str(exc),
+            "execution_id": str(execution.id),
+            "feature_key": feature_key,
+            "status": "FAILED",
+            "error": str(exc),
         }
 
 
 @shared_task(
     bind=True,
-    name='apps.reporting.tasks.process_scheduled_reports',
-    queue='reporting',
+    name="apps.reporting.tasks.process_scheduled_reports",
+    queue="reporting",
     max_retries=1,
     soft_time_limit=300,
     time_limit=600,
@@ -169,7 +188,7 @@ def process_scheduled_reports(self):
         is_active=True,
         deleted_at__isnull=True,
         next_run_at__lte=now,
-    ).select_related('report_definition', 'organization')
+    ).select_related("report_definition", "organization")
 
     executed = 0
     failed = 0
@@ -190,10 +209,15 @@ def process_scheduled_reports(self):
             schedule.run_count += 1
             schedule.failure_count = 0
             schedule.next_run_at = scheduler.calculate_next_run(schedule)
-            schedule.save(update_fields=[
-                'last_run_at', 'run_count', 'failure_count',
-                'next_run_at', 'updated_at',
-            ])
+            schedule.save(
+                update_fields=[
+                    "last_run_at",
+                    "run_count",
+                    "failure_count",
+                    "next_run_at",
+                    "updated_at",
+                ]
+            )
 
             # Deliver the report
             scheduler.deliver_report(
@@ -214,37 +238,45 @@ def process_scheduled_reports(self):
             if schedule.failure_count >= schedule.max_failures:
                 schedule.is_active = False
                 logger.warning(
-                    'Schedule %s auto-disabled after %d failures',
-                    schedule.id, schedule.failure_count,
+                    "Schedule %s auto-disabled after %d failures",
+                    schedule.id,
+                    schedule.failure_count,
                 )
             else:
                 schedule.next_run_at = scheduler.calculate_next_run(schedule)
 
-            schedule.save(update_fields=[
-                'failure_count', 'last_run_at', 'is_active',
-                'next_run_at', 'updated_at',
-            ])
+            schedule.save(
+                update_fields=[
+                    "failure_count",
+                    "last_run_at",
+                    "is_active",
+                    "next_run_at",
+                    "updated_at",
+                ]
+            )
 
             logger.error(
-                'Scheduled report failed: schedule=%s error=%s',
-                schedule.id, str(exc),
+                "Scheduled report failed: schedule=%s error=%s",
+                schedule.id,
+                str(exc),
                 exc_info=True,
             )
 
     logger.info(
-        'Scheduled reports processed: executed=%d failed=%d',
-        executed, failed,
+        "Scheduled reports processed: executed=%d failed=%d",
+        executed,
+        failed,
     )
 
     return {
-        'executed': executed,
-        'failed': failed,
+        "executed": executed,
+        "failed": failed,
     }
 
 
 @shared_task(
-    name='apps.reporting.tasks.cleanup_old_executions',
-    queue='maintenance',
+    name="apps.reporting.tasks.cleanup_old_executions",
+    queue="maintenance",
     soft_time_limit=300,
     time_limit=600,
 )
@@ -264,14 +296,14 @@ def cleanup_old_executions(days=90):
     cutoff = timezone.now() - timedelta(days=days)
 
     updated = ReportExecution.objects.filter(
-        status='COMPLETED',
+        status="COMPLETED",
         completed_at__lt=cutoff,
         result_data__isnull=False,
     ).update(
         result_data=None,
-        export_file_url='',
+        export_file_url="",
     )
 
-    logger.info('Cleaned up %d old report executions (>%d days)', updated, days)
+    logger.info("Cleaned up %d old report executions (>%d days)", updated, days)
 
-    return {'cleaned': updated, 'days': days}
+    return {"cleaned": updated, "days": days}

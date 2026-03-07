@@ -1,4 +1,5 @@
 """Website models package — re-exports all models for backward compatibility."""
+
 from .base import TimeStampedModel
 from .forms_models import ContactSubmission, DemoRequest, NewsletterSubscriber
 from .settings import SiteSettings
@@ -8,6 +9,7 @@ from .social_proof import Testimonial, TrustBadge, TrustLocation, CompanyStat
 from .content import FAQ, TeamMember, CompanyValue, LegalPage, BlogPost
 from .pricing import PlanDisplayFeature
 from .navigation import NavigationLink
+
 # New storefront models
 from .solutions import Sector, SolutionPage
 from .customers import CaseStudy, ROICalculatorConfig
@@ -19,33 +21,58 @@ from .support import HelpCategory, HelpArticle
 
 __all__ = [
     # Base
-    'TimeStampedModel',
+    "TimeStampedModel",
     # Forms
-    'ContactSubmission', 'DemoRequest', 'NewsletterSubscriber',
+    "ContactSubmission",
+    "DemoRequest",
+    "NewsletterSubscriber",
     # Settings & Navigation
-    'SiteSettings', 'NavigationLink',
+    "SiteSettings",
+    "NavigationLink",
     # Hero & Home
-    'PageHero', 'HomeSection',
+    "PageHero",
+    "HomeSection",
     # Features
-    'FeatureCategory', 'FeatureBullet',
+    "FeatureCategory",
+    "FeatureBullet",
     # Social Proof
-    'Testimonial', 'TrustBadge', 'TrustLocation', 'CompanyStat',
+    "Testimonial",
+    "TrustBadge",
+    "TrustLocation",
+    "CompanyStat",
     # Content
-    'FAQ', 'TeamMember', 'CompanyValue', 'LegalPage', 'BlogPost',
+    "FAQ",
+    "TeamMember",
+    "CompanyValue",
+    "LegalPage",
+    "BlogPost",
     # Pricing
-    'PlanDisplayFeature',
+    "PlanDisplayFeature",
     # Solutions
-    'Sector', 'SolutionPage',
+    "Sector",
+    "SolutionPage",
     # Customers
-    'CaseStudy', 'ROICalculatorConfig',
+    "CaseStudy",
+    "ROICalculatorConfig",
     # Resources
-    'ResourceCategory', 'IndustryReport', 'FreeTool', 'Webinar',
+    "ResourceCategory",
+    "IndustryReport",
+    "FreeTool",
+    "Webinar",
     # Company
-    'CareerPosition', 'PressRelease', 'Milestone', 'BrandAsset',
+    "CareerPosition",
+    "PressRelease",
+    "Milestone",
+    "BrandAsset",
     # Investor
-    'InvestorPage', 'InvestorPresentation', 'InvestorFinancial',
+    "InvestorPage",
+    "InvestorPresentation",
+    "InvestorFinancial",
     # Partners
-    'PartnerProgram', 'PartnerTier', 'PartnerBenefit',
+    "PartnerProgram",
+    "PartnerTier",
+    "PartnerBenefit",
     # Support
-    'HelpCategory', 'HelpArticle',
+    "HelpCategory",
+    "HelpArticle",
 ]

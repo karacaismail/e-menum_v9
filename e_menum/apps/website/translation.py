@@ -54,19 +54,20 @@ from .models import (
 # SITE SETTINGS
 # =============================================================================
 
+
 class SiteSettingsTranslationOptions(TranslationOptions):
     fields = (
-        'company_name',
-        'tagline',
-        'description',
-        'address',
-        'whatsapp_message',
-        'cta_primary_text',
-        'cta_secondary_text',
-        'cta_trust_text',
-        'announcement_text',
-        'cookie_banner_title',
-        'cookie_banner_text',
+        "company_name",
+        "tagline",
+        "description",
+        "address",
+        "whatsapp_message",
+        "cta_primary_text",
+        "cta_secondary_text",
+        "cta_trust_text",
+        "announcement_text",
+        "cookie_banner_title",
+        "cookie_banner_text",
     )
 
 
@@ -74,14 +75,15 @@ class SiteSettingsTranslationOptions(TranslationOptions):
 # PAGE HERO
 # =============================================================================
 
+
 class PageHeroTranslationOptions(TranslationOptions):
     fields = (
-        'title',
-        'subtitle',
-        'badge_text',
-        'cta_primary_text',
-        'cta_secondary_text',
-        'trust_text',
+        "title",
+        "subtitle",
+        "badge_text",
+        "cta_primary_text",
+        "cta_secondary_text",
+        "trust_text",
     )
 
 
@@ -89,10 +91,11 @@ class PageHeroTranslationOptions(TranslationOptions):
 # HOME SECTION
 # =============================================================================
 
+
 class HomeSectionTranslationOptions(TranslationOptions):
     fields = (
-        'title',
-        'description',
+        "title",
+        "description",
     )
 
 
@@ -100,30 +103,32 @@ class HomeSectionTranslationOptions(TranslationOptions):
 # FEATURE CATEGORY + BULLET
 # =============================================================================
 
+
 class FeatureCategoryTranslationOptions(TranslationOptions):
     fields = (
-        'title',
-        'description',
-        'badge_text',
-        'image_alt',
+        "title",
+        "description",
+        "badge_text",
+        "image_alt",
     )
 
 
 class FeatureBulletTranslationOptions(TranslationOptions):
-    fields = ('text',)
+    fields = ("text",)
 
 
 # =============================================================================
 # TESTIMONIAL
 # =============================================================================
 
+
 class TestimonialTranslationOptions(TranslationOptions):
     fields = (
-        'author_name',
-        'author_role_or_business',
-        'author_location',
-        'business_type_label',
-        'quote',
+        "author_name",
+        "author_role_or_business",
+        "author_location",
+        "business_type_label",
+        "quote",
     )
 
 
@@ -131,22 +136,24 @@ class TestimonialTranslationOptions(TranslationOptions):
 # TRUST BADGE + LOCATION
 # =============================================================================
 
+
 class TrustBadgeTranslationOptions(TranslationOptions):
-    fields = ('label',)
+    fields = ("label",)
 
 
 class TrustLocationTranslationOptions(TranslationOptions):
-    fields = ('text',)
+    fields = ("text",)
 
 
 # =============================================================================
 # FAQ
 # =============================================================================
 
+
 class FAQTranslationOptions(TranslationOptions):
     fields = (
-        'question',
-        'answer',
+        "question",
+        "answer",
     )
 
 
@@ -154,10 +161,11 @@ class FAQTranslationOptions(TranslationOptions):
 # TEAM MEMBER
 # =============================================================================
 
+
 class TeamMemberTranslationOptions(TranslationOptions):
     fields = (
-        'name',
-        'title',
+        "name",
+        "title",
     )
 
 
@@ -165,10 +173,11 @@ class TeamMemberTranslationOptions(TranslationOptions):
 # COMPANY VALUE
 # =============================================================================
 
+
 class CompanyValueTranslationOptions(TranslationOptions):
     fields = (
-        'title',
-        'description',
+        "title",
+        "description",
     )
 
 
@@ -176,10 +185,11 @@ class CompanyValueTranslationOptions(TranslationOptions):
 # COMPANY STAT
 # =============================================================================
 
+
 class CompanyStatTranslationOptions(TranslationOptions):
     fields = (
-        'value',
-        'label',
+        "value",
+        "label",
     )
 
 
@@ -187,12 +197,13 @@ class CompanyStatTranslationOptions(TranslationOptions):
 # LEGAL PAGE
 # =============================================================================
 
+
 class LegalPageTranslationOptions(TranslationOptions):
     fields = (
-        'title',
-        'content',
-        'last_updated_display',
-        'meta_description',
+        "title",
+        "content",
+        "last_updated_display",
+        "meta_description",
     )
 
 
@@ -200,13 +211,14 @@ class LegalPageTranslationOptions(TranslationOptions):
 # BLOG POST
 # =============================================================================
 
+
 class BlogPostTranslationOptions(TranslationOptions):
     fields = (
-        'title',
-        'excerpt',
-        'content',
-        'category',
-        'meta_description',
+        "title",
+        "excerpt",
+        "content",
+        "category",
+        "meta_description",
     )
 
 
@@ -214,18 +226,20 @@ class BlogPostTranslationOptions(TranslationOptions):
 # PLAN DISPLAY FEATURE
 # =============================================================================
 
+
 class PlanDisplayFeatureTranslationOptions(TranslationOptions):
-    fields = ('text',)
+    fields = ("text",)
 
 
 # =============================================================================
 # NAVIGATION LINK
 # =============================================================================
 
+
 class NavigationLinkTranslationOptions(TranslationOptions):
     fields = (
-        'label',
-        'description',
+        "label",
+        "description",
     )
 
 
@@ -233,22 +247,24 @@ class NavigationLinkTranslationOptions(TranslationOptions):
 # SECTOR
 # =============================================================================
 
+
 class SectorTranslationOptions(TranslationOptions):
-    fields = ('name', 'description')
+    fields = ("name", "description")
 
 
 # =============================================================================
 # SOLUTION PAGE
 # =============================================================================
 
+
 class SolutionPageTranslationOptions(TranslationOptions):
     fields = (
-        'title',
-        'subtitle',
-        'content',
-        'key_benefits',
-        'pain_points',
-        'target_audience',
+        "title",
+        "subtitle",
+        "content",
+        "key_benefits",
+        "pain_points",
+        "target_audience",
     )
 
 
@@ -256,19 +272,20 @@ class SolutionPageTranslationOptions(TranslationOptions):
 # CASE STUDY
 # =============================================================================
 
+
 class CaseStudyTranslationOptions(TranslationOptions):
     fields = (
-        'title',
-        'excerpt',
-        'challenge',
-        'solution',
-        'results',
-        'stat_1_label',
-        'stat_2_label',
-        'stat_3_label',
-        'quote',
-        'quote_author',
-        'quote_author_title',
+        "title",
+        "excerpt",
+        "challenge",
+        "solution",
+        "results",
+        "stat_1_label",
+        "stat_2_label",
+        "stat_3_label",
+        "quote",
+        "quote_author",
+        "quote_author_title",
     )
 
 
@@ -276,27 +293,30 @@ class CaseStudyTranslationOptions(TranslationOptions):
 # ROI CALCULATOR CONFIG
 # =============================================================================
 
+
 class ROICalculatorConfigTranslationOptions(TranslationOptions):
-    fields = ('title', 'description')
+    fields = ("title", "description")
 
 
 # =============================================================================
 # RESOURCE CATEGORY
 # =============================================================================
 
+
 class ResourceCategoryTranslationOptions(TranslationOptions):
-    fields = ('name',)
+    fields = ("name",)
 
 
 # =============================================================================
 # INDUSTRY REPORT
 # =============================================================================
 
+
 class IndustryReportTranslationOptions(TranslationOptions):
     fields = (
-        'title',
-        'excerpt',
-        'content',
+        "title",
+        "excerpt",
+        "content",
     )
 
 
@@ -304,30 +324,33 @@ class IndustryReportTranslationOptions(TranslationOptions):
 # FREE TOOL
 # =============================================================================
 
+
 class FreeToolTranslationOptions(TranslationOptions):
-    fields = ('title', 'description')
+    fields = ("title", "description")
 
 
 # =============================================================================
 # WEBINAR
 # =============================================================================
 
+
 class WebinarTranslationOptions(TranslationOptions):
-    fields = ('title', 'description')
+    fields = ("title", "description")
 
 
 # =============================================================================
 # CAREER POSITION
 # =============================================================================
 
+
 class CareerPositionTranslationOptions(TranslationOptions):
     fields = (
-        'title',
-        'department',
-        'location',
-        'description',
-        'requirements',
-        'benefits',
+        "title",
+        "department",
+        "location",
+        "description",
+        "requirements",
+        "benefits",
     )
 
 
@@ -335,11 +358,12 @@ class CareerPositionTranslationOptions(TranslationOptions):
 # PRESS RELEASE
 # =============================================================================
 
+
 class PressReleaseTranslationOptions(TranslationOptions):
     fields = (
-        'title',
-        'excerpt',
-        'content',
+        "title",
+        "excerpt",
+        "content",
     )
 
 
@@ -347,28 +371,31 @@ class PressReleaseTranslationOptions(TranslationOptions):
 # MILESTONE
 # =============================================================================
 
+
 class MilestoneTranslationOptions(TranslationOptions):
-    fields = ('title', 'description')
+    fields = ("title", "description")
 
 
 # =============================================================================
 # BRAND ASSET
 # =============================================================================
 
+
 class BrandAssetTranslationOptions(TranslationOptions):
-    fields = ('title', 'description')
+    fields = ("title", "description")
 
 
 # =============================================================================
 # INVESTOR PAGE
 # =============================================================================
 
+
 class InvestorPageTranslationOptions(TranslationOptions):
     fields = (
-        'title',
-        'subtitle',
-        'overview_content',
-        'investment_thesis',
+        "title",
+        "subtitle",
+        "overview_content",
+        "investment_thesis",
     )
 
 
@@ -376,28 +403,31 @@ class InvestorPageTranslationOptions(TranslationOptions):
 # INVESTOR PRESENTATION
 # =============================================================================
 
+
 class InvestorPresentationTranslationOptions(TranslationOptions):
-    fields = ('title', 'description')
+    fields = ("title", "description")
 
 
 # =============================================================================
 # INVESTOR FINANCIAL
 # =============================================================================
 
+
 class InvestorFinancialTranslationOptions(TranslationOptions):
-    fields = ('metric_name',)
+    fields = ("metric_name",)
 
 
 # =============================================================================
 # PARTNER PROGRAM
 # =============================================================================
 
+
 class PartnerProgramTranslationOptions(TranslationOptions):
     fields = (
-        'title',
-        'description',
-        'commission_info',
-        'requirements',
+        "title",
+        "description",
+        "commission_info",
+        "requirements",
     )
 
 
@@ -405,32 +435,36 @@ class PartnerProgramTranslationOptions(TranslationOptions):
 # PARTNER TIER
 # =============================================================================
 
+
 class PartnerTierTranslationOptions(TranslationOptions):
-    fields = ('name', 'description')
+    fields = ("name", "description")
 
 
 # =============================================================================
 # PARTNER BENEFIT
 # =============================================================================
 
+
 class PartnerBenefitTranslationOptions(TranslationOptions):
-    fields = ('text',)
+    fields = ("text",)
 
 
 # =============================================================================
 # HELP CATEGORY
 # =============================================================================
 
+
 class HelpCategoryTranslationOptions(TranslationOptions):
-    fields = ('name', 'description')
+    fields = ("name", "description")
 
 
 # =============================================================================
 # HELP ARTICLE
 # =============================================================================
 
+
 class HelpArticleTranslationOptions(TranslationOptions):
-    fields = ('title', 'content')
+    fields = ("title", "content")
 
 
 # =============================================================================

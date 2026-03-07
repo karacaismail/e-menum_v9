@@ -5,55 +5,217 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('seo', '0001_initial'),
+        ("seo", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='CrawlReport',
+            name="CrawlReport",
             fields=[
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('started_at', models.DateTimeField(help_text='When the crawl started', verbose_name='Started at')),
-                ('finished_at', models.DateTimeField(blank=True, help_text='When the crawl finished', null=True, verbose_name='Finished at')),
-                ('total_pages', models.PositiveIntegerField(default=0, help_text='Number of pages crawled', verbose_name='Total pages')),
-                ('total_links', models.PositiveIntegerField(default=0, help_text='Total number of links checked', verbose_name='Total links')),
-                ('broken_count', models.PositiveIntegerField(default=0, help_text='Number of broken links found', verbose_name='Broken count')),
-                ('redirected_count', models.PositiveIntegerField(default=0, help_text='Number of redirected links found', verbose_name='Redirected count')),
-                ('healthy_count', models.PositiveIntegerField(default=0, help_text='Number of healthy links found', verbose_name='Healthy count')),
-                ('status', models.CharField(choices=[('running', 'Running'), ('completed', 'Completed'), ('failed', 'Failed')], default='running', help_text='Current status of the crawl', max_length=20, verbose_name='Status')),
-                ('error_message', models.TextField(blank=True, help_text='Error details if the crawl failed', verbose_name='Error message')),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "started_at",
+                    models.DateTimeField(
+                        help_text="When the crawl started", verbose_name="Started at"
+                    ),
+                ),
+                (
+                    "finished_at",
+                    models.DateTimeField(
+                        blank=True,
+                        help_text="When the crawl finished",
+                        null=True,
+                        verbose_name="Finished at",
+                    ),
+                ),
+                (
+                    "total_pages",
+                    models.PositiveIntegerField(
+                        default=0,
+                        help_text="Number of pages crawled",
+                        verbose_name="Total pages",
+                    ),
+                ),
+                (
+                    "total_links",
+                    models.PositiveIntegerField(
+                        default=0,
+                        help_text="Total number of links checked",
+                        verbose_name="Total links",
+                    ),
+                ),
+                (
+                    "broken_count",
+                    models.PositiveIntegerField(
+                        default=0,
+                        help_text="Number of broken links found",
+                        verbose_name="Broken count",
+                    ),
+                ),
+                (
+                    "redirected_count",
+                    models.PositiveIntegerField(
+                        default=0,
+                        help_text="Number of redirected links found",
+                        verbose_name="Redirected count",
+                    ),
+                ),
+                (
+                    "healthy_count",
+                    models.PositiveIntegerField(
+                        default=0,
+                        help_text="Number of healthy links found",
+                        verbose_name="Healthy count",
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("running", "Running"),
+                            ("completed", "Completed"),
+                            ("failed", "Failed"),
+                        ],
+                        default="running",
+                        help_text="Current status of the crawl",
+                        max_length=20,
+                        verbose_name="Status",
+                    ),
+                ),
+                (
+                    "error_message",
+                    models.TextField(
+                        blank=True,
+                        help_text="Error details if the crawl failed",
+                        verbose_name="Error message",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Crawl Report',
-                'verbose_name_plural': 'Crawl Reports',
-                'db_table': 'seo_crawl_reports',
-                'ordering': ['-started_at'],
+                "verbose_name": "Crawl Report",
+                "verbose_name_plural": "Crawl Reports",
+                "db_table": "seo_crawl_reports",
+                "ordering": ["-started_at"],
             },
         ),
         migrations.CreateModel(
-            name='NotFound404Log',
+            name="NotFound404Log",
             fields=[
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('path', models.CharField(db_index=True, help_text='URL path that returned 404', max_length=500, verbose_name='Path')),
-                ('date', models.DateField(db_index=True, help_text='Day the 404 was recorded', verbose_name='Date')),
-                ('hit_count', models.PositiveIntegerField(default=1, help_text='Number of 404 hits for this path on this day', verbose_name='Hit count')),
-                ('last_user_agent', models.TextField(blank=True, help_text='Most recent user agent that triggered this 404', verbose_name='Last user agent')),
-                ('last_referer', models.URLField(blank=True, help_text='Most recent HTTP referer header', max_length=500, verbose_name='Last referer')),
-                ('last_ip', models.GenericIPAddressField(blank=True, help_text='Most recent IP address that triggered this 404', null=True, verbose_name='Last IP')),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "path",
+                    models.CharField(
+                        db_index=True,
+                        help_text="URL path that returned 404",
+                        max_length=500,
+                        verbose_name="Path",
+                    ),
+                ),
+                (
+                    "date",
+                    models.DateField(
+                        db_index=True,
+                        help_text="Day the 404 was recorded",
+                        verbose_name="Date",
+                    ),
+                ),
+                (
+                    "hit_count",
+                    models.PositiveIntegerField(
+                        default=1,
+                        help_text="Number of 404 hits for this path on this day",
+                        verbose_name="Hit count",
+                    ),
+                ),
+                (
+                    "last_user_agent",
+                    models.TextField(
+                        blank=True,
+                        help_text="Most recent user agent that triggered this 404",
+                        verbose_name="Last user agent",
+                    ),
+                ),
+                (
+                    "last_referer",
+                    models.URLField(
+                        blank=True,
+                        help_text="Most recent HTTP referer header",
+                        max_length=500,
+                        verbose_name="Last referer",
+                    ),
+                ),
+                (
+                    "last_ip",
+                    models.GenericIPAddressField(
+                        blank=True,
+                        help_text="Most recent IP address that triggered this 404",
+                        null=True,
+                        verbose_name="Last IP",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': '404 Log',
-                'verbose_name_plural': '404 Logs',
-                'db_table': 'seo_404_logs',
-                'ordering': ['-date', '-hit_count'],
-                'indexes': [models.Index(fields=['-date', '-hit_count'], name='seo_404_date_hits_idx')],
-                'unique_together': {('path', 'date')},
+                "verbose_name": "404 Log",
+                "verbose_name_plural": "404 Logs",
+                "db_table": "seo_404_logs",
+                "ordering": ["-date", "-hit_count"],
+                "indexes": [
+                    models.Index(
+                        fields=["-date", "-hit_count"], name="seo_404_date_hits_idx"
+                    )
+                ],
+                "unique_together": {("path", "date")},
             },
         ),
     ]

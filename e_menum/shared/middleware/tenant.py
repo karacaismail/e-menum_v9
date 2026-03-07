@@ -83,26 +83,26 @@ class TenantMiddleware(MiddlewareMixin):
 
     # URL prefixes that allow anonymous/public access without tenant context
     PUBLIC_URL_PREFIXES = (
-        '/admin/',
-        '/health/',
-        '/healthz/',
-        '/api/v1/auth/',
-        '/api/v1/public/',
-        '/static/',
-        '/media/',
-        '/m/',  # Public menu display
+        "/admin/",
+        "/health/",
+        "/healthz/",
+        "/api/v1/auth/",
+        "/api/v1/public/",
+        "/static/",
+        "/media/",
+        "/m/",  # Public menu display
     )
 
     # URL prefixes that REQUIRE tenant context
     TENANT_REQUIRED_PREFIXES = (
-        '/api/v1/menus/',
-        '/api/v1/categories/',
-        '/api/v1/products/',
-        '/api/v1/orders/',
-        '/api/v1/tables/',
-        '/api/v1/qr-codes/',
-        '/api/v1/customers/',
-        '/api/v1/analytics/',
+        "/api/v1/menus/",
+        "/api/v1/categories/",
+        "/api/v1/products/",
+        "/api/v1/orders/",
+        "/api/v1/tables/",
+        "/api/v1/qr-codes/",
+        "/api/v1/customers/",
+        "/api/v1/analytics/",
     )
 
     def __init__(self, get_response):
@@ -144,7 +144,7 @@ class TenantMiddleware(MiddlewareMixin):
             logger.debug(
                 "Tenant context set: org_id=%s, org_name=%s",
                 organization.id,
-                organization.name
+                organization.name,
             )
         else:
             # Check if tenant context is required for this path
@@ -152,7 +152,7 @@ class TenantMiddleware(MiddlewareMixin):
                 logger.warning(
                     "Tenant context required but not found: path=%s, user=%s",
                     request.path,
-                    getattr(request, 'user', 'anonymous')
+                    getattr(request, "user", "anonymous"),
                 )
                 return self._tenant_required_response()
 
@@ -183,7 +183,7 @@ class TenantMiddleware(MiddlewareMixin):
         """
         return any(path.startswith(prefix) for prefix in self.TENANT_REQUIRED_PREFIXES)
 
-    def _resolve_organization(self, request: HttpRequest) -> Optional['Organization']:
+    def _resolve_organization(self, request: HttpRequest) -> Optional["Organization"]:
         """
         Resolve the organization from the request using multiple sources.
 
@@ -201,15 +201,15 @@ class TenantMiddleware(MiddlewareMixin):
         organization = None
 
         # 1. Try to get from authenticated user's organization
-        if hasattr(request, 'user') and request.user.is_authenticated:
-            user_org = getattr(request.user, 'organization', None)
+        if hasattr(request, "user") and request.user.is_authenticated:
+            user_org = getattr(request.user, "organization", None)
             if user_org:
                 organization = user_org
                 logger.debug("Organization resolved from user: %s", user_org.id)
                 return organization
 
         # 2. Try to get from header (for admin/multi-org users)
-        header_name = getattr(settings, 'EMENUM_TENANT_HEADER', 'X-Organization-ID')
+        header_name = getattr(settings, "EMENUM_TENANT_HEADER", "X-Organization-ID")
         # Django converts headers to HTTP_X_ORGANIZATION_ID format
         django_header = f"HTTP_{header_name.upper().replace('-', '_')}"
         org_id_from_header = request.META.get(django_header)
@@ -220,10 +220,12 @@ class TenantMiddleware(MiddlewareMixin):
                 logger.debug("Organization resolved from header: %s", organization.id)
                 return organization
             else:
-                logger.warning("Invalid organization ID in header: %s", org_id_from_header)
+                logger.warning(
+                    "Invalid organization ID in header: %s", org_id_from_header
+                )
 
         # 3. Try to get from cookie
-        cookie_name = getattr(settings, 'EMENUM_TENANT_COOKIE', 'emenum_org_id')
+        cookie_name = getattr(settings, "EMENUM_TENANT_COOKIE", "emenum_org_id")
         org_id_from_cookie = request.COOKIES.get(cookie_name)
 
         if org_id_from_cookie:
@@ -232,11 +234,13 @@ class TenantMiddleware(MiddlewareMixin):
                 logger.debug("Organization resolved from cookie: %s", organization.id)
                 return organization
             else:
-                logger.warning("Invalid organization ID in cookie: %s", org_id_from_cookie)
+                logger.warning(
+                    "Invalid organization ID in cookie: %s", org_id_from_cookie
+                )
 
         return None
 
-    def _get_organization_by_id(self, org_id: str) -> Optional['Organization']:
+    def _get_organization_by_id(self, org_id: str) -> Optional["Organization"]:
         """
         Retrieve an organization by its ID.
 
@@ -267,7 +271,7 @@ class TenantMiddleware(MiddlewareMixin):
             organization = Organization.objects.get(
                 id=org_uuid,
                 deleted_at__isnull=True,  # Soft delete check
-                status='ACTIVE'  # Only active organizations
+                status="ACTIVE",  # Only active organizations
             )
             # Cache for future requests (within same request/worker)
             self._organization_cache[org_uuid] = organization
@@ -288,17 +292,19 @@ class TenantMiddleware(MiddlewareMixin):
         """
         return JsonResponse(
             {
-                'success': False,
-                'error': {
-                    'code': 'TENANT_CONTEXT_REQUIRED',
-                    'message': str(_('Organization context is required for this request')),
-                    'details': {
-                        'hint': 'Authenticate with a user belonging to an organization, '
-                                'or provide X-Organization-ID header'
-                    }
-                }
+                "success": False,
+                "error": {
+                    "code": "TENANT_CONTEXT_REQUIRED",
+                    "message": str(
+                        _("Organization context is required for this request")
+                    ),
+                    "details": {
+                        "hint": "Authenticate with a user belonging to an organization, "
+                        "or provide X-Organization-ID header"
+                    },
+                },
             },
-            status=403
+            status=403,
         )
 
 
@@ -316,14 +322,14 @@ class TenantContextMixin:
                 )
     """
 
-    def get_organization(self) -> Optional['Organization']:
+    def get_organization(self) -> Optional["Organization"]:
         """
         Get the organization from the request.
 
         Returns:
             Organization or None: The current organization
         """
-        return getattr(self.request, 'organization', None)
+        return getattr(self.request, "organization", None)
 
     def get_organization_id(self) -> Optional[UUID]:
         """
@@ -332,9 +338,9 @@ class TenantContextMixin:
         Returns:
             UUID or None: The current organization ID
         """
-        return getattr(self.request, 'organization_id', None)
+        return getattr(self.request, "organization_id", None)
 
-    def require_organization(self) -> 'Organization':
+    def require_organization(self) -> "Organization":
         """
         Get the organization, raising an exception if not found.
 
@@ -348,11 +354,11 @@ class TenantContextMixin:
 
         organization = self.get_organization()
         if not organization:
-            raise PermissionDenied(_('Organization context is required'))
+            raise PermissionDenied(_("Organization context is required"))
         return organization
 
 
-def get_current_organization(request: HttpRequest) -> Optional['Organization']:
+def get_current_organization(request: HttpRequest) -> Optional["Organization"]:
     """
     Utility function to get the current organization from a request.
 
@@ -373,10 +379,12 @@ def get_current_organization(request: HttpRequest) -> Optional['Organization']:
                 # Do something with the organization
                 ...
     """
-    return getattr(request, 'organization', None)
+    return getattr(request, "organization", None)
 
 
-def set_current_organization(request: HttpRequest, organization: 'Organization') -> None:
+def set_current_organization(
+    request: HttpRequest, organization: "Organization"
+) -> None:
     """
     Utility function to manually set the organization context.
 

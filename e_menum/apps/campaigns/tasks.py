@@ -13,7 +13,7 @@ from django.utils import timezone
 logger = logging.getLogger(__name__)
 
 
-@shared_task(name='campaigns.tasks.activate_scheduled_campaigns')
+@shared_task(name="campaigns.tasks.activate_scheduled_campaigns")
 def activate_scheduled_campaigns():
     """
     Activate campaigns whose start_date has arrived.
@@ -25,23 +25,23 @@ def activate_scheduled_campaigns():
 
     now = timezone.now()
     campaigns = Campaign.objects.filter(
-        status='scheduled',
+        status="scheduled",
         start_date__lte=now,
         deleted_at__isnull=True,
     )
 
     activated = 0
     for campaign in campaigns:
-        campaign.status = 'active'
-        campaign.save(update_fields=['status', 'updated_at'])
+        campaign.status = "active"
+        campaign.save(update_fields=["status", "updated_at"])
         activated += 1
         logger.info("Activated campaign: %s (%s)", campaign.name, campaign.id)
 
     logger.info("Activated %d scheduled campaigns", activated)
-    return {'activated': activated}
+    return {"activated": activated}
 
 
-@shared_task(name='campaigns.tasks.expire_ended_campaigns')
+@shared_task(name="campaigns.tasks.expire_ended_campaigns")
 def expire_ended_campaigns():
     """
     Deactivate campaigns whose end_date has passed.
@@ -53,23 +53,23 @@ def expire_ended_campaigns():
 
     now = timezone.now()
     campaigns = Campaign.objects.filter(
-        status='active',
+        status="active",
         end_date__lt=now,
         deleted_at__isnull=True,
     )
 
     expired = 0
     for campaign in campaigns:
-        campaign.status = 'ended'
-        campaign.save(update_fields=['status', 'updated_at'])
+        campaign.status = "ended"
+        campaign.save(update_fields=["status", "updated_at"])
         expired += 1
         logger.info("Ended campaign: %s (%s)", campaign.name, campaign.id)
 
     logger.info("Expired %d ended campaigns", expired)
-    return {'expired': expired}
+    return {"expired": expired}
 
 
-@shared_task(name='campaigns.tasks.distribute_campaign_coupons')
+@shared_task(name="campaigns.tasks.distribute_campaign_coupons")
 def distribute_campaign_coupons():
     """
     Auto-distribute coupons for active auto-distribution campaigns.
@@ -80,19 +80,20 @@ def distribute_campaign_coupons():
     from apps.campaigns.models import Campaign
 
     campaigns = Campaign.objects.filter(
-        status='active',
+        status="active",
         deleted_at__isnull=True,
-    ).select_related('organization')
+    ).select_related("organization")
 
     distributed = 0
     for campaign in campaigns:
         # Check if campaign has auto_distribute metadata
-        metadata = campaign.metadata if hasattr(campaign, 'metadata') else {}
-        if not metadata.get('auto_distribute', False):
+        metadata = campaign.metadata if hasattr(campaign, "metadata") else {}
+        if not metadata.get("auto_distribute", False):
             continue
 
         # Get eligible customers
         from apps.customers.models import Customer
+
         customers = Customer.objects.filter(
             organization=campaign.organization,
             marketing_consent=True,
@@ -101,7 +102,7 @@ def distribute_campaign_coupons():
 
         for customer in customers:
             # Check if customer already has this coupon
-            if hasattr(campaign, 'coupons'):
+            if hasattr(campaign, "coupons"):
                 existing = campaign.coupons.filter(
                     customer=customer,
                     deleted_at__isnull=True,
@@ -110,4 +111,4 @@ def distribute_campaign_coupons():
                     distributed += 1
 
     logger.info("Distributed %d campaign coupons", distributed)
-    return {'distributed': distributed}
+    return {"distributed": distributed}

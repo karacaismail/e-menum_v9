@@ -49,17 +49,34 @@ def django_db_setup(django_db_setup, django_db_blocker):
         ]
 
         for plan_data in plans_data:
-            Plan.objects.get_or_create(
-                slug=plan_data["slug"],
-                defaults=plan_data
-            )
+            Plan.objects.get_or_create(slug=plan_data["slug"], defaults=plan_data)
 
         # Create default roles if they don't exist
         roles_data = [
-            {"name": "owner", "display_name": "Owner", "scope": "ORGANIZATION", "is_system": True},
-            {"name": "manager", "display_name": "Manager", "scope": "ORGANIZATION", "is_system": True},
-            {"name": "staff", "display_name": "Staff", "scope": "ORGANIZATION", "is_system": True},
-            {"name": "super_admin", "display_name": "Super Admin", "scope": "PLATFORM", "is_system": True},
+            {
+                "name": "owner",
+                "display_name": "Owner",
+                "scope": "ORGANIZATION",
+                "is_system": True,
+            },
+            {
+                "name": "manager",
+                "display_name": "Manager",
+                "scope": "ORGANIZATION",
+                "is_system": True,
+            },
+            {
+                "name": "staff",
+                "display_name": "Staff",
+                "scope": "ORGANIZATION",
+                "is_system": True,
+            },
+            {
+                "name": "super_admin",
+                "display_name": "Super Admin",
+                "scope": "PLATFORM",
+                "is_system": True,
+            },
         ]
 
         for role_data in roles_data:
@@ -67,13 +84,14 @@ def django_db_setup(django_db_setup, django_db_blocker):
                 name=role_data["name"],
                 scope=role_data["scope"],
                 organization=None,
-                defaults=role_data
+                defaults=role_data,
             )
 
 
 # =============================================================================
 # CLIENT FIXTURES
 # =============================================================================
+
 
 @pytest.fixture
 def client() -> Client:
@@ -109,6 +127,7 @@ def authenticated_api_client(api_client: APIClient, user) -> APIClient:
 # =============================================================================
 # USER FIXTURES
 # =============================================================================
+
 
 @pytest.fixture
 @pytest.mark.django_db
@@ -167,6 +186,7 @@ def staff_user(db, organization):
 # ORGANIZATION FIXTURES
 # =============================================================================
 
+
 @pytest.fixture
 @pytest.mark.django_db
 def organization(db):
@@ -188,7 +208,7 @@ def organization(db):
             "price_yearly": 0,
             "is_active": True,
             "is_default": True,
-        }
+        },
     )
 
     return Organization.objects.create(
@@ -234,6 +254,7 @@ def organization_with_owner(db, organization):
 # =============================================================================
 # MENU FIXTURES
 # =============================================================================
+
 
 @pytest.fixture
 @pytest.mark.django_db
@@ -297,6 +318,7 @@ def product(db, organization, category):
 # ORDER FIXTURES
 # =============================================================================
 
+
 @pytest.fixture
 @pytest.mark.django_db
 def zone(db, organization):
@@ -336,6 +358,7 @@ def table(db, organization, zone):
 # SUBSCRIPTION FIXTURES
 # =============================================================================
 
+
 @pytest.fixture
 @pytest.mark.django_db
 def free_plan(db):
@@ -354,7 +377,7 @@ def free_plan(db):
             "price_yearly": 0,
             "is_active": True,
             "is_default": True,
-        }
+        },
     )
     return plan
 
@@ -377,7 +400,7 @@ def starter_plan(db):
             "price_monthly": Decimal("2000.00"),
             "price_yearly": Decimal("20000.00"),
             "is_active": True,
-        }
+        },
     )
     return plan
 
@@ -385,6 +408,7 @@ def starter_plan(db):
 # =============================================================================
 # UTILITY FIXTURES
 # =============================================================================
+
 
 @pytest.fixture
 def make_user(db):
@@ -440,7 +464,7 @@ def make_organization(db):
                 "price_yearly": 0,
                 "is_active": True,
                 "is_default": True,
-            }
+            },
         )
 
         defaults = {
@@ -460,6 +484,7 @@ def make_organization(db):
 # REQUEST CONTEXT FIXTURES
 # =============================================================================
 
+
 @pytest.fixture
 def api_request_factory():
     """
@@ -468,6 +493,7 @@ def api_request_factory():
     Useful for testing serializers and views directly without HTTP.
     """
     from rest_framework.test import APIRequestFactory
+
     return APIRequestFactory()
 
 
@@ -487,6 +513,7 @@ def mock_request(api_request_factory, user, organization):
 # =============================================================================
 # DATABASE HELPERS
 # =============================================================================
+
 
 @pytest.fixture
 def clear_cache():
@@ -510,6 +537,7 @@ def enable_db_logging(settings, caplog):
             ...
     """
     import logging
+
     settings.DEBUG = True
     logging.getLogger("django.db.backends").setLevel(logging.DEBUG)
     yield

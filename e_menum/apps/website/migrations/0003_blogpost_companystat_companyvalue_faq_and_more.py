@@ -6,356 +6,1173 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('subscriptions', '0002_remove_invoice_invoice_org_number_uniq_and_more'),
-        ('website', '0002_expand_business_type_choices'),
+        ("subscriptions", "0002_remove_invoice_invoice_org_number_uniq_and_more"),
+        ("website", "0002_expand_business_type_choices"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='BlogPost',
+            name="BlogPost",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('title', models.CharField(max_length=300, verbose_name='baslik')),
-                ('slug', models.SlugField(max_length=300, unique=True, verbose_name='slug')),
-                ('excerpt', models.TextField(blank=True, help_text='Kart onizlemesinde gosterilir', verbose_name='ozet')),
-                ('content', models.TextField(help_text='HTML icerik desteklenir', verbose_name='icerik')),
-                ('category', models.CharField(blank=True, max_length=100, verbose_name='kategori')),
-                ('author_name', models.CharField(blank=True, max_length=100, verbose_name='yazar')),
-                ('status', models.CharField(choices=[('draft', 'Taslak'), ('published', 'Yayinda'), ('archived', 'Arsivlenmis')], default='draft', max_length=20, verbose_name='durum')),
-                ('published_at', models.DateTimeField(blank=True, null=True, verbose_name='yayin tarihi')),
-                ('meta_description', models.CharField(blank=True, max_length=300, verbose_name='meta aciklama')),
-                ('is_featured', models.BooleanField(default=False, verbose_name='one cikan')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                ("title", models.CharField(max_length=300, verbose_name="baslik")),
+                (
+                    "slug",
+                    models.SlugField(max_length=300, unique=True, verbose_name="slug"),
+                ),
+                (
+                    "excerpt",
+                    models.TextField(
+                        blank=True,
+                        help_text="Kart onizlemesinde gosterilir",
+                        verbose_name="ozet",
+                    ),
+                ),
+                (
+                    "content",
+                    models.TextField(
+                        help_text="HTML icerik desteklenir", verbose_name="icerik"
+                    ),
+                ),
+                (
+                    "category",
+                    models.CharField(
+                        blank=True, max_length=100, verbose_name="kategori"
+                    ),
+                ),
+                (
+                    "author_name",
+                    models.CharField(blank=True, max_length=100, verbose_name="yazar"),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("draft", "Taslak"),
+                            ("published", "Yayinda"),
+                            ("archived", "Arsivlenmis"),
+                        ],
+                        default="draft",
+                        max_length=20,
+                        verbose_name="durum",
+                    ),
+                ),
+                (
+                    "published_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="yayin tarihi"
+                    ),
+                ),
+                (
+                    "meta_description",
+                    models.CharField(
+                        blank=True, max_length=300, verbose_name="meta aciklama"
+                    ),
+                ),
+                (
+                    "is_featured",
+                    models.BooleanField(default=False, verbose_name="one cikan"),
+                ),
             ],
             options={
-                'verbose_name': 'Blog Yazisi',
-                'verbose_name_plural': 'Blog Yazilari',
-                'ordering': ['-published_at', '-created_at'],
+                "verbose_name": "Blog Yazisi",
+                "verbose_name_plural": "Blog Yazilari",
+                "ordering": ["-published_at", "-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='CompanyStat',
+            name="CompanyStat",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('value', models.CharField(max_length=50, verbose_name='deger')),
-                ('label', models.CharField(max_length=100, verbose_name='etiket')),
-                ('sort_order', models.PositiveIntegerField(default=0, verbose_name='siralama')),
-                ('is_active', models.BooleanField(default=True, verbose_name='aktif')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                ("value", models.CharField(max_length=50, verbose_name="deger")),
+                ("label", models.CharField(max_length=100, verbose_name="etiket")),
+                (
+                    "sort_order",
+                    models.PositiveIntegerField(default=0, verbose_name="siralama"),
+                ),
+                ("is_active", models.BooleanField(default=True, verbose_name="aktif")),
             ],
             options={
-                'verbose_name': 'Sirket Istatistigi',
-                'verbose_name_plural': 'Sirket Istatistikleri',
-                'ordering': ['sort_order'],
+                "verbose_name": "Sirket Istatistigi",
+                "verbose_name_plural": "Sirket Istatistikleri",
+                "ordering": ["sort_order"],
             },
         ),
         migrations.CreateModel(
-            name='CompanyValue',
+            name="CompanyValue",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('title', models.CharField(max_length=200, verbose_name='baslik')),
-                ('description', models.TextField(verbose_name='aciklama')),
-                ('icon', models.CharField(blank=True, max_length=50, verbose_name='ikon')),
-                ('color', models.CharField(default='primary', max_length=30, verbose_name='renk')),
-                ('sort_order', models.PositiveIntegerField(default=0, verbose_name='siralama')),
-                ('is_active', models.BooleanField(default=True, verbose_name='aktif')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                ("title", models.CharField(max_length=200, verbose_name="baslik")),
+                ("description", models.TextField(verbose_name="aciklama")),
+                (
+                    "icon",
+                    models.CharField(blank=True, max_length=50, verbose_name="ikon"),
+                ),
+                (
+                    "color",
+                    models.CharField(
+                        default="primary", max_length=30, verbose_name="renk"
+                    ),
+                ),
+                (
+                    "sort_order",
+                    models.PositiveIntegerField(default=0, verbose_name="siralama"),
+                ),
+                ("is_active", models.BooleanField(default=True, verbose_name="aktif")),
             ],
             options={
-                'verbose_name': 'Sirket Degeri',
-                'verbose_name_plural': 'Sirket Degerleri',
-                'ordering': ['sort_order'],
+                "verbose_name": "Sirket Degeri",
+                "verbose_name_plural": "Sirket Degerleri",
+                "ordering": ["sort_order"],
             },
         ),
         migrations.CreateModel(
-            name='FAQ',
+            name="FAQ",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('question', models.CharField(max_length=300, verbose_name='soru')),
-                ('answer', models.TextField(verbose_name='cevap')),
-                ('page', models.CharField(choices=[('pricing', 'Fiyatlandirma'), ('contact', 'Iletisim'), ('both', 'Her Ikisi')], default='both', max_length=20, verbose_name='sayfa')),
-                ('sort_order', models.PositiveIntegerField(default=0, verbose_name='siralama')),
-                ('is_active', models.BooleanField(default=True, verbose_name='aktif')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                ("question", models.CharField(max_length=300, verbose_name="soru")),
+                ("answer", models.TextField(verbose_name="cevap")),
+                (
+                    "page",
+                    models.CharField(
+                        choices=[
+                            ("pricing", "Fiyatlandirma"),
+                            ("contact", "Iletisim"),
+                            ("both", "Her Ikisi"),
+                        ],
+                        default="both",
+                        max_length=20,
+                        verbose_name="sayfa",
+                    ),
+                ),
+                (
+                    "sort_order",
+                    models.PositiveIntegerField(default=0, verbose_name="siralama"),
+                ),
+                ("is_active", models.BooleanField(default=True, verbose_name="aktif")),
             ],
             options={
-                'verbose_name': 'SSS',
-                'verbose_name_plural': 'SSS (Sikca Sorulan Sorular)',
-                'ordering': ['sort_order'],
+                "verbose_name": "SSS",
+                "verbose_name_plural": "SSS (Sikca Sorulan Sorular)",
+                "ordering": ["sort_order"],
             },
         ),
         migrations.CreateModel(
-            name='FeatureCategory',
+            name="FeatureCategory",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('title', models.CharField(max_length=200, verbose_name='baslik')),
-                ('description', models.TextField(blank=True, verbose_name='aciklama')),
-                ('badge_text', models.CharField(blank=True, max_length=50, verbose_name='badge metni')),
-                ('badge_color', models.CharField(default='primary', max_length=30, verbose_name='badge rengi')),
-                ('icon', models.CharField(blank=True, max_length=50, verbose_name='ikon')),
-                ('image_alt', models.CharField(blank=True, max_length=200, verbose_name='gorsel alt metni')),
-                ('layout_reversed', models.BooleanField(default=False, verbose_name='ters duzenleme')),
-                ('sort_order', models.PositiveIntegerField(default=0, verbose_name='siralama')),
-                ('is_active', models.BooleanField(default=True, verbose_name='aktif')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                ("title", models.CharField(max_length=200, verbose_name="baslik")),
+                ("description", models.TextField(blank=True, verbose_name="aciklama")),
+                (
+                    "badge_text",
+                    models.CharField(
+                        blank=True, max_length=50, verbose_name="badge metni"
+                    ),
+                ),
+                (
+                    "badge_color",
+                    models.CharField(
+                        default="primary", max_length=30, verbose_name="badge rengi"
+                    ),
+                ),
+                (
+                    "icon",
+                    models.CharField(blank=True, max_length=50, verbose_name="ikon"),
+                ),
+                (
+                    "image_alt",
+                    models.CharField(
+                        blank=True, max_length=200, verbose_name="gorsel alt metni"
+                    ),
+                ),
+                (
+                    "layout_reversed",
+                    models.BooleanField(default=False, verbose_name="ters duzenleme"),
+                ),
+                (
+                    "sort_order",
+                    models.PositiveIntegerField(default=0, verbose_name="siralama"),
+                ),
+                ("is_active", models.BooleanField(default=True, verbose_name="aktif")),
             ],
             options={
-                'verbose_name': 'Ozellik Kategorisi',
-                'verbose_name_plural': 'Ozellik Kategorileri',
-                'ordering': ['sort_order'],
+                "verbose_name": "Ozellik Kategorisi",
+                "verbose_name_plural": "Ozellik Kategorileri",
+                "ordering": ["sort_order"],
             },
         ),
         migrations.CreateModel(
-            name='HomeSection',
+            name="HomeSection",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('section_type', models.CharField(choices=[('problem_solution', 'Problem / Cozum'), ('feature_card', 'Ozellik Karti'), ('how_it_works', 'Nasil Calisir'), ('stat_counter', 'Istatistik Sayac')], max_length=30, verbose_name='bolum tipi')),
-                ('title', models.CharField(max_length=200, verbose_name='baslik')),
-                ('description', models.TextField(blank=True, verbose_name='aciklama')),
-                ('icon', models.CharField(blank=True, help_text='Phosphor icon sinifi (ornek: ph-qr-code)', max_length=50, verbose_name='ikon')),
-                ('color', models.CharField(blank=True, help_text='Tailwind renk adi (ornek: primary, green, red)', max_length=30, verbose_name='renk')),
-                ('stat_value', models.CharField(blank=True, help_text='Ornek: 350.000+', max_length=20, verbose_name='istatistik degeri')),
-                ('stat_suffix', models.CharField(blank=True, help_text='Ornek: +, %, x', max_length=20, verbose_name='istatistik eki')),
-                ('step_number', models.PositiveIntegerField(blank=True, null=True, verbose_name='adim numarasi')),
-                ('card_variant', models.CharField(blank=True, choices=[('problem', 'Problem'), ('solution', 'Cozum'), ('differentiator', 'Fark')], max_length=20, verbose_name='kart varyanti')),
-                ('sort_order', models.PositiveIntegerField(default=0, verbose_name='siralama')),
-                ('is_active', models.BooleanField(default=True, verbose_name='aktif')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                (
+                    "section_type",
+                    models.CharField(
+                        choices=[
+                            ("problem_solution", "Problem / Cozum"),
+                            ("feature_card", "Ozellik Karti"),
+                            ("how_it_works", "Nasil Calisir"),
+                            ("stat_counter", "Istatistik Sayac"),
+                        ],
+                        max_length=30,
+                        verbose_name="bolum tipi",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200, verbose_name="baslik")),
+                ("description", models.TextField(blank=True, verbose_name="aciklama")),
+                (
+                    "icon",
+                    models.CharField(
+                        blank=True,
+                        help_text="Phosphor icon sinifi (ornek: ph-qr-code)",
+                        max_length=50,
+                        verbose_name="ikon",
+                    ),
+                ),
+                (
+                    "color",
+                    models.CharField(
+                        blank=True,
+                        help_text="Tailwind renk adi (ornek: primary, green, red)",
+                        max_length=30,
+                        verbose_name="renk",
+                    ),
+                ),
+                (
+                    "stat_value",
+                    models.CharField(
+                        blank=True,
+                        help_text="Ornek: 350.000+",
+                        max_length=20,
+                        verbose_name="istatistik degeri",
+                    ),
+                ),
+                (
+                    "stat_suffix",
+                    models.CharField(
+                        blank=True,
+                        help_text="Ornek: +, %, x",
+                        max_length=20,
+                        verbose_name="istatistik eki",
+                    ),
+                ),
+                (
+                    "step_number",
+                    models.PositiveIntegerField(
+                        blank=True, null=True, verbose_name="adim numarasi"
+                    ),
+                ),
+                (
+                    "card_variant",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("problem", "Problem"),
+                            ("solution", "Cozum"),
+                            ("differentiator", "Fark"),
+                        ],
+                        max_length=20,
+                        verbose_name="kart varyanti",
+                    ),
+                ),
+                (
+                    "sort_order",
+                    models.PositiveIntegerField(default=0, verbose_name="siralama"),
+                ),
+                ("is_active", models.BooleanField(default=True, verbose_name="aktif")),
             ],
             options={
-                'verbose_name': 'Ana Sayfa Bolumu',
-                'verbose_name_plural': 'Ana Sayfa Bolumleri',
-                'ordering': ['section_type', 'sort_order'],
+                "verbose_name": "Ana Sayfa Bolumu",
+                "verbose_name_plural": "Ana Sayfa Bolumleri",
+                "ordering": ["section_type", "sort_order"],
             },
         ),
         migrations.CreateModel(
-            name='LegalPage',
+            name="LegalPage",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('slug', models.CharField(choices=[('privacy', 'Gizlilik Politikasi'), ('terms', 'Kullanim Sartlari'), ('kvkk', 'KVKK Aydinlatma')], max_length=20, unique=True, verbose_name='sayfa')),
-                ('title', models.CharField(max_length=200, verbose_name='baslik')),
-                ('content', models.TextField(help_text='HTML icerik desteklenir', verbose_name='icerik')),
-                ('last_updated_display', models.CharField(blank=True, help_text='Sayfada gosterilecek tarih metni', max_length=50, verbose_name='son guncelleme (gorunum)')),
-                ('meta_description', models.CharField(blank=True, max_length=300, verbose_name='meta aciklama')),
-                ('is_active', models.BooleanField(default=True, verbose_name='aktif')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                (
+                    "slug",
+                    models.CharField(
+                        choices=[
+                            ("privacy", "Gizlilik Politikasi"),
+                            ("terms", "Kullanim Sartlari"),
+                            ("kvkk", "KVKK Aydinlatma"),
+                        ],
+                        max_length=20,
+                        unique=True,
+                        verbose_name="sayfa",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200, verbose_name="baslik")),
+                (
+                    "content",
+                    models.TextField(
+                        help_text="HTML icerik desteklenir", verbose_name="icerik"
+                    ),
+                ),
+                (
+                    "last_updated_display",
+                    models.CharField(
+                        blank=True,
+                        help_text="Sayfada gosterilecek tarih metni",
+                        max_length=50,
+                        verbose_name="son guncelleme (gorunum)",
+                    ),
+                ),
+                (
+                    "meta_description",
+                    models.CharField(
+                        blank=True, max_length=300, verbose_name="meta aciklama"
+                    ),
+                ),
+                ("is_active", models.BooleanField(default=True, verbose_name="aktif")),
             ],
             options={
-                'verbose_name': 'Yasal Sayfa',
-                'verbose_name_plural': 'Yasal Sayfalar',
-                'ordering': ['slug'],
+                "verbose_name": "Yasal Sayfa",
+                "verbose_name_plural": "Yasal Sayfalar",
+                "ordering": ["slug"],
             },
         ),
         migrations.CreateModel(
-            name='PageHero',
+            name="PageHero",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('page', models.CharField(choices=[('home', 'Ana Sayfa'), ('features', 'Ozellikler'), ('pricing', 'Fiyatlandirma'), ('about', 'Hakkimizda'), ('contact', 'Iletisim'), ('demo', 'Demo'), ('blog', 'Blog')], max_length=20, unique=True, verbose_name='sayfa')),
-                ('title', models.CharField(max_length=200, verbose_name='baslik')),
-                ('subtitle', models.TextField(blank=True, verbose_name='alt baslik')),
-                ('badge_text', models.CharField(blank=True, max_length=100, verbose_name='badge metni')),
-                ('gradient_class', models.CharField(default='hero-gradient', max_length=50, verbose_name='gradient sinifi')),
-                ('cta_primary_text', models.CharField(blank=True, max_length=100, verbose_name='birincil CTA')),
-                ('cta_primary_url', models.CharField(blank=True, max_length=100, verbose_name='birincil CTA URL')),
-                ('cta_secondary_text', models.CharField(blank=True, max_length=100, verbose_name='ikincil CTA')),
-                ('cta_secondary_url', models.CharField(blank=True, max_length=100, verbose_name='ikincil CTA URL')),
-                ('trust_text', models.CharField(blank=True, max_length=200, verbose_name='guven metni')),
-                ('show_hero_image', models.BooleanField(default=True, verbose_name='hero gorsel goster')),
-                ('is_active', models.BooleanField(default=True, verbose_name='aktif')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                (
+                    "page",
+                    models.CharField(
+                        choices=[
+                            ("home", "Ana Sayfa"),
+                            ("features", "Ozellikler"),
+                            ("pricing", "Fiyatlandirma"),
+                            ("about", "Hakkimizda"),
+                            ("contact", "Iletisim"),
+                            ("demo", "Demo"),
+                            ("blog", "Blog"),
+                        ],
+                        max_length=20,
+                        unique=True,
+                        verbose_name="sayfa",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200, verbose_name="baslik")),
+                ("subtitle", models.TextField(blank=True, verbose_name="alt baslik")),
+                (
+                    "badge_text",
+                    models.CharField(
+                        blank=True, max_length=100, verbose_name="badge metni"
+                    ),
+                ),
+                (
+                    "gradient_class",
+                    models.CharField(
+                        default="hero-gradient",
+                        max_length=50,
+                        verbose_name="gradient sinifi",
+                    ),
+                ),
+                (
+                    "cta_primary_text",
+                    models.CharField(
+                        blank=True, max_length=100, verbose_name="birincil CTA"
+                    ),
+                ),
+                (
+                    "cta_primary_url",
+                    models.CharField(
+                        blank=True, max_length=100, verbose_name="birincil CTA URL"
+                    ),
+                ),
+                (
+                    "cta_secondary_text",
+                    models.CharField(
+                        blank=True, max_length=100, verbose_name="ikincil CTA"
+                    ),
+                ),
+                (
+                    "cta_secondary_url",
+                    models.CharField(
+                        blank=True, max_length=100, verbose_name="ikincil CTA URL"
+                    ),
+                ),
+                (
+                    "trust_text",
+                    models.CharField(
+                        blank=True, max_length=200, verbose_name="guven metni"
+                    ),
+                ),
+                (
+                    "show_hero_image",
+                    models.BooleanField(
+                        default=True, verbose_name="hero gorsel goster"
+                    ),
+                ),
+                ("is_active", models.BooleanField(default=True, verbose_name="aktif")),
             ],
             options={
-                'verbose_name': 'Sayfa Hero',
-                'verbose_name_plural': "Sayfa Hero'lari",
-                'ordering': ['page'],
+                "verbose_name": "Sayfa Hero",
+                "verbose_name_plural": "Sayfa Hero'lari",
+                "ordering": ["page"],
             },
         ),
         migrations.CreateModel(
-            name='SiteSettings',
+            name="SiteSettings",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('company_name', models.CharField(default='E-Menum', max_length=100, verbose_name='sirket adi')),
-                ('tagline', models.CharField(default='QR Menunuz, Isletmenizin Dijital Vitrini', max_length=200, verbose_name='slogan')),
-                ('description', models.TextField(blank=True, verbose_name='aciklama')),
-                ('phone', models.CharField(default='+90 850 123 4567', max_length=30, verbose_name='telefon')),
-                ('email', models.EmailField(default='info@e-menum.com', max_length=254, verbose_name='e-posta')),
-                ('address', models.CharField(default='Istanbul, Turkiye', max_length=200, verbose_name='adres')),
-                ('social_instagram', models.URLField(blank=True, default='https://instagram.com/emenum', verbose_name='Instagram')),
-                ('social_twitter', models.URLField(blank=True, default='https://twitter.com/emenum', verbose_name='Twitter / X')),
-                ('social_linkedin', models.URLField(blank=True, default='https://linkedin.com/company/emenum', verbose_name='LinkedIn')),
-                ('social_youtube', models.URLField(blank=True, default='https://youtube.com/@emenum', verbose_name='YouTube')),
-                ('whatsapp_number', models.CharField(default='908501234567', max_length=20, verbose_name='WhatsApp numara')),
-                ('whatsapp_message', models.CharField(default='Merhaba! E-Menum hakkinda bilgi almak istiyorum.', max_length=300, verbose_name='WhatsApp mesaj')),
-                ('cta_primary_text', models.CharField(default='14 Gun Ucretsiz Basla', max_length=100, verbose_name='birincil CTA metni')),
-                ('cta_secondary_text', models.CharField(default='Demo Iste', max_length=100, verbose_name='ikincil CTA metni')),
-                ('cta_trust_text', models.CharField(default='Kredi karti gerekmez · 2 dakikada kurulum', max_length=200, verbose_name='guven metni')),
-                ('cta_primary_url', models.CharField(default='website:demo', max_length=100, verbose_name='birincil CTA URL')),
-                ('cta_secondary_url', models.CharField(default='website:demo', max_length=100, verbose_name='ikincil CTA URL')),
-                ('login_url', models.CharField(default='/admin/', max_length=100, verbose_name='giris URL')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                (
+                    "company_name",
+                    models.CharField(
+                        default="E-Menum", max_length=100, verbose_name="sirket adi"
+                    ),
+                ),
+                (
+                    "tagline",
+                    models.CharField(
+                        default="QR Menunuz, Isletmenizin Dijital Vitrini",
+                        max_length=200,
+                        verbose_name="slogan",
+                    ),
+                ),
+                ("description", models.TextField(blank=True, verbose_name="aciklama")),
+                (
+                    "phone",
+                    models.CharField(
+                        default="+90 850 123 4567",
+                        max_length=30,
+                        verbose_name="telefon",
+                    ),
+                ),
+                (
+                    "email",
+                    models.EmailField(
+                        default="info@e-menum.com",
+                        max_length=254,
+                        verbose_name="e-posta",
+                    ),
+                ),
+                (
+                    "address",
+                    models.CharField(
+                        default="Istanbul, Turkiye",
+                        max_length=200,
+                        verbose_name="adres",
+                    ),
+                ),
+                (
+                    "social_instagram",
+                    models.URLField(
+                        blank=True,
+                        default="https://instagram.com/emenum",
+                        verbose_name="Instagram",
+                    ),
+                ),
+                (
+                    "social_twitter",
+                    models.URLField(
+                        blank=True,
+                        default="https://twitter.com/emenum",
+                        verbose_name="Twitter / X",
+                    ),
+                ),
+                (
+                    "social_linkedin",
+                    models.URLField(
+                        blank=True,
+                        default="https://linkedin.com/company/emenum",
+                        verbose_name="LinkedIn",
+                    ),
+                ),
+                (
+                    "social_youtube",
+                    models.URLField(
+                        blank=True,
+                        default="https://youtube.com/@emenum",
+                        verbose_name="YouTube",
+                    ),
+                ),
+                (
+                    "whatsapp_number",
+                    models.CharField(
+                        default="908501234567",
+                        max_length=20,
+                        verbose_name="WhatsApp numara",
+                    ),
+                ),
+                (
+                    "whatsapp_message",
+                    models.CharField(
+                        default="Merhaba! E-Menum hakkinda bilgi almak istiyorum.",
+                        max_length=300,
+                        verbose_name="WhatsApp mesaj",
+                    ),
+                ),
+                (
+                    "cta_primary_text",
+                    models.CharField(
+                        default="14 Gun Ucretsiz Basla",
+                        max_length=100,
+                        verbose_name="birincil CTA metni",
+                    ),
+                ),
+                (
+                    "cta_secondary_text",
+                    models.CharField(
+                        default="Demo Iste",
+                        max_length=100,
+                        verbose_name="ikincil CTA metni",
+                    ),
+                ),
+                (
+                    "cta_trust_text",
+                    models.CharField(
+                        default="Kredi karti gerekmez · 2 dakikada kurulum",
+                        max_length=200,
+                        verbose_name="guven metni",
+                    ),
+                ),
+                (
+                    "cta_primary_url",
+                    models.CharField(
+                        default="website:demo",
+                        max_length=100,
+                        verbose_name="birincil CTA URL",
+                    ),
+                ),
+                (
+                    "cta_secondary_url",
+                    models.CharField(
+                        default="website:demo",
+                        max_length=100,
+                        verbose_name="ikincil CTA URL",
+                    ),
+                ),
+                (
+                    "login_url",
+                    models.CharField(
+                        default="/admin/", max_length=100, verbose_name="giris URL"
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Site Ayarlari',
-                'verbose_name_plural': 'Site Ayarlari',
+                "verbose_name": "Site Ayarlari",
+                "verbose_name_plural": "Site Ayarlari",
             },
         ),
         migrations.CreateModel(
-            name='TeamMember',
+            name="TeamMember",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('name', models.CharField(max_length=100, verbose_name='ad soyad')),
-                ('initials', models.CharField(blank=True, max_length=5, verbose_name='bas harfler')),
-                ('title', models.CharField(max_length=200, verbose_name='unvan')),
-                ('avatar_color', models.CharField(default='primary', max_length=30, verbose_name='avatar rengi')),
-                ('sort_order', models.PositiveIntegerField(default=0, verbose_name='siralama')),
-                ('is_active', models.BooleanField(default=True, verbose_name='aktif')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                ("name", models.CharField(max_length=100, verbose_name="ad soyad")),
+                (
+                    "initials",
+                    models.CharField(
+                        blank=True, max_length=5, verbose_name="bas harfler"
+                    ),
+                ),
+                ("title", models.CharField(max_length=200, verbose_name="unvan")),
+                (
+                    "avatar_color",
+                    models.CharField(
+                        default="primary", max_length=30, verbose_name="avatar rengi"
+                    ),
+                ),
+                (
+                    "sort_order",
+                    models.PositiveIntegerField(default=0, verbose_name="siralama"),
+                ),
+                ("is_active", models.BooleanField(default=True, verbose_name="aktif")),
             ],
             options={
-                'verbose_name': 'Ekip Uyesi',
-                'verbose_name_plural': 'Ekip Uyeleri',
-                'ordering': ['sort_order'],
+                "verbose_name": "Ekip Uyesi",
+                "verbose_name_plural": "Ekip Uyeleri",
+                "ordering": ["sort_order"],
             },
         ),
         migrations.CreateModel(
-            name='Testimonial',
+            name="Testimonial",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('author_name', models.CharField(max_length=100, verbose_name='yazar adi')),
-                ('initials', models.CharField(blank=True, max_length=5, verbose_name='bas harfler')),
-                ('author_role_or_business', models.CharField(blank=True, max_length=200, verbose_name='rol / isletme')),
-                ('author_location', models.CharField(blank=True, max_length=100, verbose_name='konum')),
-                ('business_type_label', models.CharField(blank=True, max_length=50, verbose_name='isletme tipi etiketi')),
-                ('badge_color', models.CharField(default='primary', max_length=30, verbose_name='badge rengi')),
-                ('avatar_color', models.CharField(default='primary', max_length=30, verbose_name='avatar rengi')),
-                ('quote', models.TextField(verbose_name='yorum')),
-                ('rating', models.PositiveSmallIntegerField(default=5, help_text='1-5 arasi', verbose_name='puan')),
-                ('sort_order', models.PositiveIntegerField(default=0, verbose_name='siralama')),
-                ('is_active', models.BooleanField(default=True, verbose_name='aktif')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                (
+                    "author_name",
+                    models.CharField(max_length=100, verbose_name="yazar adi"),
+                ),
+                (
+                    "initials",
+                    models.CharField(
+                        blank=True, max_length=5, verbose_name="bas harfler"
+                    ),
+                ),
+                (
+                    "author_role_or_business",
+                    models.CharField(
+                        blank=True, max_length=200, verbose_name="rol / isletme"
+                    ),
+                ),
+                (
+                    "author_location",
+                    models.CharField(blank=True, max_length=100, verbose_name="konum"),
+                ),
+                (
+                    "business_type_label",
+                    models.CharField(
+                        blank=True, max_length=50, verbose_name="isletme tipi etiketi"
+                    ),
+                ),
+                (
+                    "badge_color",
+                    models.CharField(
+                        default="primary", max_length=30, verbose_name="badge rengi"
+                    ),
+                ),
+                (
+                    "avatar_color",
+                    models.CharField(
+                        default="primary", max_length=30, verbose_name="avatar rengi"
+                    ),
+                ),
+                ("quote", models.TextField(verbose_name="yorum")),
+                (
+                    "rating",
+                    models.PositiveSmallIntegerField(
+                        default=5, help_text="1-5 arasi", verbose_name="puan"
+                    ),
+                ),
+                (
+                    "sort_order",
+                    models.PositiveIntegerField(default=0, verbose_name="siralama"),
+                ),
+                ("is_active", models.BooleanField(default=True, verbose_name="aktif")),
             ],
             options={
-                'verbose_name': 'Musteri Yorumu',
-                'verbose_name_plural': 'Musteri Yorumlari',
-                'ordering': ['sort_order'],
+                "verbose_name": "Musteri Yorumu",
+                "verbose_name_plural": "Musteri Yorumlari",
+                "ordering": ["sort_order"],
             },
         ),
         migrations.CreateModel(
-            name='TrustBadge',
+            name="TrustBadge",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('label', models.CharField(max_length=100, verbose_name='etiket')),
-                ('icon', models.CharField(help_text='Phosphor icon sinifi', max_length=50, verbose_name='ikon')),
-                ('sort_order', models.PositiveIntegerField(default=0, verbose_name='siralama')),
-                ('is_active', models.BooleanField(default=True, verbose_name='aktif')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                ("label", models.CharField(max_length=100, verbose_name="etiket")),
+                (
+                    "icon",
+                    models.CharField(
+                        help_text="Phosphor icon sinifi",
+                        max_length=50,
+                        verbose_name="ikon",
+                    ),
+                ),
+                (
+                    "sort_order",
+                    models.PositiveIntegerField(default=0, verbose_name="siralama"),
+                ),
+                ("is_active", models.BooleanField(default=True, verbose_name="aktif")),
             ],
             options={
-                'verbose_name': 'Guven Rozeti',
-                'verbose_name_plural': 'Guven Rozetleri',
-                'ordering': ['sort_order'],
+                "verbose_name": "Guven Rozeti",
+                "verbose_name_plural": "Guven Rozetleri",
+                "ordering": ["sort_order"],
             },
         ),
         migrations.CreateModel(
-            name='TrustLocation',
+            name="TrustLocation",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('text', models.CharField(max_length=200, verbose_name='metin')),
-                ('sort_order', models.PositiveIntegerField(default=0, verbose_name='siralama')),
-                ('is_active', models.BooleanField(default=True, verbose_name='aktif')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                ("text", models.CharField(max_length=200, verbose_name="metin")),
+                (
+                    "sort_order",
+                    models.PositiveIntegerField(default=0, verbose_name="siralama"),
+                ),
+                ("is_active", models.BooleanField(default=True, verbose_name="aktif")),
             ],
             options={
-                'verbose_name': 'Guven Lokasyon',
-                'verbose_name_plural': 'Guven Lokasyonlari',
-                'ordering': ['sort_order'],
+                "verbose_name": "Guven Lokasyon",
+                "verbose_name_plural": "Guven Lokasyonlari",
+                "ordering": ["sort_order"],
             },
         ),
         migrations.CreateModel(
-            name='FeatureBullet',
+            name="FeatureBullet",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('text', models.CharField(max_length=300, verbose_name='metin')),
-                ('sort_order', models.PositiveIntegerField(default=0, verbose_name='siralama')),
-                ('is_active', models.BooleanField(default=True, verbose_name='aktif')),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bullets', to='website.featurecategory', verbose_name='kategori')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                ("text", models.CharField(max_length=300, verbose_name="metin")),
+                (
+                    "sort_order",
+                    models.PositiveIntegerField(default=0, verbose_name="siralama"),
+                ),
+                ("is_active", models.BooleanField(default=True, verbose_name="aktif")),
+                (
+                    "category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="bullets",
+                        to="website.featurecategory",
+                        verbose_name="kategori",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Ozellik Maddesi',
-                'verbose_name_plural': 'Ozellik Maddeleri',
-                'ordering': ['sort_order'],
+                "verbose_name": "Ozellik Maddesi",
+                "verbose_name_plural": "Ozellik Maddeleri",
+                "ordering": ["sort_order"],
             },
         ),
         migrations.CreateModel(
-            name='NavigationLink',
+            name="NavigationLink",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('location', models.CharField(choices=[('header', 'Header'), ('footer_product', 'Footer — Urun'), ('footer_solutions', 'Footer — Cozumler'), ('footer_company', 'Footer — Sirket'), ('footer_support', 'Footer — Destek'), ('footer_legal', 'Footer — Yasal')], max_length=30, verbose_name='konum')),
-                ('label', models.CharField(max_length=100, verbose_name='etiket')),
-                ('url', models.CharField(blank=True, help_text='Django URL adi (ornek: website:features) veya /tam/yol/', max_length=200, verbose_name='URL')),
-                ('icon', models.CharField(blank=True, help_text='Phosphor icon sinifi', max_length=50, verbose_name='ikon')),
-                ('description', models.CharField(blank=True, help_text='Dropdown aciklama metni', max_length=200, verbose_name='aciklama')),
-                ('sort_order', models.PositiveIntegerField(default=0, verbose_name='siralama')),
-                ('is_active', models.BooleanField(default=True, verbose_name='aktif')),
-                ('parent', models.ForeignKey(blank=True, help_text='Dropdown ustune bagli alt linkler icin', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='website.navigationlink', verbose_name='ust link')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                (
+                    "location",
+                    models.CharField(
+                        choices=[
+                            ("header", "Header"),
+                            ("footer_product", "Footer — Urun"),
+                            ("footer_solutions", "Footer — Cozumler"),
+                            ("footer_company", "Footer — Sirket"),
+                            ("footer_support", "Footer — Destek"),
+                            ("footer_legal", "Footer — Yasal"),
+                        ],
+                        max_length=30,
+                        verbose_name="konum",
+                    ),
+                ),
+                ("label", models.CharField(max_length=100, verbose_name="etiket")),
+                (
+                    "url",
+                    models.CharField(
+                        blank=True,
+                        help_text="Django URL adi (ornek: website:features) veya /tam/yol/",
+                        max_length=200,
+                        verbose_name="URL",
+                    ),
+                ),
+                (
+                    "icon",
+                    models.CharField(
+                        blank=True,
+                        help_text="Phosphor icon sinifi",
+                        max_length=50,
+                        verbose_name="ikon",
+                    ),
+                ),
+                (
+                    "description",
+                    models.CharField(
+                        blank=True,
+                        help_text="Dropdown aciklama metni",
+                        max_length=200,
+                        verbose_name="aciklama",
+                    ),
+                ),
+                (
+                    "sort_order",
+                    models.PositiveIntegerField(default=0, verbose_name="siralama"),
+                ),
+                ("is_active", models.BooleanField(default=True, verbose_name="aktif")),
+                (
+                    "parent",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="Dropdown ustune bagli alt linkler icin",
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="children",
+                        to="website.navigationlink",
+                        verbose_name="ust link",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Navigasyon Linki',
-                'verbose_name_plural': 'Navigasyon Linkleri',
-                'ordering': ['location', 'sort_order'],
+                "verbose_name": "Navigasyon Linki",
+                "verbose_name_plural": "Navigasyon Linkleri",
+                "ordering": ["location", "sort_order"],
             },
         ),
         migrations.CreateModel(
-            name='PlanDisplayFeature',
+            name="PlanDisplayFeature",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('text', models.CharField(max_length=200, verbose_name='metin')),
-                ('is_highlighted', models.BooleanField(default=False, help_text='Kalin yazi ile gosterilir', verbose_name='vurgulu')),
-                ('sort_order', models.PositiveIntegerField(default=0, verbose_name='siralama')),
-                ('is_active', models.BooleanField(default=True, verbose_name='aktif')),
-                ('plan', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='display_features', to='subscriptions.plan', verbose_name='plan')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                ("text", models.CharField(max_length=200, verbose_name="metin")),
+                (
+                    "is_highlighted",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Kalin yazi ile gosterilir",
+                        verbose_name="vurgulu",
+                    ),
+                ),
+                (
+                    "sort_order",
+                    models.PositiveIntegerField(default=0, verbose_name="siralama"),
+                ),
+                ("is_active", models.BooleanField(default=True, verbose_name="aktif")),
+                (
+                    "plan",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="display_features",
+                        to="subscriptions.plan",
+                        verbose_name="plan",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Plan Gosterim Ozelligi',
-                'verbose_name_plural': 'Plan Gosterim Ozellikleri',
-                'ordering': ['plan', 'sort_order'],
+                "verbose_name": "Plan Gosterim Ozelligi",
+                "verbose_name_plural": "Plan Gosterim Ozellikleri",
+                "ordering": ["plan", "sort_order"],
             },
         ),
     ]

@@ -21,13 +21,13 @@ class CoreConfig(AppConfig):
     """
 
     # Application identifier - must match the import path
-    name = 'apps.core'
+    name = "apps.core"
 
     # Human-readable name for admin
-    verbose_name = 'Core'
+    verbose_name = "Core"
 
     # Use BigAutoField for auto-generated primary keys
-    default_auto_field = 'django.db.models.BigAutoField'
+    default_auto_field = "django.db.models.BigAutoField"
 
     def ready(self):
         """

@@ -1,4 +1,5 @@
 """Pricing page view."""
+
 import logging
 from collections import OrderedDict
 
@@ -14,47 +15,48 @@ logger = logging.getLogger(__name__)
 def _format_feature_value(value, is_enabled):
     """Convert PlanFeature JSON value to human-readable display string."""
     if not value or not isinstance(value, dict):
-        return ''
+        return ""
 
     # LIMIT type: {'limit': 10} or {'limit': -1} (unlimited)
-    if 'limit' in value:
-        limit = value['limit']
+    if "limit" in value:
+        limit = value["limit"]
         if limit == -1:
-            return str(_('Sinirsiz'))
+            return str(_("Sinirsiz"))
         return str(limit)
 
     # USAGE type: {'credits': 100, 'reset_period': 'monthly'}
-    if 'credits' in value:
-        credits_val = value['credits']
+    if "credits" in value:
+        credits_val = value["credits"]
         if credits_val == -1:
-            return str(_('Sinirsiz'))
+            return str(_("Sinirsiz"))
         # Include period if available (e.g., "250 / ay")
-        period = value.get('reset_period', '')
+        period = value.get("reset_period", "")
         period_labels = {
-            'monthly': str(_('/ ay')),
-            'weekly': str(_('/ hafta')),
-            'daily': str(_('/ gun')),
+            "monthly": str(_("/ ay")),
+            "weekly": str(_("/ hafta")),
+            "daily": str(_("/ gun")),
         }
-        suffix = period_labels.get(period, '')
+        suffix = period_labels.get(period, "")
         if suffix:
             return f"{credits_val} {suffix}"
         return str(credits_val)
 
     # TEXT type: {'text': 'E-posta + Chat'}
-    if 'text' in value:
-        return str(value['text'])
+    if "text" in value:
+        return str(value["text"])
 
     # BOOLEAN type: {'enabled': true/false}
-    if 'enabled' in value:
-        return ''  # Handled by is_enabled check/cross icons
+    if "enabled" in value:
+        return ""  # Handled by is_enabled check/cross icons
 
-    return ''
+    return ""
 
 
 class PricingView(CmsContextMixin, TemplateView):
     """Fiyatlandirma sayfasi — pricing plans, feature matrix, calculator."""
-    template_name = 'website/pricing.html'
-    page_slug = 'pricing'
+
+    template_name = "website/pricing.html"
+    page_slug = "pricing"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -65,23 +67,28 @@ class PricingView(CmsContextMixin, TemplateView):
 
             plans = list(
                 Plan.objects.filter(
-                    is_active=True, is_public=True, deleted_at__isnull=True,
-                ).prefetch_related('display_features').order_by('sort_order')
+                    is_active=True,
+                    is_public=True,
+                    deleted_at__isnull=True,
+                )
+                .prefetch_related("display_features")
+                .order_by("sort_order")
             )
-            context['plans'] = plans
+            context["plans"] = plans
 
             # Build comparison matrix grouped by category
             features = Feature.objects.filter(
-                is_active=True, deleted_at__isnull=True,
-            ).order_by('category', 'sort_order')
+                is_active=True,
+                deleted_at__isnull=True,
+            ).order_by("category", "sort_order")
 
             # Pre-fetch all PlanFeatures at once (avoid N+1)
-            plan_ids = list(plans.values_list('id', flat=True))
-            feature_ids = list(features.values_list('id', flat=True))
+            plan_ids = list(plans.values_list("id", flat=True))
+            feature_ids = list(features.values_list("id", flat=True))
             plan_features = PlanFeature.objects.filter(
                 plan_id__in=plan_ids,
                 feature_id__in=feature_ids,
-            ).select_related('feature')
+            ).select_related("feature")
 
             # Build lookup dict: (plan_id, feature_id) -> PlanFeature
             pf_lookup = {}
@@ -96,51 +103,57 @@ class PricingView(CmsContextMixin, TemplateView):
 
                 if cat not in grouped_matrix:
                     grouped_matrix[cat] = {
-                        'category_key': cat,
-                        'category_display': cat_display,
-                        'rows': [],
+                        "category_key": cat,
+                        "category_display": cat_display,
+                        "rows": [],
                     }
 
                 row = {
-                    'feature': feature,
-                    'values': [],
+                    "feature": feature,
+                    "values": [],
                 }
                 for plan in plans:
                     pf = pf_lookup.get((str(plan.id), str(feature.id)))
                     if pf:
-                        row['values'].append({
-                            'is_enabled': pf.is_enabled,
-                            'value': pf.value,
-                            'display_value': _format_feature_value(
-                                pf.value, pf.is_enabled,
-                            ),
-                        })
+                        row["values"].append(
+                            {
+                                "is_enabled": pf.is_enabled,
+                                "value": pf.value,
+                                "display_value": _format_feature_value(
+                                    pf.value,
+                                    pf.is_enabled,
+                                ),
+                            }
+                        )
                     else:
-                        row['values'].append({
-                            'is_enabled': False,
-                            'value': None,
-                            'display_value': '',
-                        })
-                grouped_matrix[cat]['rows'].append(row)
+                        row["values"].append(
+                            {
+                                "is_enabled": False,
+                                "value": None,
+                                "display_value": "",
+                            }
+                        )
+                grouped_matrix[cat]["rows"].append(row)
 
-            context['comparison_groups'] = list(grouped_matrix.values())
+            context["comparison_groups"] = list(grouped_matrix.values())
 
             # Also provide flat matrix for backward compatibility
             flat_matrix = []
             for group in grouped_matrix.values():
-                flat_matrix.extend(group['rows'])
-            context['comparison_matrix'] = flat_matrix
+                flat_matrix.extend(group["rows"])
+            context["comparison_matrix"] = flat_matrix
 
         except Exception:
-            logger.exception('Failed to load pricing data')
-            context['plans'] = []
-            context['comparison_matrix'] = []
-            context['comparison_groups'] = []
+            logger.exception("Failed to load pricing data")
+            context["plans"] = []
+            context["comparison_matrix"] = []
+            context["comparison_groups"] = []
 
         # FAQs for pricing page
-        context['faqs'] = FAQ.objects.filter(
-            is_active=True, deleted_at__isnull=True,
-            page__in=['pricing', 'both'],
-        ).order_by('sort_order')
+        context["faqs"] = FAQ.objects.filter(
+            is_active=True,
+            deleted_at__isnull=True,
+            page__in=["pricing", "both"],
+        ).order_by("sort_order")
 
         return context

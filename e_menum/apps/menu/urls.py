@@ -84,7 +84,7 @@ from apps.menu.views import (
 )
 
 
-app_name = 'menu'
+app_name = "menu"
 
 
 # =============================================================================
@@ -93,16 +93,20 @@ app_name = 'menu'
 
 # Main router for top-level resources
 router = DefaultRouter()
-router.register(r'themes', ThemeViewSet, basename='theme')
-router.register(r'menus', MenuViewSet, basename='menu')
-router.register(r'categories', CategoryViewSet, basename='category')
-router.register(r'products', ProductViewSet, basename='product')
-router.register(r'allergens', AllergenViewSet, basename='allergen')
+router.register(r"themes", ThemeViewSet, basename="theme")
+router.register(r"menus", MenuViewSet, basename="menu")
+router.register(r"categories", CategoryViewSet, basename="category")
+router.register(r"products", ProductViewSet, basename="product")
+router.register(r"allergens", AllergenViewSet, basename="allergen")
 
 # Nested router for product variants and modifiers
-products_router = routers.NestedDefaultRouter(router, r'products', lookup='product')
-products_router.register(r'variants', ProductVariantViewSet, basename='product-variants')
-products_router.register(r'modifiers', ProductModifierViewSet, basename='product-modifiers')
+products_router = routers.NestedDefaultRouter(router, r"products", lookup="product")
+products_router.register(
+    r"variants", ProductVariantViewSet, basename="product-variants"
+)
+products_router.register(
+    r"modifiers", ProductModifierViewSet, basename="product-modifiers"
+)
 
 
 # =============================================================================
@@ -110,6 +114,6 @@ products_router.register(r'modifiers', ProductModifierViewSet, basename='product
 # =============================================================================
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('', include(products_router.urls)),
+    path("", include(router.urls)),
+    path("", include(products_router.urls)),
 ]

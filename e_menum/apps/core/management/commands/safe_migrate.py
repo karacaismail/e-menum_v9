@@ -41,7 +41,7 @@ from django.utils import timezone
 
 # Advisory lock ID: deterministic hash of 'safe_migrate' so it is stable
 # across restarts but unique enough to not collide with application locks.
-ADVISORY_LOCK_ID = int(hashlib.md5(b'safe_migrate').hexdigest()[:15], 16)
+ADVISORY_LOCK_ID = int(hashlib.md5(b"safe_migrate").hexdigest()[:15], 16)
 
 
 class Command(BaseCommand):
@@ -50,45 +50,45 @@ class Command(BaseCommand):
     """
 
     help = (
-        'Apply database migrations with safety checks, advisory locking, '
-        'dangerous operation detection, and full audit logging.'
+        "Apply database migrations with safety checks, advisory locking, "
+        "dangerous operation detection, and full audit logging."
     )
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--dry-run',
-            action='store_true',
-            help='Show what migrations would be applied without executing them.',
+            "--dry-run",
+            action="store_true",
+            help="Show what migrations would be applied without executing them.",
         )
         parser.add_argument(
-            '--rollback',
+            "--rollback",
             nargs=2,
-            metavar=('APP_LABEL', 'MIGRATION_NAME'),
-            help='Rollback the specified app to the given migration name.',
+            metavar=("APP_LABEL", "MIGRATION_NAME"),
+            help="Rollback the specified app to the given migration name.",
         )
         parser.add_argument(
-            '--skip-dangerous-check',
-            action='store_true',
-            help='Skip detection of dangerous operations (DROP TABLE, DROP COLUMN).',
+            "--skip-dangerous-check",
+            action="store_true",
+            help="Skip detection of dangerous operations (DROP TABLE, DROP COLUMN).",
         )
         parser.add_argument(
-            '--applied-by',
-            default='system',
-            help='Identifier for who/what triggered this migration (default: system).',
+            "--applied-by",
+            default="system",
+            help="Identifier for who/what triggered this migration (default: system).",
         )
         parser.add_argument(
-            '--database',
-            default='default',
+            "--database",
+            default="default",
             help='Database alias to migrate (default: "default").',
         )
 
     def handle(self, *args, **options):
-        self.dry_run = options['dry_run']
-        self.rollback = options['rollback']
-        self.skip_dangerous_check = options['skip_dangerous_check']
-        self.applied_by = options['applied_by']
-        self.db_alias = options['database']
-        self.verbosity = options['verbosity']
+        self.dry_run = options["dry_run"]
+        self.rollback = options["rollback"]
+        self.skip_dangerous_check = options["skip_dangerous_check"]
+        self.applied_by = options["applied_by"]
+        self.db_alias = options["database"]
+        self.verbosity = options["verbosity"]
         self.hostname = socket.gethostname()
 
         self._print_header()
@@ -96,9 +96,9 @@ class Command(BaseCommand):
         # Acquire advisory lock to prevent concurrent execution
         if not self._acquire_advisory_lock():
             raise CommandError(
-                'Another safe_migrate process is already running. '
-                'If this is an error, the lock will be released when that '
-                'connection closes.'
+                "Another safe_migrate process is already running. "
+                "If this is an error, the lock will be released when that "
+                "connection closes."
             )
 
         try:
@@ -118,46 +118,52 @@ class Command(BaseCommand):
         plan = executor.migration_plan(executor.loader.graph.leaf_nodes())
 
         if not plan:
-            self.stdout.write(self.style.SUCCESS(
-                '\n  No pending migrations. Database is up to date.'
-            ))
+            self.stdout.write(
+                self.style.SUCCESS("\n  No pending migrations. Database is up to date.")
+            )
             return
 
         # Display pending migrations
-        self.stdout.write(self.style.MIGRATE_HEADING(
-            f'\n  Found {len(plan)} pending migration(s):'
-        ))
+        self.stdout.write(
+            self.style.MIGRATE_HEADING(f"\n  Found {len(plan)} pending migration(s):")
+        )
         for migration, backward in plan:
-            direction = 'BACKWARD' if backward else 'FORWARD'
-            self.stdout.write(f'    [{direction}] {migration.app_label}.{migration.name}')
+            direction = "BACKWARD" if backward else "FORWARD"
+            self.stdout.write(
+                f"    [{direction}] {migration.app_label}.{migration.name}"
+            )
 
         # Dangerous operation detection
         if not self.skip_dangerous_check:
             dangerous = self._detect_dangerous_operations(plan)
             if dangerous:
-                self.stdout.write(self.style.WARNING(
-                    '\n  WARNING: Potentially dangerous operations detected:'
-                ))
+                self.stdout.write(
+                    self.style.WARNING(
+                        "\n  WARNING: Potentially dangerous operations detected:"
+                    )
+                )
                 for app_label, name, operations in dangerous:
-                    self.stdout.write(self.style.WARNING(
-                        f'    {app_label}.{name}:'
-                    ))
+                    self.stdout.write(self.style.WARNING(f"    {app_label}.{name}:"))
                     for op in operations:
-                        self.stdout.write(self.style.ERROR(f'      - {op}'))
+                        self.stdout.write(self.style.ERROR(f"      - {op}"))
 
                 if self.dry_run:
-                    self.stdout.write(self.style.WARNING(
-                        '\n  Dry run: dangerous operations noted but not blocked.'
-                    ))
+                    self.stdout.write(
+                        self.style.WARNING(
+                            "\n  Dry run: dangerous operations noted but not blocked."
+                        )
+                    )
                 else:
-                    self.stdout.write(self.style.WARNING(
-                        '\n  Proceeding with caution. Use --skip-dangerous-check to suppress.'
-                    ))
+                    self.stdout.write(
+                        self.style.WARNING(
+                            "\n  Proceeding with caution. Use --skip-dangerous-check to suppress."
+                        )
+                    )
 
         if self.dry_run:
-            self.stdout.write(self.style.WARNING(
-                '\n  DRY RUN: No migrations were applied.'
-            ))
+            self.stdout.write(
+                self.style.WARNING("\n  DRY RUN: No migrations were applied.")
+            )
             self._log_migrations(plan, dry_run=True)
             return
 
@@ -169,13 +175,14 @@ class Command(BaseCommand):
         for idx, (migration, backward) in enumerate(plan, 1):
             app_label = migration.app_label
             name = migration.name
-            direction = 'backward' if backward else 'forward'
-            is_dangerous = not self.skip_dangerous_check and self._is_migration_dangerous(
-                app_label, name
+            direction = "backward" if backward else "forward"
+            is_dangerous = (
+                not self.skip_dangerous_check
+                and self._is_migration_dangerous(app_label, name)
             )
 
             self.stdout.write(
-                f'\n  [{idx}/{total}] Applying {app_label}.{name} ({direction})...'
+                f"\n  [{idx}/{total}] Applying {app_label}.{name} ({direction})..."
             )
 
             log_entry = self._create_log_entry(
@@ -189,7 +196,7 @@ class Command(BaseCommand):
             try:
                 # Apply this single migration by targeting its node
                 call_command(
-                    'migrate',
+                    "migrate",
                     app_label,
                     name,
                     database=self.db_alias,
@@ -199,25 +206,23 @@ class Command(BaseCommand):
                 elapsed_ms = int((time.monotonic() - start_time) * 1000)
                 self._update_log_success(log_entry, elapsed_ms)
                 success_count += 1
-                self.stdout.write(self.style.SUCCESS(
-                    f'    OK ({elapsed_ms}ms)'
-                ))
+                self.stdout.write(self.style.SUCCESS(f"    OK ({elapsed_ms}ms)"))
 
             except Exception as exc:
                 elapsed_ms = int((time.monotonic() - start_time) * 1000)
                 self._update_log_failure(log_entry, elapsed_ms, str(exc))
                 fail_count += 1
-                self.stdout.write(self.style.ERROR(
-                    f'    FAILED ({elapsed_ms}ms): {exc}'
-                ))
-                # Stop on first failure to prevent cascading errors
-                self.stdout.write(self.style.ERROR(
-                    f'\n  Migration halted. {success_count} succeeded, '
-                    f'{fail_count} failed, {total - idx} remaining.'
-                ))
-                raise CommandError(
-                    f'Migration {app_label}.{name} failed: {exc}'
+                self.stdout.write(
+                    self.style.ERROR(f"    FAILED ({elapsed_ms}ms): {exc}")
                 )
+                # Stop on first failure to prevent cascading errors
+                self.stdout.write(
+                    self.style.ERROR(
+                        f"\n  Migration halted. {success_count} succeeded, "
+                        f"{fail_count} failed, {total - idx} remaining."
+                    )
+                )
+                raise CommandError(f"Migration {app_label}.{name} failed: {exc}")
 
         self._print_summary(success_count, fail_count, total)
 
@@ -238,46 +243,44 @@ class Command(BaseCommand):
         if (app_label, target_migration) not in loader.graph.nodes:
             # Try partial match
             matches = [
-                key for key in loader.graph.nodes
+                key
+                for key in loader.graph.nodes
                 if key[0] == app_label and target_migration in key[1]
             ]
             if len(matches) == 1:
                 target_migration = matches[0][1]
-                self.stdout.write(
-                    f'  Matched partial name to: {target_migration}'
-                )
+                self.stdout.write(f"  Matched partial name to: {target_migration}")
             elif len(matches) > 1:
-                names = ', '.join(m[1] for m in matches)
+                names = ", ".join(m[1] for m in matches)
                 raise CommandError(
-                    f'Ambiguous migration name "{target_migration}". '
-                    f'Matches: {names}'
+                    f'Ambiguous migration name "{target_migration}". Matches: {names}'
                 )
             else:
                 raise CommandError(
                     f'Migration "{target_migration}" not found for app "{app_label}".'
                 )
 
-        self.stdout.write(self.style.WARNING(
-            f'\n  Rolling back {app_label} to {target_migration}...'
-        ))
+        self.stdout.write(
+            self.style.WARNING(f"\n  Rolling back {app_label} to {target_migration}...")
+        )
 
         if self.dry_run:
-            self.stdout.write(self.style.WARNING(
-                '  DRY RUN: No rollback was performed.'
-            ))
+            self.stdout.write(
+                self.style.WARNING("  DRY RUN: No rollback was performed.")
+            )
             return
 
         log_entry = self._create_log_entry(
             app_label=app_label,
             migration_name=target_migration,
-            direction='backward',
+            direction="backward",
             is_dangerous=True,
         )
 
         start_time = time.monotonic()
         try:
             call_command(
-                'migrate',
+                "migrate",
                 app_label,
                 target_migration,
                 database=self.db_alias,
@@ -286,13 +289,13 @@ class Command(BaseCommand):
             )
             elapsed_ms = int((time.monotonic() - start_time) * 1000)
             self._update_log_success(log_entry, elapsed_ms)
-            self.stdout.write(self.style.SUCCESS(
-                f'  Rollback complete ({elapsed_ms}ms).'
-            ))
+            self.stdout.write(
+                self.style.SUCCESS(f"  Rollback complete ({elapsed_ms}ms).")
+            )
         except Exception as exc:
             elapsed_ms = int((time.monotonic() - start_time) * 1000)
             self._update_log_failure(log_entry, elapsed_ms, str(exc))
-            raise CommandError(f'Rollback failed: {exc}')
+            raise CommandError(f"Rollback failed: {exc}")
 
     # ─── Dangerous operation detection ────────────────────────────
 
@@ -315,45 +318,50 @@ class Command(BaseCommand):
         for operation in migration.operations:
             op_type = type(operation).__name__
 
-            if op_type == 'DeleteModel':
+            if op_type == "DeleteModel":
                 dangerous_ops.append(
-                    f'DELETE MODEL: {operation.name} (table will be dropped)'
+                    f"DELETE MODEL: {operation.name} (table will be dropped)"
                 )
-            elif op_type == 'RemoveField':
+            elif op_type == "RemoveField":
                 dangerous_ops.append(
-                    f'REMOVE FIELD: {operation.model_name}.{operation.name} '
-                    f'(column will be dropped)'
+                    f"REMOVE FIELD: {operation.model_name}.{operation.name} "
+                    f"(column will be dropped)"
                 )
-            elif op_type == 'RenameModel':
+            elif op_type == "RenameModel":
                 dangerous_ops.append(
-                    f'RENAME MODEL: {operation.old_name} -> {operation.new_name}'
+                    f"RENAME MODEL: {operation.old_name} -> {operation.new_name}"
                 )
-            elif op_type == 'RenameField':
+            elif op_type == "RenameField":
                 dangerous_ops.append(
-                    f'RENAME FIELD: {operation.model_name}.'
-                    f'{operation.old_name} -> {operation.new_name}'
+                    f"RENAME FIELD: {operation.model_name}."
+                    f"{operation.old_name} -> {operation.new_name}"
                 )
-            elif op_type == 'AlterField':
+            elif op_type == "AlterField":
                 dangerous_ops.append(
-                    f'ALTER FIELD: {operation.model_name}.{operation.name} '
-                    f'(type or constraints may change)'
+                    f"ALTER FIELD: {operation.model_name}.{operation.name} "
+                    f"(type or constraints may change)"
                 )
-            elif op_type == 'RunSQL':
-                sql_str = str(getattr(operation, 'sql', ''))
+            elif op_type == "RunSQL":
+                sql_str = str(getattr(operation, "sql", ""))
                 sql_upper = sql_str.upper()
-                if any(kw in sql_upper for kw in [
-                    'DROP TABLE', 'DROP COLUMN', 'TRUNCATE', 'DELETE FROM',
-                    'ALTER TABLE', 'DROP INDEX',
-                ]):
-                    snippet = sql_str[:120].replace('\n', ' ')
-                    dangerous_ops.append(
-                        f'RAW SQL: {snippet}...'
-                    )
-            elif op_type == 'RunPython':
+                if any(
+                    kw in sql_upper
+                    for kw in [
+                        "DROP TABLE",
+                        "DROP COLUMN",
+                        "TRUNCATE",
+                        "DELETE FROM",
+                        "ALTER TABLE",
+                        "DROP INDEX",
+                    ]
+                ):
+                    snippet = sql_str[:120].replace("\n", " ")
+                    dangerous_ops.append(f"RAW SQL: {snippet}...")
+            elif op_type == "RunPython":
                 # Flag RunPython as informational, not blocking
-                code_name = getattr(operation.code, '__name__', 'anonymous')
+                code_name = getattr(operation.code, "__name__", "anonymous")
                 dangerous_ops.append(
-                    f'RUN PYTHON: {code_name} (data migration - review manually)'
+                    f"RUN PYTHON: {code_name} (data migration - review manually)"
                 )
 
         return dangerous_ops
@@ -376,50 +384,48 @@ class Command(BaseCommand):
         For non-PostgreSQL databases (e.g. SQLite in dev), always returns True.
         """
         db_engine = connections[self.db_alias].vendor
-        if db_engine != 'postgresql':
+        if db_engine != "postgresql":
             if self.verbosity >= 2:
-                self.stdout.write(
-                    f'  Advisory lock skipped (engine: {db_engine}).'
-                )
+                self.stdout.write(f"  Advisory lock skipped (engine: {db_engine}).")
             return True
 
         with connection.cursor() as cursor:
             cursor.execute(
-                'SELECT pg_try_advisory_lock(%s)',
+                "SELECT pg_try_advisory_lock(%s)",
                 [ADVISORY_LOCK_ID],
             )
             acquired = cursor.fetchone()[0]
 
         if acquired:
             if self.verbosity >= 2:
-                self.stdout.write('  Advisory lock acquired.')
+                self.stdout.write("  Advisory lock acquired.")
         else:
-            self.stdout.write(self.style.ERROR(
-                '  Could not acquire advisory lock.'
-            ))
+            self.stdout.write(self.style.ERROR("  Could not acquire advisory lock."))
         return acquired
 
     def _release_advisory_lock(self):
         """Release the PostgreSQL advisory lock."""
         db_engine = connections[self.db_alias].vendor
-        if db_engine != 'postgresql':
+        if db_engine != "postgresql":
             return
 
         try:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    'SELECT pg_advisory_unlock(%s)',
+                    "SELECT pg_advisory_unlock(%s)",
                     [ADVISORY_LOCK_ID],
                 )
             if self.verbosity >= 2:
-                self.stdout.write('  Advisory lock released.')
+                self.stdout.write("  Advisory lock released.")
         except Exception:
             # Lock is released when the connection closes anyway
             pass
 
     # ─── Audit logging ────────────────────────────────────────────
 
-    def _create_log_entry(self, app_label, migration_name, direction, is_dangerous=False):
+    def _create_log_entry(
+        self, app_label, migration_name, direction, is_dangerous=False
+    ):
         """
         Create a MigrationLog entry in PENDING status.
 
@@ -449,10 +455,10 @@ class Command(BaseCommand):
         if entry is None:
             return
         try:
-            entry.status = 'success'
+            entry.status = "success"
             entry.completed_at = timezone.now()
             entry.duration_ms = elapsed_ms
-            entry.save(update_fields=['status', 'completed_at', 'duration_ms'])
+            entry.save(update_fields=["status", "completed_at", "duration_ms"])
         except Exception:
             pass
 
@@ -461,18 +467,20 @@ class Command(BaseCommand):
         if entry is None:
             return
         try:
-            entry.status = 'failed'
+            entry.status = "failed"
             entry.completed_at = timezone.now()
             entry.duration_ms = elapsed_ms
             entry.error_message = str(error_message)[:5000]
-            entry.save(update_fields=['status', 'completed_at', 'duration_ms', 'error_message'])
+            entry.save(
+                update_fields=["status", "completed_at", "duration_ms", "error_message"]
+            )
         except Exception:
             pass
 
     def _log_migrations(self, plan, dry_run=False):
         """Log all planned migrations as dry-run entries."""
         for migration, backward in plan:
-            direction = 'backward' if backward else 'forward'
+            direction = "backward" if backward else "forward"
             self._create_log_entry(
                 app_label=migration.app_label,
                 migration_name=migration.name,
@@ -483,34 +491,40 @@ class Command(BaseCommand):
     # ─── Output helpers ───────────────────────────────────────────
 
     def _print_header(self):
-        self.stdout.write('')
-        self.stdout.write('=' * 60)
-        self.stdout.write('  E-Menum Safe Migration Runner')
-        self.stdout.write(f'  Host: {self.hostname}')
-        self.stdout.write(f'  Database: {self.db_alias}')
-        self.stdout.write(f'  Time: {timezone.now().isoformat()}')
+        self.stdout.write("")
+        self.stdout.write("=" * 60)
+        self.stdout.write("  E-Menum Safe Migration Runner")
+        self.stdout.write(f"  Host: {self.hostname}")
+        self.stdout.write(f"  Database: {self.db_alias}")
+        self.stdout.write(f"  Time: {timezone.now().isoformat()}")
         if self.dry_run:
-            self.stdout.write(self.style.WARNING('  Mode: DRY RUN'))
+            self.stdout.write(self.style.WARNING("  Mode: DRY RUN"))
         elif self.rollback:
-            self.stdout.write(self.style.WARNING(
-                f'  Mode: ROLLBACK {self.rollback[0]} -> {self.rollback[1]}'
-            ))
+            self.stdout.write(
+                self.style.WARNING(
+                    f"  Mode: ROLLBACK {self.rollback[0]} -> {self.rollback[1]}"
+                )
+            )
         else:
-            self.stdout.write('  Mode: FORWARD')
-        self.stdout.write('=' * 60)
+            self.stdout.write("  Mode: FORWARD")
+        self.stdout.write("=" * 60)
 
     def _print_summary(self, success, failed, total):
-        self.stdout.write('')
-        self.stdout.write('=' * 60)
-        self.stdout.write('  Migration Summary')
-        self.stdout.write(f'  Total: {total}  |  Success: {success}  |  Failed: {failed}')
-        self.stdout.write('=' * 60)
+        self.stdout.write("")
+        self.stdout.write("=" * 60)
+        self.stdout.write("  Migration Summary")
+        self.stdout.write(
+            f"  Total: {total}  |  Success: {success}  |  Failed: {failed}"
+        )
+        self.stdout.write("=" * 60)
 
         if failed == 0:
-            self.stdout.write(self.style.SUCCESS(
-                '\n  All migrations applied successfully.'
-            ))
+            self.stdout.write(
+                self.style.SUCCESS("\n  All migrations applied successfully.")
+            )
         else:
-            self.stdout.write(self.style.ERROR(
-                f'\n  {failed} migration(s) failed. Check logs for details.'
-            ))
+            self.stdout.write(
+                self.style.ERROR(
+                    f"\n  {failed} migration(s) failed. Check logs for details."
+                )
+            )

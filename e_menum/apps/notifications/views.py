@@ -66,13 +66,13 @@ class NotificationViewSet(BaseTenantViewSet):
     """
 
     queryset = Notification.objects.all()
-    permission_resource = 'notification'
+    permission_resource = "notification"
     # Notifications are read-only from API perspective (system creates them)
-    http_method_names = ['get', 'delete', 'head', 'options', 'post']
+    http_method_names = ["get", "delete", "head", "options", "post"]
 
     def get_serializer_class(self):
         """Return appropriate serializer based on action."""
-        if self.action == 'list':
+        if self.action == "list":
             return NotificationListSerializer
         return NotificationDetailSerializer
 
@@ -89,25 +89,23 @@ class NotificationViewSet(BaseTenantViewSet):
         queryset = queryset.filter(user=self.request.user)
 
         # Apply status filter
-        status_filter = self.request.query_params.get('status')
+        status_filter = self.request.query_params.get("status")
         if status_filter:
             queryset = queryset.filter(status=status_filter.upper())
 
         # Apply type filter
-        notification_type = self.request.query_params.get('notification_type')
+        notification_type = self.request.query_params.get("notification_type")
         if notification_type:
-            queryset = queryset.filter(
-                notification_type=notification_type.upper()
-            )
+            queryset = queryset.filter(notification_type=notification_type.upper())
 
         # Apply priority filter
-        priority = self.request.query_params.get('priority')
+        priority = self.request.query_params.get("priority")
         if priority:
             queryset = queryset.filter(priority=priority.upper())
 
         # Filter unread notifications
-        unread = self.request.query_params.get('unread')
-        if unread and unread.lower() == 'true':
+        unread = self.request.query_params.get("unread")
+        if unread and unread.lower() == "true":
             queryset = queryset.filter(
                 status__in=[
                     NotificationStatus.PENDING,
@@ -116,9 +114,9 @@ class NotificationViewSet(BaseTenantViewSet):
                 ]
             )
 
-        return queryset.order_by('-created_at')
+        return queryset.order_by("-created_at")
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def read(self, request, pk=None):
         """
         Mark a notification as read.
@@ -139,15 +137,19 @@ class NotificationViewSet(BaseTenantViewSet):
             logger.info(
                 "Notification %s marked as read by user %s",
                 notification.id,
-                request.user.id
+                request.user.id,
             )
 
-        return self.get_success_response({
-            'message': str(_('Notification marked as read')),
-            'read_at': notification.read_at.isoformat() if notification.read_at else None,
-        })
+        return self.get_success_response(
+            {
+                "message": str(_("Notification marked as read")),
+                "read_at": notification.read_at.isoformat()
+                if notification.read_at
+                else None,
+            }
+        )
 
-    @action(detail=False, methods=['post'], url_path='read-all')
+    @action(detail=False, methods=["post"], url_path="read-all")
     def read_all(self, request):
         """
         Mark all unread notifications as read for the current user.
@@ -167,9 +169,9 @@ class NotificationViewSet(BaseTenantViewSet):
         organization = self.get_organization()
         if not organization:
             return self.get_error_response(
-                code='FORBIDDEN',
-                message=str(_('Organization context required')),
-                status_code=status.HTTP_403_FORBIDDEN
+                code="FORBIDDEN",
+                message=str(_("Organization context required")),
+                status_code=status.HTTP_403_FORBIDDEN,
             )
 
         now = timezone.now()
@@ -188,17 +190,17 @@ class NotificationViewSet(BaseTenantViewSet):
         )
 
         logger.info(
-            "Marked %d notifications as read for user %s",
-            count,
-            request.user.id
+            "Marked %d notifications as read for user %s", count, request.user.id
         )
 
-        return self.get_success_response({
-            'message': str(_('All notifications marked as read')),
-            'count': count,
-        })
+        return self.get_success_response(
+            {
+                "message": str(_("All notifications marked as read")),
+                "count": count,
+            }
+        )
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def archive(self, request, pk=None):
         """
         Archive a notification.
@@ -215,9 +217,11 @@ class NotificationViewSet(BaseTenantViewSet):
         notification = self.get_object()
         notification.archive()
 
-        return self.get_success_response({
-            'message': str(_('Notification archived')),
-        })
+        return self.get_success_response(
+            {
+                "message": str(_("Notification archived")),
+            }
+        )
 
 
 # =============================================================================
@@ -225,5 +229,5 @@ class NotificationViewSet(BaseTenantViewSet):
 # =============================================================================
 
 __all__ = [
-    'NotificationViewSet',
+    "NotificationViewSet",
 ]

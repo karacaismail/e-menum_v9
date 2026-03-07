@@ -27,13 +27,13 @@ class TestStaticPageSitemap(TestCase):
         items = sitemap.items()
 
         self.assertIsInstance(items, list)
-        self.assertIn('website:home', items)
-        self.assertIn('website:features', items)
-        self.assertIn('website:pricing', items)
-        self.assertIn('website:about', items)
-        self.assertIn('website:contact', items)
-        self.assertIn('website:demo', items)
-        self.assertIn('website:blog', items)
+        self.assertIn("website:home", items)
+        self.assertIn("website:features", items)
+        self.assertIn("website:pricing", items)
+        self.assertIn("website:about", items)
+        self.assertIn("website:contact", items)
+        self.assertIn("website:demo", items)
+        self.assertIn("website:blog", items)
 
     def test_priority(self):
         sitemap = StaticPageSitemap()
@@ -41,11 +41,11 @@ class TestStaticPageSitemap(TestCase):
 
     def test_changefreq(self):
         sitemap = StaticPageSitemap()
-        self.assertEqual(sitemap.changefreq, 'weekly')
+        self.assertEqual(sitemap.changefreq, "weekly")
 
     def test_protocol_is_https(self):
         sitemap = StaticPageSitemap()
-        self.assertEqual(sitemap.protocol, 'https')
+        self.assertEqual(sitemap.protocol, "https")
 
 
 class TestPSEOPageSitemap(TestCase):
@@ -53,34 +53,34 @@ class TestPSEOPageSitemap(TestCase):
 
     def setUp(self):
         self.template = PSEOTemplate.objects.create(
-            name='Sitemap Test Template',
-            slug_template='{sehir}-test',
-            title_template='{sehir} Test',
-            description_template='Desc for {sehir}.',
-            content_template='Content for {sehir}.',
+            name="Sitemap Test Template",
+            slug_template="{sehir}-test",
+            title_template="{sehir} Test",
+            description_template="Desc for {sehir}.",
+            content_template="Content for {sehir}.",
         )
 
     def test_items_returns_only_published(self):
         # Published page
         PSEOPage.objects.create(
             template=self.template,
-            slug='published-page',
-            rendered_title='Published',
+            slug="published-page",
+            rendered_title="Published",
             is_published=True,
             published_at=timezone.now(),
         )
         # Unpublished page
         PSEOPage.objects.create(
             template=self.template,
-            slug='unpublished-page',
-            rendered_title='Draft',
+            slug="unpublished-page",
+            rendered_title="Draft",
             is_published=False,
         )
         # Soft-deleted published page
         PSEOPage.objects.create(
             template=self.template,
-            slug='deleted-page',
-            rendered_title='Deleted',
+            slug="deleted-page",
+            rendered_title="Deleted",
             is_published=True,
             published_at=timezone.now(),
             deleted_at=timezone.now(),
@@ -90,24 +90,24 @@ class TestPSEOPageSitemap(TestCase):
         items = list(sitemap.items())
 
         self.assertEqual(len(items), 1)
-        self.assertEqual(items[0].slug, 'published-page')
+        self.assertEqual(items[0].slug, "published-page")
 
     def test_location(self):
         page = PSEOPage.objects.create(
             template=self.template,
-            slug='istanbul-kafe',
-            rendered_title='Istanbul Kafe',
+            slug="istanbul-kafe",
+            rendered_title="Istanbul Kafe",
             is_published=True,
             published_at=timezone.now(),
         )
         sitemap = PSEOPageSitemap()
-        self.assertEqual(sitemap.location(page), '/s/istanbul-kafe/')
+        self.assertEqual(sitemap.location(page), "/s/istanbul-kafe/")
 
     def test_lastmod_uses_published_at(self):
         now = timezone.now()
         page = PSEOPage.objects.create(
             template=self.template,
-            slug='lastmod-test',
+            slug="lastmod-test",
             is_published=True,
             published_at=now,
         )
@@ -117,7 +117,7 @@ class TestPSEOPageSitemap(TestCase):
     def test_lastmod_falls_back_to_updated_at(self):
         page = PSEOPage.objects.create(
             template=self.template,
-            slug='no-pubdate',
+            slug="no-pubdate",
             is_published=True,
             published_at=None,
         )
@@ -132,21 +132,21 @@ class TestPSEOPageSitemap(TestCase):
 
     def test_changefreq(self):
         sitemap = PSEOPageSitemap()
-        self.assertEqual(sitemap.changefreq, 'monthly')
+        self.assertEqual(sitemap.changefreq, "monthly")
 
 
 class TestSitemapsDict(TestCase):
     """Test the module-level sitemaps dict."""
 
     def test_sitemaps_contains_expected_keys(self):
-        self.assertIn('static', sitemaps)
-        self.assertIn('blog', sitemaps)
-        self.assertIn('legal', sitemaps)
-        self.assertIn('pseo', sitemaps)
+        self.assertIn("static", sitemaps)
+        self.assertIn("blog", sitemaps)
+        self.assertIn("legal", sitemaps)
+        self.assertIn("pseo", sitemaps)
 
     def test_sitemaps_values_are_classes(self):
         for key, cls in sitemaps.items():
             self.assertTrue(
                 callable(cls),
-                f'sitemaps[{key!r}] should be a callable class',
+                f"sitemaps[{key!r}] should be a callable class",
             )

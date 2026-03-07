@@ -77,13 +77,13 @@ class WhatIfService:
                 deleted_at__isnull=True,
             )
         except Product.DoesNotExist:
-            return self._error_result('Product not found')
+            return self._error_result("Product not found")
 
         current_price = _to_float(product.price)
         new_price = float(new_price)
 
         if current_price == 0:
-            return self._error_result('Product has zero price')
+            return self._error_result("Product has zero price")
 
         # Get recent order data (last 90 days)
         ninety_days_ago = date.today() - timedelta(days=90)
@@ -97,13 +97,13 @@ class WhatIfService:
         )
 
         metrics = item_qs.aggregate(
-            total_quantity=Sum('quantity'),
-            total_revenue=Sum('total_price'),
-            order_count=Count('order', distinct=True),
+            total_quantity=Sum("quantity"),
+            total_revenue=Sum("total_price"),
+            order_count=Count("order", distinct=True),
         )
 
-        total_qty = metrics['total_quantity'] or 0
-        total_rev = _to_float(metrics['total_revenue'])
+        total_qty = metrics["total_quantity"] or 0
+        total_rev = _to_float(metrics["total_revenue"])
 
         # Price elasticity estimation (simplified model)
         # Typical food industry elasticity: -0.5 to -1.5
@@ -120,35 +120,37 @@ class WhatIfService:
         )
 
         return {
-            'simulation_type': 'price_change',
-            'product_id': product_id,
-            'product_name': product.name,
-            'current_state': {
-                'price': current_price,
-                'total_quantity_sold': total_qty,
-                'total_revenue': total_rev,
-                'period_days': 90,
+            "simulation_type": "price_change",
+            "product_id": product_id,
+            "product_name": product.name,
+            "current_state": {
+                "price": current_price,
+                "total_quantity_sold": total_qty,
+                "total_revenue": total_rev,
+                "period_days": 90,
             },
-            'projected_state': {
-                'price': new_price,
-                'projected_quantity': round(projected_qty, 0),
-                'projected_revenue': round(projected_revenue, 2),
-                'price_change_pct': round(price_change_pct * 100, 2),
-                'quantity_change_pct': round(qty_change_pct * 100, 2),
+            "projected_state": {
+                "price": new_price,
+                "projected_quantity": round(projected_qty, 0),
+                "projected_revenue": round(projected_revenue, 2),
+                "price_change_pct": round(price_change_pct * 100, 2),
+                "quantity_change_pct": round(qty_change_pct * 100, 2),
             },
-            'impact': {
-                'revenue_impact': round(revenue_impact, 2),
-                'revenue_impact_pct': revenue_impact_pct,
-                'recommendation': (
-                    'positive' if revenue_impact > 0
-                    else 'negative' if revenue_impact < 0
-                    else 'neutral'
+            "impact": {
+                "revenue_impact": round(revenue_impact, 2),
+                "revenue_impact_pct": revenue_impact_pct,
+                "recommendation": (
+                    "positive"
+                    if revenue_impact > 0
+                    else "negative"
+                    if revenue_impact < 0
+                    else "neutral"
                 ),
             },
-            'confidence': {
-                'level': 'medium' if total_qty >= 50 else 'low',
-                'data_points': total_qty,
-                'notes': 'Based on 90-day sales data with -0.8 price elasticity assumption.',
+            "confidence": {
+                "level": "medium" if total_qty >= 50 else "low",
+                "data_points": total_qty,
+                "notes": "Based on 90-day sales data with -0.8 price elasticity assumption.",
             },
         }
 
@@ -186,7 +188,7 @@ class WhatIfService:
                 deleted_at__isnull=True,
                 status__in=[OrderStatus.COMPLETED, OrderStatus.DELIVERED],
                 created_at__date__gte=thirty_days_ago,
-            ).aggregate(rev=Sum('total_amount'))['rev']
+            ).aggregate(rev=Sum("total_amount"))["rev"]
         )
 
         current_orders = Order.objects.filter(
@@ -197,7 +199,7 @@ class WhatIfService:
         ).count()
 
         # Calculate removal impact
-        remove_ids = changes.get('remove', [])
+        remove_ids = changes.get("remove", [])
         removal_revenue = 0.0
         removal_details = []
 
@@ -210,51 +212,58 @@ class WhatIfService:
                     deleted_at__isnull=True,
                     order__status__in=[OrderStatus.COMPLETED, OrderStatus.DELIVERED],
                     order__created_at__date__gte=thirty_days_ago,
-                ).aggregate(rev=Sum('total_price'))['rev']
+                ).aggregate(rev=Sum("total_price"))["rev"]
             )
             removal_revenue += item_rev
-            removal_details.append({
-                'product_id': str(pid),
-                'lost_revenue': item_rev,
-            })
+            removal_details.append(
+                {
+                    "product_id": str(pid),
+                    "lost_revenue": item_rev,
+                }
+            )
 
         # Estimate addition impact (use average product revenue)
-        add_items = changes.get('add', [])
+        add_items = changes.get("add", [])
         avg_product_revenue = current_revenue / max(current_products, 1)
-        addition_revenue = len(add_items) * avg_product_revenue * 0.6  # 60% of avg (new item ramp-up)
+        addition_revenue = (
+            len(add_items) * avg_product_revenue * 0.6
+        )  # 60% of avg (new item ramp-up)
 
         projected_revenue = current_revenue - removal_revenue + addition_revenue
         projected_products = current_products - len(remove_ids) + len(add_items)
 
         return {
-            'simulation_type': 'menu_change',
-            'current_state': {
-                'total_products': current_products,
-                'monthly_revenue': current_revenue,
-                'monthly_orders': current_orders,
-                'avg_revenue_per_product': round(avg_product_revenue, 2),
+            "simulation_type": "menu_change",
+            "current_state": {
+                "total_products": current_products,
+                "monthly_revenue": current_revenue,
+                "monthly_orders": current_orders,
+                "avg_revenue_per_product": round(avg_product_revenue, 2),
             },
-            'projected_state': {
-                'total_products': projected_products,
-                'projected_monthly_revenue': round(projected_revenue, 2),
-                'items_to_add': len(add_items),
-                'items_to_remove': len(remove_ids),
+            "projected_state": {
+                "total_products": projected_products,
+                "projected_monthly_revenue": round(projected_revenue, 2),
+                "items_to_add": len(add_items),
+                "items_to_remove": len(remove_ids),
             },
-            'impact': {
-                'revenue_impact': round(projected_revenue - current_revenue, 2),
-                'revenue_impact_pct': (
-                    round((projected_revenue - current_revenue) / current_revenue * 100, 2)
-                    if current_revenue > 0 else 0.0
+            "impact": {
+                "revenue_impact": round(projected_revenue - current_revenue, 2),
+                "revenue_impact_pct": (
+                    round(
+                        (projected_revenue - current_revenue) / current_revenue * 100, 2
+                    )
+                    if current_revenue > 0
+                    else 0.0
                 ),
-                'removal_details': removal_details,
-                'addition_estimated_revenue': round(addition_revenue, 2),
+                "removal_details": removal_details,
+                "addition_estimated_revenue": round(addition_revenue, 2),
             },
-            'confidence': {
-                'level': 'medium',
-                'data_points': current_orders,
-                'notes': (
-                    'New items estimated at 60% of average product revenue '
-                    'for ramp-up period. Removal impact based on actual 30-day sales.'
+            "confidence": {
+                "level": "medium",
+                "data_points": current_orders,
+                "notes": (
+                    "New items estimated at 60% of average product revenue "
+                    "for ramp-up period. Removal impact based on actual 30-day sales."
                 ),
             },
         }
@@ -292,74 +301,88 @@ class WhatIfService:
         )
 
         baseline = base_qs.aggregate(
-            total_revenue=Sum('total_amount'),
-            total_orders=Count('id'),
-            avg_order_value=Avg('total_amount'),
-            total_customers=Count('customer', distinct=True),
+            total_revenue=Sum("total_amount"),
+            total_orders=Count("id"),
+            avg_order_value=Avg("total_amount"),
+            total_customers=Count("customer", distinct=True),
         )
 
-        daily_revenue = _to_float(baseline['total_revenue']) / 30
-        daily_orders = (baseline['total_orders'] or 0) / 30
-        avg_order = _to_float(baseline['avg_order_value'])
+        daily_revenue = _to_float(baseline["total_revenue"]) / 30
+        daily_orders = (baseline["total_orders"] or 0) / 30
+        avg_order = _to_float(baseline["avg_order_value"])
 
-        discount_value = float(campaign_params.get('discount_value', 10))
-        discount_type = campaign_params.get('discount_type', 'PERCENTAGE')
-        duration_days = int(campaign_params.get('duration_days', 14))
+        discount_value = float(campaign_params.get("discount_value", 10))
+        discount_type = campaign_params.get("discount_type", "PERCENTAGE")
+        duration_days = int(campaign_params.get("duration_days", 14))
 
         # Campaign uplift estimate (industry averages)
         order_uplift_pct = 0.20  # 20% more orders during campaign
         avg_discount_per_order = (
             avg_order * (discount_value / 100)
-            if discount_type == 'PERCENTAGE'
+            if discount_type == "PERCENTAGE"
             else discount_value
         )
 
         campaign_daily_orders = daily_orders * (1 + order_uplift_pct)
-        campaign_daily_revenue = (
-            campaign_daily_orders * (avg_order - avg_discount_per_order)
+        campaign_daily_revenue = campaign_daily_orders * (
+            avg_order - avg_discount_per_order
         )
 
         total_campaign_revenue = campaign_daily_revenue * duration_days
         total_baseline_revenue = daily_revenue * duration_days
-        total_discount_cost = avg_discount_per_order * campaign_daily_orders * duration_days
+        total_discount_cost = (
+            avg_discount_per_order * campaign_daily_orders * duration_days
+        )
         additional_orders = (campaign_daily_orders - daily_orders) * duration_days
 
         return {
-            'simulation_type': 'campaign',
-            'current_state': {
-                'daily_revenue': round(daily_revenue, 2),
-                'daily_orders': round(daily_orders, 1),
-                'avg_order_value': round(avg_order, 2),
-                'baseline_period_days': 30,
+            "simulation_type": "campaign",
+            "current_state": {
+                "daily_revenue": round(daily_revenue, 2),
+                "daily_orders": round(daily_orders, 1),
+                "avg_order_value": round(avg_order, 2),
+                "baseline_period_days": 30,
             },
-            'projected_state': {
-                'campaign_duration_days': duration_days,
-                'projected_daily_orders': round(campaign_daily_orders, 1),
-                'projected_daily_revenue': round(campaign_daily_revenue, 2),
-                'projected_total_revenue': round(total_campaign_revenue, 2),
-                'additional_orders': round(additional_orders, 0),
-                'avg_discount_per_order': round(avg_discount_per_order, 2),
+            "projected_state": {
+                "campaign_duration_days": duration_days,
+                "projected_daily_orders": round(campaign_daily_orders, 1),
+                "projected_daily_revenue": round(campaign_daily_revenue, 2),
+                "projected_total_revenue": round(total_campaign_revenue, 2),
+                "additional_orders": round(additional_orders, 0),
+                "avg_discount_per_order": round(avg_discount_per_order, 2),
             },
-            'impact': {
-                'revenue_impact': round(total_campaign_revenue - total_baseline_revenue, 2),
-                'total_discount_cost': round(total_discount_cost, 2),
-                'net_impact': round(
-                    total_campaign_revenue - total_baseline_revenue - total_discount_cost, 2
+            "impact": {
+                "revenue_impact": round(
+                    total_campaign_revenue - total_baseline_revenue, 2
                 ),
-                'roi_pct': (
+                "total_discount_cost": round(total_discount_cost, 2),
+                "net_impact": round(
+                    total_campaign_revenue
+                    - total_baseline_revenue
+                    - total_discount_cost,
+                    2,
+                ),
+                "roi_pct": (
                     round(
-                        (total_campaign_revenue - total_baseline_revenue - total_discount_cost)
-                        / total_discount_cost * 100, 2
+                        (
+                            total_campaign_revenue
+                            - total_baseline_revenue
+                            - total_discount_cost
+                        )
+                        / total_discount_cost
+                        * 100,
+                        2,
                     )
-                    if total_discount_cost > 0 else 0.0
+                    if total_discount_cost > 0
+                    else 0.0
                 ),
             },
-            'confidence': {
-                'level': 'medium',
-                'data_points': baseline['total_orders'] or 0,
-                'notes': (
-                    'Assumes 20% order uplift during campaign. '
-                    'Actual results depend on campaign execution and market conditions.'
+            "confidence": {
+                "level": "medium",
+                "data_points": baseline["total_orders"] or 0,
+                "notes": (
+                    "Assumes 20% order uplift during campaign. "
+                    "Actual results depend on campaign execution and market conditions."
                 ),
             },
         }
@@ -392,7 +415,7 @@ class WhatIfService:
         current_branches = Branch.objects.filter(
             organization_id=org_id,
             deleted_at__isnull=True,
-            status='ACTIVE',
+            status="ACTIVE",
         ).count()
 
         current_revenue = _to_float(
@@ -401,14 +424,14 @@ class WhatIfService:
                 deleted_at__isnull=True,
                 status__in=[OrderStatus.COMPLETED, OrderStatus.DELIVERED],
                 created_at__date__gte=thirty_days_ago,
-            ).aggregate(rev=Sum('total_amount'))['rev']
+            ).aggregate(rev=Sum("total_amount"))["rev"]
         )
 
         revenue_per_branch = current_revenue / max(current_branches, 1)
 
-        new_branches = int(expansion_params.get('new_branches', 1))
-        avg_setup_cost = float(expansion_params.get('avg_setup_cost', 100000))
-        ramp_up_months = int(expansion_params.get('ramp_up_months', 6))
+        new_branches = int(expansion_params.get("new_branches", 1))
+        avg_setup_cost = float(expansion_params.get("avg_setup_cost", 100000))
+        ramp_up_months = int(expansion_params.get("ramp_up_months", 6))
 
         # New branches operate at 50% capacity during ramp-up
         ramp_up_factor = 0.5
@@ -417,45 +440,48 @@ class WhatIfService:
         total_setup_cost = avg_setup_cost * new_branches
 
         # Break-even estimation
-        monthly_operating_cost = avg_setup_cost * 0.08  # ~8% of setup cost as monthly operating
+        monthly_operating_cost = (
+            avg_setup_cost * 0.08
+        )  # ~8% of setup cost as monthly operating
         total_monthly_operating = monthly_operating_cost * new_branches
         net_monthly_revenue = total_new_revenue_monthly - total_monthly_operating
 
         break_even_months = (
             round(total_setup_cost / net_monthly_revenue)
-            if net_monthly_revenue > 0 else None
+            if net_monthly_revenue > 0
+            else None
         )
 
         return {
-            'simulation_type': 'expansion',
-            'current_state': {
-                'current_branches': current_branches,
-                'monthly_revenue': current_revenue,
-                'revenue_per_branch': round(revenue_per_branch, 2),
+            "simulation_type": "expansion",
+            "current_state": {
+                "current_branches": current_branches,
+                "monthly_revenue": current_revenue,
+                "revenue_per_branch": round(revenue_per_branch, 2),
             },
-            'projected_state': {
-                'total_branches': current_branches + new_branches,
-                'new_branches': new_branches,
-                'projected_monthly_revenue': round(
+            "projected_state": {
+                "total_branches": current_branches + new_branches,
+                "new_branches": new_branches,
+                "projected_monthly_revenue": round(
                     current_revenue + total_new_revenue_monthly, 2
                 ),
-                'new_branch_monthly_revenue': round(total_new_revenue_monthly, 2),
-                'ramp_up_months': ramp_up_months,
+                "new_branch_monthly_revenue": round(total_new_revenue_monthly, 2),
+                "ramp_up_months": ramp_up_months,
             },
-            'impact': {
-                'total_setup_cost': round(total_setup_cost, 2),
-                'monthly_operating_cost': round(total_monthly_operating, 2),
-                'net_monthly_revenue': round(net_monthly_revenue, 2),
-                'break_even_months': break_even_months,
-                'annual_projected_addition': round(total_new_revenue_monthly * 12, 2),
+            "impact": {
+                "total_setup_cost": round(total_setup_cost, 2),
+                "monthly_operating_cost": round(total_monthly_operating, 2),
+                "net_monthly_revenue": round(net_monthly_revenue, 2),
+                "break_even_months": break_even_months,
+                "annual_projected_addition": round(total_new_revenue_monthly * 12, 2),
             },
-            'confidence': {
-                'level': 'low',
-                'data_points': current_branches,
-                'notes': (
-                    f'Based on average revenue per existing branch ({current_branches}). '
-                    f'New branches estimated at 50% capacity during {ramp_up_months}-month ramp-up. '
-                    'Location, market conditions, and competition significantly affect outcomes.'
+            "confidence": {
+                "level": "low",
+                "data_points": current_branches,
+                "notes": (
+                    f"Based on average revenue per existing branch ({current_branches}). "
+                    f"New branches estimated at 50% capacity during {ramp_up_months}-month ramp-up. "
+                    "Location, market conditions, and competition significantly affect outcomes."
                 ),
             },
         }
@@ -486,7 +512,7 @@ class WhatIfService:
         current_staff = User.objects.filter(
             organization_id=org_id,
             deleted_at__isnull=True,
-            status='ACTIVE',
+            status="ACTIVE",
         ).count()
 
         staff_metrics = StaffMetric.objects.filter(
@@ -494,20 +520,20 @@ class WhatIfService:
             deleted_at__isnull=True,
             date__gte=thirty_days_ago,
         ).aggregate(
-            total_revenue=Sum('revenue_generated'),
-            total_orders=Sum('orders_handled'),
-            avg_service_time=Avg('avg_service_time_seconds'),
-            avg_rating=Avg('customer_rating_avg'),
-            total_tips=Sum('tips_amount'),
+            total_revenue=Sum("revenue_generated"),
+            total_orders=Sum("orders_handled"),
+            avg_service_time=Avg("avg_service_time_seconds"),
+            avg_rating=Avg("customer_rating_avg"),
+            total_tips=Sum("tips_amount"),
         )
 
-        total_revenue = _to_float(staff_metrics['total_revenue'])
+        total_revenue = _to_float(staff_metrics["total_revenue"])
         revenue_per_staff = total_revenue / max(current_staff, 1)
-        orders_per_staff = (staff_metrics['total_orders'] or 0) / max(current_staff, 1)
+        orders_per_staff = (staff_metrics["total_orders"] or 0) / max(current_staff, 1)
 
-        add_staff = int(staffing_changes.get('add_staff', 0))
-        remove_staff = int(staffing_changes.get('remove_staff', 0))
-        avg_monthly_cost = float(staffing_changes.get('avg_monthly_cost', 15000))
+        add_staff = int(staffing_changes.get("add_staff", 0))
+        remove_staff = int(staffing_changes.get("remove_staff", 0))
+        avg_monthly_cost = float(staffing_changes.get("avg_monthly_cost", 15000))
 
         new_staff_count = current_staff + add_staff - remove_staff
         new_staff_count = max(new_staff_count, 1)  # At least 1 staff
@@ -522,48 +548,52 @@ class WhatIfService:
         cost_change = (add_staff - remove_staff) * avg_monthly_cost
 
         # Service time improvement/degradation
-        current_service_time = staff_metrics['avg_service_time'] or 300  # default 5 min
+        current_service_time = staff_metrics["avg_service_time"] or 300  # default 5 min
         if new_staff_count > current_staff:
-            projected_service_time = current_service_time * (current_staff / new_staff_count)
+            projected_service_time = current_service_time * (
+                current_staff / new_staff_count
+            )
         elif new_staff_count < current_staff:
-            projected_service_time = current_service_time * (current_staff / new_staff_count)
+            projected_service_time = current_service_time * (
+                current_staff / new_staff_count
+            )
         else:
             projected_service_time = current_service_time
 
         return {
-            'simulation_type': 'staffing',
-            'current_state': {
-                'current_staff': current_staff,
-                'monthly_revenue': total_revenue,
-                'revenue_per_staff': round(revenue_per_staff, 2),
-                'orders_per_staff': round(orders_per_staff, 1),
-                'avg_service_time_seconds': round(current_service_time),
-                'avg_rating': _to_float(staff_metrics['avg_rating']),
+            "simulation_type": "staffing",
+            "current_state": {
+                "current_staff": current_staff,
+                "monthly_revenue": total_revenue,
+                "revenue_per_staff": round(revenue_per_staff, 2),
+                "orders_per_staff": round(orders_per_staff, 1),
+                "avg_service_time_seconds": round(current_service_time),
+                "avg_rating": _to_float(staff_metrics["avg_rating"]),
             },
-            'projected_state': {
-                'projected_staff': new_staff_count,
-                'staff_added': add_staff,
-                'staff_removed': remove_staff,
-                'projected_monthly_revenue': round(projected_revenue, 2),
-                'projected_service_time_seconds': round(projected_service_time),
+            "projected_state": {
+                "projected_staff": new_staff_count,
+                "staff_added": add_staff,
+                "staff_removed": remove_staff,
+                "projected_monthly_revenue": round(projected_revenue, 2),
+                "projected_service_time_seconds": round(projected_service_time),
             },
-            'impact': {
-                'revenue_impact': round(projected_revenue - total_revenue, 2),
-                'cost_impact': round(cost_change, 2),
-                'net_impact': round(
+            "impact": {
+                "revenue_impact": round(projected_revenue - total_revenue, 2),
+                "cost_impact": round(cost_change, 2),
+                "net_impact": round(
                     (projected_revenue - total_revenue) - cost_change, 2
                 ),
-                'service_time_change_seconds': round(
+                "service_time_change_seconds": round(
                     projected_service_time - current_service_time
                 ),
             },
-            'confidence': {
-                'level': 'medium' if current_staff >= 5 else 'low',
-                'data_points': current_staff,
-                'notes': (
-                    'New staff estimated at 70% of average revenue generation. '
-                    'Removed staff impact estimated at 90% of their average contribution. '
-                    'Service time scaled proportionally to staff count.'
+            "confidence": {
+                "level": "medium" if current_staff >= 5 else "low",
+                "data_points": current_staff,
+                "notes": (
+                    "New staff estimated at 70% of average revenue generation. "
+                    "Removed staff impact estimated at 90% of their average contribution. "
+                    "Service time scaled proportionally to staff count."
                 ),
             },
         }
@@ -602,21 +632,21 @@ class WhatIfService:
 
         # Current hourly distribution
         hourly_dist = dict(
-            qs.annotate(hour=ExtractHour('created_at'))
-            .values_list('hour')
+            qs.annotate(hour=ExtractHour("created_at"))
+            .values_list("hour")
             .annotate(
-                revenue=Sum('total_amount'),
-                count=Count('id'),
+                revenue=Sum("total_amount"),
+                count=Count("id"),
             )
-            .values_list('hour', 'revenue')
+            .values_list("hour", "revenue")
         )
 
-        total_revenue = _to_float(qs.aggregate(rev=Sum('total_amount'))['rev'])
+        total_revenue = _to_float(qs.aggregate(rev=Sum("total_amount"))["rev"])
         total_orders = qs.count()
 
-        extend_open = int(new_hours.get('extend_open_hour', 0))
-        extend_close = int(new_hours.get('extend_close_hour', 0))
-        close_days = new_hours.get('close_days', [])
+        extend_open = int(new_hours.get("extend_open_hour", 0))
+        extend_close = int(new_hours.get("extend_close_hour", 0))
+        close_days = new_hours.get("close_days", [])
 
         # Estimate revenue from extended hours
         # Use average of adjacent hours at 50% capacity
@@ -639,51 +669,57 @@ class WhatIfService:
 
         # Estimate revenue lost from closing days
         day_map = {
-            'Sunday': 1, 'Monday': 2, 'Tuesday': 3,
-            'Wednesday': 4, 'Thursday': 5, 'Friday': 6, 'Saturday': 7,
+            "Sunday": 1,
+            "Monday": 2,
+            "Tuesday": 3,
+            "Wednesday": 4,
+            "Thursday": 5,
+            "Friday": 6,
+            "Saturday": 7,
         }
         lost_revenue = 0.0
         for day_name in close_days:
             day_num = day_map.get(day_name)
             if day_num:
                 day_rev = _to_float(
-                    qs.annotate(weekday=ExtractWeekDay('created_at'))
+                    qs.annotate(weekday=ExtractWeekDay("created_at"))
                     .filter(weekday=day_num)
-                    .aggregate(rev=Sum('total_amount'))['rev']
+                    .aggregate(rev=Sum("total_amount"))["rev"]
                 )
                 lost_revenue += day_rev
 
         projected_revenue = total_revenue + extended_revenue - lost_revenue
 
         return {
-            'simulation_type': 'hours_change',
-            'current_state': {
-                'monthly_revenue': total_revenue,
-                'monthly_orders': total_orders,
-                'period_days': 30,
+            "simulation_type": "hours_change",
+            "current_state": {
+                "monthly_revenue": total_revenue,
+                "monthly_orders": total_orders,
+                "period_days": 30,
             },
-            'projected_state': {
-                'projected_monthly_revenue': round(projected_revenue, 2),
-                'extend_open_hours': extend_open,
-                'extend_close_hours': extend_close,
-                'close_days': close_days,
+            "projected_state": {
+                "projected_monthly_revenue": round(projected_revenue, 2),
+                "extend_open_hours": extend_open,
+                "extend_close_hours": extend_close,
+                "close_days": close_days,
             },
-            'impact': {
-                'extended_hours_revenue': round(extended_revenue, 2),
-                'closed_days_lost_revenue': round(lost_revenue, 2),
-                'net_revenue_impact': round(projected_revenue - total_revenue, 2),
-                'net_revenue_impact_pct': (
+            "impact": {
+                "extended_hours_revenue": round(extended_revenue, 2),
+                "closed_days_lost_revenue": round(lost_revenue, 2),
+                "net_revenue_impact": round(projected_revenue - total_revenue, 2),
+                "net_revenue_impact_pct": (
                     round((projected_revenue - total_revenue) / total_revenue * 100, 2)
-                    if total_revenue > 0 else 0.0
+                    if total_revenue > 0
+                    else 0.0
                 ),
             },
-            'confidence': {
-                'level': 'low',
-                'data_points': total_orders,
-                'notes': (
-                    'Extended opening hours estimated at 40% of first operating hour revenue. '
-                    'Extended closing hours estimated at 50% of last operating hour revenue. '
-                    'Closed day revenue loss based on actual day-of-week data.'
+            "confidence": {
+                "level": "low",
+                "data_points": total_orders,
+                "notes": (
+                    "Extended opening hours estimated at 40% of first operating hour revenue. "
+                    "Extended closing hours estimated at 50% of last operating hour revenue. "
+                    "Closed day revenue loss based on actual day-of-week data."
                 ),
             },
         }
@@ -692,15 +728,15 @@ class WhatIfService:
     def _error_result(message: str) -> dict:
         """Return a standardized error result."""
         return {
-            'simulation_type': 'error',
-            'current_state': {},
-            'projected_state': {},
-            'impact': {
-                'error': message,
+            "simulation_type": "error",
+            "current_state": {},
+            "projected_state": {},
+            "impact": {
+                "error": message,
             },
-            'confidence': {
-                'level': 'none',
-                'data_points': 0,
-                'notes': message,
+            "confidence": {
+                "level": "none",
+                "data_points": 0,
+                "notes": message,
             },
         }

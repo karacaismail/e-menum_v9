@@ -107,28 +107,30 @@ class InsightService:
             anomaly_insights = self._detect_anomalies(org_id, date_val)
             insights.extend(anomaly_insights)
         except Exception as exc:
-            logger.warning('Anomaly detection failed for org=%s: %s', org_id, exc)
+            logger.warning("Anomaly detection failed for org=%s: %s", org_id, exc)
 
         # 2. Trend detection (rising/falling/stable)
         try:
             trend_insights = self._detect_trends(org_id, date_val)
             insights.extend(trend_insights)
         except Exception as exc:
-            logger.warning('Trend detection failed for org=%s: %s', org_id, exc)
+            logger.warning("Trend detection failed for org=%s: %s", org_id, exc)
 
         # 3. Opportunity finder (low-sales + high-margin items)
         try:
             opportunity_insights = self._find_opportunities(org_id, date_val)
             insights.extend(opportunity_insights)
         except Exception as exc:
-            logger.warning('Opportunity detection failed for org=%s: %s', org_id, exc)
+            logger.warning("Opportunity detection failed for org=%s: %s", org_id, exc)
 
         # 4. Customer change alerts
         try:
             customer_insights = self._detect_customer_changes(org_id, date_val)
             insights.extend(customer_insights)
         except Exception as exc:
-            logger.warning('Customer change detection failed for org=%s: %s', org_id, exc)
+            logger.warning(
+                "Customer change detection failed for org=%s: %s", org_id, exc
+            )
 
         # 5. AI narrative insights (optional, if AI is configured)
         try:
@@ -136,11 +138,11 @@ class InsightService:
                 ai_insights = self._generate_ai_insights(org_id, insights, date_val)
                 insights.extend(ai_insights)
         except Exception as exc:
-            logger.warning('AI insight generation failed for org=%s: %s', org_id, exc)
+            logger.warning("AI insight generation failed for org=%s: %s", org_id, exc)
 
         # Sort by severity: critical first, then warning, then info
-        severity_order = {'critical': 0, 'warning': 1, 'info': 2}
-        insights.sort(key=lambda x: severity_order.get(x.get('severity', 'info'), 2))
+        severity_order = {"critical": 0, "warning": 1, "info": 2}
+        insights.sort(key=lambda x: severity_order.get(x.get("severity", "info"), 2))
 
         return insights
 
@@ -173,12 +175,18 @@ class InsightService:
             SalesAggregation.objects.filter(
                 organization_id=org_id,
                 deleted_at__isnull=True,
-                granularity='DAILY',
+                granularity="DAILY",
                 date__gte=start_date,
                 date__lt=date_val,
             )
-            .order_by('date')
-            .values('date', 'net_revenue', 'order_count', 'customer_count', 'avg_order_value')
+            .order_by("date")
+            .values(
+                "date",
+                "net_revenue",
+                "order_count",
+                "customer_count",
+                "avg_order_value",
+            )
         )
 
         if len(historical) < MIN_DATA_POINTS:
@@ -189,10 +197,10 @@ class InsightService:
             SalesAggregation.objects.filter(
                 organization_id=org_id,
                 deleted_at__isnull=True,
-                granularity='DAILY',
+                granularity="DAILY",
                 date=date_val,
             )
-            .values('net_revenue', 'order_count', 'customer_count', 'avg_order_value')
+            .values("net_revenue", "order_count", "customer_count", "avg_order_value")
             .first()
         )
 
@@ -201,16 +209,15 @@ class InsightService:
 
         # Check each metric for anomalies
         metrics_to_check = [
-            ('net_revenue', 'Revenue', 'TL'),
-            ('order_count', 'Order count', ''),
-            ('customer_count', 'Customer count', ''),
-            ('avg_order_value', 'Average order value', 'TL'),
+            ("net_revenue", "Revenue", "TL"),
+            ("order_count", "Order count", ""),
+            ("customer_count", "Customer count", ""),
+            ("avg_order_value", "Average order value", "TL"),
         ]
 
         for field, label, unit in metrics_to_check:
             historical_values = [
-                float(row[field]) for row in historical
-                if row[field] is not None
+                float(row[field]) for row in historical if row[field] is not None
             ]
 
             if len(historical_values) < MIN_DATA_POINTS:
@@ -226,81 +233,83 @@ class InsightService:
             z_score = (current_value - mean) / stdev
 
             if abs(z_score) >= ANOMALY_Z_THRESHOLD:
-                direction = 'above' if z_score > 0 else 'below'
-                severity = 'critical' if abs(z_score) >= 3.0 else 'warning'
+                direction = "above" if z_score > 0 else "below"
+                severity = "critical" if abs(z_score) >= 3.0 else "warning"
 
-                unit_str = f' {unit}' if unit else ''
-                insights.append({
-                    'type': 'anomaly',
-                    'severity': severity,
-                    'title': f'{label} significantly {direction} average',
-                    'description': (
-                        f"Today's {label.lower()} of {current_value:,.2f}{unit_str} "
-                        f"is {abs(z_score):.1f} standard deviations {direction} "
-                        f"the 30-day average of {mean:,.2f}{unit_str}."
-                    ),
-                    'metric': field,
-                    'value': current_value,
-                    'expected_value': round(mean, 2),
-                    'recommendation': self._anomaly_recommendation(
-                        field, direction, z_score
-                    ),
-                    'data': {
-                        'z_score': round(z_score, 2),
-                        'mean': round(mean, 2),
-                        'stdev': round(stdev, 2),
-                        'date': date_val.isoformat(),
-                    },
-                })
+                unit_str = f" {unit}" if unit else ""
+                insights.append(
+                    {
+                        "type": "anomaly",
+                        "severity": severity,
+                        "title": f"{label} significantly {direction} average",
+                        "description": (
+                            f"Today's {label.lower()} of {current_value:,.2f}{unit_str} "
+                            f"is {abs(z_score):.1f} standard deviations {direction} "
+                            f"the 30-day average of {mean:,.2f}{unit_str}."
+                        ),
+                        "metric": field,
+                        "value": current_value,
+                        "expected_value": round(mean, 2),
+                        "recommendation": self._anomaly_recommendation(
+                            field, direction, z_score
+                        ),
+                        "data": {
+                            "z_score": round(z_score, 2),
+                            "mean": round(mean, 2),
+                            "stdev": round(stdev, 2),
+                            "date": date_val.isoformat(),
+                        },
+                    }
+                )
 
         return insights
 
     @staticmethod
     def _anomaly_recommendation(metric: str, direction: str, z_score: float) -> str:
         """Generate a recommendation based on the anomaly detected."""
-        if metric == 'net_revenue':
-            if direction == 'above':
+        if metric == "net_revenue":
+            if direction == "above":
                 return (
-                    'Investigate what drove higher revenue today. '
-                    'Check for special events, promotions, or unusually large orders '
-                    'that could be replicated.'
+                    "Investigate what drove higher revenue today. "
+                    "Check for special events, promotions, or unusually large orders "
+                    "that could be replicated."
                 )
             return (
-                'Revenue is significantly lower than usual. '
-                'Check for operational issues, staff shortages, or '
-                'external factors that may have reduced foot traffic.'
+                "Revenue is significantly lower than usual. "
+                "Check for operational issues, staff shortages, or "
+                "external factors that may have reduced foot traffic."
             )
-        elif metric == 'order_count':
-            if direction == 'above':
+        elif metric == "order_count":
+            if direction == "above":
                 return (
-                    'Order volume is unusually high. Ensure kitchen '
-                    'and staff capacity is adequate to maintain service quality.'
+                    "Order volume is unusually high. Ensure kitchen "
+                    "and staff capacity is adequate to maintain service quality."
                 )
             return (
-                'Order volume dropped significantly. Review if there '
-                'were any service disruptions or negative customer experiences.'
+                "Order volume dropped significantly. Review if there "
+                "were any service disruptions or negative customer experiences."
             )
-        elif metric == 'customer_count':
-            if direction == 'above':
+        elif metric == "customer_count":
+            if direction == "above":
                 return (
-                    'Customer traffic spiked today. Consider what attracted '
-                    'more customers and try to sustain this momentum.'
+                    "Customer traffic spiked today. Consider what attracted "
+                    "more customers and try to sustain this momentum."
                 )
             return (
-                'Fewer customers than usual visited today. Review marketing '
-                'campaigns and customer engagement strategies.'
+                "Fewer customers than usual visited today. Review marketing "
+                "campaigns and customer engagement strategies."
             )
-        elif metric == 'avg_order_value':
-            if direction == 'above':
+        elif metric == "avg_order_value":
+            if direction == "above":
                 return (
-                    'Customers are spending more per order. Check if '
-                    'upselling strategies or menu changes are driving this.'
+                    "Customers are spending more per order. Check if "
+                    "upselling strategies or menu changes are driving this."
                 )
             return (
-                'Average order value dropped. Consider reviewing pricing, '
-                'promotions, or product bundling strategies.'
+                "Average order value dropped. Consider reviewing pricing, "
+                "promotions, or product bundling strategies."
             )
-        return 'Review the metric and investigate the root cause.'
+        return "Review the metric and investigate the root cause."
 
     # ─────────────────────────────────────────────────────────
     # TREND DETECTION (Linear Regression)
@@ -329,70 +338,80 @@ class InsightService:
             SalesAggregation.objects.filter(
                 organization_id=org_id,
                 deleted_at__isnull=True,
-                granularity='DAILY',
+                granularity="DAILY",
                 date__gte=start_date,
                 date__lte=date_val,
             )
-            .order_by('date')
-            .values('date', 'net_revenue', 'order_count')
+            .order_by("date")
+            .values("date", "net_revenue", "order_count")
         )
 
         if len(historical) < MIN_DATA_POINTS:
             return insights
 
         # Analyze revenue trend
-        revenue_values = [float(row['net_revenue']) for row in historical]
+        revenue_values = [float(row["net_revenue"]) for row in historical]
         revenue_trend = self._calculate_trend(revenue_values)
 
-        if revenue_trend['direction'] != 'stable':
-            daily_change = abs(revenue_trend['slope'])
-            insights.append({
-                'type': 'trend',
-                'severity': 'info',
-                'title': f"Revenue is {revenue_trend['direction']}",
-                'description': (
-                    f"Over the last {TREND_LOOKBACK_DAYS} days, revenue shows a "
-                    f"{revenue_trend['direction']} trend with an average daily "
-                    f"change of {daily_change:,.2f} TL ({revenue_trend['change_percent']:+.1f}%)."
-                ),
-                'metric': 'net_revenue',
-                'value': revenue_values[-1] if revenue_values else 0,
-                'expected_value': revenue_trend['intercept'] + revenue_trend['slope'] * len(revenue_values),
-                'recommendation': self._trend_recommendation('revenue', revenue_trend['direction']),
-                'data': {
-                    'slope': round(revenue_trend['slope'], 2),
-                    'r_squared': round(revenue_trend['r_squared'], 4),
-                    'direction': revenue_trend['direction'],
-                    'change_percent': round(revenue_trend['change_percent'], 2),
-                    'period_days': TREND_LOOKBACK_DAYS,
-                },
-            })
+        if revenue_trend["direction"] != "stable":
+            daily_change = abs(revenue_trend["slope"])
+            insights.append(
+                {
+                    "type": "trend",
+                    "severity": "info",
+                    "title": f"Revenue is {revenue_trend['direction']}",
+                    "description": (
+                        f"Over the last {TREND_LOOKBACK_DAYS} days, revenue shows a "
+                        f"{revenue_trend['direction']} trend with an average daily "
+                        f"change of {daily_change:,.2f} TL ({revenue_trend['change_percent']:+.1f}%)."
+                    ),
+                    "metric": "net_revenue",
+                    "value": revenue_values[-1] if revenue_values else 0,
+                    "expected_value": revenue_trend["intercept"]
+                    + revenue_trend["slope"] * len(revenue_values),
+                    "recommendation": self._trend_recommendation(
+                        "revenue", revenue_trend["direction"]
+                    ),
+                    "data": {
+                        "slope": round(revenue_trend["slope"], 2),
+                        "r_squared": round(revenue_trend["r_squared"], 4),
+                        "direction": revenue_trend["direction"],
+                        "change_percent": round(revenue_trend["change_percent"], 2),
+                        "period_days": TREND_LOOKBACK_DAYS,
+                    },
+                }
+            )
 
         # Analyze order count trend
-        order_values = [float(row['order_count']) for row in historical]
+        order_values = [float(row["order_count"]) for row in historical]
         order_trend = self._calculate_trend(order_values)
 
-        if order_trend['direction'] != 'stable':
-            insights.append({
-                'type': 'trend',
-                'severity': 'info',
-                'title': f"Order volume is {order_trend['direction']}",
-                'description': (
-                    f"Over the last {TREND_LOOKBACK_DAYS} days, order count shows a "
-                    f"{order_trend['direction']} trend ({order_trend['change_percent']:+.1f}% change)."
-                ),
-                'metric': 'order_count',
-                'value': order_values[-1] if order_values else 0,
-                'expected_value': order_trend['intercept'] + order_trend['slope'] * len(order_values),
-                'recommendation': self._trend_recommendation('orders', order_trend['direction']),
-                'data': {
-                    'slope': round(order_trend['slope'], 2),
-                    'r_squared': round(order_trend['r_squared'], 4),
-                    'direction': order_trend['direction'],
-                    'change_percent': round(order_trend['change_percent'], 2),
-                    'period_days': TREND_LOOKBACK_DAYS,
-                },
-            })
+        if order_trend["direction"] != "stable":
+            insights.append(
+                {
+                    "type": "trend",
+                    "severity": "info",
+                    "title": f"Order volume is {order_trend['direction']}",
+                    "description": (
+                        f"Over the last {TREND_LOOKBACK_DAYS} days, order count shows a "
+                        f"{order_trend['direction']} trend ({order_trend['change_percent']:+.1f}% change)."
+                    ),
+                    "metric": "order_count",
+                    "value": order_values[-1] if order_values else 0,
+                    "expected_value": order_trend["intercept"]
+                    + order_trend["slope"] * len(order_values),
+                    "recommendation": self._trend_recommendation(
+                        "orders", order_trend["direction"]
+                    ),
+                    "data": {
+                        "slope": round(order_trend["slope"], 2),
+                        "r_squared": round(order_trend["r_squared"], 4),
+                        "direction": order_trend["direction"],
+                        "change_percent": round(order_trend["change_percent"], 2),
+                        "period_days": TREND_LOOKBACK_DAYS,
+                    },
+                }
+            )
 
         return insights
 
@@ -412,11 +431,11 @@ class InsightService:
         n = len(values)
         if n < 2:
             return {
-                'slope': 0.0,
-                'intercept': 0.0,
-                'r_squared': 0.0,
-                'direction': 'stable',
-                'change_percent': 0.0,
+                "slope": 0.0,
+                "intercept": 0.0,
+                "r_squared": 0.0,
+                "direction": "stable",
+                "change_percent": 0.0,
             }
 
         # x values are 0, 1, 2, ..., n-1
@@ -425,19 +444,16 @@ class InsightService:
         y_mean = sum(values) / n
 
         # Numerator and denominator for slope
-        numerator = sum(
-            (x - x_mean) * (y - y_mean)
-            for x, y in zip(x_values, values)
-        )
+        numerator = sum((x - x_mean) * (y - y_mean) for x, y in zip(x_values, values))
         denominator = sum((x - x_mean) ** 2 for x in x_values)
 
         if denominator == 0:
             return {
-                'slope': 0.0,
-                'intercept': y_mean,
-                'r_squared': 0.0,
-                'direction': 'stable',
-                'change_percent': 0.0,
+                "slope": 0.0,
+                "intercept": y_mean,
+                "r_squared": 0.0,
+                "direction": "stable",
+                "change_percent": 0.0,
             }
 
         slope = numerator / denominator
@@ -460,43 +476,43 @@ class InsightService:
         # Classify direction based on significance
         # Require R-squared >= 0.3 and change >= 5% to call it a trend
         if r_squared >= 0.3 and abs(change_percent) >= 5.0:
-            direction = 'rising' if slope > 0 else 'falling'
+            direction = "rising" if slope > 0 else "falling"
         else:
-            direction = 'stable'
+            direction = "stable"
 
         return {
-            'slope': slope,
-            'intercept': intercept,
-            'r_squared': r_squared,
-            'direction': direction,
-            'change_percent': change_percent,
+            "slope": slope,
+            "intercept": intercept,
+            "r_squared": r_squared,
+            "direction": direction,
+            "change_percent": change_percent,
         }
 
     @staticmethod
     def _trend_recommendation(metric: str, direction: str) -> str:
         """Generate a recommendation based on the trend detected."""
-        if metric == 'revenue':
-            if direction == 'rising':
+        if metric == "revenue":
+            if direction == "rising":
                 return (
-                    'Revenue is trending upward. Continue current strategies '
-                    'and consider capitalizing on momentum with targeted promotions.'
+                    "Revenue is trending upward. Continue current strategies "
+                    "and consider capitalizing on momentum with targeted promotions."
                 )
             return (
-                'Revenue is trending downward. Review recent changes in '
-                'menu, pricing, or marketing. Consider launching a promotion '
-                'to reverse the trend.'
+                "Revenue is trending downward. Review recent changes in "
+                "menu, pricing, or marketing. Consider launching a promotion "
+                "to reverse the trend."
             )
-        elif metric == 'orders':
-            if direction == 'rising':
+        elif metric == "orders":
+            if direction == "rising":
                 return (
-                    'Order volume is increasing. Ensure operational capacity '
-                    '(staff, kitchen, inventory) can handle growing demand.'
+                    "Order volume is increasing. Ensure operational capacity "
+                    "(staff, kitchen, inventory) can handle growing demand."
                 )
             return (
-                'Order volume is declining. Investigate potential causes '
-                'such as seasonal factors, competition, or service issues.'
+                "Order volume is declining. Investigate potential causes "
+                "such as seasonal factors, competition, or service issues."
             )
-        return 'Monitor this trend and investigate root causes.'
+        return "Monitor this trend and investigate root causes."
 
     # ─────────────────────────────────────────────────────────
     # OPPORTUNITY FINDER
@@ -526,17 +542,17 @@ class InsightService:
             ProductPerformance.objects.filter(
                 organization_id=org_id,
                 deleted_at__isnull=True,
-                period_type='MONTHLY',
+                period_type="MONTHLY",
                 period_start=period_start,
                 profit_margin__isnull=False,
             )
-            .select_related('product')
+            .select_related("product")
             .values(
-                'product__name',
-                'quantity_sold',
-                'revenue',
-                'profit_margin',
-                'sales_mix_percent',
+                "product__name",
+                "quantity_sold",
+                "revenue",
+                "profit_margin",
+                "sales_mix_percent",
             )
         )
 
@@ -545,7 +561,9 @@ class InsightService:
             return insights
 
         # Calculate median quantity sold
-        quantities = [p['quantity_sold'] for p in performances if p['quantity_sold'] > 0]
+        quantities = [
+            p["quantity_sold"] for p in performances if p["quantity_sold"] > 0
+        ]
         if not quantities:
             return insights
 
@@ -554,50 +572,56 @@ class InsightService:
 
         # Find high-margin, low-volume items
         # Definition: profit_margin > 40% and quantity_sold < median
-        margin_threshold = Decimal('40.0')
+        margin_threshold = Decimal("40.0")
         opportunities = []
 
         for perf in performances:
-            margin = perf.get('profit_margin')
-            qty = perf.get('quantity_sold', 0)
-            if margin is not None and float(margin) > float(margin_threshold) and qty < median_qty:
+            margin = perf.get("profit_margin")
+            qty = perf.get("quantity_sold", 0)
+            if (
+                margin is not None
+                and float(margin) > float(margin_threshold)
+                and qty < median_qty
+            ):
                 opportunities.append(perf)
 
         # Sort by margin descending to highlight best opportunities first
-        opportunities.sort(key=lambda x: float(x.get('profit_margin', 0)), reverse=True)
+        opportunities.sort(key=lambda x: float(x.get("profit_margin", 0)), reverse=True)
 
         for opp in opportunities[:5]:  # Limit to top 5
-            product_name = opp.get('product__name', 'Unknown')
-            margin = float(opp.get('profit_margin', 0))
-            qty = opp.get('quantity_sold', 0)
-            revenue = float(opp.get('revenue', 0))
+            product_name = opp.get("product__name", "Unknown")
+            margin = float(opp.get("profit_margin", 0))
+            qty = opp.get("quantity_sold", 0)
+            revenue = float(opp.get("revenue", 0))
 
-            insights.append({
-                'type': 'opportunity',
-                'severity': 'info',
-                'title': f'Underperforming high-margin item: {product_name}',
-                'description': (
-                    f'{product_name} has a profit margin of {margin:.1f}% '
-                    f'but only sold {qty} units this month (median: {median_qty}). '
-                    f'Current revenue: {revenue:,.2f} TL.'
-                ),
-                'metric': 'product_opportunity',
-                'value': qty,
-                'expected_value': median_qty,
-                'recommendation': (
-                    f'Consider promoting "{product_name}" through better menu '
-                    f'placement, staff recommendations, or a featured item campaign. '
-                    f'With its {margin:.0f}% margin, increasing volume could '
-                    f'significantly boost profitability.'
-                ),
-                'data': {
-                    'product_name': product_name,
-                    'profit_margin': margin,
-                    'quantity_sold': qty,
-                    'median_quantity': median_qty,
-                    'revenue': revenue,
-                },
-            })
+            insights.append(
+                {
+                    "type": "opportunity",
+                    "severity": "info",
+                    "title": f"Underperforming high-margin item: {product_name}",
+                    "description": (
+                        f"{product_name} has a profit margin of {margin:.1f}% "
+                        f"but only sold {qty} units this month (median: {median_qty}). "
+                        f"Current revenue: {revenue:,.2f} TL."
+                    ),
+                    "metric": "product_opportunity",
+                    "value": qty,
+                    "expected_value": median_qty,
+                    "recommendation": (
+                        f'Consider promoting "{product_name}" through better menu '
+                        f"placement, staff recommendations, or a featured item campaign. "
+                        f"With its {margin:.0f}% margin, increasing volume could "
+                        f"significantly boost profitability."
+                    ),
+                    "data": {
+                        "product_name": product_name,
+                        "profit_margin": margin,
+                        "quantity_sold": qty,
+                        "median_quantity": median_qty,
+                        "revenue": revenue,
+                    },
+                }
+            )
 
         return insights
 
@@ -629,7 +653,9 @@ class InsightService:
                 deleted_at__isnull=True,
                 date=date_val,
             )
-            .values('new_customers', 'returning_customers', 'churn_count', 'total_customers')
+            .values(
+                "new_customers", "returning_customers", "churn_count", "total_customers"
+            )
             .first()
         )
 
@@ -638,74 +664,75 @@ class InsightService:
 
         # Get 7-day average for comparison
         start_date = date_val - timedelta(days=7)
-        avg_metrics = (
-            CustomerMetric.objects.filter(
-                organization_id=org_id,
-                deleted_at__isnull=True,
-                date__gte=start_date,
-                date__lt=date_val,
-            )
-            .aggregate(
-                avg_new=Avg('new_customers'),
-                avg_returning=Avg('returning_customers'),
-                avg_churn=Avg('churn_count'),
-            )
+        avg_metrics = CustomerMetric.objects.filter(
+            organization_id=org_id,
+            deleted_at__isnull=True,
+            date__gte=start_date,
+            date__lt=date_val,
+        ).aggregate(
+            avg_new=Avg("new_customers"),
+            avg_returning=Avg("returning_customers"),
+            avg_churn=Avg("churn_count"),
         )
 
         # Check new customers
-        new_today = today_metric.get('new_customers', 0)
-        avg_new = float(avg_metrics.get('avg_new') or 0)
+        new_today = today_metric.get("new_customers", 0)
+        avg_new = float(avg_metrics.get("avg_new") or 0)
         if avg_new > 0 and new_today > avg_new * 1.5:
-            insights.append({
-                'type': 'alert',
-                'severity': 'info',
-                'title': 'New customer surge',
-                'description': (
-                    f'{new_today} new customers today, '
-                    f'{((new_today / avg_new) - 1) * 100:.0f}% above the '
-                    f'7-day average of {avg_new:.0f}.'
-                ),
-                'metric': 'new_customers',
-                'value': new_today,
-                'expected_value': round(avg_new, 1),
-                'recommendation': (
-                    'Great customer acquisition today! Investigate what '
-                    'marketing or promotional activities contributed to this '
-                    'and consider repeating them.'
-                ),
-                'data': {
-                    'new_customers': new_today,
-                    'avg_new_7d': round(avg_new, 1),
-                    'date': date_val.isoformat(),
-                },
-            })
+            insights.append(
+                {
+                    "type": "alert",
+                    "severity": "info",
+                    "title": "New customer surge",
+                    "description": (
+                        f"{new_today} new customers today, "
+                        f"{((new_today / avg_new) - 1) * 100:.0f}% above the "
+                        f"7-day average of {avg_new:.0f}."
+                    ),
+                    "metric": "new_customers",
+                    "value": new_today,
+                    "expected_value": round(avg_new, 1),
+                    "recommendation": (
+                        "Great customer acquisition today! Investigate what "
+                        "marketing or promotional activities contributed to this "
+                        "and consider repeating them."
+                    ),
+                    "data": {
+                        "new_customers": new_today,
+                        "avg_new_7d": round(avg_new, 1),
+                        "date": date_val.isoformat(),
+                    },
+                }
+            )
 
         # Check churn
-        churn_today = today_metric.get('churn_count', 0)
-        avg_churn = float(avg_metrics.get('avg_churn') or 0)
+        churn_today = today_metric.get("churn_count", 0)
+        avg_churn = float(avg_metrics.get("avg_churn") or 0)
         if avg_churn > 0 and churn_today > avg_churn * 2:
-            insights.append({
-                'type': 'alert',
-                'severity': 'warning',
-                'title': 'Elevated customer churn',
-                'description': (
-                    f'{churn_today} customers churned today, '
-                    f'significantly above the 7-day average of {avg_churn:.0f}.'
-                ),
-                'metric': 'churn_count',
-                'value': churn_today,
-                'expected_value': round(avg_churn, 1),
-                'recommendation': (
-                    'Customer churn is elevated. Review recent customer '
-                    'feedback, service quality, and any operational issues '
-                    'that may be causing dissatisfaction.'
-                ),
-                'data': {
-                    'churn_count': churn_today,
-                    'avg_churn_7d': round(avg_churn, 1),
-                    'date': date_val.isoformat(),
-                },
-            })
+            insights.append(
+                {
+                    "type": "alert",
+                    "severity": "warning",
+                    "title": "Elevated customer churn",
+                    "description": (
+                        f"{churn_today} customers churned today, "
+                        f"significantly above the 7-day average of {avg_churn:.0f}."
+                    ),
+                    "metric": "churn_count",
+                    "value": churn_today,
+                    "expected_value": round(avg_churn, 1),
+                    "recommendation": (
+                        "Customer churn is elevated. Review recent customer "
+                        "feedback, service quality, and any operational issues "
+                        "that may be causing dissatisfaction."
+                    ),
+                    "data": {
+                        "churn_count": churn_today,
+                        "avg_churn_7d": round(avg_churn, 1),
+                        "date": date_val.isoformat(),
+                    },
+                }
+            )
 
         return insights
 
@@ -743,7 +770,7 @@ class InsightService:
                 f"- [{insight['type'].upper()}] {insight['title']}: "
                 f"{insight['description']}"
             )
-        summary = '\n'.join(summary_parts)
+        summary = "\n".join(summary_parts)
 
         system_prompt = """You are a restaurant business analyst.
 Given the following automated insights for a restaurant, provide 1-2 additional
@@ -765,10 +792,7 @@ Return ONLY a JSON array of insight objects:
 
 Do NOT repeat the existing insights. Add NEW observations only."""
 
-        user_prompt = (
-            f"Date: {date_val.isoformat()}\n\n"
-            f"Detected insights:\n{summary}"
-        )
+        user_prompt = f"Date: {date_val.isoformat()}\n\nDetected insights:\n{summary}"
 
         response_text = self._call_ai(system_prompt, user_prompt)
         if not response_text:
@@ -791,13 +815,13 @@ Do NOT repeat the existing insights. Add NEW observations only."""
         cleaned = response_text.strip()
 
         # Strip markdown code fences if present
-        if cleaned.startswith('```'):
-            lines = cleaned.split('\n')
+        if cleaned.startswith("```"):
+            lines = cleaned.split("\n")
             start = 1
             end = len(lines)
-            if lines[-1].strip().startswith('```'):
+            if lines[-1].strip().startswith("```"):
                 end = -1
-            cleaned = '\n'.join(lines[start:end]).strip()
+            cleaned = "\n".join(lines[start:end]).strip()
 
         try:
             data = json.loads(cleaned)
@@ -805,11 +829,11 @@ Do NOT repeat the existing insights. Add NEW observations only."""
                 data = [data]
         except (json.JSONDecodeError, ValueError):
             # Try to find JSON array
-            bracket_start = cleaned.find('[')
-            bracket_end = cleaned.rfind(']')
+            bracket_start = cleaned.find("[")
+            bracket_end = cleaned.rfind("]")
             if bracket_start != -1 and bracket_end > bracket_start:
                 try:
-                    data = json.loads(cleaned[bracket_start:bracket_end + 1])
+                    data = json.loads(cleaned[bracket_start : bracket_end + 1])
                 except (json.JSONDecodeError, ValueError):
                     return []
             else:
@@ -817,18 +841,20 @@ Do NOT repeat the existing insights. Add NEW observations only."""
 
         insights = []
         for item in data[:3]:  # Limit to 3 AI insights
-            if isinstance(item, dict) and item.get('title'):
-                insights.append({
-                    'type': 'trend',
-                    'severity': 'info',
-                    'title': item.get('title', ''),
-                    'description': item.get('description', ''),
-                    'metric': 'ai_observation',
-                    'value': 0,
-                    'expected_value': 0,
-                    'recommendation': item.get('recommendation', ''),
-                    'data': {'source': 'ai_analysis'},
-                })
+            if isinstance(item, dict) and item.get("title"):
+                insights.append(
+                    {
+                        "type": "trend",
+                        "severity": "info",
+                        "title": item.get("title", ""),
+                        "description": item.get("description", ""),
+                        "metric": "ai_observation",
+                        "value": 0,
+                        "expected_value": 0,
+                        "recommendation": item.get("recommendation", ""),
+                        "data": {"source": "ai_analysis"},
+                    }
+                )
 
         return insights
 
@@ -852,6 +878,7 @@ Do NOT repeat the existing insights. Add NEW observations only."""
         """
         try:
             from apps.ai.services.content_generator import AIContentService
+
             ai_svc = AIContentService()
 
             if not ai_svc.api_key:
@@ -859,8 +886,10 @@ Do NOT repeat the existing insights. Add NEW observations only."""
 
             # Try using the _call_llm_with_system method if available
             try:
-                result = ai_svc._call_llm_with_system(system_prompt, user_prompt, max_tokens=800)
-                return result.get('text') if result else None
+                result = ai_svc._call_llm_with_system(
+                    system_prompt, user_prompt, max_tokens=800
+                )
+                return result.get("text") if result else None
             except AttributeError:
                 pass
 
@@ -868,7 +897,7 @@ Do NOT repeat the existing insights. Add NEW observations only."""
             return self._call_ai_direct(ai_svc, system_prompt, user_prompt)
 
         except Exception as exc:
-            logger.warning('InsightService AI call failed: %s', exc)
+            logger.warning("InsightService AI call failed: %s", exc)
             return None
 
     @staticmethod
@@ -885,36 +914,39 @@ Do NOT repeat the existing insights. Add NEW observations only."""
             str: AI response text, or None
         """
         try:
-            if ai_svc.provider == 'anthropic':
+            if ai_svc.provider == "anthropic":
                 import anthropic
+
                 client = anthropic.Anthropic(api_key=ai_svc.api_key)
                 response = client.messages.create(
-                    model=ai_svc.model or 'claude-3-haiku-20240307',
+                    model=ai_svc.model or "claude-3-haiku-20240307",
                     max_tokens=800,
                     system=system_prompt,
-                    messages=[{'role': 'user', 'content': user_prompt}],
+                    messages=[{"role": "user", "content": user_prompt}],
                 )
                 return response.content[0].text.strip()
 
-            elif ai_svc.provider == 'openai':
+            elif ai_svc.provider == "openai":
                 import openai
+
                 client = openai.OpenAI(api_key=ai_svc.api_key)
                 response = client.chat.completions.create(
-                    model=ai_svc.model or 'gpt-4o-mini',
+                    model=ai_svc.model or "gpt-4o-mini",
                     messages=[
-                        {'role': 'system', 'content': system_prompt},
-                        {'role': 'user', 'content': user_prompt},
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt},
                     ],
                     max_tokens=800,
                     temperature=0.3,
                 )
                 return response.choices[0].message.content.strip()
 
-            elif ai_svc.provider == 'gemini':
+            elif ai_svc.provider == "gemini":
                 import google.generativeai as genai
+
                 genai.configure(api_key=ai_svc.api_key)
                 model = genai.GenerativeModel(
-                    ai_svc.model or 'gemini-1.5-flash',
+                    ai_svc.model or "gemini-1.5-flash",
                     system_instruction=system_prompt,
                 )
                 response = model.generate_content(
@@ -927,8 +959,8 @@ Do NOT repeat the existing insights. Add NEW observations only."""
                 return response.text.strip()
 
         except ImportError as exc:
-            logger.warning('AI provider package not installed: %s', exc)
+            logger.warning("AI provider package not installed: %s", exc)
         except Exception as exc:
-            logger.error('InsightService direct AI call failed: %s', exc)
+            logger.error("InsightService direct AI call failed: %s", exc)
 
         return None

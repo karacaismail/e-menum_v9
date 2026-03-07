@@ -93,10 +93,8 @@ class ForecastService:
                 - method: forecasting method used
                 - historical_summary: summary statistics of historical data
         """
-        historical = self._get_historical_data(
-            org_id, 'net_revenue', lookback_days
-        )
-        return self._build_forecast(historical, days_ahead, 'net_revenue')
+        historical = self._get_historical_data(org_id, "net_revenue", lookback_days)
+        return self._build_forecast(historical, days_ahead, "net_revenue")
 
     def forecast_orders(
         self,
@@ -115,10 +113,8 @@ class ForecastService:
         Returns:
             dict: Forecast result with predictions and confidence
         """
-        historical = self._get_historical_data(
-            org_id, 'order_count', lookback_days
-        )
-        return self._build_forecast(historical, days_ahead, 'order_count')
+        historical = self._get_historical_data(org_id, "order_count", lookback_days)
+        return self._build_forecast(historical, days_ahead, "order_count")
 
     def forecast_customers(
         self,
@@ -137,10 +133,8 @@ class ForecastService:
         Returns:
             dict: Forecast result with predictions and confidence
         """
-        historical = self._get_historical_data(
-            org_id, 'customer_count', lookback_days
-        )
-        return self._build_forecast(historical, days_ahead, 'customer_count')
+        historical = self._get_historical_data(org_id, "customer_count", lookback_days)
+        return self._build_forecast(historical, days_ahead, "customer_count")
 
     # ─────────────────────────────────────────────────────────
     # DATA RETRIEVAL
@@ -174,21 +168,23 @@ class ForecastService:
             SalesAggregation.objects.filter(
                 organization_id=org_id,
                 deleted_at__isnull=True,
-                granularity='DAILY',
+                granularity="DAILY",
                 date__gte=start_date,
                 date__lte=end_date,
             )
-            .order_by('date')
-            .values('date', metric_field)
+            .order_by("date")
+            .values("date", metric_field)
         )
 
         result = []
         for row in rows:
             value = row.get(metric_field, 0)
-            result.append({
-                'date': row['date'],
-                'value': float(value) if value is not None else 0.0,
-            })
+            result.append(
+                {
+                    "date": row["date"],
+                    "value": float(value) if value is not None else 0.0,
+                }
+            )
 
         return result
 
@@ -215,18 +211,18 @@ class ForecastService:
         """
         if len(historical) < MIN_DATA_POINTS:
             return {
-                'forecast': [],
-                'confidence': 0.0,
-                'method': 'insufficient_data',
-                'historical_summary': self._historical_summary(historical),
-                'error': (
-                    f'Insufficient data: {len(historical)} data points found, '
-                    f'minimum {MIN_DATA_POINTS} required for forecasting.'
+                "forecast": [],
+                "confidence": 0.0,
+                "method": "insufficient_data",
+                "historical_summary": self._historical_summary(historical),
+                "error": (
+                    f"Insufficient data: {len(historical)} data points found, "
+                    f"minimum {MIN_DATA_POINTS} required for forecasting."
                 ),
             }
 
-        values = [h['value'] for h in historical]
-        dates = [h['date'] for h in historical]
+        values = [h["value"] for h in historical]
+        dates = [h["date"] for h in historical]
 
         # Calculate components
         wma = self._weighted_moving_average(values, window=DEFAULT_WMA_WINDOW)
@@ -251,10 +247,10 @@ class ForecastService:
         confidence = self._calculate_confidence(values, slope, intercept)
 
         return {
-            'forecast': forecast,
-            'confidence': round(confidence, 3),
-            'method': 'wma_linear_trend',
-            'historical_summary': self._historical_summary(historical),
+            "forecast": forecast,
+            "confidence": round(confidence, 3),
+            "method": "wma_linear_trend",
+            "historical_summary": self._historical_summary(historical),
         }
 
     # ─────────────────────────────────────────────────────────
@@ -308,10 +304,7 @@ class ForecastService:
         x_mean = sum(x_values) / n
         y_mean = sum(data) / n
 
-        numerator = sum(
-            (x - x_mean) * (y - y_mean)
-            for x, y in zip(x_values, data)
-        )
+        numerator = sum((x - x_mean) * (y - y_mean) for x, y in zip(x_values, data))
         denominator = sum((x - x_mean) ** 2 for x in x_values)
 
         if denominator == 0:
@@ -398,7 +391,7 @@ class ForecastService:
             predicted = wma + slope * t
 
             # Ensure non-negative predictions for count-based metrics
-            if metric_name in ('order_count', 'customer_count', 'item_count'):
+            if metric_name in ("order_count", "customer_count", "item_count"):
                 predicted = max(0.0, predicted)
 
             # Confidence interval widens with forecast horizon
@@ -410,16 +403,18 @@ class ForecastService:
             upper_bound = predicted + margin
 
             # Ensure non-negative bounds for count metrics
-            if metric_name in ('order_count', 'customer_count', 'item_count'):
+            if metric_name in ("order_count", "customer_count", "item_count"):
                 lower_bound = max(0.0, lower_bound)
                 upper_bound = max(0.0, upper_bound)
 
-            forecast.append({
-                'date': forecast_date.isoformat(),
-                'predicted_value': round(predicted, 2),
-                'lower_bound': round(lower_bound, 2),
-                'upper_bound': round(upper_bound, 2),
-            })
+            forecast.append(
+                {
+                    "date": forecast_date.isoformat(),
+                    "predicted_value": round(predicted, 2),
+                    "lower_bound": round(lower_bound, 2),
+                    "upper_bound": round(upper_bound, 2),
+                }
+            )
 
         return forecast
 
@@ -491,17 +486,17 @@ class ForecastService:
         """
         if not historical:
             return {
-                'mean': 0.0,
-                'std': 0.0,
-                'min': 0.0,
-                'max': 0.0,
-                'count': 0,
-                'trend': 'insufficient_data',
-                'first_date': None,
-                'last_date': None,
+                "mean": 0.0,
+                "std": 0.0,
+                "min": 0.0,
+                "max": 0.0,
+                "count": 0,
+                "trend": "insufficient_data",
+                "first_date": None,
+                "last_date": None,
             }
 
-        values = [h['value'] for h in historical]
+        values = [h["value"] for h in historical]
         n = len(values)
 
         mean_val = statistics.mean(values) if values else 0.0
@@ -511,28 +506,28 @@ class ForecastService:
 
         # Simple trend determination
         if n >= 7:
-            first_half = statistics.mean(values[:n // 2])
-            second_half = statistics.mean(values[n // 2:])
+            first_half = statistics.mean(values[: n // 2])
+            second_half = statistics.mean(values[n // 2 :])
             if first_half > 0:
                 change = (second_half - first_half) / first_half
                 if change > 0.05:
-                    trend = 'rising'
+                    trend = "rising"
                 elif change < -0.05:
-                    trend = 'falling'
+                    trend = "falling"
                 else:
-                    trend = 'stable'
+                    trend = "stable"
             else:
-                trend = 'stable'
+                trend = "stable"
         else:
-            trend = 'insufficient_data'
+            trend = "insufficient_data"
 
         return {
-            'mean': round(mean_val, 2),
-            'std': round(std_val, 2),
-            'min': round(min_val, 2),
-            'max': round(max_val, 2),
-            'count': n,
-            'trend': trend,
-            'first_date': historical[0]['date'].isoformat() if historical else None,
-            'last_date': historical[-1]['date'].isoformat() if historical else None,
+            "mean": round(mean_val, 2),
+            "std": round(std_val, 2),
+            "min": round(min_val, 2),
+            "max": round(max_val, 2),
+            "count": n,
+            "trend": trend,
+            "first_date": historical[0]["date"].isoformat() if historical else None,
+            "last_date": historical[-1]["date"].isoformat() if historical else None,
         }

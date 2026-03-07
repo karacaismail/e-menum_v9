@@ -30,107 +30,93 @@ logger = logging.getLogger(__name__)
 # Models NOT listed will use their model_name as-is.
 DJANGO_MODEL_TO_RESOURCE = {
     # ── Core ──
-    'permission': 'role',
-    'userrole': 'role',
-    'rolepermission': 'role',
-    'session': 'audit_log',
-    'auditlog': 'audit_log',
-
+    "permission": "role",
+    "userrole": "role",
+    "rolepermission": "role",
+    "session": "audit_log",
+    "auditlog": "audit_log",
     # ── Menu ──
-    'productvariant': 'product',
-    'productmodifier': 'product',
-    'productallergen': 'product',
-    'allergen': 'product',
-    'nutritioninfo': 'product',
-
+    "productvariant": "product",
+    "productmodifier": "product",
+    "productallergen": "product",
+    "allergen": "product",
+    "nutritioninfo": "product",
     # ── Orders ──
-    'qrcode': 'qr_code',
-    'qrscan': 'qr_code',
-    'orderitem': 'order',
-    'servicerequest': 'service_request',
-
+    "qrcode": "qr_code",
+    "qrscan": "qr_code",
+    "orderitem": "order",
+    "servicerequest": "service_request",
     # ── Customers ──
-    'customervisit': 'customer',
-    'loyaltypoint': 'customer',
-
+    "customervisit": "customer",
+    "loyaltypoint": "customer",
     # ── Subscriptions ──
-    'feature': 'plan',
-    'planfeature': 'plan',
-    'featurepermission': 'plan',
-    'organizationusage': 'subscription',
-
+    "feature": "plan",
+    "planfeature": "plan",
+    "featurepermission": "plan",
+    "organizationusage": "subscription",
     # ── Inventory ──
-    'inventoryitem': 'inventory',
-    'stockmovement': 'inventory',
-    'purchaseorder': 'inventory',
-    'purchaseorderitem': 'inventory',
-    'recipe': 'inventory',
-    'recipeingredient': 'inventory',
-    'supplier': 'inventory',
-
+    "inventoryitem": "inventory",
+    "stockmovement": "inventory",
+    "purchaseorder": "inventory",
+    "purchaseorderitem": "inventory",
+    "recipe": "inventory",
+    "recipeingredient": "inventory",
+    "supplier": "inventory",
     # ── Campaigns ──
-    'coupon': 'campaign',
-    'couponusage': 'campaign',
-    'referral': 'campaign',
-
+    "coupon": "campaign",
+    "couponusage": "campaign",
+    "referral": "campaign",
     # ── Analytics ──
-    'dashboardmetric': 'analytics',
-    'salesaggregation': 'analytics',
-    'productperformance': 'analytics',
-    'customermetric': 'analytics',
-
+    "dashboardmetric": "analytics",
+    "salesaggregation": "analytics",
+    "productperformance": "analytics",
+    "customermetric": "analytics",
     # ── Dashboard ──
-    'dashboardinsight': 'dashboard',
-    'userpreference': 'dashboard',
-
+    "dashboardinsight": "dashboard",
+    "userpreference": "dashboard",
     # ── Reporting ──
-    'reportdefinition': 'report',
-    'reportexecution': 'report',
-    'reportschedule': 'report',
-    'reportfavorite': 'report',
-
+    "reportdefinition": "report",
+    "reportexecution": "report",
+    "reportschedule": "report",
+    "reportfavorite": "report",
     # ── Media ──
-    'mediafolder': 'media',
-
+    "mediafolder": "media",
     # ── AI ──
-    'aigeneration': 'ai_generation',
-    'aiproviderconfig': 'ai_generation',
-
+    "aigeneration": "ai_generation",
+    "aiproviderconfig": "ai_generation",
     # ── SEO ──
-    'redirect': 'settings',
-    'notfound404log': 'settings',
-    'brokenlink': 'settings',
-    'crawlreport': 'settings',
-    'txtfileconfig': 'settings',
-    'authorprofile': 'settings',
-    'pseotemplate': 'settings',
-    'pseopage': 'settings',
-
+    "redirect": "settings",
+    "notfound404log": "settings",
+    "brokenlink": "settings",
+    "crawlreport": "settings",
+    "txtfileconfig": "settings",
+    "authorprofile": "settings",
+    "pseotemplate": "settings",
+    "pseopage": "settings",
     # ── SEO Shield ──
-    'botwhitelist': 'settings',
-    'ipriskscore': 'settings',
-    'ruleset': 'settings',
-    'blocklog': 'settings',
-
+    "botwhitelist": "settings",
+    "ipriskscore": "settings",
+    "ruleset": "settings",
+    "blocklog": "settings",
     # ── Website CMS ──
-    'sitesettings': 'settings',
-    'pagehero': 'settings',
-    'homesection': 'settings',
-    'navigationlink': 'settings',
-    'featurecategory': 'settings',
-    'testimonial': 'settings',
-    'trustbadge': 'settings',
-    'trustlocation': 'settings',
-    'teammember': 'settings',
-    'companyvalue': 'settings',
-    'companystat': 'settings',
-    'faq': 'settings',
-    'blogpost': 'settings',
-    'legalpage': 'settings',
-    'plandisplayfeature': 'settings',
-    'contactsubmission': 'settings',
-    'demorequest': 'settings',
-    'newslettersubscriber': 'settings',
+    "sitesettings": "settings",
+    "pagehero": "settings",
+    "homesection": "settings",
+    "navigationlink": "settings",
+    "featurecategory": "settings",
+    "testimonial": "settings",
+    "trustbadge": "settings",
+    "trustlocation": "settings",
+    "teammember": "settings",
+    "companyvalue": "settings",
+    "companystat": "settings",
+    "faq": "settings",
+    "blogpost": "settings",
+    "legalpage": "settings",
+    "plandisplayfeature": "settings",
+    "contactsubmission": "settings",
+    "demorequest": "settings",
+    "newslettersubscriber": "settings",
 }
 
 
@@ -164,12 +150,12 @@ class EMenumPermissionMixin:
         DB queries within the same request cycle.
         """
         # Cache key on request to avoid rebuilding per ModelAdmin instance
-        cache_attr = '_emenum_ability'
+        cache_attr = "_emenum_ability"
         if hasattr(request, cache_attr):
             return getattr(request, cache_attr)
 
         user = request.user
-        organization = getattr(user, 'organization', None)
+        organization = getattr(user, "organization", None)
         ability = build_ability_for_user(user, organization)
         setattr(request, cache_attr, ability)
         return ability
@@ -196,7 +182,9 @@ class EMenumPermissionMixin:
         except Exception:
             logger.exception(
                 "Permission check failed for %s on %s.%s",
-                user.email, self._get_emenum_resource(), action
+                user.email,
+                self._get_emenum_resource(),
+                action,
             )
             return False
 
@@ -211,10 +199,9 @@ class EMenumPermissionMixin:
             return False
         if request.user.is_superuser:
             return True
-        return (
-            self._check_emenum_permission(request, 'view')
-            or self._check_emenum_permission(request, 'list')
-        )
+        return self._check_emenum_permission(
+            request, "view"
+        ) or self._check_emenum_permission(request, "list")
 
     def has_view_permission(self, request, obj=None):
         """
@@ -223,7 +210,7 @@ class EMenumPermissionMixin:
         """
         if request.user.is_superuser:
             return True
-        return self._check_emenum_permission(request, 'view', obj)
+        return self._check_emenum_permission(request, "view", obj)
 
     def has_add_permission(self, request):
         """
@@ -232,7 +219,7 @@ class EMenumPermissionMixin:
         """
         if request.user.is_superuser:
             return True
-        return self._check_emenum_permission(request, 'create')
+        return self._check_emenum_permission(request, "create")
 
     def has_change_permission(self, request, obj=None):
         """
@@ -241,7 +228,7 @@ class EMenumPermissionMixin:
         """
         if request.user.is_superuser:
             return True
-        return self._check_emenum_permission(request, 'update', obj)
+        return self._check_emenum_permission(request, "update", obj)
 
     def has_delete_permission(self, request, obj=None):
         """
@@ -250,4 +237,4 @@ class EMenumPermissionMixin:
         """
         if request.user.is_superuser:
             return True
-        return self._check_emenum_permission(request, 'delete', obj)
+        return self._check_emenum_permission(request, "delete", obj)

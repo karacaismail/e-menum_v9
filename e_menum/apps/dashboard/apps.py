@@ -12,10 +12,10 @@ from django.utils.translation import gettext_lazy as _
 class DashboardConfig(AppConfig):
     """Dashboard app configuration."""
 
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.dashboard'
-    verbose_name = _('Dashboard')
-    label = 'dashboard'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.dashboard"
+    verbose_name = _("Dashboard")
+    label = "dashboard"
 
     def ready(self):
         """Import signals and register tasks on app ready."""

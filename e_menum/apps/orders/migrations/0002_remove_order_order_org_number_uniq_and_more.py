@@ -6,64 +6,89 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('core', '0002_remove_branch_branch_org_slug_uniq_and_more'),
-        ('customers', '0001_initial'),
-        ('orders', '0001_initial'),
+        ("core", "0002_remove_branch_branch_org_slug_uniq_and_more"),
+        ("customers", "0001_initial"),
+        ("orders", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.RemoveConstraint(
-            model_name='order',
-            name='order_org_number_uniq',
+            model_name="order",
+            name="order_org_number_uniq",
         ),
         migrations.RemoveConstraint(
-            model_name='qrcode',
-            name='qrcode_org_code_uniq',
+            model_name="qrcode",
+            name="qrcode_org_code_uniq",
         ),
         migrations.RemoveConstraint(
-            model_name='table',
-            name='table_org_slug_uniq',
+            model_name="table",
+            name="table_org_slug_uniq",
         ),
         migrations.RemoveConstraint(
-            model_name='zone',
-            name='zone_org_slug_uniq',
+            model_name="zone",
+            name="zone_org_slug_uniq",
         ),
         migrations.AddField(
-            model_name='order',
-            name='customer',
-            field=models.ForeignKey(blank=True, help_text='Customer who placed this order (if registered)', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='orders', to='customers.customer', verbose_name='Customer'),
+            model_name="order",
+            name="customer",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="Customer who placed this order (if registered)",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="orders",
+                to="customers.customer",
+                verbose_name="Customer",
+            ),
         ),
         migrations.AddField(
-            model_name='qrscan',
-            name='customer',
-            field=models.ForeignKey(blank=True, help_text='Customer who scanned (if logged in)', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='qr_scans', to='customers.customer', verbose_name='Customer'),
+            model_name="qrscan",
+            name="customer",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="Customer who scanned (if logged in)",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="qr_scans",
+                to="customers.customer",
+                verbose_name="Customer",
+            ),
         ),
         migrations.AddField(
-            model_name='servicerequest',
-            name='customer',
-            field=models.ForeignKey(blank=True, help_text='Customer who made this request (if logged in)', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='service_requests', to='customers.customer', verbose_name='Customer'),
+            model_name="servicerequest",
+            name="customer",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="Customer who made this request (if logged in)",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="service_requests",
+                to="customers.customer",
+                verbose_name="Customer",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='order',
-            unique_together={('organization', 'order_number')},
+            name="order",
+            unique_together={("organization", "order_number")},
         ),
         migrations.AlterUniqueTogether(
-            name='qrcode',
-            unique_together={('organization', 'code')},
+            name="qrcode",
+            unique_together={("organization", "code")},
         ),
         migrations.AlterUniqueTogether(
-            name='table',
-            unique_together={('organization', 'slug')},
+            name="table",
+            unique_together={("organization", "slug")},
         ),
         migrations.AlterUniqueTogether(
-            name='zone',
-            unique_together={('organization', 'slug')},
+            name="zone",
+            unique_together={("organization", "slug")},
         ),
         migrations.AddIndex(
-            model_name='order',
-            index=models.Index(fields=['organization', 'customer'], name='order_org_customer_idx'),
+            model_name="order",
+            index=models.Index(
+                fields=["organization", "customer"], name="order_org_customer_idx"
+            ),
         ),
     ]

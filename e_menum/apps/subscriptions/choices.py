@@ -47,12 +47,13 @@ class SubscriptionStatus(models.TextChoices):
     - ANY → SUSPENDED: Admin action
     - SUSPENDED → ACTIVE: Admin resolves
     """
-    TRIALING = 'TRIALING', 'Trialing'
-    ACTIVE = 'ACTIVE', 'Active'
-    PAST_DUE = 'PAST_DUE', 'Past Due'
-    CANCELLED = 'CANCELLED', 'Cancelled'
-    EXPIRED = 'EXPIRED', 'Expired'
-    SUSPENDED = 'SUSPENDED', 'Suspended'
+
+    TRIALING = "TRIALING", "Trialing"
+    ACTIVE = "ACTIVE", "Active"
+    PAST_DUE = "PAST_DUE", "Past Due"
+    CANCELLED = "CANCELLED", "Cancelled"
+    EXPIRED = "EXPIRED", "Expired"
+    SUSPENDED = "SUSPENDED", "Suspended"
 
 
 class InvoiceStatus(models.TextChoices):
@@ -69,12 +70,13 @@ class InvoiceStatus(models.TextChoices):
     - REFUNDED: Invoice paid but subsequently refunded
     - UNCOLLECTIBLE: Invoice unpayable (e.g., bad debt, dispute)
     """
-    DRAFT = 'DRAFT', 'Draft'
-    PENDING = 'PENDING', 'Pending'
-    PAID = 'PAID', 'Paid'
-    VOID = 'VOID', 'Void'
-    REFUNDED = 'REFUNDED', 'Refunded'
-    UNCOLLECTIBLE = 'UNCOLLECTIBLE', 'Uncollectible'
+
+    DRAFT = "DRAFT", "Draft"
+    PENDING = "PENDING", "Pending"
+    PAID = "PAID", "Paid"
+    VOID = "VOID", "Void"
+    REFUNDED = "REFUNDED", "Refunded"
+    UNCOLLECTIBLE = "UNCOLLECTIBLE", "Uncollectible"
 
 
 class SubscriptionPaymentMethod(models.TextChoices):
@@ -89,10 +91,11 @@ class SubscriptionPaymentMethod(models.TextChoices):
     - IYZICO: Iyzico payment gateway (Turkey's leading payment provider)
     - OTHER: Other payment methods
     """
-    CREDIT_CARD = 'CREDIT_CARD', 'Credit Card'
-    BANK_TRANSFER = 'BANK_TRANSFER', 'Bank Transfer'
-    IYZICO = 'IYZICO', 'Iyzico'
-    OTHER = 'OTHER', 'Other'
+
+    CREDIT_CARD = "CREDIT_CARD", "Credit Card"
+    BANK_TRANSFER = "BANK_TRANSFER", "Bank Transfer"
+    IYZICO = "IYZICO", "Iyzico"
+    OTHER = "OTHER", "Other"
 
 
 class BillingPeriod(models.TextChoices):
@@ -102,8 +105,9 @@ class BillingPeriod(models.TextChoices):
     - MONTHLY: Billed every month
     - YEARLY: Billed annually (typically with discount)
     """
-    MONTHLY = 'MONTHLY', 'Monthly'
-    YEARLY = 'YEARLY', 'Yearly'
+
+    MONTHLY = "MONTHLY", "Monthly"
+    YEARLY = "YEARLY", "Yearly"
 
 
 class PlanTier(models.TextChoices):
@@ -118,12 +122,13 @@ class PlanTier(models.TextChoices):
     - BUSINESS: Multi-branch, white-label (₺15K/ay)
     - ENTERPRISE: Custom features, dedicated support (özel fiyat)
     """
-    FREE = 'FREE', 'Free'
-    STARTER = 'STARTER', 'Starter'
-    GROWTH = 'GROWTH', 'Growth'
-    PROFESSIONAL = 'PROFESSIONAL', 'Professional'
-    BUSINESS = 'BUSINESS', 'Business'
-    ENTERPRISE = 'ENTERPRISE', 'Enterprise'
+
+    FREE = "FREE", "Free"
+    STARTER = "STARTER", "Starter"
+    GROWTH = "GROWTH", "Growth"
+    PROFESSIONAL = "PROFESSIONAL", "Professional"
+    BUSINESS = "BUSINESS", "Business"
+    ENTERPRISE = "ENTERPRISE", "Enterprise"
 
 
 class FeatureCategoryType(models.TextChoices):
@@ -133,39 +138,43 @@ class FeatureCategoryType(models.TextChoices):
     Used by the Feature model's category field to provide
     display-friendly group headers on the pricing page.
     """
-    MENUS = 'menus', 'Menü & Ürün Yönetimi'
-    ORDERS = 'orders', 'Sipariş & Ödeme'
-    ANALYTICS = 'analytics', 'Analitik & Raporlama'
-    SUPPORT = 'support', 'Destek & Entegrasyon'
-    AI = 'ai', 'Yapay Zeka'
-    BRANDING = 'branding', 'Marka & Tasarım'
-    INTEGRATIONS = 'integrations', 'Entegrasyonlar'
-    GENERAL = 'general', 'Genel'
+
+    MENUS = "menus", "Menü & Ürün Yönetimi"
+    ORDERS = "orders", "Sipariş & Ödeme"
+    ANALYTICS = "analytics", "Analitik & Raporlama"
+    SUPPORT = "support", "Destek & Entegrasyon"
+    AI = "ai", "Yapay Zeka"
+    BRANDING = "branding", "Marka & Tasarım"
+    INTEGRATIONS = "integrations", "Entegrasyonlar"
+    GENERAL = "general", "Genel"
 
 
 class PlanCardStyle(models.TextChoices):
     """CSS class styles for pricing card appearance."""
-    FREE = 'free', 'Free (Slate)'
-    STARTER = 'start', 'Starter (Sky Blue)'
-    GROWTH = 'grow', 'Growth (Emerald)'
-    PROFESSIONAL = 'pro', 'Professional (Accent/Teal)'
-    BUSINESS = 'biz', 'Business (Purple)'
-    ENTERPRISE = 'ent', 'Enterprise (Gold)'
+
+    FREE = "free", "Free (Slate)"
+    STARTER = "start", "Starter (Sky Blue)"
+    GROWTH = "grow", "Growth (Emerald)"
+    PROFESSIONAL = "pro", "Professional (Accent/Teal)"
+    BUSINESS = "biz", "Business (Purple)"
+    ENTERPRISE = "ent", "Enterprise (Gold)"
 
 
 class PlanCtaStyle(models.TextChoices):
     """CTA button style choices for pricing cards."""
-    OUTLINE = 'cta-out', 'Outline'
-    PRIMARY = 'cta-prim', 'Primary (Filled)'
-    ENTERPRISE = 'cta-ent', 'Enterprise (Gold)'
+
+    OUTLINE = "cta-out", "Outline"
+    PRIMARY = "cta-prim", "Primary (Filled)"
+    ENTERPRISE = "cta-ent", "Enterprise (Gold)"
 
 
 class PlanRibbonColor(models.TextChoices):
     """Ribbon/highlight color choices for pricing cards."""
-    NONE = '', 'Yok'
-    TEAL = 'teal', 'Teal (Accent)'
-    GOLD = 'gold', 'Gold'
-    PURPLE = 'purple', 'Purple'
+
+    NONE = "", "Yok"
+    TEAL = "teal", "Teal (Accent)"
+    GOLD = "gold", "Gold"
+    PURPLE = "purple", "Purple"
 
 
 class FeatureType(models.TextChoices):
@@ -176,6 +185,7 @@ class FeatureType(models.TextChoices):
     - LIMIT: Feature has a numeric limit (e.g., max products)
     - USAGE: Feature is metered by usage (e.g., AI generations)
     """
-    BOOLEAN = 'BOOLEAN', 'Boolean'
-    LIMIT = 'LIMIT', 'Limit'
-    USAGE = 'USAGE', 'Usage'
+
+    BOOLEAN = "BOOLEAN", "Boolean"
+    LIMIT = "LIMIT", "Limit"
+    USAGE = "USAGE", "Usage"

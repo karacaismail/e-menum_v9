@@ -27,7 +27,7 @@ from apps.reporting.services.report_engine import BaseReportHandler, register_ha
 logger = logging.getLogger(__name__)
 
 
-@register_handler('RPT-FOR-001')
+@register_handler("RPT-FOR-001")
 class RevenueForecastHandler(BaseReportHandler):
     """
     Report handler for revenue forecasting.
@@ -40,7 +40,7 @@ class RevenueForecastHandler(BaseReportHandler):
         lookback_days (int): Historical days for analysis (default: 90)
     """
 
-    feature_key = 'RPT-FOR-001'
+    feature_key = "RPT-FOR-001"
 
     def generate(self, org_id: str, parameters: dict) -> dict:
         """
@@ -55,8 +55,8 @@ class RevenueForecastHandler(BaseReportHandler):
         """
         from apps.reporting.ai.forecast_service import ForecastService
 
-        days_ahead = parameters.get('days_ahead', 30)
-        lookback_days = parameters.get('lookback_days', 90)
+        days_ahead = parameters.get("days_ahead", 30)
+        lookback_days = parameters.get("lookback_days", 90)
 
         service = ForecastService()
         result = service.forecast_revenue(
@@ -69,7 +69,7 @@ class RevenueForecastHandler(BaseReportHandler):
 
     def get_required_permissions(self) -> List[str]:
         """Return required permissions for this report."""
-        return ['reporting.view']
+        return ["reporting.view"]
 
     def validate_parameters(self, parameters: dict) -> dict:
         """
@@ -86,32 +86,32 @@ class RevenueForecastHandler(BaseReportHandler):
         """
         validated = super().validate_parameters(parameters)
 
-        days_ahead = validated.get('days_ahead', 30)
+        days_ahead = validated.get("days_ahead", 30)
         if not isinstance(days_ahead, int) or days_ahead < 1:
             days_ahead = 30
         elif days_ahead > 90:
             days_ahead = 90
-        validated['days_ahead'] = days_ahead
+        validated["days_ahead"] = days_ahead
 
-        lookback_days = validated.get('lookback_days', 90)
+        lookback_days = validated.get("lookback_days", 90)
         if not isinstance(lookback_days, int) or lookback_days < 14:
             lookback_days = 90
         elif lookback_days > 365:
             lookback_days = 365
-        validated['lookback_days'] = lookback_days
+        validated["lookback_days"] = lookback_days
 
         return validated
 
     def get_default_parameters(self) -> dict:
         """Return default parameters for revenue forecast."""
         return {
-            'days_ahead': 30,
-            'lookback_days': 90,
+            "days_ahead": 30,
+            "lookback_days": 90,
         }
 
     def get_supported_formats(self) -> List[str]:
         """Return supported export formats."""
-        return ['JSON', 'PDF', 'EXCEL', 'CSV']
+        return ["JSON", "PDF", "EXCEL", "CSV"]
 
     def get_cache_ttl(self) -> int:
         """Forecasts can be cached for 1 hour."""

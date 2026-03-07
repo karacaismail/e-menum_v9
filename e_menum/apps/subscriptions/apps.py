@@ -20,13 +20,13 @@ class SubscriptionsConfig(AppConfig):
     """
 
     # Application identifier - must match the import path
-    name = 'apps.subscriptions'
+    name = "apps.subscriptions"
 
     # Human-readable name for admin
-    verbose_name = 'Subscriptions & Billing'
+    verbose_name = "Subscriptions & Billing"
 
     # Use BigAutoField for auto-generated primary keys
-    default_auto_field = 'django.db.models.BigAutoField'
+    default_auto_field = "django.db.models.BigAutoField"
 
     def ready(self):
         """

@@ -61,17 +61,17 @@ from shared.views.base import (
 
 __all__ = [
     # Pagination
-    'StandardPagination',
+    "StandardPagination",
     # Mixins
-    'StandardResponseMixin',
-    'SoftDeleteMixin',
-    'TenantFilterMixin',
+    "StandardResponseMixin",
+    "SoftDeleteMixin",
+    "TenantFilterMixin",
     # ViewSets
-    'BaseModelViewSet',
-    'BaseTenantViewSet',
-    'BaseReadOnlyViewSet',
-    'BaseTenantReadOnlyViewSet',
+    "BaseModelViewSet",
+    "BaseTenantViewSet",
+    "BaseReadOnlyViewSet",
+    "BaseTenantReadOnlyViewSet",
     # API Views
-    'BaseAPIView',
-    'BaseTenantAPIView',
+    "BaseAPIView",
+    "BaseTenantAPIView",
 ]

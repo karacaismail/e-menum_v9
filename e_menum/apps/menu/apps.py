@@ -20,13 +20,13 @@ class MenuConfig(AppConfig):
     """
 
     # Application identifier - must match the import path
-    name = 'apps.menu'
+    name = "apps.menu"
 
     # Human-readable name for admin
-    verbose_name = 'Menu Management'
+    verbose_name = "Menu Management"
 
     # Use BigAutoField for auto-generated primary keys
-    default_auto_field = 'django.db.models.BigAutoField'
+    default_auto_field = "django.db.models.BigAutoField"
 
     def ready(self):
         """

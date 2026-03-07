@@ -62,15 +62,15 @@ class CustomerViewSet(BaseTenantViewSet):
     """
 
     queryset = Customer.objects.all()
-    permission_resource = 'customer'
+    permission_resource = "customer"
 
     def get_serializer_class(self):
         """Return appropriate serializer based on action."""
-        if self.action == 'list':
+        if self.action == "list":
             return CustomerListSerializer
-        elif self.action == 'create':
+        elif self.action == "create":
             return CustomerCreateSerializer
-        elif self.action in ['update', 'partial_update']:
+        elif self.action in ["update", "partial_update"]:
             return CustomerUpdateSerializer
         return CustomerDetailSerializer
 
@@ -79,38 +79,39 @@ class CustomerViewSet(BaseTenantViewSet):
         queryset = super().get_queryset()
 
         # Search
-        search = self.request.query_params.get('search')
+        search = self.request.query_params.get("search")
         if search:
             from django.db.models import Q
+
             queryset = queryset.filter(
-                Q(name__icontains=search) |
-                Q(email__icontains=search) |
-                Q(phone__icontains=search)
+                Q(name__icontains=search)
+                | Q(email__icontains=search)
+                | Q(phone__icontains=search)
             )
 
         # Source filter
-        source = self.request.query_params.get('source')
+        source = self.request.query_params.get("source")
         if source:
             queryset = queryset.filter(source=source.upper())
 
         # Has orders filter
-        has_orders = self.request.query_params.get('has_orders')
+        has_orders = self.request.query_params.get("has_orders")
         if has_orders is not None:
-            if has_orders.lower() == 'true':
+            if has_orders.lower() == "true":
                 queryset = queryset.filter(total_orders__gt=0)
             else:
                 queryset = queryset.filter(total_orders=0)
 
         # Marketing consent filter
-        marketing_consent = self.request.query_params.get('marketing_consent')
+        marketing_consent = self.request.query_params.get("marketing_consent")
         if marketing_consent is not None:
             queryset = queryset.filter(
-                marketing_consent=marketing_consent.lower() == 'true'
+                marketing_consent=marketing_consent.lower() == "true"
             )
 
-        return queryset.order_by('-last_visit_at', '-created_at')
+        return queryset.order_by("-last_visit_at", "-created_at")
 
-    @action(detail=True, methods=['get'], url_path='loyalty-history')
+    @action(detail=True, methods=["get"], url_path="loyalty-history")
     def loyalty_history(self, request, pk=None):
         """
         Get loyalty point transaction history for a customer.
@@ -127,22 +128,26 @@ class CustomerViewSet(BaseTenantViewSet):
         """
         customer = self.get_object()
 
-        transactions = LoyaltyPoint.objects.filter(
-            customer=customer
-        ).order_by('-created_at').values(
-            'id',
-            'transaction_type',
-            'points',
-            'balance_after',
-            'description',
-            'expires_at',
-            'created_at',
+        transactions = (
+            LoyaltyPoint.objects.filter(customer=customer)
+            .order_by("-created_at")
+            .values(
+                "id",
+                "transaction_type",
+                "points",
+                "balance_after",
+                "description",
+                "expires_at",
+                "created_at",
+            )
         )
 
-        return self.get_success_response({
-            'balance': customer.loyalty_points_balance,
-            'transactions': list(transactions),
-        })
+        return self.get_success_response(
+            {
+                "balance": customer.loyalty_points_balance,
+                "transactions": list(transactions),
+            }
+        )
 
 
 class FeedbackViewSet(BaseTenantViewSet):
@@ -170,53 +175,53 @@ class FeedbackViewSet(BaseTenantViewSet):
     """
 
     queryset = Feedback.objects.all()
-    permission_resource = 'feedback'
+    permission_resource = "feedback"
 
     def get_serializer_class(self):
         """Return appropriate serializer based on action."""
-        if self.action == 'list':
+        if self.action == "list":
             return FeedbackListSerializer
-        elif self.action == 'create':
+        elif self.action == "create":
             return FeedbackCreateSerializer
         return FeedbackDetailSerializer
 
     def get_queryset(self):
         """Return feedback with optional filtering."""
         queryset = super().get_queryset()
-        queryset = queryset.select_related('customer')
+        queryset = queryset.select_related("customer")
 
         # Status filter
-        status_filter = self.request.query_params.get('status')
+        status_filter = self.request.query_params.get("status")
         if status_filter:
             queryset = queryset.filter(status=status_filter.upper())
 
         # Type filter
-        feedback_type = self.request.query_params.get('feedback_type')
+        feedback_type = self.request.query_params.get("feedback_type")
         if feedback_type:
             queryset = queryset.filter(feedback_type=feedback_type.upper())
 
         # Exact rating filter
-        rating = self.request.query_params.get('rating')
+        rating = self.request.query_params.get("rating")
         if rating:
             queryset = queryset.filter(rating=int(rating))
 
         # Rating range filters
-        min_rating = self.request.query_params.get('min_rating')
+        min_rating = self.request.query_params.get("min_rating")
         if min_rating:
             queryset = queryset.filter(rating__gte=int(min_rating))
 
-        max_rating = self.request.query_params.get('max_rating')
+        max_rating = self.request.query_params.get("max_rating")
         if max_rating:
             queryset = queryset.filter(rating__lte=int(max_rating))
 
         # Public filter
-        is_public = self.request.query_params.get('is_public')
+        is_public = self.request.query_params.get("is_public")
         if is_public is not None:
-            queryset = queryset.filter(is_public=is_public.lower() == 'true')
+            queryset = queryset.filter(is_public=is_public.lower() == "true")
 
-        return queryset.order_by('-created_at')
+        return queryset.order_by("-created_at")
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def respond(self, request, pk=None):
         """
         Add a staff response to feedback.
@@ -231,22 +236,21 @@ class FeedbackViewSet(BaseTenantViewSet):
         serializer.is_valid(raise_exception=True)
 
         feedback.respond(
-            response=serializer.validated_data['response'],
-            user_id=str(request.user.id)
+            response=serializer.validated_data["response"], user_id=str(request.user.id)
         )
 
-        logger.info(
-            "Feedback %s responded to by user %s",
-            feedback.id,
-            request.user.id
+        logger.info("Feedback %s responded to by user %s", feedback.id, request.user.id)
+
+        return self.get_success_response(
+            {
+                "message": str(_("Response added successfully")),
+                "responded_at": feedback.responded_at.isoformat()
+                if feedback.responded_at
+                else None,
+            }
         )
 
-        return self.get_success_response({
-            'message': str(_('Response added successfully')),
-            'responded_at': feedback.responded_at.isoformat() if feedback.responded_at else None,
-        })
-
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def publish(self, request, pk=None):
         """
         Make feedback publicly visible.
@@ -255,11 +259,13 @@ class FeedbackViewSet(BaseTenantViewSet):
         """
         feedback = self.get_object()
         feedback.make_public()
-        return self.get_success_response({
-            'message': str(_('Feedback is now public')),
-        })
+        return self.get_success_response(
+            {
+                "message": str(_("Feedback is now public")),
+            }
+        )
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def archive(self, request, pk=None):
         """
         Archive a feedback entry.
@@ -268,9 +274,11 @@ class FeedbackViewSet(BaseTenantViewSet):
         """
         feedback = self.get_object()
         feedback.archive()
-        return self.get_success_response({
-            'message': str(_('Feedback archived')),
-        })
+        return self.get_success_response(
+            {
+                "message": str(_("Feedback archived")),
+            }
+        )
 
 
 # =============================================================================
@@ -278,6 +286,6 @@ class FeedbackViewSet(BaseTenantViewSet):
 # =============================================================================
 
 __all__ = [
-    'CustomerViewSet',
-    'FeedbackViewSet',
+    "CustomerViewSet",
+    "FeedbackViewSet",
 ]

@@ -4,30 +4,49 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('menu', '0002_remove_category_category_menu_slug_uniq_and_more'),
+        ("menu", "0002_remove_category_category_menu_slug_uniq_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='category',
-            name='icon',
-            field=models.CharField(blank=True, help_text='Phosphor icon class (e.g., ph-fill ph-knife, ph-fill ph-hamburger)', max_length=100, null=True, verbose_name='Icon'),
+            model_name="category",
+            name="icon",
+            field=models.CharField(
+                blank=True,
+                help_text="Phosphor icon class (e.g., ph-fill ph-knife, ph-fill ph-hamburger)",
+                max_length=100,
+                null=True,
+                verbose_name="Icon",
+            ),
         ),
         migrations.AddField(
-            model_name='product',
-            name='discount_percentage',
-            field=models.PositiveSmallIntegerField(default=0, help_text='Discount percentage 0-100 (e.g., 10 means 10% off)', verbose_name='Discount percentage'),
+            model_name="product",
+            name="discount_percentage",
+            field=models.PositiveSmallIntegerField(
+                default=0,
+                help_text="Discount percentage 0-100 (e.g., 10 means 10% off)",
+                verbose_name="Discount percentage",
+            ),
         ),
         migrations.AddField(
-            model_name='product',
-            name='rating',
-            field=models.DecimalField(decimal_places=1, default=0, help_text='Average customer rating 0.0-5.0', max_digits=3, verbose_name='Rating'),
+            model_name="product",
+            name="rating",
+            field=models.DecimalField(
+                decimal_places=1,
+                default=0,
+                help_text="Average customer rating 0.0-5.0",
+                max_digits=3,
+                verbose_name="Rating",
+            ),
         ),
         migrations.AddField(
-            model_name='product',
-            name='review_count',
-            field=models.PositiveIntegerField(default=0, help_text='Number of customer reviews/ratings', verbose_name='Review count'),
+            model_name="product",
+            name="review_count",
+            field=models.PositiveIntegerField(
+                default=0,
+                help_text="Number of customer reviews/ratings",
+                verbose_name="Review count",
+            ),
         ),
     ]

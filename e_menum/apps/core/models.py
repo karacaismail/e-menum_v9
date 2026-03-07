@@ -20,7 +20,11 @@ Critical Rules:
 
 import uuid
 
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -67,8 +71,8 @@ class SoftDeleteMixin(models.Model):
         null=True,
         blank=True,
         db_index=True,
-        verbose_name=_('Deleted at'),
-        help_text=_('Timestamp when record was soft-deleted (null = active)')
+        verbose_name=_("Deleted at"),
+        help_text=_("Timestamp when record was soft-deleted (null = active)"),
     )
 
     class Meta:
@@ -82,7 +86,7 @@ class SoftDeleteMixin(models.Model):
         This is the ONLY way records should be "deleted" in E-Menum.
         """
         self.deleted_at = timezone.now()
-        self.save(update_fields=['deleted_at'])
+        self.save(update_fields=["deleted_at"])
 
     def restore(self):
         """
@@ -91,7 +95,7 @@ class SoftDeleteMixin(models.Model):
         Clears the deleted_at timestamp, making the record active again.
         """
         self.deleted_at = None
-        self.save(update_fields=['deleted_at'])
+        self.save(update_fields=["deleted_at"])
 
     @property
     def is_deleted(self) -> bool:
@@ -109,13 +113,13 @@ class TimeStampedMixin(models.Model):
 
     created_at = models.DateTimeField(
         auto_now_add=True,
-        verbose_name=_('Created at'),
-        help_text=_('Timestamp when record was created')
+        verbose_name=_("Created at"),
+        help_text=_("Timestamp when record was created"),
     )
     updated_at = models.DateTimeField(
         auto_now=True,
-        verbose_name=_('Updated at'),
-        help_text=_('Timestamp when record was last updated')
+        verbose_name=_("Updated at"),
+        help_text=_("Timestamp when record was last updated"),
     )
 
     class Meta:
@@ -166,49 +170,49 @@ class Organization(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     name = models.CharField(
         max_length=255,
-        verbose_name=_('Name'),
-        help_text=_('Display name of the organization')
+        verbose_name=_("Name"),
+        help_text=_("Display name of the organization"),
     )
 
     slug = models.SlugField(
         unique=True,
         max_length=100,
-        verbose_name=_('Slug'),
-        help_text=_('URL-friendly unique identifier')
+        verbose_name=_("Slug"),
+        help_text=_("URL-friendly unique identifier"),
     )
 
     email = models.EmailField(
-        verbose_name=_('Email'),
-        help_text=_('Primary contact email for the organization')
+        verbose_name=_("Email"),
+        help_text=_("Primary contact email for the organization"),
     )
 
     phone = models.CharField(
         max_length=20,
         blank=True,
         null=True,
-        verbose_name=_('Phone'),
-        help_text=_('Contact phone number')
+        verbose_name=_("Phone"),
+        help_text=_("Contact phone number"),
     )
 
     logo = models.URLField(
         blank=True,
         null=True,
         max_length=500,
-        verbose_name=_('Logo URL'),
-        help_text=_('URL to organization logo image')
+        verbose_name=_("Logo URL"),
+        help_text=_("URL to organization logo image"),
     )
 
     settings = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Settings'),
-        help_text=_('Organization-specific settings (JSON)')
+        verbose_name=_("Settings"),
+        help_text=_("Organization-specific settings (JSON)"),
     )
 
     status = models.CharField(
@@ -216,35 +220,35 @@ class Organization(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=OrganizationStatus.choices,
         default=OrganizationStatus.ACTIVE,
         db_index=True,
-        verbose_name=_('Status'),
-        help_text=_('Organization lifecycle status')
+        verbose_name=_("Status"),
+        help_text=_("Organization lifecycle status"),
     )
 
     plan = models.ForeignKey(
-        'subscriptions.Plan',
+        "subscriptions.Plan",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='organizations',
-        verbose_name=_('Plan'),
-        help_text=_('Current subscription plan')
+        related_name="organizations",
+        verbose_name=_("Plan"),
+        help_text=_("Current subscription plan"),
     )
 
     subscription = models.OneToOneField(
-        'subscriptions.Subscription',
+        "subscriptions.Subscription",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='organization_link',
-        verbose_name=_('Subscription'),
-        help_text=_('Active subscription for this organization')
+        related_name="organization_link",
+        verbose_name=_("Subscription"),
+        help_text=_("Active subscription for this organization"),
     )
 
     trial_ends_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Trial ends at'),
-        help_text=_('When trial period ends (null if not on trial)')
+        verbose_name=_("Trial ends at"),
+        help_text=_("When trial period ends (null if not on trial)"),
     )
 
     # Managers
@@ -252,13 +256,15 @@ class Organization(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'organizations'
-        verbose_name = _('Organization')
-        verbose_name_plural = _('Organizations')
-        ordering = ['-created_at']
+        db_table = "organizations"
+        verbose_name = _("Organization")
+        verbose_name_plural = _("Organizations")
+        ordering = ["-created_at"]
         indexes = [
-            models.Index(fields=['status', 'deleted_at'], name='org_status_deleted_idx'),
-            models.Index(fields=['slug'], name='org_slug_idx'),
+            models.Index(
+                fields=["status", "deleted_at"], name="org_status_deleted_idx"
+            ),
+            models.Index(fields=["slug"], name="org_slug_idx"),
         ]
 
     def __str__(self) -> str:
@@ -301,7 +307,7 @@ class Organization(TimeStampedMixin, SoftDeleteMixin, models.Model):
             value: The value to set
         """
         self.settings[key] = value
-        self.save(update_fields=['settings', 'updated_at'])
+        self.save(update_fields=["settings", "updated_at"])
 
     def suspend(self, reason: str = None) -> None:
         """
@@ -312,16 +318,16 @@ class Organization(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         self.status = OrganizationStatus.SUSPENDED
         if reason:
-            self.settings['suspension_reason'] = reason
-            self.settings['suspended_at'] = timezone.now().isoformat()
-        self.save(update_fields=['status', 'settings', 'updated_at'])
+            self.settings["suspension_reason"] = reason
+            self.settings["suspended_at"] = timezone.now().isoformat()
+        self.save(update_fields=["status", "settings", "updated_at"])
 
     def activate(self) -> None:
         """Reactivate a suspended organization."""
         self.status = OrganizationStatus.ACTIVE
-        self.settings.pop('suspension_reason', None)
-        self.settings.pop('suspended_at', None)
-        self.save(update_fields=['status', 'settings', 'updated_at'])
+        self.settings.pop("suspension_reason", None)
+        self.settings.pop("suspended_at", None)
+        self.save(update_fields=["status", "settings", "updated_at"])
 
 
 class UserManager(BaseUserManager):
@@ -365,7 +371,7 @@ class UserManager(BaseUserManager):
             ValueError: If email is not provided
         """
         if not email:
-            raise ValueError(_('The Email field must be set'))
+            raise ValueError(_("The Email field must be set"))
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -389,14 +395,14 @@ class UserManager(BaseUserManager):
         Raises:
             ValueError: If is_staff or is_superuser is not True
         """
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('status', UserStatus.ACTIVE)
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("status", UserStatus.ACTIVE)
 
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError(_('Superuser must have is_staff=True.'))
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError(_('Superuser must have is_superuser=True.'))
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError(_("Superuser must have is_staff=True."))
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError(_("Superuser must have is_superuser=True."))
 
         return self.create_user(email, password, **extra_fields)
 
@@ -452,14 +458,14 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin, SoftDeleteMixin
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     email = models.EmailField(
         unique=True,
-        verbose_name=_('Email'),
-        help_text=_('Email address (used as username for authentication)')
+        verbose_name=_("Email"),
+        help_text=_("Email address (used as username for authentication)"),
     )
 
     username = models.CharField(
@@ -468,36 +474,34 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin, SoftDeleteMixin
         blank=True,
         unique=True,
         db_index=True,
-        verbose_name=_('Username'),
-        help_text=_('Optional display username for login (3–30 chars, lowercase, digits, underscore)')
+        verbose_name=_("Username"),
+        help_text=_(
+            "Optional display username for login (3–30 chars, lowercase, digits, underscore)"
+        ),
     )
 
     first_name = models.CharField(
-        max_length=100,
-        verbose_name=_('First name'),
-        help_text=_("User's first name")
+        max_length=100, verbose_name=_("First name"), help_text=_("User's first name")
     )
 
     last_name = models.CharField(
-        max_length=100,
-        verbose_name=_('Last name'),
-        help_text=_("User's last name")
+        max_length=100, verbose_name=_("Last name"), help_text=_("User's last name")
     )
 
     avatar = models.URLField(
         blank=True,
         null=True,
         max_length=500,
-        verbose_name=_('Avatar URL'),
-        help_text=_("URL to user's avatar image")
+        verbose_name=_("Avatar URL"),
+        help_text=_("URL to user's avatar image"),
     )
 
     phone = models.CharField(
         max_length=20,
         blank=True,
         null=True,
-        verbose_name=_('Phone'),
-        help_text=_('Contact phone number')
+        verbose_name=_("Phone"),
+        help_text=_("Contact phone number"),
     )
 
     status = models.CharField(
@@ -505,28 +509,28 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin, SoftDeleteMixin
         choices=UserStatus.choices,
         default=UserStatus.ACTIVE,
         db_index=True,
-        verbose_name=_('Status'),
-        help_text=_('User account status')
+        verbose_name=_("Status"),
+        help_text=_("User account status"),
     )
 
     is_staff = models.BooleanField(
         default=False,
-        verbose_name=_('Staff status'),
-        help_text=_('Designates whether the user can log into Django admin.')
+        verbose_name=_("Staff status"),
+        help_text=_("Designates whether the user can log into Django admin."),
     )
 
     email_verified_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Email verified at'),
-        help_text=_('Timestamp when email was verified (null if not verified)')
+        verbose_name=_("Email verified at"),
+        help_text=_("Timestamp when email was verified (null if not verified)"),
     )
 
     last_login_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Last login at'),
-        help_text=_('Timestamp of last successful login')
+        verbose_name=_("Last login at"),
+        help_text=_("Timestamp of last successful login"),
     )
 
     # Organization membership - optional for system/platform users
@@ -535,9 +539,9 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin, SoftDeleteMixin
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name='users',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this user belongs to (null for platform users)')
+        related_name="users",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this user belongs to (null for platform users)"),
     )
 
     # Managers
@@ -545,18 +549,20 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin, SoftDeleteMixin
     all_objects = models.Manager()  # Includes ALL records (including soft-deleted)
 
     # Required for AbstractBaseUser
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["first_name", "last_name"]
 
     class Meta:
-        db_table = 'users'
-        verbose_name = _('User')
-        verbose_name_plural = _('Users')
-        ordering = ['-created_at']
+        db_table = "users"
+        verbose_name = _("User")
+        verbose_name_plural = _("Users")
+        ordering = ["-created_at"]
         indexes = [
-            models.Index(fields=['organization', 'status'], name='user_org_status_idx'),
-            models.Index(fields=['organization', 'deleted_at'], name='user_org_deleted_idx'),
-            models.Index(fields=['email'], name='user_email_idx'),
+            models.Index(fields=["organization", "status"], name="user_org_status_idx"),
+            models.Index(
+                fields=["organization", "deleted_at"], name="user_org_deleted_idx"
+            ),
+            models.Index(fields=["email"], name="user_email_idx"),
         ]
 
     def __str__(self) -> str:
@@ -568,7 +574,7 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin, SoftDeleteMixin
     @property
     def full_name(self) -> str:
         """Return the user's full name."""
-        return f'{self.first_name} {self.last_name}'.strip()
+        return f"{self.first_name} {self.last_name}".strip()
 
     @property
     def is_active_user(self) -> bool:
@@ -599,12 +605,12 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin, SoftDeleteMixin
     def verify_email(self) -> None:
         """Mark the user's email as verified."""
         self.email_verified_at = timezone.now()
-        self.save(update_fields=['email_verified_at', 'updated_at'])
+        self.save(update_fields=["email_verified_at", "updated_at"])
 
     def record_login(self) -> None:
         """Record the timestamp of a successful login."""
         self.last_login_at = timezone.now()
-        self.save(update_fields=['last_login_at', 'updated_at'])
+        self.save(update_fields=["last_login_at", "updated_at"])
 
     def suspend(self, reason: str = None) -> None:
         """
@@ -614,12 +620,12 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin, SoftDeleteMixin
             reason: Optional reason for suspension
         """
         self.status = UserStatus.SUSPENDED
-        self.save(update_fields=['status', 'updated_at'])
+        self.save(update_fields=["status", "updated_at"])
 
     def activate(self) -> None:
         """Activate a suspended or invited user account."""
         self.status = UserStatus.ACTIVE
-        self.save(update_fields=['status', 'updated_at'])
+        self.save(update_fields=["status", "updated_at"])
 
 
 class Branch(TimeStampedMixin, SoftDeleteMixin, models.Model):
@@ -668,81 +674,81 @@ class Branch(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='branches',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this branch belongs to')
+        related_name="branches",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this branch belongs to"),
     )
 
     name = models.CharField(
         max_length=255,
-        verbose_name=_('Name'),
-        help_text=_('Display name of the branch')
+        verbose_name=_("Name"),
+        help_text=_("Display name of the branch"),
     )
 
     slug = models.SlugField(
         max_length=100,
-        verbose_name=_('Slug'),
-        help_text=_('URL-friendly identifier (unique within organization)')
+        verbose_name=_("Slug"),
+        help_text=_("URL-friendly identifier (unique within organization)"),
     )
 
     address = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Address'),
-        help_text=_('Full street address')
+        verbose_name=_("Address"),
+        help_text=_("Full street address"),
     )
 
     city = models.CharField(
         max_length=100,
         blank=True,
         null=True,
-        verbose_name=_('City'),
-        help_text=_('City name')
+        verbose_name=_("City"),
+        help_text=_("City name"),
     )
 
     district = models.CharField(
         max_length=100,
         blank=True,
         null=True,
-        verbose_name=_('District'),
-        help_text=_('District or neighborhood')
+        verbose_name=_("District"),
+        help_text=_("District or neighborhood"),
     )
 
     postal_code = models.CharField(
         max_length=20,
         blank=True,
         null=True,
-        verbose_name=_('Postal code'),
-        help_text=_('Postal or ZIP code')
+        verbose_name=_("Postal code"),
+        help_text=_("Postal or ZIP code"),
     )
 
     country = models.CharField(
         max_length=2,
-        default='TR',
-        verbose_name=_('Country'),
-        help_text=_('Country code (ISO 3166-1 alpha-2)')
+        default="TR",
+        verbose_name=_("Country"),
+        help_text=_("Country code (ISO 3166-1 alpha-2)"),
     )
 
     phone = models.CharField(
         max_length=20,
         blank=True,
         null=True,
-        verbose_name=_('Phone'),
-        help_text=_('Branch contact phone number')
+        verbose_name=_("Phone"),
+        help_text=_("Branch contact phone number"),
     )
 
     email = models.EmailField(
         blank=True,
         null=True,
-        verbose_name=_('Email'),
-        help_text=_('Branch contact email')
+        verbose_name=_("Email"),
+        help_text=_("Branch contact email"),
     )
 
     latitude = models.DecimalField(
@@ -750,8 +756,8 @@ class Branch(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=7,
         blank=True,
         null=True,
-        verbose_name=_('Latitude'),
-        help_text=_('GPS latitude coordinate')
+        verbose_name=_("Latitude"),
+        help_text=_("GPS latitude coordinate"),
     )
 
     longitude = models.DecimalField(
@@ -759,29 +765,29 @@ class Branch(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=7,
         blank=True,
         null=True,
-        verbose_name=_('Longitude'),
-        help_text=_('GPS longitude coordinate')
+        verbose_name=_("Longitude"),
+        help_text=_("GPS longitude coordinate"),
     )
 
     timezone = models.CharField(
         max_length=50,
-        default='Europe/Istanbul',
-        verbose_name=_('Timezone'),
-        help_text=_('Branch timezone (IANA format)')
+        default="Europe/Istanbul",
+        verbose_name=_("Timezone"),
+        help_text=_("Branch timezone (IANA format)"),
     )
 
     settings = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Settings'),
-        help_text=_('Branch-specific settings (JSON)')
+        verbose_name=_("Settings"),
+        help_text=_("Branch-specific settings (JSON)"),
     )
 
     operating_hours = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Operating hours'),
-        help_text=_('Daily operating hours (JSON)')
+        verbose_name=_("Operating hours"),
+        help_text=_("Daily operating hours (JSON)"),
     )
 
     status = models.CharField(
@@ -789,14 +795,14 @@ class Branch(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=BranchStatus.choices,
         default=BranchStatus.ACTIVE,
         db_index=True,
-        verbose_name=_('Status'),
-        help_text=_('Branch lifecycle status')
+        verbose_name=_("Status"),
+        help_text=_("Branch lifecycle status"),
     )
 
     is_main = models.BooleanField(
         default=False,
-        verbose_name=_('Is main branch'),
-        help_text=_('Whether this is the main/headquarters branch')
+        verbose_name=_("Is main branch"),
+        help_text=_("Whether this is the main/headquarters branch"),
     )
 
     # Managers
@@ -804,14 +810,18 @@ class Branch(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'branches'
-        verbose_name = _('Branch')
-        verbose_name_plural = _('Branches')
-        ordering = ['-is_main', 'name']
-        unique_together = [['organization', 'slug']]
+        db_table = "branches"
+        verbose_name = _("Branch")
+        verbose_name_plural = _("Branches")
+        ordering = ["-is_main", "name"]
+        unique_together = [["organization", "slug"]]
         indexes = [
-            models.Index(fields=['organization', 'status'], name='branch_org_status_idx'),
-            models.Index(fields=['organization', 'deleted_at'], name='branch_org_deleted_idx'),
+            models.Index(
+                fields=["organization", "status"], name="branch_org_status_idx"
+            ),
+            models.Index(
+                fields=["organization", "deleted_at"], name="branch_org_deleted_idx"
+            ),
         ]
 
     def __str__(self) -> str:
@@ -829,7 +839,7 @@ class Branch(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def full_address(self) -> str:
         """Return the full formatted address."""
         parts = [self.address, self.district, self.city, self.postal_code, self.country]
-        return ', '.join(p for p in parts if p)
+        return ", ".join(p for p in parts if p)
 
     def get_setting(self, key: str, default=None):
         """Get a value from branch settings."""
@@ -838,7 +848,7 @@ class Branch(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def set_setting(self, key: str, value) -> None:
         """Set a value in branch settings."""
         self.settings[key] = value
-        self.save(update_fields=['settings', 'updated_at'])
+        self.save(update_fields=["settings", "updated_at"])
 
 
 class Role(TimeStampedMixin, models.Model):
@@ -879,27 +889,27 @@ class Role(TimeStampedMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     name = models.CharField(
         max_length=50,
-        verbose_name=_('Name'),
-        help_text=_('Internal role identifier (lowercase, underscore-separated)')
+        verbose_name=_("Name"),
+        help_text=_("Internal role identifier (lowercase, underscore-separated)"),
     )
 
     display_name = models.CharField(
         max_length=100,
-        verbose_name=_('Display name'),
-        help_text=_('Human-readable role name')
+        verbose_name=_("Display name"),
+        help_text=_("Human-readable role name"),
     )
 
     description = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Description'),
-        help_text=_('Detailed description of the role and its capabilities')
+        verbose_name=_("Description"),
+        help_text=_("Detailed description of the role and its capabilities"),
     )
 
     scope = models.CharField(
@@ -907,14 +917,14 @@ class Role(TimeStampedMixin, models.Model):
         choices=RoleScope.choices,
         default=RoleScope.ORGANIZATION,
         db_index=True,
-        verbose_name=_('Scope'),
-        help_text=_('Role scope (PLATFORM or ORGANIZATION)')
+        verbose_name=_("Scope"),
+        help_text=_("Role scope (PLATFORM or ORGANIZATION)"),
     )
 
     is_system = models.BooleanField(
         default=False,
-        verbose_name=_('Is system role'),
-        help_text=_('System roles are predefined and cannot be modified')
+        verbose_name=_("Is system role"),
+        help_text=_("System roles are predefined and cannot be modified"),
     )
 
     organization = models.ForeignKey(
@@ -922,28 +932,28 @@ class Role(TimeStampedMixin, models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name='roles',
-        verbose_name=_('Organization'),
-        help_text=_('Organization for org-scoped roles (null for platform roles)')
+        related_name="roles",
+        verbose_name=_("Organization"),
+        help_text=_("Organization for org-scoped roles (null for platform roles)"),
     )
 
     permissions = models.ManyToManyField(
-        'Permission',
-        through='RolePermission',
-        related_name='roles',
-        verbose_name=_('Permissions'),
-        help_text=_('Permissions granted to this role')
+        "Permission",
+        through="RolePermission",
+        related_name="roles",
+        verbose_name=_("Permissions"),
+        help_text=_("Permissions granted to this role"),
     )
 
     class Meta:
-        db_table = 'roles'
-        verbose_name = _('Role')
-        verbose_name_plural = _('Roles')
-        ordering = ['scope', 'name']
-        unique_together = [['name', 'scope', 'organization']]
+        db_table = "roles"
+        verbose_name = _("Role")
+        verbose_name_plural = _("Roles")
+        ordering = ["scope", "name"]
+        unique_together = [["name", "scope", "organization"]]
         indexes = [
-            models.Index(fields=['scope'], name='role_scope_idx'),
-            models.Index(fields=['organization', 'scope'], name='role_org_scope_idx'),
+            models.Index(fields=["scope"], name="role_scope_idx"),
+            models.Index(fields=["organization", "scope"], name="role_org_scope_idx"),
         ]
 
     def __str__(self) -> str:
@@ -995,46 +1005,48 @@ class Permission(TimeStampedMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     resource = models.CharField(
         max_length=50,
-        verbose_name=_('Resource'),
-        help_text=_('Resource name (e.g., menu, order, user)')
+        verbose_name=_("Resource"),
+        help_text=_("Resource name (e.g., menu, order, user)"),
     )
 
     action = models.CharField(
         max_length=20,
         choices=PermissionAction.choices,
-        verbose_name=_('Action'),
-        help_text=_('Action type (view, create, update, delete, etc.)')
+        verbose_name=_("Action"),
+        help_text=_("Action type (view, create, update, delete, etc.)"),
     )
 
     description = models.CharField(
         max_length=255,
         blank=True,
         null=True,
-        verbose_name=_('Description'),
-        help_text=_('Human-readable description of the permission')
+        verbose_name=_("Description"),
+        help_text=_("Human-readable description of the permission"),
     )
 
     is_system = models.BooleanField(
         default=False,
-        verbose_name=_('Is system permission'),
-        help_text=_('System permissions are predefined and cannot be deleted')
+        verbose_name=_("Is system permission"),
+        help_text=_("System permissions are predefined and cannot be deleted"),
     )
 
     class Meta:
-        db_table = 'permissions'
-        verbose_name = _('Permission')
-        verbose_name_plural = _('Permissions')
-        ordering = ['resource', 'action']
-        unique_together = [['resource', 'action']]
+        db_table = "permissions"
+        verbose_name = _("Permission")
+        verbose_name_plural = _("Permissions")
+        ordering = ["resource", "action"]
+        unique_together = [["resource", "action"]]
         indexes = [
-            models.Index(fields=['resource'], name='permission_resource_idx'),
-            models.Index(fields=['resource', 'action'], name='permission_res_action_idx'),
+            models.Index(fields=["resource"], name="permission_resource_idx"),
+            models.Index(
+                fields=["resource", "action"], name="permission_res_action_idx"
+            ),
         ]
 
     def __str__(self) -> str:
@@ -1091,41 +1103,41 @@ class Session(TimeStampedMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='sessions',
-        verbose_name=_('User'),
-        help_text=_('User who owns this session')
+        related_name="sessions",
+        verbose_name=_("User"),
+        help_text=_("User who owns this session"),
     )
 
     refresh_token = models.CharField(
         max_length=500,
-        verbose_name=_('Refresh token'),
-        help_text=_('Hashed refresh token')
+        verbose_name=_("Refresh token"),
+        help_text=_("Hashed refresh token"),
     )
 
     user_agent = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('User agent'),
-        help_text=_('Browser/client user agent string')
+        verbose_name=_("User agent"),
+        help_text=_("Browser/client user agent string"),
     )
 
     ip_address = models.GenericIPAddressField(
         blank=True,
         null=True,
-        verbose_name=_('IP address'),
-        help_text=_('Client IP address')
+        verbose_name=_("IP address"),
+        help_text=_("Client IP address"),
     )
 
     expires_at = models.DateTimeField(
-        verbose_name=_('Expires at'),
-        help_text=_('When the session/refresh token expires')
+        verbose_name=_("Expires at"),
+        help_text=_("When the session/refresh token expires"),
     )
 
     status = models.CharField(
@@ -1133,41 +1145,43 @@ class Session(TimeStampedMixin, models.Model):
         choices=SessionStatus.choices,
         default=SessionStatus.ACTIVE,
         db_index=True,
-        verbose_name=_('Status'),
-        help_text=_('Session status')
+        verbose_name=_("Status"),
+        help_text=_("Session status"),
     )
 
     revoked_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Revoked at'),
-        help_text=_('When the session was revoked')
+        verbose_name=_("Revoked at"),
+        help_text=_("When the session was revoked"),
     )
 
     revoke_reason = models.CharField(
         max_length=255,
         blank=True,
         null=True,
-        verbose_name=_('Revoke reason'),
-        help_text=_('Reason for session revocation')
+        verbose_name=_("Revoke reason"),
+        help_text=_("Reason for session revocation"),
     )
 
     class Meta:
-        db_table = 'sessions'
-        verbose_name = _('Session')
-        verbose_name_plural = _('Sessions')
-        ordering = ['-created_at']
+        db_table = "sessions"
+        verbose_name = _("Session")
+        verbose_name_plural = _("Sessions")
+        ordering = ["-created_at"]
         indexes = [
-            models.Index(fields=['user', 'status'], name='session_user_status_idx'),
-            models.Index(fields=['refresh_token'], name='session_token_idx'),
-            models.Index(fields=['expires_at'], name='session_expires_idx'),
+            models.Index(fields=["user", "status"], name="session_user_status_idx"),
+            models.Index(fields=["refresh_token"], name="session_token_idx"),
+            models.Index(fields=["expires_at"], name="session_expires_idx"),
         ]
 
     def __str__(self) -> str:
         return f"Session for {self.user.email} ({self.status})"
 
     def __repr__(self) -> str:
-        return f"<Session(id={self.id}, user='{self.user.email}', status={self.status})>"
+        return (
+            f"<Session(id={self.id}, user='{self.user.email}', status={self.status})>"
+        )
 
     @property
     def is_active(self) -> bool:
@@ -1192,12 +1206,12 @@ class Session(TimeStampedMixin, models.Model):
         self.revoked_at = timezone.now()
         if reason:
             self.revoke_reason = reason
-        self.save(update_fields=['status', 'revoked_at', 'revoke_reason', 'updated_at'])
+        self.save(update_fields=["status", "revoked_at", "revoke_reason", "updated_at"])
 
     def mark_expired(self) -> None:
         """Mark this session as expired."""
         self.status = SessionStatus.EXPIRED
-        self.save(update_fields=['status', 'updated_at'])
+        self.save(update_fields=["status", "updated_at"])
 
 
 class UserRole(TimeStampedMixin, models.Model):
@@ -1236,24 +1250,24 @@ class UserRole(TimeStampedMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='user_roles',
-        verbose_name=_('User'),
-        help_text=_('User who has this role')
+        related_name="user_roles",
+        verbose_name=_("User"),
+        help_text=_("User who has this role"),
     )
 
     role = models.ForeignKey(
         Role,
         on_delete=models.CASCADE,
-        related_name='user_roles',
-        verbose_name=_('Role'),
-        help_text=_('Role assigned to the user')
+        related_name="user_roles",
+        verbose_name=_("Role"),
+        help_text=_("Role assigned to the user"),
     )
 
     organization = models.ForeignKey(
@@ -1261,9 +1275,9 @@ class UserRole(TimeStampedMixin, models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name='user_roles',
-        verbose_name=_('Organization'),
-        help_text=_('Organization scope for this role assignment')
+        related_name="user_roles",
+        verbose_name=_("Organization"),
+        help_text=_("Organization scope for this role assignment"),
     )
 
     branch = models.ForeignKey(
@@ -1271,9 +1285,9 @@ class UserRole(TimeStampedMixin, models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name='user_roles',
-        verbose_name=_('Branch'),
-        help_text=_('Optional branch-level restriction')
+        related_name="user_roles",
+        verbose_name=_("Branch"),
+        help_text=_("Optional branch-level restriction"),
     )
 
     granted_by = models.ForeignKey(
@@ -1281,27 +1295,27 @@ class UserRole(TimeStampedMixin, models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='granted_roles',
-        verbose_name=_('Granted by'),
-        help_text=_('User who granted this role')
+        related_name="granted_roles",
+        verbose_name=_("Granted by"),
+        help_text=_("User who granted this role"),
     )
 
     expires_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Expires at'),
-        help_text=_('Optional expiration for temporary role assignments')
+        verbose_name=_("Expires at"),
+        help_text=_("Optional expiration for temporary role assignments"),
     )
 
     class Meta:
-        db_table = 'user_roles'
-        verbose_name = _('User Role')
-        verbose_name_plural = _('User Roles')
-        ordering = ['-created_at']
-        unique_together = [['user', 'role', 'organization', 'branch']]
+        db_table = "user_roles"
+        verbose_name = _("User Role")
+        verbose_name_plural = _("User Roles")
+        ordering = ["-created_at"]
+        unique_together = [["user", "role", "organization", "branch"]]
         indexes = [
-            models.Index(fields=['user', 'organization'], name='userrole_user_org_idx'),
-            models.Index(fields=['organization', 'role'], name='userrole_org_role_idx'),
+            models.Index(fields=["user", "organization"], name="userrole_user_org_idx"),
+            models.Index(fields=["organization", "role"], name="userrole_org_role_idx"),
         ]
 
     def __str__(self) -> str:
@@ -1355,49 +1369,51 @@ class RolePermission(TimeStampedMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     role = models.ForeignKey(
         Role,
         on_delete=models.CASCADE,
-        related_name='role_permissions',
-        verbose_name=_('Role'),
-        help_text=_('Role that has this permission')
+        related_name="role_permissions",
+        verbose_name=_("Role"),
+        help_text=_("Role that has this permission"),
     )
 
     permission = models.ForeignKey(
         Permission,
         on_delete=models.CASCADE,
-        related_name='role_permissions',
-        verbose_name=_('Permission'),
-        help_text=_('Permission granted to the role')
+        related_name="role_permissions",
+        verbose_name=_("Permission"),
+        help_text=_("Permission granted to the role"),
     )
 
     conditions = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Conditions'),
-        help_text=_('CASL-like conditions for fine-grained access control')
+        verbose_name=_("Conditions"),
+        help_text=_("CASL-like conditions for fine-grained access control"),
     )
 
     class Meta:
-        db_table = 'role_permissions'
-        verbose_name = _('Role Permission')
-        verbose_name_plural = _('Role Permissions')
-        ordering = ['role', 'permission']
-        unique_together = [['role', 'permission']]
+        db_table = "role_permissions"
+        verbose_name = _("Role Permission")
+        verbose_name_plural = _("Role Permissions")
+        ordering = ["role", "permission"]
+        unique_together = [["role", "permission"]]
         indexes = [
-            models.Index(fields=['role'], name='roleperm_role_idx'),
-            models.Index(fields=['permission'], name='roleperm_perm_idx'),
+            models.Index(fields=["role"], name="roleperm_role_idx"),
+            models.Index(fields=["permission"], name="roleperm_perm_idx"),
         ]
 
     def __str__(self) -> str:
         return f"{self.role.name} -> {self.permission.code}"
 
     def __repr__(self) -> str:
-        return f"<RolePermission(role='{self.role.name}', perm='{self.permission.code}')>"
+        return (
+            f"<RolePermission(role='{self.role.name}', perm='{self.permission.code}')>"
+        )
 
 
 class AuditLog(models.Model):
@@ -1471,8 +1487,8 @@ class AuditLog(models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
@@ -1480,9 +1496,11 @@ class AuditLog(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='audit_logs',
-        verbose_name=_('Organization'),
-        help_text=_('Organization context for this audit log (null for platform-level actions)')
+        related_name="audit_logs",
+        verbose_name=_("Organization"),
+        help_text=_(
+            "Organization context for this audit log (null for platform-level actions)"
+        ),
     )
 
     user = models.ForeignKey(
@@ -1490,24 +1508,24 @@ class AuditLog(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='audit_logs',
-        verbose_name=_('User'),
-        help_text=_('User who performed the action (null for system actions)')
+        related_name="audit_logs",
+        verbose_name=_("User"),
+        help_text=_("User who performed the action (null for system actions)"),
     )
 
     action = models.CharField(
         max_length=30,
         choices=AuditAction.choices,
         db_index=True,
-        verbose_name=_('Action'),
-        help_text=_('Type of action performed')
+        verbose_name=_("Action"),
+        help_text=_("Type of action performed"),
     )
 
     resource = models.CharField(
         max_length=50,
         db_index=True,
-        verbose_name=_('Resource'),
-        help_text=_('Resource type affected (e.g., menu, order, user)')
+        verbose_name=_("Resource"),
+        help_text=_("Resource type affected (e.g., menu, order, user)"),
     )
 
     resource_id = models.CharField(
@@ -1515,74 +1533,81 @@ class AuditLog(models.Model):
         blank=True,
         null=True,
         db_index=True,
-        verbose_name=_('Resource ID'),
-        help_text=_('ID of the affected resource')
+        verbose_name=_("Resource ID"),
+        help_text=_("ID of the affected resource"),
     )
 
     description = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Description'),
-        help_text=_('Human-readable description of the action')
+        verbose_name=_("Description"),
+        help_text=_("Human-readable description of the action"),
     )
 
     old_values = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Old values'),
-        help_text=_('JSON snapshot of values before the change')
+        verbose_name=_("Old values"),
+        help_text=_("JSON snapshot of values before the change"),
     )
 
     new_values = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('New values'),
-        help_text=_('JSON snapshot of values after the change')
+        verbose_name=_("New values"),
+        help_text=_("JSON snapshot of values after the change"),
     )
 
     ip_address = models.GenericIPAddressField(
         blank=True,
         null=True,
-        verbose_name=_('IP address'),
-        help_text=_('Client IP address')
+        verbose_name=_("IP address"),
+        help_text=_("Client IP address"),
     )
 
     user_agent = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('User agent'),
-        help_text=_('Client user agent string')
+        verbose_name=_("User agent"),
+        help_text=_("Client user agent string"),
     )
 
     metadata = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Metadata'),
-        help_text=_('Additional context data (JSON)')
+        verbose_name=_("Metadata"),
+        help_text=_("Additional context data (JSON)"),
     )
 
     created_at = models.DateTimeField(
         auto_now_add=True,
         db_index=True,
-        verbose_name=_('Created at'),
-        help_text=_('Timestamp when the action occurred')
+        verbose_name=_("Created at"),
+        help_text=_("Timestamp when the action occurred"),
     )
 
     class Meta:
-        db_table = 'audit_logs'
-        verbose_name = _('Audit Log')
-        verbose_name_plural = _('Audit Logs')
-        ordering = ['-created_at']
+        db_table = "audit_logs"
+        verbose_name = _("Audit Log")
+        verbose_name_plural = _("Audit Logs")
+        ordering = ["-created_at"]
         indexes = [
-            models.Index(fields=['organization', 'created_at'], name='audit_org_created_idx'),
-            models.Index(fields=['user', 'created_at'], name='audit_user_created_idx'),
-            models.Index(fields=['resource', 'resource_id'], name='audit_resource_idx'),
-            models.Index(fields=['action', 'created_at'], name='audit_action_created_idx'),
-            models.Index(fields=['organization', 'action', 'created_at'], name='audit_org_action_idx'),
+            models.Index(
+                fields=["organization", "created_at"], name="audit_org_created_idx"
+            ),
+            models.Index(fields=["user", "created_at"], name="audit_user_created_idx"),
+            models.Index(fields=["resource", "resource_id"], name="audit_resource_idx"),
+            models.Index(
+                fields=["action", "created_at"], name="audit_action_created_idx"
+            ),
+            models.Index(
+                fields=["organization", "action", "created_at"],
+                name="audit_org_action_idx",
+            ),
         ]
 
     def __str__(self) -> str:
-        user_str = self.user.email if self.user else 'System'
+        user_str = self.user.email if self.user else "System"
         return f"[{self.action}] {self.resource} by {user_str}"
 
     def __repr__(self) -> str:
@@ -1613,8 +1638,8 @@ class AuditLog(models.Model):
         new_values: dict = None,
         ip_address: str = None,
         user_agent: str = None,
-        metadata: dict = None
-    ) -> 'AuditLog':
+        metadata: dict = None,
+    ) -> "AuditLog":
         """
         Convenience method to create an audit log entry.
 
@@ -1645,7 +1670,7 @@ class AuditLog(models.Model):
             new_values=new_values or {},
             ip_address=ip_address,
             user_agent=user_agent,
-            metadata=metadata or {}
+            metadata=metadata or {},
         )
 
 
@@ -1674,45 +1699,41 @@ class Shift(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='shifts',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this shift belongs to')
+        related_name="shifts",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this shift belongs to"),
     )
 
     name = models.CharField(
-        max_length=100,
-        verbose_name=_('Name'),
-        help_text=_('Display name of the shift')
+        max_length=100, verbose_name=_("Name"), help_text=_("Display name of the shift")
     )
 
     shift_type = models.CharField(
         max_length=20,
         choices=ShiftType.choices,
-        verbose_name=_('Shift type'),
-        help_text=_('Type of shift')
+        verbose_name=_("Shift type"),
+        help_text=_("Type of shift"),
     )
 
     start_time = models.TimeField(
-        verbose_name=_('Start time'),
-        help_text=_('When the shift starts')
+        verbose_name=_("Start time"), help_text=_("When the shift starts")
     )
 
     end_time = models.TimeField(
-        verbose_name=_('End time'),
-        help_text=_('When the shift ends')
+        verbose_name=_("End time"), help_text=_("When the shift ends")
     )
 
     is_active = models.BooleanField(
         default=True,
-        verbose_name=_('Is active'),
-        help_text=_('Whether this shift is currently active')
+        verbose_name=_("Is active"),
+        help_text=_("Whether this shift is currently active"),
     )
 
     # Managers
@@ -1720,12 +1741,14 @@ class Shift(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'shifts'
-        verbose_name = _('Shift')
-        verbose_name_plural = _('Shifts')
-        ordering = ['start_time']
+        db_table = "shifts"
+        verbose_name = _("Shift")
+        verbose_name_plural = _("Shifts")
+        ordering = ["start_time"]
         indexes = [
-            models.Index(fields=['organization', 'deleted_at'], name='shift_org_deleted_idx'),
+            models.Index(
+                fields=["organization", "deleted_at"], name="shift_org_deleted_idx"
+            ),
         ]
 
     def __str__(self) -> str:
@@ -1763,51 +1786,50 @@ class StaffSchedule(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='staff_schedules',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this schedule belongs to')
+        related_name="staff_schedules",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this schedule belongs to"),
     )
 
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='schedules',
-        verbose_name=_('User'),
-        help_text=_('Staff member assigned to this shift')
+        related_name="schedules",
+        verbose_name=_("User"),
+        help_text=_("Staff member assigned to this shift"),
     )
 
     shift = models.ForeignKey(
         Shift,
         on_delete=models.CASCADE,
-        related_name='schedules',
-        verbose_name=_('Shift'),
-        help_text=_('Shift assigned to the staff member')
+        related_name="schedules",
+        verbose_name=_("Shift"),
+        help_text=_("Shift assigned to the staff member"),
     )
 
     date = models.DateField(
-        verbose_name=_('Date'),
-        help_text=_('Date of the scheduled shift')
+        verbose_name=_("Date"), help_text=_("Date of the scheduled shift")
     )
 
     actual_start = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Actual start'),
-        help_text=_('Actual check-in time')
+        verbose_name=_("Actual start"),
+        help_text=_("Actual check-in time"),
     )
 
     actual_end = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Actual end'),
-        help_text=_('Actual check-out time')
+        verbose_name=_("Actual end"),
+        help_text=_("Actual check-out time"),
     )
 
     status = models.CharField(
@@ -1815,15 +1837,15 @@ class StaffSchedule(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=ScheduleStatus.choices,
         default=ScheduleStatus.SCHEDULED,
         db_index=True,
-        verbose_name=_('Status'),
-        help_text=_('Current status of the schedule entry')
+        verbose_name=_("Status"),
+        help_text=_("Current status of the schedule entry"),
     )
 
     notes = models.TextField(
         null=True,
         blank=True,
-        verbose_name=_('Notes'),
-        help_text=_('Optional notes about the schedule entry')
+        verbose_name=_("Notes"),
+        help_text=_("Optional notes about the schedule entry"),
     )
 
     # Managers
@@ -1831,20 +1853,24 @@ class StaffSchedule(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'staff_schedules'
-        verbose_name = _('Staff Schedule')
-        verbose_name_plural = _('Staff Schedules')
-        ordering = ['-date']
-        unique_together = [['user', 'date', 'shift']]
+        db_table = "staff_schedules"
+        verbose_name = _("Staff Schedule")
+        verbose_name_plural = _("Staff Schedules")
+        ordering = ["-date"]
+        unique_together = [["user", "date", "shift"]]
         indexes = [
-            models.Index(fields=['organization', 'deleted_at'], name='schedule_org_deleted_idx'),
+            models.Index(
+                fields=["organization", "deleted_at"], name="schedule_org_deleted_idx"
+            ),
         ]
 
     def __str__(self) -> str:
         return f"{self.user.email} - {self.shift.name} on {self.date}"
 
     def __repr__(self) -> str:
-        return f"<StaffSchedule(id={self.id}, user='{self.user.email}', date={self.date})>"
+        return (
+            f"<StaffSchedule(id={self.id}, user='{self.user.email}', date={self.date})>"
+        )
 
 
 class StaffMetric(TimeStampedMixin, SoftDeleteMixin, models.Model):
@@ -1878,57 +1904,56 @@ class StaffMetric(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='staff_metrics',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this metric belongs to')
+        related_name="staff_metrics",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this metric belongs to"),
     )
 
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='staff_metrics',
-        verbose_name=_('User'),
-        help_text=_('Staff member these metrics are for')
+        related_name="staff_metrics",
+        verbose_name=_("User"),
+        help_text=_("Staff member these metrics are for"),
     )
 
     date = models.DateField(
-        verbose_name=_('Date'),
-        help_text=_('Date these metrics are for')
+        verbose_name=_("Date"), help_text=_("Date these metrics are for")
     )
 
     orders_handled = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Orders handled'),
-        help_text=_('Number of orders handled')
+        verbose_name=_("Orders handled"),
+        help_text=_("Number of orders handled"),
     )
 
     revenue_generated = models.DecimalField(
         max_digits=12,
         decimal_places=2,
         default=0,
-        verbose_name=_('Revenue generated'),
-        help_text=_('Total revenue generated')
+        verbose_name=_("Revenue generated"),
+        help_text=_("Total revenue generated"),
     )
 
     avg_order_value = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Average order value'),
-        help_text=_('Average value per order')
+        verbose_name=_("Average order value"),
+        help_text=_("Average value per order"),
     )
 
     avg_service_time_seconds = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Average service time (seconds)'),
-        help_text=_('Average service time in seconds')
+        verbose_name=_("Average service time (seconds)"),
+        help_text=_("Average service time in seconds"),
     )
 
     customer_rating_avg = models.DecimalField(
@@ -1936,28 +1961,28 @@ class StaffMetric(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         null=True,
         blank=True,
-        verbose_name=_('Customer rating average'),
-        help_text=_('Average customer rating')
+        verbose_name=_("Customer rating average"),
+        help_text=_("Average customer rating"),
     )
 
     rating_count = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Rating count'),
-        help_text=_('Number of ratings received')
+        verbose_name=_("Rating count"),
+        help_text=_("Number of ratings received"),
     )
 
     upsell_count = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Upsell count'),
-        help_text=_('Number of successful upsells')
+        verbose_name=_("Upsell count"),
+        help_text=_("Number of successful upsells"),
     )
 
     tips_amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Tips amount'),
-        help_text=_('Total tips received')
+        verbose_name=_("Tips amount"),
+        help_text=_("Total tips received"),
     )
 
     # Managers
@@ -1965,17 +1990,22 @@ class StaffMetric(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'staff_metrics'
-        verbose_name = _('Staff Metric')
-        verbose_name_plural = _('Staff Metrics')
-        ordering = ['-date']
-        unique_together = [['user', 'date']]
+        db_table = "staff_metrics"
+        verbose_name = _("Staff Metric")
+        verbose_name_plural = _("Staff Metrics")
+        ordering = ["-date"]
+        unique_together = [["user", "date"]]
         indexes = [
-            models.Index(fields=['organization', 'deleted_at'], name='staffmetric_org_deleted_idx'),
+            models.Index(
+                fields=["organization", "deleted_at"],
+                name="staffmetric_org_deleted_idx",
+            ),
         ]
 
     def __str__(self) -> str:
         return f"Metrics for {self.user.email} on {self.date}"
 
     def __repr__(self) -> str:
-        return f"<StaffMetric(id={self.id}, user='{self.user.email}', date={self.date})>"
+        return (
+            f"<StaffMetric(id={self.id}, user='{self.user.email}', date={self.date})>"
+        )

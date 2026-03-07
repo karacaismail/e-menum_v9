@@ -111,16 +111,16 @@ class Zone(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='zones',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this zone belongs to')
+        related_name="zones",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this zone belongs to"),
     )
 
     branch = models.ForeignKey(
@@ -128,93 +128,93 @@ class Zone(TimeStampedMixin, SoftDeleteMixin, models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name='zones',
-        verbose_name=_('Branch'),
-        help_text=_('Branch this zone belongs to (optional for single-location)')
+        related_name="zones",
+        verbose_name=_("Branch"),
+        help_text=_("Branch this zone belongs to (optional for single-location)"),
     )
 
     name = models.CharField(
         max_length=100,
-        verbose_name=_('Name'),
-        help_text=_('Display name of the zone (e.g., Garden, VIP Section)')
+        verbose_name=_("Name"),
+        help_text=_("Display name of the zone (e.g., Garden, VIP Section)"),
     )
 
     slug = models.SlugField(
         max_length=100,
-        verbose_name=_('Slug'),
-        help_text=_('URL-friendly identifier (unique within organization)')
+        verbose_name=_("Slug"),
+        help_text=_("URL-friendly identifier (unique within organization)"),
     )
 
     description = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Description'),
-        help_text=_('Optional description of the zone and its characteristics')
+        verbose_name=_("Description"),
+        help_text=_("Optional description of the zone and its characteristics"),
     )
 
     # Visual identification
     color = models.CharField(
         max_length=7,
-        default='#3B82F6',
-        verbose_name=_('Color'),
-        help_text=_('Hex color code for visual identification (e.g., #3B82F6)')
+        default="#3B82F6",
+        verbose_name=_("Color"),
+        help_text=_("Hex color code for visual identification (e.g., #3B82F6)"),
     )
 
     icon = models.CharField(
         max_length=100,
         blank=True,
         null=True,
-        verbose_name=_('Icon'),
-        help_text=_('Icon name or URL for zone representation in UI')
+        verbose_name=_("Icon"),
+        help_text=_("Icon name or URL for zone representation in UI"),
     )
 
     # Capacity
     capacity = models.PositiveIntegerField(
         blank=True,
         null=True,
-        verbose_name=_('Capacity'),
-        help_text=_('Maximum number of guests the zone can accommodate')
+        verbose_name=_("Capacity"),
+        help_text=_("Maximum number of guests the zone can accommodate"),
     )
 
     # Status and characteristics
     is_active = models.BooleanField(
         default=True,
         db_index=True,
-        verbose_name=_('Is active'),
-        help_text=_('Whether the zone is available for seating')
+        verbose_name=_("Is active"),
+        help_text=_("Whether the zone is available for seating"),
     )
 
     is_smoking_allowed = models.BooleanField(
         default=False,
-        verbose_name=_('Is smoking allowed'),
-        help_text=_('Whether smoking is permitted in this zone')
+        verbose_name=_("Is smoking allowed"),
+        help_text=_("Whether smoking is permitted in this zone"),
     )
 
     is_outdoor = models.BooleanField(
         default=False,
-        verbose_name=_('Is outdoor'),
-        help_text=_('Whether the zone is located outdoors')
+        verbose_name=_("Is outdoor"),
+        help_text=_("Whether the zone is located outdoors"),
     )
 
     is_reservable = models.BooleanField(
         default=True,
-        verbose_name=_('Is reservable'),
-        help_text=_('Whether tables in this zone can be reserved')
+        verbose_name=_("Is reservable"),
+        help_text=_("Whether tables in this zone can be reserved"),
     )
 
     # Ordering
     sort_order = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Sort order'),
-        help_text=_('Display order for zones (lower numbers appear first)')
+        verbose_name=_("Sort order"),
+        help_text=_("Display order for zones (lower numbers appear first)"),
     )
 
     # Additional settings
     settings = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Settings'),
-        help_text=_('Zone-specific settings (JSON)')
+        verbose_name=_("Settings"),
+        help_text=_("Zone-specific settings (JSON)"),
     )
 
     # Managers
@@ -222,23 +222,31 @@ class Zone(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'zones'
-        verbose_name = _('Zone')
-        verbose_name_plural = _('Zones')
-        ordering = ['sort_order', 'name']
-        unique_together = [['organization', 'slug']]
+        db_table = "zones"
+        verbose_name = _("Zone")
+        verbose_name_plural = _("Zones")
+        ordering = ["sort_order", "name"]
+        unique_together = [["organization", "slug"]]
         indexes = [
-            models.Index(fields=['organization', 'is_active'], name='zone_org_active_idx'),
-            models.Index(fields=['organization', 'deleted_at'], name='zone_org_deleted_idx'),
-            models.Index(fields=['organization', 'branch'], name='zone_org_branch_idx'),
-            models.Index(fields=['organization', 'sort_order'], name='zone_org_sort_idx'),
+            models.Index(
+                fields=["organization", "is_active"], name="zone_org_active_idx"
+            ),
+            models.Index(
+                fields=["organization", "deleted_at"], name="zone_org_deleted_idx"
+            ),
+            models.Index(fields=["organization", "branch"], name="zone_org_branch_idx"),
+            models.Index(
+                fields=["organization", "sort_order"], name="zone_org_sort_idx"
+            ),
         ]
 
     def __str__(self) -> str:
         return f"{self.name} ({self.organization.name})"
 
     def __repr__(self) -> str:
-        return f"<Zone(id={self.id}, name='{self.name}', org='{self.organization.name}')>"
+        return (
+            f"<Zone(id={self.id}, name='{self.name}', org='{self.organization.name}')>"
+        )
 
     @property
     def is_available(self) -> bool:
@@ -254,16 +262,14 @@ class Zone(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def available_table_count(self) -> int:
         """Return the number of available tables in this zone."""
         return self.tables.filter(
-            deleted_at__isnull=True,
-            status=TableStatus.AVAILABLE
+            deleted_at__isnull=True, status=TableStatus.AVAILABLE
         ).count()
 
     @property
     def occupied_table_count(self) -> int:
         """Return the number of occupied tables in this zone."""
         return self.tables.filter(
-            deleted_at__isnull=True,
-            status=TableStatus.OCCUPIED
+            deleted_at__isnull=True, status=TableStatus.OCCUPIED
         ).count()
 
     def get_setting(self, key: str, default=None):
@@ -288,17 +294,17 @@ class Zone(TimeStampedMixin, SoftDeleteMixin, models.Model):
             value: The value to set
         """
         self.settings[key] = value
-        self.save(update_fields=['settings', 'updated_at'])
+        self.save(update_fields=["settings", "updated_at"])
 
     def activate(self) -> None:
         """Activate the zone for seating."""
         self.is_active = True
-        self.save(update_fields=['is_active', 'updated_at'])
+        self.save(update_fields=["is_active", "updated_at"])
 
     def deactivate(self) -> None:
         """Deactivate the zone (not available for seating)."""
         self.is_active = False
-        self.save(update_fields=['is_active', 'updated_at'])
+        self.save(update_fields=["is_active", "updated_at"])
 
     def get_tables(self, status: str = None):
         """
@@ -313,7 +319,7 @@ class Zone(TimeStampedMixin, SoftDeleteMixin, models.Model):
         qs = self.tables.filter(deleted_at__isnull=True)
         if status:
             qs = qs.filter(status=status)
-        return qs.order_by('sort_order', 'name')
+        return qs.order_by("sort_order", "name")
 
 
 class Table(TimeStampedMixin, SoftDeleteMixin, models.Model):
@@ -387,24 +393,24 @@ class Table(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='tables',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this table belongs to')
+        related_name="tables",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this table belongs to"),
     )
 
     zone = models.ForeignKey(
         Zone,
         on_delete=models.CASCADE,
-        related_name='tables',
-        verbose_name=_('Zone'),
-        help_text=_('Zone/section this table belongs to')
+        related_name="tables",
+        verbose_name=_("Zone"),
+        help_text=_("Zone/section this table belongs to"),
     )
 
     branch = models.ForeignKey(
@@ -412,42 +418,42 @@ class Table(TimeStampedMixin, SoftDeleteMixin, models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name='tables',
-        verbose_name=_('Branch'),
-        help_text=_('Branch this table belongs to (optional for single-location)')
+        related_name="tables",
+        verbose_name=_("Branch"),
+        help_text=_("Branch this table belongs to (optional for single-location)"),
     )
 
     # Identification
     name = models.CharField(
         max_length=50,
-        verbose_name=_('Name'),
-        help_text=_('Display name/number of the table (e.g., "Table 1", "A-12")')
+        verbose_name=_("Name"),
+        help_text=_('Display name/number of the table (e.g., "Table 1", "A-12")'),
     )
 
     number = models.PositiveIntegerField(
         blank=True,
         null=True,
-        verbose_name=_('Number'),
-        help_text=_('Numeric table number for ordering and quick reference')
+        verbose_name=_("Number"),
+        help_text=_("Numeric table number for ordering and quick reference"),
     )
 
     slug = models.SlugField(
         max_length=50,
-        verbose_name=_('Slug'),
-        help_text=_('URL-friendly identifier (unique within organization)')
+        verbose_name=_("Slug"),
+        help_text=_("URL-friendly identifier (unique within organization)"),
     )
 
     # Capacity
     capacity = models.PositiveSmallIntegerField(
         default=4,
-        verbose_name=_('Capacity'),
-        help_text=_('Maximum number of guests the table can seat')
+        verbose_name=_("Capacity"),
+        help_text=_("Maximum number of guests the table can seat"),
     )
 
     min_capacity = models.PositiveSmallIntegerField(
         default=1,
-        verbose_name=_('Minimum capacity'),
-        help_text=_('Minimum number of guests required for reservation')
+        verbose_name=_("Minimum capacity"),
+        help_text=_("Minimum number of guests required for reservation"),
     )
 
     # Status
@@ -456,66 +462,70 @@ class Table(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=TableStatus.choices,
         default=TableStatus.AVAILABLE,
         db_index=True,
-        verbose_name=_('Status'),
-        help_text=_('Current table status (available, occupied, reserved)')
+        verbose_name=_("Status"),
+        help_text=_("Current table status (available, occupied, reserved)"),
     )
 
     is_active = models.BooleanField(
         default=True,
         db_index=True,
-        verbose_name=_('Is active'),
-        help_text=_('Whether the table is available for use (can be disabled for maintenance)')
+        verbose_name=_("Is active"),
+        help_text=_(
+            "Whether the table is available for use (can be disabled for maintenance)"
+        ),
     )
 
     is_vip = models.BooleanField(
         default=False,
-        verbose_name=_('Is VIP'),
-        help_text=_('Whether this is a VIP/premium table')
+        verbose_name=_("Is VIP"),
+        help_text=_("Whether this is a VIP/premium table"),
     )
 
     # Floor plan positioning (for visual table layout)
     position_x = models.PositiveIntegerField(
         blank=True,
         null=True,
-        verbose_name=_('Position X'),
-        help_text=_('X coordinate for floor plan visualization')
+        verbose_name=_("Position X"),
+        help_text=_("X coordinate for floor plan visualization"),
     )
 
     position_y = models.PositiveIntegerField(
         blank=True,
         null=True,
-        verbose_name=_('Position Y'),
-        help_text=_('Y coordinate for floor plan visualization')
+        verbose_name=_("Position Y"),
+        help_text=_("Y coordinate for floor plan visualization"),
     )
 
     shape = models.CharField(
         max_length=20,
-        default='rectangle',
-        verbose_name=_('Shape'),
-        help_text=_('Table shape for visualization (round, square, rectangle)')
+        default="rectangle",
+        verbose_name=_("Shape"),
+        help_text=_("Table shape for visualization (round, square, rectangle)"),
     )
 
     # Ordering
     sort_order = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Sort order'),
-        help_text=_('Display order within the zone (lower numbers appear first)')
+        verbose_name=_("Sort order"),
+        help_text=_("Display order within the zone (lower numbers appear first)"),
     )
 
     # Notes
     notes = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Notes'),
-        help_text=_('Staff notes about the table (e.g., "near window", "wheelchair accessible")')
+        verbose_name=_("Notes"),
+        help_text=_(
+            'Staff notes about the table (e.g., "near window", "wheelchair accessible")'
+        ),
     )
 
     # Additional settings
     settings = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Settings'),
-        help_text=_('Table-specific settings (JSON)')
+        verbose_name=_("Settings"),
+        help_text=_("Table-specific settings (JSON)"),
     )
 
     # Managers
@@ -523,20 +533,30 @@ class Table(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'tables'
-        verbose_name = _('Table')
-        verbose_name_plural = _('Tables')
-        ordering = ['zone', 'sort_order', 'number', 'name']
-        unique_together = [['organization', 'slug']]
+        db_table = "tables"
+        verbose_name = _("Table")
+        verbose_name_plural = _("Tables")
+        ordering = ["zone", "sort_order", "number", "name"]
+        unique_together = [["organization", "slug"]]
         indexes = [
-            models.Index(fields=['organization', 'status'], name='table_org_status_idx'),
-            models.Index(fields=['organization', 'is_active'], name='table_org_active_idx'),
-            models.Index(fields=['organization', 'deleted_at'], name='table_org_deleted_idx'),
-            models.Index(fields=['organization', 'zone'], name='table_org_zone_idx'),
-            models.Index(fields=['organization', 'branch'], name='table_org_branch_idx'),
-            models.Index(fields=['zone', 'status'], name='table_zone_status_idx'),
-            models.Index(fields=['zone', 'sort_order'], name='table_zone_sort_idx'),
-            models.Index(fields=['organization', 'number'], name='table_org_number_idx'),
+            models.Index(
+                fields=["organization", "status"], name="table_org_status_idx"
+            ),
+            models.Index(
+                fields=["organization", "is_active"], name="table_org_active_idx"
+            ),
+            models.Index(
+                fields=["organization", "deleted_at"], name="table_org_deleted_idx"
+            ),
+            models.Index(fields=["organization", "zone"], name="table_org_zone_idx"),
+            models.Index(
+                fields=["organization", "branch"], name="table_org_branch_idx"
+            ),
+            models.Index(fields=["zone", "status"], name="table_zone_status_idx"),
+            models.Index(fields=["zone", "sort_order"], name="table_zone_sort_idx"),
+            models.Index(
+                fields=["organization", "number"], name="table_org_number_idx"
+            ),
         ]
 
     def __str__(self) -> str:
@@ -582,9 +602,11 @@ class Table(TimeStampedMixin, SoftDeleteMixin, models.Model):
             status: TableStatus value (AVAILABLE, OCCUPIED, RESERVED)
         """
         if status not in TableStatus.values:
-            raise ValueError(f"Invalid status: {status}. Must be one of {TableStatus.values}")
+            raise ValueError(
+                f"Invalid status: {status}. Must be one of {TableStatus.values}"
+            )
         self.status = status
-        self.save(update_fields=['status', 'updated_at'])
+        self.save(update_fields=["status", "updated_at"])
 
     def set_available(self) -> None:
         """Set the table as available for seating."""
@@ -601,12 +623,12 @@ class Table(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def activate(self) -> None:
         """Activate the table for use."""
         self.is_active = True
-        self.save(update_fields=['is_active', 'updated_at'])
+        self.save(update_fields=["is_active", "updated_at"])
 
     def deactivate(self) -> None:
         """Deactivate the table (not available for use)."""
         self.is_active = False
-        self.save(update_fields=['is_active', 'updated_at'])
+        self.save(update_fields=["is_active", "updated_at"])
 
     def update_position(self, x: int, y: int) -> None:
         """
@@ -618,7 +640,7 @@ class Table(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         self.position_x = x
         self.position_y = y
-        self.save(update_fields=['position_x', 'position_y', 'updated_at'])
+        self.save(update_fields=["position_x", "position_y", "updated_at"])
 
     def get_setting(self, key: str, default=None):
         """
@@ -642,7 +664,7 @@ class Table(TimeStampedMixin, SoftDeleteMixin, models.Model):
             value: The value to set
         """
         self.settings[key] = value
-        self.save(update_fields=['settings', 'updated_at'])
+        self.save(update_fields=["settings", "updated_at"])
 
     def can_seat(self, guest_count: int) -> bool:
         """
@@ -669,7 +691,7 @@ class Table(TimeStampedMixin, SoftDeleteMixin, models.Model):
         if new_zone.organization_id != self.organization_id:
             raise ValueError("Cannot move table to a zone in a different organization")
         self.zone = new_zone
-        self.save(update_fields=['zone', 'updated_at'])
+        self.save(update_fields=["zone", "updated_at"])
 
 
 class QRCode(TimeStampedMixin, SoftDeleteMixin, models.Model):
@@ -743,16 +765,16 @@ class QRCode(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='qr_codes',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this QR code belongs to')
+        related_name="qr_codes",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this QR code belongs to"),
     )
 
     branch = models.ForeignKey(
@@ -760,9 +782,9 @@ class QRCode(TimeStampedMixin, SoftDeleteMixin, models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name='qr_codes',
-        verbose_name=_('Branch'),
-        help_text=_('Branch this QR code belongs to (optional for single-location)')
+        related_name="qr_codes",
+        verbose_name=_("Branch"),
+        help_text=_("Branch this QR code belongs to (optional for single-location)"),
     )
 
     # Linked entities (based on type)
@@ -771,19 +793,19 @@ class QRCode(TimeStampedMixin, SoftDeleteMixin, models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='qr_codes',
-        verbose_name=_('Menu'),
-        help_text=_('Menu this QR code links to (for MENU type)')
+        related_name="qr_codes",
+        verbose_name=_("Menu"),
+        help_text=_("Menu this QR code links to (for MENU type)"),
     )
 
     table = models.ForeignKey(
-        'Table',
+        "Table",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='qr_codes',
-        verbose_name=_('Table'),
-        help_text=_('Table this QR code is associated with (for TABLE type)')
+        related_name="qr_codes",
+        verbose_name=_("Table"),
+        help_text=_("Table this QR code is associated with (for TABLE type)"),
     )
 
     # QR code type and identification
@@ -792,27 +814,29 @@ class QRCode(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=QRCodeType.choices,
         default=QRCodeType.MENU,
         db_index=True,
-        verbose_name=_('Type'),
-        help_text=_('Type of QR code (MENU, TABLE, CAMPAIGN)')
+        verbose_name=_("Type"),
+        help_text=_("Type of QR code (MENU, TABLE, CAMPAIGN)"),
     )
 
     code = models.CharField(
         max_length=100,
-        verbose_name=_('Code'),
-        help_text=_('Unique code/slug for the QR code URL (unique within organization)')
+        verbose_name=_("Code"),
+        help_text=_(
+            "Unique code/slug for the QR code URL (unique within organization)"
+        ),
     )
 
     name = models.CharField(
         max_length=100,
-        verbose_name=_('Name'),
-        help_text=_('Display name for the QR code')
+        verbose_name=_("Name"),
+        help_text=_("Display name for the QR code"),
     )
 
     description = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Description'),
-        help_text=_('Optional description of the QR code purpose')
+        verbose_name=_("Description"),
+        help_text=_("Optional description of the QR code purpose"),
     )
 
     # URLs
@@ -820,74 +844,74 @@ class QRCode(TimeStampedMixin, SoftDeleteMixin, models.Model):
         blank=True,
         null=True,
         max_length=500,
-        verbose_name=_('Short URL'),
-        help_text=_('Generated short URL for QR scanning')
+        verbose_name=_("Short URL"),
+        help_text=_("Generated short URL for QR scanning"),
     )
 
     qr_image_url = models.URLField(
         blank=True,
         null=True,
         max_length=500,
-        verbose_name=_('QR image URL'),
-        help_text=_('URL to the generated QR code image')
+        verbose_name=_("QR image URL"),
+        help_text=_("URL to the generated QR code image"),
     )
 
     redirect_url = models.URLField(
         blank=True,
         null=True,
         max_length=500,
-        verbose_name=_('Redirect URL'),
-        help_text=_('Custom redirect URL (overrides default behavior)')
+        verbose_name=_("Redirect URL"),
+        help_text=_("Custom redirect URL (overrides default behavior)"),
     )
 
     # Status
     is_active = models.BooleanField(
         default=True,
         db_index=True,
-        verbose_name=_('Is active'),
-        help_text=_('Whether the QR code is active and scannable')
+        verbose_name=_("Is active"),
+        help_text=_("Whether the QR code is active and scannable"),
     )
 
     expires_at = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name=_('Expires at'),
-        help_text=_('Optional expiration date for the QR code')
+        verbose_name=_("Expires at"),
+        help_text=_("Optional expiration date for the QR code"),
     )
 
     # Analytics (denormalized for performance)
     scan_count = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Scan count'),
-        help_text=_('Total number of scans (cached counter)')
+        verbose_name=_("Scan count"),
+        help_text=_("Total number of scans (cached counter)"),
     )
 
     unique_scan_count = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Unique scan count'),
-        help_text=_('Number of unique device scans (cached counter)')
+        verbose_name=_("Unique scan count"),
+        help_text=_("Number of unique device scans (cached counter)"),
     )
 
     last_scanned_at = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name=_('Last scanned at'),
-        help_text=_('Timestamp of the most recent scan')
+        verbose_name=_("Last scanned at"),
+        help_text=_("Timestamp of the most recent scan"),
     )
 
     # Additional settings and metadata
     settings = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Settings'),
-        help_text=_('QR code-specific settings (JSON)')
+        verbose_name=_("Settings"),
+        help_text=_("QR code-specific settings (JSON)"),
     )
 
     metadata = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Metadata'),
-        help_text=_('Custom metadata (campaign info, tracking params, etc.)')
+        verbose_name=_("Metadata"),
+        help_text=_("Custom metadata (campaign info, tracking params, etc.)"),
     )
 
     # Managers
@@ -895,20 +919,28 @@ class QRCode(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'qr_codes'
-        verbose_name = _('QR Code')
-        verbose_name_plural = _('QR Codes')
-        ordering = ['-created_at']
-        unique_together = [['organization', 'code']]
+        db_table = "qr_codes"
+        verbose_name = _("QR Code")
+        verbose_name_plural = _("QR Codes")
+        ordering = ["-created_at"]
+        unique_together = [["organization", "code"]]
         indexes = [
-            models.Index(fields=['organization', 'type'], name='qrcode_org_type_idx'),
-            models.Index(fields=['organization', 'is_active'], name='qrcode_org_active_idx'),
-            models.Index(fields=['organization', 'deleted_at'], name='qrcode_org_deleted_idx'),
-            models.Index(fields=['organization', 'branch'], name='qrcode_org_branch_idx'),
-            models.Index(fields=['organization', 'menu'], name='qrcode_org_menu_idx'),
-            models.Index(fields=['organization', 'table'], name='qrcode_org_table_idx'),
-            models.Index(fields=['organization', 'expires_at'], name='qrcode_org_expires_idx'),
-            models.Index(fields=['code'], name='qrcode_code_idx'),
+            models.Index(fields=["organization", "type"], name="qrcode_org_type_idx"),
+            models.Index(
+                fields=["organization", "is_active"], name="qrcode_org_active_idx"
+            ),
+            models.Index(
+                fields=["organization", "deleted_at"], name="qrcode_org_deleted_idx"
+            ),
+            models.Index(
+                fields=["organization", "branch"], name="qrcode_org_branch_idx"
+            ),
+            models.Index(fields=["organization", "menu"], name="qrcode_org_menu_idx"),
+            models.Index(fields=["organization", "table"], name="qrcode_org_table_idx"),
+            models.Index(
+                fields=["organization", "expires_at"], name="qrcode_org_expires_idx"
+            ),
+            models.Index(fields=["code"], name="qrcode_code_idx"),
         ]
 
     def __str__(self) -> str:
@@ -921,6 +953,7 @@ class QRCode(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def is_scannable(self) -> bool:
         """Check if QR code is active, not deleted, and not expired."""
         from django.utils import timezone
+
         if not self.is_active or self.is_deleted:
             return False
         if self.expires_at and self.expires_at < timezone.now():
@@ -931,6 +964,7 @@ class QRCode(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def is_expired(self) -> bool:
         """Check if QR code has expired."""
         from django.utils import timezone
+
         if self.expires_at is None:
             return False
         return self.expires_at < timezone.now()
@@ -969,7 +1003,7 @@ class QRCode(TimeStampedMixin, SoftDeleteMixin, models.Model):
             value: The value to set
         """
         self.settings[key] = value
-        self.save(update_fields=['settings', 'updated_at'])
+        self.save(update_fields=["settings", "updated_at"])
 
     def get_metadata(self, key: str, default=None):
         """
@@ -993,17 +1027,17 @@ class QRCode(TimeStampedMixin, SoftDeleteMixin, models.Model):
             value: The value to set
         """
         self.metadata[key] = value
-        self.save(update_fields=['metadata', 'updated_at'])
+        self.save(update_fields=["metadata", "updated_at"])
 
     def activate(self) -> None:
         """Activate the QR code for scanning."""
         self.is_active = True
-        self.save(update_fields=['is_active', 'updated_at'])
+        self.save(update_fields=["is_active", "updated_at"])
 
     def deactivate(self) -> None:
         """Deactivate the QR code (stops working)."""
         self.is_active = False
-        self.save(update_fields=['is_active', 'updated_at'])
+        self.save(update_fields=["is_active", "updated_at"])
 
     def increment_scan_count(self, is_unique: bool = False) -> None:
         """
@@ -1015,14 +1049,16 @@ class QRCode(TimeStampedMixin, SoftDeleteMixin, models.Model):
         from django.utils import timezone
         from django.db.models import F
 
-        updates = {'scan_count': F('scan_count') + 1, 'last_scanned_at': timezone.now()}
+        updates = {"scan_count": F("scan_count") + 1, "last_scanned_at": timezone.now()}
         if is_unique:
-            updates['unique_scan_count'] = F('unique_scan_count') + 1
+            updates["unique_scan_count"] = F("unique_scan_count") + 1
 
         QRCode.objects.filter(pk=self.pk).update(**updates)
 
         # Refresh from database
-        self.refresh_from_db(fields=['scan_count', 'unique_scan_count', 'last_scanned_at'])
+        self.refresh_from_db(
+            fields=["scan_count", "unique_scan_count", "last_scanned_at"]
+        )
 
     def record_scan(
         self,
@@ -1035,8 +1071,8 @@ class QRCode(TimeStampedMixin, SoftDeleteMixin, models.Model):
         country: str = None,
         city: str = None,
         referer: str = None,
-        metadata: dict = None
-    ) -> 'QRScan':
+        metadata: dict = None,
+    ) -> "QRScan":
         """
         Record a scan of this QR code.
 
@@ -1168,49 +1204,49 @@ class QRScan(TimeStampedMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     qr_code = models.ForeignKey(
         QRCode,
         on_delete=models.CASCADE,
-        related_name='scans',
-        verbose_name=_('QR Code'),
-        help_text=_('QR code that was scanned')
+        related_name="scans",
+        verbose_name=_("QR Code"),
+        help_text=_("QR code that was scanned"),
     )
 
     # Denormalized for faster queries (avoid joining through qr_code)
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='qr_scans',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this scan belongs to (denormalized)')
+        related_name="qr_scans",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this scan belongs to (denormalized)"),
     )
 
     # Timestamp
     scanned_at = models.DateTimeField(
         auto_now_add=True,
         db_index=True,
-        verbose_name=_('Scanned at'),
-        help_text=_('Timestamp when the scan occurred')
+        verbose_name=_("Scanned at"),
+        help_text=_("Timestamp when the scan occurred"),
     )
 
     # Network information
     ip_address = models.GenericIPAddressField(
         blank=True,
         null=True,
-        verbose_name=_('IP address'),
-        help_text=_('IP address of the scanner')
+        verbose_name=_("IP address"),
+        help_text=_("IP address of the scanner"),
     )
 
     # User agent information
     user_agent = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('User agent'),
-        help_text=_('Full user agent string')
+        verbose_name=_("User agent"),
+        help_text=_("Full user agent string"),
     )
 
     session_id = models.CharField(
@@ -1218,8 +1254,8 @@ class QRScan(TimeStampedMixin, models.Model):
         blank=True,
         null=True,
         db_index=True,
-        verbose_name=_('Session ID'),
-        help_text=_('Session identifier for tracking unique visits')
+        verbose_name=_("Session ID"),
+        help_text=_("Session identifier for tracking unique visits"),
     )
 
     # Parsed device information
@@ -1227,24 +1263,24 @@ class QRScan(TimeStampedMixin, models.Model):
         max_length=20,
         blank=True,
         null=True,
-        verbose_name=_('Device type'),
-        help_text=_('Device type (mobile, tablet, desktop)')
+        verbose_name=_("Device type"),
+        help_text=_("Device type (mobile, tablet, desktop)"),
     )
 
     browser = models.CharField(
         max_length=100,
         blank=True,
         null=True,
-        verbose_name=_('Browser'),
-        help_text=_('Browser name (e.g., Chrome, Safari, Firefox)')
+        verbose_name=_("Browser"),
+        help_text=_("Browser name (e.g., Chrome, Safari, Firefox)"),
     )
 
     os = models.CharField(
         max_length=100,
         blank=True,
         null=True,
-        verbose_name=_('Operating system'),
-        help_text=_('Operating system (e.g., iOS, Android, Windows)')
+        verbose_name=_("Operating system"),
+        help_text=_("Operating system (e.g., iOS, Android, Windows)"),
     )
 
     # Geolocation data
@@ -1252,24 +1288,24 @@ class QRScan(TimeStampedMixin, models.Model):
         max_length=2,
         blank=True,
         null=True,
-        verbose_name=_('Country'),
-        help_text=_('Two-letter country code (ISO 3166-1 alpha-2)')
+        verbose_name=_("Country"),
+        help_text=_("Two-letter country code (ISO 3166-1 alpha-2)"),
     )
 
     city = models.CharField(
         max_length=100,
         blank=True,
         null=True,
-        verbose_name=_('City'),
-        help_text=_('City from IP geolocation')
+        verbose_name=_("City"),
+        help_text=_("City from IP geolocation"),
     )
 
     region = models.CharField(
         max_length=100,
         blank=True,
         null=True,
-        verbose_name=_('Region'),
-        help_text=_('Region/state from IP geolocation')
+        verbose_name=_("Region"),
+        help_text=_("Region/state from IP geolocation"),
     )
 
     latitude = models.DecimalField(
@@ -1277,8 +1313,8 @@ class QRScan(TimeStampedMixin, models.Model):
         decimal_places=6,
         blank=True,
         null=True,
-        verbose_name=_('Latitude'),
-        help_text=_('Latitude coordinate from geolocation')
+        verbose_name=_("Latitude"),
+        help_text=_("Latitude coordinate from geolocation"),
     )
 
     longitude = models.DecimalField(
@@ -1286,8 +1322,8 @@ class QRScan(TimeStampedMixin, models.Model):
         decimal_places=6,
         blank=True,
         null=True,
-        verbose_name=_('Longitude'),
-        help_text=_('Longitude coordinate from geolocation')
+        verbose_name=_("Longitude"),
+        help_text=_("Longitude coordinate from geolocation"),
     )
 
     # HTTP context
@@ -1295,49 +1331,59 @@ class QRScan(TimeStampedMixin, models.Model):
         blank=True,
         null=True,
         max_length=1000,
-        verbose_name=_('Referer'),
-        help_text=_('HTTP referer header')
+        verbose_name=_("Referer"),
+        help_text=_("HTTP referer header"),
     )
 
     # Tracking flags
     is_unique = models.BooleanField(
         default=True,
-        verbose_name=_('Is unique'),
-        help_text=_('Whether this was a unique visit (first from this device/session)')
+        verbose_name=_("Is unique"),
+        help_text=_("Whether this was a unique visit (first from this device/session)"),
     )
 
     # Optional customer link (if logged in)
     customer = models.ForeignKey(
-        'customers.Customer',
+        "customers.Customer",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='qr_scans',
-        verbose_name=_('Customer'),
-        help_text=_('Customer who scanned (if logged in)')
+        related_name="qr_scans",
+        verbose_name=_("Customer"),
+        help_text=_("Customer who scanned (if logged in)"),
     )
 
     # Additional metadata
     metadata = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Metadata'),
-        help_text=_('Additional tracking data (UTM params, custom fields, etc.)')
+        verbose_name=_("Metadata"),
+        help_text=_("Additional tracking data (UTM params, custom fields, etc.)"),
     )
 
     class Meta:
-        db_table = 'qr_scans'
-        verbose_name = _('QR Scan')
-        verbose_name_plural = _('QR Scans')
-        ordering = ['-scanned_at']
+        db_table = "qr_scans"
+        verbose_name = _("QR Scan")
+        verbose_name_plural = _("QR Scans")
+        ordering = ["-scanned_at"]
         indexes = [
-            models.Index(fields=['organization', 'scanned_at'], name='qrscan_org_scanned_idx'),
-            models.Index(fields=['organization', 'qr_code'], name='qrscan_org_qrcode_idx'),
-            models.Index(fields=['qr_code', 'scanned_at'], name='qrscan_qrcode_scanned_idx'),
-            models.Index(fields=['organization', 'device_type'], name='qrscan_org_device_idx'),
-            models.Index(fields=['organization', 'country'], name='qrscan_org_country_idx'),
-            models.Index(fields=['ip_address'], name='qrscan_ip_idx'),
-            models.Index(fields=['session_id'], name='qrscan_session_idx'),
+            models.Index(
+                fields=["organization", "scanned_at"], name="qrscan_org_scanned_idx"
+            ),
+            models.Index(
+                fields=["organization", "qr_code"], name="qrscan_org_qrcode_idx"
+            ),
+            models.Index(
+                fields=["qr_code", "scanned_at"], name="qrscan_qrcode_scanned_idx"
+            ),
+            models.Index(
+                fields=["organization", "device_type"], name="qrscan_org_device_idx"
+            ),
+            models.Index(
+                fields=["organization", "country"], name="qrscan_org_country_idx"
+            ),
+            models.Index(fields=["ip_address"], name="qrscan_ip_idx"),
+            models.Index(fields=["session_id"], name="qrscan_session_idx"),
         ]
 
     def __str__(self) -> str:
@@ -1349,17 +1395,17 @@ class QRScan(TimeStampedMixin, models.Model):
     @property
     def is_mobile(self) -> bool:
         """Check if scan was from a mobile device."""
-        return self.device_type == 'mobile'
+        return self.device_type == "mobile"
 
     @property
     def is_tablet(self) -> bool:
         """Check if scan was from a tablet."""
-        return self.device_type == 'tablet'
+        return self.device_type == "tablet"
 
     @property
     def is_desktop(self) -> bool:
         """Check if scan was from a desktop."""
-        return self.device_type == 'desktop'
+        return self.device_type == "desktop"
 
     @property
     def has_location(self) -> bool:
@@ -1376,7 +1422,7 @@ class QRScan(TimeStampedMixin, models.Model):
             parts.append(self.region)
         if self.country:
             parts.append(self.country)
-        return ', '.join(parts) if parts else _('Unknown')
+        return ", ".join(parts) if parts else _("Unknown")
 
     def get_metadata(self, key: str, default=None):
         """
@@ -1490,16 +1536,16 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='orders',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this order belongs to')
+        related_name="orders",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this order belongs to"),
     )
 
     branch = models.ForeignKey(
@@ -1507,9 +1553,9 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name='orders',
-        verbose_name=_('Branch'),
-        help_text=_('Branch this order belongs to (optional for single-location)')
+        related_name="orders",
+        verbose_name=_("Branch"),
+        help_text=_("Branch this order belongs to (optional for single-location)"),
     )
 
     table = models.ForeignKey(
@@ -1517,26 +1563,26 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='orders',
-        verbose_name=_('Table'),
-        help_text=_('Table associated with this order (for dine-in)')
+        related_name="orders",
+        verbose_name=_("Table"),
+        help_text=_("Table associated with this order (for dine-in)"),
     )
 
     customer = models.ForeignKey(
-        'customers.Customer',
+        "customers.Customer",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='orders',
-        verbose_name=_('Customer'),
-        help_text=_('Customer who placed this order (if registered)')
+        related_name="orders",
+        verbose_name=_("Customer"),
+        help_text=_("Customer who placed this order (if registered)"),
     )
 
     # Order identification
     order_number = models.CharField(
         max_length=50,
-        verbose_name=_('Order number'),
-        help_text=_('Human-readable order number (e.g., ORD-2024-0001)')
+        verbose_name=_("Order number"),
+        help_text=_("Human-readable order number (e.g., ORD-2024-0001)"),
     )
 
     # Status and type
@@ -1545,8 +1591,8 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=OrderStatus.choices,
         default=OrderStatus.PENDING,
         db_index=True,
-        verbose_name=_('Status'),
-        help_text=_('Current order status')
+        verbose_name=_("Status"),
+        help_text=_("Current order status"),
     )
 
     type = models.CharField(
@@ -1554,8 +1600,8 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=OrderType.choices,
         default=OrderType.DINE_IN,
         db_index=True,
-        verbose_name=_('Type'),
-        help_text=_('Order type (dine-in, takeaway, delivery)')
+        verbose_name=_("Type"),
+        help_text=_("Order type (dine-in, takeaway, delivery)"),
     )
 
     # Payment information
@@ -1564,8 +1610,8 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=PaymentStatus.choices,
         default=PaymentStatus.PENDING,
         db_index=True,
-        verbose_name=_('Payment status'),
-        help_text=_('Current payment status')
+        verbose_name=_("Payment status"),
+        help_text=_("Current payment status"),
     )
 
     payment_method = models.CharField(
@@ -1573,8 +1619,8 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=PaymentMethod.choices,
         blank=True,
         null=True,
-        verbose_name=_('Payment method'),
-        help_text=_('Payment method used')
+        verbose_name=_("Payment method"),
+        help_text=_("Payment method used"),
     )
 
     # Financial details
@@ -1582,179 +1628,179 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Subtotal'),
-        help_text=_('Sum of all items before tax and discount')
+        verbose_name=_("Subtotal"),
+        help_text=_("Sum of all items before tax and discount"),
     )
 
     tax_amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Tax amount'),
-        help_text=_('Total tax amount')
+        verbose_name=_("Tax amount"),
+        help_text=_("Total tax amount"),
     )
 
     discount_amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Discount amount'),
-        help_text=_('Total discount applied')
+        verbose_name=_("Discount amount"),
+        help_text=_("Total discount applied"),
     )
 
     refund_amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Refund amount'),
-        help_text=_('Total refund amount')
+        verbose_name=_("Refund amount"),
+        help_text=_("Total refund amount"),
     )
 
     tip_amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Tip amount'),
-        help_text=_('Tip/gratuity amount')
+        verbose_name=_("Tip amount"),
+        help_text=_("Tip/gratuity amount"),
     )
 
     total_amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Total amount'),
-        help_text=_('Final total (subtotal + tax - discount + tip)')
+        verbose_name=_("Total amount"),
+        help_text=_("Final total (subtotal + tax - discount + tip)"),
     )
 
     currency = models.CharField(
         max_length=3,
-        default='TRY',
-        verbose_name=_('Currency'),
-        help_text=_('Currency code (ISO 4217)')
+        default="TRY",
+        verbose_name=_("Currency"),
+        help_text=_("Currency code (ISO 4217)"),
     )
 
     # Guest information
     guest_count = models.PositiveSmallIntegerField(
         default=1,
-        verbose_name=_('Guest count'),
-        help_text=_('Number of guests (for dine-in orders)')
+        verbose_name=_("Guest count"),
+        help_text=_("Number of guests (for dine-in orders)"),
     )
 
     # Notes and instructions
     notes = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Notes'),
-        help_text=_('Staff/kitchen notes about the order')
+        verbose_name=_("Notes"),
+        help_text=_("Staff/kitchen notes about the order"),
     )
 
     special_instructions = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Special instructions'),
-        help_text=_('Customer special instructions or requests')
+        verbose_name=_("Special instructions"),
+        help_text=_("Customer special instructions or requests"),
     )
 
     # Customer info (for guest checkout without registration)
     customer_info = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Customer info'),
-        help_text=_('Guest customer details: name, phone, email')
+        verbose_name=_("Customer info"),
+        help_text=_("Guest customer details: name, phone, email"),
     )
 
     # Delivery address (for delivery orders)
     delivery_address = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Delivery address'),
-        help_text=_('Delivery address details: street, city, postal_code, etc.')
+        verbose_name=_("Delivery address"),
+        help_text=_("Delivery address details: street, city, postal_code, etc."),
     )
 
     # Timestamps for workflow tracking
     placed_at = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name=_('Placed at'),
-        help_text=_('Timestamp when order was placed')
+        verbose_name=_("Placed at"),
+        help_text=_("Timestamp when order was placed"),
     )
 
     confirmed_at = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name=_('Confirmed at'),
-        help_text=_('Timestamp when order was confirmed by staff')
+        verbose_name=_("Confirmed at"),
+        help_text=_("Timestamp when order was confirmed by staff"),
     )
 
     preparing_at = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name=_('Preparing at'),
-        help_text=_('Timestamp when order preparation started')
+        verbose_name=_("Preparing at"),
+        help_text=_("Timestamp when order preparation started"),
     )
 
     ready_at = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name=_('Ready at'),
-        help_text=_('Timestamp when order was ready')
+        verbose_name=_("Ready at"),
+        help_text=_("Timestamp when order was ready"),
     )
 
     delivered_at = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name=_('Delivered at'),
-        help_text=_('Timestamp when order was delivered to customer')
+        verbose_name=_("Delivered at"),
+        help_text=_("Timestamp when order was delivered to customer"),
     )
 
     completed_at = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name=_('Completed at'),
-        help_text=_('Timestamp when order was completed')
+        verbose_name=_("Completed at"),
+        help_text=_("Timestamp when order was completed"),
     )
 
     cancelled_at = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name=_('Cancelled at'),
-        help_text=_('Timestamp when order was cancelled')
+        verbose_name=_("Cancelled at"),
+        help_text=_("Timestamp when order was cancelled"),
     )
 
     cancel_reason = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Cancel reason'),
-        help_text=_('Reason for order cancellation')
+        verbose_name=_("Cancel reason"),
+        help_text=_("Reason for order cancellation"),
     )
 
     # Staff assignments
     placed_by = models.ForeignKey(
-        'core.User',
+        "core.User",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='placed_orders',
-        verbose_name=_('Placed by'),
-        help_text=_('Staff member who placed the order')
+        related_name="placed_orders",
+        verbose_name=_("Placed by"),
+        help_text=_("Staff member who placed the order"),
     )
 
     assigned_to = models.ForeignKey(
-        'core.User',
+        "core.User",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='assigned_orders',
-        verbose_name=_('Assigned to'),
-        help_text=_('Staff member assigned to handle this order')
+        related_name="assigned_orders",
+        verbose_name=_("Assigned to"),
+        help_text=_("Staff member assigned to handle this order"),
     )
 
     # Additional metadata
     metadata = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Metadata'),
-        help_text=_('Additional order data (source, promo codes, etc.)')
+        verbose_name=_("Metadata"),
+        help_text=_("Additional order data (source, promo codes, etc.)"),
     )
 
     # Managers
@@ -1762,30 +1808,49 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'orders'
-        verbose_name = _('Order')
-        verbose_name_plural = _('Orders')
-        ordering = ['-created_at']
-        unique_together = [['organization', 'order_number']]
+        db_table = "orders"
+        verbose_name = _("Order")
+        verbose_name_plural = _("Orders")
+        ordering = ["-created_at"]
+        unique_together = [["organization", "order_number"]]
         indexes = [
-            models.Index(fields=['organization', 'status'], name='order_org_status_idx'),
-            models.Index(fields=['organization', 'type'], name='order_org_type_idx'),
-            models.Index(fields=['organization', 'payment_status'], name='order_org_pay_status_idx'),
-            models.Index(fields=['organization', 'deleted_at'], name='order_org_deleted_idx'),
-            models.Index(fields=['organization', 'branch'], name='order_org_branch_idx'),
-            models.Index(fields=['organization', 'table'], name='order_org_table_idx'),
-            models.Index(fields=['organization', 'customer'], name='order_org_customer_idx'),
-            models.Index(fields=['organization', 'placed_at'], name='order_org_placed_idx'),
-            models.Index(fields=['organization', 'order_number'], name='order_org_number_idx'),
-            models.Index(fields=['table', 'status'], name='order_table_status_idx'),
-            models.Index(fields=['assigned_to', 'status'], name='order_assigned_status_idx'),
+            models.Index(
+                fields=["organization", "status"], name="order_org_status_idx"
+            ),
+            models.Index(fields=["organization", "type"], name="order_org_type_idx"),
+            models.Index(
+                fields=["organization", "payment_status"],
+                name="order_org_pay_status_idx",
+            ),
+            models.Index(
+                fields=["organization", "deleted_at"], name="order_org_deleted_idx"
+            ),
+            models.Index(
+                fields=["organization", "branch"], name="order_org_branch_idx"
+            ),
+            models.Index(fields=["organization", "table"], name="order_org_table_idx"),
+            models.Index(
+                fields=["organization", "customer"], name="order_org_customer_idx"
+            ),
+            models.Index(
+                fields=["organization", "placed_at"], name="order_org_placed_idx"
+            ),
+            models.Index(
+                fields=["organization", "order_number"], name="order_org_number_idx"
+            ),
+            models.Index(fields=["table", "status"], name="order_table_status_idx"),
+            models.Index(
+                fields=["assigned_to", "status"], name="order_assigned_status_idx"
+            ),
         ]
 
     def __str__(self) -> str:
         return f"Order {self.order_number} ({self.status})"
 
     def __repr__(self) -> str:
-        return f"<Order(id={self.id}, number='{self.order_number}', status={self.status})>"
+        return (
+            f"<Order(id={self.id}, number='{self.order_number}', status={self.status})>"
+        )
 
     @property
     def is_pending(self) -> bool:
@@ -1852,21 +1917,21 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """Get customer name from customer object or customer_info."""
         if self.customer:
             return self.customer.full_name
-        return self.customer_info.get('name', _('Guest'))
+        return self.customer_info.get("name", _("Guest"))
 
     @property
     def customer_phone(self) -> str | None:
         """Get customer phone from customer object or customer_info."""
         if self.customer:
             return self.customer.phone
-        return self.customer_info.get('phone')
+        return self.customer_info.get("phone")
 
     @property
     def customer_email(self) -> str | None:
         """Get customer email from customer object or customer_info."""
         if self.customer:
             return self.customer.email
-        return self.customer_info.get('email')
+        return self.customer_info.get("email")
 
     @property
     def item_count(self) -> int:
@@ -1877,10 +1942,11 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def item_quantity(self) -> int:
         """Return the total quantity of all items in this order."""
         from django.db.models import Sum
+
         result = self.items.filter(deleted_at__isnull=True).aggregate(
-            total=Sum('quantity')
+            total=Sum("quantity")
         )
-        return result['total'] or 0
+        return result["total"] or 0
 
     def calculate_totals(self, save: bool = True) -> None:
         """
@@ -1899,24 +1965,19 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
         # Calculate subtotal from items
         result = self.items.filter(deleted_at__isnull=True).aggregate(
             subtotal=Coalesce(
-                Sum(F('quantity') * F('unit_price'), output_field=DecimalField()),
-                Decimal('0')
+                Sum(F("quantity") * F("unit_price"), output_field=DecimalField()),
+                Decimal("0"),
             )
         )
-        self.subtotal = result['subtotal'] or Decimal('0')
+        self.subtotal = result["subtotal"] or Decimal("0")
 
         # Calculate total
         self.total_amount = (
-            self.subtotal
-            + self.tax_amount
-            - self.discount_amount
-            + self.tip_amount
+            self.subtotal + self.tax_amount - self.discount_amount + self.tip_amount
         )
 
         if save:
-            self.save(update_fields=[
-                'subtotal', 'total_amount', 'updated_at'
-            ])
+            self.save(update_fields=["subtotal", "total_amount", "updated_at"])
 
     def set_status(self, status: str, timestamp_field: str = None) -> None:
         """
@@ -1929,10 +1990,12 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
         from django.utils import timezone
 
         if status not in OrderStatus.values:
-            raise ValueError(f"Invalid status: {status}. Must be one of {OrderStatus.values}")
+            raise ValueError(
+                f"Invalid status: {status}. Must be one of {OrderStatus.values}"
+            )
 
         self.status = status
-        update_fields = ['status', 'updated_at']
+        update_fields = ["status", "updated_at"]
 
         if timestamp_field:
             setattr(self, timestamp_field, timezone.now())
@@ -1944,31 +2007,33 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """Confirm the order (staff acknowledges it)."""
         if self.status != OrderStatus.PENDING:
             raise ValueError(f"Cannot confirm order with status {self.status}")
-        self.set_status(OrderStatus.CONFIRMED, 'confirmed_at')
+        self.set_status(OrderStatus.CONFIRMED, "confirmed_at")
 
     def start_preparation(self) -> None:
         """Start preparing the order (kitchen/bar begins work)."""
         if self.status != OrderStatus.CONFIRMED:
-            raise ValueError(f"Cannot start preparation for order with status {self.status}")
-        self.set_status(OrderStatus.PREPARING, 'preparing_at')
+            raise ValueError(
+                f"Cannot start preparation for order with status {self.status}"
+            )
+        self.set_status(OrderStatus.PREPARING, "preparing_at")
 
     def mark_ready(self) -> None:
         """Mark the order as ready for pickup/delivery."""
         if self.status != OrderStatus.PREPARING:
             raise ValueError(f"Cannot mark ready order with status {self.status}")
-        self.set_status(OrderStatus.READY, 'ready_at')
+        self.set_status(OrderStatus.READY, "ready_at")
 
     def deliver(self) -> None:
         """Mark the order as delivered to customer."""
         if self.status != OrderStatus.READY:
             raise ValueError(f"Cannot deliver order with status {self.status}")
-        self.set_status(OrderStatus.DELIVERED, 'delivered_at')
+        self.set_status(OrderStatus.DELIVERED, "delivered_at")
 
     def complete(self) -> None:
         """Complete the order (fully done and paid)."""
         if self.status not in [OrderStatus.READY, OrderStatus.DELIVERED]:
             raise ValueError(f"Cannot complete order with status {self.status}")
-        self.set_status(OrderStatus.COMPLETED, 'completed_at')
+        self.set_status(OrderStatus.COMPLETED, "completed_at")
 
     def cancel(self, reason: str = None) -> None:
         """
@@ -1986,7 +2051,9 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
         self.cancelled_at = timezone.now()
         if reason:
             self.cancel_reason = reason
-        self.save(update_fields=['status', 'cancelled_at', 'cancel_reason', 'updated_at'])
+        self.save(
+            update_fields=["status", "cancelled_at", "cancel_reason", "updated_at"]
+        )
 
     def set_payment_status(self, status: str, method: str = None) -> None:
         """
@@ -2000,13 +2067,13 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
             raise ValueError(f"Invalid payment status: {status}")
 
         self.payment_status = status
-        update_fields = ['payment_status', 'updated_at']
+        update_fields = ["payment_status", "updated_at"]
 
         if method:
             if method not in PaymentMethod.values:
                 raise ValueError(f"Invalid payment method: {method}")
             self.payment_method = method
-            update_fields.append('payment_method')
+            update_fields.append("payment_method")
 
         self.save(update_fields=update_fields)
 
@@ -2027,7 +2094,7 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
             user: User to assign the order to
         """
         self.assigned_to = user
-        self.save(update_fields=['assigned_to', 'updated_at'])
+        self.save(update_fields=["assigned_to", "updated_at"])
 
     def get_metadata(self, key: str, default=None):
         """
@@ -2051,7 +2118,7 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
             value: The value to set
         """
         self.metadata[key] = value
-        self.save(update_fields=['metadata', 'updated_at'])
+        self.save(update_fields=["metadata", "updated_at"])
 
     def get_customer_info(self, key: str, default=None):
         """
@@ -2074,7 +2141,7 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
             **kwargs: Key-value pairs to set (name, phone, email)
         """
         self.customer_info.update(kwargs)
-        self.save(update_fields=['customer_info', 'updated_at'])
+        self.save(update_fields=["customer_info", "updated_at"])
 
     def get_delivery_address(self, key: str = None, default=None):
         """
@@ -2099,7 +2166,7 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
             **kwargs: Key-value pairs for address (street, city, postal_code, etc.)
         """
         self.delivery_address.update(kwargs)
-        self.save(update_fields=['delivery_address', 'updated_at'])
+        self.save(update_fields=["delivery_address", "updated_at"])
 
 
 class OrderItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
@@ -2176,64 +2243,62 @@ class OrderItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
-        related_name='items',
-        verbose_name=_('Order'),
-        help_text=_('Order this item belongs to')
+        related_name="items",
+        verbose_name=_("Order"),
+        help_text=_("Order this item belongs to"),
     )
 
     product = models.ForeignKey(
-        'menu.Product',
+        "menu.Product",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='order_items',
-        verbose_name=_('Product'),
-        help_text=_('Product ordered (reference, may be soft-deleted)')
+        related_name="order_items",
+        verbose_name=_("Product"),
+        help_text=_("Product ordered (reference, may be soft-deleted)"),
     )
 
     variant = models.ForeignKey(
-        'menu.ProductVariant',
+        "menu.ProductVariant",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='order_items',
-        verbose_name=_('Variant'),
-        help_text=_('Product variant selected (e.g., Large, Small)')
+        related_name="order_items",
+        verbose_name=_("Variant"),
+        help_text=_("Product variant selected (e.g., Large, Small)"),
     )
 
     # Quantity and pricing
     quantity = models.PositiveIntegerField(
-        default=1,
-        verbose_name=_('Quantity'),
-        help_text=_('Number of items ordered')
+        default=1, verbose_name=_("Quantity"), help_text=_("Number of items ordered")
     )
 
     unit_price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name=_('Unit price'),
-        help_text=_('Price per unit at time of order (captured, not referenced)')
+        verbose_name=_("Unit price"),
+        help_text=_("Price per unit at time of order (captured, not referenced)"),
     )
 
     total_price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name=_('Total price'),
-        help_text=_('Total price (unit_price * quantity + modifier costs)')
+        verbose_name=_("Total price"),
+        help_text=_("Total price (unit_price * quantity + modifier costs)"),
     )
 
     currency = models.CharField(
         max_length=3,
-        default='TRY',
-        verbose_name=_('Currency'),
-        help_text=_('Currency code (ISO 4217)')
+        default="TRY",
+        verbose_name=_("Currency"),
+        help_text=_("Currency code (ISO 4217)"),
     )
 
     # Status
@@ -2242,68 +2307,68 @@ class OrderItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=OrderItemStatus.choices,
         default=OrderItemStatus.PENDING,
         db_index=True,
-        verbose_name=_('Status'),
-        help_text=_('Current item status')
+        verbose_name=_("Status"),
+        help_text=_("Current item status"),
     )
 
     # Modifiers snapshot (stored at order time)
     modifiers = models.JSONField(
         default=list,
         blank=True,
-        verbose_name=_('Modifiers'),
-        help_text=_('JSON snapshot of selected modifiers with prices at order time')
+        verbose_name=_("Modifiers"),
+        help_text=_("JSON snapshot of selected modifiers with prices at order time"),
     )
 
     # Notes and instructions
     notes = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Notes'),
-        help_text=_('Customer notes/special instructions for this item')
+        verbose_name=_("Notes"),
+        help_text=_("Customer notes/special instructions for this item"),
     )
 
     # Gift flag
     is_gift = models.BooleanField(
         default=False,
-        verbose_name=_('Is gift'),
-        help_text=_('Whether this item is a complimentary gift (zero charge)')
+        verbose_name=_("Is gift"),
+        help_text=_("Whether this item is a complimentary gift (zero charge)"),
     )
 
     # Workflow timestamps
     prepared_at = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name=_('Prepared at'),
-        help_text=_('Timestamp when item preparation completed')
+        verbose_name=_("Prepared at"),
+        help_text=_("Timestamp when item preparation completed"),
     )
 
     delivered_at = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name=_('Delivered at'),
-        help_text=_('Timestamp when item was delivered to customer')
+        verbose_name=_("Delivered at"),
+        help_text=_("Timestamp when item was delivered to customer"),
     )
 
     cancelled_at = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name=_('Cancelled at'),
-        help_text=_('Timestamp when item was cancelled')
+        verbose_name=_("Cancelled at"),
+        help_text=_("Timestamp when item was cancelled"),
     )
 
     cancel_reason = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Cancel reason'),
-        help_text=_('Reason for item cancellation')
+        verbose_name=_("Cancel reason"),
+        help_text=_("Reason for item cancellation"),
     )
 
     # Additional metadata
     metadata = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Metadata'),
-        help_text=_('Additional item data (JSON)')
+        verbose_name=_("Metadata"),
+        help_text=_("Additional item data (JSON)"),
     )
 
     # Managers
@@ -2311,23 +2376,25 @@ class OrderItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'order_items'
-        verbose_name = _('Order Item')
-        verbose_name_plural = _('Order Items')
-        ordering = ['created_at']
+        db_table = "order_items"
+        verbose_name = _("Order Item")
+        verbose_name_plural = _("Order Items")
+        ordering = ["created_at"]
         indexes = [
-            models.Index(fields=['order', 'status'], name='orderitem_order_status_idx'),
-            models.Index(fields=['order', 'deleted_at'], name='orderitem_order_deleted_idx'),
-            models.Index(fields=['product'], name='orderitem_product_idx'),
-            models.Index(fields=['status'], name='orderitem_status_idx'),
+            models.Index(fields=["order", "status"], name="orderitem_order_status_idx"),
+            models.Index(
+                fields=["order", "deleted_at"], name="orderitem_order_deleted_idx"
+            ),
+            models.Index(fields=["product"], name="orderitem_product_idx"),
+            models.Index(fields=["status"], name="orderitem_status_idx"),
         ]
 
     def __str__(self) -> str:
-        product_name = self.product.name if self.product else _('Unknown Product')
+        product_name = self.product.name if self.product else _("Unknown Product")
         return f"{self.quantity}x {product_name}"
 
     def __repr__(self) -> str:
-        product_name = self.product.name if self.product else 'Unknown'
+        product_name = self.product.name if self.product else "Unknown"
         return f"<OrderItem(id={self.id}, product='{product_name}', qty={self.quantity}, status={self.status})>"
 
     @property
@@ -2370,14 +2437,14 @@ class OrderItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """Get the product name, handling deleted products."""
         if self.product:
             return self.product.name
-        return self.metadata.get('product_name', _('Unknown Product'))
+        return self.metadata.get("product_name", _("Unknown Product"))
 
     @property
     def variant_name(self) -> str | None:
         """Get the variant name if applicable."""
         if self.variant:
             return self.variant.name
-        return self.metadata.get('variant_name')
+        return self.metadata.get("variant_name")
 
     @property
     def display_name(self) -> str:
@@ -2391,10 +2458,10 @@ class OrderItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def formatted_unit_price(self) -> str:
         """Return formatted unit price with currency symbol."""
         currency_symbols = {
-            'TRY': '₺',
-            'USD': '$',
-            'EUR': '€',
-            'GBP': '£',
+            "TRY": "₺",
+            "USD": "$",
+            "EUR": "€",
+            "GBP": "£",
         }
         symbol = currency_symbols.get(self.currency, self.currency)
         return f"{symbol}{self.unit_price:,.2f}"
@@ -2403,10 +2470,10 @@ class OrderItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def formatted_total_price(self) -> str:
         """Return formatted total price with currency symbol."""
         currency_symbols = {
-            'TRY': '₺',
-            'USD': '$',
-            'EUR': '€',
-            'GBP': '£',
+            "TRY": "₺",
+            "USD": "$",
+            "EUR": "€",
+            "GBP": "£",
         }
         symbol = currency_symbols.get(self.currency, self.currency)
         return f"{symbol}{self.total_price:,.2f}"
@@ -2415,10 +2482,11 @@ class OrderItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def modifier_total(self):
         """Calculate total cost of all modifiers."""
         from decimal import Decimal
-        total = Decimal('0')
+
+        total = Decimal("0")
         for modifier in self.modifiers:
-            price = modifier.get('price', 0)
-            qty = modifier.get('quantity', 1)
+            price = modifier.get("price", 0)
+            qty = modifier.get("quantity", 1)
             total += Decimal(str(price)) * qty
         return total
 
@@ -2440,15 +2508,16 @@ class OrderItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
             save: Whether to save the item after calculation
         """
         from decimal import Decimal
+
         base_total = self.unit_price * self.quantity
         modifier_cost = self.modifier_total * self.quantity
         self.total_price = base_total + modifier_cost
 
         if self.is_gift:
-            self.total_price = Decimal('0')
+            self.total_price = Decimal("0")
 
         if save:
-            self.save(update_fields=['total_price', 'updated_at'])
+            self.save(update_fields=["total_price", "updated_at"])
 
     def set_status(self, status: str, timestamp_field: str = None) -> None:
         """
@@ -2461,10 +2530,12 @@ class OrderItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
         from django.utils import timezone
 
         if status not in OrderItemStatus.values:
-            raise ValueError(f"Invalid status: {status}. Must be one of {OrderItemStatus.values}")
+            raise ValueError(
+                f"Invalid status: {status}. Must be one of {OrderItemStatus.values}"
+            )
 
         self.status = status
-        update_fields = ['status', 'updated_at']
+        update_fields = ["status", "updated_at"]
 
         if timestamp_field:
             setattr(self, timestamp_field, timezone.now())
@@ -2475,20 +2546,22 @@ class OrderItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def start_preparation(self) -> None:
         """Start preparing the item (kitchen/bar begins work)."""
         if self.status != OrderItemStatus.PENDING:
-            raise ValueError(f"Cannot start preparation for item with status {self.status}")
+            raise ValueError(
+                f"Cannot start preparation for item with status {self.status}"
+            )
         self.set_status(OrderItemStatus.PREPARING)
 
     def mark_ready(self) -> None:
         """Mark the item as ready for delivery."""
         if self.status != OrderItemStatus.PREPARING:
             raise ValueError(f"Cannot mark ready item with status {self.status}")
-        self.set_status(OrderItemStatus.READY, 'prepared_at')
+        self.set_status(OrderItemStatus.READY, "prepared_at")
 
     def deliver(self) -> None:
         """Mark the item as delivered to customer."""
         if self.status != OrderItemStatus.READY:
             raise ValueError(f"Cannot deliver item with status {self.status}")
-        self.set_status(OrderItemStatus.DELIVERED, 'delivered_at')
+        self.set_status(OrderItemStatus.DELIVERED, "delivered_at")
 
     def cancel(self, reason: str = None) -> None:
         """
@@ -2506,7 +2579,9 @@ class OrderItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
         self.cancelled_at = timezone.now()
         if reason:
             self.cancel_reason = reason
-        self.save(update_fields=['status', 'cancelled_at', 'cancel_reason', 'updated_at'])
+        self.save(
+            update_fields=["status", "cancelled_at", "cancel_reason", "updated_at"]
+        )
 
     def add_modifier(self, name: str, price, quantity: int = 1) -> None:
         """
@@ -2518,15 +2593,16 @@ class OrderItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
             quantity: Quantity of this modifier
         """
         from decimal import Decimal
+
         modifier = {
-            'name': name,
-            'price': str(Decimal(str(price))),
-            'quantity': quantity
+            "name": name,
+            "price": str(Decimal(str(price))),
+            "quantity": quantity,
         }
         if not self.modifiers:
             self.modifiers = []
         self.modifiers.append(modifier)
-        self.save(update_fields=['modifiers', 'updated_at'])
+        self.save(update_fields=["modifiers", "updated_at"])
 
     def get_metadata(self, key: str, default=None):
         """
@@ -2550,7 +2626,7 @@ class OrderItem(TimeStampedMixin, SoftDeleteMixin, models.Model):
             value: The value to set
         """
         self.metadata[key] = value
-        self.save(update_fields=['metadata', 'updated_at'])
+        self.save(update_fields=["metadata", "updated_at"])
 
 
 class ServiceRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
@@ -2626,16 +2702,16 @@ class ServiceRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='service_requests',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this request belongs to')
+        related_name="service_requests",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this request belongs to"),
     )
 
     branch = models.ForeignKey(
@@ -2643,17 +2719,17 @@ class ServiceRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name='service_requests',
-        verbose_name=_('Branch'),
-        help_text=_('Branch this request belongs to (optional for single-location)')
+        related_name="service_requests",
+        verbose_name=_("Branch"),
+        help_text=_("Branch this request belongs to (optional for single-location)"),
     )
 
     table = models.ForeignKey(
         Table,
         on_delete=models.CASCADE,
-        related_name='service_requests',
-        verbose_name=_('Table'),
-        help_text=_('Table making this request')
+        related_name="service_requests",
+        verbose_name=_("Table"),
+        help_text=_("Table making this request"),
     )
 
     order = models.ForeignKey(
@@ -2661,19 +2737,19 @@ class ServiceRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='service_requests',
-        verbose_name=_('Order'),
-        help_text=_('Related order (if applicable)')
+        related_name="service_requests",
+        verbose_name=_("Order"),
+        help_text=_("Related order (if applicable)"),
     )
 
     customer = models.ForeignKey(
-        'customers.Customer',
+        "customers.Customer",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='service_requests',
-        verbose_name=_('Customer'),
-        help_text=_('Customer who made this request (if logged in)')
+        related_name="service_requests",
+        verbose_name=_("Customer"),
+        help_text=_("Customer who made this request (if logged in)"),
     )
 
     # Request type and status
@@ -2682,8 +2758,8 @@ class ServiceRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=ServiceRequestType.choices,
         default=ServiceRequestType.WAITER_CALL,
         db_index=True,
-        verbose_name=_('Type'),
-        help_text=_('Type of service request')
+        verbose_name=_("Type"),
+        help_text=_("Type of service request"),
     )
 
     status = models.CharField(
@@ -2691,78 +2767,78 @@ class ServiceRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=ServiceRequestStatus.choices,
         default=ServiceRequestStatus.PENDING,
         db_index=True,
-        verbose_name=_('Status'),
-        help_text=_('Current request status')
+        verbose_name=_("Status"),
+        help_text=_("Current request status"),
     )
 
     # Message and priority
     message = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Message'),
-        help_text=_('Optional customer message or notes')
+        verbose_name=_("Message"),
+        help_text=_("Optional customer message or notes"),
     )
 
     priority = models.PositiveSmallIntegerField(
         default=3,
-        verbose_name=_('Priority'),
-        help_text=_('Priority level 1-5 (1 is highest priority)')
+        verbose_name=_("Priority"),
+        help_text=_("Priority level 1-5 (1 is highest priority)"),
     )
 
     # Staff assignment
     assigned_to = models.ForeignKey(
-        'core.User',
+        "core.User",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='assigned_service_requests',
-        verbose_name=_('Assigned to'),
-        help_text=_('Staff member assigned to handle this request')
+        related_name="assigned_service_requests",
+        verbose_name=_("Assigned to"),
+        help_text=_("Staff member assigned to handle this request"),
     )
 
     # Workflow timestamps
     acknowledged_at = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name=_('Acknowledged at'),
-        help_text=_('Timestamp when request was acknowledged by staff')
+        verbose_name=_("Acknowledged at"),
+        help_text=_("Timestamp when request was acknowledged by staff"),
     )
 
     completed_at = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name=_('Completed at'),
-        help_text=_('Timestamp when request was completed')
+        verbose_name=_("Completed at"),
+        help_text=_("Timestamp when request was completed"),
     )
 
     cancelled_at = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name=_('Cancelled at'),
-        help_text=_('Timestamp when request was cancelled')
+        verbose_name=_("Cancelled at"),
+        help_text=_("Timestamp when request was cancelled"),
     )
 
     cancel_reason = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Cancel reason'),
-        help_text=_('Reason for request cancellation')
+        verbose_name=_("Cancel reason"),
+        help_text=_("Reason for request cancellation"),
     )
 
     # Performance metrics
     response_time_seconds = models.PositiveIntegerField(
         blank=True,
         null=True,
-        verbose_name=_('Response time'),
-        help_text=_('Time to first response in seconds')
+        verbose_name=_("Response time"),
+        help_text=_("Time to first response in seconds"),
     )
 
     # Additional metadata
     metadata = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Metadata'),
-        help_text=_('Additional request data (JSON)')
+        verbose_name=_("Metadata"),
+        help_text=_("Additional request data (JSON)"),
     )
 
     # Managers
@@ -2770,18 +2846,29 @@ class ServiceRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'service_requests'
-        verbose_name = _('Service Request')
-        verbose_name_plural = _('Service Requests')
-        ordering = ['priority', '-created_at']
+        db_table = "service_requests"
+        verbose_name = _("Service Request")
+        verbose_name_plural = _("Service Requests")
+        ordering = ["priority", "-created_at"]
         indexes = [
-            models.Index(fields=['organization', 'status'], name='svcreq_org_status_idx'),
-            models.Index(fields=['organization', 'type'], name='svcreq_org_type_idx'),
-            models.Index(fields=['organization', 'deleted_at'], name='svcreq_org_deleted_idx'),
-            models.Index(fields=['organization', 'branch'], name='svcreq_org_branch_idx'),
-            models.Index(fields=['table', 'status'], name='svcreq_table_status_idx'),
-            models.Index(fields=['assigned_to', 'status'], name='svcreq_assigned_status_idx'),
-            models.Index(fields=['organization', 'priority', 'status'], name='svcreq_org_priority_idx'),
+            models.Index(
+                fields=["organization", "status"], name="svcreq_org_status_idx"
+            ),
+            models.Index(fields=["organization", "type"], name="svcreq_org_type_idx"),
+            models.Index(
+                fields=["organization", "deleted_at"], name="svcreq_org_deleted_idx"
+            ),
+            models.Index(
+                fields=["organization", "branch"], name="svcreq_org_branch_idx"
+            ),
+            models.Index(fields=["table", "status"], name="svcreq_table_status_idx"),
+            models.Index(
+                fields=["assigned_to", "status"], name="svcreq_assigned_status_idx"
+            ),
+            models.Index(
+                fields=["organization", "priority", "status"],
+                name="svcreq_org_priority_idx",
+            ),
         ]
 
     def __str__(self) -> str:
@@ -2813,7 +2900,10 @@ class ServiceRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
     @property
     def is_active(self) -> bool:
         """Check if request is in an active state (not completed or cancelled)."""
-        return self.status not in [ServiceRequestStatus.COMPLETED, ServiceRequestStatus.CANCELLED]
+        return self.status not in [
+            ServiceRequestStatus.COMPLETED,
+            ServiceRequestStatus.CANCELLED,
+        ]
 
     @property
     def is_waiter_call(self) -> bool:
@@ -2855,7 +2945,10 @@ class ServiceRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         from django.utils import timezone
 
-        if self.status in [ServiceRequestStatus.COMPLETED, ServiceRequestStatus.CANCELLED]:
+        if self.status in [
+            ServiceRequestStatus.COMPLETED,
+            ServiceRequestStatus.CANCELLED,
+        ]:
             return None
 
         delta = timezone.now() - self.created_at
@@ -2866,16 +2959,16 @@ class ServiceRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """Get human-readable wait time."""
         seconds = self.wait_time_seconds
         if seconds is None:
-            return _('Completed')
+            return _("Completed")
 
         if seconds < 60:
-            return _('Just now')
+            return _("Just now")
         elif seconds < 3600:
             minutes = seconds // 60
-            return _('%(minutes)d min ago') % {'minutes': minutes}
+            return _("%(minutes)d min ago") % {"minutes": minutes}
         else:
             hours = seconds // 3600
-            return _('%(hours)d hr ago') % {'hours': hours}
+            return _("%(hours)d hr ago") % {"hours": hours}
 
     def set_status(self, status: str, timestamp_field: str = None) -> None:
         """
@@ -2888,10 +2981,12 @@ class ServiceRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
         from django.utils import timezone
 
         if status not in ServiceRequestStatus.values:
-            raise ValueError(f"Invalid status: {status}. Must be one of {ServiceRequestStatus.values}")
+            raise ValueError(
+                f"Invalid status: {status}. Must be one of {ServiceRequestStatus.values}"
+            )
 
         self.status = status
-        update_fields = ['status', 'updated_at']
+        update_fields = ["status", "updated_at"]
 
         if timestamp_field:
             setattr(self, timestamp_field, timezone.now())
@@ -2918,19 +3013,27 @@ class ServiceRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
         delta = self.acknowledged_at - self.created_at
         self.response_time_seconds = int(delta.total_seconds())
 
-        update_fields = ['status', 'acknowledged_at', 'response_time_seconds', 'updated_at']
+        update_fields = [
+            "status",
+            "acknowledged_at",
+            "response_time_seconds",
+            "updated_at",
+        ]
 
         if user:
             self.assigned_to = user
-            update_fields.append('assigned_to')
+            update_fields.append("assigned_to")
 
         self.save(update_fields=update_fields)
 
     def complete(self) -> None:
         """Complete the request (fulfilled)."""
-        if self.status not in [ServiceRequestStatus.PENDING, ServiceRequestStatus.IN_PROGRESS]:
+        if self.status not in [
+            ServiceRequestStatus.PENDING,
+            ServiceRequestStatus.IN_PROGRESS,
+        ]:
             raise ValueError(f"Cannot complete request with status {self.status}")
-        self.set_status(ServiceRequestStatus.COMPLETED, 'completed_at')
+        self.set_status(ServiceRequestStatus.COMPLETED, "completed_at")
 
     def cancel(self, reason: str = None) -> None:
         """
@@ -2941,14 +3044,19 @@ class ServiceRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         from django.utils import timezone
 
-        if self.status in [ServiceRequestStatus.COMPLETED, ServiceRequestStatus.CANCELLED]:
+        if self.status in [
+            ServiceRequestStatus.COMPLETED,
+            ServiceRequestStatus.CANCELLED,
+        ]:
             raise ValueError(f"Cannot cancel request with status {self.status}")
 
         self.status = ServiceRequestStatus.CANCELLED
         self.cancelled_at = timezone.now()
         if reason:
             self.cancel_reason = reason
-        self.save(update_fields=['status', 'cancelled_at', 'cancel_reason', 'updated_at'])
+        self.save(
+            update_fields=["status", "cancelled_at", "cancel_reason", "updated_at"]
+        )
 
     def assign_to(self, user) -> None:
         """
@@ -2958,7 +3066,7 @@ class ServiceRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
             user: User to assign the request to
         """
         self.assigned_to = user
-        self.save(update_fields=['assigned_to', 'updated_at'])
+        self.save(update_fields=["assigned_to", "updated_at"])
 
     def set_priority(self, priority: int) -> None:
         """
@@ -2973,7 +3081,7 @@ class ServiceRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
         if not 1 <= priority <= 5:
             raise ValueError("Priority must be between 1 and 5")
         self.priority = priority
-        self.save(update_fields=['priority', 'updated_at'])
+        self.save(update_fields=["priority", "updated_at"])
 
     def get_metadata(self, key: str, default=None):
         """
@@ -2997,7 +3105,7 @@ class ServiceRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
             value: The value to set
         """
         self.metadata[key] = value
-        self.save(update_fields=['metadata', 'updated_at'])
+        self.save(update_fields=["metadata", "updated_at"])
 
 
 class Discount(TimeStampedMixin, SoftDeleteMixin, models.Model):
@@ -3028,73 +3136,73 @@ class Discount(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='discounts',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this discount belongs to')
+        related_name="discounts",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this discount belongs to"),
     )
 
     order = models.ForeignKey(
-        'orders.Order',
+        "orders.Order",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name='discounts',
-        verbose_name=_('Order'),
-        help_text=_('Order this discount is applied to')
+        related_name="discounts",
+        verbose_name=_("Order"),
+        help_text=_("Order this discount is applied to"),
     )
 
     discount_type = models.CharField(
         max_length=20,
         choices=DiscountType.choices,
         db_index=True,
-        verbose_name=_('Discount type'),
-        help_text=_('Type of discount applied')
+        verbose_name=_("Discount type"),
+        help_text=_("Type of discount applied"),
     )
 
     value = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name=_('Value'),
-        help_text=_('Discount value (percentage or fixed amount)')
+        verbose_name=_("Value"),
+        help_text=_("Discount value (percentage or fixed amount)"),
     )
 
     applied_amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name=_('Applied amount'),
-        help_text=_('Actual monetary amount applied to the order')
+        verbose_name=_("Applied amount"),
+        help_text=_("Actual monetary amount applied to the order"),
     )
 
     code = models.CharField(
         max_length=50,
         null=True,
         blank=True,
-        verbose_name=_('Code'),
-        help_text=_('Coupon or promo code used')
+        verbose_name=_("Code"),
+        help_text=_("Coupon or promo code used"),
     )
 
     reason = models.TextField(
         null=True,
         blank=True,
-        verbose_name=_('Reason'),
-        help_text=_('Reason for applying the discount')
+        verbose_name=_("Reason"),
+        help_text=_("Reason for applying the discount"),
     )
 
     applied_by = models.ForeignKey(
-        'core.User',
+        "core.User",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='applied_discounts',
-        verbose_name=_('Applied by'),
-        help_text=_('Staff member who applied this discount')
+        related_name="applied_discounts",
+        verbose_name=_("Applied by"),
+        help_text=_("Staff member who applied this discount"),
     )
 
     # Managers
@@ -3102,15 +3210,19 @@ class Discount(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'order_discounts'
-        verbose_name = _('Discount')
-        verbose_name_plural = _('Discounts')
-        ordering = ['-created_at']
+        db_table = "order_discounts"
+        verbose_name = _("Discount")
+        verbose_name_plural = _("Discounts")
+        ordering = ["-created_at"]
         indexes = [
-            models.Index(fields=['organization', 'discount_type'], name='disc_org_type_idx'),
-            models.Index(fields=['organization', 'deleted_at'], name='disc_org_deleted_idx'),
-            models.Index(fields=['organization', 'order'], name='disc_org_order_idx'),
-            models.Index(fields=['organization', 'code'], name='disc_org_code_idx'),
+            models.Index(
+                fields=["organization", "discount_type"], name="disc_org_type_idx"
+            ),
+            models.Index(
+                fields=["organization", "deleted_at"], name="disc_org_deleted_idx"
+            ),
+            models.Index(fields=["organization", "order"], name="disc_org_order_idx"),
+            models.Index(fields=["organization", "code"], name="disc_org_code_idx"),
         ]
 
     def __str__(self) -> str:
@@ -3153,54 +3265,53 @@ class Refund(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='refunds',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this refund belongs to')
+        related_name="refunds",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this refund belongs to"),
     )
 
     order = models.ForeignKey(
-        'orders.Order',
+        "orders.Order",
         on_delete=models.CASCADE,
-        related_name='refunds',
-        verbose_name=_('Order'),
-        help_text=_('Order being refunded')
+        related_name="refunds",
+        verbose_name=_("Order"),
+        help_text=_("Order being refunded"),
     )
 
     order_item = models.ForeignKey(
-        'orders.OrderItem',
+        "orders.OrderItem",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name='refunds',
-        verbose_name=_('Order item'),
-        help_text=_('Specific order item being refunded (for item-level refunds)')
+        related_name="refunds",
+        verbose_name=_("Order item"),
+        help_text=_("Specific order item being refunded (for item-level refunds)"),
     )
 
     refund_type = models.CharField(
         max_length=20,
         choices=RefundType.choices,
         db_index=True,
-        verbose_name=_('Refund type'),
-        help_text=_('Type of refund (full, partial, or item)')
+        verbose_name=_("Refund type"),
+        help_text=_("Type of refund (full, partial, or item)"),
     )
 
     amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name=_('Amount'),
-        help_text=_('Refund monetary amount')
+        verbose_name=_("Amount"),
+        help_text=_("Refund monetary amount"),
     )
 
     reason = models.TextField(
-        verbose_name=_('Reason'),
-        help_text=_('Reason for the refund')
+        verbose_name=_("Reason"), help_text=_("Reason for the refund")
     )
 
     status = models.CharField(
@@ -3208,25 +3319,25 @@ class Refund(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=RefundStatus.choices,
         default=RefundStatus.PENDING,
         db_index=True,
-        verbose_name=_('Status'),
-        help_text=_('Current refund status')
+        verbose_name=_("Status"),
+        help_text=_("Current refund status"),
     )
 
     processed_by = models.ForeignKey(
-        'core.User',
+        "core.User",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='processed_refunds',
-        verbose_name=_('Processed by'),
-        help_text=_('Staff member who processed this refund')
+        related_name="processed_refunds",
+        verbose_name=_("Processed by"),
+        help_text=_("Staff member who processed this refund"),
     )
 
     processed_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Processed at'),
-        help_text=_('Timestamp when refund was processed')
+        verbose_name=_("Processed at"),
+        help_text=_("Timestamp when refund was processed"),
     )
 
     # Managers
@@ -3234,19 +3345,27 @@ class Refund(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'order_refunds'
-        verbose_name = _('Refund')
-        verbose_name_plural = _('Refunds')
-        ordering = ['-created_at']
+        db_table = "order_refunds"
+        verbose_name = _("Refund")
+        verbose_name_plural = _("Refunds")
+        ordering = ["-created_at"]
         indexes = [
-            models.Index(fields=['organization', 'status'], name='refund_org_status_idx'),
-            models.Index(fields=['organization', 'deleted_at'], name='refund_org_deleted_idx'),
-            models.Index(fields=['organization', 'order'], name='refund_org_order_idx'),
-            models.Index(fields=['organization', 'refund_type'], name='refund_org_type_idx'),
+            models.Index(
+                fields=["organization", "status"], name="refund_org_status_idx"
+            ),
+            models.Index(
+                fields=["organization", "deleted_at"], name="refund_org_deleted_idx"
+            ),
+            models.Index(fields=["organization", "order"], name="refund_org_order_idx"),
+            models.Index(
+                fields=["organization", "refund_type"], name="refund_org_type_idx"
+            ),
         ]
 
     def __str__(self) -> str:
-        return f"Refund {self.get_refund_type_display()} - {self.amount} ({self.status})"
+        return (
+            f"Refund {self.get_refund_type_display()} - {self.amount} ({self.status})"
+        )
 
     def __repr__(self) -> str:
         return f"<Refund(id={self.id}, type={self.refund_type}, amount={self.amount}, status={self.status})>"
@@ -3289,79 +3408,76 @@ class Reservation(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='reservations',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this reservation belongs to')
+        related_name="reservations",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this reservation belongs to"),
     )
 
     customer = models.ForeignKey(
-        'customers.Customer',
+        "customers.Customer",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='reservations',
-        verbose_name=_('Customer'),
-        help_text=_('Registered customer who made this reservation')
+        related_name="reservations",
+        verbose_name=_("Customer"),
+        help_text=_("Registered customer who made this reservation"),
     )
 
     table = models.ForeignKey(
-        'orders.Table',
+        "orders.Table",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='reservations',
-        verbose_name=_('Table'),
-        help_text=_('Table assigned to this reservation')
+        related_name="reservations",
+        verbose_name=_("Table"),
+        help_text=_("Table assigned to this reservation"),
     )
 
     zone = models.ForeignKey(
-        'orders.Zone',
+        "orders.Zone",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='reservations',
-        verbose_name=_('Zone'),
-        help_text=_('Preferred zone/section for this reservation')
+        related_name="reservations",
+        verbose_name=_("Zone"),
+        help_text=_("Preferred zone/section for this reservation"),
     )
 
     guest_name = models.CharField(
         max_length=200,
-        verbose_name=_('Guest name'),
-        help_text=_('Name of the guest making the reservation')
+        verbose_name=_("Guest name"),
+        help_text=_("Name of the guest making the reservation"),
     )
 
     guest_phone = models.CharField(
         max_length=20,
-        verbose_name=_('Guest phone'),
-        help_text=_('Phone number of the guest')
+        verbose_name=_("Guest phone"),
+        help_text=_("Phone number of the guest"),
     )
 
     guest_count = models.PositiveIntegerField(
-        verbose_name=_('Guest count'),
-        help_text=_('Number of guests expected')
+        verbose_name=_("Guest count"), help_text=_("Number of guests expected")
     )
 
     reservation_date = models.DateField(
-        verbose_name=_('Reservation date'),
-        help_text=_('Date of the reservation')
+        verbose_name=_("Reservation date"), help_text=_("Date of the reservation")
     )
 
     reservation_time = models.TimeField(
-        verbose_name=_('Reservation time'),
-        help_text=_('Time of the reservation')
+        verbose_name=_("Reservation time"), help_text=_("Time of the reservation")
     )
 
     duration_minutes = models.PositiveIntegerField(
         default=90,
-        verbose_name=_('Duration (minutes)'),
-        help_text=_('Expected duration of the reservation in minutes')
+        verbose_name=_("Duration (minutes)"),
+        help_text=_("Expected duration of the reservation in minutes"),
     )
 
     status = models.CharField(
@@ -3369,15 +3485,15 @@ class Reservation(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=ReservationStatus.choices,
         default=ReservationStatus.PENDING,
         db_index=True,
-        verbose_name=_('Status'),
-        help_text=_('Current reservation status')
+        verbose_name=_("Status"),
+        help_text=_("Current reservation status"),
     )
 
     notes = models.TextField(
         null=True,
         blank=True,
-        verbose_name=_('Notes'),
-        help_text=_('Additional notes about the reservation')
+        verbose_name=_("Notes"),
+        help_text=_("Additional notes about the reservation"),
     )
 
     # Managers
@@ -3385,18 +3501,27 @@ class Reservation(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'order_reservations'
-        verbose_name = _('Reservation')
-        verbose_name_plural = _('Reservations')
-        ordering = ['reservation_date', 'reservation_time']
+        db_table = "order_reservations"
+        verbose_name = _("Reservation")
+        verbose_name_plural = _("Reservations")
+        ordering = ["reservation_date", "reservation_time"]
         indexes = [
-            models.Index(fields=['organization', 'status'], name='resv_org_status_idx'),
-            models.Index(fields=['organization', 'deleted_at'], name='resv_org_deleted_idx'),
-            models.Index(fields=['organization', 'reservation_date'], name='resv_org_date_idx'),
-            models.Index(fields=['organization', 'reservation_date', 'status'], name='resv_org_date_status_idx'),
-            models.Index(fields=['organization', 'table'], name='resv_org_table_idx'),
-            models.Index(fields=['organization', 'zone'], name='resv_org_zone_idx'),
-            models.Index(fields=['organization', 'guest_phone'], name='resv_org_phone_idx'),
+            models.Index(fields=["organization", "status"], name="resv_org_status_idx"),
+            models.Index(
+                fields=["organization", "deleted_at"], name="resv_org_deleted_idx"
+            ),
+            models.Index(
+                fields=["organization", "reservation_date"], name="resv_org_date_idx"
+            ),
+            models.Index(
+                fields=["organization", "reservation_date", "status"],
+                name="resv_org_date_status_idx",
+            ),
+            models.Index(fields=["organization", "table"], name="resv_org_table_idx"),
+            models.Index(fields=["organization", "zone"], name="resv_org_zone_idx"),
+            models.Index(
+                fields=["organization", "guest_phone"], name="resv_org_phone_idx"
+            ),
         ]
 
     def __str__(self) -> str:

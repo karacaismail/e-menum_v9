@@ -33,6 +33,7 @@ pytestmark = pytest.mark.django_db
 # HELPERS
 # =============================================================================
 
+
 def _create_test_logo_image(size=(100, 100), color="red"):
     """Create a small in-memory PNG image for logo testing."""
     img = Image.new("RGBA", size, color)
@@ -89,6 +90,7 @@ def _get_image_dimensions(buffer):
 # FIXTURES
 # =============================================================================
 
+
 @pytest.fixture
 def org(db):
     return OrganizationFactory(
@@ -140,6 +142,7 @@ def sample_url():
 # 1. BASIC QR IMAGE GENERATION
 # =============================================================================
 
+
 class TestGenerateQRImageBasic:
     """Test basic QR image generation with default parameters."""
 
@@ -159,6 +162,7 @@ class TestGenerateQRImageBasic:
 # =============================================================================
 # 2. CUSTOM SIZE QR IMAGE
 # =============================================================================
+
 
 class TestGenerateQRImageCustomSize:
     """Test QR image generation with various custom sizes."""
@@ -180,6 +184,7 @@ class TestGenerateQRImageCustomSize:
 # =============================================================================
 # 3. QR WITH LOGO (LOCAL FILE PATH)
 # =============================================================================
+
 
 class TestGenerateQRWithLogo:
     """Test QR code generation with a logo overlay from a local file."""
@@ -212,6 +217,7 @@ class TestGenerateQRWithLogo:
 # 4. QR WITH LOGO (URL - MOCKED DOWNLOAD)
 # =============================================================================
 
+
 class TestGenerateQRWithLogoURL:
     """Test QR with logo when the logo source is a URL (download mocked)."""
 
@@ -241,6 +247,7 @@ class TestGenerateQRWithLogoURL:
 # 5. SVG GENERATION
 # =============================================================================
 
+
 class TestGenerateQRSVG:
     """Test QR code generation in SVG format."""
 
@@ -257,6 +264,7 @@ class TestGenerateQRSVG:
 # =============================================================================
 # 6. JPEG GENERATION
 # =============================================================================
+
 
 class TestGenerateQRJPG:
     """Test QR code generation in JPEG format."""
@@ -277,6 +285,7 @@ class TestGenerateQRJPG:
 # 7. MULTI-FORMAT GENERATION
 # =============================================================================
 
+
 class TestGenerateQRMultiformat:
     """Test multi-format batch QR generation."""
 
@@ -296,9 +305,7 @@ class TestGenerateQRMultiformat:
             assert isinstance(result[fmt], dict)
 
             for sz in sizes:
-                assert sz in result[fmt], (
-                    f"Size {sz} missing for format '{fmt}'"
-                )
+                assert sz in result[fmt], f"Size {sz} missing for format '{fmt}'"
                 item = result[fmt][sz]
 
                 if fmt == "svg":
@@ -318,6 +325,7 @@ class TestGenerateQRMultiformat:
 # =============================================================================
 # 8-12. PRINT DESIGN GENERATION
 # =============================================================================
+
 
 class TestGeneratePrintDesign:
     """Test print-ready PDF design generation for various sizes."""
@@ -402,6 +410,7 @@ class TestGeneratePrintDesign:
 # 13. PRINT DESIGN WITH LOGO
 # =============================================================================
 
+
 class TestGeneratePrintDesignWithLogo:
     """Test that an organization logo is embedded in the print design."""
 
@@ -452,6 +461,7 @@ class TestGeneratePrintDesignWithLogo:
 # 14-17. DOWNLOAD QR IN VARIOUS FORMATS
 # =============================================================================
 
+
 class TestDownloadQR:
     """Test the download_qr convenience method for each format."""
 
@@ -494,14 +504,13 @@ class TestDownloadQR:
 # 18. DOWNLOAD PRINT DESIGN
 # =============================================================================
 
+
 class TestDownloadPrintDesign:
     """Test the download_print_design convenience method."""
 
     def test_download_print_design(self, menu_qr, org):
         """download_print_design should return a valid PDF for a QR code."""
-        result = QRGeneratorService.download_print_design(
-            menu_qr, design_size="A4"
-        )
+        result = QRGeneratorService.download_print_design(menu_qr, design_size="A4")
 
         assert isinstance(result, io.BytesIO)
         assert _is_valid_pdf(result)
@@ -523,6 +532,7 @@ class TestDownloadPrintDesign:
 # =============================================================================
 # 19. TARGET URL GENERATION
 # =============================================================================
+
 
 class TestGetTargetURL:
     """Test URL generation for different QR code types."""
@@ -566,6 +576,7 @@ class TestGetTargetURL:
 # =============================================================================
 # 20. GENERATE AND SAVE
 # =============================================================================
+
 
 class TestGenerateAndSave:
     """Test file saving and QRCode model update."""
@@ -637,6 +648,7 @@ class TestGenerateAndSave:
 # BULK GENERATION
 # =============================================================================
 
+
 class TestGenerateBulk:
     """Test bulk QR code generation."""
 
@@ -646,10 +658,7 @@ class TestGenerateBulk:
         settings.MEDIA_URL = "/media/"
         settings.SITE_URL = "https://e-menum.net"
 
-        qr_codes = [
-            QRCodeFactory(organization=org, type="MENU")
-            for _ in range(3)
-        ]
+        qr_codes = [QRCodeFactory(organization=org, type="MENU") for _ in range(3)]
 
         results = QRGeneratorService.generate_bulk(qr_codes, force=True)
 
@@ -666,6 +675,7 @@ class TestGenerateBulk:
 # =============================================================================
 # EDGE CASES
 # =============================================================================
+
 
 class TestEdgeCases:
     """Test edge cases and error handling."""

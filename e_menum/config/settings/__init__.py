@@ -24,8 +24,8 @@ Settings are imported via manage.py or WSGI/ASGI entry points.
 """
 
 # Version of the settings package
-__version__ = '1.0.0'
+__version__ = "1.0.0"
 
 # Default settings module hint (used by IDE tools)
 # Actual settings loading is done by Django based on DJANGO_SETTINGS_MODULE
-default_app_config = 'config.settings.development'
+default_app_config = "config.settings.development"

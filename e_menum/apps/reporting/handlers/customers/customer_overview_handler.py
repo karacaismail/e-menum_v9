@@ -40,7 +40,7 @@ def _parse_date(val) -> Optional[date]:
         return val
     if isinstance(val, datetime):
         return val.date()
-    return datetime.strptime(str(val), '%Y-%m-%d').date()
+    return datetime.strptime(str(val), "%Y-%m-%d").date()
 
 
 def _safe_percent_change(current: float, previous: float) -> Optional[float]:
@@ -49,7 +49,7 @@ def _safe_percent_change(current: float, previous: float) -> Optional[float]:
     return round(((current - previous) / previous) * 100, 2)
 
 
-@register_handler('RPT-CUS-001')
+@register_handler("RPT-CUS-001")
 class CustomerOverviewHandler(BaseReportHandler):
     """
     Customer overview report handler.
@@ -63,37 +63,38 @@ class CustomerOverviewHandler(BaseReportHandler):
         end_date: str - End date in YYYY-MM-DD format
     """
 
-    feature_key = 'RPT-CUS-001'
+    feature_key = "RPT-CUS-001"
 
     def get_required_permissions(self) -> List[str]:
-        return ['reporting.view', 'customers.view']
+        return ["reporting.view", "customers.view"]
 
     def get_default_parameters(self) -> dict:
         today = date.today()
         return {
-            'period': 'MONTHLY',
-            'start_date': (today - timedelta(days=30)).isoformat(),
-            'end_date': today.isoformat(),
+            "period": "MONTHLY",
+            "start_date": (today - timedelta(days=30)).isoformat(),
+            "end_date": today.isoformat(),
         }
 
     def validate_parameters(self, parameters: dict) -> dict:
         merged = {**self.get_default_parameters(), **parameters}
-        merged['start_date'] = _parse_date(merged['start_date'])
-        merged['end_date'] = _parse_date(merged['end_date'])
+        merged["start_date"] = _parse_date(merged["start_date"])
+        merged["end_date"] = _parse_date(merged["end_date"])
 
-        if merged['start_date'] > merged['end_date']:
+        if merged["start_date"] > merged["end_date"]:
             from shared.utils.exceptions import AppException
+
             raise AppException(
-                code='INVALID_DATE_RANGE',
-                message='start_date must be before or equal to end_date',
+                code="INVALID_DATE_RANGE",
+                message="start_date must be before or equal to end_date",
                 status_code=400,
             )
 
         return merged
 
     def generate(self, org_id: str, parameters: dict) -> dict:
-        start_date = parameters['start_date']
-        end_date = parameters['end_date']
+        start_date = parameters["start_date"]
+        end_date = parameters["end_date"]
 
         # ---- Customer base metrics ----
         all_customers_qs = Customer.objects.filter(
@@ -112,33 +113,35 @@ class CustomerOverviewHandler(BaseReportHandler):
 
         # Returning customers: those who placed >1 order in the period
         returning_customers = self._count_returning_customers(
-            org_id, start_date, end_date,
+            org_id,
+            start_date,
+            end_date,
         )
 
         # ---- Lifetime value statistics ----
         ltv_stats = all_customers_qs.aggregate(
-            avg_lifetime_value=Avg('lifetime_value'),
-            avg_total_spent=Avg('total_spent'),
-            avg_total_orders=Avg('total_orders'),
+            avg_lifetime_value=Avg("lifetime_value"),
+            avg_total_spent=Avg("total_spent"),
+            avg_total_orders=Avg("total_orders"),
         )
 
         # ---- RFM Segment distribution ----
         segment_distribution = list(
-            all_customers_qs
-            .exclude(rfm_segment__isnull=True)
-            .exclude(rfm_segment='')
-            .values('rfm_segment')
-            .annotate(count=Count('id'))
-            .order_by('-count')
+            all_customers_qs.exclude(rfm_segment__isnull=True)
+            .exclude(rfm_segment="")
+            .values("rfm_segment")
+            .annotate(count=Count("id"))
+            .order_by("-count")
         )
 
-        segment_total = sum(s['count'] for s in segment_distribution)
+        segment_total = sum(s["count"] for s in segment_distribution)
         segments = [
             {
-                'segment': row['rfm_segment'],
-                'count': row['count'],
-                'percent': round(
-                    (row['count'] / segment_total * 100) if segment_total > 0 else 0, 2,
+                "segment": row["rfm_segment"],
+                "count": row["count"],
+                "percent": round(
+                    (row["count"] / segment_total * 100) if segment_total > 0 else 0,
+                    2,
                 ),
             }
             for row in segment_distribution
@@ -149,11 +152,10 @@ class CustomerOverviewHandler(BaseReportHandler):
 
         # ---- New customers daily trend ----
         new_customer_trend = list(
-            new_customers_qs
-            .annotate(dt=TruncDate('created_at'))
-            .values('dt')
-            .annotate(count=Count('id'))
-            .order_by('dt')
+            new_customers_qs.annotate(dt=TruncDate("created_at"))
+            .values("dt")
+            .annotate(count=Count("id"))
+            .order_by("dt")
         )
 
         # ---- Previous period comparison ----
@@ -169,7 +171,9 @@ class CustomerOverviewHandler(BaseReportHandler):
         ).count()
 
         prev_returning = self._count_returning_customers(
-            org_id, prev_start, prev_end,
+            org_id,
+            prev_start,
+            prev_end,
         )
 
         # ---- Try CustomerMetric for enriched data ----
@@ -179,7 +183,7 @@ class CustomerOverviewHandler(BaseReportHandler):
                 deleted_at__isnull=True,
                 date__lte=end_date,
             )
-            .order_by('-date')
+            .order_by("-date")
             .first()
         )
 
@@ -187,7 +191,9 @@ class CustomerOverviewHandler(BaseReportHandler):
         churn_count = 0
         avg_visit_frequency = None
         if latest_metric:
-            nps_score = _to_float(latest_metric.nps_score) if latest_metric.nps_score else None
+            nps_score = (
+                _to_float(latest_metric.nps_score) if latest_metric.nps_score else None
+            )
             churn_count = latest_metric.churn_count or 0
             avg_visit_frequency = (
                 _to_float(latest_metric.avg_visit_frequency)
@@ -196,42 +202,44 @@ class CustomerOverviewHandler(BaseReportHandler):
             )
 
         return {
-            'period': {
-                'type': parameters['period'],
-                'start_date': start_date.isoformat(),
-                'end_date': end_date.isoformat(),
+            "period": {
+                "type": parameters["period"],
+                "start_date": start_date.isoformat(),
+                "end_date": end_date.isoformat(),
             },
-            'metrics': {
-                'total_customers': total_customers,
-                'new_customers': new_customers,
-                'returning_customers': returning_customers,
-                'avg_lifetime_value': _to_float(ltv_stats['avg_lifetime_value']),
-                'avg_total_spent': _to_float(ltv_stats['avg_total_spent']),
-                'avg_orders_per_customer': _to_float(ltv_stats['avg_total_orders']),
-                'nps_score': nps_score,
-                'churn_count': churn_count,
-                'avg_visit_frequency': avg_visit_frequency,
+            "metrics": {
+                "total_customers": total_customers,
+                "new_customers": new_customers,
+                "returning_customers": returning_customers,
+                "avg_lifetime_value": _to_float(ltv_stats["avg_lifetime_value"]),
+                "avg_total_spent": _to_float(ltv_stats["avg_total_spent"]),
+                "avg_orders_per_customer": _to_float(ltv_stats["avg_total_orders"]),
+                "nps_score": nps_score,
+                "churn_count": churn_count,
+                "avg_visit_frequency": avg_visit_frequency,
             },
-            'comparison': {
-                'previous_period': {
-                    'start_date': prev_start.isoformat(),
-                    'end_date': prev_end.isoformat(),
+            "comparison": {
+                "previous_period": {
+                    "start_date": prev_start.isoformat(),
+                    "end_date": prev_end.isoformat(),
                 },
-                'new_customers': prev_new,
-                'returning_customers': prev_returning,
-                'new_customers_change_percent': _safe_percent_change(
-                    float(new_customers), float(prev_new),
+                "new_customers": prev_new,
+                "returning_customers": prev_returning,
+                "new_customers_change_percent": _safe_percent_change(
+                    float(new_customers),
+                    float(prev_new),
                 ),
-                'returning_customers_change_percent': _safe_percent_change(
-                    float(returning_customers), float(prev_returning),
+                "returning_customers_change_percent": _safe_percent_change(
+                    float(returning_customers),
+                    float(prev_returning),
                 ),
             },
-            'segment_distribution': segments,
-            'top_customers': top_customers,
-            'new_customer_trend': [
+            "segment_distribution": segments,
+            "top_customers": top_customers,
+            "new_customer_trend": [
                 {
-                    'date': row['dt'].isoformat() if row['dt'] else None,
-                    'count': row['count'],
+                    "date": row["dt"].isoformat() if row["dt"] else None,
+                    "count": row["count"],
                 }
                 for row in new_customer_trend
             ],
@@ -242,7 +250,10 @@ class CustomerOverviewHandler(BaseReportHandler):
     # ------------------------------------------------------------------
 
     def _count_returning_customers(
-        self, org_id: str, start: date, end: date,
+        self,
+        org_id: str,
+        start: date,
+        end: date,
     ) -> int:
         """
         Count customers who placed more than one order in the given period.
@@ -258,14 +269,18 @@ class CustomerOverviewHandler(BaseReportHandler):
                 created_at__date__gte=start,
                 created_at__date__lte=end,
             )
-            .values('customer')
-            .annotate(order_count=DjangoCount('id'))
+            .values("customer")
+            .annotate(order_count=DjangoCount("id"))
             .filter(order_count__gt=1)
         )
         return returning.count()
 
     def _get_top_customers(
-        self, org_id: str, start: date, end: date, limit: int = 10,
+        self,
+        org_id: str,
+        start: date,
+        end: date,
+        limit: int = 10,
     ) -> List[dict]:
         """
         Return top customers by total spending in the period.
@@ -281,28 +296,28 @@ class CustomerOverviewHandler(BaseReportHandler):
                 created_at__date__lte=end,
             )
             .values(
-                customer_id=F('customer__id'),
-                customer_name=F('customer__name'),
-                customer_email=F('customer__email'),
-                rfm=F('customer__rfm_segment'),
+                customer_id=F("customer__id"),
+                customer_name=F("customer__name"),
+                customer_email=F("customer__email"),
+                rfm=F("customer__rfm_segment"),
             )
             .annotate(
-                total_spent=Sum('total_amount'),
-                order_count=Count('id'),
-                avg_order_value=Avg('total_amount'),
+                total_spent=Sum("total_amount"),
+                order_count=Count("id"),
+                avg_order_value=Avg("total_amount"),
             )
-            .order_by('-total_spent')[:limit]
+            .order_by("-total_spent")[:limit]
         )
 
         return [
             {
-                'customer_id': str(row['customer_id']),
-                'name': row['customer_name'] or 'Unknown',
-                'email': row['customer_email'],
-                'rfm_segment': row['rfm'],
-                'total_spent': _to_float(row['total_spent']),
-                'order_count': row['order_count'],
-                'avg_order_value': _to_float(row['avg_order_value']),
+                "customer_id": str(row["customer_id"]),
+                "name": row["customer_name"] or "Unknown",
+                "email": row["customer_email"],
+                "rfm_segment": row["rfm"],
+                "total_spent": _to_float(row["total_spent"]),
+                "order_count": row["order_count"],
+                "avg_order_value": _to_float(row["avg_order_value"]),
             }
             for row in rows
         ]

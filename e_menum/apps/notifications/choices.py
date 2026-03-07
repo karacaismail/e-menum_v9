@@ -30,13 +30,14 @@ class NotificationType(models.TextChoices):
     - SECURITY: Security alerts (login attempts, password changes)
     - GENERAL: General notifications that don't fit other categories
     """
-    ORDER = 'ORDER', 'Order'
-    SYSTEM = 'SYSTEM', 'System'
-    PROMOTION = 'PROMOTION', 'Promotion'
-    PAYMENT = 'PAYMENT', 'Payment'
-    FEEDBACK = 'FEEDBACK', 'Feedback'
-    SECURITY = 'SECURITY', 'Security'
-    GENERAL = 'GENERAL', 'General'
+
+    ORDER = "ORDER", "Order"
+    SYSTEM = "SYSTEM", "System"
+    PROMOTION = "PROMOTION", "Promotion"
+    PAYMENT = "PAYMENT", "Payment"
+    FEEDBACK = "FEEDBACK", "Feedback"
+    SECURITY = "SECURITY", "Security"
+    GENERAL = "GENERAL", "General"
 
 
 class NotificationStatus(models.TextChoices):
@@ -53,12 +54,13 @@ class NotificationStatus(models.TextChoices):
     - ARCHIVED: Notification has been archived by user
     - FAILED: Notification delivery failed
     """
-    PENDING = 'PENDING', 'Pending'
-    SENT = 'SENT', 'Sent'
-    DELIVERED = 'DELIVERED', 'Delivered'
-    READ = 'READ', 'Read'
-    ARCHIVED = 'ARCHIVED', 'Archived'
-    FAILED = 'FAILED', 'Failed'
+
+    PENDING = "PENDING", "Pending"
+    SENT = "SENT", "Sent"
+    DELIVERED = "DELIVERED", "Delivered"
+    READ = "READ", "Read"
+    ARCHIVED = "ARCHIVED", "Archived"
+    FAILED = "FAILED", "Failed"
 
 
 class NotificationPriority(models.TextChoices):
@@ -70,10 +72,11 @@ class NotificationPriority(models.TextChoices):
     - HIGH: Important notifications requiring attention
     - URGENT: Critical notifications requiring immediate attention
     """
-    LOW = 'LOW', 'Low'
-    NORMAL = 'NORMAL', 'Normal'
-    HIGH = 'HIGH', 'High'
-    URGENT = 'URGENT', 'Urgent'
+
+    LOW = "LOW", "Low"
+    NORMAL = "NORMAL", "Normal"
+    HIGH = "HIGH", "High"
+    URGENT = "URGENT", "Urgent"
 
 
 class NotificationChannel(models.TextChoices):
@@ -85,7 +88,8 @@ class NotificationChannel(models.TextChoices):
     - EMAIL: Email notifications
     - SMS: SMS text message notifications
     """
-    IN_APP = 'IN_APP', 'In-App'
-    PUSH = 'PUSH', 'Push'
-    EMAIL = 'EMAIL', 'Email'
-    SMS = 'SMS', 'SMS'
+
+    IN_APP = "IN_APP", "In-App"
+    PUSH = "PUSH", "Push"
+    EMAIL = "EMAIL", "Email"
+    SMS = "SMS", "SMS"

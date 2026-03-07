@@ -27,9 +27,10 @@ class OrganizationStatus(models.TextChoices):
     - SUSPENDED: Organization is temporarily disabled (unpaid bills, violation, etc.)
     - DELETED: Organization is soft-deleted (retained for audit, not operational)
     """
-    ACTIVE = 'ACTIVE', 'Active'
-    SUSPENDED = 'SUSPENDED', 'Suspended'
-    DELETED = 'DELETED', 'Deleted'
+
+    ACTIVE = "ACTIVE", "Active"
+    SUSPENDED = "SUSPENDED", "Suspended"
+    DELETED = "DELETED", "Deleted"
 
 
 class UserStatus(models.TextChoices):
@@ -40,9 +41,10 @@ class UserStatus(models.TextChoices):
     - INVITED: User has been invited but hasn't completed registration
     - SUSPENDED: User account is temporarily disabled
     """
-    ACTIVE = 'ACTIVE', 'Active'
-    INVITED = 'INVITED', 'Invited'
-    SUSPENDED = 'SUSPENDED', 'Suspended'
+
+    ACTIVE = "ACTIVE", "Active"
+    INVITED = "INVITED", "Invited"
+    SUSPENDED = "SUSPENDED", "Suspended"
 
 
 class BranchStatus(models.TextChoices):
@@ -53,9 +55,10 @@ class BranchStatus(models.TextChoices):
     - INACTIVE: Branch is temporarily closed (seasonal, renovation, etc.)
     - SUSPENDED: Branch is suspended by the platform (violation, unpaid bills)
     """
-    ACTIVE = 'ACTIVE', 'Active'
-    INACTIVE = 'INACTIVE', 'Inactive'
-    SUSPENDED = 'SUSPENDED', 'Suspended'
+
+    ACTIVE = "ACTIVE", "Active"
+    INACTIVE = "INACTIVE", "Inactive"
+    SUSPENDED = "SUSPENDED", "Suspended"
 
 
 class RoleScope(models.TextChoices):
@@ -65,8 +68,9 @@ class RoleScope(models.TextChoices):
     - PLATFORM: System-wide roles (super_admin, admin, sales, support)
     - ORGANIZATION: Organization-scoped roles (owner, manager, staff, viewer)
     """
-    PLATFORM = 'PLATFORM', 'Platform'
-    ORGANIZATION = 'ORGANIZATION', 'Organization'
+
+    PLATFORM = "PLATFORM", "Platform"
+    ORGANIZATION = "ORGANIZATION", "Organization"
 
 
 class AuditAction(models.TextChoices):
@@ -76,46 +80,47 @@ class AuditAction(models.TextChoices):
     Captures what type of operation was performed on a resource.
     Used for compliance, debugging, and security analysis.
     """
+
     # CRUD Operations
-    CREATE = 'CREATE', 'Create'
-    READ = 'READ', 'Read'
-    UPDATE = 'UPDATE', 'Update'
-    DELETE = 'DELETE', 'Delete'
+    CREATE = "CREATE", "Create"
+    READ = "READ", "Read"
+    UPDATE = "UPDATE", "Update"
+    DELETE = "DELETE", "Delete"
 
     # Authentication Actions
-    LOGIN = 'LOGIN', 'Login'
-    LOGOUT = 'LOGOUT', 'Logout'
-    LOGIN_FAILED = 'LOGIN_FAILED', 'Login Failed'
-    PASSWORD_CHANGE = 'PASSWORD_CHANGE', 'Password Change'
-    PASSWORD_RESET = 'PASSWORD_RESET', 'Password Reset'
+    LOGIN = "LOGIN", "Login"
+    LOGOUT = "LOGOUT", "Logout"
+    LOGIN_FAILED = "LOGIN_FAILED", "Login Failed"
+    PASSWORD_CHANGE = "PASSWORD_CHANGE", "Password Change"
+    PASSWORD_RESET = "PASSWORD_RESET", "Password Reset"
 
     # Authorization Actions
-    PERMISSION_GRANT = 'PERMISSION_GRANT', 'Permission Grant'
-    PERMISSION_REVOKE = 'PERMISSION_REVOKE', 'Permission Revoke'
-    ROLE_ASSIGN = 'ROLE_ASSIGN', 'Role Assign'
-    ROLE_REMOVE = 'ROLE_REMOVE', 'Role Remove'
+    PERMISSION_GRANT = "PERMISSION_GRANT", "Permission Grant"
+    PERMISSION_REVOKE = "PERMISSION_REVOKE", "Permission Revoke"
+    ROLE_ASSIGN = "ROLE_ASSIGN", "Role Assign"
+    ROLE_REMOVE = "ROLE_REMOVE", "Role Remove"
 
     # Account Actions
-    INVITE_SENT = 'INVITE_SENT', 'Invite Sent'
-    INVITE_ACCEPTED = 'INVITE_ACCEPTED', 'Invite Accepted'
-    ACCOUNT_SUSPENDED = 'ACCOUNT_SUSPENDED', 'Account Suspended'
-    ACCOUNT_ACTIVATED = 'ACCOUNT_ACTIVATED', 'Account Activated'
+    INVITE_SENT = "INVITE_SENT", "Invite Sent"
+    INVITE_ACCEPTED = "INVITE_ACCEPTED", "Invite Accepted"
+    ACCOUNT_SUSPENDED = "ACCOUNT_SUSPENDED", "Account Suspended"
+    ACCOUNT_ACTIVATED = "ACCOUNT_ACTIVATED", "Account Activated"
 
     # Data Operations
-    EXPORT = 'EXPORT', 'Export'
-    IMPORT = 'IMPORT', 'Import'
-    BULK_UPDATE = 'BULK_UPDATE', 'Bulk Update'
-    BULK_DELETE = 'BULK_DELETE', 'Bulk Delete'
+    EXPORT = "EXPORT", "Export"
+    IMPORT = "IMPORT", "Import"
+    BULK_UPDATE = "BULK_UPDATE", "Bulk Update"
+    BULK_DELETE = "BULK_DELETE", "Bulk Delete"
 
     # Subscription Actions
-    SUBSCRIPTION_CREATED = 'SUBSCRIPTION_CREATED', 'Subscription Created'
-    SUBSCRIPTION_UPDATED = 'SUBSCRIPTION_UPDATED', 'Subscription Updated'
-    SUBSCRIPTION_CANCELLED = 'SUBSCRIPTION_CANCELLED', 'Subscription Cancelled'
+    SUBSCRIPTION_CREATED = "SUBSCRIPTION_CREATED", "Subscription Created"
+    SUBSCRIPTION_UPDATED = "SUBSCRIPTION_UPDATED", "Subscription Updated"
+    SUBSCRIPTION_CANCELLED = "SUBSCRIPTION_CANCELLED", "Subscription Cancelled"
 
     # System Actions
-    SETTINGS_UPDATED = 'SETTINGS_UPDATED', 'Settings Updated'
-    API_KEY_CREATED = 'API_KEY_CREATED', 'API Key Created'
-    API_KEY_REVOKED = 'API_KEY_REVOKED', 'API Key Revoked'
+    SETTINGS_UPDATED = "SETTINGS_UPDATED", "Settings Updated"
+    API_KEY_CREATED = "API_KEY_CREATED", "API Key Created"
+    API_KEY_REVOKED = "API_KEY_REVOKED", "API Key Revoked"
 
 
 class SessionStatus(models.TextChoices):
@@ -126,9 +131,10 @@ class SessionStatus(models.TextChoices):
     - EXPIRED: Session has expired naturally
     - REVOKED: Session was explicitly revoked (logout, security)
     """
-    ACTIVE = 'ACTIVE', 'Active'
-    EXPIRED = 'EXPIRED', 'Expired'
-    REVOKED = 'REVOKED', 'Revoked'
+
+    ACTIVE = "ACTIVE", "Active"
+    EXPIRED = "EXPIRED", "Expired"
+    REVOKED = "REVOKED", "Revoked"
 
 
 class PermissionAction(models.TextChoices):
@@ -138,15 +144,16 @@ class PermissionAction(models.TextChoices):
     Used with Permission model to define granular access control.
     Example: 'menu.create', 'order.view', 'user.delete'
     """
-    VIEW = 'view', 'View'
-    LIST = 'list', 'List'
-    CREATE = 'create', 'Create'
-    UPDATE = 'update', 'Update'
-    DELETE = 'delete', 'Delete'
-    MANAGE = 'manage', 'Manage'  # Full access to a resource
-    PUBLISH = 'publish', 'Publish'
-    EXPORT = 'export', 'Export'
-    IMPORT = 'import', 'Import'
+
+    VIEW = "view", "View"
+    LIST = "list", "List"
+    CREATE = "create", "Create"
+    UPDATE = "update", "Update"
+    DELETE = "delete", "Delete"
+    MANAGE = "manage", "Manage"  # Full access to a resource
+    PUBLISH = "publish", "Publish"
+    EXPORT = "export", "Export"
+    IMPORT = "import", "Import"
 
 
 class ShiftType(models.TextChoices):
@@ -159,11 +166,12 @@ class ShiftType(models.TextChoices):
     - NIGHT: Night shift
     - CUSTOM: Custom/flexible shift
     """
-    MORNING = 'MORNING', _('Morning')
-    AFTERNOON = 'AFTERNOON', _('Afternoon')
-    EVENING = 'EVENING', _('Evening')
-    NIGHT = 'NIGHT', _('Night')
-    CUSTOM = 'CUSTOM', _('Custom')
+
+    MORNING = "MORNING", _("Morning")
+    AFTERNOON = "AFTERNOON", _("Afternoon")
+    EVENING = "EVENING", _("Evening")
+    NIGHT = "NIGHT", _("Night")
+    CUSTOM = "CUSTOM", _("Custom")
 
 
 class ScheduleStatus(models.TextChoices):
@@ -176,8 +184,9 @@ class ScheduleStatus(models.TextChoices):
     - ABSENT: Staff was absent for the shift
     - LATE: Staff arrived late for the shift
     """
-    SCHEDULED = 'SCHEDULED', _('Scheduled')
-    CHECKED_IN = 'CHECKED_IN', _('Checked In')
-    CHECKED_OUT = 'CHECKED_OUT', _('Checked Out')
-    ABSENT = 'ABSENT', _('Absent')
-    LATE = 'LATE', _('Late')
+
+    SCHEDULED = "SCHEDULED", _("Scheduled")
+    CHECKED_IN = "CHECKED_IN", _("Checked In")
+    CHECKED_OUT = "CHECKED_OUT", _("Checked Out")
+    ABSENT = "ABSENT", _("Absent")
+    LATE = "LATE", _("Late")

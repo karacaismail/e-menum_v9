@@ -4,35 +4,34 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('core', '0002_remove_branch_branch_org_slug_uniq_and_more'),
-        ('subscriptions', '0001_initial'),
+        ("core", "0002_remove_branch_branch_org_slug_uniq_and_more"),
+        ("subscriptions", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveConstraint(
-            model_name='invoice',
-            name='invoice_org_number_uniq',
+            model_name="invoice",
+            name="invoice_org_number_uniq",
         ),
         migrations.RemoveConstraint(
-            model_name='organizationusage',
-            name='orgusage_org_feature_uniq',
+            model_name="organizationusage",
+            name="orgusage_org_feature_uniq",
         ),
         migrations.RemoveConstraint(
-            model_name='planfeature',
-            name='planfeature_plan_feature_uniq',
+            model_name="planfeature",
+            name="planfeature_plan_feature_uniq",
         ),
         migrations.AlterUniqueTogether(
-            name='invoice',
-            unique_together={('organization', 'invoice_number')},
+            name="invoice",
+            unique_together={("organization", "invoice_number")},
         ),
         migrations.AlterUniqueTogether(
-            name='organizationusage',
-            unique_together={('organization', 'feature')},
+            name="organizationusage",
+            unique_together={("organization", "feature")},
         ),
         migrations.AlterUniqueTogether(
-            name='planfeature',
-            unique_together={('plan', 'feature')},
+            name="planfeature",
+            unique_together={("plan", "feature")},
         ),
     ]

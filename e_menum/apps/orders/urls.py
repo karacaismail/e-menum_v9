@@ -84,7 +84,7 @@ from apps.orders.views import (
 )
 
 
-app_name = 'orders'
+app_name = "orders"
 
 
 # =============================================================================
@@ -93,11 +93,11 @@ app_name = 'orders'
 
 # Main router for top-level resources
 router = DefaultRouter()
-router.register(r'zones', ZoneViewSet, basename='zone')
-router.register(r'tables', TableViewSet, basename='table')
-router.register(r'qr-codes', QRCodeViewSet, basename='qr-code')
-router.register(r'orders', OrderViewSet, basename='order')
-router.register(r'service-requests', ServiceRequestViewSet, basename='service-request')
+router.register(r"zones", ZoneViewSet, basename="zone")
+router.register(r"tables", TableViewSet, basename="table")
+router.register(r"qr-codes", QRCodeViewSet, basename="qr-code")
+router.register(r"orders", OrderViewSet, basename="order")
+router.register(r"service-requests", ServiceRequestViewSet, basename="service-request")
 
 
 # =============================================================================
@@ -105,5 +105,5 @@ router.register(r'service-requests', ServiceRequestViewSet, basename='service-re
 # =============================================================================
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]

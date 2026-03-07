@@ -85,35 +85,35 @@ from shared.permissions.drf_permissions import (
 
 __all__ = [
     # Core classes
-    'Rule',
-    'Ability',
-    'Actions',
-    'Resources',
+    "Rule",
+    "Ability",
+    "Actions",
+    "Resources",
     # Builder functions
-    'build_ability_for_user',
-    'check_permission',
-    'require_permission',
+    "build_ability_for_user",
+    "check_permission",
+    "require_permission",
     # DRF Permission classes (basic)
-    'HasOrganizationPermission',
-    'HasPlatformPermission',
-    'IsTenantMember',
-    'IsOwnerOrReadOnly',
-    'IsAuthenticatedOrReadOnly',
-    'AllowPublicRead',
+    "HasOrganizationPermission",
+    "HasPlatformPermission",
+    "IsTenantMember",
+    "IsOwnerOrReadOnly",
+    "IsAuthenticatedOrReadOnly",
+    "AllowPublicRead",
     # DRF Permission classes (action-based)
-    'OrganizationScopedPermission',
-    'ActionBasedPermission',
+    "OrganizationScopedPermission",
+    "ActionBasedPermission",
     # Factory functions
-    'make_organization_permission',
-    'make_platform_permission',
-    'make_composite_permission',
+    "make_organization_permission",
+    "make_platform_permission",
+    "make_composite_permission",
     # Utility functions
-    'get_action_permission_code',
+    "get_action_permission_code",
     # Decorators
-    'permission_required',
+    "permission_required",
     # Predefined abilities
-    'get_owner_abilities',
-    'get_manager_abilities',
-    'get_staff_abilities',
-    'get_viewer_abilities',
+    "get_owner_abilities",
+    "get_manager_abilities",
+    "get_staff_abilities",
+    "get_viewer_abilities",
 ]

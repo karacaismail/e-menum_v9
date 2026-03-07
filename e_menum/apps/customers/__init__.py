@@ -8,4 +8,4 @@ This app provides models and functionality for:
 - LoyaltyPoint: Points ledger for loyalty programs
 """
 
-default_app_config = 'apps.customers.apps.CustomersConfig'
+default_app_config = "apps.customers.apps.CustomersConfig"

@@ -7,44 +7,198 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('core', '0002_remove_branch_branch_org_slug_uniq_and_more'),
-        ('menu', '0003_add_icon_discount_rating'),
+        ("core", "0002_remove_branch_branch_org_slug_uniq_and_more"),
+        ("menu", "0003_add_icon_discount_rating"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AIGeneration',
+            name="AIGeneration",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('generation_type', models.CharField(choices=[('DESCRIPTION', 'Product Description'), ('SHORT_DESCRIPTION', 'Short Description'), ('NAME_SUGGESTION', 'Name Suggestion'), ('SEO_TEXT', 'SEO Text'), ('TRANSLATION', 'Translation'), ('IMAGE_SEARCH', 'Image Search'), ('IMPROVE', 'Improve Text')], db_index=True, max_length=30, verbose_name='Type')),
-                ('status', models.CharField(choices=[('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('FAILED', 'Failed'), ('CANCELLED', 'Cancelled')], db_index=True, default='PENDING', max_length=20, verbose_name='Status')),
-                ('input_text', models.TextField(blank=True, help_text='Original text or prompt sent to AI', null=True, verbose_name='Input text')),
-                ('input_context', models.JSONField(blank=True, default=dict, help_text='Additional context: product name, category, cuisine, etc.', verbose_name='Input context')),
-                ('output_text', models.TextField(blank=True, help_text='Generated text from AI', null=True, verbose_name='Output text')),
-                ('output_data', models.JSONField(blank=True, default=dict, help_text='Structured output (alternatives, images, translations)', verbose_name='Output data')),
-                ('credits_used', models.PositiveIntegerField(default=1, verbose_name='Credits used')),
-                ('model_used', models.CharField(blank=True, help_text='e.g., gpt-4o-mini, claude-3-haiku', max_length=100, null=True, verbose_name='AI model')),
-                ('tokens_input', models.PositiveIntegerField(default=0, verbose_name='Input tokens')),
-                ('tokens_output', models.PositiveIntegerField(default=0, verbose_name='Output tokens')),
-                ('error_message', models.TextField(blank=True, null=True, verbose_name='Error')),
-                ('organization', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='ai_generations', to='core.organization', verbose_name='Organization')),
-                ('product', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='ai_generations', to='menu.product', verbose_name='Product')),
-                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='ai_generations', to=settings.AUTH_USER_MODEL, verbose_name='Requested by')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "generation_type",
+                    models.CharField(
+                        choices=[
+                            ("DESCRIPTION", "Product Description"),
+                            ("SHORT_DESCRIPTION", "Short Description"),
+                            ("NAME_SUGGESTION", "Name Suggestion"),
+                            ("SEO_TEXT", "SEO Text"),
+                            ("TRANSLATION", "Translation"),
+                            ("IMAGE_SEARCH", "Image Search"),
+                            ("IMPROVE", "Improve Text"),
+                        ],
+                        db_index=True,
+                        max_length=30,
+                        verbose_name="Type",
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("PENDING", "Pending"),
+                            ("PROCESSING", "Processing"),
+                            ("COMPLETED", "Completed"),
+                            ("FAILED", "Failed"),
+                            ("CANCELLED", "Cancelled"),
+                        ],
+                        db_index=True,
+                        default="PENDING",
+                        max_length=20,
+                        verbose_name="Status",
+                    ),
+                ),
+                (
+                    "input_text",
+                    models.TextField(
+                        blank=True,
+                        help_text="Original text or prompt sent to AI",
+                        null=True,
+                        verbose_name="Input text",
+                    ),
+                ),
+                (
+                    "input_context",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text="Additional context: product name, category, cuisine, etc.",
+                        verbose_name="Input context",
+                    ),
+                ),
+                (
+                    "output_text",
+                    models.TextField(
+                        blank=True,
+                        help_text="Generated text from AI",
+                        null=True,
+                        verbose_name="Output text",
+                    ),
+                ),
+                (
+                    "output_data",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text="Structured output (alternatives, images, translations)",
+                        verbose_name="Output data",
+                    ),
+                ),
+                (
+                    "credits_used",
+                    models.PositiveIntegerField(default=1, verbose_name="Credits used"),
+                ),
+                (
+                    "model_used",
+                    models.CharField(
+                        blank=True,
+                        help_text="e.g., gpt-4o-mini, claude-3-haiku",
+                        max_length=100,
+                        null=True,
+                        verbose_name="AI model",
+                    ),
+                ),
+                (
+                    "tokens_input",
+                    models.PositiveIntegerField(default=0, verbose_name="Input tokens"),
+                ),
+                (
+                    "tokens_output",
+                    models.PositiveIntegerField(
+                        default=0, verbose_name="Output tokens"
+                    ),
+                ),
+                (
+                    "error_message",
+                    models.TextField(blank=True, null=True, verbose_name="Error"),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="ai_generations",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
+                (
+                    "product",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="ai_generations",
+                        to="menu.product",
+                        verbose_name="Product",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="ai_generations",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Requested by",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'AI Generation',
-                'verbose_name_plural': 'AI Generations',
-                'db_table': 'ai_generations',
-                'ordering': ['-created_at'],
-                'indexes': [models.Index(fields=['organization', 'generation_type'], name='aigen_org_type_idx'), models.Index(fields=['organization', 'status'], name='aigen_org_status_idx'), models.Index(fields=['product'], name='aigen_product_idx')],
+                "verbose_name": "AI Generation",
+                "verbose_name_plural": "AI Generations",
+                "db_table": "ai_generations",
+                "ordering": ["-created_at"],
+                "indexes": [
+                    models.Index(
+                        fields=["organization", "generation_type"],
+                        name="aigen_org_type_idx",
+                    ),
+                    models.Index(
+                        fields=["organization", "status"], name="aigen_org_status_idx"
+                    ),
+                    models.Index(fields=["product"], name="aigen_product_idx"),
+                ],
             },
         ),
     ]

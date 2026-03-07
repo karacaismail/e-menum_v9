@@ -19,13 +19,13 @@ class CustomersConfig(AppConfig):
     """
 
     # Application identifier - must match the import path
-    name = 'apps.customers'
+    name = "apps.customers"
 
     # Human-readable name for admin
-    verbose_name = 'Customers'
+    verbose_name = "Customers"
 
     # Use BigAutoField for auto-generated primary keys
-    default_auto_field = 'django.db.models.BigAutoField'
+    default_auto_field = "django.db.models.BigAutoField"
 
     def ready(self):
         """

@@ -22,12 +22,13 @@ import logging
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
-logger = logging.getLogger('apps.seo')
+logger = logging.getLogger("apps.seo")
 
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Static Pages
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class StaticPageSitemap(Sitemap):
     """
@@ -37,18 +38,18 @@ class StaticPageSitemap(Sitemap):
     """
 
     priority = 0.8
-    changefreq = 'weekly'
-    protocol = 'https'
+    changefreq = "weekly"
+    protocol = "https"
 
     # URL names from ``apps.website.urls`` (app_name = 'website')
     _page_names = [
-        'website:home',
-        'website:features',
-        'website:pricing',
-        'website:about',
-        'website:contact',
-        'website:demo',
-        'website:blog',
+        "website:home",
+        "website:features",
+        "website:pricing",
+        "website:about",
+        "website:contact",
+        "website:demo",
+        "website:blog",
     ]
 
     def items(self):
@@ -62,6 +63,7 @@ class StaticPageSitemap(Sitemap):
 # Blog Posts
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class BlogPostSitemap(Sitemap):
     """
     Sitemap for published blog posts.
@@ -70,26 +72,28 @@ class BlogPostSitemap(Sitemap):
     """
 
     priority = 0.6
-    changefreq = 'monthly'
-    protocol = 'https'
+    changefreq = "monthly"
+    protocol = "https"
 
     def items(self):
         from apps.website.models import BlogPost
+
         return BlogPost.objects.filter(
-            status='published',
+            status="published",
             deleted_at__isnull=True,
-        ).order_by('-published_at')
+        ).order_by("-published_at")
 
     def lastmod(self, obj):
-        return obj.published_at or getattr(obj, 'updated_at', None)
+        return obj.published_at or getattr(obj, "updated_at", None)
 
     def location(self, obj):
-        return reverse('website:blog_detail', kwargs={'slug': obj.slug})
+        return reverse("website:blog_detail", kwargs={"slug": obj.slug})
 
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Legal Pages
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class LegalPageSitemap(Sitemap):
     """
@@ -97,37 +101,39 @@ class LegalPageSitemap(Sitemap):
     """
 
     priority = 0.3
-    changefreq = 'yearly'
-    protocol = 'https'
+    changefreq = "yearly"
+    protocol = "https"
 
     # Mapping from LegalPage.slug to website URL name
     _slug_to_url = {
-        'privacy': 'website:privacy',
-        'terms': 'website:terms',
-        'kvkk': 'website:kvkk',
+        "privacy": "website:privacy",
+        "terms": "website:terms",
+        "kvkk": "website:kvkk",
     }
 
     def items(self):
         from apps.website.models import LegalPage
+
         return LegalPage.objects.filter(
             is_active=True,
             deleted_at__isnull=True,
         )
 
     def lastmod(self, obj):
-        return getattr(obj, 'updated_at', None)
+        return getattr(obj, "updated_at", None)
 
     def location(self, obj):
         url_name = self._slug_to_url.get(obj.slug)
         if url_name:
             return reverse(url_name)
         # Fallback: construct path from slug
-        return f'/{obj.slug}/'
+        return f"/{obj.slug}/"
 
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Menus (Public)
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class MenuSitemap(Sitemap):
     """
@@ -135,26 +141,28 @@ class MenuSitemap(Sitemap):
     """
 
     priority = 0.7
-    changefreq = 'weekly'
-    protocol = 'https'
+    changefreq = "weekly"
+    protocol = "https"
 
     def items(self):
         from apps.menu.models import Menu
+
         return Menu.objects.filter(
             is_active=True,
             deleted_at__isnull=True,
-        ).order_by('-updated_at')
+        ).order_by("-updated_at")
 
     def lastmod(self, obj):
-        return getattr(obj, 'updated_at', None)
+        return getattr(obj, "updated_at", None)
 
     def location(self, obj):
-        return f'/m/{obj.slug}/'
+        return f"/m/{obj.slug}/"
 
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Programmatic SEO Pages
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class PSEOPageSitemap(Sitemap):
     """
@@ -162,21 +170,22 @@ class PSEOPageSitemap(Sitemap):
     """
 
     priority = 0.5
-    changefreq = 'monthly'
-    protocol = 'https'
+    changefreq = "monthly"
+    protocol = "https"
 
     def items(self):
         from apps.seo.models import PSEOPage
+
         return PSEOPage.objects.filter(
             is_published=True,
             deleted_at__isnull=True,
-        ).order_by('-published_at')
+        ).order_by("-published_at")
 
     def lastmod(self, obj):
-        return obj.published_at or getattr(obj, 'updated_at', None)
+        return obj.published_at or getattr(obj, "updated_at", None)
 
     def location(self, obj):
-        return f'/s/{obj.slug}/'
+        return f"/s/{obj.slug}/"
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -184,9 +193,9 @@ class PSEOPageSitemap(Sitemap):
 # ──────────────────────────────────────────────────────────────────────────────
 
 sitemaps = {
-    'static': StaticPageSitemap,
-    'blog': BlogPostSitemap,
-    'legal': LegalPageSitemap,
-    'menus': MenuSitemap,
-    'pseo': PSEOPageSitemap,
+    "static": StaticPageSitemap,
+    "blog": BlogPostSitemap,
+    "legal": LegalPageSitemap,
+    "menus": MenuSitemap,
+    "pseo": PSEOPageSitemap,
 }

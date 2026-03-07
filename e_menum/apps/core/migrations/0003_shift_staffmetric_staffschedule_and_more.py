@@ -7,100 +7,412 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('core', '0002_remove_branch_branch_org_slug_uniq_and_more'),
+        ("core", "0002_remove_branch_branch_org_slug_uniq_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Shift',
+            name="Shift",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier (UUID)', primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='Display name of the shift', max_length=100, verbose_name='Name')),
-                ('shift_type', models.CharField(choices=[('MORNING', 'Morning'), ('AFTERNOON', 'Afternoon'), ('EVENING', 'Evening'), ('NIGHT', 'Night'), ('CUSTOM', 'Custom')], help_text='Type of shift', max_length=20, verbose_name='Shift type')),
-                ('start_time', models.TimeField(help_text='When the shift starts', verbose_name='Start time')),
-                ('end_time', models.TimeField(help_text='When the shift ends', verbose_name='End time')),
-                ('is_active', models.BooleanField(default=True, help_text='Whether this shift is currently active', verbose_name='Is active')),
-                ('organization', models.ForeignKey(help_text='Organization this shift belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='shifts', to='core.organization', verbose_name='Organization')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier (UUID)",
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="Display name of the shift",
+                        max_length=100,
+                        verbose_name="Name",
+                    ),
+                ),
+                (
+                    "shift_type",
+                    models.CharField(
+                        choices=[
+                            ("MORNING", "Morning"),
+                            ("AFTERNOON", "Afternoon"),
+                            ("EVENING", "Evening"),
+                            ("NIGHT", "Night"),
+                            ("CUSTOM", "Custom"),
+                        ],
+                        help_text="Type of shift",
+                        max_length=20,
+                        verbose_name="Shift type",
+                    ),
+                ),
+                (
+                    "start_time",
+                    models.TimeField(
+                        help_text="When the shift starts", verbose_name="Start time"
+                    ),
+                ),
+                (
+                    "end_time",
+                    models.TimeField(
+                        help_text="When the shift ends", verbose_name="End time"
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Whether this shift is currently active",
+                        verbose_name="Is active",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization this shift belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="shifts",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Shift',
-                'verbose_name_plural': 'Shifts',
-                'db_table': 'shifts',
-                'ordering': ['start_time'],
+                "verbose_name": "Shift",
+                "verbose_name_plural": "Shifts",
+                "db_table": "shifts",
+                "ordering": ["start_time"],
             },
         ),
         migrations.CreateModel(
-            name='StaffMetric',
+            name="StaffMetric",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier (UUID)', primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField(help_text='Date these metrics are for', verbose_name='Date')),
-                ('orders_handled', models.PositiveIntegerField(default=0, help_text='Number of orders handled', verbose_name='Orders handled')),
-                ('revenue_generated', models.DecimalField(decimal_places=2, default=0, help_text='Total revenue generated', max_digits=12, verbose_name='Revenue generated')),
-                ('avg_order_value', models.DecimalField(decimal_places=2, default=0, help_text='Average value per order', max_digits=10, verbose_name='Average order value')),
-                ('avg_service_time_seconds', models.PositiveIntegerField(default=0, help_text='Average service time in seconds', verbose_name='Average service time (seconds)')),
-                ('customer_rating_avg', models.DecimalField(blank=True, decimal_places=2, help_text='Average customer rating', max_digits=3, null=True, verbose_name='Customer rating average')),
-                ('rating_count', models.PositiveIntegerField(default=0, help_text='Number of ratings received', verbose_name='Rating count')),
-                ('upsell_count', models.PositiveIntegerField(default=0, help_text='Number of successful upsells', verbose_name='Upsell count')),
-                ('tips_amount', models.DecimalField(decimal_places=2, default=0, help_text='Total tips received', max_digits=10, verbose_name='Tips amount')),
-                ('organization', models.ForeignKey(help_text='Organization this metric belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='staff_metrics', to='core.organization', verbose_name='Organization')),
-                ('user', models.ForeignKey(help_text='Staff member these metrics are for', on_delete=django.db.models.deletion.CASCADE, related_name='staff_metrics', to=settings.AUTH_USER_MODEL, verbose_name='User')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier (UUID)",
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "date",
+                    models.DateField(
+                        help_text="Date these metrics are for", verbose_name="Date"
+                    ),
+                ),
+                (
+                    "orders_handled",
+                    models.PositiveIntegerField(
+                        default=0,
+                        help_text="Number of orders handled",
+                        verbose_name="Orders handled",
+                    ),
+                ),
+                (
+                    "revenue_generated",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        help_text="Total revenue generated",
+                        max_digits=12,
+                        verbose_name="Revenue generated",
+                    ),
+                ),
+                (
+                    "avg_order_value",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        help_text="Average value per order",
+                        max_digits=10,
+                        verbose_name="Average order value",
+                    ),
+                ),
+                (
+                    "avg_service_time_seconds",
+                    models.PositiveIntegerField(
+                        default=0,
+                        help_text="Average service time in seconds",
+                        verbose_name="Average service time (seconds)",
+                    ),
+                ),
+                (
+                    "customer_rating_avg",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        help_text="Average customer rating",
+                        max_digits=3,
+                        null=True,
+                        verbose_name="Customer rating average",
+                    ),
+                ),
+                (
+                    "rating_count",
+                    models.PositiveIntegerField(
+                        default=0,
+                        help_text="Number of ratings received",
+                        verbose_name="Rating count",
+                    ),
+                ),
+                (
+                    "upsell_count",
+                    models.PositiveIntegerField(
+                        default=0,
+                        help_text="Number of successful upsells",
+                        verbose_name="Upsell count",
+                    ),
+                ),
+                (
+                    "tips_amount",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        help_text="Total tips received",
+                        max_digits=10,
+                        verbose_name="Tips amount",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization this metric belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="staff_metrics",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        help_text="Staff member these metrics are for",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="staff_metrics",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="User",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Staff Metric',
-                'verbose_name_plural': 'Staff Metrics',
-                'db_table': 'staff_metrics',
-                'ordering': ['-date'],
+                "verbose_name": "Staff Metric",
+                "verbose_name_plural": "Staff Metrics",
+                "db_table": "staff_metrics",
+                "ordering": ["-date"],
             },
         ),
         migrations.CreateModel(
-            name='StaffSchedule',
+            name="StaffSchedule",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier (UUID)', primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField(help_text='Date of the scheduled shift', verbose_name='Date')),
-                ('actual_start', models.DateTimeField(blank=True, help_text='Actual check-in time', null=True, verbose_name='Actual start')),
-                ('actual_end', models.DateTimeField(blank=True, help_text='Actual check-out time', null=True, verbose_name='Actual end')),
-                ('status', models.CharField(choices=[('SCHEDULED', 'Scheduled'), ('CHECKED_IN', 'Checked In'), ('CHECKED_OUT', 'Checked Out'), ('ABSENT', 'Absent'), ('LATE', 'Late')], db_index=True, default='SCHEDULED', help_text='Current status of the schedule entry', max_length=20, verbose_name='Status')),
-                ('notes', models.TextField(blank=True, help_text='Optional notes about the schedule entry', null=True, verbose_name='Notes')),
-                ('organization', models.ForeignKey(help_text='Organization this schedule belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='staff_schedules', to='core.organization', verbose_name='Organization')),
-                ('shift', models.ForeignKey(help_text='Shift assigned to the staff member', on_delete=django.db.models.deletion.CASCADE, related_name='schedules', to='core.shift', verbose_name='Shift')),
-                ('user', models.ForeignKey(help_text='Staff member assigned to this shift', on_delete=django.db.models.deletion.CASCADE, related_name='schedules', to=settings.AUTH_USER_MODEL, verbose_name='User')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier (UUID)",
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "date",
+                    models.DateField(
+                        help_text="Date of the scheduled shift", verbose_name="Date"
+                    ),
+                ),
+                (
+                    "actual_start",
+                    models.DateTimeField(
+                        blank=True,
+                        help_text="Actual check-in time",
+                        null=True,
+                        verbose_name="Actual start",
+                    ),
+                ),
+                (
+                    "actual_end",
+                    models.DateTimeField(
+                        blank=True,
+                        help_text="Actual check-out time",
+                        null=True,
+                        verbose_name="Actual end",
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("SCHEDULED", "Scheduled"),
+                            ("CHECKED_IN", "Checked In"),
+                            ("CHECKED_OUT", "Checked Out"),
+                            ("ABSENT", "Absent"),
+                            ("LATE", "Late"),
+                        ],
+                        db_index=True,
+                        default="SCHEDULED",
+                        help_text="Current status of the schedule entry",
+                        max_length=20,
+                        verbose_name="Status",
+                    ),
+                ),
+                (
+                    "notes",
+                    models.TextField(
+                        blank=True,
+                        help_text="Optional notes about the schedule entry",
+                        null=True,
+                        verbose_name="Notes",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization this schedule belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="staff_schedules",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
+                (
+                    "shift",
+                    models.ForeignKey(
+                        help_text="Shift assigned to the staff member",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="schedules",
+                        to="core.shift",
+                        verbose_name="Shift",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        help_text="Staff member assigned to this shift",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="schedules",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="User",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Staff Schedule',
-                'verbose_name_plural': 'Staff Schedules',
-                'db_table': 'staff_schedules',
-                'ordering': ['-date'],
+                "verbose_name": "Staff Schedule",
+                "verbose_name_plural": "Staff Schedules",
+                "db_table": "staff_schedules",
+                "ordering": ["-date"],
             },
         ),
         migrations.AddIndex(
-            model_name='shift',
-            index=models.Index(fields=['organization', 'deleted_at'], name='shift_org_deleted_idx'),
+            model_name="shift",
+            index=models.Index(
+                fields=["organization", "deleted_at"], name="shift_org_deleted_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='staffmetric',
-            index=models.Index(fields=['organization', 'deleted_at'], name='staffmetric_org_deleted_idx'),
+            model_name="staffmetric",
+            index=models.Index(
+                fields=["organization", "deleted_at"],
+                name="staffmetric_org_deleted_idx",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='staffmetric',
-            unique_together={('user', 'date')},
+            name="staffmetric",
+            unique_together={("user", "date")},
         ),
         migrations.AddIndex(
-            model_name='staffschedule',
-            index=models.Index(fields=['organization', 'deleted_at'], name='schedule_org_deleted_idx'),
+            model_name="staffschedule",
+            index=models.Index(
+                fields=["organization", "deleted_at"], name="schedule_org_deleted_idx"
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='staffschedule',
-            unique_together={('user', 'date', 'shift')},
+            name="staffschedule",
+            unique_together={("user", "date", "shift")},
         ),
     ]

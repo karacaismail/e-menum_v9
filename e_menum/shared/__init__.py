@@ -17,7 +17,7 @@ Usage:
 """
 
 # Version info
-__version__ = '1.0.0'
+__version__ = "1.0.0"
 
 # Expose submodules for convenient imports
 from . import middleware
@@ -27,10 +27,10 @@ from . import views
 from . import utils
 
 __all__ = [
-    'middleware',
-    'permissions',
-    'serializers',
-    'views',
-    'utils',
-    '__version__',
+    "middleware",
+    "permissions",
+    "serializers",
+    "views",
+    "utils",
+    "__version__",
 ]

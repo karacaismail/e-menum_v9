@@ -20,13 +20,13 @@ class OrdersConfig(AppConfig):
     """
 
     # Application identifier - must match the import path
-    name = 'apps.orders'
+    name = "apps.orders"
 
     # Human-readable name for admin
-    verbose_name = 'Order Management'
+    verbose_name = "Order Management"
 
     # Use BigAutoField for auto-generated primary keys
-    default_auto_field = 'django.db.models.BigAutoField'
+    default_auto_field = "django.db.models.BigAutoField"
 
     def ready(self):
         """

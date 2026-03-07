@@ -39,8 +39,8 @@ from shared.middleware.tenant import (
 )
 
 __all__ = [
-    'TenantMiddleware',
-    'TenantContextMixin',
-    'get_current_organization',
-    'set_current_organization',
+    "TenantMiddleware",
+    "TenantContextMixin",
+    "get_current_organization",
+    "set_current_organization",
 ]

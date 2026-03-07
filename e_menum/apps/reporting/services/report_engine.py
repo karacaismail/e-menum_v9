@@ -24,6 +24,7 @@ Usage:
         user=request.user,
     )
 """
+
 from __future__ import annotations
 
 import logging
@@ -46,6 +47,7 @@ logger = logging.getLogger(__name__)
 # =============================================================================
 # BASE REPORT HANDLER (ABC)
 # =============================================================================
+
 
 class BaseReportHandler(ABC):
     """
@@ -78,7 +80,7 @@ class BaseReportHandler(ABC):
     """
 
     # Must be set by subclass
-    feature_key: str = ''
+    feature_key: str = ""
 
     def __init__(self):
         """Initialize handler with empty context."""
@@ -147,7 +149,7 @@ class BaseReportHandler(ABC):
         Returns:
             list[str]: Format strings (e.g., ['JSON', 'PDF', 'EXCEL'])
         """
-        return ['JSON', 'PDF', 'EXCEL', 'CSV']
+        return ["JSON", "PDF", "EXCEL", "CSV"]
 
     def get_cache_key(self, org_id: str, parameters: dict) -> Optional[str]:
         """
@@ -187,6 +189,7 @@ class BaseReportHandler(ABC):
 # HANDLER REGISTRY
 # =============================================================================
 
+
 class _HandlerRegistry:
     """
     Singleton registry for report handler classes.
@@ -208,13 +211,15 @@ class _HandlerRegistry:
         """Register a handler class for a feature key."""
         if feature_key in self._handlers:
             logger.warning(
-                'Overwriting handler for %s: %s -> %s',
+                "Overwriting handler for %s: %s -> %s",
                 feature_key,
                 self._handlers[feature_key].__name__,
                 handler_class.__name__,
             )
         self._handlers[feature_key] = handler_class
-        logger.debug('Registered handler: %s -> %s', feature_key, handler_class.__name__)
+        logger.debug(
+            "Registered handler: %s -> %s", feature_key, handler_class.__name__
+        )
 
     def get(self, feature_key: str) -> Optional[Type[BaseReportHandler]]:
         """Get handler class by feature key."""
@@ -246,16 +251,19 @@ def register_handler(feature_key: str):
         class RevenueReportHandler(BaseReportHandler):
             ...
     """
+
     def decorator(cls):
         cls.feature_key = feature_key
         handler_registry.register(feature_key, cls)
         return cls
+
     return decorator
 
 
 # =============================================================================
 # REPORT ENGINE
 # =============================================================================
+
 
 class ReportEngine:
     """
@@ -323,10 +331,10 @@ class ReportEngine:
 
         if plan_tier:
             # Filter by plan tier hierarchy
-            tier_order = ['FREE', 'STARTER', 'PROFESSIONAL', 'BUSINESS', 'ENTERPRISE']
+            tier_order = ["FREE", "STARTER", "PROFESSIONAL", "BUSINESS", "ENTERPRISE"]
             try:
                 tier_idx = tier_order.index(plan_tier)
-                allowed_tiers = tier_order[:tier_idx + 1]
+                allowed_tiers = tier_order[: tier_idx + 1]
                 qs = qs.filter(min_plan__in=allowed_tiers)
             except ValueError:
                 pass
@@ -339,8 +347,8 @@ class ReportEngine:
         feature_key: str,
         parameters: dict = None,
         user=None,
-        export_format: str = '',
-    ) -> 'ReportExecution':
+        export_format: str = "",
+    ) -> "ReportExecution":
         """
         Execute a report synchronously.
 
@@ -369,8 +377,8 @@ class ReportEngine:
             )
         except ReportDefinition.DoesNotExist:
             raise AppException(
-                code='REPORT_NOT_FOUND',
-                message=f'Report definition not found: {feature_key}',
+                code="REPORT_NOT_FOUND",
+                message=f"Report definition not found: {feature_key}",
                 status_code=404,
             )
 
@@ -378,8 +386,8 @@ class ReportEngine:
         handler_class = self.registry.get(feature_key)
         if not handler_class:
             raise AppException(
-                code='HANDLER_NOT_REGISTERED',
-                message=f'No handler registered for report: {feature_key}',
+                code="HANDLER_NOT_REGISTERED",
+                message=f"No handler registered for report: {feature_key}",
                 status_code=501,
             )
 
@@ -388,7 +396,7 @@ class ReportEngine:
             organization_id=org_id,
             report_definition=report_def,
             requested_by=user,
-            status='PENDING',
+            status="PENDING",
             parameters=parameters,
             export_format=export_format,
         )
@@ -400,15 +408,15 @@ class ReportEngine:
         try:
             validated_params = handler.validate_parameters(parameters)
         except Exception as exc:
-            execution.status = 'FAILED'
-            execution.error_message = f'Parameter validation failed: {str(exc)}'
-            execution.save(update_fields=['status', 'error_message', 'updated_at'])
+            execution.status = "FAILED"
+            execution.error_message = f"Parameter validation failed: {str(exc)}"
+            execution.save(update_fields=["status", "error_message", "updated_at"])
             raise
 
         # 5. Execute the handler
-        execution.status = 'PROCESSING'
+        execution.status = "PROCESSING"
         execution.started_at = timezone.now()
-        execution.save(update_fields=['status', 'started_at', 'updated_at'])
+        execution.save(update_fields=["status", "started_at", "updated_at"])
 
         start_time = time.monotonic()
 
@@ -417,41 +425,56 @@ class ReportEngine:
 
             elapsed_ms = int((time.monotonic() - start_time) * 1000)
 
-            execution.status = 'COMPLETED'
+            execution.status = "COMPLETED"
             execution.result_data = result_data
             execution.completed_at = timezone.now()
             execution.duration_ms = elapsed_ms
             execution.credits_consumed = report_def.credit_cost
-            execution.save(update_fields=[
-                'status', 'result_data', 'completed_at',
-                'duration_ms', 'credits_consumed', 'updated_at',
-            ])
+            execution.save(
+                update_fields=[
+                    "status",
+                    "result_data",
+                    "completed_at",
+                    "duration_ms",
+                    "credits_consumed",
+                    "updated_at",
+                ]
+            )
 
             logger.info(
-                'Report executed: key=%s org=%s duration=%dms',
-                feature_key, org_id, elapsed_ms,
+                "Report executed: key=%s org=%s duration=%dms",
+                feature_key,
+                org_id,
+                elapsed_ms,
             )
 
         except Exception as exc:
             elapsed_ms = int((time.monotonic() - start_time) * 1000)
 
-            execution.status = 'FAILED'
+            execution.status = "FAILED"
             execution.error_message = str(exc)
             execution.completed_at = timezone.now()
             execution.duration_ms = elapsed_ms
-            execution.save(update_fields=[
-                'status', 'error_message', 'completed_at',
-                'duration_ms', 'updated_at',
-            ])
+            execution.save(
+                update_fields=[
+                    "status",
+                    "error_message",
+                    "completed_at",
+                    "duration_ms",
+                    "updated_at",
+                ]
+            )
 
             logger.error(
-                'Report execution failed: key=%s org=%s error=%s',
-                feature_key, org_id, str(exc),
+                "Report execution failed: key=%s org=%s error=%s",
+                feature_key,
+                org_id,
+                str(exc),
                 exc_info=True,
             )
             raise AppException(
-                code='REPORT_EXECUTION_FAILED',
-                message=f'Report execution failed: {str(exc)}',
+                code="REPORT_EXECUTION_FAILED",
+                message=f"Report execution failed: {str(exc)}",
                 status_code=500,
             )
 
@@ -463,8 +486,8 @@ class ReportEngine:
         feature_key: str,
         parameters: dict = None,
         user=None,
-        export_format: str = '',
-    ) -> 'ReportExecution':
+        export_format: str = "",
+    ) -> "ReportExecution":
         """
         Create execution record and dispatch to Celery for async processing.
 
@@ -491,16 +514,16 @@ class ReportEngine:
             )
         except ReportDefinition.DoesNotExist:
             raise AppException(
-                code='REPORT_NOT_FOUND',
-                message=f'Report definition not found: {feature_key}',
+                code="REPORT_NOT_FOUND",
+                message=f"Report definition not found: {feature_key}",
                 status_code=404,
             )
 
         # Check handler registration
         if not self.registry.is_registered(feature_key):
             raise AppException(
-                code='HANDLER_NOT_REGISTERED',
-                message=f'No handler registered for report: {feature_key}',
+                code="HANDLER_NOT_REGISTERED",
+                message=f"No handler registered for report: {feature_key}",
                 status_code=501,
             )
 
@@ -509,7 +532,7 @@ class ReportEngine:
             organization_id=org_id,
             report_definition=report_def,
             requested_by=user,
-            status='PENDING',
+            status="PENDING",
             parameters=parameters,
             export_format=export_format,
         )
@@ -517,11 +540,14 @@ class ReportEngine:
         # Dispatch to Celery
         task = execute_report_task.delay(str(execution.id))
         execution.celery_task_id = task.id
-        execution.save(update_fields=['celery_task_id', 'updated_at'])
+        execution.save(update_fields=["celery_task_id", "updated_at"])
 
         logger.info(
-            'Report dispatched async: key=%s org=%s execution=%s task=%s',
-            feature_key, org_id, execution.id, task.id,
+            "Report dispatched async: key=%s org=%s execution=%s task=%s",
+            feature_key,
+            org_id,
+            execution.id,
+            task.id,
         )
 
         return execution
@@ -539,25 +565,26 @@ class ReportEngine:
             execution = ReportExecution.objects.get(id=execution_id)
         except ReportExecution.DoesNotExist:
             raise AppException(
-                code='EXECUTION_NOT_FOUND',
-                message=f'Execution not found: {execution_id}',
+                code="EXECUTION_NOT_FOUND",
+                message=f"Execution not found: {execution_id}",
                 status_code=404,
             )
 
-        if execution.status not in ('PENDING', 'PROCESSING'):
+        if execution.status not in ("PENDING", "PROCESSING"):
             raise AppException(
-                code='EXECUTION_NOT_CANCELLABLE',
-                message=f'Execution in status {execution.status} cannot be cancelled',
+                code="EXECUTION_NOT_CANCELLABLE",
+                message=f"Execution in status {execution.status} cannot be cancelled",
                 status_code=400,
             )
 
-        execution.status = 'CANCELLED'
+        execution.status = "CANCELLED"
         execution.completed_at = timezone.now()
-        execution.save(update_fields=['status', 'completed_at', 'updated_at'])
+        execution.save(update_fields=["status", "completed_at", "updated_at"])
 
         # Revoke Celery task if exists
         if execution.celery_task_id:
             from config.celery import app
+
             app.control.revoke(execution.celery_task_id, terminate=True)
 
-        logger.info('Report execution cancelled: %s', execution_id)
+        logger.info("Report execution cancelled: %s", execution_id)

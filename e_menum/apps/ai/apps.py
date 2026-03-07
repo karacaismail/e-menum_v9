@@ -24,13 +24,13 @@ class AiConfig(AppConfig):
     """
 
     # Application identifier - must match the import path
-    name = 'apps.ai'
+    name = "apps.ai"
 
     # Human-readable name for admin
-    verbose_name = 'AI Services'
+    verbose_name = "AI Services"
 
     # Use BigAutoField for auto-generated primary keys
-    default_auto_field = 'django.db.models.BigAutoField'
+    default_auto_field = "django.db.models.BigAutoField"
 
     def ready(self):
         """

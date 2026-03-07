@@ -24,134 +24,121 @@ logger = logging.getLogger(__name__)
 
 ADMIN_URL_TO_RESOURCE = {
     # ── Core ──
-    '/admin/core/organization/': 'organization',
-    '/admin/core/branch/': 'branch',
-    '/admin/core/user/': 'user',
-    '/admin/core/role/': 'role',
-    '/admin/core/permission/': 'role',        # Permission mgmt needs role access
-    '/admin/core/rolepermission/': 'role',     # Role-Permission mapping
-    '/admin/core/userrole/': 'role',           # User-Role assignments
-    '/admin/core/session/': 'audit_log',       # Sessions ≈ audit trail
-    '/admin/core/auditlog/': 'audit_log',
-
+    "/admin/core/organization/": "organization",
+    "/admin/core/branch/": "branch",
+    "/admin/core/user/": "user",
+    "/admin/core/role/": "role",
+    "/admin/core/permission/": "role",  # Permission mgmt needs role access
+    "/admin/core/rolepermission/": "role",  # Role-Permission mapping
+    "/admin/core/userrole/": "role",  # User-Role assignments
+    "/admin/core/session/": "audit_log",  # Sessions ≈ audit trail
+    "/admin/core/auditlog/": "audit_log",
     # ── Menu ──
-    '/admin/menu/menu/': 'menu',
-    '/admin/menu/category/': 'category',
-    '/admin/menu/product/': 'product',
-    '/admin/menu/productvariant/': 'product',  # Variants are part of product
-    '/admin/menu/productmodifier/': 'product', # Modifiers are part of product
-    '/admin/menu/allergen/': 'product',        # Allergens relate to product
-    '/admin/menu/productallergen/': 'product',
-    '/admin/menu/nutritioninfo/': 'product',
-    '/admin/menu/theme/': 'theme',
-
+    "/admin/menu/menu/": "menu",
+    "/admin/menu/category/": "category",
+    "/admin/menu/product/": "product",
+    "/admin/menu/productvariant/": "product",  # Variants are part of product
+    "/admin/menu/productmodifier/": "product",  # Modifiers are part of product
+    "/admin/menu/allergen/": "product",  # Allergens relate to product
+    "/admin/menu/productallergen/": "product",
+    "/admin/menu/nutritioninfo/": "product",
+    "/admin/menu/theme/": "theme",
     # ── Orders ──
-    '/admin/orders/zone/': 'zone',
-    '/admin/orders/table/': 'table',
-    '/admin/orders/qrcode/': 'qr_code',
-    '/admin/orders/qrscan/': 'qr_code',
-    '/admin/orders/order/': 'order',
-    '/admin/orders/orderitem/': 'order',
-    '/admin/orders/servicerequest/': 'service_request',
-
+    "/admin/orders/zone/": "zone",
+    "/admin/orders/table/": "table",
+    "/admin/orders/qrcode/": "qr_code",
+    "/admin/orders/qrscan/": "qr_code",
+    "/admin/orders/order/": "order",
+    "/admin/orders/orderitem/": "order",
+    "/admin/orders/servicerequest/": "service_request",
     # ── Customers ──
-    '/admin/customers/customer/': 'customer',
-    '/admin/customers/customervisit/': 'customer',
-    '/admin/customers/feedback/': 'feedback',
-    '/admin/customers/loyaltypoint/': 'customer',
-
+    "/admin/customers/customer/": "customer",
+    "/admin/customers/customervisit/": "customer",
+    "/admin/customers/feedback/": "feedback",
+    "/admin/customers/loyaltypoint/": "customer",
     # ── Subscriptions ──
-    '/admin/subscriptions/plan/': 'plan',
-    '/admin/subscriptions/feature/': 'plan',
-    '/admin/subscriptions/planfeature/': 'plan',
-    '/admin/subscriptions/featurepermission/': 'plan',
-    '/admin/subscriptions/subscription/': 'subscription',
-    '/admin/subscriptions/invoice/': 'invoice',
-    '/admin/subscriptions/organizationusage/': 'subscription',
-
+    "/admin/subscriptions/plan/": "plan",
+    "/admin/subscriptions/feature/": "plan",
+    "/admin/subscriptions/planfeature/": "plan",
+    "/admin/subscriptions/featurepermission/": "plan",
+    "/admin/subscriptions/subscription/": "subscription",
+    "/admin/subscriptions/invoice/": "invoice",
+    "/admin/subscriptions/organizationusage/": "subscription",
     # ── Inventory ──
-    '/admin/inventory/supplier/': 'inventory',
-    '/admin/inventory/inventoryitem/': 'inventory',
-    '/admin/inventory/stockmovement/': 'inventory',
-    '/admin/inventory/purchaseorder/': 'inventory',
-    '/admin/inventory/purchaseorderitem/': 'inventory',
-    '/admin/inventory/recipe/': 'inventory',
-    '/admin/inventory/recipeingredient/': 'inventory',
-
+    "/admin/inventory/supplier/": "inventory",
+    "/admin/inventory/inventoryitem/": "inventory",
+    "/admin/inventory/stockmovement/": "inventory",
+    "/admin/inventory/purchaseorder/": "inventory",
+    "/admin/inventory/purchaseorderitem/": "inventory",
+    "/admin/inventory/recipe/": "inventory",
+    "/admin/inventory/recipeingredient/": "inventory",
     # ── Campaigns ──
-    '/admin/campaigns/campaign/': 'campaign',
-    '/admin/campaigns/coupon/': 'campaign',
-    '/admin/campaigns/couponusage/': 'campaign',
-    '/admin/campaigns/referral/': 'campaign',
-
+    "/admin/campaigns/campaign/": "campaign",
+    "/admin/campaigns/coupon/": "campaign",
+    "/admin/campaigns/couponusage/": "campaign",
+    "/admin/campaigns/referral/": "campaign",
     # ── Analytics ──
-    '/admin/analytics/dashboardmetric/': 'analytics',
-    '/admin/analytics/salesaggregation/': 'analytics',
-    '/admin/analytics/productperformance/': 'analytics',
-    '/admin/analytics/customermetric/': 'analytics',
-
+    "/admin/analytics/dashboardmetric/": "analytics",
+    "/admin/analytics/salesaggregation/": "analytics",
+    "/admin/analytics/productperformance/": "analytics",
+    "/admin/analytics/customermetric/": "analytics",
     # ── Dashboard ──
-    '/admin/dashboard/dashboardinsight/': 'dashboard',
-    '/admin/dashboard/userpreference/': 'dashboard',
-
+    "/admin/dashboard/dashboardinsight/": "dashboard",
+    "/admin/dashboard/userpreference/": "dashboard",
     # ── Reporting ──
-    '/admin/reporting/reportdefinition/': 'report',
-    '/admin/reporting/reportexecution/': 'report',
-    '/admin/reporting/reportschedule/': 'report',
-    '/admin/reporting/reportfavorite/': 'report',
-
+    "/admin/reporting/reportdefinition/": "report",
+    "/admin/reporting/reportexecution/": "report",
+    "/admin/reporting/reportschedule/": "report",
+    "/admin/reporting/reportfavorite/": "report",
     # ── AI ──
-    '/admin/ai/aiproviderconfig/': 'ai_generation',
-    '/admin/ai/aigeneration/': 'ai_generation',
-
+    "/admin/ai/aiproviderconfig/": "ai_generation",
+    "/admin/ai/aigeneration/": "ai_generation",
     # ── Media ──
-    '/admin/media/media/': 'media',
-    '/admin/media/mediafolder/': 'media',
-
+    "/admin/media/media/": "media",
+    "/admin/media/mediafolder/": "media",
     # ── Notifications ──
-    '/admin/notifications/notification/': 'notification',
-
+    "/admin/notifications/notification/": "notification",
     # ── SEO ──
-    '/admin/seo/redirect/': 'settings',
-    '/admin/seo/notfound404log/': 'settings',
-    '/admin/seo/brokenlink/': 'settings',
-    '/admin/seo/crawlreport/': 'settings',
-    '/admin/seo/txtfileconfig/': 'settings',
-    '/admin/seo/authorprofile/': 'settings',
-    '/admin/seo/pseotemplate/': 'settings',
-    '/admin/seo/pseopage/': 'settings',
-
+    "/admin/seo/redirect/": "settings",
+    "/admin/seo/notfound404log/": "settings",
+    "/admin/seo/brokenlink/": "settings",
+    "/admin/seo/crawlreport/": "settings",
+    "/admin/seo/txtfileconfig/": "settings",
+    "/admin/seo/authorprofile/": "settings",
+    "/admin/seo/pseotemplate/": "settings",
+    "/admin/seo/pseopage/": "settings",
     # ── SEO Shield ──
-    '/admin/seo_shield/botwhitelist/': 'settings',
-    '/admin/seo_shield/ipriskscore/': 'settings',
-    '/admin/seo_shield/ruleset/': 'settings',
-    '/admin/seo_shield/blocklog/': 'settings',
-
+    "/admin/seo_shield/botwhitelist/": "settings",
+    "/admin/seo_shield/ipriskscore/": "settings",
+    "/admin/seo_shield/ruleset/": "settings",
+    "/admin/seo_shield/blocklog/": "settings",
     # ── Website CMS ──
-    '/admin/website/sitesettings/': 'settings',
-    '/admin/website/pagehero/': 'settings',
-    '/admin/website/homesection/': 'settings',
-    '/admin/website/navigationlink/': 'settings',
-    '/admin/website/featurecategory/': 'settings',
-    '/admin/website/testimonial/': 'settings',
-    '/admin/website/trustbadge/': 'settings',
-    '/admin/website/trustlocation/': 'settings',
-    '/admin/website/teammember/': 'settings',
-    '/admin/website/companyvalue/': 'settings',
-    '/admin/website/companystat/': 'settings',
-    '/admin/website/faq/': 'settings',
-    '/admin/website/blogpost/': 'settings',
-    '/admin/website/legalpage/': 'settings',
-    '/admin/website/plandisplayfeature/': 'settings',
-    '/admin/website/contactsubmission/': 'settings',
-    '/admin/website/demorequest/': 'settings',
-    '/admin/website/newslettersubscriber/': 'settings',
+    "/admin/website/sitesettings/": "settings",
+    "/admin/website/pagehero/": "settings",
+    "/admin/website/homesection/": "settings",
+    "/admin/website/navigationlink/": "settings",
+    "/admin/website/featurecategory/": "settings",
+    "/admin/website/testimonial/": "settings",
+    "/admin/website/trustbadge/": "settings",
+    "/admin/website/trustlocation/": "settings",
+    "/admin/website/teammember/": "settings",
+    "/admin/website/companyvalue/": "settings",
+    "/admin/website/companystat/": "settings",
+    "/admin/website/faq/": "settings",
+    "/admin/website/blogpost/": "settings",
+    "/admin/website/legalpage/": "settings",
+    "/admin/website/plandisplayfeature/": "settings",
+    "/admin/website/contactsubmission/": "settings",
+    "/admin/website/demorequest/": "settings",
+    "/admin/website/newslettersubscriber/": "settings",
 }
 
 # Resources that only platform-level (superuser/admin) roles should see.
 # Organization-scoped roles should NOT have these unless explicitly granted.
 PLATFORM_ONLY_RESOURCES = {
-    'role', 'plan', 'audit_log',
+    "role",
+    "plan",
+    "audit_log",
 }
 
 
@@ -173,40 +160,40 @@ def admin_sidebar_permissions(request):
 
     Only runs for admin pages to avoid unnecessary DB queries.
     """
-    if not hasattr(request, 'user') or not request.user.is_authenticated:
+    if not hasattr(request, "user") or not request.user.is_authenticated:
         return {}
 
     # Only compute for admin pages
-    if not request.path.startswith('/admin/'):
+    if not request.path.startswith("/admin/"):
         return {}
 
     if not request.user.is_staff:
-        return {'allowed_admin_urls_json': json.dumps([])}
+        return {"allowed_admin_urls_json": json.dumps([])}
 
     # Superusers see everything
     if request.user.is_superuser:
-        return {'allowed_admin_urls_json': json.dumps(['__all__'])}
+        return {"allowed_admin_urls_json": json.dumps(["__all__"])}
 
     # ── Build E-Menum ability for this user ──
     # Get the user's organization (could be None for platform users)
-    organization = getattr(request.user, 'organization', None)
+    organization = getattr(request.user, "organization", None)
 
     try:
         ability = build_ability_for_user(request.user, organization)
     except Exception:
-        logger.exception(
-            "Failed to build ability for user %s", request.user.email
-        )
-        return {'allowed_admin_urls_json': json.dumps([])}
+        logger.exception("Failed to build ability for user %s", request.user.email)
+        return {"allowed_admin_urls_json": json.dumps([])}
 
     # ── Check each admin URL against E-Menum permissions ──
     allowed_urls = set()
 
     for admin_url, resource in ADMIN_URL_TO_RESOURCE.items():
         # Check if the user can view or list this resource
-        if (ability.can('view', resource)
-                or ability.can('list', resource)
-                or ability.can('manage', resource)):
+        if (
+            ability.can("view", resource)
+            or ability.can("list", resource)
+            or ability.can("manage", resource)
+        ):
             allowed_urls.add(admin_url)
 
     logger.debug(
@@ -219,5 +206,5 @@ def admin_sidebar_permissions(request):
     )
 
     return {
-        'allowed_admin_urls_json': json.dumps(sorted(allowed_urls)),
+        "allowed_admin_urls_json": json.dumps(sorted(allowed_urls)),
     }

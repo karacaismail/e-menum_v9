@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 CACHE_TTL = 300
 
 # Cache key prefix
-CACHE_PREFIX = 'dashboard:kpi:'
+CACHE_PREFIX = "dashboard:kpi:"
 
 
 class DecimalEncoder(json.JSONEncoder):
@@ -54,7 +54,7 @@ class KPIService:
     All methods are safe to call without Redis (fallback to DB query).
     """
 
-    def _cache_key(self, metric: str, suffix: str = '') -> str:
+    def _cache_key(self, metric: str, suffix: str = "") -> str:
         """Build a cache key for the given metric."""
         key = f"{CACHE_PREFIX}{metric}"
         if suffix:
@@ -68,7 +68,7 @@ class KPIService:
             if val is not None:
                 return val
         except Exception as exc:
-            logger.warning('Redis cache read failed for %s: %s', key, exc)
+            logger.warning("Redis cache read failed for %s: %s", key, exc)
         return None
 
     def _set_cached(self, key: str, value: Any, ttl: int = CACHE_TTL):
@@ -76,7 +76,7 @@ class KPIService:
         try:
             cache.set(key, value, ttl)
         except Exception as exc:
-            logger.warning('Redis cache write failed for %s: %s', key, exc)
+            logger.warning("Redis cache write failed for %s: %s", key, exc)
 
     # ─── KPI Methods ──────────────────────────────────────────────
 
@@ -86,7 +86,7 @@ class KPIService:
 
         Source: core.Organization
         """
-        key = self._cache_key('active_organizations')
+        key = self._cache_key("active_organizations")
         cached = self._get_cached(key)
         if cached is not None:
             return cached
@@ -108,7 +108,7 @@ class KPIService:
 
         Source: orders.QRScan (created_at__date = today)
         """
-        key = self._cache_key('today_qr_scans')
+        key = self._cache_key("today_qr_scans")
         cached = self._get_cached(key)
         if cached is not None:
             return cached
@@ -129,7 +129,7 @@ class KPIService:
 
         Source: menu.Menu
         """
-        key = self._cache_key('active_menus')
+        key = self._cache_key("active_menus")
         cached = self._get_cached(key)
         if cached is not None:
             return cached
@@ -150,7 +150,7 @@ class KPIService:
 
         Source: orders.ServiceRequest (status='PENDING')
         """
-        key = self._cache_key('pending_service_requests')
+        key = self._cache_key("pending_service_requests")
         cached = self._get_cached(key)
         if cached is not None:
             return cached
@@ -158,7 +158,7 @@ class KPIService:
         from apps.orders.models import ServiceRequest
 
         count = ServiceRequest.objects.filter(
-            status='PENDING',
+            status="PENDING",
             deleted_at__isnull=True,
         ).count()
 
@@ -172,7 +172,7 @@ class KPIService:
         Source: subscriptions.Subscription
         (status=ACTIVE, billing_period=MONTHLY)
         """
-        key = self._cache_key('mrr')
+        key = self._cache_key("mrr")
         cached = self._get_cached(key)
         if cached is not None:
             return cached
@@ -186,12 +186,12 @@ class KPIService:
             deleted_at__isnull=True,
         ).aggregate(
             total=Coalesce(
-                Sum('current_price'),
-                Decimal('0'),
+                Sum("current_price"),
+                Decimal("0"),
             ),
         )
 
-        mrr = float(result['total'])
+        mrr = float(result["total"])
 
         # Also add yearly subscriptions divided by 12
         yearly_result = Subscription.objects.filter(
@@ -200,11 +200,11 @@ class KPIService:
             deleted_at__isnull=True,
         ).aggregate(
             total=Coalesce(
-                Sum('current_price'),
-                Decimal('0'),
+                Sum("current_price"),
+                Decimal("0"),
             ),
         )
-        mrr += float(yearly_result['total']) / 12
+        mrr += float(yearly_result["total"]) / 12
 
         self._set_cached(key, round(mrr, 2))
         return round(mrr, 2)
@@ -215,7 +215,7 @@ class KPIService:
 
         Source: subscriptions.Subscription (status=TRIALING)
         """
-        key = self._cache_key('trial_count')
+        key = self._cache_key("trial_count")
         cached = self._get_cached(key)
         if cached is not None:
             return cached
@@ -245,7 +245,7 @@ class KPIService:
 
         Returns a list of int/float values, one per day (oldest first).
         """
-        key = self._cache_key(f'trend:{metric_key}', f'{days}d')
+        key = self._cache_key(f"trend:{metric_key}", f"{days}d")
         cached = self._get_cached(key)
         if cached is not None:
             return cached
@@ -254,15 +254,17 @@ class KPIService:
         start_date = today - timedelta(days=days - 1)
         result = []
 
-        if metric_key == 'qr_scans':
+        if metric_key == "qr_scans":
             from apps.orders.models import QRScan
+
             for i in range(days):
                 d = start_date + timedelta(days=i)
                 count = QRScan.objects.filter(created_at__date=d).count()
                 result.append(count)
 
-        elif metric_key == 'organizations':
+        elif metric_key == "organizations":
             from apps.core.models import Organization
+
             for i in range(days):
                 d = start_date + timedelta(days=i)
                 count = Organization.objects.filter(
@@ -271,8 +273,9 @@ class KPIService:
                 ).count()
                 result.append(count)
 
-        elif metric_key == 'orders':
+        elif metric_key == "orders":
             from apps.orders.models import Order
+
             for i in range(days):
                 d = start_date + timedelta(days=i)
                 count = Order.objects.filter(
@@ -281,20 +284,22 @@ class KPIService:
                 ).count()
                 result.append(count)
 
-        elif metric_key == 'revenue':
+        elif metric_key == "revenue":
             from apps.analytics.models import SalesAggregation
+
             for i in range(days):
                 d = start_date + timedelta(days=i)
                 agg = SalesAggregation.objects.filter(
                     date=d,
-                    granularity='DAILY',
+                    granularity="DAILY",
                 ).aggregate(
-                    total=Coalesce(Sum('gross_revenue'), Decimal('0')),
+                    total=Coalesce(Sum("gross_revenue"), Decimal("0")),
                 )
-                result.append(float(agg['total']))
+                result.append(float(agg["total"]))
 
-        elif metric_key == 'menus':
+        elif metric_key == "menus":
             from apps.menu.models import Menu
+
             for i in range(days):
                 d = start_date + timedelta(days=i)
                 count = Menu.objects.filter(
@@ -303,8 +308,9 @@ class KPIService:
                 ).count()
                 result.append(count)
 
-        elif metric_key == 'service_requests':
+        elif metric_key == "service_requests":
             from apps.orders.models import ServiceRequest
+
             for i in range(days):
                 d = start_date + timedelta(days=i)
                 count = ServiceRequest.objects.filter(
@@ -330,7 +336,7 @@ class KPIService:
                 'change': float (percentage),
             }
         """
-        key = self._cache_key(f'comparison:{metric_key}')
+        key = self._cache_key(f"comparison:{metric_key}")
         cached = self._get_cached(key)
         if cached is not None:
             return cached
@@ -343,8 +349,9 @@ class KPIService:
         current = 0
         previous = 0
 
-        if metric_key == 'qr_scans':
+        if metric_key == "qr_scans":
             from apps.orders.models import QRScan
+
             current = QRScan.objects.filter(
                 created_at__date__gte=week_start,
                 created_at__date__lte=today,
@@ -354,8 +361,9 @@ class KPIService:
                 created_at__date__lte=prev_week_end,
             ).count()
 
-        elif metric_key == 'organizations':
+        elif metric_key == "organizations":
             from apps.core.models import Organization
+
             current = Organization.objects.filter(
                 created_at__date__gte=week_start,
                 created_at__date__lte=today,
@@ -367,8 +375,9 @@ class KPIService:
                 deleted_at__isnull=True,
             ).count()
 
-        elif metric_key == 'orders':
+        elif metric_key == "orders":
             from apps.orders.models import Order
+
             current = Order.objects.filter(
                 placed_at__date__gte=week_start,
                 placed_at__date__lte=today,
@@ -380,24 +389,26 @@ class KPIService:
                 deleted_at__isnull=True,
             ).count()
 
-        elif metric_key == 'revenue':
+        elif metric_key == "revenue":
             from apps.analytics.models import SalesAggregation
+
             c_agg = SalesAggregation.objects.filter(
                 date__gte=week_start,
                 date__lte=today,
-                granularity='DAILY',
-            ).aggregate(total=Coalesce(Sum('gross_revenue'), Decimal('0')))
-            current = float(c_agg['total'])
+                granularity="DAILY",
+            ).aggregate(total=Coalesce(Sum("gross_revenue"), Decimal("0")))
+            current = float(c_agg["total"])
 
             p_agg = SalesAggregation.objects.filter(
                 date__gte=prev_week_start,
                 date__lte=prev_week_end,
-                granularity='DAILY',
-            ).aggregate(total=Coalesce(Sum('gross_revenue'), Decimal('0')))
-            previous = float(p_agg['total'])
+                granularity="DAILY",
+            ).aggregate(total=Coalesce(Sum("gross_revenue"), Decimal("0")))
+            previous = float(p_agg["total"])
 
-        elif metric_key in ('menus', 'active_menus'):
+        elif metric_key in ("menus", "active_menus"):
             from apps.menu.models import Menu
+
             current = Menu.objects.filter(
                 created_at__date__gte=week_start,
                 created_at__date__lte=today,
@@ -409,8 +420,9 @@ class KPIService:
                 deleted_at__isnull=True,
             ).count()
 
-        elif metric_key in ('service_requests', 'pending_service_requests'):
+        elif metric_key in ("service_requests", "pending_service_requests"):
             from apps.orders.models import ServiceRequest
+
             current = ServiceRequest.objects.filter(
                 created_at__date__gte=week_start,
                 created_at__date__lte=today,
@@ -431,9 +443,9 @@ class KPIService:
             change = 0.0
 
         result = {
-            'current': current,
-            'previous': previous,
-            'change': change,
+            "current": current,
+            "previous": previous,
+            "change": change,
         }
 
         self._set_cached(key, result)
@@ -452,7 +464,7 @@ class KPIService:
                 'total': int,
             }
         """
-        key = self._cache_key('qr_scan_trend', f'{days}d')
+        key = self._cache_key("qr_scan_trend", f"{days}d")
         cached = self._get_cached(key)
         if cached is not None:
             return cached
@@ -473,7 +485,7 @@ class KPIService:
             values.append(count)
             total += count
 
-        result = {'dates': dates, 'values': values, 'total': total}
+        result = {"dates": dates, "values": values, "total": total}
         self._set_cached(key, result)
         return result
 
@@ -491,7 +503,7 @@ class KPIService:
                 'data': [[week_idx, day_of_week, count], ...]
             }
         """
-        key = self._cache_key('org_activity_heatmap')
+        key = self._cache_key("org_activity_heatmap")
         cached = self._get_cached(key)
         if cached is not None:
             return cached
@@ -507,39 +519,41 @@ class KPIService:
                 created_at__date__gte=start_date,
                 qr_code__organization__isnull=False,
             )
-            .values('qr_code__organization_id', 'qr_code__organization__name')
-            .annotate(total=Count('id'))
-            .order_by('-total')[:20]
+            .values("qr_code__organization_id", "qr_code__organization__name")
+            .annotate(total=Count("id"))
+            .order_by("-total")[:20]
         )
 
         result = []
         for org in top_orgs:
-            org_id = str(org['qr_code__organization_id'])
-            org_name = org['qr_code__organization__name'] or 'Unknown'
+            org_id = str(org["qr_code__organization_id"])
+            org_name = org["qr_code__organization__name"] or "Unknown"
 
             # Get daily counts for this org
             daily = (
                 QRScan.objects.filter(
                     created_at__date__gte=start_date,
-                    qr_code__organization_id=org['qr_code__organization_id'],
+                    qr_code__organization_id=org["qr_code__organization_id"],
                 )
-                .values('created_at__date')
-                .annotate(count=Count('id'))
+                .values("created_at__date")
+                .annotate(count=Count("id"))
             )
 
             # Convert to week/day matrix
             data = []
             for row in daily:
-                d = row['created_at__date']
+                d = row["created_at__date"]
                 week_idx = (d - start_date).days // 7
                 day_of_week = d.weekday()
-                data.append([week_idx, day_of_week, row['count']])
+                data.append([week_idx, day_of_week, row["count"]])
 
-            result.append({
-                'org_id': org_id,
-                'org_name': org_name[:20],  # Truncate for display
-                'data': data,
-            })
+            result.append(
+                {
+                    "org_id": org_id,
+                    "org_name": org_name[:20],  # Truncate for display
+                    "data": data,
+                }
+            )
 
         self._set_cached(key, result)
         return result
@@ -553,7 +567,7 @@ class KPIService:
         Returns:
             [{'name': 'Starter', 'value': 120}, ...]
         """
-        key = self._cache_key('plan_distribution')
+        key = self._cache_key("plan_distribution")
         cached = self._get_cached(key)
         if cached is not None:
             return cached
@@ -569,13 +583,13 @@ class KPIService:
                 ],
                 deleted_at__isnull=True,
             )
-            .values('plan__name')
-            .annotate(count=Count('id'))
-            .order_by('-count')
+            .values("plan__name")
+            .annotate(count=Count("id"))
+            .order_by("-count")
         )
 
         result = [
-            {'name': row['plan__name'] or 'Unknown', 'value': row['count']}
+            {"name": row["plan__name"] or "Unknown", "value": row["count"]}
             for row in dist
         ]
 
@@ -591,7 +605,7 @@ class KPIService:
         Returns:
             [{'city': 'Istanbul', 'count': 145, 'lat': 41.0, 'lng': 28.9}, ...]
         """
-        key = self._cache_key('city_distribution')
+        key = self._cache_key("city_distribution")
         cached = self._get_cached(key)
         if cached is not None:
             return cached
@@ -600,23 +614,23 @@ class KPIService:
 
         # Major Turkish cities with approximate coordinates
         CITY_COORDS = {
-            'istanbul': (41.0082, 28.9784),
-            'ankara': (39.9334, 32.8597),
-            'izmir': (38.4237, 27.1428),
-            'bursa': (40.1885, 29.0610),
-            'antalya': (36.8969, 30.7133),
-            'adana': (37.0000, 35.3213),
-            'konya': (37.8746, 32.4932),
-            'gaziantep': (37.0662, 37.3833),
-            'mersin': (36.8121, 34.6415),
-            'kayseri': (38.7312, 35.4787),
-            'eskisehir': (39.7767, 30.5206),
-            'diyarbakir': (37.9144, 40.2306),
-            'samsun': (41.2867, 36.3300),
-            'trabzon': (41.0027, 39.7168),
-            'denizli': (37.7765, 29.0864),
-            'mugla': (37.2153, 28.3636),
-            'bodrum': (37.0344, 27.4305),
+            "istanbul": (41.0082, 28.9784),
+            "ankara": (39.9334, 32.8597),
+            "izmir": (38.4237, 27.1428),
+            "bursa": (40.1885, 29.0610),
+            "antalya": (36.8969, 30.7133),
+            "adana": (37.0000, 35.3213),
+            "konya": (37.8746, 32.4932),
+            "gaziantep": (37.0662, 37.3833),
+            "mersin": (36.8121, 34.6415),
+            "kayseri": (38.7312, 35.4787),
+            "eskisehir": (39.7767, 30.5206),
+            "diyarbakir": (37.9144, 40.2306),
+            "samsun": (41.2867, 36.3300),
+            "trabzon": (41.0027, 39.7168),
+            "denizli": (37.7765, 29.0864),
+            "mugla": (37.2153, 28.3636),
+            "bodrum": (37.0344, 27.4305),
         }
 
         dist = (
@@ -625,22 +639,24 @@ class KPIService:
                 city__isnull=False,
                 organization__deleted_at__isnull=True,
             )
-            .values('city')
-            .annotate(count=Count('organization_id', distinct=True))
-            .order_by('-count')[:30]
+            .values("city")
+            .annotate(count=Count("organization_id", distinct=True))
+            .order_by("-count")[:30]
         )
 
         result = []
         for row in dist:
-            city = row['city']
-            city_lower = city.lower().replace('İ', 'i').replace('ı', 'i')
+            city = row["city"]
+            city_lower = city.lower().replace("İ", "i").replace("ı", "i")
             lat, lng = CITY_COORDS.get(city_lower, (39.0, 35.0))
-            result.append({
-                'city': city,
-                'count': row['count'],
-                'lat': lat,
-                'lng': lng,
-            })
+            result.append(
+                {
+                    "city": city,
+                    "count": row["count"],
+                    "lat": lat,
+                    "lng": lng,
+                }
+            )
 
         self._set_cached(key, result)
         return result
@@ -654,7 +670,7 @@ class KPIService:
         Returns:
             [{'step': 'Registration', 'count': 500}, ...]
         """
-        key = self._cache_key('subscription_funnel')
+        key = self._cache_key("subscription_funnel")
         cached = self._get_cached(key)
         if cached is not None:
             return cached
@@ -669,9 +685,14 @@ class KPIService:
         ).count()
 
         # Step 2: Organizations that started a trial
-        trial_ever = Subscription.objects.filter(
-            deleted_at__isnull=True,
-        ).values('organization_id').distinct().count()
+        trial_ever = (
+            Subscription.objects.filter(
+                deleted_at__isnull=True,
+            )
+            .values("organization_id")
+            .distinct()
+            .count()
+        )
 
         # Step 3: Active subscriptions (paying)
         active_subs = Subscription.objects.filter(
@@ -682,20 +703,25 @@ class KPIService:
         # Step 4: Renewals (subscriptions with current_period_end in future
         # that have been active for more than 1 billing period)
         from django.utils import timezone as tz
-        renewals = Subscription.objects.filter(
-            status=SubscriptionStatus.ACTIVE,
-            deleted_at__isnull=True,
-            current_period_end__gt=tz.now(),
-        ).exclude(
-            # Exclude first-time (within 35 days of creation)
-            created_at__gte=tz.now() - timedelta(days=35),
-        ).count()
+
+        renewals = (
+            Subscription.objects.filter(
+                status=SubscriptionStatus.ACTIVE,
+                deleted_at__isnull=True,
+                current_period_end__gt=tz.now(),
+            )
+            .exclude(
+                # Exclude first-time (within 35 days of creation)
+                created_at__gte=tz.now() - timedelta(days=35),
+            )
+            .count()
+        )
 
         result = [
-            {'step': 'Kayıt', 'count': total_orgs},
-            {'step': 'Trial', 'count': trial_ever},
-            {'step': 'Aktif', 'count': active_subs},
-            {'step': 'Yenileme', 'count': renewals},
+            {"step": "Kayıt", "count": total_orgs},
+            {"step": "Trial", "count": trial_ever},
+            {"step": "Aktif", "count": active_subs},
+            {"step": "Yenileme", "count": renewals},
         ]
 
         self._set_cached(key, result)
@@ -708,7 +734,7 @@ class KPIService:
         Pre-warm all KPI caches.
         Called by Celery task every 5 minutes.
         """
-        logger.info('Warming dashboard KPI caches...')
+        logger.info("Warming dashboard KPI caches...")
         try:
             self.get_active_organizations()
             self.get_today_qr_scans()
@@ -718,11 +744,18 @@ class KPIService:
             self.get_trial_count()
 
             # Trends (7-day for sparklines)
-            for metric in ['qr_scans', 'organizations', 'orders', 'revenue', 'menus', 'service_requests']:
+            for metric in [
+                "qr_scans",
+                "organizations",
+                "orders",
+                "revenue",
+                "menus",
+                "service_requests",
+            ]:
                 self.get_trend(metric, days=7)
 
             # Comparisons
-            for metric in ['qr_scans', 'organizations', 'orders', 'revenue']:
+            for metric in ["qr_scans", "organizations", "orders", "revenue"]:
                 self.get_period_comparison(metric)
 
             # QR scan trend for charts (30d, 90d)
@@ -735,6 +768,6 @@ class KPIService:
             self.get_city_distribution()
             self.get_subscription_funnel()
 
-            logger.info('Dashboard KPI cache warm complete.')
+            logger.info("Dashboard KPI cache warm complete.")
         except Exception as exc:
-            logger.error('Cache warm failed: %s', exc, exc_info=True)
+            logger.error("Cache warm failed: %s", exc, exc_info=True)

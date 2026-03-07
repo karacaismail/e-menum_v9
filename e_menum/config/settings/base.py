@@ -17,6 +17,7 @@ from django.utils.translation import gettext_lazy as _
 # Try to use django-environ if available, fallback to os.environ
 try:
     import environ
+
     env = environ.Env(
         # Set defaults
         DEBUG=(bool, False),
@@ -32,11 +33,11 @@ except ImportError:
             value = os.environ.get(key, default)
             if cast and value is not None:
                 if cast is bool:
-                    return str(value).lower() in ('true', '1', 'yes')
+                    return str(value).lower() in ("true", "1", "yes")
                 if cast is int:
                     return int(value)
                 if cast is list:
-                    return [x.strip() for x in str(value).split(',') if x.strip()]
+                    return [x.strip() for x in str(value).split(",") if x.strip()]
             return value
 
         def bool(self, key, default=False):
@@ -50,20 +51,21 @@ except ImportError:
 
         def db_url(self, default=None):
             """Parse DATABASE_URL into Django database config."""
-            db_url = os.environ.get('DATABASE_URL', default)
+            db_url = os.environ.get("DATABASE_URL", default)
             if not db_url:
                 return None
             # Basic URL parsing for postgresql://user:pass@host:port/db
-            if db_url.startswith('postgresql://') or db_url.startswith('postgres://'):
+            if db_url.startswith("postgresql://") or db_url.startswith("postgres://"):
                 from urllib.parse import urlparse
+
                 parsed = urlparse(db_url)
                 return {
-                    'ENGINE': 'django.db.backends.postgresql',
-                    'NAME': parsed.path[1:],
-                    'USER': parsed.username or '',
-                    'PASSWORD': parsed.password or '',
-                    'HOST': parsed.hostname or 'localhost',
-                    'PORT': str(parsed.port) if parsed.port else '5432',
+                    "ENGINE": "django.db.backends.postgresql",
+                    "NAME": parsed.path[1:],
+                    "USER": parsed.username or "",
+                    "PASSWORD": parsed.password or "",
+                    "HOST": parsed.hostname or "localhost",
+                    "PORT": str(parsed.port) if parsed.port else "5432",
                 }
             return None
 
@@ -79,7 +81,7 @@ except ImportError:
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Read .env file if it exists (project root: e_menum/.env or Docker /app/.env)
-ENV_FILE = BASE_DIR / '.env'
+ENV_FILE = BASE_DIR / ".env"
 if ENV_FILE.exists():
     try:
         environ.Env.read_env(str(ENV_FILE))
@@ -94,21 +96,21 @@ if ENV_FILE.exists():
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get(
-    'DJANGO_SECRET_KEY',
-    'django-insecure-change-this-in-production-use-50-char-random-string'
+    "DJANGO_SECRET_KEY",
+    "django-insecure-change-this-in-production-use-50-char-random-string",
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=False)
+DEBUG = env.bool("DEBUG", default=False)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 
 # CSRF Settings
-CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[])
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 # Security headers (enabled in production)
 SECURE_BROWSER_XSS_FILTER = True
-X_FRAME_OPTIONS = 'DENY'
+X_FRAME_OPTIONS = "DENY"
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
 
@@ -118,57 +120,62 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # Django built-in apps
 DJANGO_APPS = [
-    'modeltranslation',  # MUST be before django.contrib.admin
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.sitemaps',
+    "modeltranslation",  # MUST be before django.contrib.admin
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.sitemaps",
 ]
 
 # Third-party apps
 # Note: These apps require their dependencies to be installed via requirements.txt
 THIRD_PARTY_APPS = [
-    'rest_framework',
-    'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     # django-filer & easy-thumbnails for self-hosted media management
-    'filer',
-    'easy_thumbnails',
-    'django.contrib.sites',  # Required by django-filer
-    'django_filters',
-    'corsheaders',
-    'guardian',
-    'django_celery_beat',
-    'impersonate',  # User impersonation for superadmin
+    "filer",
+    "easy_thumbnails",
+    "django.contrib.sites",  # Required by django-filer
+    "django_filters",
+    "corsheaders",
+    "guardian",
+    "django_celery_beat",
+    "impersonate",  # User impersonation for superadmin
 ]
 
 # E-Menum Local apps (ordered by dependency)
 LOCAL_APPS = [
-    'apps.core.apps.CoreConfig',
-    'apps.menu.apps.MenuConfig',
-    'apps.orders.apps.OrdersConfig',
-    'apps.subscriptions.apps.SubscriptionsConfig',
-    'apps.customers.apps.CustomersConfig',
-    'apps.media.apps.MediaConfig',
-    'apps.notifications.apps.NotificationsConfig',
-    'apps.analytics.apps.AnalyticsConfig',
-    'apps.reporting.apps.ReportingConfig',
-    'apps.inventory.apps.InventoryConfig',
-    'apps.campaigns.apps.CampaignsConfig',
-    'apps.ai.apps.AiConfig',
-    'apps.website.apps.WebsiteConfig',
-    'apps.seo.apps.SEOConfig',
-    'apps.seo_shield.apps.SEOShieldConfig',
-    'apps.dashboard.apps.DashboardConfig',
-    'apps.accounts.apps.AccountsConfig',
+    "apps.core.apps.CoreConfig",
+    "apps.menu.apps.MenuConfig",
+    "apps.orders.apps.OrdersConfig",
+    "apps.subscriptions.apps.SubscriptionsConfig",
+    "apps.customers.apps.CustomersConfig",
+    "apps.media.apps.MediaConfig",
+    "apps.notifications.apps.NotificationsConfig",
+    "apps.analytics.apps.AnalyticsConfig",
+    "apps.reporting.apps.ReportingConfig",
+    "apps.inventory.apps.InventoryConfig",
+    "apps.campaigns.apps.CampaignsConfig",
+    "apps.ai.apps.AiConfig",
+    "apps.website.apps.WebsiteConfig",
+    "apps.seo.apps.SEOConfig",
+    "apps.seo_shield.apps.SEOShieldConfig",
+    "apps.dashboard.apps.DashboardConfig",
+    "apps.accounts.apps.AccountsConfig",
 ]
 
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + [
-    'django.forms',  # Required for FORM_RENDERER = TemplatesSetting
-]
+INSTALLED_APPS = (
+    DJANGO_APPS
+    + THIRD_PARTY_APPS
+    + LOCAL_APPS
+    + [
+        "django.forms",  # Required for FORM_RENDERER = TemplatesSetting
+    ]
+)
 
 
 # =============================================================================
@@ -178,26 +185,26 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + [
 # CRITICAL: Middleware order matters!
 # See spec.md for detailed ordering requirements
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     # SEO Shield — must be early to block bad requests before session/auth
-    'apps.seo_shield.middleware.SEOShieldMiddleware',
+    "apps.seo_shield.middleware.SEOShieldMiddleware",
     # SEO Middleware — redirect, canonical domain, headers
-    'apps.seo.middleware.CanonicalDomainMiddleware',
-    'apps.seo.middleware.RedirectMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',  # i18n support
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'impersonate.middleware.ImpersonateMiddleware',  # User impersonation
+    "apps.seo.middleware.CanonicalDomainMiddleware",
+    "apps.seo.middleware.RedirectMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",  # i18n support
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "impersonate.middleware.ImpersonateMiddleware",  # User impersonation
     # TenantMiddleware will be added after core app is created
     # 'shared.middleware.tenant.TenantMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'apps.seo.middleware.SEOHeadersMiddleware',  # Must be late to modify responses
-    'apps.seo.middleware.Track404Middleware',  # Must be last to catch 404 after all other middleware
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "apps.seo.middleware.SEOHeadersMiddleware",  # Must be late to modify responses
+    "apps.seo.middleware.Track404Middleware",  # Must be last to catch 404 after all other middleware
 ]
 
 
@@ -205,10 +212,10 @@ MIDDLEWARE = [
 # URL CONFIGURATION
 # =============================================================================
 
-ROOT_URLCONF = 'config.urls'
+ROOT_URLCONF = "config.urls"
 
-WSGI_APPLICATION = 'config.wsgi.application'
-ASGI_APPLICATION = 'config.asgi.application'
+WSGI_APPLICATION = "config.wsgi.application"
+ASGI_APPLICATION = "config.asgi.application"
 
 
 # =============================================================================
@@ -217,24 +224,24 @@ ASGI_APPLICATION = 'config.asgi.application'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            BASE_DIR / 'templates',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [
+            BASE_DIR / "templates",
         ],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.i18n',
-                'django.template.context_processors.media',
-                'django.template.context_processors.static',
-                'shared.context_processors.admin_sidebar_permissions',
-                'apps.website.context_processors.marketing_context',
-                'apps.website.context_processors.deploy_info_context',
-                'apps.seo.context_processors.seo_context',
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.i18n",
+                "django.template.context_processors.media",
+                "django.template.context_processors.static",
+                "shared.context_processors.admin_sidebar_permissions",
+                "apps.website.context_processors.marketing_context",
+                "apps.website.context_processors.deploy_info_context",
+                "apps.seo.context_processors.seo_context",
             ],
         },
     },
@@ -242,7 +249,7 @@ TEMPLATES = [
 
 # Use project's TEMPLATES configuration for form widget rendering
 # This allows custom widget templates in templates/admin/widgets/ to be found
-FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
+FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 
 
 # =============================================================================
@@ -252,32 +259,33 @@ FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 # Default to SQLite for initial setup, environment settings will override
 # Production uses PostgreSQL via DATABASE_URL
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
 # Try to use DATABASE_URL if available
-DATABASE_URL = os.environ.get('DATABASE_URL')
+DATABASE_URL = os.environ.get("DATABASE_URL")
 if DATABASE_URL:
     try:
         # Use dj-database-url if available
         import dj_database_url
-        DATABASES['default'] = dj_database_url.config(
+
+        DATABASES["default"] = dj_database_url.config(
             default=DATABASE_URL,
             conn_max_age=600,
             conn_health_checks=True,
         )
     except ImportError:
         # Fallback to manual parsing
-        db_config = env.db_url() if hasattr(env, 'db_url') else None
+        db_config = env.db_url() if hasattr(env, "db_url") else None
         if db_config:
-            DATABASES['default'] = db_config
+            DATABASES["default"] = db_config
 
 # Default database options for PostgreSQL
 DEFAULT_DATABASE_OPTIONS = {
-    'connect_timeout': 10,
+    "connect_timeout": 10,
 }
 
 
@@ -286,40 +294,40 @@ DEFAULT_DATABASE_OPTIONS = {
 # =============================================================================
 
 # Custom User Model
-AUTH_USER_MODEL = 'core.User'
+AUTH_USER_MODEL = "core.User"
 
 # Authentication backends (including django-guardian for object-level permissions)
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'guardian.backends.ObjectPermissionBackend',
+    "django.contrib.auth.backends.ModelBackend",
+    "guardian.backends.ObjectPermissionBackend",
 ]
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        'OPTIONS': {
-            'min_length': 12,  # Enterprise requirement: min 12 chars
-        }
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {
+            "min_length": 12,  # Enterprise requirement: min 12 chars
+        },
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
 # Password hashing (bcrypt with 12 rounds for enterprise security)
 PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
-    'django.contrib.auth.hashers.Argon2PasswordHasher',
-    'django.contrib.auth.hashers.ScryptPasswordHasher',
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.ScryptPasswordHasher",
 ]
 
 
@@ -329,63 +337,54 @@ PASSWORD_HASHERS = [
 
 REST_FRAMEWORK = {
     # Authentication
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',  # For browsable API
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",  # For browsable API
     ],
-
     # Permissions
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
     ],
-
     # Filtering & Search
-    'DEFAULT_FILTER_BACKENDS': [
-        'django_filters.rest_framework.DjangoFilterBackend',
-        'rest_framework.filters.SearchFilter',
-        'rest_framework.filters.OrderingFilter',
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.SearchFilter",
+        "rest_framework.filters.OrderingFilter",
     ],
-
     # Pagination
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 20,
-
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 20,
     # Throttling (rate limiting)
-    'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle',
-        'rest_framework.throttling.UserRateThrottle',
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
     ],
-    'DEFAULT_THROTTLE_RATES': {
-        'anon': '100/hour',
-        'user': '1000/hour',
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "100/hour",
+        "user": "1000/hour",
     },
-
     # Parsers & Renderers
-    'DEFAULT_PARSER_CLASSES': [
-        'rest_framework.parsers.JSONParser',
-        'rest_framework.parsers.FormParser',
-        'rest_framework.parsers.MultiPartParser',
+    "DEFAULT_PARSER_CLASSES": [
+        "rest_framework.parsers.JSONParser",
+        "rest_framework.parsers.FormParser",
+        "rest_framework.parsers.MultiPartParser",
     ],
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
     ],
-
     # Exception handling
-    'EXCEPTION_HANDLER': 'shared.utils.exceptions.custom_exception_handler',
-
+    "EXCEPTION_HANDLER": "shared.utils.exceptions.custom_exception_handler",
     # Versioning
-    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning',
-    'DEFAULT_VERSION': 'v1',
-    'ALLOWED_VERSIONS': ['v1'],
-
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",
+    "DEFAULT_VERSION": "v1",
+    "ALLOWED_VERSIONS": ["v1"],
     # Date/Time formats
-    'DATETIME_FORMAT': '%Y-%m-%dT%H:%M:%S.%fZ',
-    'DATE_FORMAT': '%Y-%m-%d',
-    'TIME_FORMAT': '%H:%M:%S',
-
+    "DATETIME_FORMAT": "%Y-%m-%dT%H:%M:%S.%fZ",
+    "DATE_FORMAT": "%Y-%m-%d",
+    "TIME_FORMAT": "%H:%M:%S",
     # Schema
-    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.openapi.AutoSchema',
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.openapi.AutoSchema",
 }
 
 
@@ -394,35 +393,30 @@ REST_FRAMEWORK = {
 # =============================================================================
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(
-        minutes=env.int('JWT_ACCESS_TOKEN_LIFETIME', default=15)
+    "ACCESS_TOKEN_LIFETIME": timedelta(
+        minutes=env.int("JWT_ACCESS_TOKEN_LIFETIME", default=15)
     ),
-    'REFRESH_TOKEN_LIFETIME': timedelta(
-        minutes=env.int('JWT_REFRESH_TOKEN_LIFETIME', default=10080)  # 7 days
+    "REFRESH_TOKEN_LIFETIME": timedelta(
+        minutes=env.int("JWT_REFRESH_TOKEN_LIFETIME", default=10080)  # 7 days
     ),
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'UPDATE_LAST_LOGIN': True,
-
-    'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,
-    'VERIFYING_KEY': None,
-    'AUDIENCE': None,
-    'ISSUER': 'e-menum',
-
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
-
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'TOKEN_TYPE_CLAIM': 'token_type',
-
-    'JTI_CLAIM': 'jti',
-
-    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=15),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "VERIFYING_KEY": None,
+    "AUDIENCE": None,
+    "ISSUER": "e-menum",
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "JTI_CLAIM": "jti",
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=15),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=7),
 }
 
 
@@ -431,30 +425,30 @@ SIMPLE_JWT = {
 # =============================================================================
 
 # CORS headers configuration
-CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[])
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
 
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_METHODS = [
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
 ]
 
 CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-    'x-organization-id',  # For multi-tenant requests
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+    "x-organization-id",  # For multi-tenant requests
 ]
 
 
@@ -464,23 +458,23 @@ CORS_ALLOW_HEADERS = [
 
 # Default cache (can be overridden with Redis in production)
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
     }
 }
 
 # Redis cache configuration (if REDIS_URL is set)
-REDIS_URL = os.environ.get('REDIS_URL')
+REDIS_URL = os.environ.get("REDIS_URL")
 if REDIS_URL:
     CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-            'LOCATION': REDIS_URL,
-            'OPTIONS': {
-                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": REDIS_URL,
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
             },
-            'KEY_PREFIX': 'emenum',
+            "KEY_PREFIX": "emenum",
         }
     }
 
@@ -495,14 +489,16 @@ CACHE_TIMEOUT_LONG = 60 * 60 * 24  # 24 hours
 # =============================================================================
 
 # Celery broker URL (Redis)
-CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/0")
+CELERY_RESULT_BACKEND = os.environ.get(
+    "CELERY_RESULT_BACKEND", "redis://localhost:6379/0"
+)
 
 # Celery configuration
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'Europe/Istanbul'
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "Europe/Istanbul"
 CELERY_ENABLE_UTC = True
 
 # Task execution settings
@@ -513,7 +509,7 @@ CELERY_TASK_REJECT_ON_WORKER_LOST = True
 
 # Worker settings
 CELERY_WORKER_PREFETCH_MULTIPLIER = 1
-CELERY_WORKER_CONCURRENCY = env.int('CELERY_WORKER_CONCURRENCY', default=4)
+CELERY_WORKER_CONCURRENCY = env.int("CELERY_WORKER_CONCURRENCY", default=4)
 
 # Result backend settings
 CELERY_RESULT_EXPIRES = 60 * 60 * 24  # 24 hours
@@ -523,16 +519,16 @@ CELERY_TASK_DEFAULT_RETRY_DELAY = 60  # 1 minute
 CELERY_TASK_MAX_RETRIES = 3
 
 # Beat scheduler (for periodic tasks)
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 
 # =============================================================================
 # INTERNATIONALIZATION (i18n)
 # =============================================================================
 
-LANGUAGE_CODE = 'tr'  # Turkish as default
+LANGUAGE_CODE = "tr"  # Turkish as default
 
-TIME_ZONE = 'Europe/Istanbul'
+TIME_ZONE = "Europe/Istanbul"
 
 USE_I18N = True
 USE_L10N = True
@@ -540,47 +536,47 @@ USE_TZ = True
 
 # Available languages — 5 languages
 LANGUAGES = [
-    ('tr', _('Turkce')),
-    ('en', _('English')),
-    ('ar', _('Arabic')),
-    ('ru', _('Russian')),
-    ('de', _('Deutsch')),
+    ("tr", _("Turkce")),
+    ("en", _("English")),
+    ("ar", _("Arabic")),
+    ("ru", _("Russian")),
+    ("de", _("Deutsch")),
 ]
 
 LOCALE_PATHS = [
-    BASE_DIR / 'locale',
+    BASE_DIR / "locale",
 ]
 
 # =============================================================================
 # DJANGO-MODELTRANSLATION
 # =============================================================================
 
-MODELTRANSLATION_DEFAULT_LANGUAGE = 'tr'
-MODELTRANSLATION_LANGUAGES = ('tr', 'en', 'ar', 'ru', 'de')
-MODELTRANSLATION_FALLBACK_LANGUAGES = {'default': ('tr', 'en')}
-MODELTRANSLATION_PREPOPULATE_LANGUAGE = 'tr'
+MODELTRANSLATION_DEFAULT_LANGUAGE = "tr"
+MODELTRANSLATION_LANGUAGES = ("tr", "en", "ar", "ru", "de")
+MODELTRANSLATION_FALLBACK_LANGUAGES = {"default": ("tr", "en")}
+MODELTRANSLATION_PREPOPULATE_LANGUAGE = "tr"
 
 
 # =============================================================================
 # STATIC FILES
 # =============================================================================
 
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',
+    BASE_DIR / "static",
 ]
 
 # WhiteNoise for serving static files
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 # =============================================================================
 # MEDIA FILES
 # =============================================================================
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # File upload settings
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
@@ -595,24 +591,24 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
 SITE_ID = 1
 
 # Filer canonical URL
-FILER_CANONICAL_URL = 'media/'
+FILER_CANONICAL_URL = "media/"
 
 # Filer storage configuration
 FILER_STORAGES = {
-    'public': {
-        'main': {
-            'ENGINE': 'django.core.files.storage.FileSystemStorage',
-            'OPTIONS': {
-                'location': str(BASE_DIR / 'media' / 'filer'),
-                'base_url': '/media/filer/',
+    "public": {
+        "main": {
+            "ENGINE": "django.core.files.storage.FileSystemStorage",
+            "OPTIONS": {
+                "location": str(BASE_DIR / "media" / "filer"),
+                "base_url": "/media/filer/",
             },
-            'UPLOAD_TO': 'shared.utils.media.filer_upload_path',
+            "UPLOAD_TO": "shared.utils.media.filer_upload_path",
         },
-        'thumbnails': {
-            'ENGINE': 'django.core.files.storage.FileSystemStorage',
-            'OPTIONS': {
-                'location': str(BASE_DIR / 'media' / 'filer_thumbnails'),
-                'base_url': '/media/filer_thumbnails/',
+        "thumbnails": {
+            "ENGINE": "django.core.files.storage.FileSystemStorage",
+            "OPTIONS": {
+                "location": str(BASE_DIR / "media" / "filer_thumbnails"),
+                "base_url": "/media/filer_thumbnails/",
             },
         },
     },
@@ -620,32 +616,32 @@ FILER_STORAGES = {
 
 # Easy-thumbnails processors
 THUMBNAIL_PROCESSORS = (
-    'easy_thumbnails.processors.colorspace',
-    'easy_thumbnails.processors.autocrop',
-    'easy_thumbnails.processors.scale_and_crop',
-    'easy_thumbnails.processors.filters',
+    "easy_thumbnails.processors.colorspace",
+    "easy_thumbnails.processors.autocrop",
+    "easy_thumbnails.processors.scale_and_crop",
+    "easy_thumbnails.processors.filters",
 )
 
 # Allowed MIME types for uploads
 FILER_MIME_TYPE_WHITELIST = [
-    'image/jpeg',
-    'image/png',
-    'image/gif',
-    'image/webp',
-    'image/svg+xml',
-    'video/mp4',
-    'video/webm',
-    'application/pdf',
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+    "image/svg+xml",
+    "video/mp4",
+    "video/webm",
+    "application/pdf",
 ]
 
 # Thumbnail aliases
 THUMBNAIL_ALIASES = {
-    '': {
-        'menu_thumb': {'size': (400, 300), 'crop': True, 'quality': 85},
-        'menu_large': {'size': (800, 600), 'crop': True, 'quality': 90},
-        'category_icon': {'size': (200, 200), 'crop': True, 'quality': 85},
-        'logo_small': {'size': (100, 100), 'crop': False, 'quality': 90},
-        'logo_large': {'size': (400, 400), 'crop': False, 'quality': 90},
+    "": {
+        "menu_thumb": {"size": (400, 300), "crop": True, "quality": 85},
+        "menu_large": {"size": (800, 600), "crop": True, "quality": 90},
+        "category_icon": {"size": (200, 200), "crop": True, "quality": 85},
+        "logo_small": {"size": (100, 100), "crop": False, "quality": 90},
+        "logo_large": {"size": (400, 400), "crop": False, "quality": 90},
     },
 }
 
@@ -654,7 +650,7 @@ THUMBNAIL_ALIASES = {
 # DEFAULT PRIMARY KEY
 # =============================================================================
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # =============================================================================
@@ -671,25 +667,25 @@ ANONYMOUS_USER_NAME = None  # Disable anonymous user
 
 IMPERSONATE = {
     # Only superusers and staff users can impersonate
-    'REQUIRE_SUPERUSER': False,
+    "REQUIRE_SUPERUSER": False,
     # Custom function to check who can impersonate
-    'CUSTOM_ALLOW': 'shared.utils.impersonate.can_impersonate',
+    "CUSTOM_ALLOW": "shared.utils.impersonate.can_impersonate",
     # Custom function to check who can be impersonated
-    'CUSTOM_USER_QUERYSET': 'shared.utils.impersonate.get_impersonatable_users',
+    "CUSTOM_USER_QUERYSET": "shared.utils.impersonate.get_impersonatable_users",
     # Redirect after impersonation starts/stops
-    'REDIRECT_URL': '/admin/',
+    "REDIRECT_URL": "/admin/",
     # Disable impersonation of superusers (security)
-    'ALLOW_SUPERUSER': False,
+    "ALLOW_SUPERUSER": False,
     # Max session duration in seconds (1 hour)
-    'MAX_DURATION': 3600,
+    "MAX_DURATION": 3600,
     # URI to redirect to after stopping impersonation
-    'REDIRECT_FIELD_NAME': 'next',
+    "REDIRECT_FIELD_NAME": "next",
     # Override default URI_EXCLUSIONS which blocks /admin/ paths.
     # We WANT impersonation to work inside admin panel.
     # Only exclude impersonate's own stop URL to prevent loops.
-    'URI_EXCLUSIONS': (),
+    "URI_EXCLUSIONS": (),
     # Admin panel behaviour while impersonating
-    'ADMIN_READ_ONLY': True,  # Impersonated user sees admin as read-only
+    "ADMIN_READ_ONLY": True,  # Impersonated user sees admin as read-only
 }
 
 
@@ -698,20 +694,19 @@ IMPERSONATE = {
 # =============================================================================
 
 EMAIL_BACKEND = os.environ.get(
-    'EMAIL_BACKEND',
-    'django.core.mail.backends.console.EmailBackend'
+    "EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
 )
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
-EMAIL_PORT = env.int('EMAIL_PORT', default=587)
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "localhost")
+EMAIL_PORT = env.int("EMAIL_PORT", default=587)
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
 # Central domain setting — single source of truth for the entire project.
 # Override via SITE_DOMAIN env var. Every email/URL default derives from here.
-SITE_DOMAIN = os.environ.get('SITE_DOMAIN', 'e-menum.net')
-SITE_URL = os.environ.get('SITE_URL', f'https://{SITE_DOMAIN}')
+SITE_DOMAIN = os.environ.get("SITE_DOMAIN", "e-menum.net")
+SITE_URL = os.environ.get("SITE_URL", f"https://{SITE_DOMAIN}")
 
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', f'noreply@{SITE_DOMAIN}')
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", f"noreply@{SITE_DOMAIN}")
 
 
 # =============================================================================
@@ -719,78 +714,78 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', f'noreply@{SITE_DOMAIN
 # =============================================================================
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-            'style': '{',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
         },
-        'simple': {
-            'format': '{levelname} {asctime} {module} {message}',
-            'style': '{',
+        "simple": {
+            "format": "{levelname} {asctime} {module} {message}",
+            "style": "{",
         },
-        'json': {
-            'format': '{"level": "%(levelname)s", "time": "%(asctime)s", "module": "%(module)s", "message": "%(message)s"}',
-        },
-    },
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse',
-        },
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
+        "json": {
+            "format": '{"level": "%(levelname)s", "time": "%(asctime)s", "module": "%(module)s", "message": "%(message)s"}',
         },
     },
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
+    "filters": {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
         },
-        'console_verbose': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler',
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
         },
     },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+        "console_verbose": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
+        },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': os.environ.get('DJANGO_LOG_LEVEL', 'INFO'),
-            'propagate': False,
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": os.environ.get("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": False,
         },
-        'django.request': {
-            'handlers': ['console_verbose', 'mail_admins'],
-            'level': 'ERROR',
-            'propagate': False,
+        "django.request": {
+            "handlers": ["console_verbose", "mail_admins"],
+            "level": "ERROR",
+            "propagate": False,
         },
-        'django.security': {
-            'handlers': ['console_verbose', 'mail_admins'],
-            'level': 'ERROR',
-            'propagate': False,
+        "django.security": {
+            "handlers": ["console_verbose", "mail_admins"],
+            "level": "ERROR",
+            "propagate": False,
         },
-        'django.db.backends': {
-            'handlers': ['console'],
-            'level': os.environ.get('DB_LOG_LEVEL', 'WARNING'),
-            'propagate': False,
+        "django.db.backends": {
+            "handlers": ["console"],
+            "level": os.environ.get("DB_LOG_LEVEL", "WARNING"),
+            "propagate": False,
         },
-        'apps': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,
+        "apps": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
         },
-        'celery': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': False,
+        "celery": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
         },
     },
 }
@@ -801,12 +796,12 @@ LOGGING = {
 # =============================================================================
 
 # Multi-tenancy settings
-EMENUM_TENANT_HEADER = 'X-Organization-ID'
-EMENUM_TENANT_COOKIE = 'emenum_org_id'
+EMENUM_TENANT_HEADER = "X-Organization-ID"
+EMENUM_TENANT_COOKIE = "emenum_org_id"
 
 # API settings
-EMENUM_API_VERSION = 'v1'
-EMENUM_API_PREFIX = f'/api/{EMENUM_API_VERSION}'
+EMENUM_API_VERSION = "v1"
+EMENUM_API_PREFIX = f"/api/{EMENUM_API_VERSION}"
 
 # Pagination defaults
 EMENUM_DEFAULT_PAGE_SIZE = 20
@@ -814,45 +809,45 @@ EMENUM_MAX_PAGE_SIZE = 100
 
 # Plan limits (from spec)
 EMENUM_PLAN_LIMITS = {
-    'FREE': {
-        'menus': 1,
-        'products': 50,
-        'qr_codes': 3,
-        'users': 2,
-        'storage_mb': 100,
-        'ai_credits': 0,
+    "FREE": {
+        "menus": 1,
+        "products": 50,
+        "qr_codes": 3,
+        "users": 2,
+        "storage_mb": 100,
+        "ai_credits": 0,
     },
-    'STARTER': {
-        'menus': 3,
-        'products': 200,
-        'qr_codes': 10,
-        'users': 5,
-        'storage_mb': 500,
-        'ai_credits': 100,
+    "STARTER": {
+        "menus": 3,
+        "products": 200,
+        "qr_codes": 10,
+        "users": 5,
+        "storage_mb": 500,
+        "ai_credits": 100,
     },
-    'PROFESSIONAL': {
-        'menus': 10,
-        'products': 500,
-        'qr_codes': 50,
-        'users': 15,
-        'storage_mb': 2048,
-        'ai_credits': 500,
+    "PROFESSIONAL": {
+        "menus": 10,
+        "products": 500,
+        "qr_codes": 50,
+        "users": 15,
+        "storage_mb": 2048,
+        "ai_credits": 500,
     },
-    'BUSINESS': {
-        'menus': 25,
-        'products': 1000,
-        'qr_codes': 100,
-        'users': 30,
-        'storage_mb': 5120,
-        'ai_credits': 1000,
+    "BUSINESS": {
+        "menus": 25,
+        "products": 1000,
+        "qr_codes": 100,
+        "users": 30,
+        "storage_mb": 5120,
+        "ai_credits": 1000,
     },
-    'ENTERPRISE': {
-        'menus': -1,  # Unlimited
-        'products': -1,
-        'qr_codes': -1,
-        'users': -1,
-        'storage_mb': 20480,
-        'ai_credits': -1,
+    "ENTERPRISE": {
+        "menus": -1,  # Unlimited
+        "products": -1,
+        "qr_codes": -1,
+        "users": -1,
+        "storage_mb": 20480,
+        "ai_credits": -1,
     },
 }
 
@@ -860,43 +855,45 @@ EMENUM_PLAN_LIMITS = {
 # AI CONTENT GENERATION
 # =============================================================================
 # Provider: 'openai' or 'anthropic' (set via environment variable)
-AI_PROVIDER = os.environ.get('AI_PROVIDER', 'openai')
-AI_API_KEY = os.environ.get('AI_API_KEY', os.environ.get('OPENAI_API_KEY', ''))
-AI_MODEL = os.environ.get('AI_MODEL', 'gpt-4o-mini')
+AI_PROVIDER = os.environ.get("AI_PROVIDER", "openai")
+AI_API_KEY = os.environ.get("AI_API_KEY", os.environ.get("OPENAI_API_KEY", ""))
+AI_MODEL = os.environ.get("AI_MODEL", "gpt-4o-mini")
 # When no API key is set, the service uses mock responses for development.
 
 # Session settings
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 7  # 1 week
 SESSION_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = "Lax"
 
 # CSRF settings
 CSRF_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_HTTPONLY = True
-CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = "Lax"
 
 
 # =============================================================================
 # SEO MODULE SETTINGS
 # =============================================================================
 
-SEO_SITE_NAME = 'E-Menum'
-SEO_DEFAULT_TITLE = 'E-Menum - Akilli QR Menu Platformu'
-SEO_DEFAULT_DESCRIPTION = 'Restoran ve kafeler icin yapay zeka destekli dijital menu platformu.'
-SEO_DEFAULT_OG_IMAGE = ''
-SEO_CANONICAL_DOMAIN = os.environ.get('SEO_CANONICAL_DOMAIN', SITE_DOMAIN)
-SEO_GTM_CONTAINER_ID = os.environ.get('SEO_GTM_CONTAINER_ID', '')  # e.g. 'GTM-XXXXXX'
+SEO_SITE_NAME = "E-Menum"
+SEO_DEFAULT_TITLE = "E-Menum - Akilli QR Menu Platformu"
+SEO_DEFAULT_DESCRIPTION = (
+    "Restoran ve kafeler icin yapay zeka destekli dijital menu platformu."
+)
+SEO_DEFAULT_OG_IMAGE = ""
+SEO_CANONICAL_DOMAIN = os.environ.get("SEO_CANONICAL_DOMAIN", SITE_DOMAIN)
+SEO_GTM_CONTAINER_ID = os.environ.get("SEO_GTM_CONTAINER_ID", "")  # e.g. 'GTM-XXXXXX'
 
 
 # =============================================================================
 # SEO SHIELD SETTINGS
 # =============================================================================
 
-SHIELD_ENABLED = env.bool('SHIELD_ENABLED', default=True)
-SHIELD_RATE_LIMIT_WINDOW = env.int('SHIELD_RATE_LIMIT_WINDOW', default=60)  # seconds
-SHIELD_RATE_LIMIT_MAX_REQUESTS = env.int('SHIELD_RATE_LIMIT_MAX_REQUESTS', default=60)
-SHIELD_THRESHOLD_LOG = env.int('SHIELD_THRESHOLD_LOG', default=30)
-SHIELD_THRESHOLD_CHALLENGE = env.int('SHIELD_THRESHOLD_CHALLENGE', default=60)
-SHIELD_THRESHOLD_BLOCK = env.int('SHIELD_THRESHOLD_BLOCK', default=80)
-SHIELD_WHITELIST_IPS = env.list('SHIELD_WHITELIST_IPS', default=['127.0.0.1', '::1'])
+SHIELD_ENABLED = env.bool("SHIELD_ENABLED", default=True)
+SHIELD_RATE_LIMIT_WINDOW = env.int("SHIELD_RATE_LIMIT_WINDOW", default=60)  # seconds
+SHIELD_RATE_LIMIT_MAX_REQUESTS = env.int("SHIELD_RATE_LIMIT_MAX_REQUESTS", default=60)
+SHIELD_THRESHOLD_LOG = env.int("SHIELD_THRESHOLD_LOG", default=30)
+SHIELD_THRESHOLD_CHALLENGE = env.int("SHIELD_THRESHOLD_CHALLENGE", default=60)
+SHIELD_THRESHOLD_BLOCK = env.int("SHIELD_THRESHOLD_BLOCK", default=80)
+SHIELD_WHITELIST_IPS = env.list("SHIELD_WHITELIST_IPS", default=["127.0.0.1", "::1"])

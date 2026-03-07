@@ -81,7 +81,7 @@ from apps.subscriptions.views import (
 )
 
 
-app_name = 'subscriptions'
+app_name = "subscriptions"
 
 
 # =============================================================================
@@ -91,14 +91,14 @@ app_name = 'subscriptions'
 router = DefaultRouter()
 
 # Platform-level resources (no tenant scope)
-router.register(r'features', FeatureViewSet, basename='feature')
-router.register(r'plans', PlanViewSet, basename='plan')
-router.register(r'plan-features', PlanFeatureViewSet, basename='plan-feature')
+router.register(r"features", FeatureViewSet, basename="feature")
+router.register(r"plans", PlanViewSet, basename="plan")
+router.register(r"plan-features", PlanFeatureViewSet, basename="plan-feature")
 
 # Tenant-scoped resources
-router.register(r'subscriptions', SubscriptionViewSet, basename='subscription')
-router.register(r'invoices', InvoiceViewSet, basename='invoice')
-router.register(r'usage', OrganizationUsageViewSet, basename='usage')
+router.register(r"subscriptions", SubscriptionViewSet, basename="subscription")
+router.register(r"invoices", InvoiceViewSet, basename="invoice")
+router.register(r"usage", OrganizationUsageViewSet, basename="usage")
 
 
 # =============================================================================
@@ -106,5 +106,5 @@ router.register(r'usage', OrganizationUsageViewSet, basename='usage')
 # =============================================================================
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]

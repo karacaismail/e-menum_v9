@@ -55,20 +55,24 @@ logger = logging.getLogger(__name__)
 # EXCEPTIONS
 # =============================================================================
 
+
 class PlanLimitExceeded(PermissionDenied):
     """Raised when an organization exceeds their plan limit."""
-    status_code = status.HTTP_403_FORBIDDEN
-    default_detail = _('Plan limit exceeded. Please upgrade your subscription.')
-    default_code = 'plan_limit_exceeded'
 
-    def __init__(self, limit_key: str = None, current: int = 0, limit: int = 0, **kwargs):
+    status_code = status.HTTP_403_FORBIDDEN
+    default_detail = _("Plan limit exceeded. Please upgrade your subscription.")
+    default_code = "plan_limit_exceeded"
+
+    def __init__(
+        self, limit_key: str = None, current: int = 0, limit: int = 0, **kwargs
+    ):
         detail = self.default_detail
         if limit_key:
-            label = limit_key.replace('max_', '').replace('_', ' ').title()
+            label = limit_key.replace("max_", "").replace("_", " ").title()
             detail = _(
-                'You have reached the %(label)s limit for your plan '
-                '(%(current)d/%(limit)d). Please upgrade to add more.'
-            ) % {'label': label, 'current': current, 'limit': limit}
+                "You have reached the %(label)s limit for your plan "
+                "(%(current)d/%(limit)d). Please upgrade to add more."
+            ) % {"label": label, "current": current, "limit": limit}
         super().__init__(detail=detail, **kwargs)
         self.limit_key = limit_key
         self.current = current
@@ -77,18 +81,19 @@ class PlanLimitExceeded(PermissionDenied):
 
 class FeatureNotAvailable(PermissionDenied):
     """Raised when a feature is not available on the org's plan."""
+
     status_code = status.HTTP_403_FORBIDDEN
-    default_detail = _('This feature is not available on your current plan.')
-    default_code = 'feature_not_available'
+    default_detail = _("This feature is not available on your current plan.")
+    default_code = "feature_not_available"
 
     def __init__(self, feature_code: str = None, **kwargs):
         detail = self.default_detail
         if feature_code:
-            label = feature_code.replace('_', ' ').title()
+            label = feature_code.replace("_", " ").title()
             detail = _(
-                '%(label)s is not available on your current plan. '
-                'Please upgrade to access this feature.'
-            ) % {'label': label}
+                "%(label)s is not available on your current plan. "
+                "Please upgrade to access this feature."
+            ) % {"label": label}
         super().__init__(detail=detail, **kwargs)
         self.feature_code = feature_code
 
@@ -96,6 +101,7 @@ class FeatureNotAvailable(PermissionDenied):
 # =============================================================================
 # PLAN ENFORCEMENT SERVICE
 # =============================================================================
+
 
 class PlanEnforcementService:
     """
@@ -120,11 +126,15 @@ class PlanEnforcementService:
         from apps.subscriptions.models import Subscription
         from apps.subscriptions.choices import SubscriptionStatus
 
-        return Subscription.objects.filter(
-            organization=organization,
-            status__in=[SubscriptionStatus.ACTIVE, SubscriptionStatus.TRIALING],
-            deleted_at__isnull=True,
-        ).select_related('plan').first()
+        return (
+            Subscription.objects.filter(
+                organization=organization,
+                status__in=[SubscriptionStatus.ACTIVE, SubscriptionStatus.TRIALING],
+                deleted_at__isnull=True,
+            )
+            .select_related("plan")
+            .first()
+        )
 
     @staticmethod
     def get_active_plan(organization):
@@ -141,19 +151,23 @@ class PlanEnforcementService:
             return subscription.plan
 
         # No active subscription → return default plan (FREE)
-        return Plan.objects.filter(
-            is_default=True,
-            is_active=True,
-            deleted_at__isnull=True,
-        ).first() or Plan.objects.filter(
-            tier=PlanTier.FREE,
-            is_active=True,
-            deleted_at__isnull=True,
-        ).first()
+        return (
+            Plan.objects.filter(
+                is_default=True,
+                is_active=True,
+                deleted_at__isnull=True,
+            ).first()
+            or Plan.objects.filter(
+                tier=PlanTier.FREE,
+                is_active=True,
+                deleted_at__isnull=True,
+            ).first()
+        )
 
     @staticmethod
-    def check_limit(organization, limit_key: str, model_class=None,
-                     extra_filter: dict = None) -> Tuple[bool, int, int]:
+    def check_limit(
+        organization, limit_key: str, model_class=None, extra_filter: dict = None
+    ) -> Tuple[bool, int, int]:
         """
         Check if an organization can create another resource.
 
@@ -182,17 +196,17 @@ class PlanEnforcementService:
         current_count = 0
         if model_class:
             filter_kwargs = {
-                'deleted_at__isnull': True,
+                "deleted_at__isnull": True,
             }
             # Determine org field name
-            if hasattr(model_class, 'organization_id'):
-                filter_kwargs['organization'] = organization
-            elif hasattr(model_class, 'category'):
+            if hasattr(model_class, "organization_id"):
+                filter_kwargs["organization"] = organization
+            elif hasattr(model_class, "category"):
                 # Products are linked via category → menu → organization
-                filter_kwargs['category__menu__organization'] = organization
-            elif hasattr(model_class, 'menu'):
+                filter_kwargs["category__menu__organization"] = organization
+            elif hasattr(model_class, "menu"):
                 # Categories are linked via menu → organization
-                filter_kwargs['menu__organization'] = organization
+                filter_kwargs["menu__organization"] = organization
 
             if extra_filter:
                 filter_kwargs.update(extra_filter)
@@ -238,11 +252,29 @@ class PlanEnforcementService:
 
         # Model mappings for counting
         model_mapping = {
-            'max_menus': (Menu, {'organization': organization, 'deleted_at__isnull': True}),
-            'max_products': (Product, {'category__menu__organization': organization, 'deleted_at__isnull': True}),
-            'max_categories': (Category, {'menu__organization': organization, 'deleted_at__isnull': True}),
-            'max_qr_codes': (QRCode, {'organization': organization, 'deleted_at__isnull': True}),
-            'max_users': (UserRole, {'organization': organization, 'deleted_at__isnull': True}),
+            "max_menus": (
+                Menu,
+                {"organization": organization, "deleted_at__isnull": True},
+            ),
+            "max_products": (
+                Product,
+                {
+                    "category__menu__organization": organization,
+                    "deleted_at__isnull": True,
+                },
+            ),
+            "max_categories": (
+                Category,
+                {"menu__organization": organization, "deleted_at__isnull": True},
+            ),
+            "max_qr_codes": (
+                QRCode,
+                {"organization": organization, "deleted_at__isnull": True},
+            ),
+            "max_users": (
+                UserRole,
+                {"organization": organization, "deleted_at__isnull": True},
+            ),
         }
 
         summary = {}
@@ -257,26 +289,33 @@ class PlanEnforcementService:
 
             if limit_value == -1:
                 percentage = 0
-                status_text = 'unlimited'
+                status_text = "unlimited"
             elif limit_value > 0:
                 percentage = min(100, (current / limit_value) * 100)
-                status_text = 'ok' if percentage < 90 else 'warning' if percentage < 100 else 'exceeded'
+                status_text = (
+                    "ok"
+                    if percentage < 90
+                    else "warning"
+                    if percentage < 100
+                    else "exceeded"
+                )
             else:
                 percentage = 0
-                status_text = 'no_limit'
+                status_text = "no_limit"
 
             summary[key] = {
-                'current': current,
-                'limit': limit_value,
-                'percentage': round(percentage, 1),
-                'status': status_text,
+                "current": current,
+                "limit": limit_value,
+                "percentage": round(percentage, 1),
+                "status": status_text,
             }
 
         return summary
 
     @staticmethod
-    def enforce_limit(organization, limit_key: str, model_class=None,
-                       extra_filter: dict = None) -> None:
+    def enforce_limit(
+        organization, limit_key: str, model_class=None, extra_filter: dict = None
+    ) -> None:
         """
         Enforce a plan limit — raise PlanLimitExceeded if exceeded.
 
@@ -288,7 +327,10 @@ class PlanEnforcementService:
         if not can_create:
             logger.warning(
                 "Plan limit exceeded: org=%s, key=%s, current=%d, limit=%d",
-                organization.name, limit_key, current, limit,
+                organization.name,
+                limit_key,
+                current,
+                limit,
             )
             raise PlanLimitExceeded(
                 limit_key=limit_key,
@@ -306,7 +348,8 @@ class PlanEnforcementService:
         if not PlanEnforcementService.check_feature(organization, feature_code):
             logger.warning(
                 "Feature not available: org=%s, feature=%s",
-                organization.name, feature_code,
+                organization.name,
+                feature_code,
             )
             raise FeatureNotAvailable(feature_code=feature_code)
 
@@ -314,6 +357,7 @@ class PlanEnforcementService:
 # =============================================================================
 # DRF PERMISSION CLASSES
 # =============================================================================
+
 
 class RequiresPlanFeature(permissions.BasePermission):
     """
@@ -335,15 +379,17 @@ class RequiresPlanFeature(permissions.BasePermission):
         if request.user.is_superuser:
             return True
 
-        organization = getattr(request, 'organization', None)
+        organization = getattr(request, "organization", None)
         if not organization:
             return False
 
-        available = PlanEnforcementService.check_feature(organization, self.feature_code)
+        available = PlanEnforcementService.check_feature(
+            organization, self.feature_code
+        )
         if not available:
             self.message = _(
                 'The feature "%(feature)s" is not available on your current plan.'
-            ) % {'feature': self.feature_code.replace('_', ' ').title()}
+            ) % {"feature": self.feature_code.replace("_", " ").title()}
         return available
 
 
@@ -355,10 +401,12 @@ def requires_plan_feature(feature_code: str):
         class AIView(APIView):
             permission_classes = [IsAuthenticated, requires_plan_feature('ai_content_generation')]
     """
+
     class DynamicFeaturePermission(RequiresPlanFeature):
         def __init__(self):
             super().__init__(feature_code)
-    DynamicFeaturePermission.__name__ = f'RequiresFeature_{feature_code}'
+
+    DynamicFeaturePermission.__name__ = f"RequiresFeature_{feature_code}"
     return DynamicFeaturePermission
 
 
@@ -382,17 +430,17 @@ class CheckPlanLimit(permissions.BasePermission):
             return True
 
         # Only check on create action
-        action = getattr(view, 'action', None)
-        if action != 'create':
+        action = getattr(view, "action", None)
+        if action != "create":
             return True
 
-        organization = getattr(request, 'organization', None)
+        organization = getattr(request, "organization", None)
         if not organization:
             return True  # No org context, let other permissions handle
 
-        limit_key = getattr(view, 'plan_limit_key', None)
-        model_class = getattr(view, 'plan_limit_model', None)
-        extra_filter = getattr(view, 'plan_limit_filter', None)
+        limit_key = getattr(view, "plan_limit_key", None)
+        model_class = getattr(view, "plan_limit_model", None)
+        extra_filter = getattr(view, "plan_limit_filter", None)
 
         if not limit_key:
             return True  # No limit configured
@@ -402,11 +450,11 @@ class CheckPlanLimit(permissions.BasePermission):
         )
 
         if not can_create:
-            label = limit_key.replace('max_', '').replace('_', ' ').title()
+            label = limit_key.replace("max_", "").replace("_", " ").title()
             self.message = _(
-                'You have reached the %(label)s limit (%(current)d/%(limit)d) '
-                'for your plan. Please upgrade to create more.'
-            ) % {'label': label, 'current': current, 'limit': limit}
+                "You have reached the %(label)s limit (%(current)d/%(limit)d) "
+                "for your plan. Please upgrade to create more."
+            ) % {"label": label, "current": current, "limit": limit}
             return False
 
         return True
@@ -415,6 +463,7 @@ class CheckPlanLimit(permissions.BasePermission):
 # =============================================================================
 # VIEWSET MIXIN
 # =============================================================================
+
 
 class PlanEnforcementMixin:
     """
@@ -446,7 +495,7 @@ class PlanEnforcementMixin:
         Override perform_create to check plan limits before saving.
         """
         if self.plan_limit_key:
-            organization = getattr(self.request, 'organization', None)
+            organization = getattr(self.request, "organization", None)
             if organization and not self.request.user.is_superuser:
                 PlanEnforcementService.enforce_limit(
                     organization=organization,
@@ -462,11 +511,11 @@ class PlanEnforcementMixin:
 # =============================================================================
 
 __all__ = [
-    'PlanEnforcementService',
-    'PlanLimitExceeded',
-    'FeatureNotAvailable',
-    'RequiresPlanFeature',
-    'requires_plan_feature',
-    'CheckPlanLimit',
-    'PlanEnforcementMixin',
+    "PlanEnforcementService",
+    "PlanLimitExceeded",
+    "FeatureNotAvailable",
+    "RequiresPlanFeature",
+    "requires_plan_feature",
+    "CheckPlanLimit",
+    "PlanEnforcementMixin",
 ]

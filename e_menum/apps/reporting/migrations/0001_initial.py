@@ -7,282 +7,1230 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('core', '0003_shift_staffmetric_staffschedule_and_more'),
+        ("core", "0003_shift_staffmetric_staffschedule_and_more"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ReportDefinition',
+            name="ReportDefinition",
             fields=[
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('feature_key', models.CharField(db_index=True, help_text='Unique feature key, e.g., RPT-SAL-001', max_length=50, unique=True)),
-                ('name', models.CharField(help_text='Human-readable report name', max_length=200)),
-                ('description', models.TextField(blank=True, default='', help_text='Report description')),
-                ('category', models.CharField(choices=[('SALES', 'Sales'), ('ORDERS', 'Orders'), ('MENU', 'Menu'), ('CUSTOMERS', 'Customers'), ('OPERATIONS', 'Operations'), ('DIGITAL', 'Digital'), ('PERIODIC', 'Periodic'), ('STAFF', 'Staff'), ('BRANCH', 'Branch'), ('INVENTORY', 'Inventory'), ('CAMPAIGNS', 'Campaigns'), ('PLATFORM', 'Platform'), ('AI_INSIGHTS', 'AI Insights'), ('AI_QUERY', 'AI Query'), ('FORECASTING', 'Forecasting')], db_index=True, help_text='Report category', max_length=20)),
-                ('priority', models.CharField(choices=[('P0', 'P0 - Critical'), ('P1', 'P1 - High'), ('P2', 'P2 - Medium'), ('P3', 'P3 - Low')], default='P2', help_text='Implementation priority', max_length=5)),
-                ('ai_model', models.CharField(choices=[('HAIKU', 'Claude Haiku'), ('SONNET', 'Claude Sonnet'), ('OPUS', 'Claude Opus'), ('NONE', 'No AI')], default='NONE', help_text='AI model used for this report', max_length=10)),
-                ('credit_cost', models.PositiveIntegerField(default=0, help_text='Credit cost per execution')),
-                ('min_plan', models.CharField(choices=[('FREE', 'Free'), ('STARTER', 'Starter'), ('PROFESSIONAL', 'Professional'), ('BUSINESS', 'Business'), ('ENTERPRISE', 'Enterprise')], default='STARTER', help_text='Minimum plan required to access this report', max_length=20)),
-                ('default_parameters', models.JSONField(blank=True, default=dict, help_text='Default parameters for this report')),
-                ('supported_formats', models.JSONField(blank=True, default=list, help_text='Supported export formats, e.g., ["PDF", "EXCEL", "CSV"]')),
-                ('supported_dimensions', models.JSONField(blank=True, default=list, help_text='Supported grouping dimensions')),
-                ('handler_class', models.CharField(blank=True, default='', help_text='Dotted path to handler class', max_length=255)),
-                ('is_active', models.BooleanField(default=True, help_text='Whether this report is available')),
-                ('is_periodic', models.BooleanField(default=False, help_text='Whether this report can be scheduled')),
-                ('requires_ai', models.BooleanField(default=False, help_text='Whether this report requires AI processing')),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "feature_key",
+                    models.CharField(
+                        db_index=True,
+                        help_text="Unique feature key, e.g., RPT-SAL-001",
+                        max_length=50,
+                        unique=True,
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="Human-readable report name", max_length=200
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(
+                        blank=True, default="", help_text="Report description"
+                    ),
+                ),
+                (
+                    "category",
+                    models.CharField(
+                        choices=[
+                            ("SALES", "Sales"),
+                            ("ORDERS", "Orders"),
+                            ("MENU", "Menu"),
+                            ("CUSTOMERS", "Customers"),
+                            ("OPERATIONS", "Operations"),
+                            ("DIGITAL", "Digital"),
+                            ("PERIODIC", "Periodic"),
+                            ("STAFF", "Staff"),
+                            ("BRANCH", "Branch"),
+                            ("INVENTORY", "Inventory"),
+                            ("CAMPAIGNS", "Campaigns"),
+                            ("PLATFORM", "Platform"),
+                            ("AI_INSIGHTS", "AI Insights"),
+                            ("AI_QUERY", "AI Query"),
+                            ("FORECASTING", "Forecasting"),
+                        ],
+                        db_index=True,
+                        help_text="Report category",
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "priority",
+                    models.CharField(
+                        choices=[
+                            ("P0", "P0 - Critical"),
+                            ("P1", "P1 - High"),
+                            ("P2", "P2 - Medium"),
+                            ("P3", "P3 - Low"),
+                        ],
+                        default="P2",
+                        help_text="Implementation priority",
+                        max_length=5,
+                    ),
+                ),
+                (
+                    "ai_model",
+                    models.CharField(
+                        choices=[
+                            ("HAIKU", "Claude Haiku"),
+                            ("SONNET", "Claude Sonnet"),
+                            ("OPUS", "Claude Opus"),
+                            ("NONE", "No AI"),
+                        ],
+                        default="NONE",
+                        help_text="AI model used for this report",
+                        max_length=10,
+                    ),
+                ),
+                (
+                    "credit_cost",
+                    models.PositiveIntegerField(
+                        default=0, help_text="Credit cost per execution"
+                    ),
+                ),
+                (
+                    "min_plan",
+                    models.CharField(
+                        choices=[
+                            ("FREE", "Free"),
+                            ("STARTER", "Starter"),
+                            ("PROFESSIONAL", "Professional"),
+                            ("BUSINESS", "Business"),
+                            ("ENTERPRISE", "Enterprise"),
+                        ],
+                        default="STARTER",
+                        help_text="Minimum plan required to access this report",
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "default_parameters",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text="Default parameters for this report",
+                    ),
+                ),
+                (
+                    "supported_formats",
+                    models.JSONField(
+                        blank=True,
+                        default=list,
+                        help_text='Supported export formats, e.g., ["PDF", "EXCEL", "CSV"]',
+                    ),
+                ),
+                (
+                    "supported_dimensions",
+                    models.JSONField(
+                        blank=True,
+                        default=list,
+                        help_text="Supported grouping dimensions",
+                    ),
+                ),
+                (
+                    "handler_class",
+                    models.CharField(
+                        blank=True,
+                        default="",
+                        help_text="Dotted path to handler class",
+                        max_length=255,
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True, help_text="Whether this report is available"
+                    ),
+                ),
+                (
+                    "is_periodic",
+                    models.BooleanField(
+                        default=False, help_text="Whether this report can be scheduled"
+                    ),
+                ),
+                (
+                    "requires_ai",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Whether this report requires AI processing",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Report Definition',
-                'verbose_name_plural': 'Report Definitions',
-                'db_table': 'reporting_definitions',
-                'ordering': ['category', 'feature_key'],
+                "verbose_name": "Report Definition",
+                "verbose_name_plural": "Report Definitions",
+                "db_table": "reporting_definitions",
+                "ordering": ["category", "feature_key"],
             },
         ),
         migrations.CreateModel(
-            name='ConversationSession',
+            name="ConversationSession",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('title', models.CharField(blank=True, default='', help_text='Session title (auto-generated or user-defined)', max_length=255)),
-                ('context_data', models.JSONField(blank=True, default=dict, help_text='Accumulated context from conversation turns')),
-                ('is_active', models.BooleanField(default=True, help_text='Whether this session is still active')),
-                ('last_message_at', models.DateTimeField(blank=True, help_text='Timestamp of the last message in this session', null=True)),
-                ('organization', models.ForeignKey(help_text='Organization that owns this session', on_delete=django.db.models.deletion.CASCADE, related_name='conversation_sessions', to='core.organization')),
-                ('user', models.ForeignKey(help_text='User who initiated this conversation', on_delete=django.db.models.deletion.CASCADE, related_name='conversation_sessions', to=settings.AUTH_USER_MODEL)),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        blank=True,
+                        default="",
+                        help_text="Session title (auto-generated or user-defined)",
+                        max_length=255,
+                    ),
+                ),
+                (
+                    "context_data",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text="Accumulated context from conversation turns",
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True, help_text="Whether this session is still active"
+                    ),
+                ),
+                (
+                    "last_message_at",
+                    models.DateTimeField(
+                        blank=True,
+                        help_text="Timestamp of the last message in this session",
+                        null=True,
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization that owns this session",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="conversation_sessions",
+                        to="core.organization",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        help_text="User who initiated this conversation",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="conversation_sessions",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Conversation Session',
-                'verbose_name_plural': 'Conversation Sessions',
-                'db_table': 'reporting_conversation_sessions',
-                'ordering': ['-last_message_at'],
+                "verbose_name": "Conversation Session",
+                "verbose_name_plural": "Conversation Sessions",
+                "db_table": "reporting_conversation_sessions",
+                "ordering": ["-last_message_at"],
             },
         ),
         migrations.CreateModel(
-            name='ConversationMessage',
+            name="ConversationMessage",
             fields=[
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('role', models.CharField(choices=[('user', 'User'), ('assistant', 'Assistant'), ('system', 'System')], help_text='Message role: user, assistant, or system', max_length=20)),
-                ('content', models.TextField(help_text='Message text content')),
-                ('metadata', models.JSONField(blank=True, default=dict, help_text='Additional message metadata (intent, confidence, etc.)')),
-                ('report_data', models.JSONField(blank=True, help_text='Associated report data returned with this message', null=True)),
-                ('session', models.ForeignKey(help_text='Parent conversation session', on_delete=django.db.models.deletion.CASCADE, related_name='messages', to='reporting.conversationsession')),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "role",
+                    models.CharField(
+                        choices=[
+                            ("user", "User"),
+                            ("assistant", "Assistant"),
+                            ("system", "System"),
+                        ],
+                        help_text="Message role: user, assistant, or system",
+                        max_length=20,
+                    ),
+                ),
+                ("content", models.TextField(help_text="Message text content")),
+                (
+                    "metadata",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text="Additional message metadata (intent, confidence, etc.)",
+                    ),
+                ),
+                (
+                    "report_data",
+                    models.JSONField(
+                        blank=True,
+                        help_text="Associated report data returned with this message",
+                        null=True,
+                    ),
+                ),
+                (
+                    "session",
+                    models.ForeignKey(
+                        help_text="Parent conversation session",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="messages",
+                        to="reporting.conversationsession",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Conversation Message',
-                'verbose_name_plural': 'Conversation Messages',
-                'db_table': 'reporting_conversation_messages',
-                'ordering': ['created_at'],
+                "verbose_name": "Conversation Message",
+                "verbose_name_plural": "Conversation Messages",
+                "db_table": "reporting_conversation_messages",
+                "ordering": ["created_at"],
             },
         ),
         migrations.CreateModel(
-            name='CreditBalance',
+            name="CreditBalance",
             fields=[
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('total_credits', models.IntegerField(default=0, help_text='Total credits ever purchased/granted')),
-                ('used_credits', models.IntegerField(default=0, help_text='Total credits consumed')),
-                ('reserved_credits', models.IntegerField(default=0, help_text='Credits currently reserved for in-progress operations')),
-                ('organization', models.ForeignKey(help_text='Organization this balance belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='credit_balance', to='core.organization')),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "total_credits",
+                    models.IntegerField(
+                        default=0, help_text="Total credits ever purchased/granted"
+                    ),
+                ),
+                (
+                    "used_credits",
+                    models.IntegerField(default=0, help_text="Total credits consumed"),
+                ),
+                (
+                    "reserved_credits",
+                    models.IntegerField(
+                        default=0,
+                        help_text="Credits currently reserved for in-progress operations",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization this balance belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="credit_balance",
+                        to="core.organization",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Credit Balance',
-                'verbose_name_plural': 'Credit Balances',
-                'db_table': 'reporting_credit_balances',
+                "verbose_name": "Credit Balance",
+                "verbose_name_plural": "Credit Balances",
+                "db_table": "reporting_credit_balances",
             },
         ),
         migrations.CreateModel(
-            name='CreditTransaction',
+            name="CreditTransaction",
             fields=[
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('transaction_type', models.CharField(choices=[('PURCHASE', 'Purchase'), ('CONSUME', 'Consume'), ('REFUND', 'Refund'), ('BONUS', 'Bonus'), ('EXPIRE', 'Expire')], help_text='Type of credit transaction', max_length=20)),
-                ('amount', models.IntegerField(help_text='Credit amount (positive=addition, negative=consumption)')),
-                ('balance_after', models.IntegerField(help_text='Available balance after this transaction')),
-                ('description', models.CharField(blank=True, default='', help_text='Human-readable description of the transaction', max_length=500)),
-                ('reference_type', models.CharField(blank=True, default='', help_text='Reference type (e.g., report_execution, subscription)', max_length=50)),
-                ('reference_id', models.UUIDField(blank=True, help_text='UUID of the referenced entity', null=True)),
-                ('created_by', models.ForeignKey(blank=True, help_text='User who initiated this transaction', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='credit_transactions', to=settings.AUTH_USER_MODEL)),
-                ('organization', models.ForeignKey(help_text='Organization this transaction belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='credit_transactions', to='core.organization')),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "transaction_type",
+                    models.CharField(
+                        choices=[
+                            ("PURCHASE", "Purchase"),
+                            ("CONSUME", "Consume"),
+                            ("REFUND", "Refund"),
+                            ("BONUS", "Bonus"),
+                            ("EXPIRE", "Expire"),
+                        ],
+                        help_text="Type of credit transaction",
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "amount",
+                    models.IntegerField(
+                        help_text="Credit amount (positive=addition, negative=consumption)"
+                    ),
+                ),
+                (
+                    "balance_after",
+                    models.IntegerField(
+                        help_text="Available balance after this transaction"
+                    ),
+                ),
+                (
+                    "description",
+                    models.CharField(
+                        blank=True,
+                        default="",
+                        help_text="Human-readable description of the transaction",
+                        max_length=500,
+                    ),
+                ),
+                (
+                    "reference_type",
+                    models.CharField(
+                        blank=True,
+                        default="",
+                        help_text="Reference type (e.g., report_execution, subscription)",
+                        max_length=50,
+                    ),
+                ),
+                (
+                    "reference_id",
+                    models.UUIDField(
+                        blank=True, help_text="UUID of the referenced entity", null=True
+                    ),
+                ),
+                (
+                    "created_by",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="User who initiated this transaction",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="credit_transactions",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization this transaction belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="credit_transactions",
+                        to="core.organization",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Credit Transaction',
-                'verbose_name_plural': 'Credit Transactions',
-                'db_table': 'reporting_credit_transactions',
-                'ordering': ['-created_at'],
+                "verbose_name": "Credit Transaction",
+                "verbose_name_plural": "Credit Transactions",
+                "db_table": "reporting_credit_transactions",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='IndustryBenchmark',
+            name="IndustryBenchmark",
             fields=[
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('metric_name', models.CharField(help_text='Metric identifier (e.g., avg_order_value, daily_revenue)', max_length=100)),
-                ('category', models.CharField(help_text='Business category (e.g., cafe, restaurant, fast_food)', max_length=50)),
-                ('region', models.CharField(blank=True, default='TR', help_text='Geographic region (ISO country code or city)', max_length=100)),
-                ('period_type', models.CharField(choices=[('DAILY', 'Daily'), ('WEEKLY', 'Weekly'), ('MONTHLY', 'Monthly')], help_text='Period granularity', max_length=20)),
-                ('period_start', models.DateField(help_text='Start date of the benchmark period')),
-                ('value', models.DecimalField(decimal_places=4, help_text='Benchmark mean/average value', max_digits=15)),
-                ('sample_size', models.IntegerField(default=0, help_text='Number of organizations in this benchmark')),
-                ('percentile_25', models.DecimalField(blank=True, decimal_places=4, help_text='25th percentile value', max_digits=15, null=True)),
-                ('percentile_50', models.DecimalField(blank=True, decimal_places=4, help_text='50th percentile (median) value', max_digits=15, null=True)),
-                ('percentile_75', models.DecimalField(blank=True, decimal_places=4, help_text='75th percentile value', max_digits=15, null=True)),
-                ('percentile_90', models.DecimalField(blank=True, decimal_places=4, help_text='90th percentile value', max_digits=15, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "metric_name",
+                    models.CharField(
+                        help_text="Metric identifier (e.g., avg_order_value, daily_revenue)",
+                        max_length=100,
+                    ),
+                ),
+                (
+                    "category",
+                    models.CharField(
+                        help_text="Business category (e.g., cafe, restaurant, fast_food)",
+                        max_length=50,
+                    ),
+                ),
+                (
+                    "region",
+                    models.CharField(
+                        blank=True,
+                        default="TR",
+                        help_text="Geographic region (ISO country code or city)",
+                        max_length=100,
+                    ),
+                ),
+                (
+                    "period_type",
+                    models.CharField(
+                        choices=[
+                            ("DAILY", "Daily"),
+                            ("WEEKLY", "Weekly"),
+                            ("MONTHLY", "Monthly"),
+                        ],
+                        help_text="Period granularity",
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "period_start",
+                    models.DateField(help_text="Start date of the benchmark period"),
+                ),
+                (
+                    "value",
+                    models.DecimalField(
+                        decimal_places=4,
+                        help_text="Benchmark mean/average value",
+                        max_digits=15,
+                    ),
+                ),
+                (
+                    "sample_size",
+                    models.IntegerField(
+                        default=0, help_text="Number of organizations in this benchmark"
+                    ),
+                ),
+                (
+                    "percentile_25",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=4,
+                        help_text="25th percentile value",
+                        max_digits=15,
+                        null=True,
+                    ),
+                ),
+                (
+                    "percentile_50",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=4,
+                        help_text="50th percentile (median) value",
+                        max_digits=15,
+                        null=True,
+                    ),
+                ),
+                (
+                    "percentile_75",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=4,
+                        help_text="75th percentile value",
+                        max_digits=15,
+                        null=True,
+                    ),
+                ),
+                (
+                    "percentile_90",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=4,
+                        help_text="90th percentile value",
+                        max_digits=15,
+                        null=True,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Industry Benchmark',
-                'verbose_name_plural': 'Industry Benchmarks',
-                'db_table': 'reporting_industry_benchmarks',
-                'ordering': ['-period_start', 'metric_name'],
-                'indexes': [models.Index(fields=['metric_name', 'category', 'period_type'], name='idx_benchmark_metric_cat_type')],
-                'unique_together': {('metric_name', 'category', 'region', 'period_type', 'period_start')},
+                "verbose_name": "Industry Benchmark",
+                "verbose_name_plural": "Industry Benchmarks",
+                "db_table": "reporting_industry_benchmarks",
+                "ordering": ["-period_start", "metric_name"],
+                "indexes": [
+                    models.Index(
+                        fields=["metric_name", "category", "period_type"],
+                        name="idx_benchmark_metric_cat_type",
+                    )
+                ],
+                "unique_together": {
+                    ("metric_name", "category", "region", "period_type", "period_start")
+                },
             },
         ),
         migrations.CreateModel(
-            name='ReportFavorite',
+            name="ReportFavorite",
             fields=[
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('custom_name', models.CharField(blank=True, default='', help_text='Custom name for this favorite', max_length=200)),
-                ('custom_parameters', models.JSONField(blank=True, default=dict, help_text='Saved parameters for quick access')),
-                ('display_order', models.PositiveSmallIntegerField(default=0, help_text='Display order in favorites list')),
-                ('organization', models.ForeignKey(help_text='Organization context', on_delete=django.db.models.deletion.CASCADE, related_name='report_favorites', to='core.organization')),
-                ('report_definition', models.ForeignKey(help_text='The favorited report', on_delete=django.db.models.deletion.CASCADE, related_name='favorites', to='reporting.reportdefinition')),
-                ('user', models.ForeignKey(help_text='User who favorited this report', on_delete=django.db.models.deletion.CASCADE, related_name='report_favorites', to=settings.AUTH_USER_MODEL)),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "custom_name",
+                    models.CharField(
+                        blank=True,
+                        default="",
+                        help_text="Custom name for this favorite",
+                        max_length=200,
+                    ),
+                ),
+                (
+                    "custom_parameters",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text="Saved parameters for quick access",
+                    ),
+                ),
+                (
+                    "display_order",
+                    models.PositiveSmallIntegerField(
+                        default=0, help_text="Display order in favorites list"
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization context",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="report_favorites",
+                        to="core.organization",
+                    ),
+                ),
+                (
+                    "report_definition",
+                    models.ForeignKey(
+                        help_text="The favorited report",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="favorites",
+                        to="reporting.reportdefinition",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        help_text="User who favorited this report",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="report_favorites",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Report Favorite',
-                'verbose_name_plural': 'Report Favorites',
-                'db_table': 'reporting_favorites',
-                'ordering': ['display_order', 'created_at'],
+                "verbose_name": "Report Favorite",
+                "verbose_name_plural": "Report Favorites",
+                "db_table": "reporting_favorites",
+                "ordering": ["display_order", "created_at"],
             },
         ),
         migrations.CreateModel(
-            name='ReportSchedule',
+            name="ReportSchedule",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('name', models.CharField(help_text='Schedule name', max_length=200)),
-                ('frequency', models.CharField(choices=[('DAILY', 'Daily'), ('WEEKLY', 'Weekly'), ('BIWEEKLY', 'Bi-weekly'), ('MONTHLY', 'Monthly'), ('QUARTERLY', 'Quarterly'), ('YEARLY', 'Yearly'), ('CUSTOM', 'Custom')], help_text='How often to generate the report', max_length=15)),
-                ('trigger_time', models.TimeField(help_text='Time of day to generate (local timezone)')),
-                ('trigger_day_of_week', models.PositiveSmallIntegerField(blank=True, help_text='Day of week for weekly schedules (0=Monday, 6=Sunday)', null=True)),
-                ('trigger_day_of_month', models.PositiveSmallIntegerField(blank=True, help_text='Day of month for monthly schedules (1-28)', null=True)),
-                ('parameters', models.JSONField(blank=True, default=dict, help_text='Report parameters to use')),
-                ('delivery_channels', models.JSONField(blank=True, default=list, help_text='Delivery channels: ["DASHBOARD", "EMAIL", "PUSH", "WEBHOOK"]')),
-                ('delivery_emails', models.JSONField(blank=True, default=list, help_text='Email addresses for EMAIL delivery')),
-                ('delivery_webhook_url', models.URLField(blank=True, default='', help_text='Webhook URL for WEBHOOK delivery')),
-                ('export_format', models.CharField(choices=[('JSON', 'JSON'), ('PDF', 'PDF'), ('EXCEL', 'Excel'), ('CSV', 'CSV')], default='JSON', help_text='Export format for delivery', max_length=10)),
-                ('is_active', models.BooleanField(default=True, help_text='Whether this schedule is active')),
-                ('next_run_at', models.DateTimeField(blank=True, db_index=True, help_text='Next scheduled run time', null=True)),
-                ('last_run_at', models.DateTimeField(blank=True, help_text='When the schedule was last executed', null=True)),
-                ('run_count', models.PositiveIntegerField(default=0, help_text='Number of times this schedule has run')),
-                ('failure_count', models.PositiveIntegerField(default=0, help_text='Number of consecutive failures')),
-                ('max_failures', models.PositiveSmallIntegerField(default=3, help_text='Max consecutive failures before auto-disable')),
-                ('created_by', models.ForeignKey(blank=True, help_text='User who created the schedule', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='created_report_schedules', to=settings.AUTH_USER_MODEL)),
-                ('organization', models.ForeignKey(help_text='Organization that owns this schedule', on_delete=django.db.models.deletion.CASCADE, related_name='report_schedules', to='core.organization')),
-                ('report_definition', models.ForeignKey(help_text='The report to generate', on_delete=django.db.models.deletion.CASCADE, related_name='schedules', to='reporting.reportdefinition')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("name", models.CharField(help_text="Schedule name", max_length=200)),
+                (
+                    "frequency",
+                    models.CharField(
+                        choices=[
+                            ("DAILY", "Daily"),
+                            ("WEEKLY", "Weekly"),
+                            ("BIWEEKLY", "Bi-weekly"),
+                            ("MONTHLY", "Monthly"),
+                            ("QUARTERLY", "Quarterly"),
+                            ("YEARLY", "Yearly"),
+                            ("CUSTOM", "Custom"),
+                        ],
+                        help_text="How often to generate the report",
+                        max_length=15,
+                    ),
+                ),
+                (
+                    "trigger_time",
+                    models.TimeField(
+                        help_text="Time of day to generate (local timezone)"
+                    ),
+                ),
+                (
+                    "trigger_day_of_week",
+                    models.PositiveSmallIntegerField(
+                        blank=True,
+                        help_text="Day of week for weekly schedules (0=Monday, 6=Sunday)",
+                        null=True,
+                    ),
+                ),
+                (
+                    "trigger_day_of_month",
+                    models.PositiveSmallIntegerField(
+                        blank=True,
+                        help_text="Day of month for monthly schedules (1-28)",
+                        null=True,
+                    ),
+                ),
+                (
+                    "parameters",
+                    models.JSONField(
+                        blank=True, default=dict, help_text="Report parameters to use"
+                    ),
+                ),
+                (
+                    "delivery_channels",
+                    models.JSONField(
+                        blank=True,
+                        default=list,
+                        help_text='Delivery channels: ["DASHBOARD", "EMAIL", "PUSH", "WEBHOOK"]',
+                    ),
+                ),
+                (
+                    "delivery_emails",
+                    models.JSONField(
+                        blank=True,
+                        default=list,
+                        help_text="Email addresses for EMAIL delivery",
+                    ),
+                ),
+                (
+                    "delivery_webhook_url",
+                    models.URLField(
+                        blank=True,
+                        default="",
+                        help_text="Webhook URL for WEBHOOK delivery",
+                    ),
+                ),
+                (
+                    "export_format",
+                    models.CharField(
+                        choices=[
+                            ("JSON", "JSON"),
+                            ("PDF", "PDF"),
+                            ("EXCEL", "Excel"),
+                            ("CSV", "CSV"),
+                        ],
+                        default="JSON",
+                        help_text="Export format for delivery",
+                        max_length=10,
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True, help_text="Whether this schedule is active"
+                    ),
+                ),
+                (
+                    "next_run_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Next scheduled run time",
+                        null=True,
+                    ),
+                ),
+                (
+                    "last_run_at",
+                    models.DateTimeField(
+                        blank=True,
+                        help_text="When the schedule was last executed",
+                        null=True,
+                    ),
+                ),
+                (
+                    "run_count",
+                    models.PositiveIntegerField(
+                        default=0, help_text="Number of times this schedule has run"
+                    ),
+                ),
+                (
+                    "failure_count",
+                    models.PositiveIntegerField(
+                        default=0, help_text="Number of consecutive failures"
+                    ),
+                ),
+                (
+                    "max_failures",
+                    models.PositiveSmallIntegerField(
+                        default=3,
+                        help_text="Max consecutive failures before auto-disable",
+                    ),
+                ),
+                (
+                    "created_by",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="User who created the schedule",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="created_report_schedules",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization that owns this schedule",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="report_schedules",
+                        to="core.organization",
+                    ),
+                ),
+                (
+                    "report_definition",
+                    models.ForeignKey(
+                        help_text="The report to generate",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="schedules",
+                        to="reporting.reportdefinition",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Report Schedule',
-                'verbose_name_plural': 'Report Schedules',
-                'db_table': 'reporting_schedules',
-                'ordering': ['organization', 'name'],
+                "verbose_name": "Report Schedule",
+                "verbose_name_plural": "Report Schedules",
+                "db_table": "reporting_schedules",
+                "ordering": ["organization", "name"],
             },
         ),
         migrations.CreateModel(
-            name='ReportExecution',
+            name="ReportExecution",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('status', models.CharField(choices=[('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('FAILED', 'Failed'), ('CANCELLED', 'Cancelled'), ('EXPIRED', 'Expired')], db_index=True, default='PENDING', help_text='Current execution status', max_length=15)),
-                ('parameters', models.JSONField(blank=True, default=dict, help_text='Parameters used for this execution')),
-                ('result_data', models.JSONField(blank=True, help_text='Report result data (JSON)', null=True)),
-                ('error_message', models.TextField(blank=True, default='', help_text='Error message if execution failed')),
-                ('started_at', models.DateTimeField(blank=True, help_text='When processing started', null=True)),
-                ('completed_at', models.DateTimeField(blank=True, help_text='When processing completed', null=True)),
-                ('duration_ms', models.PositiveIntegerField(blank=True, help_text='Execution duration in milliseconds', null=True)),
-                ('credits_consumed', models.PositiveIntegerField(default=0, help_text='Credits consumed for this execution')),
-                ('ai_model_used', models.CharField(blank=True, choices=[('HAIKU', 'Claude Haiku'), ('SONNET', 'Claude Sonnet'), ('OPUS', 'Claude Opus'), ('NONE', 'No AI')], default='', help_text='AI model actually used (may differ from definition)', max_length=10)),
-                ('ai_tokens_used', models.PositiveIntegerField(default=0, help_text='AI tokens consumed')),
-                ('export_format', models.CharField(blank=True, choices=[('JSON', 'JSON'), ('PDF', 'PDF'), ('EXCEL', 'Excel'), ('CSV', 'CSV')], default='', help_text='Export format if exported', max_length=10)),
-                ('export_file_url', models.URLField(blank=True, default='', help_text='URL to exported file')),
-                ('celery_task_id', models.CharField(blank=True, default='', help_text='Celery task ID for tracking', max_length=255)),
-                ('organization', models.ForeignKey(help_text='Organization that requested this report', on_delete=django.db.models.deletion.CASCADE, related_name='report_executions', to='core.organization')),
-                ('report_definition', models.ForeignKey(help_text='The report definition being executed', on_delete=django.db.models.deletion.CASCADE, related_name='executions', to='reporting.reportdefinition')),
-                ('requested_by', models.ForeignKey(blank=True, help_text='User who requested the report', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='report_executions', to=settings.AUTH_USER_MODEL)),
-                ('schedule', models.ForeignKey(blank=True, help_text='Schedule that triggered this execution (if scheduled)', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='executions', to='reporting.reportschedule')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("PENDING", "Pending"),
+                            ("PROCESSING", "Processing"),
+                            ("COMPLETED", "Completed"),
+                            ("FAILED", "Failed"),
+                            ("CANCELLED", "Cancelled"),
+                            ("EXPIRED", "Expired"),
+                        ],
+                        db_index=True,
+                        default="PENDING",
+                        help_text="Current execution status",
+                        max_length=15,
+                    ),
+                ),
+                (
+                    "parameters",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text="Parameters used for this execution",
+                    ),
+                ),
+                (
+                    "result_data",
+                    models.JSONField(
+                        blank=True, help_text="Report result data (JSON)", null=True
+                    ),
+                ),
+                (
+                    "error_message",
+                    models.TextField(
+                        blank=True,
+                        default="",
+                        help_text="Error message if execution failed",
+                    ),
+                ),
+                (
+                    "started_at",
+                    models.DateTimeField(
+                        blank=True, help_text="When processing started", null=True
+                    ),
+                ),
+                (
+                    "completed_at",
+                    models.DateTimeField(
+                        blank=True, help_text="When processing completed", null=True
+                    ),
+                ),
+                (
+                    "duration_ms",
+                    models.PositiveIntegerField(
+                        blank=True,
+                        help_text="Execution duration in milliseconds",
+                        null=True,
+                    ),
+                ),
+                (
+                    "credits_consumed",
+                    models.PositiveIntegerField(
+                        default=0, help_text="Credits consumed for this execution"
+                    ),
+                ),
+                (
+                    "ai_model_used",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("HAIKU", "Claude Haiku"),
+                            ("SONNET", "Claude Sonnet"),
+                            ("OPUS", "Claude Opus"),
+                            ("NONE", "No AI"),
+                        ],
+                        default="",
+                        help_text="AI model actually used (may differ from definition)",
+                        max_length=10,
+                    ),
+                ),
+                (
+                    "ai_tokens_used",
+                    models.PositiveIntegerField(
+                        default=0, help_text="AI tokens consumed"
+                    ),
+                ),
+                (
+                    "export_format",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("JSON", "JSON"),
+                            ("PDF", "PDF"),
+                            ("EXCEL", "Excel"),
+                            ("CSV", "CSV"),
+                        ],
+                        default="",
+                        help_text="Export format if exported",
+                        max_length=10,
+                    ),
+                ),
+                (
+                    "export_file_url",
+                    models.URLField(
+                        blank=True, default="", help_text="URL to exported file"
+                    ),
+                ),
+                (
+                    "celery_task_id",
+                    models.CharField(
+                        blank=True,
+                        default="",
+                        help_text="Celery task ID for tracking",
+                        max_length=255,
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization that requested this report",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="report_executions",
+                        to="core.organization",
+                    ),
+                ),
+                (
+                    "report_definition",
+                    models.ForeignKey(
+                        help_text="The report definition being executed",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="executions",
+                        to="reporting.reportdefinition",
+                    ),
+                ),
+                (
+                    "requested_by",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="User who requested the report",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="report_executions",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "schedule",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="Schedule that triggered this execution (if scheduled)",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="executions",
+                        to="reporting.reportschedule",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Report Execution',
-                'verbose_name_plural': 'Report Executions',
-                'db_table': 'reporting_executions',
-                'ordering': ['-created_at'],
+                "verbose_name": "Report Execution",
+                "verbose_name_plural": "Report Executions",
+                "db_table": "reporting_executions",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.AddIndex(
-            model_name='conversationsession',
-            index=models.Index(fields=['organization', 'user', '-last_message_at'], name='idx_conv_sess_org_user_last'),
+            model_name="conversationsession",
+            index=models.Index(
+                fields=["organization", "user", "-last_message_at"],
+                name="idx_conv_sess_org_user_last",
+            ),
         ),
         migrations.AddIndex(
-            model_name='conversationsession',
-            index=models.Index(fields=['organization', 'is_active'], name='idx_conv_sess_org_active'),
+            model_name="conversationsession",
+            index=models.Index(
+                fields=["organization", "is_active"], name="idx_conv_sess_org_active"
+            ),
         ),
         migrations.AddIndex(
-            model_name='conversationmessage',
-            index=models.Index(fields=['session', 'created_at'], name='idx_conv_msg_session_created'),
+            model_name="conversationmessage",
+            index=models.Index(
+                fields=["session", "created_at"], name="idx_conv_msg_session_created"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='creditbalance',
-            constraint=models.UniqueConstraint(fields=('organization',), name='unique_org_credit_balance'),
+            model_name="creditbalance",
+            constraint=models.UniqueConstraint(
+                fields=("organization",), name="unique_org_credit_balance"
+            ),
         ),
         migrations.AddIndex(
-            model_name='credittransaction',
-            index=models.Index(fields=['organization', '-created_at'], name='idx_credit_tx_org_created'),
+            model_name="credittransaction",
+            index=models.Index(
+                fields=["organization", "-created_at"], name="idx_credit_tx_org_created"
+            ),
         ),
         migrations.AddIndex(
-            model_name='credittransaction',
-            index=models.Index(fields=['organization', 'transaction_type'], name='idx_credit_tx_org_type'),
+            model_name="credittransaction",
+            index=models.Index(
+                fields=["organization", "transaction_type"],
+                name="idx_credit_tx_org_type",
+            ),
         ),
         migrations.AddIndex(
-            model_name='credittransaction',
-            index=models.Index(fields=['reference_type', 'reference_id'], name='idx_credit_tx_ref'),
+            model_name="credittransaction",
+            index=models.Index(
+                fields=["reference_type", "reference_id"], name="idx_credit_tx_ref"
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='reportfavorite',
-            unique_together={('user', 'report_definition', 'organization')},
+            name="reportfavorite",
+            unique_together={("user", "report_definition", "organization")},
         ),
         migrations.AddIndex(
-            model_name='reportschedule',
-            index=models.Index(fields=['is_active', 'next_run_at'], name='idx_rpt_sched_active_next'),
+            model_name="reportschedule",
+            index=models.Index(
+                fields=["is_active", "next_run_at"], name="idx_rpt_sched_active_next"
+            ),
         ),
         migrations.AddIndex(
-            model_name='reportexecution',
-            index=models.Index(fields=['organization', 'status'], name='idx_rpt_exec_org_status'),
+            model_name="reportexecution",
+            index=models.Index(
+                fields=["organization", "status"], name="idx_rpt_exec_org_status"
+            ),
         ),
         migrations.AddIndex(
-            model_name='reportexecution',
-            index=models.Index(fields=['organization', 'report_definition'], name='idx_rpt_exec_org_def'),
+            model_name="reportexecution",
+            index=models.Index(
+                fields=["organization", "report_definition"],
+                name="idx_rpt_exec_org_def",
+            ),
         ),
         migrations.AddIndex(
-            model_name='reportexecution',
-            index=models.Index(fields=['organization', '-created_at'], name='idx_rpt_exec_org_created'),
+            model_name="reportexecution",
+            index=models.Index(
+                fields=["organization", "-created_at"], name="idx_rpt_exec_org_created"
+            ),
         ),
     ]

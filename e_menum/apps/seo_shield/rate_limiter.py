@@ -20,10 +20,10 @@ from typing import Optional
 from django.conf import settings
 from django.core.cache import cache
 
-logger = logging.getLogger('apps.seo_shield')
+logger = logging.getLogger("apps.seo_shield")
 
 # Key prefix for rate limit counters
-RATE_LIMIT_KEY_PREFIX = 'shield:rate:'
+RATE_LIMIT_KEY_PREFIX = "shield:rate:"
 
 
 class RateLimiter:
@@ -56,8 +56,10 @@ class RateLimiter:
         if self._redis_client is not None:
             return True
 
-        cache_backend = getattr(settings, 'CACHES', {}).get('default', {}).get('BACKEND', '')
-        return 'redis' in cache_backend.lower()
+        cache_backend = (
+            getattr(settings, "CACHES", {}).get("default", {}).get("BACKEND", "")
+        )
+        return "redis" in cache_backend.lower()
 
     def is_rate_limited(
         self,
@@ -143,8 +145,7 @@ class RateLimiter:
 
         except Exception as exc:
             logger.warning(
-                "Redis sliding window check failed, falling back to "
-                "simple counter: %s",
+                "Redis sliding window check failed, falling back to simple counter: %s",
                 exc,
             )
             return self._simple_counter_check(key, window, max_requests)
@@ -194,7 +195,8 @@ class RateLimiter:
 
         except Exception as exc:
             logger.warning(
-                "Rate limit check failed, allowing request: %s", exc,
+                "Rate limit check failed, allowing request: %s",
+                exc,
             )
             return False, 0, max_requests
 
@@ -208,13 +210,14 @@ class RateLimiter:
         try:
             # django-redis exposes get_redis_connection
             from django_redis import get_redis_connection
-            return get_redis_connection('default')
+
+            return get_redis_connection("default")
         except (ImportError, Exception):
             pass
 
         try:
             # Django 4.x+ RedisCache exposes _cache
-            client = getattr(cache, '_cache', None)
+            client = getattr(cache, "_cache", None)
             if client is not None:
                 return client.get_client()
         except Exception:
@@ -236,11 +239,11 @@ class RateLimiter:
         Returns:
             Client IP address as a string.
         """
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
         if x_forwarded_for:
             # X-Forwarded-For: client, proxy1, proxy2
             # Take the first (leftmost) IP = original client
-            ip = x_forwarded_for.split(',')[0].strip()
+            ip = x_forwarded_for.split(",")[0].strip()
             return ip
 
-        return request.META.get('REMOTE_ADDR', '127.0.0.1')
+        return request.META.get("REMOTE_ADDR", "127.0.0.1")

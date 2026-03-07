@@ -111,6 +111,7 @@ logger = logging.getLogger(__name__)
 # PAGINATION
 # =============================================================================
 
+
 class StandardPagination(PageNumberPagination):
     """
     Standard pagination class with E-Menum response format.
@@ -135,9 +136,9 @@ class StandardPagination(PageNumberPagination):
     """
 
     page_size = 20
-    page_size_query_param = 'per_page'
+    page_size_query_param = "per_page"
     max_page_size = 100
-    page_query_param = 'page'
+    page_query_param = "page"
 
     def get_paginated_response(self, data: List) -> Response:
         """
@@ -149,16 +150,18 @@ class StandardPagination(PageNumberPagination):
         Returns:
             Response: Formatted paginated response
         """
-        return Response({
-            'success': True,
-            'data': data,
-            'meta': {
-                'page': self.page.number,
-                'per_page': self.get_page_size(self.request),
-                'total': self.page.paginator.count,
-                'total_pages': self.page.paginator.num_pages,
+        return Response(
+            {
+                "success": True,
+                "data": data,
+                "meta": {
+                    "page": self.page.number,
+                    "per_page": self.get_page_size(self.request),
+                    "total": self.page.paginator.count,
+                    "total_pages": self.page.paginator.num_pages,
+                },
             }
-        })
+        )
 
     def get_paginated_response_schema(self, schema: Dict) -> Dict:
         """
@@ -171,29 +174,30 @@ class StandardPagination(PageNumberPagination):
             Dict: The paginated response schema
         """
         return {
-            'type': 'object',
-            'properties': {
-                'success': {
-                    'type': 'boolean',
-                    'default': True,
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "default": True,
                 },
-                'data': schema,
-                'meta': {
-                    'type': 'object',
-                    'properties': {
-                        'page': {'type': 'integer'},
-                        'per_page': {'type': 'integer'},
-                        'total': {'type': 'integer'},
-                        'total_pages': {'type': 'integer'},
-                    }
-                }
-            }
+                "data": schema,
+                "meta": {
+                    "type": "object",
+                    "properties": {
+                        "page": {"type": "integer"},
+                        "per_page": {"type": "integer"},
+                        "total": {"type": "integer"},
+                        "total_pages": {"type": "integer"},
+                    },
+                },
+            },
         }
 
 
 # =============================================================================
 # RESPONSE MIXINS
 # =============================================================================
+
 
 class StandardResponseMixin:
     """
@@ -212,10 +216,7 @@ class StandardResponseMixin:
     """
 
     def get_success_response(
-        self,
-        data: Any,
-        status_code: int = status.HTTP_200_OK,
-        message: str = None
+        self, data: Any, status_code: int = status.HTTP_200_OK, message: str = None
     ) -> Response:
         """
         Create a success response in standard format.
@@ -229,11 +230,11 @@ class StandardResponseMixin:
             Response: Formatted success response
         """
         response_data = {
-            'success': True,
-            'data': data,
+            "success": True,
+            "data": data,
         }
         if message:
-            response_data['message'] = message
+            response_data["message"] = message
 
         return Response(response_data, status=status_code)
 
@@ -242,7 +243,7 @@ class StandardResponseMixin:
         code: str,
         message: str,
         status_code: int = status.HTTP_400_BAD_REQUEST,
-        details: Dict = None
+        details: Dict = None,
     ) -> Response:
         """
         Create an error response in standard format.
@@ -257,14 +258,14 @@ class StandardResponseMixin:
             Response: Formatted error response
         """
         response_data = {
-            'success': False,
-            'error': {
-                'code': code,
-                'message': str(message),
-            }
+            "success": False,
+            "error": {
+                "code": code,
+                "message": str(message),
+            },
         }
         if details:
-            response_data['error']['details'] = details
+            response_data["error"]["details"] = details
 
         return Response(response_data, status=status_code)
 
@@ -282,7 +283,7 @@ class StandardResponseMixin:
         return self.get_success_response(
             data,
             status_code=status.HTTP_201_CREATED,
-            message=message or str(_('Resource created successfully'))
+            message=message or str(_("Resource created successfully")),
         )
 
     def get_no_content_response(self) -> Response:
@@ -305,8 +306,8 @@ class StandardResponseMixin:
             Response: Formatted delete success response
         """
         return self.get_success_response(
-            data={'deleted': True},
-            message=message or str(_('Resource deleted successfully'))
+            data={"deleted": True},
+            message=message or str(_("Resource deleted successfully")),
         )
 
     def finalize_response(self, request, response, *args, **kwargs):
@@ -330,7 +331,7 @@ class StandardResponseMixin:
             return response
 
         # Don't modify responses that are already wrapped
-        if isinstance(response.data, dict) and 'success' in response.data:
+        if isinstance(response.data, dict) and "success" in response.data:
             return response
 
         # Don't modify empty responses (204 No Content)
@@ -339,8 +340,8 @@ class StandardResponseMixin:
 
         # Wrap the response data
         response.data = {
-            'success': True,
-            'data': response.data,
+            "success": True,
+            "data": response.data,
         }
 
         return response
@@ -349,6 +350,7 @@ class StandardResponseMixin:
 # =============================================================================
 # SOFT DELETE MIXIN
 # =============================================================================
+
 
 class SoftDeleteMixin:
     """
@@ -380,7 +382,7 @@ class SoftDeleteMixin:
         queryset = super().get_queryset()
 
         # Filter out soft-deleted records if the model has deleted_at
-        if hasattr(queryset.model, 'deleted_at'):
+        if hasattr(queryset.model, "deleted_at"):
             queryset = queryset.filter(deleted_at__isnull=True)
 
         return queryset
@@ -392,26 +394,24 @@ class SoftDeleteMixin:
         Args:
             instance: The model instance to delete
         """
-        if hasattr(instance, 'soft_delete'):
+        if hasattr(instance, "soft_delete"):
             instance.soft_delete()
             logger.info(
-                "Soft deleted %s: id=%s",
-                instance.__class__.__name__,
-                instance.pk
+                "Soft deleted %s: id=%s", instance.__class__.__name__, instance.pk
             )
-        elif hasattr(instance, 'deleted_at'):
+        elif hasattr(instance, "deleted_at"):
             instance.deleted_at = timezone.now()
-            instance.save(update_fields=['deleted_at'])
+            instance.save(update_fields=["deleted_at"])
             logger.info(
                 "Soft deleted (manual) %s: id=%s",
                 instance.__class__.__name__,
-                instance.pk
+                instance.pk,
             )
         else:
             # Fallback to hard delete only if model doesn't support soft delete
             logger.warning(
                 "Model %s does not support soft delete, using hard delete",
-                instance.__class__.__name__
+                instance.__class__.__name__,
             )
             instance.delete()
 
@@ -436,6 +436,7 @@ class SoftDeleteMixin:
 # TENANT FILTER MIXIN
 # =============================================================================
 
+
 class TenantFilterMixin:
     """
     Mixin that automatically filters querysets by organization.
@@ -453,16 +454,16 @@ class TenantFilterMixin:
         EVERY query on tenant-scoped data MUST filter by organization.
     """
 
-    def get_organization(self) -> Optional['Organization']:
+    def get_organization(self) -> Optional["Organization"]:
         """
         Get the current organization from request context.
 
         Returns:
             Organization or None: The current organization
         """
-        return getattr(self.request, 'organization', None)
+        return getattr(self.request, "organization", None)
 
-    def require_organization(self) -> 'Organization':
+    def require_organization(self) -> "Organization":
         """
         Get the current organization or raise an exception.
 
@@ -476,8 +477,8 @@ class TenantFilterMixin:
         if not organization:
             raise AppException(
                 code=ErrorCodes.FORBIDDEN_TENANT_MISMATCH,
-                message=str(_('Organization context is required')),
-                status_code=status.HTTP_403_FORBIDDEN
+                message=str(_("Organization context is required")),
+                status_code=status.HTTP_403_FORBIDDEN,
             )
         return organization
 
@@ -494,23 +495,20 @@ class TenantFilterMixin:
         queryset = super().get_queryset()
 
         # Check if model has organization field
-        if not hasattr(queryset.model, 'organization'):
+        if not hasattr(queryset.model, "organization"):
             return queryset
 
         organization = self.get_organization()
 
         if organization:
             queryset = queryset.filter(organization=organization)
-            logger.debug(
-                "Filtered queryset for organization: %s",
-                organization.id
-            )
+            logger.debug("Filtered queryset for organization: %s", organization.id)
         else:
             # If no organization context, return empty queryset for safety
             # This prevents accidental data leaks
             logger.warning(
                 "No organization context for %s, returning empty queryset",
-                self.__class__.__name__
+                self.__class__.__name__,
             )
             queryset = queryset.none()
 
@@ -528,7 +526,7 @@ class TenantFilterMixin:
         logger.info(
             "Created %s for organization %s",
             serializer.instance.__class__.__name__,
-            organization.id
+            organization.id,
         )
 
     def perform_update(self, serializer) -> None:
@@ -542,12 +540,14 @@ class TenantFilterMixin:
         organization = self.get_organization()
 
         # Validate organization hasn't changed
-        if hasattr(instance, 'organization_id') and organization:
+        if hasattr(instance, "organization_id") and organization:
             if str(instance.organization_id) != str(organization.id):
                 raise AppException(
                     code=ErrorCodes.FORBIDDEN_TENANT_MISMATCH,
-                    message=str(_('Cannot update resource from different organization')),
-                    status_code=status.HTTP_403_FORBIDDEN
+                    message=str(
+                        _("Cannot update resource from different organization")
+                    ),
+                    status_code=status.HTTP_403_FORBIDDEN,
                 )
 
         serializer.save()
@@ -555,13 +555,14 @@ class TenantFilterMixin:
             "Updated %s: id=%s, organization=%s",
             instance.__class__.__name__,
             instance.pk,
-            organization.id if organization else 'N/A'
+            organization.id if organization else "N/A",
         )
 
 
 # =============================================================================
 # BASE VIEWSETS
 # =============================================================================
+
 
 class BaseModelViewSet(StandardResponseMixin, SoftDeleteMixin, viewsets.ModelViewSet):
     """
@@ -586,10 +587,7 @@ class BaseModelViewSet(StandardResponseMixin, SoftDeleteMixin, viewsets.ModelVie
 
 
 class BaseTenantViewSet(
-    TenantFilterMixin,
-    StandardResponseMixin,
-    SoftDeleteMixin,
-    viewsets.ModelViewSet
+    TenantFilterMixin, StandardResponseMixin, SoftDeleteMixin, viewsets.ModelViewSet
 ):
     """
     Base ViewSet for tenant-scoped resources.
@@ -640,20 +638,17 @@ class BaseTenantViewSet(
 
         # Additional organization validation
         organization = self.get_organization()
-        if organization and hasattr(obj, 'organization_id'):
+        if organization and hasattr(obj, "organization_id"):
             if str(obj.organization_id) != str(organization.id):
                 raise ResourceNotFoundException(
                     code=ErrorCodes.RESOURCE_NOT_FOUND,
-                    message=str(_('Resource not found'))
+                    message=str(_("Resource not found")),
                 )
 
         return obj
 
 
-class BaseReadOnlyViewSet(
-    StandardResponseMixin,
-    viewsets.ReadOnlyModelViewSet
-):
+class BaseReadOnlyViewSet(StandardResponseMixin, viewsets.ReadOnlyModelViewSet):
     """
     Base ViewSet for read-only resources.
 
@@ -672,9 +667,7 @@ class BaseReadOnlyViewSet(
 
 
 class BaseTenantReadOnlyViewSet(
-    TenantFilterMixin,
-    StandardResponseMixin,
-    viewsets.ReadOnlyModelViewSet
+    TenantFilterMixin, StandardResponseMixin, viewsets.ReadOnlyModelViewSet
 ):
     """
     Base ViewSet for read-only tenant-scoped resources.
@@ -700,6 +693,7 @@ class BaseTenantReadOnlyViewSet(
 # =============================================================================
 # BASE API VIEWS
 # =============================================================================
+
 
 class BaseAPIView(StandardResponseMixin, APIView):
     """
@@ -739,17 +733,17 @@ class BaseTenantAPIView(TenantFilterMixin, StandardResponseMixin, APIView):
 
 __all__ = [
     # Pagination
-    'StandardPagination',
+    "StandardPagination",
     # Mixins
-    'StandardResponseMixin',
-    'SoftDeleteMixin',
-    'TenantFilterMixin',
+    "StandardResponseMixin",
+    "SoftDeleteMixin",
+    "TenantFilterMixin",
     # ViewSets
-    'BaseModelViewSet',
-    'BaseTenantViewSet',
-    'BaseReadOnlyViewSet',
-    'BaseTenantReadOnlyViewSet',
+    "BaseModelViewSet",
+    "BaseTenantViewSet",
+    "BaseReadOnlyViewSet",
+    "BaseTenantReadOnlyViewSet",
     # API Views
-    'BaseAPIView',
-    'BaseTenantAPIView',
+    "BaseAPIView",
+    "BaseTenantAPIView",
 ]

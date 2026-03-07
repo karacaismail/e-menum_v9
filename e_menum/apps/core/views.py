@@ -71,6 +71,7 @@ from shared.views import BaseTenantViewSet, BaseModelViewSet
 # UTILITY FUNCTIONS
 # =============================================================================
 
+
 def get_client_ip(request):
     """
     Extract client IP address from request.
@@ -83,12 +84,12 @@ def get_client_ip(request):
     Returns:
         str: Client IP address or None
     """
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
     if x_forwarded_for:
         # Take the first IP in the chain (client IP)
-        ip = x_forwarded_for.split(',')[0].strip()
+        ip = x_forwarded_for.split(",")[0].strip()
     else:
-        ip = request.META.get('REMOTE_ADDR')
+        ip = request.META.get("REMOTE_ADDR")
     return ip
 
 
@@ -116,13 +117,12 @@ def build_success_response(data, status_code=status.HTTP_200_OK):
     Returns:
         Response: Formatted success response
     """
-    return Response({
-        'success': True,
-        'data': data
-    }, status=status_code)
+    return Response({"success": True, "data": data}, status=status_code)
 
 
-def build_error_response(code, message, details=None, status_code=status.HTTP_400_BAD_REQUEST):
+def build_error_response(
+    code, message, details=None, status_code=status.HTTP_400_BAD_REQUEST
+):
     """
     Build a standardized error response.
 
@@ -136,20 +136,21 @@ def build_error_response(code, message, details=None, status_code=status.HTTP_40
         Response: Formatted error response
     """
     error_data = {
-        'success': False,
-        'error': {
-            'code': code,
-            'message': str(message),
-        }
+        "success": False,
+        "error": {
+            "code": code,
+            "message": str(message),
+        },
     }
     if details:
-        error_data['error']['details'] = details
+        error_data["error"]["details"] = details
     return Response(error_data, status=status_code)
 
 
 # =============================================================================
 # AUTHENTICATION VIEWS
 # =============================================================================
+
 
 class LoginView(APIView):
     """
@@ -191,8 +192,7 @@ class LoginView(APIView):
     def post(self, request, *args, **kwargs):
         """Handle login request."""
         serializer = self.serializer_class(
-            data=request.data,
-            context={'request': request}
+            data=request.data, context={"request": request}
         )
 
         if not serializer.is_valid():
@@ -205,13 +205,13 @@ class LoginView(APIView):
 
             return build_error_response(
                 code=ErrorCodes.AUTH_INVALID_CREDENTIALS,
-                message=str(first_error) if first_error else _('Invalid credentials'),
+                message=str(first_error) if first_error else _("Invalid credentials"),
                 details=serializer.errors,
-                status_code=status.HTTP_401_UNAUTHORIZED
+                status_code=status.HTTP_401_UNAUTHORIZED,
             )
 
-        user = serializer.validated_data['user']
-        tokens = serializer.validated_data['tokens']
+        user = serializer.validated_data["user"]
+        tokens = serializer.validated_data["tokens"]
 
         # Record login timestamp
         user.record_login()
@@ -219,38 +219,39 @@ class LoginView(APIView):
         # Create session record
         Session.objects.create(
             user=user,
-            refresh_token=hash_token(tokens['refresh']),
-            user_agent=request.META.get('HTTP_USER_AGENT', '')[:500],
+            refresh_token=hash_token(tokens["refresh"]),
+            user_agent=request.META.get("HTTP_USER_AGENT", "")[:500],
             ip_address=get_client_ip(request),
-            expires_at=timezone.now() + timedelta(days=7),  # Match refresh token lifetime
-            status=SessionStatus.ACTIVE
+            expires_at=timezone.now()
+            + timedelta(days=7),  # Match refresh token lifetime
+            status=SessionStatus.ACTIVE,
         )
 
         # Log audit event
         AuditLog.log_action(
             action=AuditAction.LOGIN,
-            resource='user',
+            resource="user",
             resource_id=str(user.id),
             user=user,
             organization=user.organization,
-            description=f'User {user.email} logged in',
+            description=f"User {user.email} logged in",
             ip_address=get_client_ip(request),
-            user_agent=request.META.get('HTTP_USER_AGENT', '')[:500]
+            user_agent=request.META.get("HTTP_USER_AGENT", "")[:500],
         )
 
         # Build response
         response_data = {
-            'access': tokens['access'],
-            'refresh': tokens['refresh'],
-            'user': UserSerializer(user).data,
+            "access": tokens["access"],
+            "refresh": tokens["refresh"],
+            "user": UserSerializer(user).data,
         }
 
         if user.organization:
-            response_data['organization'] = OrganizationMinimalSerializer(
+            response_data["organization"] = OrganizationMinimalSerializer(
                 user.organization
             ).data
         else:
-            response_data['organization'] = None
+            response_data["organization"] = None
 
         return build_success_response(response_data)
 
@@ -286,9 +287,9 @@ class LogoutView(APIView):
         if not serializer.is_valid():
             return build_error_response(
                 code=ErrorCodes.VALIDATION_ERROR,
-                message=_('Invalid request'),
+                message=_("Invalid request"),
                 details=serializer.errors,
-                status_code=status.HTTP_400_BAD_REQUEST
+                status_code=status.HTTP_400_BAD_REQUEST,
             )
 
         try:
@@ -298,34 +299,32 @@ class LogoutView(APIView):
             pass
 
         # Revoke session in database
-        refresh_token = request.data.get('refresh', '')
+        refresh_token = request.data.get("refresh", "")
         if refresh_token:
             hashed_token = hash_token(refresh_token)
             Session.objects.filter(
                 user=request.user,
                 refresh_token=hashed_token,
-                status=SessionStatus.ACTIVE
+                status=SessionStatus.ACTIVE,
             ).update(
                 status=SessionStatus.REVOKED,
                 revoked_at=timezone.now(),
-                revoke_reason='User logged out'
+                revoke_reason="User logged out",
             )
 
         # Log audit event
         AuditLog.log_action(
             action=AuditAction.LOGOUT,
-            resource='user',
+            resource="user",
             resource_id=str(request.user.id),
             user=request.user,
             organization=request.user.organization,
-            description=f'User {request.user.email} logged out',
+            description=f"User {request.user.email} logged out",
             ip_address=get_client_ip(request),
-            user_agent=request.META.get('HTTP_USER_AGENT', '')[:500]
+            user_agent=request.META.get("HTTP_USER_AGENT", "")[:500],
         )
 
-        return build_success_response({
-            'message': str(_('Successfully logged out'))
-        })
+        return build_success_response({"message": str(_("Successfully logged out"))})
 
 
 class TokenRefreshView(APIView):
@@ -362,20 +361,24 @@ class TokenRefreshView(APIView):
         except InvalidToken:
             return build_error_response(
                 code=ErrorCodes.AUTH_REFRESH_TOKEN_INVALID,
-                message=str(_('Invalid or expired refresh token')),
-                status_code=status.HTTP_401_UNAUTHORIZED
+                message=str(_("Invalid or expired refresh token")),
+                status_code=status.HTTP_401_UNAUTHORIZED,
             )
         except TokenError:
             return build_error_response(
                 code=ErrorCodes.AUTH_REFRESH_TOKEN_EXPIRED,
-                message=str(_('Refresh token has expired')),
-                status_code=status.HTTP_401_UNAUTHORIZED
+                message=str(_("Refresh token has expired")),
+                status_code=status.HTTP_401_UNAUTHORIZED,
             )
 
-        return build_success_response({
-            'access': serializer.validated_data['access'],
-            'refresh': serializer.validated_data.get('refresh', request.data.get('refresh')),
-        })
+        return build_success_response(
+            {
+                "access": serializer.validated_data["access"],
+                "refresh": serializer.validated_data.get(
+                    "refresh", request.data.get("refresh")
+                ),
+            }
+        )
 
 
 class TokenVerifyView(APIView):
@@ -403,26 +406,28 @@ class TokenVerifyView(APIView):
 
     def post(self, request, *args, **kwargs):
         """Handle token verification request."""
-        token = request.data.get('token')
+        token = request.data.get("token")
 
         if not token:
             return build_error_response(
                 code=ErrorCodes.VALIDATION_ERROR,
-                message=str(_('Token is required')),
-                status_code=status.HTTP_400_BAD_REQUEST
+                message=str(_("Token is required")),
+                status_code=status.HTTP_400_BAD_REQUEST,
             )
 
         try:
             from rest_framework_simplejwt.tokens import AccessToken
+
             AccessToken(token)
-            return build_success_response({'valid': True})
+            return build_success_response({"valid": True})
         except TokenError:
-            return build_success_response({'valid': False})
+            return build_success_response({"valid": False})
 
 
 # =============================================================================
 # USER PROFILE VIEWS
 # =============================================================================
+
 
 class UserMeView(APIView):
     """
@@ -484,17 +489,15 @@ class UserMeView(APIView):
             Response: Updated user data or errors
         """
         serializer = UserProfileUpdateSerializer(
-            request.user,
-            data=request.data,
-            partial=partial
+            request.user, data=request.data, partial=partial
         )
 
         if not serializer.is_valid():
             return build_error_response(
                 code=ErrorCodes.VALIDATION_ERROR,
-                message=_('Invalid data'),
+                message=_("Invalid data"),
                 details=serializer.errors,
-                status_code=status.HTTP_400_BAD_REQUEST
+                status_code=status.HTTP_400_BAD_REQUEST,
             )
 
         serializer.save()
@@ -502,20 +505,18 @@ class UserMeView(APIView):
         # Log audit event
         AuditLog.log_action(
             action=AuditAction.UPDATE,
-            resource='user',
+            resource="user",
             resource_id=str(request.user.id),
             user=request.user,
             organization=request.user.organization,
-            description=f'User {request.user.email} updated profile',
+            description=f"User {request.user.email} updated profile",
             new_values=serializer.validated_data,
             ip_address=get_client_ip(request),
-            user_agent=request.META.get('HTTP_USER_AGENT', '')[:500]
+            user_agent=request.META.get("HTTP_USER_AGENT", "")[:500],
         )
 
         # Return full user data
-        return build_success_response(
-            UserSerializer(request.user).data
-        )
+        return build_success_response(UserSerializer(request.user).data)
 
 
 class PasswordChangeView(APIView):
@@ -548,16 +549,15 @@ class PasswordChangeView(APIView):
     def post(self, request, *args, **kwargs):
         """Handle password change request."""
         serializer = self.serializer_class(
-            data=request.data,
-            context={'request': request}
+            data=request.data, context={"request": request}
         )
 
         if not serializer.is_valid():
             return build_error_response(
                 code=ErrorCodes.VALIDATION_ERROR,
-                message=_('Invalid data'),
+                message=_("Invalid data"),
                 details=serializer.errors,
-                status_code=status.HTTP_400_BAD_REQUEST
+                status_code=status.HTTP_400_BAD_REQUEST,
             )
 
         serializer.save()
@@ -565,23 +565,24 @@ class PasswordChangeView(APIView):
         # Log audit event
         AuditLog.log_action(
             action=AuditAction.PASSWORD_CHANGE,
-            resource='user',
+            resource="user",
             resource_id=str(request.user.id),
             user=request.user,
             organization=request.user.organization,
-            description=f'User {request.user.email} changed password',
+            description=f"User {request.user.email} changed password",
             ip_address=get_client_ip(request),
-            user_agent=request.META.get('HTTP_USER_AGENT', '')[:500]
+            user_agent=request.META.get("HTTP_USER_AGENT", "")[:500],
         )
 
-        return build_success_response({
-            'message': str(_('Password changed successfully. Please log in again.'))
-        })
+        return build_success_response(
+            {"message": str(_("Password changed successfully. Please log in again."))}
+        )
 
 
 # =============================================================================
 # SESSION MANAGEMENT VIEWS
 # =============================================================================
+
 
 class SessionListView(APIView):
     """
@@ -611,13 +612,11 @@ class SessionListView(APIView):
         sessions = Session.objects.filter(
             user=request.user,
             status=SessionStatus.ACTIVE,
-            expires_at__gt=timezone.now()
-        ).order_by('-created_at')
+            expires_at__gt=timezone.now(),
+        ).order_by("-created_at")
 
         serializer = SessionSerializer(
-            sessions,
-            many=True,
-            context={'request': request}
+            sessions, many=True, context={"request": request}
         )
 
         return build_success_response(serializer.data)
@@ -643,34 +642,32 @@ class SessionRevokeView(APIView):
         """Revoke a specific session."""
         try:
             session = Session.objects.get(
-                id=session_id,
-                user=request.user,
-                status=SessionStatus.ACTIVE
+                id=session_id, user=request.user, status=SessionStatus.ACTIVE
             )
         except Session.DoesNotExist:
             return build_error_response(
                 code=ErrorCodes.RESOURCE_NOT_FOUND,
-                message=_('Session not found'),
-                status_code=status.HTTP_404_NOT_FOUND
+                message=_("Session not found"),
+                status_code=status.HTTP_404_NOT_FOUND,
             )
 
-        session.revoke(reason='User revoked session')
+        session.revoke(reason="User revoked session")
 
         # Log audit event
         AuditLog.log_action(
             action=AuditAction.LOGOUT,
-            resource='session',
+            resource="session",
             resource_id=str(session.id),
             user=request.user,
             organization=request.user.organization,
-            description=f'User {request.user.email} revoked session',
+            description=f"User {request.user.email} revoked session",
             ip_address=get_client_ip(request),
-            user_agent=request.META.get('HTTP_USER_AGENT', '')[:500]
+            user_agent=request.META.get("HTTP_USER_AGENT", "")[:500],
         )
 
-        return build_success_response({
-            'message': str(_('Session revoked successfully'))
-        })
+        return build_success_response(
+            {"message": str(_("Session revoked successfully"))}
+        )
 
 
 class SessionRevokeAllView(APIView):
@@ -693,44 +690,43 @@ class SessionRevokeAllView(APIView):
     def post(self, request, *args, **kwargs):
         """Revoke all sessions except current."""
         # Get current session's token from the request
-        auth_header = request.META.get('HTTP_AUTHORIZATION', '')
-        if auth_header.startswith('Bearer '):
+        auth_header = request.META.get("HTTP_AUTHORIZATION", "")
+        if auth_header.startswith("Bearer "):
             # We can't easily identify the "current" session from access token
             # So we'll just revoke all sessions - user will need to re-login
             pass
 
         # Revoke all active sessions
         count = Session.objects.filter(
-            user=request.user,
-            status=SessionStatus.ACTIVE
+            user=request.user, status=SessionStatus.ACTIVE
         ).update(
             status=SessionStatus.REVOKED,
             revoked_at=timezone.now(),
-            revoke_reason='User revoked all sessions'
+            revoke_reason="User revoked all sessions",
         )
 
         # Log audit event
         AuditLog.log_action(
             action=AuditAction.LOGOUT,
-            resource='session',
-            resource_id='all',
+            resource="session",
+            resource_id="all",
             user=request.user,
             organization=request.user.organization,
-            description=f'User {request.user.email} revoked all sessions ({count})',
+            description=f"User {request.user.email} revoked all sessions ({count})",
             ip_address=get_client_ip(request),
-            user_agent=request.META.get('HTTP_USER_AGENT', '')[:500],
-            metadata={'revoked_count': count}
+            user_agent=request.META.get("HTTP_USER_AGENT", "")[:500],
+            metadata={"revoked_count": count},
         )
 
-        return build_success_response({
-            'message': str(_('All sessions revoked')),
-            'count': count
-        })
+        return build_success_response(
+            {"message": str(_("All sessions revoked")), "count": count}
+        )
 
 
 # =============================================================================
 # ORGANIZATION VIEWSET
 # =============================================================================
+
 
 class OrganizationViewSet(BaseModelViewSet):
     """
@@ -754,15 +750,15 @@ class OrganizationViewSet(BaseModelViewSet):
     """
 
     queryset = Organization.objects.all()
-    permission_resource = 'organization'
+    permission_resource = "organization"
 
     def get_serializer_class(self):
         """Return the appropriate serializer based on action."""
-        if self.action == 'list':
+        if self.action == "list":
             return OrganizationListSerializer
-        elif self.action == 'create':
+        elif self.action == "create":
             return OrganizationCreateSerializer
-        elif self.action in ['update', 'partial_update']:
+        elif self.action in ["update", "partial_update"]:
             return OrganizationUpdateSerializer
         return OrganizationDetailSerializer
 
@@ -796,22 +792,22 @@ class OrganizationViewSet(BaseModelViewSet):
         # Log audit event
         AuditLog.log_action(
             action=AuditAction.CREATE,
-            resource='organization',
+            resource="organization",
             resource_id=str(organization.id),
             user=self.request.user,
             organization=organization,
-            description=f'Created organization: {organization.name}',
+            description=f"Created organization: {organization.name}",
             new_values=serializer.validated_data,
             ip_address=get_client_ip(self.request),
-            user_agent=self.request.META.get('HTTP_USER_AGENT', '')[:500]
+            user_agent=self.request.META.get("HTTP_USER_AGENT", "")[:500],
         )
 
     def perform_update(self, serializer):
         """Update organization with audit logging."""
         old_values = {
-            'name': serializer.instance.name,
-            'email': serializer.instance.email,
-            'phone': serializer.instance.phone,
+            "name": serializer.instance.name,
+            "email": serializer.instance.email,
+            "phone": serializer.instance.phone,
         }
 
         organization = serializer.save()
@@ -819,15 +815,15 @@ class OrganizationViewSet(BaseModelViewSet):
         # Log audit event
         AuditLog.log_action(
             action=AuditAction.UPDATE,
-            resource='organization',
+            resource="organization",
             resource_id=str(organization.id),
             user=self.request.user,
             organization=organization,
-            description=f'Updated organization: {organization.name}',
+            description=f"Updated organization: {organization.name}",
             old_values=old_values,
             new_values=serializer.validated_data,
             ip_address=get_client_ip(self.request),
-            user_agent=self.request.META.get('HTTP_USER_AGENT', '')[:500]
+            user_agent=self.request.META.get("HTTP_USER_AGENT", "")[:500],
         )
 
     def perform_destroy(self, instance):
@@ -835,13 +831,13 @@ class OrganizationViewSet(BaseModelViewSet):
         # Log audit event before deletion
         AuditLog.log_action(
             action=AuditAction.DELETE,
-            resource='organization',
+            resource="organization",
             resource_id=str(instance.id),
             user=self.request.user,
             organization=instance,
-            description=f'Deleted organization: {instance.name}',
+            description=f"Deleted organization: {instance.name}",
             ip_address=get_client_ip(self.request),
-            user_agent=self.request.META.get('HTTP_USER_AGENT', '')[:500]
+            user_agent=self.request.META.get("HTTP_USER_AGENT", "")[:500],
         )
 
         # Soft delete (inherited from BaseModelViewSet)
@@ -851,6 +847,7 @@ class OrganizationViewSet(BaseModelViewSet):
 # =============================================================================
 # USER VIEWSET
 # =============================================================================
+
 
 class UserViewSet(BaseTenantViewSet):
     """
@@ -875,15 +872,15 @@ class UserViewSet(BaseTenantViewSet):
     """
 
     queryset = User.objects.all()
-    permission_resource = 'user'
+    permission_resource = "user"
 
     def get_serializer_class(self):
         """Return the appropriate serializer based on action."""
-        if self.action == 'list':
+        if self.action == "list":
             return UserListSerializer
-        elif self.action == 'create':
+        elif self.action == "create":
             return UserCreateSerializer
-        elif self.action in ['update', 'partial_update']:
+        elif self.action in ["update", "partial_update"]:
             return UserUpdateSerializer
         return UserDetailSerializer
 
@@ -896,20 +893,20 @@ class UserViewSet(BaseTenantViewSet):
         queryset = super().get_queryset()
 
         # Apply status filter if provided
-        status_filter = self.request.query_params.get('status')
+        status_filter = self.request.query_params.get("status")
         if status_filter:
             queryset = queryset.filter(status=status_filter)
 
         # Apply search filter if provided
-        search = self.request.query_params.get('search')
+        search = self.request.query_params.get("search")
         if search:
             queryset = queryset.filter(
-                models.Q(email__icontains=search) |
-                models.Q(first_name__icontains=search) |
-                models.Q(last_name__icontains=search)
+                models.Q(email__icontains=search)
+                | models.Q(first_name__icontains=search)
+                | models.Q(last_name__icontains=search)
             )
 
-        return queryset.order_by('-created_at')
+        return queryset.order_by("-created_at")
 
     def perform_create(self, serializer):
         """Create user within organization."""
@@ -919,28 +916,28 @@ class UserViewSet(BaseTenantViewSet):
         # Log audit event
         AuditLog.log_action(
             action=AuditAction.CREATE,
-            resource='user',
+            resource="user",
             resource_id=str(user.id),
             user=self.request.user,
             organization=organization,
-            description=f'Created user: {user.email}',
+            description=f"Created user: {user.email}",
             new_values={
-                'email': user.email,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
+                "email": user.email,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
             },
             ip_address=get_client_ip(self.request),
-            user_agent=self.request.META.get('HTTP_USER_AGENT', '')[:500]
+            user_agent=self.request.META.get("HTTP_USER_AGENT", "")[:500],
         )
 
     def perform_update(self, serializer):
         """Update user with audit logging."""
         instance = serializer.instance
         old_values = {
-            'first_name': instance.first_name,
-            'last_name': instance.last_name,
-            'phone': instance.phone,
-            'status': instance.status,
+            "first_name": instance.first_name,
+            "last_name": instance.last_name,
+            "phone": instance.phone,
+            "status": instance.status,
         }
 
         user = serializer.save()
@@ -948,15 +945,15 @@ class UserViewSet(BaseTenantViewSet):
         # Log audit event
         AuditLog.log_action(
             action=AuditAction.UPDATE,
-            resource='user',
+            resource="user",
             resource_id=str(user.id),
             user=self.request.user,
             organization=user.organization,
-            description=f'Updated user: {user.email}',
+            description=f"Updated user: {user.email}",
             old_values=old_values,
             new_values=serializer.validated_data,
             ip_address=get_client_ip(self.request),
-            user_agent=self.request.META.get('HTTP_USER_AGENT', '')[:500]
+            user_agent=self.request.META.get("HTTP_USER_AGENT", "")[:500],
         )
 
     def perform_destroy(self, instance):
@@ -964,20 +961,19 @@ class UserViewSet(BaseTenantViewSet):
         # Prevent self-deletion
         if instance.id == self.request.user.id:
             from rest_framework.exceptions import ValidationError
-            raise ValidationError({
-                'detail': _('You cannot delete your own account.')
-            })
+
+            raise ValidationError({"detail": _("You cannot delete your own account.")})
 
         # Log audit event before deletion
         AuditLog.log_action(
             action=AuditAction.DELETE,
-            resource='user',
+            resource="user",
             resource_id=str(instance.id),
             user=self.request.user,
             organization=instance.organization,
-            description=f'Deleted user: {instance.email}',
+            description=f"Deleted user: {instance.email}",
             ip_address=get_client_ip(self.request),
-            user_agent=self.request.META.get('HTTP_USER_AGENT', '')[:500]
+            user_agent=self.request.META.get("HTTP_USER_AGENT", "")[:500],
         )
 
         # Soft delete (inherited from BaseTenantViewSet)
@@ -990,26 +986,22 @@ class UserViewSet(BaseTenantViewSet):
 
 __all__ = [
     # Auth views
-    'LoginView',
-    'LogoutView',
-    'TokenRefreshView',
-    'TokenVerifyView',
-
+    "LoginView",
+    "LogoutView",
+    "TokenRefreshView",
+    "TokenVerifyView",
     # Profile views
-    'UserMeView',
-    'PasswordChangeView',
-
+    "UserMeView",
+    "PasswordChangeView",
     # Session views
-    'SessionListView',
-    'SessionRevokeView',
-    'SessionRevokeAllView',
-
+    "SessionListView",
+    "SessionRevokeView",
+    "SessionRevokeAllView",
     # ViewSets
-    'OrganizationViewSet',
-    'UserViewSet',
-
+    "OrganizationViewSet",
+    "UserViewSet",
     # Utilities
-    'get_client_ip',
-    'build_success_response',
-    'build_error_response',
+    "get_client_ip",
+    "build_success_response",
+    "build_error_response",
 ]

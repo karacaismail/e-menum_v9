@@ -25,7 +25,7 @@ from typing import Optional
 
 from django.conf import settings
 
-logger = logging.getLogger('apps.seo_shield')
+logger = logging.getLogger("apps.seo_shield")
 
 
 @dataclass
@@ -38,98 +38,99 @@ class RiskResult:
         signals: Dict mapping signal names to their individual scores.
         action: Recommended action ('pass', 'log', 'challenge', 'block').
     """
+
     score: int = 0
     signals: dict = field(default_factory=dict)
-    action: str = 'pass'
+    action: str = "pass"
 
 
 # Suspicious URL path patterns that indicate vulnerability scanners,
 # misconfigurations, or malicious probing.
 SUSPICIOUS_PATHS = [
-    r'/\.env',
-    r'/\.git',
-    r'/\.svn',
-    r'/\.htaccess',
-    r'/\.htpasswd',
-    r'/\.DS_Store',
-    r'/wp-admin',
-    r'/wp-login',
-    r'/wp-content/uploads',
-    r'/wp-includes',
-    r'/xmlrpc\.php',
-    r'/phpmyadmin',
-    r'/phpMyAdmin',
-    r'/pma',
-    r'/adminer',
-    r'/config\.(php|yml|yaml|json|ini|xml)',
-    r'/backup',
-    r'/dump',
-    r'/database',
-    r'/db\.(sql|sqlite|sqlite3)',
-    r'/\.aws',
-    r'/\.ssh',
-    r'/etc/passwd',
-    r'/etc/shadow',
-    r'/proc/self',
-    r'/actuator',
-    r'/debug',
-    r'/console',
-    r'/server-status',
-    r'/server-info',
-    r'/cgi-bin',
-    r'/shell',
-    r'/cmd',
-    r'/eval',
-    r'/exec',
-    r'/setup\.php',
-    r'/install\.php',
-    r'/admin\.php',
-    r'/test\.php',
-    r'/info\.php',
-    r'/phpinfo',
+    r"/\.env",
+    r"/\.git",
+    r"/\.svn",
+    r"/\.htaccess",
+    r"/\.htpasswd",
+    r"/\.DS_Store",
+    r"/wp-admin",
+    r"/wp-login",
+    r"/wp-content/uploads",
+    r"/wp-includes",
+    r"/xmlrpc\.php",
+    r"/phpmyadmin",
+    r"/phpMyAdmin",
+    r"/pma",
+    r"/adminer",
+    r"/config\.(php|yml|yaml|json|ini|xml)",
+    r"/backup",
+    r"/dump",
+    r"/database",
+    r"/db\.(sql|sqlite|sqlite3)",
+    r"/\.aws",
+    r"/\.ssh",
+    r"/etc/passwd",
+    r"/etc/shadow",
+    r"/proc/self",
+    r"/actuator",
+    r"/debug",
+    r"/console",
+    r"/server-status",
+    r"/server-info",
+    r"/cgi-bin",
+    r"/shell",
+    r"/cmd",
+    r"/eval",
+    r"/exec",
+    r"/setup\.php",
+    r"/install\.php",
+    r"/admin\.php",
+    r"/test\.php",
+    r"/info\.php",
+    r"/phpinfo",
 ]
 
 # Known vulnerability scanner and attack tool User-Agent patterns.
 SCANNER_USER_AGENTS = [
-    r'sqlmap',
-    r'nikto',
-    r'nmap',
-    r'masscan',
-    r'zgrab',
-    r'gobuster',
-    r'dirbuster',
-    r'wfuzz',
-    r'ffuf',
-    r'nuclei',
-    r'httpx',
-    r'burpsuite',
-    r'burp\s?suite',
-    r'owasp',
-    r'acunetix',
-    r'nessus',
-    r'openvas',
-    r'qualys',
-    r'arachni',
-    r'w3af',
-    r'skipfish',
-    r'havij',
-    r'commix',
-    r'whatweb',
-    r'wpscan',
-    r'joomscan',
-    r'droopescan',
-    r'cmsmap',
-    r'curl/',           # curl without further identification
-    r'wget/',           # wget without further identification
-    r'python-requests', # generic Python HTTP client
-    r'python-urllib',
-    r'go-http-client',
-    r'java/',           # generic Java HTTP client
-    r'libwww-perl',
-    r'lwp-trivial',
-    r'mechanize',
-    r'scrapy',
-    r'httpclient',
+    r"sqlmap",
+    r"nikto",
+    r"nmap",
+    r"masscan",
+    r"zgrab",
+    r"gobuster",
+    r"dirbuster",
+    r"wfuzz",
+    r"ffuf",
+    r"nuclei",
+    r"httpx",
+    r"burpsuite",
+    r"burp\s?suite",
+    r"owasp",
+    r"acunetix",
+    r"nessus",
+    r"openvas",
+    r"qualys",
+    r"arachni",
+    r"w3af",
+    r"skipfish",
+    r"havij",
+    r"commix",
+    r"whatweb",
+    r"wpscan",
+    r"joomscan",
+    r"droopescan",
+    r"cmsmap",
+    r"curl/",  # curl without further identification
+    r"wget/",  # wget without further identification
+    r"python-requests",  # generic Python HTTP client
+    r"python-urllib",
+    r"go-http-client",
+    r"java/",  # generic Java HTTP client
+    r"libwww-perl",
+    r"lwp-trivial",
+    r"mechanize",
+    r"scrapy",
+    r"httpclient",
 ]
 
 # Precompile regex patterns for performance
@@ -152,11 +153,11 @@ class RiskEngine:
 
     # Signal weights (must match IPReputationManager.SIGNAL_WEIGHTS)
     SIGNAL_WEIGHTS = {
-        'rate_limit': 0.30,
-        'header_anomaly': 0.20,
-        'path_pattern': 0.20,
-        'ua_anomaly': 0.15,
-        'robots_violation': 0.15,
+        "rate_limit": 0.30,
+        "header_anomaly": 0.20,
+        "path_pattern": 0.20,
+        "ua_anomaly": 0.15,
+        "robots_violation": 0.15,
     }
 
     def __init__(self):
@@ -167,13 +168,19 @@ class RiskEngine:
         uses the class-level defaults.
         """
         self.threshold_log = getattr(
-            settings, 'SHIELD_THRESHOLD_LOG', self.THRESHOLD_LOG,
+            settings,
+            "SHIELD_THRESHOLD_LOG",
+            self.THRESHOLD_LOG,
         )
         self.threshold_challenge = getattr(
-            settings, 'SHIELD_THRESHOLD_CHALLENGE', self.THRESHOLD_CHALLENGE,
+            settings,
+            "SHIELD_THRESHOLD_CHALLENGE",
+            self.THRESHOLD_CHALLENGE,
         )
         self.threshold_block = getattr(
-            settings, 'SHIELD_THRESHOLD_BLOCK', self.THRESHOLD_BLOCK,
+            settings,
+            "SHIELD_THRESHOLD_BLOCK",
+            self.THRESHOLD_BLOCK,
         )
 
     def evaluate(
@@ -200,21 +207,21 @@ class RiskEngine:
         signals = {}
 
         # Signal 1: Rate limiting
-        signals['rate_limit'] = 100 if rate_limited else 0
+        signals["rate_limit"] = 100 if rate_limited else 0
 
         # Signal 2: Header anomaly detection
-        signals['header_anomaly'] = self._check_header_anomaly(request)
+        signals["header_anomaly"] = self._check_header_anomaly(request)
 
         # Signal 3: Suspicious path pattern
-        signals['path_pattern'] = self._check_path_pattern(request)
+        signals["path_pattern"] = self._check_path_pattern(request)
 
         # Signal 4: User-Agent anomaly
-        signals['ua_anomaly'] = self._check_ua_anomaly(request, bot_verified)
+        signals["ua_anomaly"] = self._check_ua_anomaly(request, bot_verified)
 
         # Signal 5: Robots.txt violation
         # Not implemented in simple version; would require tracking
         # robots.txt rules and comparing against requested paths.
-        signals['robots_violation'] = 0
+        signals["robots_violation"] = 0
 
         # Calculate weighted total
         total_score = self._calculate_weighted_score(signals)
@@ -228,10 +235,13 @@ class RiskEngine:
             action=action,
         )
 
-        if action != 'pass':
+        if action != "pass":
             logger.debug(
                 "Risk evaluation for %s: score=%d action=%s signals=%s",
-                ip_address, total_score, action, signals,
+                ip_address,
+                total_score,
+                action,
+                signals,
             )
 
         return result
@@ -252,10 +262,10 @@ class RiskEngine:
         """
         score = 0
 
-        user_agent = request.META.get('HTTP_USER_AGENT', '')
-        accept = request.META.get('HTTP_ACCEPT', '')
-        accept_encoding = request.META.get('HTTP_ACCEPT_ENCODING', '')
-        accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+        user_agent = request.META.get("HTTP_USER_AGENT", "")
+        accept = request.META.get("HTTP_ACCEPT", "")
+        accept_encoding = request.META.get("HTTP_ACCEPT_ENCODING", "")
+        accept_language = request.META.get("HTTP_ACCEPT_LANGUAGE", "")
 
         # No User-Agent header at all
         if not user_agent:
@@ -274,7 +284,7 @@ class RiskEngine:
             score += 10
 
         # Suspicious Accept-Encoding values
-        if accept_encoding and accept_encoding.strip() == '*':
+        if accept_encoding and accept_encoding.strip() == "*":
             score += 10
 
         return min(100, score)
@@ -298,12 +308,13 @@ class RiskEngine:
             if pattern.search(path):
                 logger.debug(
                     "Suspicious path pattern matched: %s matched %s",
-                    path, pattern.pattern,
+                    path,
+                    pattern.pattern,
                 )
                 return 100
 
         # Check for common attack payloads in query string
-        query_string = request.META.get('QUERY_STRING', '')
+        query_string = request.META.get("QUERY_STRING", "")
         if query_string:
             # SQL injection patterns
             sql_patterns = [
@@ -317,7 +328,7 @@ class RiskEngine:
                     return 100
 
             # Path traversal patterns
-            if '../' in query_string or '..\\' in query_string:
+            if "../" in query_string or "..\\" in query_string:
                 return 90
 
         return 0
@@ -339,7 +350,7 @@ class RiskEngine:
         Returns:
             Score between 0 (normal) and 100 (highly suspicious).
         """
-        user_agent = request.META.get('HTTP_USER_AGENT', '')
+        user_agent = request.META.get("HTTP_USER_AGENT", "")
 
         # Empty User-Agent is highly suspicious
         if not user_agent:
@@ -394,10 +405,10 @@ class RiskEngine:
             Action string: 'pass', 'log', 'challenge', or 'block'.
         """
         if total_score >= self.threshold_block:
-            return 'block'
+            return "block"
         elif total_score >= self.threshold_challenge:
-            return 'challenge'
+            return "challenge"
         elif total_score >= self.threshold_log:
-            return 'log'
+            return "log"
         else:
-            return 'pass'
+            return "pass"

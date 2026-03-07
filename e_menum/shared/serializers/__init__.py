@@ -70,20 +70,20 @@ from shared.serializers.base import (
 
 __all__ = [
     # Base serializers
-    'BaseModelSerializer',
-    'SoftDeleteModelSerializer',
-    'AuditModelSerializer',
-    'TenantModelSerializer',
+    "BaseModelSerializer",
+    "SoftDeleteModelSerializer",
+    "AuditModelSerializer",
+    "TenantModelSerializer",
     # Response wrappers
-    'StandardResponseSerializer',
-    'PaginatedResponseSerializer',
-    'ErrorDetailSerializer',
-    'ErrorResponseSerializer',
+    "StandardResponseSerializer",
+    "PaginatedResponseSerializer",
+    "ErrorDetailSerializer",
+    "ErrorResponseSerializer",
     # Utility serializers
-    'IDListSerializer',
-    'BulkActionResponseSerializer',
-    'SlugLookupSerializer',
+    "IDListSerializer",
+    "BulkActionResponseSerializer",
+    "SlugLookupSerializer",
     # Nested helpers
-    'MinimalSerializer',
-    'create_minimal_serializer',
+    "MinimalSerializer",
+    "create_minimal_serializer",
 ]

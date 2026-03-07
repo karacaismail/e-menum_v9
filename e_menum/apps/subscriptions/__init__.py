@@ -8,4 +8,4 @@ This app handles subscription management, billing, and invoicing:
 - Payment processing integration
 """
 
-default_app_config = 'apps.subscriptions.apps.SubscriptionsConfig'
+default_app_config = "apps.subscriptions.apps.SubscriptionsConfig"

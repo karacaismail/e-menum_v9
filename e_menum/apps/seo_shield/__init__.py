@@ -1,1 +1,1 @@
-default_app_config = 'apps.seo_shield.apps.SEOShieldConfig'
+default_app_config = "apps.seo_shield.apps.SEOShieldConfig"

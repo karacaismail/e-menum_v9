@@ -49,6 +49,6 @@ def get_impersonatable_users(request):
 
     return User.objects.filter(
         is_superuser=False,
-        status='ACTIVE',
+        status="ACTIVE",
         deleted_at__isnull=True,
-    ).select_related('organization')
+    ).select_related("organization")

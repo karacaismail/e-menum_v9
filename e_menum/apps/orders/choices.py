@@ -27,9 +27,10 @@ class TableStatus(models.TextChoices):
     - OCCUPIED: Table currently has active customers
     - RESERVED: Table is reserved for a future booking
     """
-    AVAILABLE = 'AVAILABLE', 'Available'
-    OCCUPIED = 'OCCUPIED', 'Occupied'
-    RESERVED = 'RESERVED', 'Reserved'
+
+    AVAILABLE = "AVAILABLE", "Available"
+    OCCUPIED = "OCCUPIED", "Occupied"
+    RESERVED = "RESERVED", "Reserved"
 
 
 class QRCodeType(models.TextChoices):
@@ -40,9 +41,10 @@ class QRCodeType(models.TextChoices):
     - TABLE: QR code is associated with a specific table
     - CAMPAIGN: QR code is for marketing/promotional campaigns
     """
-    MENU = 'MENU', 'Menu'
-    TABLE = 'TABLE', 'Table'
-    CAMPAIGN = 'CAMPAIGN', 'Campaign'
+
+    MENU = "MENU", "Menu"
+    TABLE = "TABLE", "Table"
+    CAMPAIGN = "CAMPAIGN", "Campaign"
 
 
 class OrderStatus(models.TextChoices):
@@ -60,13 +62,14 @@ class OrderStatus(models.TextChoices):
     - COMPLETED: Order is fully completed and paid
     - CANCELLED: Order was cancelled (terminal state)
     """
-    PENDING = 'PENDING', 'Pending'
-    CONFIRMED = 'CONFIRMED', 'Confirmed'
-    PREPARING = 'PREPARING', 'Preparing'
-    READY = 'READY', 'Ready'
-    DELIVERED = 'DELIVERED', 'Delivered'
-    COMPLETED = 'COMPLETED', 'Completed'
-    CANCELLED = 'CANCELLED', 'Cancelled'
+
+    PENDING = "PENDING", "Pending"
+    CONFIRMED = "CONFIRMED", "Confirmed"
+    PREPARING = "PREPARING", "Preparing"
+    READY = "READY", "Ready"
+    DELIVERED = "DELIVERED", "Delivered"
+    COMPLETED = "COMPLETED", "Completed"
+    CANCELLED = "CANCELLED", "Cancelled"
 
 
 class OrderType(models.TextChoices):
@@ -77,10 +80,11 @@ class OrderType(models.TextChoices):
     - TAKEAWAY: Customer picks up the order
     - DELIVERY: Order is delivered to customer's location
     """
-    DINE_IN = 'DINE_IN', 'Dine In'
-    TAKEAWAY = 'TAKEAWAY', 'Takeaway'
-    DELIVERY = 'DELIVERY', 'Delivery'
-    ONLINE = 'ONLINE', _('Online')
+
+    DINE_IN = "DINE_IN", "Dine In"
+    TAKEAWAY = "TAKEAWAY", "Takeaway"
+    DELIVERY = "DELIVERY", "Delivery"
+    ONLINE = "ONLINE", _("Online")
 
 
 class OrderItemStatus(models.TextChoices):
@@ -96,11 +100,12 @@ class OrderItemStatus(models.TextChoices):
     - DELIVERED: Item has been delivered to customer
     - CANCELLED: Item was cancelled from the order
     """
-    PENDING = 'PENDING', 'Pending'
-    PREPARING = 'PREPARING', 'Preparing'
-    READY = 'READY', 'Ready'
-    DELIVERED = 'DELIVERED', 'Delivered'
-    CANCELLED = 'CANCELLED', 'Cancelled'
+
+    PENDING = "PENDING", "Pending"
+    PREPARING = "PREPARING", "Preparing"
+    READY = "READY", "Ready"
+    DELIVERED = "DELIVERED", "Delivered"
+    CANCELLED = "CANCELLED", "Cancelled"
 
 
 class ServiceRequestType(models.TextChoices):
@@ -112,10 +117,11 @@ class ServiceRequestType(models.TextChoices):
     - HELP: Customer needs assistance
     - OTHER: Other type of request
     """
-    WAITER_CALL = 'WAITER_CALL', 'Waiter Call'
-    BILL_REQUEST = 'BILL_REQUEST', 'Bill Request'
-    HELP = 'HELP', 'Help'
-    OTHER = 'OTHER', 'Other'
+
+    WAITER_CALL = "WAITER_CALL", "Waiter Call"
+    BILL_REQUEST = "BILL_REQUEST", "Bill Request"
+    HELP = "HELP", "Help"
+    OTHER = "OTHER", "Other"
 
 
 class ServiceRequestStatus(models.TextChoices):
@@ -127,10 +133,11 @@ class ServiceRequestStatus(models.TextChoices):
     - COMPLETED: Request has been fulfilled
     - CANCELLED: Request was cancelled
     """
-    PENDING = 'PENDING', 'Pending'
-    IN_PROGRESS = 'IN_PROGRESS', 'In Progress'
-    COMPLETED = 'COMPLETED', 'Completed'
-    CANCELLED = 'CANCELLED', 'Cancelled'
+
+    PENDING = "PENDING", "Pending"
+    IN_PROGRESS = "IN_PROGRESS", "In Progress"
+    COMPLETED = "COMPLETED", "Completed"
+    CANCELLED = "CANCELLED", "Cancelled"
 
 
 class PaymentStatus(models.TextChoices):
@@ -143,11 +150,12 @@ class PaymentStatus(models.TextChoices):
     - REFUNDED: Payment was refunded
     - FAILED: Payment attempt failed
     """
-    PENDING = 'PENDING', 'Pending'
-    PARTIAL = 'PARTIAL', 'Partial'
-    PAID = 'PAID', 'Paid'
-    REFUNDED = 'REFUNDED', 'Refunded'
-    FAILED = 'FAILED', 'Failed'
+
+    PENDING = "PENDING", "Pending"
+    PARTIAL = "PARTIAL", "Partial"
+    PAID = "PAID", "Paid"
+    REFUNDED = "REFUNDED", "Refunded"
+    FAILED = "FAILED", "Failed"
 
 
 class PaymentMethod(models.TextChoices):
@@ -161,12 +169,13 @@ class PaymentMethod(models.TextChoices):
     - WALLET: Digital wallet payment
     - OTHER: Other payment methods
     """
-    CASH = 'CASH', 'Cash'
-    CREDIT_CARD = 'CREDIT_CARD', 'Credit Card'
-    DEBIT_CARD = 'DEBIT_CARD', 'Debit Card'
-    ONLINE = 'ONLINE', 'Online'
-    WALLET = 'WALLET', 'Wallet'
-    OTHER = 'OTHER', 'Other'
+
+    CASH = "CASH", "Cash"
+    CREDIT_CARD = "CREDIT_CARD", "Credit Card"
+    DEBIT_CARD = "DEBIT_CARD", "Debit Card"
+    ONLINE = "ONLINE", "Online"
+    WALLET = "WALLET", "Wallet"
+    OTHER = "OTHER", "Other"
 
 
 class DiscountType(models.TextChoices):
@@ -181,13 +190,14 @@ class DiscountType(models.TextChoices):
     - STAFF: Staff discount
     - HAPPY_HOUR: Happy hour time-based discount
     """
-    PERCENTAGE = 'PERCENTAGE', _('Percentage')
-    FIXED_AMOUNT = 'FIXED_AMOUNT', _('Fixed Amount')
-    BUY_X_GET_Y = 'BUY_X_GET_Y', _('Buy X Get Y')
-    LOYALTY = 'LOYALTY', _('Loyalty')
-    COUPON = 'COUPON', _('Coupon')
-    STAFF = 'STAFF', _('Staff')
-    HAPPY_HOUR = 'HAPPY_HOUR', _('Happy Hour')
+
+    PERCENTAGE = "PERCENTAGE", _("Percentage")
+    FIXED_AMOUNT = "FIXED_AMOUNT", _("Fixed Amount")
+    BUY_X_GET_Y = "BUY_X_GET_Y", _("Buy X Get Y")
+    LOYALTY = "LOYALTY", _("Loyalty")
+    COUPON = "COUPON", _("Coupon")
+    STAFF = "STAFF", _("Staff")
+    HAPPY_HOUR = "HAPPY_HOUR", _("Happy Hour")
 
 
 class RefundType(models.TextChoices):
@@ -198,9 +208,10 @@ class RefundType(models.TextChoices):
     - PARTIAL: Partial amount refund
     - ITEM: Individual item refund
     """
-    FULL = 'FULL', _('Full Refund')
-    PARTIAL = 'PARTIAL', _('Partial Refund')
-    ITEM = 'ITEM', _('Item Refund')
+
+    FULL = "FULL", _("Full Refund")
+    PARTIAL = "PARTIAL", _("Partial Refund")
+    ITEM = "ITEM", _("Item Refund")
 
 
 class RefundStatus(models.TextChoices):
@@ -212,10 +223,11 @@ class RefundStatus(models.TextChoices):
     - PROCESSED: Refund has been processed/paid
     - REJECTED: Refund request was rejected
     """
-    PENDING = 'PENDING', _('Pending')
-    APPROVED = 'APPROVED', _('Approved')
-    PROCESSED = 'PROCESSED', _('Processed')
-    REJECTED = 'REJECTED', _('Rejected')
+
+    PENDING = "PENDING", _("Pending")
+    APPROVED = "APPROVED", _("Approved")
+    PROCESSED = "PROCESSED", _("Processed")
+    REJECTED = "REJECTED", _("Rejected")
 
 
 class ReservationStatus(models.TextChoices):
@@ -229,9 +241,10 @@ class ReservationStatus(models.TextChoices):
     - NO_SHOW: Guest did not show up
     - CANCELLED: Reservation was cancelled
     """
-    PENDING = 'PENDING', _('Pending')
-    CONFIRMED = 'CONFIRMED', _('Confirmed')
-    SEATED = 'SEATED', _('Seated')
-    COMPLETED = 'COMPLETED', _('Completed')
-    NO_SHOW = 'NO_SHOW', _('No Show')
-    CANCELLED = 'CANCELLED', _('Cancelled')
+
+    PENDING = "PENDING", _("Pending")
+    CONFIRMED = "CONFIRMED", _("Confirmed")
+    SEATED = "SEATED", _("Seated")
+    COMPLETED = "COMPLETED", _("Completed")
+    NO_SHOW = "NO_SHOW", _("No Show")
+    CANCELLED = "CANCELLED", _("Cancelled")

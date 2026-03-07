@@ -20,6 +20,7 @@ from apps.customers.models import Customer, Feedback
 # CUSTOMER SERIALIZERS
 # =============================================================================
 
+
 class CustomerListSerializer(serializers.ModelSerializer):
     """
     Lightweight serializer for listing customers.
@@ -32,26 +33,32 @@ class CustomerListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = [
-            'id',
-            'name',
-            'display_name',
-            'email',
-            'phone',
-            'avatar',
-            'source',
-            'total_orders',
-            'total_spent',
-            'loyalty_points_balance',
-            'is_returning_customer',
-            'average_order_value',
-            'marketing_consent',
-            'last_visit_at',
-            'created_at',
+            "id",
+            "name",
+            "display_name",
+            "email",
+            "phone",
+            "avatar",
+            "source",
+            "total_orders",
+            "total_spent",
+            "loyalty_points_balance",
+            "is_returning_customer",
+            "average_order_value",
+            "marketing_consent",
+            "last_visit_at",
+            "created_at",
         ]
         read_only_fields = [
-            'id', 'display_name', 'is_returning_customer', 'average_order_value',
-            'total_orders', 'total_spent', 'loyalty_points_balance',
-            'last_visit_at', 'created_at',
+            "id",
+            "display_name",
+            "is_returning_customer",
+            "average_order_value",
+            "total_orders",
+            "total_spent",
+            "loyalty_points_balance",
+            "last_visit_at",
+            "created_at",
         ]
 
     def get_display_name(self, obj) -> str:
@@ -76,33 +83,41 @@ class CustomerDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = [
-            'id',
-            'name',
-            'display_name',
-            'email',
-            'phone',
-            'avatar',
-            'language_preference',
-            'source',
-            'notes',
-            'settings',
-            'total_orders',
-            'total_spent',
-            'loyalty_points_balance',
-            'is_returning_customer',
-            'average_order_value',
-            'marketing_consent',
-            'marketing_consent_at',
-            'first_visit_at',
-            'last_visit_at',
-            'created_at',
-            'updated_at',
+            "id",
+            "name",
+            "display_name",
+            "email",
+            "phone",
+            "avatar",
+            "language_preference",
+            "source",
+            "notes",
+            "settings",
+            "total_orders",
+            "total_spent",
+            "loyalty_points_balance",
+            "is_returning_customer",
+            "average_order_value",
+            "marketing_consent",
+            "marketing_consent_at",
+            "first_visit_at",
+            "last_visit_at",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = [
-            'id', 'display_name', 'is_returning_customer', 'average_order_value',
-            'total_orders', 'total_spent', 'loyalty_points_balance',
-            'marketing_consent_at', 'first_visit_at', 'last_visit_at',
-            'created_at', 'updated_at',
+            "id",
+            "display_name",
+            "is_returning_customer",
+            "average_order_value",
+            "total_orders",
+            "total_spent",
+            "loyalty_points_balance",
+            "marketing_consent_at",
+            "first_visit_at",
+            "last_visit_at",
+            "created_at",
+            "updated_at",
         ]
 
     def get_display_name(self, obj) -> str:
@@ -123,30 +138,28 @@ class CustomerCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = [
-            'name',
-            'email',
-            'phone',
-            'avatar',
-            'language_preference',
-            'source',
-            'notes',
-            'settings',
-            'marketing_consent',
+            "name",
+            "email",
+            "phone",
+            "avatar",
+            "language_preference",
+            "source",
+            "notes",
+            "settings",
+            "marketing_consent",
         ]
 
     def validate_email(self, value):
         """Validate email uniqueness within organization."""
-        request = self.context.get('request')
+        request = self.context.get("request")
         if value and request:
-            organization = getattr(request, 'organization', None)
+            organization = getattr(request, "organization", None)
             if organization:
                 if Customer.objects.filter(
-                    organization=organization,
-                    email=value,
-                    deleted_at__isnull=True
+                    organization=organization, email=value, deleted_at__isnull=True
                 ).exists():
                     raise serializers.ValidationError(
-                        _('A customer with this email already exists.')
+                        _("A customer with this email already exists.")
                     )
         return value
 
@@ -159,19 +172,20 @@ class CustomerUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = [
-            'name',
-            'phone',
-            'avatar',
-            'language_preference',
-            'notes',
-            'settings',
-            'marketing_consent',
+            "name",
+            "phone",
+            "avatar",
+            "language_preference",
+            "notes",
+            "settings",
+            "marketing_consent",
         ]
 
 
 # =============================================================================
 # FEEDBACK SERIALIZERS
 # =============================================================================
+
 
 class FeedbackListSerializer(serializers.ModelSerializer):
     """
@@ -184,24 +198,30 @@ class FeedbackListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
         fields = [
-            'id',
-            'customer',
-            'customer_name',
-            'feedback_type',
-            'rating',
-            'comment',
-            'status',
-            'is_public',
-            'is_positive',
-            'has_response',
-            'created_at',
+            "id",
+            "customer",
+            "customer_name",
+            "feedback_type",
+            "rating",
+            "comment",
+            "status",
+            "is_public",
+            "is_positive",
+            "has_response",
+            "created_at",
         ]
-        read_only_fields = ['id', 'customer_name', 'is_positive', 'has_response', 'created_at']
+        read_only_fields = [
+            "id",
+            "customer_name",
+            "is_positive",
+            "has_response",
+            "created_at",
+        ]
 
     def get_customer_name(self, obj) -> str:
         if obj.customer:
             return obj.customer.display_name
-        return _('Anonymous')
+        return _("Anonymous")
 
     def get_is_positive(self, obj) -> bool:
         return obj.is_positive
@@ -220,33 +240,39 @@ class FeedbackDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
         fields = [
-            'id',
-            'customer',
-            'customer_name',
-            'order_id',
-            'feedback_type',
-            'rating',
-            'comment',
-            'status',
-            'staff_response',
-            'responded_at',
-            'is_public',
-            'is_positive',
-            'is_negative',
-            'has_response',
-            'metadata',
-            'created_at',
-            'updated_at',
+            "id",
+            "customer",
+            "customer_name",
+            "order_id",
+            "feedback_type",
+            "rating",
+            "comment",
+            "status",
+            "staff_response",
+            "responded_at",
+            "is_public",
+            "is_positive",
+            "is_negative",
+            "has_response",
+            "metadata",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = [
-            'id', 'customer_name', 'is_positive', 'is_negative', 'has_response',
-            'responded_at', 'created_at', 'updated_at',
+            "id",
+            "customer_name",
+            "is_positive",
+            "is_negative",
+            "has_response",
+            "responded_at",
+            "created_at",
+            "updated_at",
         ]
 
     def get_customer_name(self, obj) -> str:
         if obj.customer:
             return obj.customer.display_name
-        return str(_('Anonymous'))
+        return str(_("Anonymous"))
 
     def get_is_positive(self, obj) -> bool:
         return obj.is_positive
@@ -267,20 +293,18 @@ class FeedbackCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
         fields = [
-            'customer',
-            'order_id',
-            'feedback_type',
-            'rating',
-            'comment',
-            'is_public',
-            'metadata',
+            "customer",
+            "order_id",
+            "feedback_type",
+            "rating",
+            "comment",
+            "is_public",
+            "metadata",
         ]
 
     def validate_rating(self, value):
         if not (1 <= value <= 5):
-            raise serializers.ValidationError(
-                _('Rating must be between 1 and 5.')
-            )
+            raise serializers.ValidationError(_("Rating must be between 1 and 5."))
         return value
 
 
@@ -290,9 +314,7 @@ class FeedbackRespondSerializer(serializers.Serializer):
     """
 
     response = serializers.CharField(
-        min_length=1,
-        max_length=2000,
-        help_text=_('Staff response to the feedback')
+        min_length=1, max_length=2000, help_text=_("Staff response to the feedback")
     )
 
 
@@ -301,12 +323,12 @@ class FeedbackRespondSerializer(serializers.Serializer):
 # =============================================================================
 
 __all__ = [
-    'CustomerListSerializer',
-    'CustomerDetailSerializer',
-    'CustomerCreateSerializer',
-    'CustomerUpdateSerializer',
-    'FeedbackListSerializer',
-    'FeedbackDetailSerializer',
-    'FeedbackCreateSerializer',
-    'FeedbackRespondSerializer',
+    "CustomerListSerializer",
+    "CustomerDetailSerializer",
+    "CustomerCreateSerializer",
+    "CustomerUpdateSerializer",
+    "FeedbackListSerializer",
+    "FeedbackDetailSerializer",
+    "FeedbackCreateSerializer",
+    "FeedbackRespondSerializer",
 ]

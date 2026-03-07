@@ -7,165 +7,689 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('core', '0003_shift_staffmetric_staffschedule_and_more'),
-        ('customers', '0002_customer_churn_risk_score_customer_last_visit_date_and_more'),
-        ('orders', '0003_order_refund_amount_alter_order_type_discount_refund_and_more'),
+        ("core", "0003_shift_staffmetric_staffschedule_and_more"),
+        (
+            "customers",
+            "0002_customer_churn_risk_score_customer_last_visit_date_and_more",
+        ),
+        (
+            "orders",
+            "0003_order_refund_amount_alter_order_type_discount_refund_and_more",
+        ),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Campaign',
+            name="Campaign",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier (UUID)', primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='Campaign name', max_length=255, verbose_name='Name')),
-                ('campaign_type', models.CharField(choices=[('DISCOUNT', 'Discount'), ('BOGO', 'Buy One Get One'), ('FREE_ITEM', 'Free Item'), ('BUNDLE', 'Bundle Deal'), ('LOYALTY', 'Loyalty Reward'), ('SEASONAL', 'Seasonal Promotion'), ('FLASH_SALE', 'Flash Sale'), ('REFERRAL', 'Referral Program')], help_text='Type of marketing campaign', max_length=20, verbose_name='Campaign type')),
-                ('status', models.CharField(choices=[('DRAFT', 'Draft'), ('ACTIVE', 'Active'), ('PAUSED', 'Paused'), ('COMPLETED', 'Completed'), ('CANCELLED', 'Cancelled')], db_index=True, default='DRAFT', help_text='Current campaign status', max_length=20, verbose_name='Status')),
-                ('description', models.TextField(blank=True, help_text='Campaign description', null=True, verbose_name='Description')),
-                ('start_date', models.DateTimeField(help_text='When the campaign starts', verbose_name='Start date')),
-                ('end_date', models.DateTimeField(help_text='When the campaign ends', verbose_name='End date')),
-                ('budget', models.DecimalField(decimal_places=2, default=0, help_text='Total campaign budget', max_digits=12, verbose_name='Budget')),
-                ('spent_amount', models.DecimalField(decimal_places=2, default=0, help_text='Total amount spent/discounted so far', max_digits=12, verbose_name='Spent amount')),
-                ('target_audience', models.JSONField(blank=True, default=dict, help_text='Targeting criteria (JSON)', verbose_name='Target audience')),
-                ('discount_value', models.DecimalField(decimal_places=2, default=0, help_text='Discount amount or percentage', max_digits=10, verbose_name='Discount value')),
-                ('discount_type', models.CharField(choices=[('PERCENTAGE', 'Percentage'), ('FIXED', 'Fixed Amount')], default='PERCENTAGE', help_text='How the discount is calculated', max_length=20, verbose_name='Discount type')),
-                ('min_order_amount', models.DecimalField(decimal_places=2, default=0, help_text='Minimum order amount to qualify', max_digits=10, verbose_name='Minimum order amount')),
-                ('max_discount_amount', models.DecimalField(blank=True, decimal_places=2, help_text='Cap on the discount amount (for percentage discounts)', max_digits=10, null=True, verbose_name='Maximum discount amount')),
-                ('usage_limit', models.PositiveIntegerField(default=0, help_text='Maximum number of times this campaign can be used (0 = unlimited)', verbose_name='Usage limit')),
-                ('usage_count', models.PositiveIntegerField(default=0, help_text='Number of times this campaign has been used', verbose_name='Usage count')),
-                ('is_active', models.BooleanField(default=True, help_text='Whether this campaign is enabled', verbose_name='Is active')),
-                ('created_by', models.ForeignKey(blank=True, help_text='User who created this campaign', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='created_campaigns', to=settings.AUTH_USER_MODEL, verbose_name='Created by')),
-                ('organization', models.ForeignKey(help_text='Organization this campaign belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='campaigns', to='core.organization', verbose_name='Organization')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier (UUID)",
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="Campaign name", max_length=255, verbose_name="Name"
+                    ),
+                ),
+                (
+                    "campaign_type",
+                    models.CharField(
+                        choices=[
+                            ("DISCOUNT", "Discount"),
+                            ("BOGO", "Buy One Get One"),
+                            ("FREE_ITEM", "Free Item"),
+                            ("BUNDLE", "Bundle Deal"),
+                            ("LOYALTY", "Loyalty Reward"),
+                            ("SEASONAL", "Seasonal Promotion"),
+                            ("FLASH_SALE", "Flash Sale"),
+                            ("REFERRAL", "Referral Program"),
+                        ],
+                        help_text="Type of marketing campaign",
+                        max_length=20,
+                        verbose_name="Campaign type",
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("DRAFT", "Draft"),
+                            ("ACTIVE", "Active"),
+                            ("PAUSED", "Paused"),
+                            ("COMPLETED", "Completed"),
+                            ("CANCELLED", "Cancelled"),
+                        ],
+                        db_index=True,
+                        default="DRAFT",
+                        help_text="Current campaign status",
+                        max_length=20,
+                        verbose_name="Status",
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(
+                        blank=True,
+                        help_text="Campaign description",
+                        null=True,
+                        verbose_name="Description",
+                    ),
+                ),
+                (
+                    "start_date",
+                    models.DateTimeField(
+                        help_text="When the campaign starts", verbose_name="Start date"
+                    ),
+                ),
+                (
+                    "end_date",
+                    models.DateTimeField(
+                        help_text="When the campaign ends", verbose_name="End date"
+                    ),
+                ),
+                (
+                    "budget",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        help_text="Total campaign budget",
+                        max_digits=12,
+                        verbose_name="Budget",
+                    ),
+                ),
+                (
+                    "spent_amount",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        help_text="Total amount spent/discounted so far",
+                        max_digits=12,
+                        verbose_name="Spent amount",
+                    ),
+                ),
+                (
+                    "target_audience",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text="Targeting criteria (JSON)",
+                        verbose_name="Target audience",
+                    ),
+                ),
+                (
+                    "discount_value",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        help_text="Discount amount or percentage",
+                        max_digits=10,
+                        verbose_name="Discount value",
+                    ),
+                ),
+                (
+                    "discount_type",
+                    models.CharField(
+                        choices=[
+                            ("PERCENTAGE", "Percentage"),
+                            ("FIXED", "Fixed Amount"),
+                        ],
+                        default="PERCENTAGE",
+                        help_text="How the discount is calculated",
+                        max_length=20,
+                        verbose_name="Discount type",
+                    ),
+                ),
+                (
+                    "min_order_amount",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        help_text="Minimum order amount to qualify",
+                        max_digits=10,
+                        verbose_name="Minimum order amount",
+                    ),
+                ),
+                (
+                    "max_discount_amount",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        help_text="Cap on the discount amount (for percentage discounts)",
+                        max_digits=10,
+                        null=True,
+                        verbose_name="Maximum discount amount",
+                    ),
+                ),
+                (
+                    "usage_limit",
+                    models.PositiveIntegerField(
+                        default=0,
+                        help_text="Maximum number of times this campaign can be used (0 = unlimited)",
+                        verbose_name="Usage limit",
+                    ),
+                ),
+                (
+                    "usage_count",
+                    models.PositiveIntegerField(
+                        default=0,
+                        help_text="Number of times this campaign has been used",
+                        verbose_name="Usage count",
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Whether this campaign is enabled",
+                        verbose_name="Is active",
+                    ),
+                ),
+                (
+                    "created_by",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="User who created this campaign",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="created_campaigns",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Created by",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization this campaign belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="campaigns",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Campaign',
-                'verbose_name_plural': 'Campaigns',
-                'db_table': 'campaigns',
-                'ordering': ['-start_date'],
+                "verbose_name": "Campaign",
+                "verbose_name_plural": "Campaigns",
+                "db_table": "campaigns",
+                "ordering": ["-start_date"],
             },
         ),
         migrations.CreateModel(
-            name='Coupon',
+            name="Coupon",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier (UUID)', primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(help_text='Unique coupon code within the organization', max_length=50, verbose_name='Coupon code')),
-                ('discount_value', models.DecimalField(decimal_places=2, help_text='Discount amount or percentage', max_digits=10, verbose_name='Discount value')),
-                ('discount_type', models.CharField(choices=[('PERCENTAGE', 'Percentage'), ('FIXED', 'Fixed Amount')], default='PERCENTAGE', help_text='How the discount is calculated', max_length=20, verbose_name='Discount type')),
-                ('min_order_amount', models.DecimalField(decimal_places=2, default=0, help_text='Minimum order amount to apply coupon', max_digits=10, verbose_name='Minimum order amount')),
-                ('max_uses', models.PositiveIntegerField(default=1, help_text='Maximum number of times this coupon can be used', verbose_name='Maximum uses')),
-                ('used_count', models.PositiveIntegerField(default=0, help_text='Number of times this coupon has been redeemed', verbose_name='Used count')),
-                ('valid_from', models.DateTimeField(help_text='When the coupon becomes valid', verbose_name='Valid from')),
-                ('valid_until', models.DateTimeField(help_text='When the coupon expires', verbose_name='Valid until')),
-                ('is_active', models.BooleanField(default=True, help_text='Whether this coupon is currently active', verbose_name='Is active')),
-                ('campaign', models.ForeignKey(blank=True, help_text='Campaign this coupon is linked to (optional)', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='coupons', to='campaigns.campaign', verbose_name='Campaign')),
-                ('organization', models.ForeignKey(help_text='Organization this coupon belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='coupons', to='core.organization', verbose_name='Organization')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier (UUID)",
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "code",
+                    models.CharField(
+                        help_text="Unique coupon code within the organization",
+                        max_length=50,
+                        verbose_name="Coupon code",
+                    ),
+                ),
+                (
+                    "discount_value",
+                    models.DecimalField(
+                        decimal_places=2,
+                        help_text="Discount amount or percentage",
+                        max_digits=10,
+                        verbose_name="Discount value",
+                    ),
+                ),
+                (
+                    "discount_type",
+                    models.CharField(
+                        choices=[
+                            ("PERCENTAGE", "Percentage"),
+                            ("FIXED", "Fixed Amount"),
+                        ],
+                        default="PERCENTAGE",
+                        help_text="How the discount is calculated",
+                        max_length=20,
+                        verbose_name="Discount type",
+                    ),
+                ),
+                (
+                    "min_order_amount",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        help_text="Minimum order amount to apply coupon",
+                        max_digits=10,
+                        verbose_name="Minimum order amount",
+                    ),
+                ),
+                (
+                    "max_uses",
+                    models.PositiveIntegerField(
+                        default=1,
+                        help_text="Maximum number of times this coupon can be used",
+                        verbose_name="Maximum uses",
+                    ),
+                ),
+                (
+                    "used_count",
+                    models.PositiveIntegerField(
+                        default=0,
+                        help_text="Number of times this coupon has been redeemed",
+                        verbose_name="Used count",
+                    ),
+                ),
+                (
+                    "valid_from",
+                    models.DateTimeField(
+                        help_text="When the coupon becomes valid",
+                        verbose_name="Valid from",
+                    ),
+                ),
+                (
+                    "valid_until",
+                    models.DateTimeField(
+                        help_text="When the coupon expires", verbose_name="Valid until"
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Whether this coupon is currently active",
+                        verbose_name="Is active",
+                    ),
+                ),
+                (
+                    "campaign",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="Campaign this coupon is linked to (optional)",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="coupons",
+                        to="campaigns.campaign",
+                        verbose_name="Campaign",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization this coupon belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="coupons",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Coupon',
-                'verbose_name_plural': 'Coupons',
-                'db_table': 'coupons',
-                'ordering': ['-created_at'],
+                "verbose_name": "Coupon",
+                "verbose_name_plural": "Coupons",
+                "db_table": "coupons",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='CouponUsage',
+            name="CouponUsage",
             fields=[
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier (UUID)', primary_key=True, serialize=False, verbose_name='ID')),
-                ('discount_applied', models.DecimalField(decimal_places=2, help_text='Actual discount amount applied to the order', max_digits=10, verbose_name='Discount applied')),
-                ('used_at', models.DateTimeField(auto_now_add=True, help_text='When the coupon was redeemed', verbose_name='Used at')),
-                ('coupon', models.ForeignKey(help_text='The coupon that was redeemed', on_delete=django.db.models.deletion.CASCADE, related_name='usages', to='campaigns.coupon', verbose_name='Coupon')),
-                ('customer', models.ForeignKey(blank=True, help_text='The customer who redeemed the coupon', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='coupon_usages', to='customers.customer', verbose_name='Customer')),
-                ('order', models.ForeignKey(help_text='The order where the coupon was applied', on_delete=django.db.models.deletion.CASCADE, related_name='coupon_usages', to='orders.order', verbose_name='Order')),
-                ('organization', models.ForeignKey(help_text='Organization this usage belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='coupon_usages', to='core.organization', verbose_name='Organization')),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier (UUID)",
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "discount_applied",
+                    models.DecimalField(
+                        decimal_places=2,
+                        help_text="Actual discount amount applied to the order",
+                        max_digits=10,
+                        verbose_name="Discount applied",
+                    ),
+                ),
+                (
+                    "used_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="When the coupon was redeemed",
+                        verbose_name="Used at",
+                    ),
+                ),
+                (
+                    "coupon",
+                    models.ForeignKey(
+                        help_text="The coupon that was redeemed",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="usages",
+                        to="campaigns.coupon",
+                        verbose_name="Coupon",
+                    ),
+                ),
+                (
+                    "customer",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="The customer who redeemed the coupon",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="coupon_usages",
+                        to="customers.customer",
+                        verbose_name="Customer",
+                    ),
+                ),
+                (
+                    "order",
+                    models.ForeignKey(
+                        help_text="The order where the coupon was applied",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="coupon_usages",
+                        to="orders.order",
+                        verbose_name="Order",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization this usage belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="coupon_usages",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Coupon Usage',
-                'verbose_name_plural': 'Coupon Usages',
-                'db_table': 'coupon_usages',
-                'ordering': ['-used_at'],
+                "verbose_name": "Coupon Usage",
+                "verbose_name_plural": "Coupon Usages",
+                "db_table": "coupon_usages",
+                "ordering": ["-used_at"],
             },
         ),
         migrations.CreateModel(
-            name='Referral',
+            name="Referral",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier (UUID)', primary_key=True, serialize=False, verbose_name='ID')),
-                ('referral_code', models.CharField(help_text='Unique referral code used', max_length=50, verbose_name='Referral code')),
-                ('reward_type', models.CharField(choices=[('PERCENTAGE', 'Percentage'), ('FIXED', 'Fixed Amount')], default='FIXED', help_text='How the referral reward is calculated', max_length=20, verbose_name='Reward type')),
-                ('reward_value', models.DecimalField(decimal_places=2, default=0, help_text='Value of the referral reward', max_digits=10, verbose_name='Reward value')),
-                ('is_completed', models.BooleanField(default=False, help_text='Whether the referral reward has been fulfilled', verbose_name='Is completed')),
-                ('completed_at', models.DateTimeField(blank=True, help_text='When the referral was completed', null=True, verbose_name='Completed at')),
-                ('organization', models.ForeignKey(help_text='Organization this referral belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='referrals', to='core.organization', verbose_name='Organization')),
-                ('referred', models.ForeignKey(help_text='Customer who was referred', on_delete=django.db.models.deletion.CASCADE, related_name='referrals_received', to='customers.customer', verbose_name='Referred')),
-                ('referrer', models.ForeignKey(help_text='Customer who made the referral', on_delete=django.db.models.deletion.CASCADE, related_name='referrals_made', to='customers.customer', verbose_name='Referrer')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier (UUID)",
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "referral_code",
+                    models.CharField(
+                        help_text="Unique referral code used",
+                        max_length=50,
+                        verbose_name="Referral code",
+                    ),
+                ),
+                (
+                    "reward_type",
+                    models.CharField(
+                        choices=[
+                            ("PERCENTAGE", "Percentage"),
+                            ("FIXED", "Fixed Amount"),
+                        ],
+                        default="FIXED",
+                        help_text="How the referral reward is calculated",
+                        max_length=20,
+                        verbose_name="Reward type",
+                    ),
+                ),
+                (
+                    "reward_value",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        help_text="Value of the referral reward",
+                        max_digits=10,
+                        verbose_name="Reward value",
+                    ),
+                ),
+                (
+                    "is_completed",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Whether the referral reward has been fulfilled",
+                        verbose_name="Is completed",
+                    ),
+                ),
+                (
+                    "completed_at",
+                    models.DateTimeField(
+                        blank=True,
+                        help_text="When the referral was completed",
+                        null=True,
+                        verbose_name="Completed at",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization this referral belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="referrals",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
+                (
+                    "referred",
+                    models.ForeignKey(
+                        help_text="Customer who was referred",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="referrals_received",
+                        to="customers.customer",
+                        verbose_name="Referred",
+                    ),
+                ),
+                (
+                    "referrer",
+                    models.ForeignKey(
+                        help_text="Customer who made the referral",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="referrals_made",
+                        to="customers.customer",
+                        verbose_name="Referrer",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Referral',
-                'verbose_name_plural': 'Referrals',
-                'db_table': 'referrals',
-                'ordering': ['-created_at'],
+                "verbose_name": "Referral",
+                "verbose_name_plural": "Referrals",
+                "db_table": "referrals",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.AddIndex(
-            model_name='campaign',
-            index=models.Index(fields=['organization', 'deleted_at'], name='campaign_org_deleted_idx'),
+            model_name="campaign",
+            index=models.Index(
+                fields=["organization", "deleted_at"], name="campaign_org_deleted_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='campaign',
-            index=models.Index(fields=['organization', 'status'], name='campaign_org_status_idx'),
+            model_name="campaign",
+            index=models.Index(
+                fields=["organization", "status"], name="campaign_org_status_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='campaign',
-            index=models.Index(fields=['organization', 'campaign_type'], name='campaign_org_type_idx'),
+            model_name="campaign",
+            index=models.Index(
+                fields=["organization", "campaign_type"], name="campaign_org_type_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='campaign',
-            index=models.Index(fields=['start_date', 'end_date'], name='campaign_date_range_idx'),
+            model_name="campaign",
+            index=models.Index(
+                fields=["start_date", "end_date"], name="campaign_date_range_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='coupon',
-            index=models.Index(fields=['organization', 'deleted_at'], name='coupon_org_deleted_idx'),
+            model_name="coupon",
+            index=models.Index(
+                fields=["organization", "deleted_at"], name="coupon_org_deleted_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='coupon',
-            index=models.Index(fields=['organization', 'code'], name='coupon_org_code_idx'),
+            model_name="coupon",
+            index=models.Index(
+                fields=["organization", "code"], name="coupon_org_code_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='coupon',
-            index=models.Index(fields=['valid_from', 'valid_until'], name='coupon_validity_idx'),
+            model_name="coupon",
+            index=models.Index(
+                fields=["valid_from", "valid_until"], name="coupon_validity_idx"
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='coupon',
-            unique_together={('organization', 'code')},
+            name="coupon",
+            unique_together={("organization", "code")},
         ),
         migrations.AddIndex(
-            model_name='couponusage',
-            index=models.Index(fields=['organization', 'used_at'], name='couponusage_org_used_idx'),
+            model_name="couponusage",
+            index=models.Index(
+                fields=["organization", "used_at"], name="couponusage_org_used_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='couponusage',
-            index=models.Index(fields=['coupon', 'used_at'], name='couponusage_coupon_used_idx'),
+            model_name="couponusage",
+            index=models.Index(
+                fields=["coupon", "used_at"], name="couponusage_coupon_used_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='referral',
-            index=models.Index(fields=['organization', 'deleted_at'], name='referral_org_deleted_idx'),
+            model_name="referral",
+            index=models.Index(
+                fields=["organization", "deleted_at"], name="referral_org_deleted_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='referral',
-            index=models.Index(fields=['organization', 'referral_code'], name='referral_org_code_idx'),
+            model_name="referral",
+            index=models.Index(
+                fields=["organization", "referral_code"], name="referral_org_code_idx"
+            ),
         ),
     ]

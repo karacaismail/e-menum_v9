@@ -19,7 +19,7 @@ from urllib.parse import urljoin, urlparse
 from django.conf import settings
 from django.utils import timezone
 
-logger = logging.getLogger('apps.seo')
+logger = logging.getLogger("apps.seo")
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Optional ``requests`` import
@@ -27,13 +27,14 @@ logger = logging.getLogger('apps.seo')
 
 try:
     import requests as _requests  # noqa: F401 (used throughout)
+
     HAS_REQUESTS = True
 except ImportError:
     _requests = None  # type: ignore[assignment]
     HAS_REQUESTS = False
     logger.warning(
         'The "requests" library is not installed. '
-        'BrokenLinkChecker will return status 0 for all checks.'
+        "BrokenLinkChecker will return status 0 for all checks."
     )
 
 
@@ -47,12 +48,13 @@ _HREF_RE = re.compile(
 )
 
 # User-Agent string for requests
-_USER_AGENT = f'E-Menum-LinkChecker/1.0 (+https://{settings.SITE_DOMAIN})'
+_USER_AGENT = f"E-Menum-LinkChecker/1.0 (+https://{settings.SITE_DOMAIN})"
 
 
 # ──────────────────────────────────────────────────────────────────────────────
 # BrokenLinkChecker
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class BrokenLinkChecker:
     """
@@ -72,7 +74,7 @@ class BrokenLinkChecker:
         base_url: Optional[str] = None,
         timeout: int = 10,
     ) -> None:
-        self.base_url = (base_url or '').rstrip('/')
+        self.base_url = (base_url or "").rstrip("/")
         self.timeout = timeout
 
     # ── Single URL check ─────────────────────────────────────────────────
@@ -92,7 +94,7 @@ class BrokenLinkChecker:
         if not HAS_REQUESTS:
             return 0
 
-        headers = {'User-Agent': _USER_AGENT}
+        headers = {"User-Agent": _USER_AGENT}
 
         try:
             resp = _requests.head(
@@ -114,13 +116,13 @@ class BrokenLinkChecker:
             return resp.status_code
 
         except _requests.exceptions.Timeout:
-            logger.debug('Timeout checking URL: %s', url)
+            logger.debug("Timeout checking URL: %s", url)
             return 0
         except _requests.exceptions.ConnectionError:
-            logger.debug('Connection error checking URL: %s', url)
+            logger.debug("Connection error checking URL: %s", url)
             return 0
         except _requests.exceptions.RequestException as exc:
-            logger.debug('Request error checking URL %s: %s', url, exc)
+            logger.debug("Request error checking URL %s: %s", url, exc)
             return 0
 
     # ── Single page crawl ────────────────────────────────────────────────
@@ -142,7 +144,7 @@ class BrokenLinkChecker:
         if not HAS_REQUESTS:
             return []
 
-        headers = {'User-Agent': _USER_AGENT}
+        headers = {"User-Agent": _USER_AGENT}
         results: List[Tuple[str, int]] = []
 
         try:
@@ -153,11 +155,11 @@ class BrokenLinkChecker:
                 allow_redirects=True,
             )
         except _requests.exceptions.RequestException as exc:
-            logger.warning('Failed to fetch page %s: %s', url, exc)
+            logger.warning("Failed to fetch page %s: %s", url, exc)
             return results
 
         if resp.status_code != 200:
-            logger.debug('Page %s returned status %d', url, resp.status_code)
+            logger.debug("Page %s returned status %d", url, resp.status_code)
             return results
 
         # Extract hrefs
@@ -166,7 +168,7 @@ class BrokenLinkChecker:
 
         for href in hrefs:
             # Skip anchors, javascript, mailto, tel
-            if href.startswith(('#', 'javascript:', 'mailto:', 'tel:')):
+            if href.startswith(("#", "javascript:", "mailto:", "tel:")):
                 continue
 
             # Resolve relative URLs
@@ -209,12 +211,14 @@ class BrokenLinkChecker:
             ``{page_url: [(link_url, status_code), ...]}``
         """
         if not HAS_REQUESTS:
-            logger.error('Cannot run full site crawl: "requests" library not installed.')
+            logger.error(
+                'Cannot run full site crawl: "requests" library not installed.'
+            )
             return {}
 
         start = start_url or self.base_url
         if not start:
-            logger.error('No start URL or base_url configured for site crawl.')
+            logger.error("No start URL or base_url configured for site crawl.")
             return {}
 
         base_parsed = urlparse(start)
@@ -229,13 +233,15 @@ class BrokenLinkChecker:
 
             # Normalise (strip fragment)
             current_parsed = urlparse(current_url)
-            current_clean = current_parsed._replace(fragment='').geturl()
+            current_clean = current_parsed._replace(fragment="").geturl()
 
             if current_clean in visited:
                 continue
             visited.add(current_clean)
 
-            logger.info('Crawling page %d/%d: %s', len(visited), max_pages, current_clean)
+            logger.info(
+                "Crawling page %d/%d: %s", len(visited), max_pages, current_clean
+            )
 
             page_results = self.crawl_page(current_clean)
             all_results[current_clean] = page_results
@@ -243,7 +249,7 @@ class BrokenLinkChecker:
             # Enqueue internal links that returned 200
             for link_url, status in page_results:
                 link_parsed = urlparse(link_url)
-                link_clean = link_parsed._replace(fragment='').geturl()
+                link_clean = link_parsed._replace(fragment="").geturl()
 
                 # Only follow internal pages
                 if link_parsed.netloc == base_domain and link_clean not in visited:
@@ -252,7 +258,7 @@ class BrokenLinkChecker:
                         continue
                     queue.append(link_clean)
 
-        logger.info('Site crawl complete: %d pages crawled.', len(visited))
+        logger.info("Site crawl complete: %d pages crawled.", len(visited))
         return all_results
 
     # ── Persist results ──────────────────────────────────────────────────
@@ -295,13 +301,15 @@ class BrokenLinkChecker:
                         if existing.is_resolved:
                             existing.is_resolved = False
                             existing.resolved_at = None
-                        existing.save(update_fields=[
-                            'status_code',
-                            'last_checked',
-                            'check_count',
-                            'is_resolved',
-                            'resolved_at',
-                        ])
+                        existing.save(
+                            update_fields=[
+                                "status_code",
+                                "last_checked",
+                                "check_count",
+                                "is_resolved",
+                                "resolved_at",
+                            ]
+                        )
                     else:
                         BrokenLink.objects.create(
                             source_url=source_url,
@@ -318,13 +326,14 @@ class BrokenLinkChecker:
                         )
                     saved += 1
 
-        logger.info('Saved %d broken link records.', saved)
+        logger.info("Saved %d broken link records.", saved)
         return saved
 
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Helpers
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 def _looks_like_page(path: str) -> bool:
     """
@@ -335,14 +344,32 @@ def _looks_like_page(path: str) -> bool:
     waste time on images, CSS, JS, etc.
     """
     skip_extensions = {
-        '.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp',
-        '.ico', '.woff', '.woff2', '.ttf', '.eot', '.map', '.pdf',
-        '.zip', '.gz', '.mp4', '.webm', '.mp3', '.wav',
+        ".css",
+        ".js",
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".gif",
+        ".svg",
+        ".webp",
+        ".ico",
+        ".woff",
+        ".woff2",
+        ".ttf",
+        ".eot",
+        ".map",
+        ".pdf",
+        ".zip",
+        ".gz",
+        ".mp4",
+        ".webm",
+        ".mp3",
+        ".wav",
     }
     # Extract extension from the last path segment
-    last_segment = path.rsplit('/', 1)[-1]
-    if '.' in last_segment:
-        ext = '.' + last_segment.rsplit('.', 1)[-1].lower()
+    last_segment = path.rsplit("/", 1)[-1]
+    if "." in last_segment:
+        ext = "." + last_segment.rsplit(".", 1)[-1].lower()
         if ext in skip_extensions:
             return False
     return True

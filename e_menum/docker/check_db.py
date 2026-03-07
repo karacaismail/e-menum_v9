@@ -7,6 +7,7 @@ Usage (from host):
   docker exec emenum_web python /app/docker/check_db.py
   docker exec -it emenum_web python /app/docker/check_db.py
 """
+
 import os
 import sys
 from urllib.parse import urlparse, urlunparse
@@ -55,7 +56,10 @@ def main() -> int:
     url = get_database_url()
     if not url:
         print("ERROR: No DATABASE_URL and no POSTGRES_USER/POSTGRES_PASSWORD in env.")
-        print("Env keys present:", [k for k in os.environ if "POSTGRES" in k or "DATABASE" in k])
+        print(
+            "Env keys present:",
+            [k for k in os.environ if "POSTGRES" in k or "DATABASE" in k],
+        )
         return 1
 
     print("DATABASE_URL (masked):", mask_url(url))
@@ -68,6 +72,7 @@ def main() -> int:
 
     # 1) Raw TCP connect (no driver)
     import socket
+
     host = parsed.hostname or "db"
     port = parsed.port or 5432
     print(f"1) TCP connect to {host}:{port} ...")
@@ -87,6 +92,7 @@ def main() -> int:
     except ImportError:
         try:
             import psycopg2 as psycopg
+
             # psycopg2 uses connect(dsn=url) or connect(host=..., user=..., ...)
             try:
                 conn = psycopg.connect(

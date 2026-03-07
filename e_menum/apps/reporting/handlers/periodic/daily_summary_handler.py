@@ -40,7 +40,7 @@ def _parse_date(val) -> Optional[date]:
         return val
     if isinstance(val, datetime):
         return val.date()
-    return datetime.strptime(str(val), '%Y-%m-%d').date()
+    return datetime.strptime(str(val), "%Y-%m-%d").date()
 
 
 def _safe_percent_change(current: float, previous: float) -> Optional[float]:
@@ -49,7 +49,7 @@ def _safe_percent_change(current: float, previous: float) -> Optional[float]:
     return round(((current - previous) / previous) * 100, 2)
 
 
-@register_handler('RPT-PER-001')
+@register_handler("RPT-PER-001")
 class DailySummaryHandler(BaseReportHandler):
     """
     Daily summary report handler.
@@ -61,24 +61,24 @@ class DailySummaryHandler(BaseReportHandler):
         date: str - The date to report on in YYYY-MM-DD (defaults to yesterday)
     """
 
-    feature_key = 'RPT-PER-001'
+    feature_key = "RPT-PER-001"
 
     def get_required_permissions(self) -> List[str]:
-        return ['reporting.view']
+        return ["reporting.view"]
 
     def get_default_parameters(self) -> dict:
         yesterday = date.today() - timedelta(days=1)
         return {
-            'date': yesterday.isoformat(),
+            "date": yesterday.isoformat(),
         }
 
     def validate_parameters(self, parameters: dict) -> dict:
         merged = {**self.get_default_parameters(), **parameters}
-        merged['date'] = _parse_date(merged['date'])
+        merged["date"] = _parse_date(merged["date"])
         return merged
 
     def generate(self, org_id: str, parameters: dict) -> dict:
-        report_date = parameters['date']
+        report_date = parameters["date"]
         prev_date = report_date - timedelta(days=1)
 
         # ---- Revenue metrics ----
@@ -111,64 +111,72 @@ class DailySummaryHandler(BaseReportHandler):
 
         # ---- Build highlights ----
         highlights = self._build_highlights(
-            revenue, prev_revenue, orders, prev_orders, top_sellers,
+            revenue,
+            prev_revenue,
+            orders,
+            prev_orders,
+            top_sellers,
         )
 
         return {
-            'date': report_date.isoformat(),
-            'day_of_week': report_date.strftime('%A'),
-            'revenue': {
-                'total': revenue['total'],
-                'net': revenue['net'],
-                'discount': revenue['discount'],
-                'tax': revenue['tax'],
-                'refund': revenue['refund'],
-                'comparison': {
-                    'previous_date': prev_date.isoformat(),
-                    'total': prev_revenue['total'],
-                    'change_percent': _safe_percent_change(
-                        revenue['total'], prev_revenue['total'],
+            "date": report_date.isoformat(),
+            "day_of_week": report_date.strftime("%A"),
+            "revenue": {
+                "total": revenue["total"],
+                "net": revenue["net"],
+                "discount": revenue["discount"],
+                "tax": revenue["tax"],
+                "refund": revenue["refund"],
+                "comparison": {
+                    "previous_date": prev_date.isoformat(),
+                    "total": prev_revenue["total"],
+                    "change_percent": _safe_percent_change(
+                        revenue["total"],
+                        prev_revenue["total"],
                     ),
                 },
             },
-            'orders': {
-                'total': orders['total'],
-                'completed': orders['completed'],
-                'cancelled': orders['cancelled'],
-                'avg_order_value': orders['avg_order_value'],
-                'comparison': {
-                    'previous_date': prev_date.isoformat(),
-                    'total': prev_orders['total'],
-                    'change_percent': _safe_percent_change(
-                        float(orders['total']), float(prev_orders['total']),
+            "orders": {
+                "total": orders["total"],
+                "completed": orders["completed"],
+                "cancelled": orders["cancelled"],
+                "avg_order_value": orders["avg_order_value"],
+                "comparison": {
+                    "previous_date": prev_date.isoformat(),
+                    "total": prev_orders["total"],
+                    "change_percent": _safe_percent_change(
+                        float(orders["total"]),
+                        float(prev_orders["total"]),
                     ),
                 },
             },
-            'customers': {
-                'new_customers': customers['new'],
-                'returning_customers': customers['returning'],
-                'total_unique': customers['unique'],
-                'comparison': {
-                    'previous_date': prev_date.isoformat(),
-                    'new_customers': prev_customers['new'],
-                    'new_customers_change_percent': _safe_percent_change(
-                        float(customers['new']), float(prev_customers['new']),
+            "customers": {
+                "new_customers": customers["new"],
+                "returning_customers": customers["returning"],
+                "total_unique": customers["unique"],
+                "comparison": {
+                    "previous_date": prev_date.isoformat(),
+                    "new_customers": prev_customers["new"],
+                    "new_customers_change_percent": _safe_percent_change(
+                        float(customers["new"]),
+                        float(prev_customers["new"]),
                     ),
                 },
             },
-            'qr_scans': {
-                'total': qr_scans,
-                'comparison': {
-                    'previous_date': prev_date.isoformat(),
-                    'total': prev_qr_scans,
-                    'change_percent': _safe_percent_change(
-                        float(qr_scans), float(prev_qr_scans),
+            "qr_scans": {
+                "total": qr_scans,
+                "comparison": {
+                    "previous_date": prev_date.isoformat(),
+                    "total": prev_qr_scans,
+                    "change_percent": _safe_percent_change(
+                        float(qr_scans),
+                        float(prev_qr_scans),
                     ),
                 },
             },
-            'top_sellers': top_sellers,
-            'hourly_distribution': hourly_revenue,
-            'highlights': highlights,
+            "top_sellers": top_sellers,
+            "hourly_distribution": hourly_revenue,
+            "highlights": highlights,
         }
 
     # ------------------------------------------------------------------
@@ -184,11 +192,11 @@ class DailySummaryHandler(BaseReportHandler):
             date=d,
             granularity=Granularity.DAILY,
         ).aggregate(
-            gross=Sum('gross_revenue'),
-            net=Sum('net_revenue'),
+            gross=Sum("gross_revenue"),
+            net=Sum("net_revenue"),
         )
 
-        if agg['gross'] is not None:
+        if agg["gross"] is not None:
             # Get discount/tax/refund from Order table
             order_agg = Order.objects.filter(
                 organization_id=org_id,
@@ -196,16 +204,16 @@ class DailySummaryHandler(BaseReportHandler):
                 created_at__date=d,
                 status__in=[OrderStatus.COMPLETED, OrderStatus.DELIVERED],
             ).aggregate(
-                discount=Sum('discount_amount'),
-                tax=Sum('tax_amount'),
-                refund=Sum('refund_amount'),
+                discount=Sum("discount_amount"),
+                tax=Sum("tax_amount"),
+                refund=Sum("refund_amount"),
             )
             return {
-                'total': _to_float(agg['gross']),
-                'net': _to_float(agg['net']),
-                'discount': _to_float(order_agg['discount']),
-                'tax': _to_float(order_agg['tax']),
-                'refund': _to_float(order_agg['refund']),
+                "total": _to_float(agg["gross"]),
+                "net": _to_float(agg["net"]),
+                "discount": _to_float(order_agg["discount"]),
+                "tax": _to_float(order_agg["tax"]),
+                "refund": _to_float(order_agg["refund"]),
             }
 
         # Fallback to Order table
@@ -216,20 +224,20 @@ class DailySummaryHandler(BaseReportHandler):
             status__in=[OrderStatus.COMPLETED, OrderStatus.DELIVERED],
         )
         result = qs.aggregate(
-            total=Sum('total_amount'),
-            discount=Sum('discount_amount'),
-            tax=Sum('tax_amount'),
-            refund=Sum('refund_amount'),
+            total=Sum("total_amount"),
+            discount=Sum("discount_amount"),
+            tax=Sum("tax_amount"),
+            refund=Sum("refund_amount"),
         )
-        total = _to_float(result['total'])
-        discount = _to_float(result['discount'])
-        refund = _to_float(result['refund'])
+        total = _to_float(result["total"])
+        discount = _to_float(result["discount"])
+        refund = _to_float(result["refund"])
         return {
-            'total': total,
-            'net': total - discount - refund,
-            'discount': discount,
-            'tax': _to_float(result['tax']),
-            'refund': refund,
+            "total": total,
+            "net": total - discount - refund,
+            "discount": discount,
+            "tax": _to_float(result["tax"]),
+            "refund": refund,
         }
 
     def _get_order_metrics(self, org_id: str, d: date) -> dict:
@@ -247,13 +255,13 @@ class DailySummaryHandler(BaseReportHandler):
 
         aov = qs.filter(
             status__in=[OrderStatus.COMPLETED, OrderStatus.DELIVERED],
-        ).aggregate(avg=Avg('total_amount'))['avg']
+        ).aggregate(avg=Avg("total_amount"))["avg"]
 
         return {
-            'total': total,
-            'completed': completed,
-            'cancelled': cancelled,
-            'avg_order_value': _to_float(aov),
+            "total": total,
+            "completed": completed,
+            "cancelled": cancelled,
+            "avg_order_value": _to_float(aov),
         }
 
     def _get_customer_metrics(self, org_id: str, d: date) -> dict:
@@ -264,12 +272,17 @@ class DailySummaryHandler(BaseReportHandler):
             created_at__date=d,
         ).count()
 
-        unique_customers = Order.objects.filter(
-            organization_id=org_id,
-            deleted_at__isnull=True,
-            created_at__date=d,
-            customer__isnull=False,
-        ).values('customer').distinct().count()
+        unique_customers = (
+            Order.objects.filter(
+                organization_id=org_id,
+                deleted_at__isnull=True,
+                created_at__date=d,
+                customer__isnull=False,
+            )
+            .values("customer")
+            .distinct()
+            .count()
+        )
 
         # Returning: customers with >1 total orders who ordered today
         returning = (
@@ -280,15 +293,15 @@ class DailySummaryHandler(BaseReportHandler):
                 customer__isnull=False,
                 customer__total_orders__gt=1,
             )
-            .values('customer')
+            .values("customer")
             .distinct()
             .count()
         )
 
         return {
-            'new': new_count,
-            'returning': returning,
-            'unique': unique_customers,
+            "new": new_count,
+            "returning": returning,
+            "unique": unique_customers,
         }
 
     def _get_top_sellers(self, org_id: str, d: date, limit: int = 5) -> List[dict]:
@@ -302,22 +315,24 @@ class DailySummaryHandler(BaseReportHandler):
                 order__created_at__date=d,
             )
             .values(
-                product_name=F('product__name'),
-                product_id_val=F('product__id'),
+                product_name=F("product__name"),
+                product_id_val=F("product__id"),
             )
             .annotate(
-                qty_sold=Sum('quantity'),
-                revenue=Sum('total_price'),
+                qty_sold=Sum("quantity"),
+                revenue=Sum("total_price"),
             )
-            .order_by('-revenue')[:limit]
+            .order_by("-revenue")[:limit]
         )
 
         return [
             {
-                'product_id': str(row['product_id_val']) if row['product_id_val'] else None,
-                'product_name': row['product_name'] or 'Unknown',
-                'qty_sold': row['qty_sold'] or 0,
-                'revenue': _to_float(row['revenue']),
+                "product_id": str(row["product_id_val"])
+                if row["product_id_val"]
+                else None,
+                "product_name": row["product_name"] or "Unknown",
+                "qty_sold": row["qty_sold"] or 0,
+                "revenue": _to_float(row["revenue"]),
             }
             for row in rows
         ]
@@ -332,20 +347,20 @@ class DailySummaryHandler(BaseReportHandler):
                 date=d,
                 granularity=Granularity.HOURLY,
             )
-            .values('hour')
+            .values("hour")
             .annotate(
-                revenue=Sum('gross_revenue'),
-                orders=Sum('order_count'),
+                revenue=Sum("gross_revenue"),
+                orders=Sum("order_count"),
             )
-            .order_by('hour')
+            .order_by("hour")
         )
 
         if hourly_agg:
             return [
                 {
-                    'hour': row['hour'],
-                    'revenue': _to_float(row['revenue']),
-                    'orders': row['orders'] or 0,
+                    "hour": row["hour"],
+                    "revenue": _to_float(row["revenue"]),
+                    "orders": row["orders"] or 0,
                 }
                 for row in hourly_agg
             ]
@@ -357,20 +372,20 @@ class DailySummaryHandler(BaseReportHandler):
                 deleted_at__isnull=True,
                 created_at__date=d,
             )
-            .annotate(hour=ExtractHour('created_at'))
-            .values('hour')
+            .annotate(hour=ExtractHour("created_at"))
+            .values("hour")
             .annotate(
-                revenue=Sum('total_amount'),
-                orders=Count('id'),
+                revenue=Sum("total_amount"),
+                orders=Count("id"),
             )
-            .order_by('hour')
+            .order_by("hour")
         )
 
         return [
             {
-                'hour': row['hour'],
-                'revenue': _to_float(row['revenue']),
-                'orders': row['orders'] or 0,
+                "hour": row["hour"],
+                "revenue": _to_float(row["revenue"]),
+                "orders": row["orders"] or 0,
             }
             for row in rows
         ]
@@ -386,7 +401,7 @@ class DailySummaryHandler(BaseReportHandler):
         """Build list of highlight strings for the daily summary."""
         highlights = []
 
-        rev_change = _safe_percent_change(revenue['total'], prev_revenue['total'])
+        rev_change = _safe_percent_change(revenue["total"], prev_revenue["total"])
         if rev_change is not None and rev_change > 0:
             highlights.append(
                 f"Revenue increased by {rev_change}% compared to previous day."
@@ -397,16 +412,16 @@ class DailySummaryHandler(BaseReportHandler):
             )
 
         ord_change = _safe_percent_change(
-            float(orders['total']), float(prev_orders['total']),
+            float(orders["total"]),
+            float(prev_orders["total"]),
         )
         if ord_change is not None and ord_change > 10:
-            highlights.append(
-                f"Order volume up {ord_change}% vs yesterday."
-            )
+            highlights.append(f"Order volume up {ord_change}% vs yesterday.")
 
-        if orders['cancelled'] > 0:
+        if orders["cancelled"] > 0:
             cancel_rate = round(
-                orders['cancelled'] / max(orders['total'], 1) * 100, 1,
+                orders["cancelled"] / max(orders["total"], 1) * 100,
+                1,
             )
             if cancel_rate > 10:
                 highlights.append(

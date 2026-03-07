@@ -61,7 +61,7 @@ class EmailOrUsernameBackend(ModelBackend):
 
         # Determine lookup strategy
         try:
-            if '@' in identifier:
+            if "@" in identifier:
                 user = User.objects.get(email__iexact=identifier)
             else:
                 user = User.objects.get(username__iexact=identifier)
@@ -71,9 +71,7 @@ class EmailOrUsernameBackend(ModelBackend):
             return None
         except User.MultipleObjectsReturned:
             # Shouldn't happen due to unique constraints, but be safe
-            logger.warning(
-                'Multiple users found for identifier: %s', identifier
-            )
+            logger.warning("Multiple users found for identifier: %s", identifier)
             return None
 
         # Verify password and check user can authenticate

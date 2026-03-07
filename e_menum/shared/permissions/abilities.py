@@ -62,36 +62,38 @@ logger = logging.getLogger(__name__)
 # Permission constants for common actions
 class Actions:
     """Standard permission action constants."""
-    VIEW = 'view'
-    LIST = 'list'
-    CREATE = 'create'
-    UPDATE = 'update'
-    DELETE = 'delete'
-    MANAGE = 'manage'  # Full access to a resource
-    PUBLISH = 'publish'
-    EXPORT = 'export'
-    IMPORT = 'import'
+
+    VIEW = "view"
+    LIST = "list"
+    CREATE = "create"
+    UPDATE = "update"
+    DELETE = "delete"
+    MANAGE = "manage"  # Full access to a resource
+    PUBLISH = "publish"
+    EXPORT = "export"
+    IMPORT = "import"
 
 
 # Resource constants for common entities
 class Resources:
     """Standard resource name constants."""
-    ORGANIZATION = 'organization'
-    USER = 'user'
-    ROLE = 'role'
-    PERMISSION = 'permission'
-    MENU = 'menu'
-    CATEGORY = 'category'
-    PRODUCT = 'product'
-    ORDER = 'order'
-    TABLE = 'table'
-    QRCODE = 'qrcode'
-    CUSTOMER = 'customer'
-    SUBSCRIPTION = 'subscription'
-    ANALYTICS = 'analytics'
-    MEDIA = 'media'
-    BRANCH = 'branch'
-    THEME = 'theme'
+
+    ORGANIZATION = "organization"
+    USER = "user"
+    ROLE = "role"
+    PERMISSION = "permission"
+    MENU = "menu"
+    CATEGORY = "category"
+    PRODUCT = "product"
+    ORDER = "order"
+    TABLE = "table"
+    QRCODE = "qrcode"
+    CUSTOMER = "customer"
+    SUBSCRIPTION = "subscription"
+    ANALYTICS = "analytics"
+    MEDIA = "media"
+    BRANCH = "branch"
+    THEME = "theme"
 
 
 @dataclass
@@ -110,6 +112,7 @@ class Rule:
         fields: Optional list of fields this rule applies to
         reason: Optional reason for the rule (useful for denials)
     """
+
     action: str
     resource: str
     inverted: bool = False
@@ -119,11 +122,11 @@ class Rule:
 
     def matches_action(self, action: str) -> bool:
         """Check if this rule matches the given action."""
-        return self.action == action or self.action == 'manage'
+        return self.action == action or self.action == "manage"
 
     def matches_resource(self, resource: str) -> bool:
         """Check if this rule matches the given resource."""
-        return self.resource == resource or self.resource == 'all'
+        return self.resource == resource or self.resource == "all"
 
 
 @dataclass
@@ -156,16 +159,14 @@ class Ability:
         if ability.can('update', 'menu', menu_instance):
             ...
     """
-    user: 'User'
-    organization: Optional['Organization'] = None
+
+    user: "User"
+    organization: Optional["Organization"] = None
     rules: List[Rule] = field(default_factory=list)
     _permission_cache: Dict[str, bool] = field(default_factory=dict)
 
     def can(
-        self,
-        action: str,
-        resource: Union[str, Model],
-        subject: Optional[Model] = None
+        self, action: str, resource: Union[str, Model], subject: Optional[Model] = None
     ) -> bool:
         """
         Check if the user can perform an action on a resource.
@@ -204,10 +205,7 @@ class Ability:
         return result
 
     def cannot(
-        self,
-        action: str,
-        resource: Union[str, Model],
-        subject: Optional[Model] = None
+        self, action: str, resource: Union[str, Model], subject: Optional[Model] = None
     ) -> bool:
         """
         Check if the user cannot perform an action on a resource.
@@ -225,10 +223,7 @@ class Ability:
         return not self.can(action, resource, subject)
 
     def _check_rules(
-        self,
-        action: str,
-        resource: str,
-        subject: Optional[Model] = None
+        self, action: str, resource: str, subject: Optional[Model] = None
     ) -> bool:
         """
         Check permission rules for a given action and resource.
@@ -262,11 +257,7 @@ class Ability:
 
         return result
 
-    def _check_conditions(
-        self,
-        conditions: Dict[str, Any],
-        subject: Model
-    ) -> bool:
+    def _check_conditions(self, conditions: Dict[str, Any], subject: Model) -> bool:
         """
         Evaluate ABAC conditions against a subject instance.
 
@@ -284,14 +275,14 @@ class Ability:
         """
         for field_name, expected_value in conditions.items():
             # Handle variable substitution
-            if isinstance(expected_value, str) and expected_value.startswith('${'):
+            if isinstance(expected_value, str) and expected_value.startswith("${"):
                 expected_value = self._resolve_variable(expected_value)
 
             # Get actual value from subject
             actual_value = getattr(subject, field_name, None)
 
             # Handle foreign key IDs
-            if hasattr(actual_value, 'id'):
+            if hasattr(actual_value, "id"):
                 actual_value = actual_value.id
 
             # Compare values (handle UUID comparison)
@@ -315,28 +306,28 @@ class Ability:
             The resolved value
         """
         # Extract variable path: ${user.organization_id} -> user.organization_id
-        match = re.match(r'\$\{(.+)\}', variable)
+        match = re.match(r"\$\{(.+)\}", variable)
         if not match:
             return variable
 
         path = match.group(1)
-        parts = path.split('.')
+        parts = path.split(".")
 
-        if parts[0] == 'user' and self.user:
+        if parts[0] == "user" and self.user:
             obj = self.user
             for part in parts[1:]:
                 obj = getattr(obj, part, None)
                 if obj is None:
                     return None
-            return obj.id if hasattr(obj, 'id') else obj
+            return obj.id if hasattr(obj, "id") else obj
 
-        elif parts[0] == 'organization' and self.organization:
+        elif parts[0] == "organization" and self.organization:
             obj = self.organization
             for part in parts[1:]:
                 obj = getattr(obj, part, None)
                 if obj is None:
                     return None
-            return obj.id if hasattr(obj, 'id') else obj
+            return obj.id if hasattr(obj, "id") else obj
 
         return None
 
@@ -388,8 +379,7 @@ class Ability:
 
 
 def build_ability_for_user(
-    user: 'User',
-    organization: Optional['Organization'] = None
+    user: "User", organization: Optional["Organization"] = None
 ) -> Ability:
     """
     Build an Ability instance for a user based on their roles and permissions.
@@ -423,16 +413,16 @@ def build_ability_for_user(
     if organization:
         # Get both platform roles and org-specific roles
         from django.db.models import Q
+
         user_roles = UserRole.objects.filter(
-            Q(user=user, organization__isnull=True) |  # Platform roles
-            Q(user=user, organization=organization)   # Org roles
-        ).select_related('role')
+            Q(user=user, organization__isnull=True)  # Platform roles
+            | Q(user=user, organization=organization)  # Org roles
+        ).select_related("role")
     else:
         # Only platform roles
         user_roles = UserRole.objects.filter(
-            user=user,
-            organization__isnull=True
-        ).select_related('role')
+            user=user, organization__isnull=True
+        ).select_related("role")
 
     # Collect all role IDs
     role_ids = [ur.role_id for ur in user_roles if ur.is_active]
@@ -444,7 +434,7 @@ def build_ability_for_user(
     # Get all permissions for these roles
     role_permissions = RolePermission.objects.filter(
         role_id__in=role_ids
-    ).select_related('permission')
+    ).select_related("permission")
 
     # Build rules from permissions
     for rp in role_permissions:
@@ -452,24 +442,22 @@ def build_ability_for_user(
         rule = Rule(
             action=perm.action,
             resource=perm.resource,
-            conditions=rp.conditions if rp.conditions else {}
+            conditions=rp.conditions if rp.conditions else {},
         )
         ability.add_rule(rule)
 
     logger.debug(
-        "Built ability for user %s with %d rules",
-        user.email,
-        len(ability.rules)
+        "Built ability for user %s with %d rules", user.email, len(ability.rules)
     )
 
     return ability
 
 
 def check_permission(
-    user: 'User',
+    user: "User",
     permission_code: str,
-    organization: Optional['Organization'] = None,
-    subject: Optional[Model] = None
+    organization: Optional["Organization"] = None,
+    subject: Optional[Model] = None,
 ) -> bool:
     """
     Simple utility function to check if a user has a specific permission.
@@ -493,22 +481,22 @@ def check_permission(
     Raises:
         ValueError: If permission_code format is invalid
     """
-    if '.' not in permission_code:
+    if "." not in permission_code:
         raise ValueError(
             f"Invalid permission code format: '{permission_code}'. "
             f"Expected format: 'resource.action' (e.g., 'menu.create')"
         )
 
-    resource, action = permission_code.rsplit('.', 1)
+    resource, action = permission_code.rsplit(".", 1)
     ability = build_ability_for_user(user, organization)
     return ability.can(action, resource, subject)
 
 
 def require_permission(
-    user: 'User',
+    user: "User",
     permission_code: str,
-    organization: Optional['Organization'] = None,
-    subject: Optional[Model] = None
+    organization: Optional["Organization"] = None,
+    subject: Optional[Model] = None,
 ) -> None:
     """
     Require that a user has a specific permission, raising PermissionDenied if not.
@@ -531,14 +519,13 @@ def require_permission(
             menu.soft_delete()
     """
     if not check_permission(user, permission_code, organization, subject):
-        raise PermissionDenied(
-            f"Permission denied: {permission_code}"
-        )
+        raise PermissionDenied(f"Permission denied: {permission_code}")
 
 
 # =============================================================================
 # Django REST Framework Permission Classes
 # =============================================================================
+
 
 class HasOrganizationPermission(permissions.BasePermission):
     """
@@ -603,13 +590,9 @@ class HasOrganizationPermission(permissions.BasePermission):
             return False
 
         # Get organization context
-        organization = getattr(request, 'organization', None)
+        organization = getattr(request, "organization", None)
 
-        return check_permission(
-            request.user,
-            self.permission_code,
-            organization
-        )
+        return check_permission(request.user, self.permission_code, organization)
 
     def has_object_permission(self, request: Request, view, obj) -> bool:
         """
@@ -629,13 +612,10 @@ class HasOrganizationPermission(permissions.BasePermission):
         if not request.user or not request.user.is_authenticated:
             return False
 
-        organization = getattr(request, 'organization', None)
+        organization = getattr(request, "organization", None)
 
         return check_permission(
-            request.user,
-            self.permission_code,
-            organization,
-            subject=obj
+            request.user, self.permission_code, organization, subject=obj
         )
 
 
@@ -681,11 +661,7 @@ class HasPlatformPermission(permissions.BasePermission):
             return False
 
         # Platform permissions don't use organization context
-        return check_permission(
-            request.user,
-            self.permission_code,
-            organization=None
-        )
+        return check_permission(request.user, self.permission_code, organization=None)
 
 
 class IsTenantMember(permissions.BasePermission):
@@ -699,6 +675,7 @@ class IsTenantMember(permissions.BasePermission):
         class MenuViewSet(viewsets.ModelViewSet):
             permission_classes = [IsTenantMember]
     """
+
     message = "You must be a member of this organization to access this resource."
 
     def has_permission(self, request: Request, view) -> bool:
@@ -720,20 +697,20 @@ class IsTenantMember(permissions.BasePermission):
             return True
 
         # Get organization context
-        organization = getattr(request, 'organization', None)
+        organization = getattr(request, "organization", None)
         if not organization:
             return False
 
         # Check if user belongs to this organization
-        user_org = getattr(request.user, 'organization', None)
+        user_org = getattr(request.user, "organization", None)
         if user_org and user_org.id == organization.id:
             return True
 
         # Check if user has any role in this organization
         from apps.core.models import UserRole
+
         return UserRole.objects.filter(
-            user=request.user,
-            organization=organization
+            user=request.user, organization=organization
         ).exists()
 
 
@@ -750,8 +727,9 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         class FeedbackViewSet(viewsets.ModelViewSet):
             permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     """
+
     message = "You can only modify your own objects."
-    owner_field = 'created_by'  # Default field name for owner
+    owner_field = "created_by"  # Default field name for owner
 
     def has_object_permission(self, request: Request, view, obj) -> bool:
         """
@@ -774,7 +752,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
             return True
 
         # Check ownership
-        owner_field = getattr(view, 'owner_field', self.owner_field)
+        owner_field = getattr(view, "owner_field", self.owner_field)
         owner = getattr(obj, owner_field, None)
 
         if owner is None:
@@ -782,7 +760,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
             return False
 
         # Compare owner ID with request user
-        owner_id = owner.id if hasattr(owner, 'id') else owner
+        owner_id = owner.id if hasattr(owner, "id") else owner
         return str(owner_id) == str(request.user.id)
 
 
@@ -793,6 +771,7 @@ class IsAuthenticatedOrReadOnly(permissions.BasePermission):
     Similar to DRF's built-in IsAuthenticatedOrReadOnly but with E-Menum's
     standard error message format.
     """
+
     message = "Authentication is required to perform this action."
 
     def has_permission(self, request: Request, view) -> bool:
@@ -822,6 +801,7 @@ class AllowPublicRead(permissions.BasePermission):
 # Permission Decorators
 # =============================================================================
 
+
 def permission_required(permission_code: str):
     """
     Decorator for function-based views requiring a specific permission.
@@ -833,19 +813,23 @@ def permission_required(permission_code: str):
         def create_menu(request):
             ...
     """
+
     def decorator(view_func):
         def wrapped_view(request, *args, **kwargs):
-            organization = getattr(request, 'organization', None)
+            organization = getattr(request, "organization", None)
             if not check_permission(request.user, permission_code, organization):
                 raise PermissionDenied(f"Permission denied: {permission_code}")
             return view_func(request, *args, **kwargs)
+
         return wrapped_view
+
     return decorator
 
 
 # =============================================================================
 # Predefined Role Abilities
 # =============================================================================
+
 
 def get_owner_abilities() -> List[Rule]:
     """
@@ -857,7 +841,11 @@ def get_owner_abilities() -> List[Rule]:
         List of permission rules
     """
     return [
-        Rule(action='manage', resource='all', conditions={'organization_id': '${user.organization_id}'}),
+        Rule(
+            action="manage",
+            resource="all",
+            conditions={"organization_id": "${user.organization_id}"},
+        ),
     ]
 
 
@@ -871,17 +859,17 @@ def get_manager_abilities() -> List[Rule]:
         List of permission rules
     """
     return [
-        Rule(action='manage', resource='menu'),
-        Rule(action='manage', resource='category'),
-        Rule(action='manage', resource='product'),
-        Rule(action='manage', resource='order'),
-        Rule(action='manage', resource='table'),
-        Rule(action='manage', resource='qrcode'),
-        Rule(action='manage', resource='theme'),
-        Rule(action='view', resource='analytics'),
-        Rule(action='view', resource='customer'),
-        Rule(action='update', resource='customer'),
-        Rule(action='view', resource='user'),
+        Rule(action="manage", resource="menu"),
+        Rule(action="manage", resource="category"),
+        Rule(action="manage", resource="product"),
+        Rule(action="manage", resource="order"),
+        Rule(action="manage", resource="table"),
+        Rule(action="manage", resource="qrcode"),
+        Rule(action="manage", resource="theme"),
+        Rule(action="view", resource="analytics"),
+        Rule(action="view", resource="customer"),
+        Rule(action="update", resource="customer"),
+        Rule(action="view", resource="user"),
     ]
 
 
@@ -895,14 +883,14 @@ def get_staff_abilities() -> List[Rule]:
         List of permission rules
     """
     return [
-        Rule(action='view', resource='menu'),
-        Rule(action='view', resource='category'),
-        Rule(action='view', resource='product'),
-        Rule(action='create', resource='order'),
-        Rule(action='view', resource='order'),
-        Rule(action='update', resource='order'),
-        Rule(action='view', resource='table'),
-        Rule(action='update', resource='table'),
+        Rule(action="view", resource="menu"),
+        Rule(action="view", resource="category"),
+        Rule(action="view", resource="product"),
+        Rule(action="create", resource="order"),
+        Rule(action="view", resource="order"),
+        Rule(action="update", resource="order"),
+        Rule(action="view", resource="table"),
+        Rule(action="update", resource="table"),
     ]
 
 
@@ -916,12 +904,12 @@ def get_viewer_abilities() -> List[Rule]:
         List of permission rules
     """
     return [
-        Rule(action='view', resource='menu'),
-        Rule(action='view', resource='category'),
-        Rule(action='view', resource='product'),
-        Rule(action='view', resource='order'),
-        Rule(action='view', resource='table'),
-        Rule(action='view', resource='analytics'),
+        Rule(action="view", resource="menu"),
+        Rule(action="view", resource="category"),
+        Rule(action="view", resource="product"),
+        Rule(action="view", resource="order"),
+        Rule(action="view", resource="table"),
+        Rule(action="view", resource="analytics"),
     ]
 
 
@@ -931,26 +919,26 @@ def get_viewer_abilities() -> List[Rule]:
 
 __all__ = [
     # Core classes
-    'Rule',
-    'Ability',
-    'Actions',
-    'Resources',
+    "Rule",
+    "Ability",
+    "Actions",
+    "Resources",
     # Builder functions
-    'build_ability_for_user',
-    'check_permission',
-    'require_permission',
+    "build_ability_for_user",
+    "check_permission",
+    "require_permission",
     # DRF Permission classes
-    'HasOrganizationPermission',
-    'HasPlatformPermission',
-    'IsTenantMember',
-    'IsOwnerOrReadOnly',
-    'IsAuthenticatedOrReadOnly',
-    'AllowPublicRead',
+    "HasOrganizationPermission",
+    "HasPlatformPermission",
+    "IsTenantMember",
+    "IsOwnerOrReadOnly",
+    "IsAuthenticatedOrReadOnly",
+    "AllowPublicRead",
     # Decorators
-    'permission_required',
+    "permission_required",
     # Predefined abilities
-    'get_owner_abilities',
-    'get_manager_abilities',
-    'get_staff_abilities',
-    'get_viewer_abilities',
+    "get_owner_abilities",
+    "get_manager_abilities",
+    "get_staff_abilities",
+    "get_viewer_abilities",
 ]

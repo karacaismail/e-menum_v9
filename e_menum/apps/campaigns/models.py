@@ -50,29 +50,29 @@ class Campaign(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)'),
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='campaigns',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this campaign belongs to'),
+        related_name="campaigns",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this campaign belongs to"),
     )
 
     name = models.CharField(
         max_length=255,
-        verbose_name=_('Name'),
-        help_text=_('Campaign name'),
+        verbose_name=_("Name"),
+        help_text=_("Campaign name"),
     )
 
     campaign_type = models.CharField(
         max_length=20,
         choices=CampaignType.choices,
-        verbose_name=_('Campaign type'),
-        help_text=_('Type of marketing campaign'),
+        verbose_name=_("Campaign type"),
+        help_text=_("Type of marketing campaign"),
     )
 
     status = models.CharField(
@@ -80,72 +80,72 @@ class Campaign(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=CampaignStatus.choices,
         default=CampaignStatus.DRAFT,
         db_index=True,
-        verbose_name=_('Status'),
-        help_text=_('Current campaign status'),
+        verbose_name=_("Status"),
+        help_text=_("Current campaign status"),
     )
 
     description = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Description'),
-        help_text=_('Campaign description'),
+        verbose_name=_("Description"),
+        help_text=_("Campaign description"),
     )
 
     start_date = models.DateTimeField(
-        verbose_name=_('Start date'),
-        help_text=_('When the campaign starts'),
+        verbose_name=_("Start date"),
+        help_text=_("When the campaign starts"),
     )
 
     end_date = models.DateTimeField(
-        verbose_name=_('End date'),
-        help_text=_('When the campaign ends'),
+        verbose_name=_("End date"),
+        help_text=_("When the campaign ends"),
     )
 
     budget = models.DecimalField(
         max_digits=12,
         decimal_places=2,
         default=0,
-        verbose_name=_('Budget'),
-        help_text=_('Total campaign budget'),
+        verbose_name=_("Budget"),
+        help_text=_("Total campaign budget"),
     )
 
     spent_amount = models.DecimalField(
         max_digits=12,
         decimal_places=2,
         default=0,
-        verbose_name=_('Spent amount'),
-        help_text=_('Total amount spent/discounted so far'),
+        verbose_name=_("Spent amount"),
+        help_text=_("Total amount spent/discounted so far"),
     )
 
     target_audience = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Target audience'),
-        help_text=_('Targeting criteria (JSON)'),
+        verbose_name=_("Target audience"),
+        help_text=_("Targeting criteria (JSON)"),
     )
 
     discount_value = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Discount value'),
-        help_text=_('Discount amount or percentage'),
+        verbose_name=_("Discount value"),
+        help_text=_("Discount amount or percentage"),
     )
 
     discount_type = models.CharField(
         max_length=20,
         choices=DiscountType.choices,
         default=DiscountType.PERCENTAGE,
-        verbose_name=_('Discount type'),
-        help_text=_('How the discount is calculated'),
+        verbose_name=_("Discount type"),
+        help_text=_("How the discount is calculated"),
     )
 
     min_order_amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Minimum order amount'),
-        help_text=_('Minimum order amount to qualify'),
+        verbose_name=_("Minimum order amount"),
+        help_text=_("Minimum order amount to qualify"),
     )
 
     max_discount_amount = models.DecimalField(
@@ -153,36 +153,38 @@ class Campaign(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         null=True,
         blank=True,
-        verbose_name=_('Maximum discount amount'),
-        help_text=_('Cap on the discount amount (for percentage discounts)'),
+        verbose_name=_("Maximum discount amount"),
+        help_text=_("Cap on the discount amount (for percentage discounts)"),
     )
 
     usage_limit = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Usage limit'),
-        help_text=_('Maximum number of times this campaign can be used (0 = unlimited)'),
+        verbose_name=_("Usage limit"),
+        help_text=_(
+            "Maximum number of times this campaign can be used (0 = unlimited)"
+        ),
     )
 
     usage_count = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Usage count'),
-        help_text=_('Number of times this campaign has been used'),
+        verbose_name=_("Usage count"),
+        help_text=_("Number of times this campaign has been used"),
     )
 
     is_active = models.BooleanField(
         default=True,
-        verbose_name=_('Is active'),
-        help_text=_('Whether this campaign is enabled'),
+        verbose_name=_("Is active"),
+        help_text=_("Whether this campaign is enabled"),
     )
 
     created_by = models.ForeignKey(
-        'core.User',
+        "core.User",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='created_campaigns',
-        verbose_name=_('Created by'),
-        help_text=_('User who created this campaign'),
+        related_name="created_campaigns",
+        verbose_name=_("Created by"),
+        help_text=_("User who created this campaign"),
     )
 
     # Managers
@@ -190,26 +192,26 @@ class Campaign(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()
 
     class Meta:
-        db_table = 'campaigns'
-        verbose_name = _('Campaign')
-        verbose_name_plural = _('Campaigns')
-        ordering = ['-start_date']
+        db_table = "campaigns"
+        verbose_name = _("Campaign")
+        verbose_name_plural = _("Campaigns")
+        ordering = ["-start_date"]
         indexes = [
             models.Index(
-                fields=['organization', 'deleted_at'],
-                name='campaign_org_deleted_idx',
+                fields=["organization", "deleted_at"],
+                name="campaign_org_deleted_idx",
             ),
             models.Index(
-                fields=['organization', 'status'],
-                name='campaign_org_status_idx',
+                fields=["organization", "status"],
+                name="campaign_org_status_idx",
             ),
             models.Index(
-                fields=['organization', 'campaign_type'],
-                name='campaign_org_type_idx',
+                fields=["organization", "campaign_type"],
+                name="campaign_org_type_idx",
             ),
             models.Index(
-                fields=['start_date', 'end_date'],
-                name='campaign_date_range_idx',
+                fields=["start_date", "end_date"],
+                name="campaign_date_range_idx",
             ),
         ]
 
@@ -259,16 +261,16 @@ class Coupon(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)'),
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='coupons',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this coupon belongs to'),
+        related_name="coupons",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this coupon belongs to"),
     )
 
     campaign = models.ForeignKey(
@@ -276,66 +278,66 @@ class Coupon(TimeStampedMixin, SoftDeleteMixin, models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='coupons',
-        verbose_name=_('Campaign'),
-        help_text=_('Campaign this coupon is linked to (optional)'),
+        related_name="coupons",
+        verbose_name=_("Campaign"),
+        help_text=_("Campaign this coupon is linked to (optional)"),
     )
 
     code = models.CharField(
         max_length=50,
-        verbose_name=_('Coupon code'),
-        help_text=_('Unique coupon code within the organization'),
+        verbose_name=_("Coupon code"),
+        help_text=_("Unique coupon code within the organization"),
     )
 
     discount_value = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name=_('Discount value'),
-        help_text=_('Discount amount or percentage'),
+        verbose_name=_("Discount value"),
+        help_text=_("Discount amount or percentage"),
     )
 
     discount_type = models.CharField(
         max_length=20,
         choices=DiscountType.choices,
         default=DiscountType.PERCENTAGE,
-        verbose_name=_('Discount type'),
-        help_text=_('How the discount is calculated'),
+        verbose_name=_("Discount type"),
+        help_text=_("How the discount is calculated"),
     )
 
     min_order_amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Minimum order amount'),
-        help_text=_('Minimum order amount to apply coupon'),
+        verbose_name=_("Minimum order amount"),
+        help_text=_("Minimum order amount to apply coupon"),
     )
 
     max_uses = models.PositiveIntegerField(
         default=1,
-        verbose_name=_('Maximum uses'),
-        help_text=_('Maximum number of times this coupon can be used'),
+        verbose_name=_("Maximum uses"),
+        help_text=_("Maximum number of times this coupon can be used"),
     )
 
     used_count = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Used count'),
-        help_text=_('Number of times this coupon has been redeemed'),
+        verbose_name=_("Used count"),
+        help_text=_("Number of times this coupon has been redeemed"),
     )
 
     valid_from = models.DateTimeField(
-        verbose_name=_('Valid from'),
-        help_text=_('When the coupon becomes valid'),
+        verbose_name=_("Valid from"),
+        help_text=_("When the coupon becomes valid"),
     )
 
     valid_until = models.DateTimeField(
-        verbose_name=_('Valid until'),
-        help_text=_('When the coupon expires'),
+        verbose_name=_("Valid until"),
+        help_text=_("When the coupon expires"),
     )
 
     is_active = models.BooleanField(
         default=True,
-        verbose_name=_('Is active'),
-        help_text=_('Whether this coupon is currently active'),
+        verbose_name=_("Is active"),
+        help_text=_("Whether this coupon is currently active"),
     )
 
     # Managers
@@ -343,23 +345,23 @@ class Coupon(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()
 
     class Meta:
-        db_table = 'coupons'
-        verbose_name = _('Coupon')
-        verbose_name_plural = _('Coupons')
-        ordering = ['-created_at']
-        unique_together = [['organization', 'code']]
+        db_table = "coupons"
+        verbose_name = _("Coupon")
+        verbose_name_plural = _("Coupons")
+        ordering = ["-created_at"]
+        unique_together = [["organization", "code"]]
         indexes = [
             models.Index(
-                fields=['organization', 'deleted_at'],
-                name='coupon_org_deleted_idx',
+                fields=["organization", "deleted_at"],
+                name="coupon_org_deleted_idx",
             ),
             models.Index(
-                fields=['organization', 'code'],
-                name='coupon_org_code_idx',
+                fields=["organization", "code"],
+                name="coupon_org_code_idx",
             ),
             models.Index(
-                fields=['valid_from', 'valid_until'],
-                name='coupon_validity_idx',
+                fields=["valid_from", "valid_until"],
+                name="coupon_validity_idx",
             ),
         ]
 
@@ -397,70 +399,70 @@ class CouponUsage(TimeStampedMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)'),
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='coupon_usages',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this usage belongs to'),
+        related_name="coupon_usages",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this usage belongs to"),
     )
 
     coupon = models.ForeignKey(
         Coupon,
         on_delete=models.CASCADE,
-        related_name='usages',
-        verbose_name=_('Coupon'),
-        help_text=_('The coupon that was redeemed'),
+        related_name="usages",
+        verbose_name=_("Coupon"),
+        help_text=_("The coupon that was redeemed"),
     )
 
     order = models.ForeignKey(
-        'orders.Order',
+        "orders.Order",
         on_delete=models.CASCADE,
-        related_name='coupon_usages',
-        verbose_name=_('Order'),
-        help_text=_('The order where the coupon was applied'),
+        related_name="coupon_usages",
+        verbose_name=_("Order"),
+        help_text=_("The order where the coupon was applied"),
     )
 
     customer = models.ForeignKey(
-        'customers.Customer',
+        "customers.Customer",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='coupon_usages',
-        verbose_name=_('Customer'),
-        help_text=_('The customer who redeemed the coupon'),
+        related_name="coupon_usages",
+        verbose_name=_("Customer"),
+        help_text=_("The customer who redeemed the coupon"),
     )
 
     discount_applied = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name=_('Discount applied'),
-        help_text=_('Actual discount amount applied to the order'),
+        verbose_name=_("Discount applied"),
+        help_text=_("Actual discount amount applied to the order"),
     )
 
     used_at = models.DateTimeField(
         auto_now_add=True,
-        verbose_name=_('Used at'),
-        help_text=_('When the coupon was redeemed'),
+        verbose_name=_("Used at"),
+        help_text=_("When the coupon was redeemed"),
     )
 
     class Meta:
-        db_table = 'coupon_usages'
-        verbose_name = _('Coupon Usage')
-        verbose_name_plural = _('Coupon Usages')
-        ordering = ['-used_at']
+        db_table = "coupon_usages"
+        verbose_name = _("Coupon Usage")
+        verbose_name_plural = _("Coupon Usages")
+        ordering = ["-used_at"]
         indexes = [
             models.Index(
-                fields=['organization', 'used_at'],
-                name='couponusage_org_used_idx',
+                fields=["organization", "used_at"],
+                name="couponusage_org_used_idx",
             ),
             models.Index(
-                fields=['coupon', 'used_at'],
-                name='couponusage_coupon_used_idx',
+                fields=["coupon", "used_at"],
+                name="couponusage_coupon_used_idx",
             ),
         ]
 
@@ -487,67 +489,67 @@ class Referral(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)'),
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='referrals',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this referral belongs to'),
+        related_name="referrals",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this referral belongs to"),
     )
 
     referrer = models.ForeignKey(
-        'customers.Customer',
+        "customers.Customer",
         on_delete=models.CASCADE,
-        related_name='referrals_made',
-        verbose_name=_('Referrer'),
-        help_text=_('Customer who made the referral'),
+        related_name="referrals_made",
+        verbose_name=_("Referrer"),
+        help_text=_("Customer who made the referral"),
     )
 
     referred = models.ForeignKey(
-        'customers.Customer',
+        "customers.Customer",
         on_delete=models.CASCADE,
-        related_name='referrals_received',
-        verbose_name=_('Referred'),
-        help_text=_('Customer who was referred'),
+        related_name="referrals_received",
+        verbose_name=_("Referred"),
+        help_text=_("Customer who was referred"),
     )
 
     referral_code = models.CharField(
         max_length=50,
-        verbose_name=_('Referral code'),
-        help_text=_('Unique referral code used'),
+        verbose_name=_("Referral code"),
+        help_text=_("Unique referral code used"),
     )
 
     reward_type = models.CharField(
         max_length=20,
         choices=DiscountType.choices,
         default=DiscountType.FIXED,
-        verbose_name=_('Reward type'),
-        help_text=_('How the referral reward is calculated'),
+        verbose_name=_("Reward type"),
+        help_text=_("How the referral reward is calculated"),
     )
 
     reward_value = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Reward value'),
-        help_text=_('Value of the referral reward'),
+        verbose_name=_("Reward value"),
+        help_text=_("Value of the referral reward"),
     )
 
     is_completed = models.BooleanField(
         default=False,
-        verbose_name=_('Is completed'),
-        help_text=_('Whether the referral reward has been fulfilled'),
+        verbose_name=_("Is completed"),
+        help_text=_("Whether the referral reward has been fulfilled"),
     )
 
     completed_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Completed at'),
-        help_text=_('When the referral was completed'),
+        verbose_name=_("Completed at"),
+        help_text=_("When the referral was completed"),
     )
 
     # Managers
@@ -555,18 +557,18 @@ class Referral(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()
 
     class Meta:
-        db_table = 'referrals'
-        verbose_name = _('Referral')
-        verbose_name_plural = _('Referrals')
-        ordering = ['-created_at']
+        db_table = "referrals"
+        verbose_name = _("Referral")
+        verbose_name_plural = _("Referrals")
+        ordering = ["-created_at"]
         indexes = [
             models.Index(
-                fields=['organization', 'deleted_at'],
-                name='referral_org_deleted_idx',
+                fields=["organization", "deleted_at"],
+                name="referral_org_deleted_idx",
             ),
             models.Index(
-                fields=['organization', 'referral_code'],
-                name='referral_org_code_idx',
+                fields=["organization", "referral_code"],
+                name="referral_org_code_idx",
             ),
         ]
 

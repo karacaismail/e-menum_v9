@@ -29,9 +29,9 @@ class GalleryUploadWidget(forms.HiddenInput):
     File uploads are handled via AJAX to /admin/api/upload/.
     """
 
-    template_name = 'admin/widgets/gallery_upload.html'
+    template_name = "admin/widgets/gallery_upload.html"
 
-    def __init__(self, attrs=None, subfolder='gallery'):
+    def __init__(self, attrs=None, subfolder="gallery"):
         self.subfolder = subfolder
         super().__init__(attrs=attrs)
 
@@ -39,27 +39,27 @@ class GalleryUploadWidget(forms.HiddenInput):
         context = super().get_context(name, value, attrs)
         # Ensure value is a JSON string for the template
         if value is None:
-            json_value = '[]'
+            json_value = "[]"
         elif isinstance(value, str):
             # Validate it's valid JSON
             try:
                 json.loads(value)
                 json_value = value
             except (json.JSONDecodeError, TypeError):
-                json_value = '[]'
+                json_value = "[]"
         elif isinstance(value, list):
             json_value = json.dumps(value)
         else:
-            json_value = '[]'
+            json_value = "[]"
 
-        context['widget']['json_value'] = json_value
-        context['widget']['subfolder'] = self.subfolder
+        context["widget"]["json_value"] = json_value
+        context["widget"]["subfolder"] = self.subfolder
         return context
 
     def format_value(self, value):
         """Format the value for the hidden input."""
         if value is None:
-            return '[]'
+            return "[]"
         if isinstance(value, list):
             return json.dumps(value)
         if isinstance(value, str):
@@ -67,5 +67,5 @@ class GalleryUploadWidget(forms.HiddenInput):
                 json.loads(value)
                 return value
             except (json.JSONDecodeError, TypeError):
-                return '[]'
-        return '[]'
+                return "[]"
+        return "[]"

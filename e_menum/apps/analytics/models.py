@@ -54,40 +54,40 @@ class DashboardMetric(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
+        verbose_name=_("ID"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='dashboard_metrics',
-        verbose_name=_('Organization'),
+        related_name="dashboard_metrics",
+        verbose_name=_("Organization"),
     )
 
     metric_type = models.CharField(
         max_length=30,
         choices=MetricType.choices,
-        verbose_name=_('Metric type'),
+        verbose_name=_("Metric type"),
     )
 
     period_type = models.CharField(
         max_length=20,
         choices=PeriodType.choices,
-        verbose_name=_('Period type'),
+        verbose_name=_("Period type"),
     )
 
     period_start = models.DateField(
-        verbose_name=_('Period start'),
+        verbose_name=_("Period start"),
     )
 
     period_end = models.DateField(
-        verbose_name=_('Period end'),
+        verbose_name=_("Period end"),
     )
 
     value = models.DecimalField(
         max_digits=15,
         decimal_places=2,
-        verbose_name=_('Value'),
+        verbose_name=_("Value"),
     )
 
     previous_value = models.DecimalField(
@@ -95,7 +95,7 @@ class DashboardMetric(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         null=True,
         blank=True,
-        verbose_name=_('Previous value'),
+        verbose_name=_("Previous value"),
     )
 
     change_percent = models.DecimalField(
@@ -103,13 +103,13 @@ class DashboardMetric(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         null=True,
         blank=True,
-        verbose_name=_('Change percent'),
+        verbose_name=_("Change percent"),
     )
 
     metadata = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Metadata'),
+        verbose_name=_("Metadata"),
     )
 
     # Managers
@@ -117,25 +117,25 @@ class DashboardMetric(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()
 
     class Meta:
-        db_table = 'analytics_dashboard_metrics'
-        verbose_name = _('Dashboard Metric')
-        verbose_name_plural = _('Dashboard Metrics')
-        ordering = ['-period_start']
+        db_table = "analytics_dashboard_metrics"
+        verbose_name = _("Dashboard Metric")
+        verbose_name_plural = _("Dashboard Metrics")
+        ordering = ["-period_start"]
         unique_together = [
-            ['organization', 'metric_type', 'period_type', 'period_start'],
+            ["organization", "metric_type", "period_type", "period_start"],
         ]
         indexes = [
             models.Index(
-                fields=['organization', 'period_type', 'period_start'],
-                name='dm_org_period_start_idx',
+                fields=["organization", "period_type", "period_start"],
+                name="dm_org_period_start_idx",
             ),
             models.Index(
-                fields=['organization', 'metric_type'],
-                name='dm_org_metric_idx',
+                fields=["organization", "metric_type"],
+                name="dm_org_metric_idx",
             ),
             models.Index(
-                fields=['organization', 'deleted_at'],
-                name='dm_org_deleted_idx',
+                fields=["organization", "deleted_at"],
+                name="dm_org_deleted_idx",
             ),
         ]
 
@@ -174,94 +174,94 @@ class SalesAggregation(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
+        verbose_name=_("ID"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='sales_aggregations',
-        verbose_name=_('Organization'),
+        related_name="sales_aggregations",
+        verbose_name=_("Organization"),
     )
 
     date = models.DateField(
-        verbose_name=_('Date'),
+        verbose_name=_("Date"),
     )
 
     hour = models.IntegerField(
         null=True,
         blank=True,
-        verbose_name=_('Hour'),
-        help_text=_('Hour of day (0-23) for hourly granularity'),
+        verbose_name=_("Hour"),
+        help_text=_("Hour of day (0-23) for hourly granularity"),
     )
 
     granularity = models.CharField(
         max_length=10,
         choices=Granularity.choices,
         default=Granularity.DAILY,
-        verbose_name=_('Granularity'),
+        verbose_name=_("Granularity"),
     )
 
     gross_revenue = models.DecimalField(
         max_digits=15,
         decimal_places=2,
         default=0,
-        verbose_name=_('Gross revenue'),
+        verbose_name=_("Gross revenue"),
     )
 
     net_revenue = models.DecimalField(
         max_digits=15,
         decimal_places=2,
         default=0,
-        verbose_name=_('Net revenue'),
+        verbose_name=_("Net revenue"),
     )
 
     order_count = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Order count'),
+        verbose_name=_("Order count"),
     )
 
     item_count = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Item count'),
+        verbose_name=_("Item count"),
     )
 
     avg_order_value = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Average order value'),
+        verbose_name=_("Average order value"),
     )
 
     customer_count = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Customer count'),
+        verbose_name=_("Customer count"),
     )
 
     new_customer_count = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('New customer count'),
+        verbose_name=_("New customer count"),
     )
 
     payment_breakdown = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Payment breakdown'),
-        help_text=_('Breakdown by payment method: {cash: X, card: Y, ...}'),
+        verbose_name=_("Payment breakdown"),
+        help_text=_("Breakdown by payment method: {cash: X, card: Y, ...}"),
     )
 
     channel_breakdown = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Channel breakdown'),
-        help_text=_('Breakdown by order type: {dine_in: X, takeaway: Y, ...}'),
+        verbose_name=_("Channel breakdown"),
+        help_text=_("Breakdown by order type: {dine_in: X, takeaway: Y, ...}"),
     )
 
     category_breakdown = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Category breakdown'),
-        help_text=_('Breakdown by category: {cat_id: {revenue: X, qty: Y}, ...}'),
+        verbose_name=_("Category breakdown"),
+        help_text=_("Breakdown by category: {cat_id: {revenue: X, qty: Y}, ...}"),
     )
 
     # Managers
@@ -269,22 +269,22 @@ class SalesAggregation(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()
 
     class Meta:
-        db_table = 'analytics_sales_aggregations'
-        verbose_name = _('Sales Aggregation')
-        verbose_name_plural = _('Sales Aggregations')
-        ordering = ['-date', '-hour']
+        db_table = "analytics_sales_aggregations"
+        verbose_name = _("Sales Aggregation")
+        verbose_name_plural = _("Sales Aggregations")
+        ordering = ["-date", "-hour"]
         indexes = [
             models.Index(
-                fields=['organization', 'date', 'granularity'],
-                name='sa_org_date_gran_idx',
+                fields=["organization", "date", "granularity"],
+                name="sa_org_date_gran_idx",
             ),
             models.Index(
-                fields=['organization', 'date', 'hour'],
-                name='sa_org_date_hour_idx',
+                fields=["organization", "date", "hour"],
+                name="sa_org_date_hour_idx",
             ),
             models.Index(
-                fields=['organization', 'deleted_at'],
-                name='sa_org_deleted_idx',
+                fields=["organization", "deleted_at"],
+                name="sa_org_deleted_idx",
             ),
         ]
 
@@ -322,47 +322,47 @@ class ProductPerformance(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
+        verbose_name=_("ID"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='product_performances',
-        verbose_name=_('Organization'),
+        related_name="product_performances",
+        verbose_name=_("Organization"),
     )
 
     product = models.ForeignKey(
-        'menu.Product',
+        "menu.Product",
         on_delete=models.CASCADE,
-        related_name='performance_records',
-        verbose_name=_('Product'),
+        related_name="performance_records",
+        verbose_name=_("Product"),
     )
 
     period_type = models.CharField(
         max_length=20,
         choices=PeriodType.choices,
-        verbose_name=_('Period type'),
+        verbose_name=_("Period type"),
     )
 
     period_start = models.DateField(
-        verbose_name=_('Period start'),
+        verbose_name=_("Period start"),
     )
 
     period_end = models.DateField(
-        verbose_name=_('Period end'),
+        verbose_name=_("Period end"),
     )
 
     quantity_sold = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Quantity sold'),
+        verbose_name=_("Quantity sold"),
     )
 
     revenue = models.DecimalField(
         max_digits=15,
         decimal_places=2,
         default=0,
-        verbose_name=_('Revenue'),
+        verbose_name=_("Revenue"),
     )
 
     cost = models.DecimalField(
@@ -370,7 +370,7 @@ class ProductPerformance(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         null=True,
         blank=True,
-        verbose_name=_('Cost'),
+        verbose_name=_("Cost"),
     )
 
     profit_margin = models.DecimalField(
@@ -378,14 +378,14 @@ class ProductPerformance(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         null=True,
         blank=True,
-        verbose_name=_('Profit margin (%)'),
+        verbose_name=_("Profit margin (%)"),
     )
 
     sales_mix_percent = models.DecimalField(
         max_digits=8,
         decimal_places=2,
         default=0,
-        verbose_name=_('Sales mix (%)'),
+        verbose_name=_("Sales mix (%)"),
     )
 
     avg_rating = models.DecimalField(
@@ -393,22 +393,22 @@ class ProductPerformance(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         null=True,
         blank=True,
-        verbose_name=_('Average rating'),
+        verbose_name=_("Average rating"),
     )
 
     review_count = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Review count'),
+        verbose_name=_("Review count"),
     )
 
     return_count = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Return count'),
+        verbose_name=_("Return count"),
     )
 
     view_count = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('View count'),
+        verbose_name=_("View count"),
     )
 
     # Managers
@@ -416,25 +416,25 @@ class ProductPerformance(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()
 
     class Meta:
-        db_table = 'analytics_product_performances'
-        verbose_name = _('Product Performance')
-        verbose_name_plural = _('Product Performances')
-        ordering = ['-period_start', '-revenue']
+        db_table = "analytics_product_performances"
+        verbose_name = _("Product Performance")
+        verbose_name_plural = _("Product Performances")
+        ordering = ["-period_start", "-revenue"]
         unique_together = [
-            ['organization', 'product', 'period_type', 'period_start'],
+            ["organization", "product", "period_type", "period_start"],
         ]
         indexes = [
             models.Index(
-                fields=['organization', 'period_type', 'period_start'],
-                name='pp_org_period_start_idx',
+                fields=["organization", "period_type", "period_start"],
+                name="pp_org_period_start_idx",
             ),
             models.Index(
-                fields=['organization', 'product'],
-                name='pp_org_product_idx',
+                fields=["organization", "product"],
+                name="pp_org_product_idx",
             ),
             models.Index(
-                fields=['organization', 'deleted_at'],
-                name='pp_org_deleted_idx',
+                fields=["organization", "deleted_at"],
+                name="pp_org_deleted_idx",
             ),
         ]
 
@@ -465,38 +465,38 @@ class CustomerMetric(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
+        verbose_name=_("ID"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='customer_metrics',
-        verbose_name=_('Organization'),
+        related_name="customer_metrics",
+        verbose_name=_("Organization"),
     )
 
     date = models.DateField(
-        verbose_name=_('Date'),
+        verbose_name=_("Date"),
     )
 
     total_customers = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Total customers'),
+        verbose_name=_("Total customers"),
     )
 
     new_customers = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('New customers'),
+        verbose_name=_("New customers"),
     )
 
     returning_customers = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Returning customers'),
+        verbose_name=_("Returning customers"),
     )
 
     churn_count = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Churn count'),
+        verbose_name=_("Churn count"),
     )
 
     avg_visit_frequency = models.DecimalField(
@@ -504,7 +504,7 @@ class CustomerMetric(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         null=True,
         blank=True,
-        verbose_name=_('Average visit frequency'),
+        verbose_name=_("Average visit frequency"),
     )
 
     avg_lifetime_value = models.DecimalField(
@@ -512,7 +512,7 @@ class CustomerMetric(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         null=True,
         blank=True,
-        verbose_name=_('Average lifetime value'),
+        verbose_name=_("Average lifetime value"),
     )
 
     nps_score = models.DecimalField(
@@ -520,7 +520,7 @@ class CustomerMetric(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         null=True,
         blank=True,
-        verbose_name=_('NPS score'),
+        verbose_name=_("NPS score"),
     )
 
     # Managers
@@ -528,21 +528,21 @@ class CustomerMetric(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()
 
     class Meta:
-        db_table = 'analytics_customer_metrics'
-        verbose_name = _('Customer Metric')
-        verbose_name_plural = _('Customer Metrics')
-        ordering = ['-date']
+        db_table = "analytics_customer_metrics"
+        verbose_name = _("Customer Metric")
+        verbose_name_plural = _("Customer Metrics")
+        ordering = ["-date"]
         unique_together = [
-            ['organization', 'date'],
+            ["organization", "date"],
         ]
         indexes = [
             models.Index(
-                fields=['organization', 'date'],
-                name='cm_org_date_idx',
+                fields=["organization", "date"],
+                name="cm_org_date_idx",
             ),
             models.Index(
-                fields=['organization', 'deleted_at'],
-                name='cm_org_deleted_idx',
+                fields=["organization", "deleted_at"],
+                name="cm_org_deleted_idx",
             ),
         ]
 

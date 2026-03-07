@@ -18,26 +18,27 @@ logger = logging.getLogger(__name__)
 
 
 def _get_org(request):
-    return getattr(request.user, 'organization', None)
+    return getattr(request.user, "organization", None)
 
 
-@login_required(login_url='/account/login/')
+@login_required(login_url="/account/login/")
 def team_list(request):
     """List all team members in the organization."""
     org = _get_org(request)
     if not org:
-        return redirect('accounts:profile')
+        return redirect("accounts:profile")
 
     members = list(
         User.objects.filter(
-            organization=org, deleted_at__isnull=True,
-        ).order_by('-created_at')
+            organization=org,
+            deleted_at__isnull=True,
+        ).order_by("-created_at")
     )
 
     # Build a role map: user_id -> list of Role objects
     user_roles = UserRole.objects.filter(
         organization=org,
-    ).select_related('role', 'user')
+    ).select_related("role", "user")
 
     role_map = {}
     for ur in user_roles:
@@ -52,35 +53,41 @@ def team_list(request):
     # Available org roles for invitation
     available_roles = Role.objects.filter(
         scope=RoleScope.ORGANIZATION,
-    ).order_by('name')
+    ).order_by("name")
 
-    return render(request, 'accounts/team/list.html', {
-        'members': members,
-        'available_roles': available_roles,
-    })
+    return render(
+        request,
+        "accounts/team/list.html",
+        {
+            "members": members,
+            "available_roles": available_roles,
+        },
+    )
 
 
-@login_required(login_url='/account/login/')
+@login_required(login_url="/account/login/")
 @require_POST
 def team_invite(request):
     """Invite a new team member."""
     org = _get_org(request)
     if not org:
-        return JsonResponse({'error': 'Unauthorized'}, status=403)
+        return JsonResponse({"error": "Unauthorized"}, status=403)
 
-    email = request.POST.get('email', '').strip().lower()
-    first_name = request.POST.get('first_name', '').strip()
-    last_name = request.POST.get('last_name', '').strip()
-    role_id = request.POST.get('role_id', '').strip()
+    email = request.POST.get("email", "").strip().lower()
+    first_name = request.POST.get("first_name", "").strip()
+    last_name = request.POST.get("last_name", "").strip()
+    role_id = request.POST.get("role_id", "").strip()
 
     if not email or not first_name or not last_name:
-        messages.error(request, _('E-posta, ad ve soyad zorunludur.'))
-        return redirect('accounts:team-list')
+        messages.error(request, _("E-posta, ad ve soyad zorunludur."))
+        return redirect("accounts:team-list")
 
     # Check if user already exists in org
-    if User.objects.filter(email=email, organization=org, deleted_at__isnull=True).exists():
-        messages.error(request, _('Bu e-posta adresi zaten ekipte.'))
-        return redirect('accounts:team-list')
+    if User.objects.filter(
+        email=email, organization=org, deleted_at__isnull=True
+    ).exists():
+        messages.error(request, _("Bu e-posta adresi zaten ekipte."))
+        return redirect("accounts:team-list")
 
     # Create invited user
     temp_password = str(uuid.uuid4())[:16]
@@ -109,32 +116,34 @@ def team_invite(request):
     # Audit log
     AuditLog.log_action(
         action=AuditAction.INVITE_SENT,
-        resource='user',
+        resource="user",
         resource_id=str(user.id),
         user=request.user,
         organization=org,
-        description=f'{request.user.email} invited {email} to {org.name}',
+        description=f"{request.user.email} invited {email} to {org.name}",
         ip_address=get_client_ip(request),
-        user_agent=request.META.get('HTTP_USER_AGENT', '')[:500],
+        user_agent=request.META.get("HTTP_USER_AGENT", "")[:500],
     )
 
-    messages.success(request, _('Davet gonderildi: %(email)s') % {'email': email})
-    return redirect('accounts:team-list')
+    messages.success(request, _("Davet gonderildi: %(email)s") % {"email": email})
+    return redirect("accounts:team-list")
 
 
-@login_required(login_url='/account/login/')
+@login_required(login_url="/account/login/")
 @require_POST
 def team_assign_role(request, user_id):
     """Assign a role to a team member."""
     org = _get_org(request)
     if not org:
-        return JsonResponse({'error': 'Unauthorized'}, status=403)
+        return JsonResponse({"error": "Unauthorized"}, status=403)
 
-    member = get_object_or_404(User, id=user_id, organization=org, deleted_at__isnull=True)
-    role_id = request.POST.get('role_id', '').strip()
+    member = get_object_or_404(
+        User, id=user_id, organization=org, deleted_at__isnull=True
+    )
+    role_id = request.POST.get("role_id", "").strip()
 
     if not role_id:
-        return JsonResponse({'error': 'role_id required'}, status=400)
+        return JsonResponse({"error": "role_id required"}, status=400)
 
     role = get_object_or_404(Role, id=role_id, scope=RoleScope.ORGANIZATION)
 
@@ -151,33 +160,35 @@ def team_assign_role(request, user_id):
 
     AuditLog.log_action(
         action=AuditAction.ROLE_ASSIGN,
-        resource='user_role',
+        resource="user_role",
         resource_id=str(member.id),
         user=request.user,
         organization=org,
-        description=f'{request.user.email} assigned role {role.name} to {member.email}',
+        description=f"{request.user.email} assigned role {role.name} to {member.email}",
         ip_address=get_client_ip(request),
-        user_agent=request.META.get('HTTP_USER_AGENT', '')[:500],
+        user_agent=request.META.get("HTTP_USER_AGENT", "")[:500],
     )
 
-    messages.success(request, _('Rol atandi.'))
-    return redirect('accounts:team-list')
+    messages.success(request, _("Rol atandi."))
+    return redirect("accounts:team-list")
 
 
-@login_required(login_url='/account/login/')
+@login_required(login_url="/account/login/")
 @require_POST
 def team_remove(request, user_id):
     """Remove a team member (soft delete from org)."""
     org = _get_org(request)
     if not org:
-        return JsonResponse({'error': 'Unauthorized'}, status=403)
+        return JsonResponse({"error": "Unauthorized"}, status=403)
 
-    member = get_object_or_404(User, id=user_id, organization=org, deleted_at__isnull=True)
+    member = get_object_or_404(
+        User, id=user_id, organization=org, deleted_at__isnull=True
+    )
 
     # Cannot remove self
     if member.id == request.user.id:
-        messages.error(request, _('Kendinizi ekipten cikaramazsiniz.'))
-        return redirect('accounts:team-list')
+        messages.error(request, _("Kendinizi ekipten cikaramazsiniz."))
+        return redirect("accounts:team-list")
 
     # Soft delete user roles
     UserRole.objects.filter(user=member, organization=org).delete()
@@ -187,14 +198,14 @@ def team_remove(request, user_id):
 
     AuditLog.log_action(
         action=AuditAction.ROLE_REMOVE,
-        resource='user',
+        resource="user",
         resource_id=str(member.id),
         user=request.user,
         organization=org,
-        description=f'{request.user.email} removed {member.email} from {org.name}',
+        description=f"{request.user.email} removed {member.email} from {org.name}",
         ip_address=get_client_ip(request),
-        user_agent=request.META.get('HTTP_USER_AGENT', '')[:500],
+        user_agent=request.META.get("HTTP_USER_AGENT", "")[:500],
     )
 
-    messages.success(request, _('Ekip uyesi cikarildi.'))
-    return redirect('accounts:team-list')
+    messages.success(request, _("Ekip uyesi cikarildi."))
+    return redirect("accounts:team-list")

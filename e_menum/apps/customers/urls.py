@@ -25,12 +25,12 @@ from rest_framework.routers import DefaultRouter
 from apps.customers.views import CustomerViewSet, FeedbackViewSet
 
 
-app_name = 'customers'
+app_name = "customers"
 
 router = DefaultRouter()
-router.register(r'customers', CustomerViewSet, basename='customer')
-router.register(r'customers/feedback', FeedbackViewSet, basename='feedback')
+router.register(r"customers", CustomerViewSet, basename="customer")
+router.register(r"customers/feedback", FeedbackViewSet, basename="feedback")
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]

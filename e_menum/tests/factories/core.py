@@ -230,7 +230,9 @@ class BranchFactory(DjangoModelFactory):
     postal_code = factory.Faker("postcode")
     country = "TR"
     phone = factory.LazyAttribute(lambda o: f"+90532{uuid.uuid4().int % 10000000:07d}")
-    email = factory.LazyAttribute(lambda o: f"branch-{uuid.uuid4().hex[:6]}@example.com")
+    email = factory.LazyAttribute(
+        lambda o: f"branch-{uuid.uuid4().hex[:6]}@example.com"
+    )
     timezone = "Europe/Istanbul"
     status = "ACTIVE"
     is_main = False

@@ -5,36 +5,155 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('ai', '0001_initial'),
+        ("ai", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AIProviderConfig',
+            name="AIProviderConfig",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='Human-readable name (e.g., "OpenAI Production")', max_length=100, verbose_name='Display Name')),
-                ('provider', models.CharField(help_text='Provider identifier', max_length=50, verbose_name='Provider')),
-                ('category', models.CharField(choices=[('TEXT', 'Text Generation'), ('IMAGE', 'Image Generation')], db_index=True, max_length=10, verbose_name='Category')),
-                ('api_key_encrypted', models.TextField(blank=True, default='', help_text='Encrypted API key stored at rest', verbose_name='API Key (encrypted)')),
-                ('default_model', models.CharField(blank=True, default='', help_text='Default model name (e.g., gpt-4o-mini, claude-3-haiku)', max_length=100, verbose_name='Default Model')),
-                ('api_base_url', models.URLField(blank=True, help_text='Custom API endpoint (leave blank for default)', max_length=500, null=True, verbose_name='API Base URL')),
-                ('is_active', models.BooleanField(db_index=True, default=True, verbose_name='Active')),
-                ('is_default', models.BooleanField(default=False, help_text='Use this provider as the default for its category', verbose_name='Default Provider')),
-                ('priority', models.PositiveIntegerField(default=100, help_text='Lower number = higher priority for fallback', verbose_name='Priority')),
-                ('settings', models.JSONField(blank=True, default=dict, help_text='Provider-specific settings (temperature, max_tokens, etc.)', verbose_name='Additional Settings')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text='Human-readable name (e.g., "OpenAI Production")',
+                        max_length=100,
+                        verbose_name="Display Name",
+                    ),
+                ),
+                (
+                    "provider",
+                    models.CharField(
+                        help_text="Provider identifier",
+                        max_length=50,
+                        verbose_name="Provider",
+                    ),
+                ),
+                (
+                    "category",
+                    models.CharField(
+                        choices=[
+                            ("TEXT", "Text Generation"),
+                            ("IMAGE", "Image Generation"),
+                        ],
+                        db_index=True,
+                        max_length=10,
+                        verbose_name="Category",
+                    ),
+                ),
+                (
+                    "api_key_encrypted",
+                    models.TextField(
+                        blank=True,
+                        default="",
+                        help_text="Encrypted API key stored at rest",
+                        verbose_name="API Key (encrypted)",
+                    ),
+                ),
+                (
+                    "default_model",
+                    models.CharField(
+                        blank=True,
+                        default="",
+                        help_text="Default model name (e.g., gpt-4o-mini, claude-3-haiku)",
+                        max_length=100,
+                        verbose_name="Default Model",
+                    ),
+                ),
+                (
+                    "api_base_url",
+                    models.URLField(
+                        blank=True,
+                        help_text="Custom API endpoint (leave blank for default)",
+                        max_length=500,
+                        null=True,
+                        verbose_name="API Base URL",
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        db_index=True, default=True, verbose_name="Active"
+                    ),
+                ),
+                (
+                    "is_default",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Use this provider as the default for its category",
+                        verbose_name="Default Provider",
+                    ),
+                ),
+                (
+                    "priority",
+                    models.PositiveIntegerField(
+                        default=100,
+                        help_text="Lower number = higher priority for fallback",
+                        verbose_name="Priority",
+                    ),
+                ),
+                (
+                    "settings",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text="Provider-specific settings (temperature, max_tokens, etc.)",
+                        verbose_name="Additional Settings",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'AI Provider Configuration',
-                'verbose_name_plural': 'AI Provider Configurations',
-                'db_table': 'ai_provider_configs',
-                'ordering': ['category', 'priority', 'name'],
-                'indexes': [models.Index(fields=['category', 'is_active'], name='aiprov_cat_active_idx'), models.Index(fields=['provider', 'is_active'], name='aiprov_prov_active_idx'), models.Index(fields=['is_default', 'category'], name='aiprov_default_cat_idx')],
+                "verbose_name": "AI Provider Configuration",
+                "verbose_name_plural": "AI Provider Configurations",
+                "db_table": "ai_provider_configs",
+                "ordering": ["category", "priority", "name"],
+                "indexes": [
+                    models.Index(
+                        fields=["category", "is_active"], name="aiprov_cat_active_idx"
+                    ),
+                    models.Index(
+                        fields=["provider", "is_active"], name="aiprov_prov_active_idx"
+                    ),
+                    models.Index(
+                        fields=["is_default", "category"], name="aiprov_default_cat_idx"
+                    ),
+                ],
             },
         ),
     ]

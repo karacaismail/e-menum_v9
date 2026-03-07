@@ -1,4 +1,5 @@
 """Legal page views — privacy, terms, KVKK, cookie policy."""
+
 import logging
 
 from django.http import Http404
@@ -16,31 +17,32 @@ class LegalPageView(CmsContextMixin, TemplateView):
 
     Used for privacy, terms, kvkk, and cookie policy pages.
     """
-    template_name = 'website/legal_page.html'
+
+    template_name = "website/legal_page.html"
     legal_slug = None  # Set by URL config or subclass
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        slug = self.legal_slug or self.kwargs.get('slug')
+        slug = self.legal_slug or self.kwargs.get("slug")
         legal = LegalPage.objects.filter(slug=slug, is_active=True).first()
         if not legal:
             raise Http404
-        context['legal'] = legal
+        context["legal"] = legal
         return context
 
 
 # Convenience subclasses with fixed slug
 class PrivacyView(LegalPageView):
-    legal_slug = 'privacy'
+    legal_slug = "privacy"
 
 
 class TermsView(LegalPageView):
-    legal_slug = 'terms'
+    legal_slug = "terms"
 
 
 class KvkkView(LegalPageView):
-    legal_slug = 'kvkk'
+    legal_slug = "kvkk"
 
 
 class CookiePolicyView(LegalPageView):
-    legal_slug = 'cookie'
+    legal_slug = "cookie"

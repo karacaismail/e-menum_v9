@@ -42,7 +42,7 @@ from apps.seo_shield.ip_reputation import IPReputationManager
 from apps.seo_shield.rate_limiter import RateLimiter
 from apps.seo_shield.risk_engine import RiskEngine
 
-logger = logging.getLogger('apps.seo_shield')
+logger = logging.getLogger("apps.seo_shield")
 
 
 class SEOShieldMiddleware:
@@ -76,15 +76,15 @@ class SEOShieldMiddleware:
             if the request is blocked.
         """
         # Step 1: Check if Shield is enabled
-        if not getattr(settings, 'SHIELD_ENABLED', True):
+        if not getattr(settings, "SHIELD_ENABLED", True):
             return self.get_response(request)
 
         # Step 2: Extract client IP
         ip_address = self.rate_limiter.get_client_ip(request)
-        user_agent = request.META.get('HTTP_USER_AGENT', '')
+        user_agent = request.META.get("HTTP_USER_AGENT", "")
 
         # Step 3: Check whitelist (settings-based and DB-based)
-        whitelist_ips = getattr(settings, 'SHIELD_WHITELIST_IPS', [])
+        whitelist_ips = getattr(settings, "SHIELD_WHITELIST_IPS", [])
         if ip_address in whitelist_ips:
             return self.get_response(request)
 
@@ -92,29 +92,35 @@ class SEOShieldMiddleware:
             return self.get_response(request)
 
         # Step 4: Rate limit check
-        rate_window = getattr(settings, 'SHIELD_RATE_LIMIT_WINDOW', 60)
-        rate_max = getattr(settings, 'SHIELD_RATE_LIMIT_MAX', 60)
+        rate_window = getattr(settings, "SHIELD_RATE_LIMIT_WINDOW", 60)
+        rate_max = getattr(settings, "SHIELD_RATE_LIMIT_MAX", 60)
         is_limited, current_count, remaining = self.rate_limiter.is_rate_limited(
-            ip_address, window=rate_window, max_requests=rate_max,
+            ip_address,
+            window=rate_window,
+            max_requests=rate_max,
         )
 
         if is_limited:
             # Update IP reputation with rate limit signal
-            self.ip_reputation.update_signal(ip_address, 'rate_limit', 100)
+            self.ip_reputation.update_signal(ip_address, "rate_limit", 100)
 
             self._log_block(
                 request=request,
                 ip=ip_address,
-                reason='rate_limit',
+                reason="rate_limit",
                 risk_score=100,
-                signals={'rate_limit': 100},
-                action_taken='blocked',
+                signals={"rate_limit": 100},
+                action_taken="blocked",
                 response_code=429,
             )
 
             logger.warning(
                 "Rate limited: IP=%s requests=%d/%d window=%ds path=%s",
-                ip_address, current_count, rate_max, rate_window, request.path,
+                ip_address,
+                current_count,
+                rate_max,
+                rate_window,
+                request.path,
             )
 
             return self._get_response_429()
@@ -132,10 +138,12 @@ class SEOShieldMiddleware:
 
                 if not is_verified:
                     # Bot impersonation detected
-                    self.ip_reputation.update_signal(ip_address, 'ua_anomaly', 80)
+                    self.ip_reputation.update_signal(ip_address, "ua_anomaly", 80)
                     logger.warning(
                         "Bot impersonation detected: IP=%s claims=%s UA=%s",
-                        ip_address, bot_name, user_agent[:200],
+                        ip_address,
+                        bot_name,
+                        user_agent[:200],
                     )
 
         # Step 6: Multi-signal risk evaluation
@@ -150,82 +158,95 @@ class SEOShieldMiddleware:
         for signal_name, signal_value in result.signals.items():
             if signal_value > 0:
                 self.ip_reputation.update_signal(
-                    ip_address, signal_name, signal_value,
+                    ip_address,
+                    signal_name,
+                    signal_value,
                 )
 
         # Step 7: Take action based on risk evaluation
-        if result.action == 'block':
+        if result.action == "block":
             self._log_block(
                 request=request,
                 ip=ip_address,
-                reason='risk_threshold',
+                reason="risk_threshold",
                 risk_score=result.score,
                 signals=result.signals,
-                action_taken='blocked',
+                action_taken="blocked",
                 response_code=429,
             )
 
             # Fire the shield_threat_detected event
             from apps.core.events import shield_threat_detected
+
             shield_threat_detected.send(
                 sender=self.__class__,
                 ip_address=ip_address,
                 risk_score=result.score,
                 signals=result.signals,
-                action='block',
+                action="block",
             )
 
             logger.warning(
                 "Blocked: IP=%s score=%d action=%s path=%s signals=%s",
-                ip_address, result.score, result.action,
-                request.path, result.signals,
+                ip_address,
+                result.score,
+                result.action,
+                request.path,
+                result.signals,
             )
 
             return self._get_response_429()
 
-        if result.action == 'challenge':
+        if result.action == "challenge":
             # For now, challenge acts the same as block.
             # Future: serve a CAPTCHA or JS challenge page.
             self._log_block(
                 request=request,
                 ip=ip_address,
-                reason='risk_challenge',
+                reason="risk_challenge",
                 risk_score=result.score,
                 signals=result.signals,
-                action_taken='challenged',
+                action_taken="challenged",
                 response_code=429,
             )
 
             from apps.core.events import shield_threat_detected
+
             shield_threat_detected.send(
                 sender=self.__class__,
                 ip_address=ip_address,
                 risk_score=result.score,
                 signals=result.signals,
-                action='challenge',
+                action="challenge",
             )
 
             logger.warning(
                 "Challenged: IP=%s score=%d path=%s signals=%s",
-                ip_address, result.score, request.path, result.signals,
+                ip_address,
+                result.score,
+                request.path,
+                result.signals,
             )
 
             return self._get_response_429()
 
-        if result.action == 'log':
+        if result.action == "log":
             self._log_block(
                 request=request,
                 ip=ip_address,
-                reason='risk_elevated',
+                reason="risk_elevated",
                 risk_score=result.score,
                 signals=result.signals,
-                action_taken='logged',
+                action_taken="logged",
                 response_code=200,
             )
 
             logger.info(
                 "Logged suspicious: IP=%s score=%d path=%s signals=%s",
-                ip_address, result.score, request.path, result.signals,
+                ip_address,
+                result.score,
+                request.path,
+                result.signals,
             )
 
         # Pass through
@@ -258,7 +279,7 @@ class SEOShieldMiddleware:
 
             BlockLog.objects.create(
                 ip_address=ip,
-                user_agent=request.META.get('HTTP_USER_AGENT', '')[:500],
+                user_agent=request.META.get("HTTP_USER_AGENT", "")[:500],
                 path=request.path[:500],
                 method=request.method[:10],
                 reason=reason[:50],
@@ -269,7 +290,8 @@ class SEOShieldMiddleware:
             )
         except Exception as exc:
             logger.error(
-                "Failed to create BlockLog entry: %s", exc,
+                "Failed to create BlockLog entry: %s",
+                exc,
             )
 
     @staticmethod
@@ -280,15 +302,17 @@ class SEOShieldMiddleware:
         Returns:
             HttpResponse with status 429 and JSON error body.
         """
-        body = json.dumps({
-            'success': False,
-            'error': {
-                'code': 'TOO_MANY_REQUESTS',
-                'message': 'Too Many Requests',
-            },
-        })
+        body = json.dumps(
+            {
+                "success": False,
+                "error": {
+                    "code": "TOO_MANY_REQUESTS",
+                    "message": "Too Many Requests",
+                },
+            }
+        )
         return HttpResponse(
             content=body,
-            content_type='application/json',
+            content_type="application/json",
             status=429,
         )

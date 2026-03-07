@@ -30,7 +30,7 @@ from apps.reporting.services.report_engine import BaseReportHandler, register_ha
 logger = logging.getLogger(__name__)
 
 
-@register_handler('RPT-AII-001')
+@register_handler("RPT-AII-001")
 class DailyInsightsHandler(BaseReportHandler):
     """
     Report handler for daily AI-powered business insights.
@@ -42,7 +42,7 @@ class DailyInsightsHandler(BaseReportHandler):
         date (str): Target date in ISO format (default: today)
     """
 
-    feature_key = 'RPT-AII-001'
+    feature_key = "RPT-AII-001"
 
     def generate(self, org_id: str, parameters: dict) -> dict:
         """
@@ -57,7 +57,7 @@ class DailyInsightsHandler(BaseReportHandler):
         """
         from apps.reporting.ai.insight_service import InsightService
 
-        target_date = parameters.get('date')
+        target_date = parameters.get("date")
         if isinstance(target_date, str):
             try:
                 target_date = date.fromisoformat(target_date)
@@ -77,24 +77,24 @@ class DailyInsightsHandler(BaseReportHandler):
         type_counts = {}
         severity_counts = {}
         for insight in insights:
-            itype = insight.get('type', 'unknown')
-            isev = insight.get('severity', 'info')
+            itype = insight.get("type", "unknown")
+            isev = insight.get("severity", "info")
             type_counts[itype] = type_counts.get(itype, 0) + 1
             severity_counts[isev] = severity_counts.get(isev, 0) + 1
 
         return {
-            'date': target_date.isoformat(),
-            'insights': insights,
-            'summary': {
-                'total_insights': len(insights),
-                'by_type': type_counts,
-                'by_severity': severity_counts,
+            "date": target_date.isoformat(),
+            "insights": insights,
+            "summary": {
+                "total_insights": len(insights),
+                "by_type": type_counts,
+                "by_severity": severity_counts,
             },
         }
 
     def get_required_permissions(self) -> List[str]:
         """Return required permissions for this report."""
-        return ['reporting.view']
+        return ["reporting.view"]
 
     def validate_parameters(self, parameters: dict) -> dict:
         """
@@ -109,27 +109,27 @@ class DailyInsightsHandler(BaseReportHandler):
         validated = super().validate_parameters(parameters)
 
         # Validate date parameter if provided
-        date_val = validated.get('date')
+        date_val = validated.get("date")
         if date_val is not None:
             if isinstance(date_val, str):
                 try:
                     date.fromisoformat(date_val)
                 except ValueError:
-                    validated['date'] = None
+                    validated["date"] = None
             elif not isinstance(date_val, date):
-                validated['date'] = None
+                validated["date"] = None
 
         return validated
 
     def get_default_parameters(self) -> dict:
         """Return default parameters for daily insights."""
         return {
-            'date': None,  # Defaults to today in generate()
+            "date": None,  # Defaults to today in generate()
         }
 
     def get_supported_formats(self) -> List[str]:
         """Return supported export formats."""
-        return ['JSON', 'PDF']
+        return ["JSON", "PDF"]
 
     def get_cache_ttl(self) -> int:
         """Insights can be cached for 30 minutes."""

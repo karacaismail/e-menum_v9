@@ -15,4 +15,4 @@ Critical Rules:
 - Products must have at least one variant (base variant)
 """
 
-default_app_config = 'apps.menu.apps.MenuConfig'
+default_app_config = "apps.menu.apps.MenuConfig"

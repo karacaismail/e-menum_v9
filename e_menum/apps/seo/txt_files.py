@@ -20,7 +20,7 @@ from django.conf import settings
 from django.http import HttpRequest, HttpResponse
 from django.utils import timezone
 
-logger = logging.getLogger('apps.seo')
+logger = logging.getLogger("apps.seo")
 
 
 def _get_txt_config(file_type: str):
@@ -42,12 +42,13 @@ def _get_txt_config(file_type: str):
 
 def _txt_response(content: str) -> HttpResponse:
     """Shortcut: return a ``text/plain`` response."""
-    return HttpResponse(content.strip() + '\n', content_type='text/plain')
+    return HttpResponse(content.strip() + "\n", content_type="text/plain")
 
 
 # ──────────────────────────────────────────────────────────────────────────────
 # robots.txt
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 def robots_txt_view(request: HttpRequest) -> HttpResponse:
     """
@@ -59,34 +60,35 @@ def robots_txt_view(request: HttpRequest) -> HttpResponse:
     2. Auto-generated default that disallows ``/admin/`` and ``/api/``
        and points to the XML sitemap.
     """
-    config = _get_txt_config('robots')
+    config = _get_txt_config("robots")
 
     if config and not config.auto_generate and config.content:
         return _txt_response(config.content)
 
     # Auto-generate
-    sitemap_url = f'{request.scheme}://{request.get_host()}/sitemap.xml'
+    sitemap_url = f"{request.scheme}://{request.get_host()}/sitemap.xml"
     lines = [
-        'User-agent: *',
-        'Disallow: /admin/',
-        'Disallow: /api/',
-        'Disallow: /media/filer/',
-        'Disallow: /static/admin/',
-        '',
-        'User-agent: GPTBot',
-        'Disallow: /',
-        '',
-        'User-agent: CCBot',
-        'Disallow: /',
-        '',
-        f'Sitemap: {sitemap_url}',
+        "User-agent: *",
+        "Disallow: /admin/",
+        "Disallow: /api/",
+        "Disallow: /media/filer/",
+        "Disallow: /static/admin/",
+        "",
+        "User-agent: GPTBot",
+        "Disallow: /",
+        "",
+        "User-agent: CCBot",
+        "Disallow: /",
+        "",
+        f"Sitemap: {sitemap_url}",
     ]
-    return _txt_response('\n'.join(lines))
+    return _txt_response("\n".join(lines))
 
 
 # ──────────────────────────────────────────────────────────────────────────────
 # humans.txt
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 def humans_txt_view(request: HttpRequest) -> HttpResponse:
     """
@@ -94,38 +96,39 @@ def humans_txt_view(request: HttpRequest) -> HttpResponse:
 
     Contains team info, technology stack, and last-updated date.
     """
-    config = _get_txt_config('humans')
+    config = _get_txt_config("humans")
 
     if config and not config.auto_generate and config.content:
         return _txt_response(config.content)
 
     # Auto-generate
-    now = timezone.now().strftime('%Y-%m-%d')
+    now = timezone.now().strftime("%Y-%m-%d")
     lines = [
-        '/* TEAM */',
-        'Product: E-Menum - Enterprise QR Menu SaaS',
-        f'Site: {settings.SITE_URL}',
-        'Location: Istanbul, Turkey',
-        '',
-        '/* THANKS */',
-        'Django: https://www.djangoproject.com/',
-        'Tailwind CSS: https://tailwindcss.com/',
-        'Alpine.js: https://alpinejs.dev/',
-        '',
-        '/* SITE */',
-        f'Last update: {now}',
-        'Language: Turkish / English',
-        'Standards: HTML5, CSS3, ES6+',
-        'Framework: Django 5.x',
-        'Database: PostgreSQL',
-        'Cache: Redis',
+        "/* TEAM */",
+        "Product: E-Menum - Enterprise QR Menu SaaS",
+        f"Site: {settings.SITE_URL}",
+        "Location: Istanbul, Turkey",
+        "",
+        "/* THANKS */",
+        "Django: https://www.djangoproject.com/",
+        "Tailwind CSS: https://tailwindcss.com/",
+        "Alpine.js: https://alpinejs.dev/",
+        "",
+        "/* SITE */",
+        f"Last update: {now}",
+        "Language: Turkish / English",
+        "Standards: HTML5, CSS3, ES6+",
+        "Framework: Django 5.x",
+        "Database: PostgreSQL",
+        "Cache: Redis",
     ]
-    return _txt_response('\n'.join(lines))
+    return _txt_response("\n".join(lines))
 
 
 # ──────────────────────────────────────────────────────────────────────────────
 # security.txt  (RFC 9116)
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 def security_txt_view(request: HttpRequest) -> HttpResponse:
     """
@@ -133,32 +136,35 @@ def security_txt_view(request: HttpRequest) -> HttpResponse:
 
     Fields: Contact, Expires, Preferred-Languages, Canonical.
     """
-    config = _get_txt_config('security')
+    config = _get_txt_config("security")
 
     if config and not config.auto_generate and config.content:
         return _txt_response(config.content)
 
     # Auto-generate
     host = request.get_host()
-    canonical = f'{request.scheme}://{host}/.well-known/security.txt'
+    canonical = f"{request.scheme}://{host}/.well-known/security.txt"
     # Expiry one year from now, ISO-8601
-    expires = (datetime.utcnow() + timedelta(days=365)).strftime('%Y-%m-%dT%H:%M:%Sz')
+    expires = (datetime.utcnow() + timedelta(days=365)).strftime("%Y-%m-%dT%H:%M:%Sz")
 
-    contact_email = getattr(settings, 'DEFAULT_FROM_EMAIL', f'security@{settings.SITE_DOMAIN}')
+    contact_email = getattr(
+        settings, "DEFAULT_FROM_EMAIL", f"security@{settings.SITE_DOMAIN}"
+    )
 
     lines = [
-        f'Contact: mailto:{contact_email}',
-        f'Expires: {expires}',
-        'Preferred-Languages: tr, en',
-        f'Canonical: {canonical}',
-        f'Policy: {settings.SITE_URL}/guvenlik-politikasi/',
+        f"Contact: mailto:{contact_email}",
+        f"Expires: {expires}",
+        "Preferred-Languages: tr, en",
+        f"Canonical: {canonical}",
+        f"Policy: {settings.SITE_URL}/guvenlik-politikasi/",
     ]
-    return _txt_response('\n'.join(lines))
+    return _txt_response("\n".join(lines))
 
 
 # ──────────────────────────────────────────────────────────────────────────────
 # ads.txt
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 def ads_txt_view(request: HttpRequest) -> HttpResponse:
     """
@@ -167,23 +173,24 @@ def ads_txt_view(request: HttpRequest) -> HttpResponse:
     Most SaaS products do not run display ads, so the default is an empty
     placeholder.  Actual ad lines should be configured via ``TXTFileConfig``.
     """
-    config = _get_txt_config('ads')
+    config = _get_txt_config("ads")
 
     if config and not config.auto_generate and config.content:
         return _txt_response(config.content)
 
     # Auto-generate (empty placeholder)
     lines = [
-        '# ads.txt - E-Menum',
-        '# No authorized digital sellers at this time.',
-        '# Configure via admin -> SEO -> TXT File Configs',
+        "# ads.txt - E-Menum",
+        "# No authorized digital sellers at this time.",
+        "# Configure via admin -> SEO -> TXT File Configs",
     ]
-    return _txt_response('\n'.join(lines))
+    return _txt_response("\n".join(lines))
 
 
 # ──────────────────────────────────────────────────────────────────────────────
 # llms.txt
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 def llms_txt_view(request: HttpRequest) -> HttpResponse:
     """
@@ -192,7 +199,7 @@ def llms_txt_view(request: HttpRequest) -> HttpResponse:
     This is an emerging convention (llms.txt) for informing AI systems about
     site purpose, allowed usage, and attribution requirements.
     """
-    config = _get_txt_config('llms')
+    config = _get_txt_config("llms")
 
     if config and not config.auto_generate and config.content:
         return _txt_response(config.content)
@@ -200,31 +207,31 @@ def llms_txt_view(request: HttpRequest) -> HttpResponse:
     # Auto-generate
     host = request.get_host()
     lines = [
-        '# E-Menum - Enterprise QR Menu SaaS',
-        f'# https://{host}',
-        '',
-        '## About',
-        'E-Menum is a SaaS platform providing AI-powered digital QR menus',
-        'for restaurants, cafes, and food & beverage businesses in Turkey.',
-        '',
-        '## Usage Policy',
-        'You may reference publicly available information from this site',
-        'for informational purposes. Do not scrape user-generated content',
-        'or private data.',
-        '',
-        '## Attribution',
-        'When citing information from this site, please attribute to',
+        "# E-Menum - Enterprise QR Menu SaaS",
+        f"# https://{host}",
+        "",
+        "## About",
+        "E-Menum is a SaaS platform providing AI-powered digital QR menus",
+        "for restaurants, cafes, and food & beverage businesses in Turkey.",
+        "",
+        "## Usage Policy",
+        "You may reference publicly available information from this site",
+        "for informational purposes. Do not scrape user-generated content",
+        "or private data.",
+        "",
+        "## Attribution",
+        "When citing information from this site, please attribute to",
         f'"E-Menum ({settings.SITE_URL})".',
-        '',
-        '## Contact',
-        'For questions about AI/LLM usage of our content, contact',
-        f'info@{settings.SITE_DOMAIN}',
-        '',
-        '## Pages',
-        f'- Homepage: https://{host}/',
-        f'- Features: https://{host}/ozellikler/',
-        f'- Pricing: https://{host}/fiyatlandirma/',
-        f'- Blog: https://{host}/blog/',
-        f'- About: https://{host}/hakkimizda/',
+        "",
+        "## Contact",
+        "For questions about AI/LLM usage of our content, contact",
+        f"info@{settings.SITE_DOMAIN}",
+        "",
+        "## Pages",
+        f"- Homepage: https://{host}/",
+        f"- Features: https://{host}/ozellikler/",
+        f"- Pricing: https://{host}/fiyatlandirma/",
+        f"- Blog: https://{host}/blog/",
+        f"- About: https://{host}/hakkimizda/",
     ]
-    return _txt_response('\n'.join(lines))
+    return _txt_response("\n".join(lines))

@@ -64,7 +64,7 @@ class CreditService:
     # BALANCE QUERIES
     # ─────────────────────────────────────────────────────────
 
-    def get_balance(self, org_id) -> 'CreditBalance':
+    def get_balance(self, org_id) -> "CreditBalance":
         """
         Get or create the credit balance for an organization.
 
@@ -79,15 +79,16 @@ class CreditService:
         balance, created = CreditBalance.objects.get_or_create(
             organization_id=org_id,
             defaults={
-                'total_credits': 0,
-                'used_credits': 0,
-                'reserved_credits': 0,
+                "total_credits": 0,
+                "used_credits": 0,
+                "reserved_credits": 0,
             },
         )
 
         if created:
             logger.info(
-                'Created initial credit balance for org=%s', org_id,
+                "Created initial credit balance for org=%s",
+                org_id,
             )
 
         return balance
@@ -115,9 +116,9 @@ class CreditService:
         self,
         org_id,
         amount: int,
-        reference_type: str = '',
+        reference_type: str = "",
         reference_id=None,
-    ) -> 'CreditTransaction':
+    ) -> "CreditTransaction":
         """
         Reserve credits for an in-progress operation.
 
@@ -141,8 +142,8 @@ class CreditService:
 
         if amount <= 0:
             raise AppException(
-                code='INVALID_CREDIT_AMOUNT',
-                message='Credit amount must be positive',
+                code="INVALID_CREDIT_AMOUNT",
+                message="Credit amount must be positive",
                 status_code=400,
             )
 
@@ -150,39 +151,41 @@ class CreditService:
         balance = CreditBalance.objects.select_for_update().get_or_create(
             organization_id=org_id,
             defaults={
-                'total_credits': 0,
-                'used_credits': 0,
-                'reserved_credits': 0,
+                "total_credits": 0,
+                "used_credits": 0,
+                "reserved_credits": 0,
             },
         )[0]
 
         if balance.available_credits < amount:
             raise AppException(
-                code='INSUFFICIENT_CREDITS',
+                code="INSUFFICIENT_CREDITS",
                 message=(
-                    f'Insufficient credits. Available: {balance.available_credits}, '
-                    f'required: {amount}'
+                    f"Insufficient credits. Available: {balance.available_credits}, "
+                    f"required: {amount}"
                 ),
                 status_code=402,
             )
 
         balance.reserved_credits += amount
-        balance.save(update_fields=['reserved_credits', 'updated_at'])
+        balance.save(update_fields=["reserved_credits", "updated_at"])
 
         # Create transaction record
         tx = CreditTransaction.objects.create(
             organization_id=org_id,
-            transaction_type='CONSUME',
+            transaction_type="CONSUME",
             amount=-amount,
             balance_after=balance.available_credits,
-            description=f'Credits reserved: {amount}',
+            description=f"Credits reserved: {amount}",
             reference_type=reference_type,
             reference_id=reference_id,
         )
 
         logger.info(
-            'Credits reserved: org=%s amount=%d available=%d',
-            org_id, amount, balance.available_credits,
+            "Credits reserved: org=%s amount=%d available=%d",
+            org_id,
+            amount,
+            balance.available_credits,
         )
 
         return tx
@@ -192,11 +195,11 @@ class CreditService:
         self,
         org_id,
         amount: int,
-        description: str = '',
-        reference_type: str = '',
+        description: str = "",
+        reference_type: str = "",
         reference_id=None,
         user=None,
-    ) -> 'CreditTransaction':
+    ) -> "CreditTransaction":
         """
         Consume credits for a completed operation.
 
@@ -220,8 +223,8 @@ class CreditService:
 
         if amount <= 0:
             raise AppException(
-                code='INVALID_CREDIT_AMOUNT',
-                message='Credit amount must be positive',
+                code="INVALID_CREDIT_AMOUNT",
+                message="Credit amount must be positive",
                 status_code=400,
             )
 
@@ -229,41 +232,43 @@ class CreditService:
         balance = CreditBalance.objects.select_for_update().get_or_create(
             organization_id=org_id,
             defaults={
-                'total_credits': 0,
-                'used_credits': 0,
-                'reserved_credits': 0,
+                "total_credits": 0,
+                "used_credits": 0,
+                "reserved_credits": 0,
             },
         )[0]
 
         if balance.available_credits < amount:
             raise AppException(
-                code='INSUFFICIENT_CREDITS',
+                code="INSUFFICIENT_CREDITS",
                 message=(
-                    f'Insufficient credits. Available: {balance.available_credits}, '
-                    f'required: {amount}'
+                    f"Insufficient credits. Available: {balance.available_credits}, "
+                    f"required: {amount}"
                 ),
                 status_code=402,
             )
 
         balance.used_credits += amount
-        balance.save(update_fields=['used_credits', 'updated_at'])
+        balance.save(update_fields=["used_credits", "updated_at"])
 
         # Create transaction record
         tx = CreditTransaction.objects.create(
             organization_id=org_id,
-            transaction_type='CONSUME',
+            transaction_type="CONSUME",
             amount=-amount,
             balance_after=balance.available_credits,
-            description=description or f'Credits consumed: {amount}',
+            description=description or f"Credits consumed: {amount}",
             reference_type=reference_type,
             reference_id=reference_id,
             created_by=user,
         )
 
         logger.info(
-            'Credits consumed: org=%s amount=%d remaining=%d user=%s',
-            org_id, amount, balance.available_credits,
-            user.email if user and hasattr(user, 'email') else 'system',
+            "Credits consumed: org=%s amount=%d remaining=%d user=%s",
+            org_id,
+            amount,
+            balance.available_credits,
+            user.email if user and hasattr(user, "email") else "system",
         )
 
         return tx
@@ -287,20 +292,22 @@ class CreditService:
         balance = CreditBalance.objects.select_for_update().get_or_create(
             organization_id=org_id,
             defaults={
-                'total_credits': 0,
-                'used_credits': 0,
-                'reserved_credits': 0,
+                "total_credits": 0,
+                "used_credits": 0,
+                "reserved_credits": 0,
             },
         )[0]
 
         # Release cannot exceed current reservations
         release_amount = min(amount, balance.reserved_credits)
         balance.reserved_credits -= release_amount
-        balance.save(update_fields=['reserved_credits', 'updated_at'])
+        balance.save(update_fields=["reserved_credits", "updated_at"])
 
         logger.info(
-            'Credits released: org=%s amount=%d reserved_remaining=%d',
-            org_id, release_amount, balance.reserved_credits,
+            "Credits released: org=%s amount=%d reserved_remaining=%d",
+            org_id,
+            release_amount,
+            balance.reserved_credits,
         )
 
     @transaction.atomic
@@ -308,9 +315,9 @@ class CreditService:
         self,
         org_id,
         amount: int,
-        description: str = '',
+        description: str = "",
         user=None,
-    ) -> 'CreditTransaction':
+    ) -> "CreditTransaction":
         """
         Add credits to an organization's balance.
 
@@ -332,37 +339,39 @@ class CreditService:
 
         if amount <= 0:
             raise AppException(
-                code='INVALID_CREDIT_AMOUNT',
-                message='Credit amount must be positive',
+                code="INVALID_CREDIT_AMOUNT",
+                message="Credit amount must be positive",
                 status_code=400,
             )
 
         balance = CreditBalance.objects.select_for_update().get_or_create(
             organization_id=org_id,
             defaults={
-                'total_credits': 0,
-                'used_credits': 0,
-                'reserved_credits': 0,
+                "total_credits": 0,
+                "used_credits": 0,
+                "reserved_credits": 0,
             },
         )[0]
 
         balance.total_credits += amount
-        balance.save(update_fields=['total_credits', 'updated_at'])
+        balance.save(update_fields=["total_credits", "updated_at"])
 
         tx = CreditTransaction.objects.create(
             organization_id=org_id,
-            transaction_type='PURCHASE',
+            transaction_type="PURCHASE",
             amount=amount,
             balance_after=balance.available_credits,
-            description=description or f'Credits added: {amount}',
-            reference_type='manual',
+            description=description or f"Credits added: {amount}",
+            reference_type="manual",
             created_by=user,
         )
 
         logger.info(
-            'Credits added: org=%s amount=%d total=%d user=%s',
-            org_id, amount, balance.total_credits,
-            user.email if user and hasattr(user, 'email') else 'system',
+            "Credits added: org=%s amount=%d total=%d user=%s",
+            org_id,
+            amount,
+            balance.total_credits,
+            user.email if user and hasattr(user, "email") else "system",
         )
 
         return tx
@@ -372,10 +381,10 @@ class CreditService:
         self,
         org_id,
         amount: int,
-        description: str = '',
-        reference_type: str = '',
+        description: str = "",
+        reference_type: str = "",
         reference_id=None,
-    ) -> 'CreditTransaction':
+    ) -> "CreditTransaction":
         """
         Refund credits to an organization's balance.
 
@@ -395,38 +404,40 @@ class CreditService:
 
         if amount <= 0:
             raise AppException(
-                code='INVALID_CREDIT_AMOUNT',
-                message='Credit amount must be positive',
+                code="INVALID_CREDIT_AMOUNT",
+                message="Credit amount must be positive",
                 status_code=400,
             )
 
         balance = CreditBalance.objects.select_for_update().get_or_create(
             organization_id=org_id,
             defaults={
-                'total_credits': 0,
-                'used_credits': 0,
-                'reserved_credits': 0,
+                "total_credits": 0,
+                "used_credits": 0,
+                "reserved_credits": 0,
             },
         )[0]
 
         # Refund cannot exceed used credits
         refund_amount = min(amount, balance.used_credits)
         balance.used_credits -= refund_amount
-        balance.save(update_fields=['used_credits', 'updated_at'])
+        balance.save(update_fields=["used_credits", "updated_at"])
 
         tx = CreditTransaction.objects.create(
             organization_id=org_id,
-            transaction_type='REFUND',
+            transaction_type="REFUND",
             amount=refund_amount,
             balance_after=balance.available_credits,
-            description=description or f'Credits refunded: {refund_amount}',
+            description=description or f"Credits refunded: {refund_amount}",
             reference_type=reference_type,
             reference_id=reference_id,
         )
 
         logger.info(
-            'Credits refunded: org=%s amount=%d available=%d',
-            org_id, refund_amount, balance.available_credits,
+            "Credits refunded: org=%s amount=%d available=%d",
+            org_id,
+            refund_amount,
+            balance.available_credits,
         )
 
         return tx
@@ -473,35 +484,39 @@ class CreditService:
             qs = qs.filter(created_at__date__lte=end_date)
 
         # Aggregate by transaction type
-        aggregates = qs.values('transaction_type').annotate(
-            total_amount=Sum('amount'),
+        aggregates = qs.values("transaction_type").annotate(
+            total_amount=Sum("amount"),
         )
 
         type_totals = {}
         for agg in aggregates:
-            type_totals[agg['transaction_type']] = agg['total_amount'] or 0
+            type_totals[agg["transaction_type"]] = agg["total_amount"] or 0
 
         # Breakdown by reference type for consumption
-        consume_qs = qs.filter(transaction_type='CONSUME')
-        breakdown = consume_qs.values('reference_type').annotate(
-            total_amount=Sum('amount'),
-        ).order_by('reference_type')
+        consume_qs = qs.filter(transaction_type="CONSUME")
+        breakdown = (
+            consume_qs.values("reference_type")
+            .annotate(
+                total_amount=Sum("amount"),
+            )
+            .order_by("reference_type")
+        )
 
         breakdown_dict = {}
         for item in breakdown:
-            ref_type = item['reference_type'] or 'unspecified'
-            breakdown_dict[ref_type] = abs(item['total_amount'] or 0)
+            ref_type = item["reference_type"] or "unspecified"
+            breakdown_dict[ref_type] = abs(item["total_amount"] or 0)
 
         return {
-            'balance': {
-                'total_credits': balance.total_credits,
-                'used_credits': balance.used_credits,
-                'reserved_credits': balance.reserved_credits,
-                'available_credits': balance.available_credits,
+            "balance": {
+                "total_credits": balance.total_credits,
+                "used_credits": balance.used_credits,
+                "reserved_credits": balance.reserved_credits,
+                "available_credits": balance.available_credits,
             },
-            'total_consumed': abs(type_totals.get('CONSUME', 0)),
-            'total_added': type_totals.get('PURCHASE', 0) + type_totals.get('BONUS', 0),
-            'total_refunded': type_totals.get('REFUND', 0),
-            'breakdown_by_type': breakdown_dict,
-            'transaction_count': qs.count(),
+            "total_consumed": abs(type_totals.get("CONSUME", 0)),
+            "total_added": type_totals.get("PURCHASE", 0) + type_totals.get("BONUS", 0),
+            "total_refunded": type_totals.get("REFUND", 0),
+            "breakdown_by_type": breakdown_dict,
+            "transaction_count": qs.count(),
         }

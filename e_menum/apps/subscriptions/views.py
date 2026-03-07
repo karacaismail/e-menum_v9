@@ -96,6 +96,7 @@ logger = logging.getLogger(__name__)
 # FEATURE VIEWSET (Platform-level, admin only)
 # =============================================================================
 
+
 class FeatureViewSet(BaseModelViewSet):
     """
     ViewSet for feature management.
@@ -126,17 +127,17 @@ class FeatureViewSet(BaseModelViewSet):
 
     def get_permissions(self):
         """Return permissions based on action."""
-        if self.action in ['list', 'retrieve']:
+        if self.action in ["list", "retrieve"]:
             return [AllowAny()]
         return [IsAdminUser()]
 
     def get_serializer_class(self):
         """Return the appropriate serializer based on action."""
-        if self.action == 'list':
+        if self.action == "list":
             return FeatureListSerializer
-        elif self.action == 'create':
+        elif self.action == "create":
             return FeatureCreateSerializer
-        elif self.action in ['update', 'partial_update']:
+        elif self.action in ["update", "partial_update"]:
             return FeatureUpdateSerializer
         return FeatureDetailSerializer
 
@@ -147,34 +148,34 @@ class FeatureViewSet(BaseModelViewSet):
         queryset = super().get_queryset()
 
         # Filter by category
-        category = self.request.query_params.get('category')
+        category = self.request.query_params.get("category")
         if category:
             queryset = queryset.filter(category=category)
 
         # Filter by feature_type
-        feature_type = self.request.query_params.get('feature_type')
+        feature_type = self.request.query_params.get("feature_type")
         if feature_type:
             queryset = queryset.filter(feature_type=feature_type.upper())
 
         # Filter by active status
-        is_active = self.request.query_params.get('is_active')
+        is_active = self.request.query_params.get("is_active")
         if is_active is not None:
-            queryset = queryset.filter(is_active=is_active.lower() == 'true')
+            queryset = queryset.filter(is_active=is_active.lower() == "true")
 
         # Search by name or code
-        search = self.request.query_params.get('search')
+        search = self.request.query_params.get("search")
         if search:
             queryset = queryset.filter(
-                models.Q(name__icontains=search) |
-                models.Q(code__icontains=search)
+                models.Q(name__icontains=search) | models.Q(code__icontains=search)
             )
 
-        return queryset.order_by('category', 'sort_order', 'name')
+        return queryset.order_by("category", "sort_order", "name")
 
 
 # =============================================================================
 # PLAN VIEWSET (Platform-level, public read)
 # =============================================================================
+
 
 class PlanViewSet(BaseModelViewSet):
     """
@@ -208,17 +209,17 @@ class PlanViewSet(BaseModelViewSet):
 
     def get_permissions(self):
         """Return permissions based on action."""
-        if self.action in ['list', 'retrieve', 'compare']:
+        if self.action in ["list", "retrieve", "compare"]:
             return [AllowAny()]
         return [IsAdminUser()]
 
     def get_serializer_class(self):
         """Return the appropriate serializer based on action."""
-        if self.action == 'list':
+        if self.action == "list":
             return PlanListSerializer
-        elif self.action == 'create':
+        elif self.action == "create":
             return PlanCreateSerializer
-        elif self.action in ['update', 'partial_update']:
+        elif self.action in ["update", "partial_update"]:
             return PlanUpdateSerializer
         return PlanDetailSerializer
 
@@ -229,39 +230,39 @@ class PlanViewSet(BaseModelViewSet):
         queryset = super().get_queryset()
 
         # For detail view, prefetch plan features
-        if self.action == 'retrieve':
+        if self.action == "retrieve":
             queryset = queryset.prefetch_related(
                 Prefetch(
-                    'plan_features',
+                    "plan_features",
                     queryset=PlanFeature.objects.filter(is_enabled=True)
-                        .select_related('feature')
-                        .order_by('sort_order', 'feature__name')
+                    .select_related("feature")
+                    .order_by("sort_order", "feature__name"),
                 )
             )
 
         # Filter by tier
-        tier = self.request.query_params.get('tier')
+        tier = self.request.query_params.get("tier")
         if tier:
             queryset = queryset.filter(tier=tier.upper())
 
         # Filter by active status
-        is_active = self.request.query_params.get('is_active')
+        is_active = self.request.query_params.get("is_active")
         if is_active is not None:
-            queryset = queryset.filter(is_active=is_active.lower() == 'true')
+            queryset = queryset.filter(is_active=is_active.lower() == "true")
 
         # Filter by public visibility
-        is_public = self.request.query_params.get('is_public')
+        is_public = self.request.query_params.get("is_public")
         if is_public is not None:
-            queryset = queryset.filter(is_public=is_public.lower() == 'true')
+            queryset = queryset.filter(is_public=is_public.lower() == "true")
 
         # Search by name
-        search = self.request.query_params.get('search')
+        search = self.request.query_params.get("search")
         if search:
             queryset = queryset.filter(name__icontains=search)
 
-        return queryset.order_by('sort_order', 'price_monthly')
+        return queryset.order_by("sort_order", "price_monthly")
 
-    @action(detail=True, methods=['post'], url_path='set-default')
+    @action(detail=True, methods=["post"], url_path="set-default")
     def set_default(self, request, pk=None):
         """
         Set this plan as the default for new organizations.
@@ -278,11 +279,9 @@ class PlanViewSet(BaseModelViewSet):
         plan = self.get_object()
         plan.set_as_default()
 
-        return self.get_success_response({
-            'message': str(_('Plan set as default'))
-        })
+        return self.get_success_response({"message": str(_("Plan set as default"))})
 
-    @action(detail=True, methods=['get'])
+    @action(detail=True, methods=["get"])
     def compare(self, request, pk=None):
         """
         Compare this plan with another plan.
@@ -304,38 +303,38 @@ class PlanViewSet(BaseModelViewSet):
         plan = self.get_object()
 
         # Get the plan to compare with
-        other_plan_id = request.query_params.get('with')
+        other_plan_id = request.query_params.get("with")
         if not other_plan_id:
             return self.get_error_response(
-                code='MISSING_PARAMETER',
+                code="MISSING_PARAMETER",
                 message=str(_('The "with" parameter is required')),
-                status_code=status.HTTP_400_BAD_REQUEST
+                status_code=status.HTTP_400_BAD_REQUEST,
             )
 
         try:
-            other_plan = Plan.objects.get(
-                id=other_plan_id,
-                deleted_at__isnull=True
-            )
+            other_plan = Plan.objects.get(id=other_plan_id, deleted_at__isnull=True)
         except Plan.DoesNotExist:
             return self.get_error_response(
-                code='PLAN_NOT_FOUND',
-                message=str(_('Comparison plan not found')),
-                status_code=status.HTTP_404_NOT_FOUND
+                code="PLAN_NOT_FOUND",
+                message=str(_("Comparison plan not found")),
+                status_code=status.HTTP_404_NOT_FOUND,
             )
 
         comparison = plan.compare_to(other_plan)
 
-        return self.get_success_response({
-            'plan': PlanDetailSerializer(plan).data,
-            'compared_to': PlanDetailSerializer(other_plan).data,
-            'comparison': comparison,
-        })
+        return self.get_success_response(
+            {
+                "plan": PlanDetailSerializer(plan).data,
+                "compared_to": PlanDetailSerializer(other_plan).data,
+                "comparison": comparison,
+            }
+        )
 
 
 # =============================================================================
 # SUBSCRIPTION VIEWSET (Tenant-scoped)
 # =============================================================================
+
 
 class SubscriptionViewSet(BaseTenantViewSet):
     """
@@ -365,19 +364,19 @@ class SubscriptionViewSet(BaseTenantViewSet):
     """
 
     queryset = Subscription.objects.all()
-    permission_resource = 'subscription'
+    permission_resource = "subscription"
 
     def get_serializer_class(self):
         """Return the appropriate serializer based on action."""
-        if self.action == 'list':
+        if self.action == "list":
             return SubscriptionListSerializer
-        elif self.action == 'create':
+        elif self.action == "create":
             return SubscriptionCreateSerializer
-        elif self.action in ['update', 'partial_update']:
+        elif self.action in ["update", "partial_update"]:
             return SubscriptionUpdateSerializer
-        elif self.action == 'cancel':
+        elif self.action == "cancel":
             return SubscriptionCancelSerializer
-        elif self.action == 'change_plan':
+        elif self.action == "change_plan":
             return SubscriptionChangePlanSerializer
         return SubscriptionDetailSerializer
 
@@ -388,16 +387,16 @@ class SubscriptionViewSet(BaseTenantViewSet):
         queryset = super().get_queryset()
 
         # Optimize with select_related
-        queryset = queryset.select_related('plan')
+        queryset = queryset.select_related("plan")
 
         # Filter by status
-        status_filter = self.request.query_params.get('status')
+        status_filter = self.request.query_params.get("status")
         if status_filter:
             queryset = queryset.filter(status=status_filter.upper())
 
-        return queryset.order_by('-created_at')
+        return queryset.order_by("-created_at")
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=["get"])
     def current(self, request):
         """
         Get the current active subscription for the organization.
@@ -412,16 +411,20 @@ class SubscriptionViewSet(BaseTenantViewSet):
         organization = self.get_organization()
         if not organization:
             return self.get_error_response(
-                code='NO_ORGANIZATION',
-                message=str(_('Organization context required')),
-                status_code=status.HTTP_403_FORBIDDEN
+                code="NO_ORGANIZATION",
+                message=str(_("Organization context required")),
+                status_code=status.HTTP_403_FORBIDDEN,
             )
 
-        subscription = Subscription.objects.filter(
-            organization=organization,
-            status__in=[SubscriptionStatus.ACTIVE, SubscriptionStatus.TRIALING],
-            deleted_at__isnull=True
-        ).select_related('plan').first()
+        subscription = (
+            Subscription.objects.filter(
+                organization=organization,
+                status__in=[SubscriptionStatus.ACTIVE, SubscriptionStatus.TRIALING],
+                deleted_at__isnull=True,
+            )
+            .select_related("plan")
+            .first()
+        )
 
         if not subscription:
             return self.get_success_response(None)
@@ -429,7 +432,7 @@ class SubscriptionViewSet(BaseTenantViewSet):
         serializer = SubscriptionDetailSerializer(subscription)
         return self.get_success_response(serializer.data)
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def cancel(self, request, pk=None):
         """
         Cancel the subscription.
@@ -455,17 +458,21 @@ class SubscriptionViewSet(BaseTenantViewSet):
         serializer.is_valid(raise_exception=True)
 
         subscription.cancel(
-            reason=serializer.validated_data.get('reason'),
-            at_period_end=serializer.validated_data.get('at_period_end', True)
+            reason=serializer.validated_data.get("reason"),
+            at_period_end=serializer.validated_data.get("at_period_end", True),
         )
 
-        return self.get_success_response({
-            'message': str(_('Subscription cancelled')),
-            'cancelled_at': subscription.cancelled_at.isoformat() if subscription.cancelled_at else None,
-            'cancel_at_period_end': subscription.cancel_at_period_end,
-        })
+        return self.get_success_response(
+            {
+                "message": str(_("Subscription cancelled")),
+                "cancelled_at": subscription.cancelled_at.isoformat()
+                if subscription.cancelled_at
+                else None,
+                "cancel_at_period_end": subscription.cancel_at_period_end,
+            }
+        )
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def reactivate(self, request, pk=None):
         """
         Reactivate a cancelled or suspended subscription.
@@ -481,21 +488,28 @@ class SubscriptionViewSet(BaseTenantViewSet):
         """
         subscription = self.get_object()
 
-        if subscription.status not in [SubscriptionStatus.CANCELLED, SubscriptionStatus.SUSPENDED]:
+        if subscription.status not in [
+            SubscriptionStatus.CANCELLED,
+            SubscriptionStatus.SUSPENDED,
+        ]:
             return self.get_error_response(
-                code='INVALID_STATUS',
-                message=str(_('Only cancelled or suspended subscriptions can be reactivated')),
-                status_code=status.HTTP_400_BAD_REQUEST
+                code="INVALID_STATUS",
+                message=str(
+                    _("Only cancelled or suspended subscriptions can be reactivated")
+                ),
+                status_code=status.HTTP_400_BAD_REQUEST,
             )
 
         subscription.reactivate()
 
-        return self.get_success_response({
-            'message': str(_('Subscription reactivated')),
-            'status': subscription.status,
-        })
+        return self.get_success_response(
+            {
+                "message": str(_("Subscription reactivated")),
+                "status": subscription.status,
+            }
+        )
 
-    @action(detail=True, methods=['post'], url_path='change-plan')
+    @action(detail=True, methods=["post"], url_path="change-plan")
     def change_plan(self, request, pk=None):
         """
         Change the subscription to a different plan.
@@ -520,25 +534,28 @@ class SubscriptionViewSet(BaseTenantViewSet):
         serializer = SubscriptionChangePlanSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        new_plan = serializer.validated_data['plan_id']
-        prorate = serializer.validated_data.get('prorate', True)
+        new_plan = serializer.validated_data["plan_id"]
+        prorate = serializer.validated_data.get("prorate", True)
 
         subscription.change_plan(new_plan, prorate=prorate)
 
-        return self.get_success_response({
-            'message': str(_('Plan changed successfully')),
-            'new_plan': {
-                'id': str(new_plan.id),
-                'name': new_plan.name,
-                'tier': new_plan.tier,
-            },
-            'current_price': str(subscription.current_price),
-        })
+        return self.get_success_response(
+            {
+                "message": str(_("Plan changed successfully")),
+                "new_plan": {
+                    "id": str(new_plan.id),
+                    "name": new_plan.name,
+                    "tier": new_plan.tier,
+                },
+                "current_price": str(subscription.current_price),
+            }
+        )
 
 
 # =============================================================================
 # INVOICE VIEWSET (Tenant-scoped)
 # =============================================================================
+
 
 class InvoiceViewSet(BaseTenantViewSet):
     """
@@ -568,19 +585,19 @@ class InvoiceViewSet(BaseTenantViewSet):
     """
 
     queryset = Invoice.objects.all()
-    permission_resource = 'invoice'
+    permission_resource = "invoice"
 
     def get_serializer_class(self):
         """Return the appropriate serializer based on action."""
-        if self.action == 'list':
+        if self.action == "list":
             return InvoiceListSerializer
-        elif self.action == 'create':
+        elif self.action == "create":
             return InvoiceCreateSerializer
-        elif self.action in ['update', 'partial_update']:
+        elif self.action in ["update", "partial_update"]:
             return InvoiceUpdateSerializer
-        elif self.action == 'mark_paid':
+        elif self.action == "mark_paid":
             return InvoicePaymentSerializer
-        elif self.action == 'refund':
+        elif self.action == "refund":
             return InvoiceRefundSerializer
         return InvoiceDetailSerializer
 
@@ -591,21 +608,21 @@ class InvoiceViewSet(BaseTenantViewSet):
         queryset = super().get_queryset()
 
         # Optimize with select_related
-        queryset = queryset.select_related('subscription', 'subscription__plan')
+        queryset = queryset.select_related("subscription", "subscription__plan")
 
         # Filter by status
-        status_filter = self.request.query_params.get('status')
+        status_filter = self.request.query_params.get("status")
         if status_filter:
             queryset = queryset.filter(status=status_filter.upper())
 
         # Filter by subscription
-        subscription_id = self.request.query_params.get('subscription_id')
+        subscription_id = self.request.query_params.get("subscription_id")
         if subscription_id:
             queryset = queryset.filter(subscription_id=subscription_id)
 
-        return queryset.order_by('-created_at')
+        return queryset.order_by("-created_at")
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def finalize(self, request, pk=None):
         """
         Finalize a draft invoice and make it pending.
@@ -624,19 +641,21 @@ class InvoiceViewSet(BaseTenantViewSet):
 
         if invoice.status != InvoiceStatus.DRAFT:
             return self.get_error_response(
-                code='INVALID_STATUS',
-                message=str(_('Only draft invoices can be finalized')),
-                status_code=status.HTTP_400_BAD_REQUEST
+                code="INVALID_STATUS",
+                message=str(_("Only draft invoices can be finalized")),
+                status_code=status.HTTP_400_BAD_REQUEST,
             )
 
         invoice.finalize()
 
-        return self.get_success_response({
-            'message': str(_('Invoice finalized')),
-            'status': invoice.status,
-        })
+        return self.get_success_response(
+            {
+                "message": str(_("Invoice finalized")),
+                "status": invoice.status,
+            }
+        )
 
-    @action(detail=True, methods=['post'], url_path='mark-paid')
+    @action(detail=True, methods=["post"], url_path="mark-paid")
     def mark_paid(self, request, pk=None):
         """
         Mark an invoice as paid.
@@ -661,27 +680,29 @@ class InvoiceViewSet(BaseTenantViewSet):
 
         if invoice.status not in [InvoiceStatus.PENDING, InvoiceStatus.DRAFT]:
             return self.get_error_response(
-                code='INVALID_STATUS',
-                message=str(_('Only pending or draft invoices can be marked as paid')),
-                status_code=status.HTTP_400_BAD_REQUEST
+                code="INVALID_STATUS",
+                message=str(_("Only pending or draft invoices can be marked as paid")),
+                status_code=status.HTTP_400_BAD_REQUEST,
             )
 
         serializer = InvoicePaymentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         invoice.mark_paid(
-            payment_id=serializer.validated_data.get('payment_id'),
-            payment_details=serializer.validated_data.get('payment_details'),
-            amount=serializer.validated_data.get('amount'),
+            payment_id=serializer.validated_data.get("payment_id"),
+            payment_details=serializer.validated_data.get("payment_details"),
+            amount=serializer.validated_data.get("amount"),
         )
 
-        return self.get_success_response({
-            'message': str(_('Invoice marked as paid')),
-            'paid_at': invoice.paid_at.isoformat() if invoice.paid_at else None,
-            'amount_paid': str(invoice.amount_paid),
-        })
+        return self.get_success_response(
+            {
+                "message": str(_("Invoice marked as paid")),
+                "paid_at": invoice.paid_at.isoformat() if invoice.paid_at else None,
+                "amount_paid": str(invoice.amount_paid),
+            }
+        )
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def void(self, request, pk=None):
         """
         Void an invoice.
@@ -703,20 +724,22 @@ class InvoiceViewSet(BaseTenantViewSet):
 
         if invoice.status == InvoiceStatus.PAID:
             return self.get_error_response(
-                code='INVALID_STATUS',
-                message=str(_('Paid invoices cannot be voided. Use refund instead.')),
-                status_code=status.HTTP_400_BAD_REQUEST
+                code="INVALID_STATUS",
+                message=str(_("Paid invoices cannot be voided. Use refund instead.")),
+                status_code=status.HTTP_400_BAD_REQUEST,
             )
 
-        reason = request.data.get('reason')
+        reason = request.data.get("reason")
         invoice.void(reason=reason)
 
-        return self.get_success_response({
-            'message': str(_('Invoice voided')),
-            'status': invoice.status,
-        })
+        return self.get_success_response(
+            {
+                "message": str(_("Invoice voided")),
+                "status": invoice.status,
+            }
+        )
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def refund(self, request, pk=None):
         """
         Refund a paid invoice.
@@ -740,29 +763,32 @@ class InvoiceViewSet(BaseTenantViewSet):
 
         if invoice.status != InvoiceStatus.PAID:
             return self.get_error_response(
-                code='INVALID_STATUS',
-                message=str(_('Only paid invoices can be refunded')),
-                status_code=status.HTTP_400_BAD_REQUEST
+                code="INVALID_STATUS",
+                message=str(_("Only paid invoices can be refunded")),
+                status_code=status.HTTP_400_BAD_REQUEST,
             )
 
         serializer = InvoiceRefundSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         invoice.refund(
-            amount=serializer.validated_data.get('amount'),
-            reason=serializer.validated_data.get('reason'),
+            amount=serializer.validated_data.get("amount"),
+            reason=serializer.validated_data.get("reason"),
         )
 
-        return self.get_success_response({
-            'message': str(_('Invoice refunded')),
-            'amount_refunded': str(invoice.amount_refunded),
-            'status': invoice.status,
-        })
+        return self.get_success_response(
+            {
+                "message": str(_("Invoice refunded")),
+                "amount_refunded": str(invoice.amount_refunded),
+                "status": invoice.status,
+            }
+        )
 
 
 # =============================================================================
 # PLAN FEATURE VIEWSET (Platform-level, admin only)
 # =============================================================================
+
 
 class PlanFeatureViewSet(BaseModelViewSet):
     """
@@ -792,17 +818,17 @@ class PlanFeatureViewSet(BaseModelViewSet):
 
     def get_permissions(self):
         """Return permissions based on action."""
-        if self.action in ['list', 'retrieve']:
+        if self.action in ["list", "retrieve"]:
             return [AllowAny()]
         return [IsAdminUser()]
 
     def get_serializer_class(self):
         """Return the appropriate serializer based on action."""
-        if self.action == 'list':
+        if self.action == "list":
             return PlanFeatureListSerializer
-        elif self.action == 'create':
+        elif self.action == "create":
             return PlanFeatureCreateSerializer
-        elif self.action in ['update', 'partial_update']:
+        elif self.action in ["update", "partial_update"]:
             return PlanFeatureUpdateSerializer
         return PlanFeatureDetailSerializer
 
@@ -813,29 +839,30 @@ class PlanFeatureViewSet(BaseModelViewSet):
         queryset = super().get_queryset()
 
         # Optimize with select_related
-        queryset = queryset.select_related('plan', 'feature')
+        queryset = queryset.select_related("plan", "feature")
 
         # Filter by plan
-        plan_id = self.request.query_params.get('plan_id')
+        plan_id = self.request.query_params.get("plan_id")
         if plan_id:
             queryset = queryset.filter(plan_id=plan_id)
 
         # Filter by feature
-        feature_id = self.request.query_params.get('feature_id')
+        feature_id = self.request.query_params.get("feature_id")
         if feature_id:
             queryset = queryset.filter(feature_id=feature_id)
 
         # Filter by enabled status
-        is_enabled = self.request.query_params.get('is_enabled')
+        is_enabled = self.request.query_params.get("is_enabled")
         if is_enabled is not None:
-            queryset = queryset.filter(is_enabled=is_enabled.lower() == 'true')
+            queryset = queryset.filter(is_enabled=is_enabled.lower() == "true")
 
-        return queryset.order_by('plan__sort_order', 'sort_order', 'feature__name')
+        return queryset.order_by("plan__sort_order", "sort_order", "feature__name")
 
 
 # =============================================================================
 # ORGANIZATION USAGE VIEWSET (Tenant-scoped, read-only for users)
 # =============================================================================
+
 
 class OrganizationUsageViewSet(BaseTenantReadOnlyViewSet):
     """
@@ -858,11 +885,11 @@ class OrganizationUsageViewSet(BaseTenantReadOnlyViewSet):
     """
 
     queryset = OrganizationUsage.objects.all()
-    permission_resource = 'usage'
+    permission_resource = "usage"
 
     def get_serializer_class(self):
         """Return the appropriate serializer based on action."""
-        if self.action == 'list':
+        if self.action == "list":
             return OrganizationUsageListSerializer
         return OrganizationUsageDetailSerializer
 
@@ -873,16 +900,16 @@ class OrganizationUsageViewSet(BaseTenantReadOnlyViewSet):
         queryset = super().get_queryset()
 
         # Optimize with select_related
-        queryset = queryset.select_related('feature')
+        queryset = queryset.select_related("feature")
 
         # Filter by feature code
-        feature_code = self.request.query_params.get('feature_code')
+        feature_code = self.request.query_params.get("feature_code")
         if feature_code:
             queryset = queryset.filter(feature__code=feature_code)
 
-        return queryset.order_by('feature__category', 'feature__sort_order')
+        return queryset.order_by("feature__category", "feature__sort_order")
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=["get"])
     def summary(self, request):
         """
         Get a summary of usage for the organization.
@@ -902,20 +929,23 @@ class OrganizationUsageViewSet(BaseTenantReadOnlyViewSet):
         organization = self.get_organization()
         if not organization:
             return self.get_error_response(
-                code='NO_ORGANIZATION',
-                message=str(_('Organization context required')),
-                status_code=status.HTTP_403_FORBIDDEN
+                code="NO_ORGANIZATION",
+                message=str(_("Organization context required")),
+                status_code=status.HTTP_403_FORBIDDEN,
             )
 
         usage_records = OrganizationUsage.objects.filter(
             organization=organization
-        ).select_related('feature')
+        ).select_related("feature")
 
         total_tracked = usage_records.count()
         at_limit = sum(1 for u in usage_records if u.is_limit_exceeded)
         near_limit = sum(
-            1 for u in usage_records
-            if not u.is_unlimited and not u.is_limit_exceeded and u.usage_percentage >= 80
+            1
+            for u in usage_records
+            if not u.is_unlimited
+            and not u.is_limit_exceeded
+            and u.usage_percentage >= 80
         )
 
         # Group by category
@@ -924,21 +954,25 @@ class OrganizationUsageViewSet(BaseTenantReadOnlyViewSet):
             category = usage.feature.category
             if category not in usage_by_category:
                 usage_by_category[category] = []
-            usage_by_category[category].append({
-                'feature_code': usage.feature.code,
-                'feature_name': usage.feature.name,
-                'current_usage': usage.current_usage,
-                'limit': usage.usage_limit,
-                'percentage': usage.usage_percentage,
-                'is_exceeded': usage.is_limit_exceeded,
-            })
+            usage_by_category[category].append(
+                {
+                    "feature_code": usage.feature.code,
+                    "feature_name": usage.feature.name,
+                    "current_usage": usage.current_usage,
+                    "limit": usage.usage_limit,
+                    "percentage": usage.usage_percentage,
+                    "is_exceeded": usage.is_limit_exceeded,
+                }
+            )
 
-        return self.get_success_response({
-            'total_features_tracked': total_tracked,
-            'features_at_limit': at_limit,
-            'features_near_limit': near_limit,
-            'usage_by_category': usage_by_category,
-        })
+        return self.get_success_response(
+            {
+                "total_features_tracked": total_tracked,
+                "features_at_limit": at_limit,
+                "features_near_limit": near_limit,
+                "usage_by_category": usage_by_category,
+            }
+        )
 
 
 # =============================================================================
@@ -946,10 +980,10 @@ class OrganizationUsageViewSet(BaseTenantReadOnlyViewSet):
 # =============================================================================
 
 __all__ = [
-    'FeatureViewSet',
-    'PlanViewSet',
-    'SubscriptionViewSet',
-    'InvoiceViewSet',
-    'PlanFeatureViewSet',
-    'OrganizationUsageViewSet',
+    "FeatureViewSet",
+    "PlanViewSet",
+    "SubscriptionViewSet",
+    "InvoiceViewSet",
+    "PlanFeatureViewSet",
+    "OrganizationUsageViewSet",
 ]

@@ -27,12 +27,12 @@ class ImageUploadWidget(forms.URLInput):
     File uploads are handled via AJAX to /admin/api/upload/.
     """
 
-    template_name = 'admin/widgets/image_upload.html'
+    template_name = "admin/widgets/image_upload.html"
 
-    def __init__(self, attrs=None, subfolder='menu_items'):
+    def __init__(self, attrs=None, subfolder="menu_items"):
         self.subfolder = subfolder
         default_attrs = {
-            'class': 'vURLField image-upload-url-input',
+            "class": "vURLField image-upload-url-input",
         }
         if attrs:
             default_attrs.update(attrs)
@@ -40,5 +40,5 @@ class ImageUploadWidget(forms.URLInput):
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
-        context['widget']['subfolder'] = self.subfolder
+        context["widget"]["subfolder"] = self.subfolder
         return context

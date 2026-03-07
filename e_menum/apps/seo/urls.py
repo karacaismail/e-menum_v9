@@ -11,21 +11,25 @@ from django.contrib.sitemaps.views import sitemap
 from apps.seo import txt_files
 from apps.seo.sitemaps import sitemaps
 
-app_name = 'seo'
+app_name = "seo"
 
 urlpatterns = [
     # TXT files
-    path('robots.txt', txt_files.robots_txt_view, name='robots-txt'),
-    path('humans.txt', txt_files.humans_txt_view, name='humans-txt'),
-    path('security.txt', txt_files.security_txt_view, name='security-txt'),
-    path('.well-known/security.txt', txt_files.security_txt_view, name='security-txt-wellknown'),
-    path('ads.txt', txt_files.ads_txt_view, name='ads-txt'),
-    path('llms.txt', txt_files.llms_txt_view, name='llms-txt'),
+    path("robots.txt", txt_files.robots_txt_view, name="robots-txt"),
+    path("humans.txt", txt_files.humans_txt_view, name="humans-txt"),
+    path("security.txt", txt_files.security_txt_view, name="security-txt"),
+    path(
+        ".well-known/security.txt",
+        txt_files.security_txt_view,
+        name="security-txt-wellknown",
+    ),
+    path("ads.txt", txt_files.ads_txt_view, name="ads-txt"),
+    path("llms.txt", txt_files.llms_txt_view, name="llms-txt"),
     # Sitemaps
     path(
-        'sitemap.xml',
+        "sitemap.xml",
         sitemap,
-        {'sitemaps': sitemaps},
-        name='django.contrib.sitemaps.views.sitemap',
+        {"sitemaps": sitemaps},
+        name="django.contrib.sitemaps.views.sitemap",
     ),
 ]

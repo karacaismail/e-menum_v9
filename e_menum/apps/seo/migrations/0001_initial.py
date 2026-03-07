@@ -8,7 +8,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -17,165 +16,937 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='PSEOTemplate',
+            name="PSEOTemplate",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='Template name for internal reference', max_length=200, verbose_name='Name')),
-                ('slug_template', models.CharField(help_text='URL slug pattern, e.g. {sehir}-{sektor}-qr-menu', max_length=300, verbose_name='Slug template')),
-                ('title_template', models.CharField(help_text='Page title pattern with variable placeholders', max_length=300, verbose_name='Title template')),
-                ('description_template', models.TextField(help_text='Meta description pattern with variable placeholders', verbose_name='Description template')),
-                ('content_template', models.TextField(help_text='Page content template with variable placeholders', verbose_name='Content template')),
-                ('schema_type', models.CharField(choices=[('LocalBusiness', 'Local Business'), ('Restaurant', 'Restaurant'), ('CafeOrCoffeeShop', 'Cafe or Coffee Shop'), ('BarOrPub', 'Bar or Pub'), ('FoodEstablishment', 'Food Establishment')], default='Restaurant', help_text='Structured data type for generated pages', max_length=50, verbose_name='Schema.org type')),
-                ('is_active', models.BooleanField(default=True, help_text='Whether this template is available for page generation', verbose_name='Is active')),
-                ('quality_threshold', models.IntegerField(default=60, help_text='Minimum SEO score required to publish generated pages', verbose_name='Quality threshold')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="Template name for internal reference",
+                        max_length=200,
+                        verbose_name="Name",
+                    ),
+                ),
+                (
+                    "slug_template",
+                    models.CharField(
+                        help_text="URL slug pattern, e.g. {sehir}-{sektor}-qr-menu",
+                        max_length=300,
+                        verbose_name="Slug template",
+                    ),
+                ),
+                (
+                    "title_template",
+                    models.CharField(
+                        help_text="Page title pattern with variable placeholders",
+                        max_length=300,
+                        verbose_name="Title template",
+                    ),
+                ),
+                (
+                    "description_template",
+                    models.TextField(
+                        help_text="Meta description pattern with variable placeholders",
+                        verbose_name="Description template",
+                    ),
+                ),
+                (
+                    "content_template",
+                    models.TextField(
+                        help_text="Page content template with variable placeholders",
+                        verbose_name="Content template",
+                    ),
+                ),
+                (
+                    "schema_type",
+                    models.CharField(
+                        choices=[
+                            ("LocalBusiness", "Local Business"),
+                            ("Restaurant", "Restaurant"),
+                            ("CafeOrCoffeeShop", "Cafe or Coffee Shop"),
+                            ("BarOrPub", "Bar or Pub"),
+                            ("FoodEstablishment", "Food Establishment"),
+                        ],
+                        default="Restaurant",
+                        help_text="Structured data type for generated pages",
+                        max_length=50,
+                        verbose_name="Schema.org type",
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Whether this template is available for page generation",
+                        verbose_name="Is active",
+                    ),
+                ),
+                (
+                    "quality_threshold",
+                    models.IntegerField(
+                        default=60,
+                        help_text="Minimum SEO score required to publish generated pages",
+                        verbose_name="Quality threshold",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'pSEO Template',
-                'verbose_name_plural': 'pSEO Templates',
-                'db_table': 'seo_pseo_templates',
-                'ordering': ['-created_at'],
+                "verbose_name": "pSEO Template",
+                "verbose_name_plural": "pSEO Templates",
+                "db_table": "seo_pseo_templates",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='TXTFileConfig',
+            name="TXTFileConfig",
             fields=[
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file_type', models.CharField(choices=[('robots', 'robots.txt'), ('humans', 'humans.txt'), ('security', 'security.txt'), ('ads', 'ads.txt'), ('llms', 'llms.txt')], help_text='Type of TXT file to serve', max_length=20, unique=True, verbose_name='File type')),
-                ('content', models.TextField(blank=True, help_text='File content (raw text)', verbose_name='Content')),
-                ('is_active', models.BooleanField(default=True, help_text='Whether this file is actively served', verbose_name='Is active')),
-                ('auto_generate', models.BooleanField(default=True, help_text='Whether to auto-generate content from site data', verbose_name='Auto generate')),
-                ('last_generated', models.DateTimeField(blank=True, help_text='When the content was last auto-generated', null=True, verbose_name='Last generated')),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "file_type",
+                    models.CharField(
+                        choices=[
+                            ("robots", "robots.txt"),
+                            ("humans", "humans.txt"),
+                            ("security", "security.txt"),
+                            ("ads", "ads.txt"),
+                            ("llms", "llms.txt"),
+                        ],
+                        help_text="Type of TXT file to serve",
+                        max_length=20,
+                        unique=True,
+                        verbose_name="File type",
+                    ),
+                ),
+                (
+                    "content",
+                    models.TextField(
+                        blank=True,
+                        help_text="File content (raw text)",
+                        verbose_name="Content",
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Whether this file is actively served",
+                        verbose_name="Is active",
+                    ),
+                ),
+                (
+                    "auto_generate",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Whether to auto-generate content from site data",
+                        verbose_name="Auto generate",
+                    ),
+                ),
+                (
+                    "last_generated",
+                    models.DateTimeField(
+                        blank=True,
+                        help_text="When the content was last auto-generated",
+                        null=True,
+                        verbose_name="Last generated",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'TXT File Config',
-                'verbose_name_plural': 'TXT File Configs',
-                'db_table': 'seo_txt_file_configs',
-                'ordering': ['file_type'],
+                "verbose_name": "TXT File Config",
+                "verbose_name_plural": "TXT File Configs",
+                "db_table": "seo_txt_file_configs",
+                "ordering": ["file_type"],
             },
         ),
         migrations.CreateModel(
-            name='AuthorProfile',
+            name="AuthorProfile",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('bio', models.TextField(blank=True, help_text='Author biography for display and structured data', verbose_name='Biography')),
-                ('avatar', models.ImageField(blank=True, help_text='Author profile photo', null=True, upload_to='seo/authors/', verbose_name='Avatar')),
-                ('website', models.URLField(blank=True, help_text='Author personal website URL', max_length=500, verbose_name='Website')),
-                ('social_links', models.JSONField(blank=True, default=dict, help_text='Social media links: {"twitter": "", "linkedin": "", "github": ""}', verbose_name='Social links')),
-                ('expertise', models.JSONField(blank=True, default=list, help_text='List of expertise areas, e.g. ["SEO", "Digital Marketing"]', verbose_name='Expertise')),
-                ('is_verified', models.BooleanField(default=False, help_text='Whether this author has been verified', verbose_name='Is verified')),
-                ('user', models.OneToOneField(help_text='User account linked to this author profile', on_delete=django.db.models.deletion.CASCADE, related_name='author_profile', to=settings.AUTH_USER_MODEL, verbose_name='User')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "bio",
+                    models.TextField(
+                        blank=True,
+                        help_text="Author biography for display and structured data",
+                        verbose_name="Biography",
+                    ),
+                ),
+                (
+                    "avatar",
+                    models.ImageField(
+                        blank=True,
+                        help_text="Author profile photo",
+                        null=True,
+                        upload_to="seo/authors/",
+                        verbose_name="Avatar",
+                    ),
+                ),
+                (
+                    "website",
+                    models.URLField(
+                        blank=True,
+                        help_text="Author personal website URL",
+                        max_length=500,
+                        verbose_name="Website",
+                    ),
+                ),
+                (
+                    "social_links",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text='Social media links: {"twitter": "", "linkedin": "", "github": ""}',
+                        verbose_name="Social links",
+                    ),
+                ),
+                (
+                    "expertise",
+                    models.JSONField(
+                        blank=True,
+                        default=list,
+                        help_text='List of expertise areas, e.g. ["SEO", "Digital Marketing"]',
+                        verbose_name="Expertise",
+                    ),
+                ),
+                (
+                    "is_verified",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Whether this author has been verified",
+                        verbose_name="Is verified",
+                    ),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        help_text="User account linked to this author profile",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="author_profile",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="User",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Author Profile',
-                'verbose_name_plural': 'Author Profiles',
-                'db_table': 'seo_author_profiles',
-                'ordering': ['-created_at'],
+                "verbose_name": "Author Profile",
+                "verbose_name_plural": "Author Profiles",
+                "db_table": "seo_author_profiles",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='BrokenLink',
+            name="BrokenLink",
             fields=[
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('source_url', models.URLField(help_text='URL of the page containing the broken link', max_length=500, verbose_name='Source URL')),
-                ('target_url', models.URLField(help_text='The broken destination URL', max_length=500, verbose_name='Target URL')),
-                ('status_code', models.IntegerField(help_text='HTTP status code returned (e.g. 404, 500)', verbose_name='Status code')),
-                ('source_page', models.CharField(blank=True, help_text='Page path where the broken link was found', max_length=500, verbose_name='Source page')),
-                ('link_text', models.CharField(blank=True, help_text='Anchor text of the broken link', max_length=300, verbose_name='Link text')),
-                ('first_detected', models.DateTimeField(auto_now_add=True, help_text='When this broken link was first discovered', verbose_name='First detected')),
-                ('last_checked', models.DateTimeField(auto_now=True, help_text='When this broken link was last verified', verbose_name='Last checked')),
-                ('check_count', models.PositiveIntegerField(default=1, help_text='Number of times this link has been checked', verbose_name='Check count')),
-                ('is_resolved', models.BooleanField(default=False, help_text='Whether this broken link has been fixed', verbose_name='Is resolved')),
-                ('resolved_at', models.DateTimeField(blank=True, help_text='When this broken link was resolved', null=True, verbose_name='Resolved at')),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "source_url",
+                    models.URLField(
+                        help_text="URL of the page containing the broken link",
+                        max_length=500,
+                        verbose_name="Source URL",
+                    ),
+                ),
+                (
+                    "target_url",
+                    models.URLField(
+                        help_text="The broken destination URL",
+                        max_length=500,
+                        verbose_name="Target URL",
+                    ),
+                ),
+                (
+                    "status_code",
+                    models.IntegerField(
+                        help_text="HTTP status code returned (e.g. 404, 500)",
+                        verbose_name="Status code",
+                    ),
+                ),
+                (
+                    "source_page",
+                    models.CharField(
+                        blank=True,
+                        help_text="Page path where the broken link was found",
+                        max_length=500,
+                        verbose_name="Source page",
+                    ),
+                ),
+                (
+                    "link_text",
+                    models.CharField(
+                        blank=True,
+                        help_text="Anchor text of the broken link",
+                        max_length=300,
+                        verbose_name="Link text",
+                    ),
+                ),
+                (
+                    "first_detected",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="When this broken link was first discovered",
+                        verbose_name="First detected",
+                    ),
+                ),
+                (
+                    "last_checked",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="When this broken link was last verified",
+                        verbose_name="Last checked",
+                    ),
+                ),
+                (
+                    "check_count",
+                    models.PositiveIntegerField(
+                        default=1,
+                        help_text="Number of times this link has been checked",
+                        verbose_name="Check count",
+                    ),
+                ),
+                (
+                    "is_resolved",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Whether this broken link has been fixed",
+                        verbose_name="Is resolved",
+                    ),
+                ),
+                (
+                    "resolved_at",
+                    models.DateTimeField(
+                        blank=True,
+                        help_text="When this broken link was resolved",
+                        null=True,
+                        verbose_name="Resolved at",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Broken Link',
-                'verbose_name_plural': 'Broken Links',
-                'db_table': 'seo_broken_links',
-                'ordering': ['-first_detected'],
-                'indexes': [models.Index(fields=['is_resolved'], name='seo_brokenlink_resolved_idx'), models.Index(fields=['source_url'], name='seo_brokenlink_source_idx')],
+                "verbose_name": "Broken Link",
+                "verbose_name_plural": "Broken Links",
+                "db_table": "seo_broken_links",
+                "ordering": ["-first_detected"],
+                "indexes": [
+                    models.Index(
+                        fields=["is_resolved"], name="seo_brokenlink_resolved_idx"
+                    ),
+                    models.Index(
+                        fields=["source_url"], name="seo_brokenlink_source_idx"
+                    ),
+                ],
             },
         ),
         migrations.CreateModel(
-            name='PSEOPage',
+            name="PSEOPage",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('meta_title', models.CharField(blank=True, help_text='Page title for search engines (max 70 chars)', max_length=70, verbose_name='Meta title')),
-                ('meta_description', models.CharField(blank=True, help_text='Page description for search engines (max 160 chars)', max_length=160, verbose_name='Meta description')),
-                ('meta_keywords', models.CharField(blank=True, help_text='Comma-separated keywords', max_length=255, verbose_name='Meta keywords')),
-                ('og_title', models.CharField(blank=True, help_text='Open Graph title for social sharing', max_length=70, verbose_name='OG title')),
-                ('og_description', models.CharField(blank=True, help_text='Open Graph description for social sharing', max_length=200, verbose_name='OG description')),
-                ('og_image', models.ImageField(blank=True, help_text='Open Graph image (recommended 1200x630)', null=True, upload_to='seo/og/', verbose_name='OG image')),
-                ('og_type', models.CharField(default='website', help_text='Open Graph type (e.g. website, article)', max_length=50, verbose_name='OG type')),
-                ('twitter_card', models.CharField(choices=[('summary', 'Summary'), ('summary_large_image', 'Summary Large Image'), ('player', 'Player'), ('app', 'App')], default='summary_large_image', help_text='Twitter Card display type', max_length=20, verbose_name='Twitter card')),
-                ('twitter_title', models.CharField(blank=True, help_text='Title for Twitter Card', max_length=70, verbose_name='Twitter title')),
-                ('twitter_description', models.CharField(blank=True, help_text='Description for Twitter Card', max_length=200, verbose_name='Twitter description')),
-                ('twitter_image', models.ImageField(blank=True, help_text='Image for Twitter Card', null=True, upload_to='seo/twitter/', verbose_name='Twitter image')),
-                ('canonical_url', models.URLField(blank=True, help_text='Canonical URL to prevent duplicate content', max_length=500, verbose_name='Canonical URL')),
-                ('robots_index', models.BooleanField(default=True, help_text='Allow search engines to index this page', verbose_name='Robots index')),
-                ('robots_follow', models.BooleanField(default=True, help_text='Allow search engines to follow links on this page', verbose_name='Robots follow')),
-                ('robots_extra', models.JSONField(blank=True, default=list, help_text='Additional robots directives (e.g. noarchive, nosnippet)', verbose_name='Robots extra directives')),
-                ('sitemap_include', models.BooleanField(default=True, help_text='Whether to include this page in the XML sitemap', verbose_name='Include in sitemap')),
-                ('sitemap_priority', models.DecimalField(decimal_places=1, default=Decimal('0.5'), help_text='Priority in sitemap (0.0 to 1.0)', max_digits=2, verbose_name='Sitemap priority')),
-                ('sitemap_changefreq', models.CharField(choices=[('always', 'Always'), ('hourly', 'Hourly'), ('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly'), ('yearly', 'Yearly'), ('never', 'Never')], default='weekly', help_text='Expected page update frequency', max_length=10, verbose_name='Sitemap change frequency')),
-                ('seo_score', models.IntegerField(default=0, help_text='Calculated SEO quality score (0-100)', verbose_name='SEO score')),
-                ('seo_suggestions', models.JSONField(blank=True, default=dict, help_text='Auto-generated improvement suggestions', verbose_name='SEO suggestions')),
-                ('structured_data', models.JSONField(blank=True, default=dict, help_text='Custom JSON-LD structured data override', verbose_name='Structured data')),
-                ('focus_keyword', models.CharField(blank=True, help_text='Primary keyword to optimize for', max_length=100, verbose_name='Focus keyword')),
-                ('last_seo_analysis', models.DateTimeField(blank=True, help_text='Timestamp of the last SEO score calculation', null=True, verbose_name='Last SEO analysis')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('slug', models.SlugField(help_text='URL slug for this page', max_length=300, unique=True, verbose_name='Slug')),
-                ('variables', models.JSONField(blank=True, default=dict, help_text='Template variable values used for rendering', verbose_name='Variables')),
-                ('rendered_title', models.CharField(blank=True, help_text='Rendered page title from template', max_length=300, verbose_name='Rendered title')),
-                ('rendered_description', models.TextField(blank=True, help_text='Rendered meta description from template', verbose_name='Rendered description')),
-                ('rendered_content', models.TextField(blank=True, help_text='Rendered page body from template', verbose_name='Rendered content')),
-                ('quality_score', models.IntegerField(default=0, help_text='Content quality score (0-100)', verbose_name='Quality score')),
-                ('is_published', models.BooleanField(default=False, help_text='Whether this page is publicly visible', verbose_name='Is published')),
-                ('published_at', models.DateTimeField(blank=True, help_text='When this page was first published', null=True, verbose_name='Published at')),
-                ('view_count', models.PositiveIntegerField(default=0, help_text='Number of page views', verbose_name='View count')),
-                ('template', models.ForeignKey(help_text='Source template used to generate this page', on_delete=django.db.models.deletion.CASCADE, related_name='pages', to='seo.pseotemplate', verbose_name='Template')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "meta_title",
+                    models.CharField(
+                        blank=True,
+                        help_text="Page title for search engines (max 70 chars)",
+                        max_length=70,
+                        verbose_name="Meta title",
+                    ),
+                ),
+                (
+                    "meta_description",
+                    models.CharField(
+                        blank=True,
+                        help_text="Page description for search engines (max 160 chars)",
+                        max_length=160,
+                        verbose_name="Meta description",
+                    ),
+                ),
+                (
+                    "meta_keywords",
+                    models.CharField(
+                        blank=True,
+                        help_text="Comma-separated keywords",
+                        max_length=255,
+                        verbose_name="Meta keywords",
+                    ),
+                ),
+                (
+                    "og_title",
+                    models.CharField(
+                        blank=True,
+                        help_text="Open Graph title for social sharing",
+                        max_length=70,
+                        verbose_name="OG title",
+                    ),
+                ),
+                (
+                    "og_description",
+                    models.CharField(
+                        blank=True,
+                        help_text="Open Graph description for social sharing",
+                        max_length=200,
+                        verbose_name="OG description",
+                    ),
+                ),
+                (
+                    "og_image",
+                    models.ImageField(
+                        blank=True,
+                        help_text="Open Graph image (recommended 1200x630)",
+                        null=True,
+                        upload_to="seo/og/",
+                        verbose_name="OG image",
+                    ),
+                ),
+                (
+                    "og_type",
+                    models.CharField(
+                        default="website",
+                        help_text="Open Graph type (e.g. website, article)",
+                        max_length=50,
+                        verbose_name="OG type",
+                    ),
+                ),
+                (
+                    "twitter_card",
+                    models.CharField(
+                        choices=[
+                            ("summary", "Summary"),
+                            ("summary_large_image", "Summary Large Image"),
+                            ("player", "Player"),
+                            ("app", "App"),
+                        ],
+                        default="summary_large_image",
+                        help_text="Twitter Card display type",
+                        max_length=20,
+                        verbose_name="Twitter card",
+                    ),
+                ),
+                (
+                    "twitter_title",
+                    models.CharField(
+                        blank=True,
+                        help_text="Title for Twitter Card",
+                        max_length=70,
+                        verbose_name="Twitter title",
+                    ),
+                ),
+                (
+                    "twitter_description",
+                    models.CharField(
+                        blank=True,
+                        help_text="Description for Twitter Card",
+                        max_length=200,
+                        verbose_name="Twitter description",
+                    ),
+                ),
+                (
+                    "twitter_image",
+                    models.ImageField(
+                        blank=True,
+                        help_text="Image for Twitter Card",
+                        null=True,
+                        upload_to="seo/twitter/",
+                        verbose_name="Twitter image",
+                    ),
+                ),
+                (
+                    "canonical_url",
+                    models.URLField(
+                        blank=True,
+                        help_text="Canonical URL to prevent duplicate content",
+                        max_length=500,
+                        verbose_name="Canonical URL",
+                    ),
+                ),
+                (
+                    "robots_index",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Allow search engines to index this page",
+                        verbose_name="Robots index",
+                    ),
+                ),
+                (
+                    "robots_follow",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Allow search engines to follow links on this page",
+                        verbose_name="Robots follow",
+                    ),
+                ),
+                (
+                    "robots_extra",
+                    models.JSONField(
+                        blank=True,
+                        default=list,
+                        help_text="Additional robots directives (e.g. noarchive, nosnippet)",
+                        verbose_name="Robots extra directives",
+                    ),
+                ),
+                (
+                    "sitemap_include",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Whether to include this page in the XML sitemap",
+                        verbose_name="Include in sitemap",
+                    ),
+                ),
+                (
+                    "sitemap_priority",
+                    models.DecimalField(
+                        decimal_places=1,
+                        default=Decimal("0.5"),
+                        help_text="Priority in sitemap (0.0 to 1.0)",
+                        max_digits=2,
+                        verbose_name="Sitemap priority",
+                    ),
+                ),
+                (
+                    "sitemap_changefreq",
+                    models.CharField(
+                        choices=[
+                            ("always", "Always"),
+                            ("hourly", "Hourly"),
+                            ("daily", "Daily"),
+                            ("weekly", "Weekly"),
+                            ("monthly", "Monthly"),
+                            ("yearly", "Yearly"),
+                            ("never", "Never"),
+                        ],
+                        default="weekly",
+                        help_text="Expected page update frequency",
+                        max_length=10,
+                        verbose_name="Sitemap change frequency",
+                    ),
+                ),
+                (
+                    "seo_score",
+                    models.IntegerField(
+                        default=0,
+                        help_text="Calculated SEO quality score (0-100)",
+                        verbose_name="SEO score",
+                    ),
+                ),
+                (
+                    "seo_suggestions",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text="Auto-generated improvement suggestions",
+                        verbose_name="SEO suggestions",
+                    ),
+                ),
+                (
+                    "structured_data",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text="Custom JSON-LD structured data override",
+                        verbose_name="Structured data",
+                    ),
+                ),
+                (
+                    "focus_keyword",
+                    models.CharField(
+                        blank=True,
+                        help_text="Primary keyword to optimize for",
+                        max_length=100,
+                        verbose_name="Focus keyword",
+                    ),
+                ),
+                (
+                    "last_seo_analysis",
+                    models.DateTimeField(
+                        blank=True,
+                        help_text="Timestamp of the last SEO score calculation",
+                        null=True,
+                        verbose_name="Last SEO analysis",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "slug",
+                    models.SlugField(
+                        help_text="URL slug for this page",
+                        max_length=300,
+                        unique=True,
+                        verbose_name="Slug",
+                    ),
+                ),
+                (
+                    "variables",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text="Template variable values used for rendering",
+                        verbose_name="Variables",
+                    ),
+                ),
+                (
+                    "rendered_title",
+                    models.CharField(
+                        blank=True,
+                        help_text="Rendered page title from template",
+                        max_length=300,
+                        verbose_name="Rendered title",
+                    ),
+                ),
+                (
+                    "rendered_description",
+                    models.TextField(
+                        blank=True,
+                        help_text="Rendered meta description from template",
+                        verbose_name="Rendered description",
+                    ),
+                ),
+                (
+                    "rendered_content",
+                    models.TextField(
+                        blank=True,
+                        help_text="Rendered page body from template",
+                        verbose_name="Rendered content",
+                    ),
+                ),
+                (
+                    "quality_score",
+                    models.IntegerField(
+                        default=0,
+                        help_text="Content quality score (0-100)",
+                        verbose_name="Quality score",
+                    ),
+                ),
+                (
+                    "is_published",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Whether this page is publicly visible",
+                        verbose_name="Is published",
+                    ),
+                ),
+                (
+                    "published_at",
+                    models.DateTimeField(
+                        blank=True,
+                        help_text="When this page was first published",
+                        null=True,
+                        verbose_name="Published at",
+                    ),
+                ),
+                (
+                    "view_count",
+                    models.PositiveIntegerField(
+                        default=0,
+                        help_text="Number of page views",
+                        verbose_name="View count",
+                    ),
+                ),
+                (
+                    "template",
+                    models.ForeignKey(
+                        help_text="Source template used to generate this page",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="pages",
+                        to="seo.pseotemplate",
+                        verbose_name="Template",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'pSEO Page',
-                'verbose_name_plural': 'pSEO Pages',
-                'db_table': 'seo_pseo_pages',
-                'ordering': ['-created_at'],
-                'indexes': [models.Index(fields=['is_published', 'deleted_at'], name='seo_pseopage_pub_del_idx'), models.Index(fields=['slug'], name='seo_pseopage_slug_idx')],
+                "verbose_name": "pSEO Page",
+                "verbose_name_plural": "pSEO Pages",
+                "db_table": "seo_pseo_pages",
+                "ordering": ["-created_at"],
+                "indexes": [
+                    models.Index(
+                        fields=["is_published", "deleted_at"],
+                        name="seo_pseopage_pub_del_idx",
+                    ),
+                    models.Index(fields=["slug"], name="seo_pseopage_slug_idx"),
+                ],
             },
         ),
         migrations.CreateModel(
-            name='Redirect',
+            name="Redirect",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('source_path', models.CharField(db_index=True, help_text='Original URL path to redirect from (e.g. /old-page)', max_length=500, unique=True, verbose_name='Source path')),
-                ('target_path', models.CharField(help_text='Destination URL path to redirect to (e.g. /new-page)', max_length=500, verbose_name='Target path')),
-                ('redirect_type', models.IntegerField(choices=[(301, 'Permanent (301)'), (302, 'Temporary (302)'), (307, 'Temporary Strict (307)'), (308, 'Permanent Strict (308)')], default=301, help_text='HTTP redirect status code', verbose_name='Redirect type')),
-                ('is_active', models.BooleanField(default=True, help_text='Whether this redirect is currently active', verbose_name='Is active')),
-                ('hit_count', models.PositiveIntegerField(default=0, help_text='Number of times this redirect has been triggered', verbose_name='Hit count')),
-                ('last_hit', models.DateTimeField(blank=True, help_text='Timestamp of the last redirect hit', null=True, verbose_name='Last hit')),
-                ('note', models.TextField(blank=True, help_text='Internal note about why this redirect exists', verbose_name='Note')),
-                ('created_by', models.ForeignKey(blank=True, help_text='User who created this redirect rule', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='created_redirects', to=settings.AUTH_USER_MODEL, verbose_name='Created by')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "source_path",
+                    models.CharField(
+                        db_index=True,
+                        help_text="Original URL path to redirect from (e.g. /old-page)",
+                        max_length=500,
+                        unique=True,
+                        verbose_name="Source path",
+                    ),
+                ),
+                (
+                    "target_path",
+                    models.CharField(
+                        help_text="Destination URL path to redirect to (e.g. /new-page)",
+                        max_length=500,
+                        verbose_name="Target path",
+                    ),
+                ),
+                (
+                    "redirect_type",
+                    models.IntegerField(
+                        choices=[
+                            (301, "Permanent (301)"),
+                            (302, "Temporary (302)"),
+                            (307, "Temporary Strict (307)"),
+                            (308, "Permanent Strict (308)"),
+                        ],
+                        default=301,
+                        help_text="HTTP redirect status code",
+                        verbose_name="Redirect type",
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Whether this redirect is currently active",
+                        verbose_name="Is active",
+                    ),
+                ),
+                (
+                    "hit_count",
+                    models.PositiveIntegerField(
+                        default=0,
+                        help_text="Number of times this redirect has been triggered",
+                        verbose_name="Hit count",
+                    ),
+                ),
+                (
+                    "last_hit",
+                    models.DateTimeField(
+                        blank=True,
+                        help_text="Timestamp of the last redirect hit",
+                        null=True,
+                        verbose_name="Last hit",
+                    ),
+                ),
+                (
+                    "note",
+                    models.TextField(
+                        blank=True,
+                        help_text="Internal note about why this redirect exists",
+                        verbose_name="Note",
+                    ),
+                ),
+                (
+                    "created_by",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="User who created this redirect rule",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="created_redirects",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Created by",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Redirect',
-                'verbose_name_plural': 'Redirects',
-                'db_table': 'seo_redirects',
-                'ordering': ['-created_at'],
-                'indexes': [models.Index(fields=['source_path'], name='seo_redirect_source_idx'), models.Index(fields=['is_active', 'deleted_at'], name='seo_redirect_active_del_idx')],
+                "verbose_name": "Redirect",
+                "verbose_name_plural": "Redirects",
+                "db_table": "seo_redirects",
+                "ordering": ["-created_at"],
+                "indexes": [
+                    models.Index(
+                        fields=["source_path"], name="seo_redirect_source_idx"
+                    ),
+                    models.Index(
+                        fields=["is_active", "deleted_at"],
+                        name="seo_redirect_active_del_idx",
+                    ),
+                ],
             },
         ),
     ]

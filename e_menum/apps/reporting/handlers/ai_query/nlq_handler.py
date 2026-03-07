@@ -31,7 +31,7 @@ from shared.utils.exceptions import AppException
 logger = logging.getLogger(__name__)
 
 
-@register_handler('RPT-AIQ-001')
+@register_handler("RPT-AIQ-001")
 class NLQHandler(BaseReportHandler):
     """
     Report handler for natural language data queries.
@@ -43,7 +43,7 @@ class NLQHandler(BaseReportHandler):
         question (str): Natural language question (required)
     """
 
-    feature_key = 'RPT-AIQ-001'
+    feature_key = "RPT-AIQ-001"
 
     def generate(self, org_id: str, parameters: dict) -> dict:
         """
@@ -61,15 +61,15 @@ class NLQHandler(BaseReportHandler):
         """
         from apps.reporting.ai.nlq_service import NLQService
 
-        question = parameters.get('question', '').strip()
+        question = parameters.get("question", "").strip()
         if not question:
             raise AppException(
-                code='VALIDATION_ERROR',
+                code="VALIDATION_ERROR",
                 message='The "question" parameter is required for NLQ reports.',
                 status_code=400,
             )
 
-        user = self._context.get('user')
+        user = self._context.get("user")
 
         service = NLQService()
         result = service.process_query(
@@ -82,7 +82,7 @@ class NLQHandler(BaseReportHandler):
 
     def get_required_permissions(self) -> List[str]:
         """Return required permissions for this report."""
-        return ['reporting.view']
+        return ["reporting.view"]
 
     def validate_parameters(self, parameters: dict) -> dict:
         """
@@ -99,16 +99,16 @@ class NLQHandler(BaseReportHandler):
         """
         validated = super().validate_parameters(parameters)
 
-        question = validated.get('question', '')
+        question = validated.get("question", "")
         if not isinstance(question, str) or not question.strip():
             raise AppException(
-                code='VALIDATION_ERROR',
+                code="VALIDATION_ERROR",
                 message='A non-empty "question" string is required.',
                 status_code=400,
             )
 
         # Limit question length to prevent abuse
-        validated['question'] = question.strip()[:500]
+        validated["question"] = question.strip()[:500]
 
         return validated
 
@@ -118,7 +118,7 @@ class NLQHandler(BaseReportHandler):
 
     def get_supported_formats(self) -> List[str]:
         """NLQ results are JSON only."""
-        return ['JSON']
+        return ["JSON"]
 
     def get_cache_ttl(self) -> int:
         """NLQ results are not cached (each query is unique)."""

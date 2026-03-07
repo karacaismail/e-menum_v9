@@ -12,4 +12,4 @@ This app provides analytics and reporting functionality for the E-Menum platform
 Note: This is a stub module for future implementation.
 """
 
-default_app_config = 'apps.analytics.apps.AnalyticsConfig'
+default_app_config = "apps.analytics.apps.AnalyticsConfig"

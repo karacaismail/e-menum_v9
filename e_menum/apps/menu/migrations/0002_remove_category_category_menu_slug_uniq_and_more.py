@@ -4,51 +4,50 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('core', '0002_remove_branch_branch_org_slug_uniq_and_more'),
-        ('menu', '0001_initial'),
+        ("core", "0002_remove_branch_branch_org_slug_uniq_and_more"),
+        ("menu", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveConstraint(
-            model_name='category',
-            name='category_menu_slug_uniq',
+            model_name="category",
+            name="category_menu_slug_uniq",
         ),
         migrations.RemoveConstraint(
-            model_name='menu',
-            name='menu_org_slug_uniq',
+            model_name="menu",
+            name="menu_org_slug_uniq",
         ),
         migrations.RemoveConstraint(
-            model_name='product',
-            name='product_category_slug_uniq',
+            model_name="product",
+            name="product_category_slug_uniq",
         ),
         migrations.RemoveConstraint(
-            model_name='productallergen',
-            name='prod_allergen_prod_all_uniq',
+            model_name="productallergen",
+            name="prod_allergen_prod_all_uniq",
         ),
         migrations.RemoveConstraint(
-            model_name='theme',
-            name='theme_org_slug_uniq',
+            model_name="theme",
+            name="theme_org_slug_uniq",
         ),
         migrations.AlterUniqueTogether(
-            name='category',
-            unique_together={('menu', 'slug')},
+            name="category",
+            unique_together={("menu", "slug")},
         ),
         migrations.AlterUniqueTogether(
-            name='menu',
-            unique_together={('organization', 'slug')},
+            name="menu",
+            unique_together={("organization", "slug")},
         ),
         migrations.AlterUniqueTogether(
-            name='product',
-            unique_together={('category', 'slug')},
+            name="product",
+            unique_together={("category", "slug")},
         ),
         migrations.AlterUniqueTogether(
-            name='productallergen',
-            unique_together={('product', 'allergen')},
+            name="productallergen",
+            unique_together={("product", "allergen")},
         ),
         migrations.AlterUniqueTogether(
-            name='theme',
-            unique_together={('organization', 'slug')},
+            name="theme",
+            unique_together={("organization", "slug")},
         ),
     ]

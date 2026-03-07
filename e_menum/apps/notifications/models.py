@@ -103,24 +103,24 @@ class Notification(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='notifications',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this notification belongs to')
+        related_name="notifications",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this notification belongs to"),
     )
 
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='notifications',
-        verbose_name=_('User'),
-        help_text=_('User who is the recipient of this notification')
+        related_name="notifications",
+        verbose_name=_("User"),
+        help_text=_("User who is the recipient of this notification"),
     )
 
     notification_type = models.CharField(
@@ -128,8 +128,8 @@ class Notification(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=NotificationType.choices,
         default=NotificationType.GENERAL,
         db_index=True,
-        verbose_name=_('Notification type'),
-        help_text=_('Category of the notification')
+        verbose_name=_("Notification type"),
+        help_text=_("Category of the notification"),
     )
 
     status = models.CharField(
@@ -137,8 +137,8 @@ class Notification(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=NotificationStatus.choices,
         default=NotificationStatus.PENDING,
         db_index=True,
-        verbose_name=_('Status'),
-        help_text=_('Current delivery/read status of the notification')
+        verbose_name=_("Status"),
+        help_text=_("Current delivery/read status of the notification"),
     )
 
     priority = models.CharField(
@@ -146,95 +146,94 @@ class Notification(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=NotificationPriority.choices,
         default=NotificationPriority.NORMAL,
         db_index=True,
-        verbose_name=_('Priority'),
-        help_text=_('Priority level for ordering and urgency')
+        verbose_name=_("Priority"),
+        help_text=_("Priority level for ordering and urgency"),
     )
 
     channel = models.CharField(
         max_length=10,
         choices=NotificationChannel.choices,
         default=NotificationChannel.IN_APP,
-        verbose_name=_('Channel'),
-        help_text=_('Delivery channel for the notification')
+        verbose_name=_("Channel"),
+        help_text=_("Delivery channel for the notification"),
     )
 
     title = models.CharField(
         max_length=255,
-        verbose_name=_('Title'),
-        help_text=_('Short title or subject for the notification')
+        verbose_name=_("Title"),
+        help_text=_("Short title or subject for the notification"),
     )
 
     message = models.TextField(
-        verbose_name=_('Message'),
-        help_text=_('Full notification message content')
+        verbose_name=_("Message"), help_text=_("Full notification message content")
     )
 
     data = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Data'),
-        help_text=_('Additional context data (order_id, urls, etc.)')
+        verbose_name=_("Data"),
+        help_text=_("Additional context data (order_id, urls, etc.)"),
     )
 
     read_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Read at'),
-        help_text=_('When the notification was read/viewed by the user')
+        verbose_name=_("Read at"),
+        help_text=_("When the notification was read/viewed by the user"),
     )
 
     sent_at = models.DateTimeField(
         null=True,
         blank=True,
         db_index=True,
-        verbose_name=_('Sent at'),
-        help_text=_('When the notification was sent to the delivery channel')
+        verbose_name=_("Sent at"),
+        help_text=_("When the notification was sent to the delivery channel"),
     )
 
     delivered_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Delivered at'),
-        help_text=_('When the notification was confirmed delivered')
+        verbose_name=_("Delivered at"),
+        help_text=_("When the notification was confirmed delivered"),
     )
 
     scheduled_for = models.DateTimeField(
         null=True,
         blank=True,
         db_index=True,
-        verbose_name=_('Scheduled for'),
-        help_text=_('Optional scheduled delivery time (null for immediate)')
+        verbose_name=_("Scheduled for"),
+        help_text=_("Optional scheduled delivery time (null for immediate)"),
     )
 
     expires_at = models.DateTimeField(
         null=True,
         blank=True,
         db_index=True,
-        verbose_name=_('Expires at'),
-        help_text=_('Optional expiration time after which notification is hidden')
+        verbose_name=_("Expires at"),
+        help_text=_("Optional expiration time after which notification is hidden"),
     )
 
     action_url = models.URLField(
         blank=True,
         null=True,
         max_length=500,
-        verbose_name=_('Action URL'),
-        help_text=_('Optional URL for click-through action')
+        verbose_name=_("Action URL"),
+        help_text=_("Optional URL for click-through action"),
     )
 
     image_url = models.URLField(
         blank=True,
         null=True,
         max_length=500,
-        verbose_name=_('Image URL'),
-        help_text=_('Optional image URL for rich notifications')
+        verbose_name=_("Image URL"),
+        help_text=_("Optional image URL for rich notifications"),
     )
 
     metadata = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Metadata'),
-        help_text=_('Additional metadata for tracking and analytics')
+        verbose_name=_("Metadata"),
+        help_text=_("Additional metadata for tracking and analytics"),
     )
 
     # Managers
@@ -242,30 +241,29 @@ class Notification(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'notifications'
-        verbose_name = _('Notification')
-        verbose_name_plural = _('Notifications')
-        ordering = ['-created_at']
+        db_table = "notifications"
+        verbose_name = _("Notification")
+        verbose_name_plural = _("Notifications")
+        ordering = ["-created_at"]
         indexes = [
             models.Index(
-                fields=['organization', 'user', 'status'],
-                name='notif_org_user_status_idx'
+                fields=["organization", "user", "status"],
+                name="notif_org_user_status_idx",
             ),
             models.Index(
-                fields=['organization', 'status', 'deleted_at'],
-                name='notif_org_status_deleted_idx'
+                fields=["organization", "status", "deleted_at"],
+                name="notif_org_status_deleted_idx",
             ),
             models.Index(
-                fields=['user', 'status', 'created_at'],
-                name='notif_user_status_created_idx'
+                fields=["user", "status", "created_at"],
+                name="notif_user_status_created_idx",
             ),
             models.Index(
-                fields=['notification_type', 'created_at'],
-                name='notif_type_created_idx'
+                fields=["notification_type", "created_at"],
+                name="notif_type_created_idx",
             ),
             models.Index(
-                fields=['organization', 'notification_type'],
-                name='notif_org_type_idx'
+                fields=["organization", "notification_type"], name="notif_org_type_idx"
             ),
         ]
 
@@ -286,7 +284,7 @@ class Notification(TimeStampedMixin, SoftDeleteMixin, models.Model):
         return self.sent_at is not None or self.status in [
             NotificationStatus.SENT,
             NotificationStatus.DELIVERED,
-            NotificationStatus.READ
+            NotificationStatus.READ,
         ]
 
     @property
@@ -316,7 +314,7 @@ class Notification(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         self.read_at = timezone.now()
         self.status = NotificationStatus.READ
-        self.save(update_fields=['read_at', 'status', 'updated_at'])
+        self.save(update_fields=["read_at", "status", "updated_at"])
 
     def mark_as_sent(self) -> None:
         """
@@ -326,7 +324,7 @@ class Notification(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         self.sent_at = timezone.now()
         self.status = NotificationStatus.SENT
-        self.save(update_fields=['sent_at', 'status', 'updated_at'])
+        self.save(update_fields=["sent_at", "status", "updated_at"])
 
     def mark_as_delivered(self) -> None:
         """
@@ -336,7 +334,7 @@ class Notification(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         self.delivered_at = timezone.now()
         self.status = NotificationStatus.DELIVERED
-        self.save(update_fields=['delivered_at', 'status', 'updated_at'])
+        self.save(update_fields=["delivered_at", "status", "updated_at"])
 
     def mark_as_failed(self, error_message: str = None) -> None:
         """
@@ -347,9 +345,9 @@ class Notification(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         self.status = NotificationStatus.FAILED
         if error_message:
-            self.metadata['error_message'] = error_message
-            self.metadata['failed_at'] = timezone.now().isoformat()
-        self.save(update_fields=['status', 'metadata', 'updated_at'])
+            self.metadata["error_message"] = error_message
+            self.metadata["failed_at"] = timezone.now().isoformat()
+        self.save(update_fields=["status", "metadata", "updated_at"])
 
     def archive(self) -> None:
         """
@@ -358,7 +356,7 @@ class Notification(TimeStampedMixin, SoftDeleteMixin, models.Model):
         Sets the status to ARCHIVED for user-initiated archival.
         """
         self.status = NotificationStatus.ARCHIVED
-        self.save(update_fields=['status', 'updated_at'])
+        self.save(update_fields=["status", "updated_at"])
 
     def get_data(self, key: str, default=None):
         """
@@ -382,4 +380,4 @@ class Notification(TimeStampedMixin, SoftDeleteMixin, models.Model):
             value: The value to set
         """
         self.data[key] = value
-        self.save(update_fields=['data', 'updated_at'])
+        self.save(update_fields=["data", "updated_at"])

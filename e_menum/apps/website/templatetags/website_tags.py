@@ -18,15 +18,15 @@ def resolve_nav_url(url_value):
     Falls back to ``#`` when resolution fails.
     """
     if not url_value:
-        return '#'
+        return "#"
     # Raw path or full URL — pass through
-    if url_value.startswith('/') or url_value.startswith('http'):
+    if url_value.startswith("/") or url_value.startswith("http"):
         return url_value
     # Anchor-only
-    if url_value.startswith('#'):
+    if url_value.startswith("#"):
         return url_value
     # Try Django URL name
     try:
         return reverse(url_value)
     except NoReverseMatch:
-        return '#'
+        return "#"

@@ -53,15 +53,15 @@ logger = logging.getLogger(__name__)
 
 # Supported languages for STT/TTS
 SUPPORTED_LANGUAGES = {
-    'tr': 'Turkish',
-    'en': 'English',
+    "tr": "Turkish",
+    "en": "English",
 }
 
 # Maximum audio file size (10 MB)
 MAX_AUDIO_SIZE_BYTES = 10 * 1024 * 1024
 
 # TTS cache directory (relative to MEDIA_ROOT)
-TTS_CACHE_DIR = 'tts_cache'
+TTS_CACHE_DIR = "tts_cache"
 
 
 class VoiceQueryService:
@@ -80,6 +80,7 @@ class VoiceQueryService:
         """Lazy-load NLQ service."""
         if self._nlq_service is None:
             from apps.reporting.ai.nlq_service import NLQService
+
             self._nlq_service = NLQService()
         return self._nlq_service
 
@@ -90,7 +91,7 @@ class VoiceQueryService:
     def transcribe(
         self,
         audio_data: bytes,
-        language: str = 'tr',
+        language: str = "tr",
     ) -> str:
         """
         Transcribe audio data to text using an external STT API.
@@ -111,19 +112,20 @@ class VoiceQueryService:
             RuntimeError: If STT service is not configured
         """
         if not audio_data:
-            raise ValueError('Audio data is empty')
+            raise ValueError("Audio data is empty")
 
         if len(audio_data) > MAX_AUDIO_SIZE_BYTES:
             raise ValueError(
-                f'Audio data exceeds maximum size of '
-                f'{MAX_AUDIO_SIZE_BYTES // (1024 * 1024)} MB'
+                f"Audio data exceeds maximum size of "
+                f"{MAX_AUDIO_SIZE_BYTES // (1024 * 1024)} MB"
             )
 
         if language not in SUPPORTED_LANGUAGES:
             logger.warning(
-                'Unsupported language %s, falling back to Turkish', language,
+                "Unsupported language %s, falling back to Turkish",
+                language,
             )
-            language = 'tr'
+            language = "tr"
 
         # ─── INTEGRATION POINT: STT Provider ───
         # Replace this stub with your preferred STT provider.
@@ -156,23 +158,23 @@ class VoiceQueryService:
 
         stt_provider = self._get_stt_provider()
 
-        if stt_provider == 'openai':
+        if stt_provider == "openai":
             return self._transcribe_openai(audio_data, language)
-        elif stt_provider == 'google':
+        elif stt_provider == "google":
             return self._transcribe_google(audio_data, language)
         else:
             logger.warning(
-                'No STT provider configured. Set VOICE_STT_PROVIDER in settings.'
+                "No STT provider configured. Set VOICE_STT_PROVIDER in settings."
             )
             raise RuntimeError(
-                'Speech-to-text service is not configured. '
-                'Set VOICE_STT_PROVIDER in Django settings.'
+                "Speech-to-text service is not configured. "
+                "Set VOICE_STT_PROVIDER in Django settings."
             )
 
     def text_to_speech(
         self,
         text: str,
-        language: str = 'tr',
+        language: str = "tr",
     ) -> bytes:
         """
         Convert text to speech audio using an external TTS API.
@@ -192,10 +194,10 @@ class VoiceQueryService:
             RuntimeError: If TTS service is not configured
         """
         if not text or not text.strip():
-            raise ValueError('Text is empty')
+            raise ValueError("Text is empty")
 
         if language not in SUPPORTED_LANGUAGES:
-            language = 'tr'
+            language = "tr"
 
         # ─── INTEGRATION POINT: TTS Provider ───
         # Replace this stub with your preferred TTS provider.
@@ -229,17 +231,17 @@ class VoiceQueryService:
 
         tts_provider = self._get_tts_provider()
 
-        if tts_provider == 'openai':
+        if tts_provider == "openai":
             return self._tts_openai(text, language)
-        elif tts_provider == 'google':
+        elif tts_provider == "google":
             return self._tts_google(text, language)
         else:
             logger.warning(
-                'No TTS provider configured. Set VOICE_TTS_PROVIDER in settings.'
+                "No TTS provider configured. Set VOICE_TTS_PROVIDER in settings."
             )
             raise RuntimeError(
-                'Text-to-speech service is not configured. '
-                'Set VOICE_TTS_PROVIDER in Django settings.'
+                "Text-to-speech service is not configured. "
+                "Set VOICE_TTS_PROVIDER in Django settings."
             )
 
     def process_voice_query(
@@ -247,7 +249,7 @@ class VoiceQueryService:
         org_id,
         audio_data: bytes,
         user=None,
-        language: str = 'tr',
+        language: str = "tr",
     ) -> Dict[str, Any]:
         """
         Full voice query pipeline: audio -> STT -> NLQ -> report -> TTS.
@@ -272,30 +274,33 @@ class VoiceQueryService:
             text_query = self.transcribe(audio_data, language)
         except (ValueError, RuntimeError) as exc:
             logger.error(
-                'STT transcription failed: org=%s error=%s', org_id, exc,
+                "STT transcription failed: org=%s error=%s",
+                org_id,
+                exc,
             )
             return {
-                'text_query': '',
-                'report_data': None,
-                'answer_text': str(exc),
-                'audio_response_url': None,
-                'visualization_hint': 'text',
-                'confidence': 0.0,
+                "text_query": "",
+                "report_data": None,
+                "answer_text": str(exc),
+                "audio_response_url": None,
+                "visualization_hint": "text",
+                "confidence": 0.0,
             }
 
         if not text_query or not text_query.strip():
             return {
-                'text_query': '',
-                'report_data': None,
-                'answer_text': 'Could not understand the audio. Please try again.',
-                'audio_response_url': None,
-                'visualization_hint': 'text',
-                'confidence': 0.0,
+                "text_query": "",
+                "report_data": None,
+                "answer_text": "Could not understand the audio. Please try again.",
+                "audio_response_url": None,
+                "visualization_hint": "text",
+                "confidence": 0.0,
             }
 
         logger.info(
-            'Voice query transcribed: org=%s text=%r',
-            org_id, text_query[:80],
+            "Voice query transcribed: org=%s text=%r",
+            org_id,
+            text_query[:80],
         )
 
         # Step 2: Process through NLQ
@@ -307,17 +312,18 @@ class VoiceQueryService:
             )
         except Exception as exc:
             logger.error(
-                'NLQ processing failed for voice query: org=%s error=%s',
-                org_id, exc,
+                "NLQ processing failed for voice query: org=%s error=%s",
+                org_id,
+                exc,
             )
             nlq_result = {
-                'answer': 'An error occurred while processing your question.',
-                'data': None,
-                'visualization_hint': 'text',
-                'confidence': 0.0,
+                "answer": "An error occurred while processing your question.",
+                "data": None,
+                "visualization_hint": "text",
+                "confidence": 0.0,
             }
 
-        answer_text = nlq_result.get('answer', '')
+        answer_text = nlq_result.get("answer", "")
 
         # Step 3: Convert answer to speech (optional, non-blocking)
         audio_response_url = None
@@ -326,20 +332,22 @@ class VoiceQueryService:
             audio_response_url = self._save_tts_audio(audio_bytes, org_id)
         except (RuntimeError, ValueError) as exc:
             logger.info(
-                'TTS generation skipped (not configured or failed): %s', exc,
+                "TTS generation skipped (not configured or failed): %s",
+                exc,
             )
         except Exception as exc:
             logger.warning(
-                'TTS generation failed unexpectedly: %s', exc,
+                "TTS generation failed unexpectedly: %s",
+                exc,
             )
 
         return {
-            'text_query': text_query,
-            'report_data': nlq_result.get('data'),
-            'answer_text': answer_text,
-            'audio_response_url': audio_response_url,
-            'visualization_hint': nlq_result.get('visualization_hint', 'text'),
-            'confidence': nlq_result.get('confidence', 0.0),
+            "text_query": text_query,
+            "report_data": nlq_result.get("data"),
+            "answer_text": answer_text,
+            "audio_response_url": audio_response_url,
+            "visualization_hint": nlq_result.get("visualization_hint", "text"),
+            "confidence": nlq_result.get("confidence", 0.0),
         }
 
     # ─────────────────────────────────────────────────────────
@@ -349,12 +357,12 @@ class VoiceQueryService:
     @staticmethod
     def _get_stt_provider() -> str:
         """Get configured STT provider name from settings."""
-        return getattr(settings, 'VOICE_STT_PROVIDER', '')
+        return getattr(settings, "VOICE_STT_PROVIDER", "")
 
     @staticmethod
     def _get_tts_provider() -> str:
         """Get configured TTS provider name from settings."""
-        return getattr(settings, 'VOICE_TTS_PROVIDER', '')
+        return getattr(settings, "VOICE_TTS_PROVIDER", "")
 
     # ─────────────────────────────────────────────────────────
     # STT PROVIDER IMPLEMENTATIONS
@@ -375,23 +383,23 @@ class VoiceQueryService:
         try:
             import openai
         except ImportError:
-            raise RuntimeError('openai package is required for Whisper STT')
+            raise RuntimeError("openai package is required for Whisper STT")
 
-        api_key = getattr(settings, 'OPENAI_API_KEY', '')
+        api_key = getattr(settings, "OPENAI_API_KEY", "")
         if not api_key:
-            raise RuntimeError('OPENAI_API_KEY is not configured')
+            raise RuntimeError("OPENAI_API_KEY is not configured")
 
         client = openai.OpenAI(api_key=api_key)
 
         # Write audio to temporary file for the API
-        with tempfile.NamedTemporaryFile(suffix='.webm', delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(suffix=".webm", delete=False) as tmp:
             tmp.write(audio_data)
             tmp_path = tmp.name
 
         try:
-            with open(tmp_path, 'rb') as audio_file:
+            with open(tmp_path, "rb") as audio_file:
                 transcript = client.audio.transcriptions.create(
-                    model='whisper-1',
+                    model="whisper-1",
                     file=audio_file,
                     language=language,
                 )
@@ -414,24 +422,22 @@ class VoiceQueryService:
         try:
             from google.cloud import speech
         except ImportError:
-            raise RuntimeError(
-                'google-cloud-speech package is required for Google STT'
-            )
+            raise RuntimeError("google-cloud-speech package is required for Google STT")
 
         language_codes = {
-            'tr': 'tr-TR',
-            'en': 'en-US',
+            "tr": "tr-TR",
+            "en": "en-US",
         }
 
         client = speech.SpeechClient()
         audio = speech.RecognitionAudio(content=audio_data)
         config = speech.RecognitionConfig(
-            language_code=language_codes.get(language, 'tr-TR'),
+            language_code=language_codes.get(language, "tr-TR"),
             enable_automatic_punctuation=True,
         )
 
         response = client.recognize(config=config, audio=audio)
-        return ' '.join(
+        return " ".join(
             result.alternatives[0].transcript
             for result in response.results
             if result.alternatives
@@ -456,17 +462,17 @@ class VoiceQueryService:
         try:
             import openai
         except ImportError:
-            raise RuntimeError('openai package is required for OpenAI TTS')
+            raise RuntimeError("openai package is required for OpenAI TTS")
 
-        api_key = getattr(settings, 'OPENAI_API_KEY', '')
+        api_key = getattr(settings, "OPENAI_API_KEY", "")
         if not api_key:
-            raise RuntimeError('OPENAI_API_KEY is not configured')
+            raise RuntimeError("OPENAI_API_KEY is not configured")
 
         client = openai.OpenAI(api_key=api_key)
 
         response = client.audio.speech.create(
-            model='tts-1',
-            voice='alloy',
+            model="tts-1",
+            voice="alloy",
             input=text[:4096],  # TTS character limit
         )
         return response.content
@@ -487,18 +493,18 @@ class VoiceQueryService:
             from google.cloud import texttospeech
         except ImportError:
             raise RuntimeError(
-                'google-cloud-texttospeech package is required for Google TTS'
+                "google-cloud-texttospeech package is required for Google TTS"
             )
 
         language_codes = {
-            'tr': 'tr-TR',
-            'en': 'en-US',
+            "tr": "tr-TR",
+            "en": "en-US",
         }
 
         client = texttospeech.TextToSpeechClient()
         input_text = texttospeech.SynthesisInput(text=text[:5000])
         voice = texttospeech.VoiceSelectionParams(
-            language_code=language_codes.get(language, 'tr-TR'),
+            language_code=language_codes.get(language, "tr-TR"),
             ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL,
         )
         audio_config = texttospeech.AudioConfig(
@@ -531,23 +537,23 @@ class VoiceQueryService:
         if not audio_bytes:
             return None
 
-        media_root = getattr(settings, 'MEDIA_ROOT', '/tmp')
-        media_url = getattr(settings, 'MEDIA_URL', '/media/')
+        media_root = getattr(settings, "MEDIA_ROOT", "/tmp")
+        media_url = getattr(settings, "MEDIA_URL", "/media/")
 
         cache_dir = os.path.join(media_root, TTS_CACHE_DIR, str(org_id))
         os.makedirs(cache_dir, exist_ok=True)
 
         # Generate unique filename from content hash
         content_hash = hashlib.md5(audio_bytes).hexdigest()[:12]
-        filename = f'tts_{content_hash}.mp3'
+        filename = f"tts_{content_hash}.mp3"
         filepath = os.path.join(cache_dir, filename)
 
         try:
-            with open(filepath, 'wb') as f:
+            with open(filepath, "wb") as f:
                 f.write(audio_bytes)
 
-            url = f'{media_url}{TTS_CACHE_DIR}/{org_id}/{filename}'
+            url = f"{media_url}{TTS_CACHE_DIR}/{org_id}/{filename}"
             return url
         except OSError as exc:
-            logger.error('Failed to save TTS audio: %s', exc)
+            logger.error("Failed to save TTS audio: %s", exc)
             return None

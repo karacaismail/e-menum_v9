@@ -33,7 +33,7 @@ def restaurant_upload_path(instance, filename):
     Returns:
         str: Upload path relative to MEDIA_ROOT
     """
-    ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else 'bin'
+    ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else "bin"
     new_filename = f"{uuid4()}.{ext}"
 
     # Try to get organization_id from the instance
@@ -48,7 +48,7 @@ def restaurant_logo_path(instance, filename):
 
     Creates path: {org_id}/logos/{uuid4}.{ext}
     """
-    ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else 'png'
+    ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else "png"
     new_filename = f"{uuid4()}.{ext}"
     org_id = _get_org_id(instance)
     return f"{org_id}/logos/{new_filename}"
@@ -60,7 +60,7 @@ def restaurant_gallery_path(instance, filename):
 
     Creates path: {org_id}/gallery/{uuid4}.{ext}
     """
-    ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else 'jpg'
+    ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else "jpg"
     new_filename = f"{uuid4()}.{ext}"
     org_id = _get_org_id(instance)
     return f"{org_id}/gallery/{new_filename}"
@@ -80,11 +80,11 @@ def filer_upload_path(instance, filename):
     Returns:
         str: Upload path relative to filer storage root
     """
-    ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else 'bin'
+    ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else "bin"
     new_filename = f"{uuid4()}.{ext}"
 
     # Filer files have a folder hierarchy; use folder name as org_id if available
-    if hasattr(instance, 'folder') and instance.folder:
+    if hasattr(instance, "folder") and instance.folder:
         # Walk up to find root folder (which is the org_id)
         folder = instance.folder
         while folder.parent:
@@ -108,23 +108,23 @@ def _get_org_id(instance):
         str: Organization ID or 'global'
     """
     # Direct organization FK
-    if hasattr(instance, 'organization_id') and instance.organization_id:
+    if hasattr(instance, "organization_id") and instance.organization_id:
         return str(instance.organization_id)
 
     # Via organization object
-    if hasattr(instance, 'organization') and instance.organization:
+    if hasattr(instance, "organization") and instance.organization:
         return str(instance.organization.id)
 
     # Via product → organization
-    if hasattr(instance, 'product') and instance.product:
+    if hasattr(instance, "product") and instance.product:
         return str(instance.product.organization_id)
 
     # Via category → organization
-    if hasattr(instance, 'category') and instance.category:
+    if hasattr(instance, "category") and instance.category:
         return str(instance.category.organization_id)
 
     # Via menu → organization
-    if hasattr(instance, 'menu') and instance.menu:
+    if hasattr(instance, "menu") and instance.menu:
         return str(instance.menu.organization_id)
 
-    return 'global'
+    return "global"

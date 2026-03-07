@@ -48,6 +48,7 @@ logger = logging.getLogger(__name__)
 # REPORT CATALOG (Read-only)
 # =============================================================================
 
+
 class ReportCatalogViewSet(BaseReadOnlyViewSet):
     """
     Read-only viewset for the report catalog.
@@ -61,11 +62,11 @@ class ReportCatalogViewSet(BaseReadOnlyViewSet):
     queryset = ReportDefinition.objects.filter(is_active=True)
     serializer_class = ReportDefinitionSerializer
     permission_classes = [IsAuthenticated]
-    filterset_fields = ['category', 'min_plan', 'is_periodic', 'requires_ai']
-    search_fields = ['name', 'description', 'feature_key']
-    ordering_fields = ['category', 'feature_key', 'priority']
+    filterset_fields = ["category", "min_plan", "is_periodic", "requires_ai"]
+    search_fields = ["name", "description", "feature_key"]
+    ordering_fields = ["category", "feature_key", "priority"]
 
-    @action(detail=False, methods=['get'], url_path='by-category')
+    @action(detail=False, methods=["get"], url_path="by-category")
     def by_category(self, request):
         """
         Get reports grouped by category.
@@ -88,6 +89,7 @@ class ReportCatalogViewSet(BaseReadOnlyViewSet):
 # REPORT EXECUTION
 # =============================================================================
 
+
 class ReportExecutionViewSet(BaseTenantReadOnlyViewSet):
     """
     ViewSet for executing reports and viewing execution history.
@@ -98,14 +100,15 @@ class ReportExecutionViewSet(BaseTenantReadOnlyViewSet):
     """
 
     queryset = ReportExecution.objects.select_related(
-        'report_definition', 'requested_by',
+        "report_definition",
+        "requested_by",
     ).all()
-    permission_resource = 'reporting'
-    filterset_fields = ['status', 'report_definition__feature_key']
-    ordering_fields = ['created_at', 'completed_at', 'duration_ms']
+    permission_resource = "reporting"
+    filterset_fields = ["status", "report_definition__feature_key"]
+    ordering_fields = ["created_at", "completed_at", "duration_ms"]
 
     def get_serializer_class(self):
-        if self.action == 'retrieve':
+        if self.action == "retrieve":
             return ReportExecutionDetailSerializer
         return ReportExecutionListSerializer
 
@@ -135,10 +138,10 @@ class RunReportView(BaseTenantAPIView):
         org = self.require_organization()
 
         data = serializer.validated_data
-        feature_key = data['feature_key']
-        parameters = data.get('parameters', {})
-        export_format = data.get('export_format', 'JSON')
-        async_execution = data.get('async_execution', False)
+        feature_key = data["feature_key"]
+        parameters = data.get("parameters", {})
+        export_format = data.get("export_format", "JSON")
+        async_execution = data.get("async_execution", False)
 
         if async_execution:
             execution = engine.execute_report_async(
@@ -152,7 +155,7 @@ class RunReportView(BaseTenantAPIView):
             return self.get_success_response(
                 result_serializer.data,
                 status_code=status.HTTP_202_ACCEPTED,
-                message='Report execution queued',
+                message="Report execution queued",
             )
         else:
             execution = engine.execute_report(
@@ -185,58 +188,59 @@ class ExportReportView(BaseTenantAPIView):
             execution = ReportExecution.objects.get(
                 id=execution_id,
                 organization=org,
-                status='COMPLETED',
+                status="COMPLETED",
                 deleted_at__isnull=True,
             )
         except ReportExecution.DoesNotExist:
             return self.get_error_response(
-                code='EXECUTION_NOT_FOUND',
-                message='Completed execution not found',
+                code="EXECUTION_NOT_FOUND",
+                message="Completed execution not found",
                 status_code=status.HTTP_404_NOT_FOUND,
             )
 
-        export_format = request.query_params.get('format', 'EXCEL').upper()
+        export_format = request.query_params.get("format", "EXCEL").upper()
         export_service = ExportService()
 
         try:
             file_bytes = export_service.export(execution.result_data, export_format)
         except ValueError as exc:
             return self.get_error_response(
-                code='INVALID_FORMAT',
+                code="INVALID_FORMAT",
                 message=str(exc),
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
         content_types = {
-            'JSON': 'application/json',
-            'CSV': 'text/csv',
-            'EXCEL': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'PDF': 'application/pdf',
+            "JSON": "application/json",
+            "CSV": "text/csv",
+            "EXCEL": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "PDF": "application/pdf",
         }
         extensions = {
-            'JSON': 'json',
-            'CSV': 'csv',
-            'EXCEL': 'xlsx',
-            'PDF': 'pdf',
+            "JSON": "json",
+            "CSV": "csv",
+            "EXCEL": "xlsx",
+            "PDF": "pdf",
         }
 
         filename = (
-            f'{execution.report_definition.feature_key}_'
-            f'{timezone.now().strftime("%Y%m%d_%H%M")}'
-            f'.{extensions.get(export_format, "dat")}'
+            f"{execution.report_definition.feature_key}_"
+            f"{timezone.now().strftime('%Y%m%d_%H%M')}"
+            f".{extensions.get(export_format, 'dat')}"
         )
 
         response = HttpResponse(
             file_bytes,
-            content_type=content_types.get(export_format, 'application/octet-stream'),
+            content_type=content_types.get(export_format, "application/octet-stream"),
         )
-        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        response["Content-Disposition"] = f'attachment; filename="{filename}"'
         return response
 
 
 # =============================================================================
 # REPORT SCHEDULE
 # =============================================================================
+
 
 class ReportScheduleViewSet(BaseTenantViewSet):
     """
@@ -250,11 +254,11 @@ class ReportScheduleViewSet(BaseTenantViewSet):
     """
 
     queryset = ReportSchedule.objects.select_related(
-        'report_definition',
+        "report_definition",
     ).all()
     serializer_class = ReportScheduleSerializer
-    permission_resource = 'reporting'
-    filterset_fields = ['frequency', 'is_active', 'report_definition__feature_key']
+    permission_resource = "reporting"
+    filterset_fields = ["frequency", "is_active", "report_definition__feature_key"]
 
     def perform_create(self, serializer):
         org = self.require_organization()
@@ -268,6 +272,7 @@ class ReportScheduleViewSet(BaseTenantViewSet):
 # REPORT FAVORITES
 # =============================================================================
 
+
 class ReportFavoriteViewSet(BaseTenantViewSet):
     """
     CRUD for user report favorites.
@@ -278,10 +283,10 @@ class ReportFavoriteViewSet(BaseTenantViewSet):
     """
 
     queryset = ReportFavorite.objects.select_related(
-        'report_definition',
+        "report_definition",
     ).all()
     serializer_class = ReportFavoriteSerializer
-    permission_resource = 'reporting'
+    permission_resource = "reporting"
 
     def get_queryset(self):
         """Filter favorites to current user only."""
@@ -304,6 +309,7 @@ class ReportFavoriteViewSet(BaseTenantViewSet):
 # DASHBOARD METRICS
 # =============================================================================
 
+
 class DashboardMetricView(BaseTenantAPIView):
     """
     Dashboard KPI metrics endpoint.
@@ -319,13 +325,13 @@ class DashboardMetricView(BaseTenantAPIView):
         from apps.analytics.models import DashboardMetric
 
         org = self.require_organization()
-        period = request.query_params.get('period', 'DAILY').upper()
+        period = request.query_params.get("period", "DAILY").upper()
 
         metrics = DashboardMetric.objects.filter(
             organization=org,
             period_type=period,
             deleted_at__isnull=True,
-        ).order_by('-period_start')[:10]
+        ).order_by("-period_start")[:10]
 
         serializer = DashboardMetricSerializer(metrics, many=True)
         return self.get_success_response(serializer.data)
@@ -334,6 +340,7 @@ class DashboardMetricView(BaseTenantAPIView):
 # =============================================================================
 # CONVERSATIONAL ANALYTICS (F4 Innovation)
 # =============================================================================
+
 
 class ConversationalView(BaseTenantAPIView):
     """
@@ -374,13 +381,13 @@ class ConversationalView(BaseTenantAPIView):
         )
 
         org = self.require_organization()
-        message = request.data.get('message', '').strip()
-        session_id = request.data.get('session_id', None)
+        message = request.data.get("message", "").strip()
+        session_id = request.data.get("session_id", None)
 
         if not message:
             return self.get_error_response(
-                code='EMPTY_MESSAGE',
-                message='Message cannot be empty',
+                code="EMPTY_MESSAGE",
+                message="Message cannot be empty",
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -406,12 +413,12 @@ class ConversationalView(BaseTenantAPIView):
             ConversationalAnalyticsService,
         )
 
-        session_id = request.query_params.get('session_id', '')
+        session_id = request.query_params.get("session_id", "")
 
         if not session_id:
             return self.get_error_response(
-                code='MISSING_SESSION_ID',
-                message='session_id query parameter is required',
+                code="MISSING_SESSION_ID",
+                message="session_id query parameter is required",
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -424,23 +431,24 @@ class ConversationalView(BaseTenantAPIView):
             ConversationalAnalyticsService,
         )
 
-        session_id = request.query_params.get('session_id', '')
+        session_id = request.query_params.get("session_id", "")
 
         if not session_id:
             return self.get_error_response(
-                code='MISSING_SESSION_ID',
-                message='session_id query parameter is required',
+                code="MISSING_SESSION_ID",
+                message="session_id query parameter is required",
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
         service = ConversationalAnalyticsService()
         service.end_session(session_id)
-        return self.get_success_response({'ended': True})
+        return self.get_success_response({"ended": True})
 
 
 # =============================================================================
 # CREDIT BALANCE (F4 Innovation)
 # =============================================================================
+
 
 class CreditBalanceView(BaseTenantAPIView):
     """
@@ -461,8 +469,8 @@ class CreditBalanceView(BaseTenantAPIView):
         org = self.require_organization()
         service = CreditService()
 
-        start_date_str = request.query_params.get('start_date', '')
-        end_date_str = request.query_params.get('end_date', '')
+        start_date_str = request.query_params.get("start_date", "")
+        end_date_str = request.query_params.get("end_date", "")
 
         start_date = None
         end_date = None
@@ -470,24 +478,26 @@ class CreditBalanceView(BaseTenantAPIView):
         if start_date_str:
             try:
                 from datetime import date as date_type
-                parts = start_date_str.split('-')
+
+                parts = start_date_str.split("-")
                 start_date = date_type(int(parts[0]), int(parts[1]), int(parts[2]))
             except (ValueError, IndexError):
                 return self.get_error_response(
-                    code='INVALID_DATE',
-                    message='start_date must be in YYYY-MM-DD format',
+                    code="INVALID_DATE",
+                    message="start_date must be in YYYY-MM-DD format",
                     status_code=status.HTTP_400_BAD_REQUEST,
                 )
 
         if end_date_str:
             try:
                 from datetime import date as date_type
-                parts = end_date_str.split('-')
+
+                parts = end_date_str.split("-")
                 end_date = date_type(int(parts[0]), int(parts[1]), int(parts[2]))
             except (ValueError, IndexError):
                 return self.get_error_response(
-                    code='INVALID_DATE',
-                    message='end_date must be in YYYY-MM-DD format',
+                    code="INVALID_DATE",
+                    message="end_date must be in YYYY-MM-DD format",
                     status_code=status.HTTP_400_BAD_REQUEST,
                 )
 
@@ -503,6 +513,7 @@ class CreditBalanceView(BaseTenantAPIView):
 # =============================================================================
 # VOICE QUERY (F4 Innovation)
 # =============================================================================
+
 
 class VoiceQueryView(BaseTenantAPIView):
     """
@@ -533,23 +544,23 @@ class VoiceQueryView(BaseTenantAPIView):
 
         org = self.require_organization()
 
-        audio_file = request.FILES.get('audio')
+        audio_file = request.FILES.get("audio")
         if not audio_file:
             return self.get_error_response(
-                code='MISSING_AUDIO',
+                code="MISSING_AUDIO",
                 message='Audio file is required. Upload as "audio" field.',
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
-        language = request.data.get('language', 'tr')
+        language = request.data.get("language", "tr")
 
         try:
             audio_data = audio_file.read()
         except Exception as exc:
-            logger.error('Failed to read audio file: %s', exc)
+            logger.error("Failed to read audio file: %s", exc)
             return self.get_error_response(
-                code='AUDIO_READ_ERROR',
-                message='Failed to read audio file',
+                code="AUDIO_READ_ERROR",
+                message="Failed to read audio file",
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -564,12 +575,13 @@ class VoiceQueryView(BaseTenantAPIView):
             )
         except Exception as exc:
             logger.error(
-                'Voice query processing failed: org=%s error=%s',
-                org.id, exc,
+                "Voice query processing failed: org=%s error=%s",
+                org.id,
+                exc,
             )
             return self.get_error_response(
-                code='VOICE_QUERY_ERROR',
-                message=f'Voice query processing failed: {str(exc)}',
+                code="VOICE_QUERY_ERROR",
+                message=f"Voice query processing failed: {str(exc)}",
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
@@ -579,6 +591,7 @@ class VoiceQueryView(BaseTenantAPIView):
 # =============================================================================
 # ADVANCED EXPORT (F4 Innovation)
 # =============================================================================
+
 
 class AdvancedExportView(BaseTenantAPIView):
     """
@@ -600,18 +613,20 @@ class AdvancedExportView(BaseTenantAPIView):
 
     def post(self, request):
         from django.http import HttpResponse
-        from apps.reporting.services.advanced_export_service import AdvancedExportService
+        from apps.reporting.services.advanced_export_service import (
+            AdvancedExportService,
+        )
 
         org = self.require_organization()
 
-        execution_id = request.data.get('execution_id')
-        export_format = request.data.get('format', 'white_label_pdf')
-        branding = request.data.get('branding', {})
+        execution_id = request.data.get("execution_id")
+        export_format = request.data.get("format", "white_label_pdf")
+        branding = request.data.get("branding", {})
 
         if not execution_id:
             return self.get_error_response(
-                code='MISSING_EXECUTION_ID',
-                message='execution_id is required',
+                code="MISSING_EXECUTION_ID",
+                message="execution_id is required",
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -619,61 +634,64 @@ class AdvancedExportView(BaseTenantAPIView):
             execution = ReportExecution.objects.get(
                 id=execution_id,
                 organization=org,
-                status='COMPLETED',
+                status="COMPLETED",
                 deleted_at__isnull=True,
             )
         except ReportExecution.DoesNotExist:
             return self.get_error_response(
-                code='EXECUTION_NOT_FOUND',
-                message='Completed execution not found',
+                code="EXECUTION_NOT_FOUND",
+                message="Completed execution not found",
                 status_code=status.HTTP_404_NOT_FOUND,
             )
 
         service = AdvancedExportService()
 
         try:
-            if export_format == 'white_label_pdf':
+            if export_format == "white_label_pdf":
                 file_bytes = service.export_white_label_pdf(
-                    execution.result_data, branding,
+                    execution.result_data,
+                    branding,
                 )
-                content_type = 'application/pdf'
-                ext = 'pdf'
-            elif export_format in ('powerbi', 'tableau'):
+                content_type = "application/pdf"
+                ext = "pdf"
+            elif export_format in ("powerbi", "tableau"):
                 file_bytes = service.export_to_bi_format(
-                    execution.result_data, export_format,
+                    execution.result_data,
+                    export_format,
                 )
-                content_type = 'application/json'
-                ext = 'json'
+                content_type = "application/json"
+                ext = "json"
             else:
                 return self.get_error_response(
-                    code='INVALID_FORMAT',
+                    code="INVALID_FORMAT",
                     message=(
-                        f'Unsupported format: {export_format}. '
-                        f'Supported: white_label_pdf, powerbi, tableau'
+                        f"Unsupported format: {export_format}. "
+                        f"Supported: white_label_pdf, powerbi, tableau"
                     ),
                     status_code=status.HTTP_400_BAD_REQUEST,
                 )
         except (ImportError, ValueError) as exc:
             return self.get_error_response(
-                code='EXPORT_ERROR',
+                code="EXPORT_ERROR",
                 message=str(exc),
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
         filename = (
-            f'{execution.report_definition.feature_key}_'
-            f'{export_format}_{timezone.now().strftime("%Y%m%d_%H%M")}'
-            f'.{ext}'
+            f"{execution.report_definition.feature_key}_"
+            f"{export_format}_{timezone.now().strftime('%Y%m%d_%H%M')}"
+            f".{ext}"
         )
 
         response = HttpResponse(file_bytes, content_type=content_type)
-        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        response["Content-Disposition"] = f'attachment; filename="{filename}"'
         return response
 
 
 # =============================================================================
 # BENCHMARK COMPARISON (F4 Innovation)
 # =============================================================================
+
 
 class BenchmarkComparisonView(BaseTenantAPIView):
     """
@@ -694,8 +712,8 @@ class BenchmarkComparisonView(BaseTenantAPIView):
         org = self.require_organization()
         service = BenchmarkService()
 
-        metric_name = request.query_params.get('metric', 'daily_revenue')
-        period = request.query_params.get('period', 'MONTHLY')
+        metric_name = request.query_params.get("metric", "daily_revenue")
+        period = request.query_params.get("period", "MONTHLY")
 
         comparison = service.compare_org_to_benchmark(
             org_id=org.id,
@@ -709,6 +727,7 @@ class BenchmarkComparisonView(BaseTenantAPIView):
 # =============================================================================
 # AI MODEL INFO (F4 Innovation)
 # =============================================================================
+
 
 class AIModelInfoView(BaseTenantAPIView):
     """

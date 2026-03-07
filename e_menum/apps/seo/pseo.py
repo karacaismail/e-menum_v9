@@ -20,7 +20,7 @@ from typing import Dict, List
 
 from django.utils import timezone
 
-logger = logging.getLogger('apps.seo')
+logger = logging.getLogger("apps.seo")
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -28,29 +28,29 @@ logger = logging.getLogger('apps.seo')
 # ──────────────────────────────────────────────────────────────────────────────
 
 DEFAULT_CITIES: List[str] = [
-    'Istanbul',
-    'Ankara',
-    'Izmir',
-    'Antalya',
-    'Bursa',
-    'Adana',
-    'Gaziantep',
-    'Konya',
-    'Mersin',
-    'Kayseri',
+    "Istanbul",
+    "Ankara",
+    "Izmir",
+    "Antalya",
+    "Bursa",
+    "Adana",
+    "Gaziantep",
+    "Konya",
+    "Mersin",
+    "Kayseri",
 ]
 
 DEFAULT_SECTORS: List[str] = [
-    'Restoran',
-    'Kafe',
-    'Fast Food',
-    'Fine Dining',
-    'Pastane',
-    'Nargile Kafe',
-    'Bar',
-    'Pub',
-    'Kebapci',
-    'Pizzaci',
+    "Restoran",
+    "Kafe",
+    "Fast Food",
+    "Fine Dining",
+    "Pastane",
+    "Nargile Kafe",
+    "Bar",
+    "Pub",
+    "Kebapci",
+    "Pizzaci",
 ]
 
 
@@ -70,16 +70,19 @@ def generate_city_sector_combinations() -> List[Dict[str, str]]:
     combinations: List[Dict[str, str]] = []
     for city in DEFAULT_CITIES:
         for sector in DEFAULT_SECTORS:
-            combinations.append({
-                'sehir': city,
-                'sektor': sector,
-            })
+            combinations.append(
+                {
+                    "sehir": city,
+                    "sektor": sector,
+                }
+            )
     return combinations
 
 
 # ──────────────────────────────────────────────────────────────────────────────
 # PSEOEngine
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class PSEOEngine:
     """
@@ -127,10 +130,10 @@ class PSEOEngine:
         slug = _slugify_turkish(slug)
 
         return {
-            'slug': slug,
-            'title': title,
-            'description': description,
-            'content': content,
+            "slug": slug,
+            "title": title,
+            "description": description,
+            "content": content,
         }
 
     # ── Generation ───────────────────────────────────────────────────────
@@ -149,11 +152,11 @@ class PSEOEngine:
         created = 0
         for variables in variables_list:
             rendered = self.render_page(template, variables)
-            slug = rendered['slug']
+            slug = rendered["slug"]
 
             # Skip if page already exists for this slug
             if PSEOPage.objects.filter(slug=slug, deleted_at__isnull=True).exists():
-                logger.debug('pSEO page already exists for slug: %s', slug)
+                logger.debug("pSEO page already exists for slug: %s", slug)
                 continue
 
             quality = self._score_rendered(rendered)
@@ -162,17 +165,17 @@ class PSEOEngine:
                 template=template,
                 slug=slug,
                 variables=variables,
-                rendered_title=rendered['title'],
-                rendered_description=rendered['description'],
-                rendered_content=rendered['content'],
+                rendered_title=rendered["title"],
+                rendered_description=rendered["description"],
+                rendered_content=rendered["content"],
                 quality_score=quality,
                 # Inherit SEOMixin defaults
-                meta_title=rendered['title'][:70],
-                meta_description=rendered['description'][:160],
+                meta_title=rendered["title"][:70],
+                meta_description=rendered["description"][:160],
             )
             page.save()
             created += 1
-            logger.debug('Created pSEO page: %s (quality=%d)', slug, quality)
+            logger.debug("Created pSEO page: %s (quality=%d)", slug, quality)
 
         logger.info(
             'pSEO generation complete: %d pages created from template "%s"',
@@ -199,11 +202,11 @@ class PSEOEngine:
         saved automatically.
         """
         rendered = {
-            'title': page.rendered_title or '',
-            'description': page.rendered_description or '',
-            'content': page.rendered_content or '',
+            "title": page.rendered_title or "",
+            "description": page.rendered_description or "",
+            "content": page.rendered_content or "",
         }
-        focus = getattr(page, 'focus_keyword', '') or ''
+        focus = getattr(page, "focus_keyword", "") or ""
 
         score = self._score_rendered(rendered, focus_keyword=focus)
         page.quality_score = score
@@ -212,13 +215,13 @@ class PSEOEngine:
     @staticmethod
     def _score_rendered(
         rendered: Dict[str, str],
-        focus_keyword: str = '',
+        focus_keyword: str = "",
     ) -> int:
         """Score a dict of rendered fields. Returns 0-100."""
         score = 0
-        title = rendered.get('title', '')
-        description = rendered.get('description', '')
-        content = rendered.get('content', '')
+        title = rendered.get("title", "")
+        description = rendered.get("description", "")
+        content = rendered.get("content", "")
 
         # --- Title (max 20 pts) ---
         title_len = len(title)
@@ -321,6 +324,7 @@ class PSEOEngine:
 # Helpers
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class _SafeFormatMap(dict):
     """
     A dict subclass that returns the placeholder key wrapped in braces
@@ -330,7 +334,7 @@ class _SafeFormatMap(dict):
     """
 
     def __missing__(self, key: str) -> str:
-        return f'{{{key}}}'
+        return f"{{{key}}}"
 
 
 def _slugify_turkish(value: str) -> str:
@@ -341,17 +345,25 @@ def _slugify_turkish(value: str) -> str:
     lowercases, replaces whitespace/special chars with hyphens, and
     strips leading/trailing hyphens.
     """
-    tr_map = str.maketrans({
-        'ç': 'c', 'Ç': 'c',
-        'ğ': 'g', 'Ğ': 'g',
-        'ı': 'i', 'I': 'i',
-        'İ': 'i',
-        'ö': 'o', 'Ö': 'o',
-        'ş': 's', 'Ş': 's',
-        'ü': 'u', 'Ü': 'u',
-    })
+    tr_map = str.maketrans(
+        {
+            "ç": "c",
+            "Ç": "c",
+            "ğ": "g",
+            "Ğ": "g",
+            "ı": "i",
+            "I": "i",
+            "İ": "i",
+            "ö": "o",
+            "Ö": "o",
+            "ş": "s",
+            "Ş": "s",
+            "ü": "u",
+            "Ü": "u",
+        }
+    )
     value = value.translate(tr_map)
     value = value.lower()
-    value = re.sub(r'[^a-z0-9\-]', '-', value)
-    value = re.sub(r'-+', '-', value)
-    return value.strip('-')
+    value = re.sub(r"[^a-z0-9\-]", "-", value)
+    value = re.sub(r"-+", "-", value)
+    return value.strip("-")

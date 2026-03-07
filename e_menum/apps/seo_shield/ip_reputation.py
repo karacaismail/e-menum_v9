@@ -24,7 +24,7 @@ import logging
 
 from django.db.models import F
 
-logger = logging.getLogger('apps.seo_shield')
+logger = logging.getLogger("apps.seo_shield")
 
 
 class IPReputationManager:
@@ -37,11 +37,11 @@ class IPReputationManager:
 
     # Weights for each signal type. Must sum to 1.0.
     SIGNAL_WEIGHTS = {
-        'rate_limit': 0.30,
-        'header_anomaly': 0.20,
-        'path_pattern': 0.20,
-        'ua_anomaly': 0.15,
-        'robots_violation': 0.15,
+        "rate_limit": 0.30,
+        "header_anomaly": 0.20,
+        "path_pattern": 0.20,
+        "ua_anomaly": 0.15,
+        "robots_violation": 0.15,
     }
 
     def get_risk_score(self, ip_address: str) -> int:
@@ -62,16 +62,16 @@ class IPReputationManager:
         obj, created = IPRiskScore.objects.get_or_create(
             ip_address=ip_address,
             defaults={
-                'risk_score': 0,
-                'signals': {},
-                'total_requests': 1,
+                "risk_score": 0,
+                "signals": {},
+                "total_requests": 1,
             },
         )
 
         if not created:
             # Increment total request count
             IPRiskScore.objects.filter(pk=obj.pk).update(
-                total_requests=F('total_requests') + 1,
+                total_requests=F("total_requests") + 1,
             )
 
         return obj.risk_score
@@ -97,7 +97,8 @@ class IPReputationManager:
         if signal_type not in self.SIGNAL_WEIGHTS:
             logger.warning(
                 "Unknown signal type '%s' for IP %s, ignoring",
-                signal_type, ip_address,
+                signal_type,
+                ip_address,
             )
             return 0
 
@@ -107,9 +108,9 @@ class IPReputationManager:
         obj, created = IPRiskScore.objects.get_or_create(
             ip_address=ip_address,
             defaults={
-                'risk_score': 0,
-                'signals': {signal_type: value},
-                'total_requests': 0,
+                "risk_score": 0,
+                "signals": {signal_type: value},
+                "total_requests": 0,
             },
         )
 
@@ -124,11 +125,14 @@ class IPReputationManager:
         # Recalculate total risk score
         new_score = self.calculate_total_score(signals)
         obj.risk_score = new_score
-        obj.save(update_fields=['risk_score', 'signals', 'updated_at'])
+        obj.save(update_fields=["risk_score", "signals", "updated_at"])
 
         logger.debug(
             "Updated signal '%s'=%d for IP %s, new risk_score=%d",
-            signal_type, value, ip_address, new_score,
+            signal_type,
+            value,
+            ip_address,
+            new_score,
         )
 
         return new_score
@@ -198,12 +202,13 @@ class IPReputationManager:
 
             record.signals = decayed_signals
             record.risk_score = new_score
-            record.save(update_fields=['risk_score', 'signals', 'updated_at'])
+            record.save(update_fields=["risk_score", "signals", "updated_at"])
             updated_count += 1
 
         logger.info(
             "Decayed risk scores for %d IP records (factor=%.2f)",
-            updated_count, decay_factor,
+            updated_count,
+            decay_factor,
         )
 
         return updated_count

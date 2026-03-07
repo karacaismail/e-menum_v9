@@ -5,71 +5,190 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='ContactSubmission',
+            name="ContactSubmission",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('name', models.CharField(max_length=100, verbose_name='ad soyad')),
-                ('email', models.EmailField(max_length=254, verbose_name='e-posta')),
-                ('phone', models.CharField(blank=True, max_length=20, verbose_name='telefon')),
-                ('subject', models.CharField(choices=[('general', 'Genel Bilgi'), ('sales', 'Satis'), ('support', 'Teknik Destek'), ('partnership', 'Is Birligi'), ('press', 'Basin & Medya'), ('other', 'Diger')], default='general', max_length=50, verbose_name='konu')),
-                ('message', models.TextField(verbose_name='mesaj')),
-                ('is_read', models.BooleanField(default=False, verbose_name='okundu')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                ("name", models.CharField(max_length=100, verbose_name="ad soyad")),
+                ("email", models.EmailField(max_length=254, verbose_name="e-posta")),
+                (
+                    "phone",
+                    models.CharField(blank=True, max_length=20, verbose_name="telefon"),
+                ),
+                (
+                    "subject",
+                    models.CharField(
+                        choices=[
+                            ("general", "Genel Bilgi"),
+                            ("sales", "Satis"),
+                            ("support", "Teknik Destek"),
+                            ("partnership", "Is Birligi"),
+                            ("press", "Basin & Medya"),
+                            ("other", "Diger"),
+                        ],
+                        default="general",
+                        max_length=50,
+                        verbose_name="konu",
+                    ),
+                ),
+                ("message", models.TextField(verbose_name="mesaj")),
+                ("is_read", models.BooleanField(default=False, verbose_name="okundu")),
             ],
             options={
-                'verbose_name': 'Iletisim Formu',
-                'verbose_name_plural': 'Iletisim Formlari',
-                'ordering': ['-created_at'],
+                "verbose_name": "Iletisim Formu",
+                "verbose_name_plural": "Iletisim Formlari",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='DemoRequest',
+            name="DemoRequest",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('name', models.CharField(max_length=100, verbose_name='ad soyad')),
-                ('business_name', models.CharField(max_length=200, verbose_name='isletme adi')),
-                ('email', models.EmailField(max_length=254, verbose_name='e-posta')),
-                ('phone', models.CharField(max_length=20, verbose_name='telefon')),
-                ('business_type', models.CharField(choices=[('restaurant', 'Restoran'), ('cafe', 'Kafe'), ('fast_food', 'Fast Food'), ('lokanta', 'Lokanta'), ('bakery', 'Pastane / Firincilik'), ('kebab', 'Kebapci / Pideci / Borekci'), ('chain', 'Zincir Isletme'), ('hotel', 'Otel / Tatil Koyu'), ('other', 'Diger')], default='restaurant', max_length=50, verbose_name='isletme tipi')),
-                ('branch_count', models.PositiveIntegerField(default=1, verbose_name='sube sayisi')),
-                ('message', models.TextField(blank=True, verbose_name='mesaj')),
-                ('status', models.CharField(choices=[('pending', 'Beklemede'), ('contacted', 'Iletisime Gecildi'), ('demo_done', 'Demo Yapildi'), ('converted', 'Musteri Oldu'), ('rejected', 'Vazgecti')], default='pending', max_length=20, verbose_name='durum')),
-                ('notes', models.TextField(blank=True, verbose_name='admin notlari')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                ("name", models.CharField(max_length=100, verbose_name="ad soyad")),
+                (
+                    "business_name",
+                    models.CharField(max_length=200, verbose_name="isletme adi"),
+                ),
+                ("email", models.EmailField(max_length=254, verbose_name="e-posta")),
+                ("phone", models.CharField(max_length=20, verbose_name="telefon")),
+                (
+                    "business_type",
+                    models.CharField(
+                        choices=[
+                            ("restaurant", "Restoran"),
+                            ("cafe", "Kafe"),
+                            ("fast_food", "Fast Food"),
+                            ("lokanta", "Lokanta"),
+                            ("bakery", "Pastane / Firincilik"),
+                            ("kebab", "Kebapci / Pideci / Borekci"),
+                            ("chain", "Zincir Isletme"),
+                            ("hotel", "Otel / Tatil Koyu"),
+                            ("other", "Diger"),
+                        ],
+                        default="restaurant",
+                        max_length=50,
+                        verbose_name="isletme tipi",
+                    ),
+                ),
+                (
+                    "branch_count",
+                    models.PositiveIntegerField(default=1, verbose_name="sube sayisi"),
+                ),
+                ("message", models.TextField(blank=True, verbose_name="mesaj")),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Beklemede"),
+                            ("contacted", "Iletisime Gecildi"),
+                            ("demo_done", "Demo Yapildi"),
+                            ("converted", "Musteri Oldu"),
+                            ("rejected", "Vazgecti"),
+                        ],
+                        default="pending",
+                        max_length=20,
+                        verbose_name="durum",
+                    ),
+                ),
+                ("notes", models.TextField(blank=True, verbose_name="admin notlari")),
             ],
             options={
-                'verbose_name': 'Demo Talebi',
-                'verbose_name_plural': 'Demo Talepleri',
-                'ordering': ['-created_at'],
+                "verbose_name": "Demo Talebi",
+                "verbose_name_plural": "Demo Talepleri",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='NewsletterSubscriber',
+            name="NewsletterSubscriber",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='deleted at')),
-                ('email', models.EmailField(max_length=254, unique=True, verbose_name='e-posta')),
-                ('is_active', models.BooleanField(default=True, verbose_name='aktif')),
-                ('language', models.CharField(default='tr', max_length=5, verbose_name='dil')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="updated at"),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="deleted at"
+                    ),
+                ),
+                (
+                    "email",
+                    models.EmailField(
+                        max_length=254, unique=True, verbose_name="e-posta"
+                    ),
+                ),
+                ("is_active", models.BooleanField(default=True, verbose_name="aktif")),
+                (
+                    "language",
+                    models.CharField(default="tr", max_length=5, verbose_name="dil"),
+                ),
             ],
             options={
-                'verbose_name': 'Bulten Abonesi',
-                'verbose_name_plural': 'Bulten Aboneleri',
-                'ordering': ['-created_at'],
+                "verbose_name": "Bulten Abonesi",
+                "verbose_name_plural": "Bulten Aboneleri",
+                "ordering": ["-created_at"],
             },
         ),
     ]

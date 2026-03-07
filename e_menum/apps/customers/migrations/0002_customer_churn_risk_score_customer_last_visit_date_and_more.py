@@ -7,91 +7,313 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('core', '0003_shift_staffmetric_staffschedule_and_more'),
-        ('customers', '0001_initial'),
+        ("core", "0003_shift_staffmetric_staffschedule_and_more"),
+        ("customers", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customer',
-            name='churn_risk_score',
-            field=models.DecimalField(blank=True, decimal_places=4, max_digits=5, null=True, verbose_name='Churn Risk Score'),
+            model_name="customer",
+            name="churn_risk_score",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=4,
+                max_digits=5,
+                null=True,
+                verbose_name="Churn Risk Score",
+            ),
         ),
         migrations.AddField(
-            model_name='customer',
-            name='last_visit_date',
-            field=models.DateField(blank=True, null=True, verbose_name='Last Visit Date'),
+            model_name="customer",
+            name="last_visit_date",
+            field=models.DateField(
+                blank=True, null=True, verbose_name="Last Visit Date"
+            ),
         ),
         migrations.AddField(
-            model_name='customer',
-            name='lifetime_value',
-            field=models.DecimalField(blank=True, decimal_places=2, max_digits=12, null=True, verbose_name='Lifetime Value'),
+            model_name="customer",
+            name="lifetime_value",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=2,
+                max_digits=12,
+                null=True,
+                verbose_name="Lifetime Value",
+            ),
         ),
         migrations.AddField(
-            model_name='customer',
-            name='rfm_frequency_score',
-            field=models.IntegerField(blank=True, null=True, verbose_name='RFM Frequency Score'),
+            model_name="customer",
+            name="rfm_frequency_score",
+            field=models.IntegerField(
+                blank=True, null=True, verbose_name="RFM Frequency Score"
+            ),
         ),
         migrations.AddField(
-            model_name='customer',
-            name='rfm_monetary_score',
-            field=models.IntegerField(blank=True, null=True, verbose_name='RFM Monetary Score'),
+            model_name="customer",
+            name="rfm_monetary_score",
+            field=models.IntegerField(
+                blank=True, null=True, verbose_name="RFM Monetary Score"
+            ),
         ),
         migrations.AddField(
-            model_name='customer',
-            name='rfm_recency_score',
-            field=models.IntegerField(blank=True, null=True, verbose_name='RFM Recency Score'),
+            model_name="customer",
+            name="rfm_recency_score",
+            field=models.IntegerField(
+                blank=True, null=True, verbose_name="RFM Recency Score"
+            ),
         ),
         migrations.AddField(
-            model_name='customer',
-            name='rfm_segment',
-            field=models.CharField(blank=True, max_length=50, null=True, verbose_name='RFM Segment'),
+            model_name="customer",
+            name="rfm_segment",
+            field=models.CharField(
+                blank=True, max_length=50, null=True, verbose_name="RFM Segment"
+            ),
         ),
         migrations.CreateModel(
-            name='CustomerPreference',
+            name="CustomerPreference",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier (UUID)', primary_key=True, serialize=False, verbose_name='ID')),
-                ('preference_type', models.CharField(choices=[('DIETARY', 'Dietary'), ('ALLERGEN', 'Allergen'), ('SEATING', 'Seating'), ('PAYMENT', 'Payment'), ('COMMUNICATION', 'Communication')], help_text='Category of preference', max_length=20, verbose_name='Preference type')),
-                ('key', models.CharField(help_text="Preference key identifier (e.g., 'vegetarian', 'window_seat')", max_length=100, verbose_name='Key')),
-                ('value', models.CharField(help_text="Preference value (e.g., 'true', 'always')", max_length=255, verbose_name='Value')),
-                ('auto_detected', models.BooleanField(default=False, help_text='Whether this preference was automatically detected', verbose_name='Auto detected')),
-                ('confidence', models.DecimalField(blank=True, decimal_places=4, help_text='Confidence score for auto-detected preferences (0-1)', max_digits=5, null=True, verbose_name='Confidence')),
-                ('customer', models.ForeignKey(help_text='Customer this preference belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='preferences', to='customers.customer', verbose_name='Customer')),
-                ('organization', models.ForeignKey(help_text='Organization this preference belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='customer_preferences', to='core.organization', verbose_name='Organization')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier (UUID)",
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "preference_type",
+                    models.CharField(
+                        choices=[
+                            ("DIETARY", "Dietary"),
+                            ("ALLERGEN", "Allergen"),
+                            ("SEATING", "Seating"),
+                            ("PAYMENT", "Payment"),
+                            ("COMMUNICATION", "Communication"),
+                        ],
+                        help_text="Category of preference",
+                        max_length=20,
+                        verbose_name="Preference type",
+                    ),
+                ),
+                (
+                    "key",
+                    models.CharField(
+                        help_text="Preference key identifier (e.g., 'vegetarian', 'window_seat')",
+                        max_length=100,
+                        verbose_name="Key",
+                    ),
+                ),
+                (
+                    "value",
+                    models.CharField(
+                        help_text="Preference value (e.g., 'true', 'always')",
+                        max_length=255,
+                        verbose_name="Value",
+                    ),
+                ),
+                (
+                    "auto_detected",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Whether this preference was automatically detected",
+                        verbose_name="Auto detected",
+                    ),
+                ),
+                (
+                    "confidence",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=4,
+                        help_text="Confidence score for auto-detected preferences (0-1)",
+                        max_digits=5,
+                        null=True,
+                        verbose_name="Confidence",
+                    ),
+                ),
+                (
+                    "customer",
+                    models.ForeignKey(
+                        help_text="Customer this preference belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="preferences",
+                        to="customers.customer",
+                        verbose_name="Customer",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization this preference belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="customer_preferences",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Customer Preference',
-                'verbose_name_plural': 'Customer Preferences',
-                'db_table': 'customer_preferences',
-                'ordering': ['-created_at'],
-                'indexes': [models.Index(fields=['organization', 'deleted_at'], name='custpref_org_deleted_idx')],
+                "verbose_name": "Customer Preference",
+                "verbose_name_plural": "Customer Preferences",
+                "db_table": "customer_preferences",
+                "ordering": ["-created_at"],
+                "indexes": [
+                    models.Index(
+                        fields=["organization", "deleted_at"],
+                        name="custpref_org_deleted_idx",
+                    )
+                ],
             },
         ),
         migrations.CreateModel(
-            name='NPSSurvey',
+            name="NPSSurvey",
             fields=[
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier (UUID)', primary_key=True, serialize=False, verbose_name='ID')),
-                ('order_id', models.UUIDField(blank=True, help_text='Order this survey is about (if applicable)', null=True, verbose_name='Order ID')),
-                ('score', models.IntegerField(help_text='NPS score (0-10)', validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(10)], verbose_name='Score')),
-                ('comment', models.TextField(blank=True, help_text='Optional free-text comment', null=True, verbose_name='Comment')),
-                ('category', models.CharField(choices=[('PROMOTER', 'Promoter'), ('PASSIVE', 'Passive'), ('DETRACTOR', 'Detractor')], help_text='NPS category (auto-calculated from score)', max_length=20, verbose_name='Category')),
-                ('channel', models.CharField(choices=[('QR', 'QR Code'), ('EMAIL', 'Email'), ('SMS', 'SMS'), ('IN_APP', 'In App')], help_text='Channel through which survey was collected', max_length=20, verbose_name='Channel')),
-                ('customer', models.ForeignKey(blank=True, help_text='Customer who submitted this survey (null for anonymous)', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='nps_surveys', to='customers.customer', verbose_name='Customer')),
-                ('organization', models.ForeignKey(help_text='Organization this survey belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='nps_surveys', to='core.organization', verbose_name='Organization')),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier (UUID)",
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "order_id",
+                    models.UUIDField(
+                        blank=True,
+                        help_text="Order this survey is about (if applicable)",
+                        null=True,
+                        verbose_name="Order ID",
+                    ),
+                ),
+                (
+                    "score",
+                    models.IntegerField(
+                        help_text="NPS score (0-10)",
+                        validators=[
+                            django.core.validators.MinValueValidator(0),
+                            django.core.validators.MaxValueValidator(10),
+                        ],
+                        verbose_name="Score",
+                    ),
+                ),
+                (
+                    "comment",
+                    models.TextField(
+                        blank=True,
+                        help_text="Optional free-text comment",
+                        null=True,
+                        verbose_name="Comment",
+                    ),
+                ),
+                (
+                    "category",
+                    models.CharField(
+                        choices=[
+                            ("PROMOTER", "Promoter"),
+                            ("PASSIVE", "Passive"),
+                            ("DETRACTOR", "Detractor"),
+                        ],
+                        help_text="NPS category (auto-calculated from score)",
+                        max_length=20,
+                        verbose_name="Category",
+                    ),
+                ),
+                (
+                    "channel",
+                    models.CharField(
+                        choices=[
+                            ("QR", "QR Code"),
+                            ("EMAIL", "Email"),
+                            ("SMS", "SMS"),
+                            ("IN_APP", "In App"),
+                        ],
+                        help_text="Channel through which survey was collected",
+                        max_length=20,
+                        verbose_name="Channel",
+                    ),
+                ),
+                (
+                    "customer",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="Customer who submitted this survey (null for anonymous)",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="nps_surveys",
+                        to="customers.customer",
+                        verbose_name="Customer",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization this survey belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="nps_surveys",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'NPS Survey',
-                'verbose_name_plural': 'NPS Surveys',
-                'db_table': 'nps_surveys',
-                'ordering': ['-created_at'],
-                'indexes': [models.Index(fields=['organization', 'created_at'], name='nps_org_created_idx')],
+                "verbose_name": "NPS Survey",
+                "verbose_name_plural": "NPS Surveys",
+                "db_table": "nps_surveys",
+                "ordering": ["-created_at"],
+                "indexes": [
+                    models.Index(
+                        fields=["organization", "created_at"],
+                        name="nps_org_created_idx",
+                    )
+                ],
             },
         ),
     ]

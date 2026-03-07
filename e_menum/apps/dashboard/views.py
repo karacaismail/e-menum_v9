@@ -20,8 +20,8 @@ def mainboard(request):
     Page load target: ~50ms (empty template).
     """
     context = {
-        'title': 'Dashboard',
-        'is_nav_sidebar_enabled': False,
-        'has_permission': True,
+        "title": "Dashboard",
+        "is_nav_sidebar_enabled": False,
+        "has_permission": True,
     }
-    return render(request, 'dashboard/mainboard.html', context)
+    return render(request, "dashboard/mainboard.html", context)

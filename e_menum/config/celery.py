@@ -21,16 +21,16 @@ from celery import Celery
 from celery.schedules import crontab
 
 # Set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.development')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.development")
 
 # Create the Celery application instance
-app = Celery('e_menum')
+app = Celery("e_menum")
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
 # - namespace='CELERY' means all celery-related configuration keys
 #   should have a `CELERY_` prefix in Django settings.
-app.config_from_object('django.conf:settings', namespace='CELERY')
+app.config_from_object("django.conf:settings", namespace="CELERY")
 
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()
@@ -44,108 +44,92 @@ app.conf.beat_schedule = {
     # =========================================================================
     # Analytics Aggregation Tasks
     # =========================================================================
-
     # Hourly sales aggregation - runs every hour at minute 5
-    'aggregate-hourly-analytics': {
-        'task': 'apps.analytics.tasks.aggregate_hourly_analytics',
-        'schedule': crontab(minute=5),
-        'options': {'queue': 'analytics'},
+    "aggregate-hourly-analytics": {
+        "task": "apps.analytics.tasks.aggregate_hourly_analytics",
+        "schedule": crontab(minute=5),
+        "options": {"queue": "analytics"},
     },
-
     # Daily sales aggregation - runs at 02:00 UTC
-    'generate-daily-summary': {
-        'task': 'apps.analytics.tasks.generate_daily_summary',
-        'schedule': crontab(hour=2, minute=0),
-        'options': {'queue': 'analytics'},
+    "generate-daily-summary": {
+        "task": "apps.analytics.tasks.generate_daily_summary",
+        "schedule": crontab(hour=2, minute=0),
+        "options": {"queue": "analytics"},
     },
-
     # Product performance aggregation (daily) - runs at 02:30 UTC
-    'aggregate-product-performance': {
-        'task': 'apps.analytics.tasks.aggregate_product_performance',
-        'schedule': crontab(hour=2, minute=30),
-        'options': {'queue': 'analytics'},
+    "aggregate-product-performance": {
+        "task": "apps.analytics.tasks.aggregate_product_performance",
+        "schedule": crontab(hour=2, minute=30),
+        "options": {"queue": "analytics"},
     },
-
     # Customer metrics aggregation - runs at 03:00 UTC
-    'aggregate-customer-metrics': {
-        'task': 'apps.analytics.tasks.aggregate_customer_metrics',
-        'schedule': crontab(hour=3, minute=0),
-        'options': {'queue': 'analytics'},
+    "aggregate-customer-metrics": {
+        "task": "apps.analytics.tasks.aggregate_customer_metrics",
+        "schedule": crontab(hour=3, minute=0),
+        "options": {"queue": "analytics"},
     },
-
     # Dashboard KPI metrics - runs at 03:30 UTC
-    'aggregate-dashboard-metrics': {
-        'task': 'apps.analytics.tasks.aggregate_dashboard_metrics',
-        'schedule': crontab(hour=3, minute=30),
-        'options': {'queue': 'analytics'},
+    "aggregate-dashboard-metrics": {
+        "task": "apps.analytics.tasks.aggregate_dashboard_metrics",
+        "schedule": crontab(hour=3, minute=30),
+        "options": {"queue": "analytics"},
     },
-
     # Weekly product performance - runs Mondays at 04:00 UTC
-    'aggregate-weekly-performance': {
-        'task': 'apps.analytics.tasks.aggregate_weekly_performance',
-        'schedule': crontab(hour=4, minute=0, day_of_week=1),
-        'options': {'queue': 'analytics'},
+    "aggregate-weekly-performance": {
+        "task": "apps.analytics.tasks.aggregate_weekly_performance",
+        "schedule": crontab(hour=4, minute=0, day_of_week=1),
+        "options": {"queue": "analytics"},
     },
-
     # =========================================================================
     # Dashboard Tasks
     # =========================================================================
-
     # Generate dashboard insights - runs daily at 06:00 UTC
-    'generate-dashboard-insights': {
-        'task': 'apps.dashboard.tasks.generate_dashboard_insights',
-        'schedule': crontab(hour=6, minute=0),
-        'options': {'queue': 'analytics'},
+    "generate-dashboard-insights": {
+        "task": "apps.dashboard.tasks.generate_dashboard_insights",
+        "schedule": crontab(hour=6, minute=0),
+        "options": {"queue": "analytics"},
     },
-
     # Warm dashboard KPI cache - runs every 5 minutes
-    'warm-kpi-cache': {
-        'task': 'apps.dashboard.tasks.warm_kpi_cache',
-        'schedule': crontab(minute='*/5'),
-        'options': {'queue': 'analytics'},
+    "warm-kpi-cache": {
+        "task": "apps.dashboard.tasks.warm_kpi_cache",
+        "schedule": crontab(minute="*/5"),
+        "options": {"queue": "analytics"},
     },
-
     # =========================================================================
     # Reporting Tasks
     # =========================================================================
-
     # Process scheduled reports - runs every 5 minutes
-    'process-scheduled-reports': {
-        'task': 'apps.reporting.tasks.process_scheduled_reports',
-        'schedule': crontab(minute='*/5'),
-        'options': {'queue': 'reporting'},
+    "process-scheduled-reports": {
+        "task": "apps.reporting.tasks.process_scheduled_reports",
+        "schedule": crontab(minute="*/5"),
+        "options": {"queue": "reporting"},
     },
-
     # =========================================================================
     # System Maintenance Tasks
     # =========================================================================
-
     # Subscription expiry check - runs at 5 AM
-    'check-subscription-expiry': {
-        'task': 'apps.subscriptions.tasks.check_expiring_subscriptions',
-        'schedule': crontab(hour=5, minute=0),
-        'options': {'queue': 'subscriptions'},
+    "check-subscription-expiry": {
+        "task": "apps.subscriptions.tasks.check_expiring_subscriptions",
+        "schedule": crontab(hour=5, minute=0),
+        "options": {"queue": "subscriptions"},
     },
-
     # Send weekly digest emails - runs on Mondays at 9 AM
-    'send-weekly-digest': {
-        'task': 'apps.notifications.tasks.send_weekly_digest',
-        'schedule': crontab(hour=9, minute=0, day_of_week=1),
-        'options': {'queue': 'notifications'},
+    "send-weekly-digest": {
+        "task": "apps.notifications.tasks.send_weekly_digest",
+        "schedule": crontab(hour=9, minute=0, day_of_week=1),
+        "options": {"queue": "notifications"},
     },
-
     # Cleanup old sessions - runs daily at 6 AM
-    'cleanup-expired-sessions': {
-        'task': 'apps.core.tasks.cleanup_expired_sessions',
-        'schedule': crontab(hour=6, minute=0),
-        'options': {'queue': 'maintenance'},
+    "cleanup-expired-sessions": {
+        "task": "apps.core.tasks.cleanup_expired_sessions",
+        "schedule": crontab(hour=6, minute=0),
+        "options": {"queue": "maintenance"},
     },
-
     # Cleanup soft-deleted records older than 30 days - runs weekly
-    'cleanup-soft-deleted': {
-        'task': 'apps.core.tasks.cleanup_soft_deleted_records',
-        'schedule': crontab(hour=6, minute=30, day_of_week=0),
-        'options': {'queue': 'maintenance'},
+    "cleanup-soft-deleted": {
+        "task": "apps.core.tasks.cleanup_soft_deleted_records",
+        "schedule": crontab(hour=6, minute=30, day_of_week=0),
+        "options": {"queue": "maintenance"},
     },
 }
 
@@ -156,25 +140,19 @@ app.conf.beat_schedule = {
 
 app.conf.task_routes = {
     # AI tasks go to a dedicated queue (may need more resources)
-    'apps.ai.tasks.*': {'queue': 'ai'},
-
+    "apps.ai.tasks.*": {"queue": "ai"},
     # Analytics tasks (can be lower priority)
-    'apps.analytics.tasks.*': {'queue': 'analytics'},
-
+    "apps.analytics.tasks.*": {"queue": "analytics"},
     # Reporting tasks (report generation, exports)
-    'apps.reporting.tasks.*': {'queue': 'reporting'},
-
+    "apps.reporting.tasks.*": {"queue": "reporting"},
     # Notification tasks (email, push, etc.)
-    'apps.notifications.tasks.*': {'queue': 'notifications'},
-
+    "apps.notifications.tasks.*": {"queue": "notifications"},
     # Subscription and billing tasks
-    'apps.subscriptions.tasks.*': {'queue': 'subscriptions'},
-
+    "apps.subscriptions.tasks.*": {"queue": "subscriptions"},
     # Media processing (image optimization, etc.)
-    'apps.media.tasks.*': {'queue': 'media'},
-
+    "apps.media.tasks.*": {"queue": "media"},
     # Default queue for everything else
-    'apps.*.tasks.*': {'queue': 'default'},
+    "apps.*.tasks.*": {"queue": "default"},
 }
 
 
@@ -200,15 +178,15 @@ app.conf.worker_pool_restarts = True
 
 # Retry configuration for transient failures
 app.conf.task_annotations = {
-    '*': {
-        'rate_limit': '100/s',
+    "*": {
+        "rate_limit": "100/s",
     },
-    'apps.ai.tasks.*': {
-        'rate_limit': '10/m',  # AI tasks rate limited
-        'time_limit': 300,  # 5 minute timeout for AI tasks
+    "apps.ai.tasks.*": {
+        "rate_limit": "10/m",  # AI tasks rate limited
+        "time_limit": 300,  # 5 minute timeout for AI tasks
     },
-    'apps.notifications.tasks.send_email': {
-        'rate_limit': '50/m',  # Email rate limiting
+    "apps.notifications.tasks.send_email": {
+        "rate_limit": "50/m",  # Email rate limiting
     },
 }
 
@@ -216,6 +194,7 @@ app.conf.task_annotations = {
 # =============================================================================
 # Debug Task
 # =============================================================================
+
 
 @app.task(bind=True, ignore_result=True)
 def debug_task(self):
@@ -226,4 +205,4 @@ def debug_task(self):
         from config.celery import debug_task
         debug_task.delay()
     """
-    print(f'Request: {self.request!r}')
+    print(f"Request: {self.request!r}")

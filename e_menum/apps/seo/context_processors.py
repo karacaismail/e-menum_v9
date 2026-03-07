@@ -14,18 +14,18 @@ def seo_context(request):
 
     gtm = GTMManager()
     return {
-        'SEO_GTM_HEAD': gtm.get_head_snippet(),
-        'SEO_GTM_BODY': gtm.get_body_snippet(),
-        'SEO_SITE_NAME': getattr(settings, 'SEO_SITE_NAME', 'E-Menum'),
-        'SEO_DEFAULT_TITLE': getattr(
+        "SEO_GTM_HEAD": gtm.get_head_snippet(),
+        "SEO_GTM_BODY": gtm.get_body_snippet(),
+        "SEO_SITE_NAME": getattr(settings, "SEO_SITE_NAME", "E-Menum"),
+        "SEO_DEFAULT_TITLE": getattr(
             settings,
-            'SEO_DEFAULT_TITLE',
-            'E-Menum - Akilli QR Menu Platformu',
+            "SEO_DEFAULT_TITLE",
+            "E-Menum - Akilli QR Menu Platformu",
         ),
-        'SEO_DEFAULT_DESCRIPTION': getattr(
+        "SEO_DEFAULT_DESCRIPTION": getattr(
             settings,
-            'SEO_DEFAULT_DESCRIPTION',
-            'Restoran ve kafeler icin yapay zeka destekli dijital menu platformu.',
+            "SEO_DEFAULT_DESCRIPTION",
+            "Restoran ve kafeler icin yapay zeka destekli dijital menu platformu.",
         ),
-        'SEO_DEFAULT_OG_IMAGE': getattr(settings, 'SEO_DEFAULT_OG_IMAGE', ''),
+        "SEO_DEFAULT_OG_IMAGE": getattr(settings, "SEO_DEFAULT_OG_IMAGE", ""),
     }

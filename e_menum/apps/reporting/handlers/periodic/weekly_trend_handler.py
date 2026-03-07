@@ -39,7 +39,7 @@ def _parse_date(val) -> Optional[date]:
         return val
     if isinstance(val, datetime):
         return val.date()
-    return datetime.strptime(str(val), '%Y-%m-%d').date()
+    return datetime.strptime(str(val), "%Y-%m-%d").date()
 
 
 def _safe_percent_change(current: float, previous: float) -> Optional[float]:
@@ -48,7 +48,7 @@ def _safe_percent_change(current: float, previous: float) -> Optional[float]:
     return round(((current - previous) / previous) * 100, 2)
 
 
-@register_handler('RPT-PER-005')
+@register_handler("RPT-PER-005")
 class WeeklyTrendHandler(BaseReportHandler):
     """
     Weekly trend report handler.
@@ -61,10 +61,10 @@ class WeeklyTrendHandler(BaseReportHandler):
                                (defaults to last week's Monday)
     """
 
-    feature_key = 'RPT-PER-005'
+    feature_key = "RPT-PER-005"
 
     def get_required_permissions(self) -> List[str]:
-        return ['reporting.view']
+        return ["reporting.view"]
 
     def get_default_parameters(self) -> dict:
         today = date.today()
@@ -73,16 +73,16 @@ class WeeklyTrendHandler(BaseReportHandler):
         this_monday = today - timedelta(days=days_since_monday)
         last_monday = this_monday - timedelta(days=7)
         return {
-            'week_start_date': last_monday.isoformat(),
+            "week_start_date": last_monday.isoformat(),
         }
 
     def validate_parameters(self, parameters: dict) -> dict:
         merged = {**self.get_default_parameters(), **parameters}
-        merged['week_start_date'] = _parse_date(merged['week_start_date'])
+        merged["week_start_date"] = _parse_date(merged["week_start_date"])
         return merged
 
     def generate(self, org_id: str, parameters: dict) -> dict:
-        week_start = parameters['week_start_date']
+        week_start = parameters["week_start_date"]
         week_end = week_start + timedelta(days=6)
 
         prev_week_start = week_start - timedelta(days=7)
@@ -104,38 +104,39 @@ class WeeklyTrendHandler(BaseReportHandler):
         trends = self._calculate_trends(daily_breakdown)
 
         return {
-            'week': {
-                'start_date': week_start.isoformat(),
-                'end_date': week_end.isoformat(),
-                'week_number': week_start.isocalendar()[1],
-                'year': week_start.year,
+            "week": {
+                "start_date": week_start.isoformat(),
+                "end_date": week_end.isoformat(),
+                "week_number": week_start.isocalendar()[1],
+                "year": week_start.year,
             },
-            'daily_breakdown': daily_breakdown,
-            'week_totals': week_totals,
-            'comparison': {
-                'previous_week': {
-                    'start_date': prev_week_start.isoformat(),
-                    'end_date': prev_week_end.isoformat(),
+            "daily_breakdown": daily_breakdown,
+            "week_totals": week_totals,
+            "comparison": {
+                "previous_week": {
+                    "start_date": prev_week_start.isoformat(),
+                    "end_date": prev_week_end.isoformat(),
                 },
-                'revenue_change_percent': _safe_percent_change(
-                    week_totals['total_revenue'], prev_week_totals['total_revenue'],
+                "revenue_change_percent": _safe_percent_change(
+                    week_totals["total_revenue"],
+                    prev_week_totals["total_revenue"],
                 ),
-                'order_count_change_percent': _safe_percent_change(
-                    float(week_totals['order_count']),
-                    float(prev_week_totals['order_count']),
+                "order_count_change_percent": _safe_percent_change(
+                    float(week_totals["order_count"]),
+                    float(prev_week_totals["order_count"]),
                 ),
-                'avg_order_value_change_percent': _safe_percent_change(
-                    week_totals['avg_order_value'],
-                    prev_week_totals['avg_order_value'],
+                "avg_order_value_change_percent": _safe_percent_change(
+                    week_totals["avg_order_value"],
+                    prev_week_totals["avg_order_value"],
                 ),
-                'new_customers_change_percent': _safe_percent_change(
-                    float(week_totals['new_customers']),
-                    float(prev_week_totals['new_customers']),
+                "new_customers_change_percent": _safe_percent_change(
+                    float(week_totals["new_customers"]),
+                    float(prev_week_totals["new_customers"]),
                 ),
-                'previous_week_totals': prev_week_totals,
+                "previous_week_totals": prev_week_totals,
             },
-            'top_sellers': top_sellers,
-            'trends': trends,
+            "top_sellers": top_sellers,
+            "trends": trends,
         }
 
     # ------------------------------------------------------------------
@@ -143,7 +144,10 @@ class WeeklyTrendHandler(BaseReportHandler):
     # ------------------------------------------------------------------
 
     def _get_daily_breakdown(
-        self, org_id: str, start: date, end: date,
+        self,
+        org_id: str,
+        start: date,
+        end: date,
     ) -> List[dict]:
         """Get per-day metrics for the week."""
         # Try SalesAggregation first
@@ -155,39 +159,44 @@ class WeeklyTrendHandler(BaseReportHandler):
                 date__gte=start,
                 date__lte=end,
             )
-            .values('date')
+            .values("date")
             .annotate(
-                revenue=Sum('gross_revenue'),
-                net_revenue=Sum('net_revenue'),
-                orders=Sum('order_count'),
-                items=Sum('item_count'),
-                customers=Sum('customer_count'),
+                revenue=Sum("gross_revenue"),
+                net_revenue=Sum("net_revenue"),
+                orders=Sum("order_count"),
+                items=Sum("item_count"),
+                customers=Sum("customer_count"),
             )
-            .order_by('date')
+            .order_by("date")
         )
 
         # Build a lookup for quick access
-        agg_lookup = {row['date']: row for row in agg_rows}
+        agg_lookup = {row["date"]: row for row in agg_rows}
 
         breakdown = []
         current = start
         while current <= end:
             if current in agg_lookup:
                 row = agg_lookup[current]
-                orders_count = row['orders'] or 0
-                rev = _to_float(row['revenue'])
-                breakdown.append({
-                    'date': current.isoformat(),
-                    'day_of_week': current.strftime('%A'),
-                    'revenue': rev,
-                    'net_revenue': _to_float(row['net_revenue']),
-                    'order_count': orders_count,
-                    'item_count': row['items'] or 0,
-                    'customer_count': row['customers'] or 0,
-                    'avg_order_value': round(
-                        rev / orders_count, 2,
-                    ) if orders_count > 0 else 0,
-                })
+                orders_count = row["orders"] or 0
+                rev = _to_float(row["revenue"])
+                breakdown.append(
+                    {
+                        "date": current.isoformat(),
+                        "day_of_week": current.strftime("%A"),
+                        "revenue": rev,
+                        "net_revenue": _to_float(row["net_revenue"]),
+                        "order_count": orders_count,
+                        "item_count": row["items"] or 0,
+                        "customer_count": row["customers"] or 0,
+                        "avg_order_value": round(
+                            rev / orders_count,
+                            2,
+                        )
+                        if orders_count > 0
+                        else 0,
+                    }
+                )
             else:
                 # Fallback to Order table for this day
                 day_data = self._get_day_from_orders(org_id, current)
@@ -207,32 +216,35 @@ class WeeklyTrendHandler(BaseReportHandler):
         )
 
         agg = qs.aggregate(
-            revenue=Sum('total_amount'),
-            orders=Count('id'),
-            avg_ov=Avg('total_amount'),
-            customers=Count('customer', distinct=True),
+            revenue=Sum("total_amount"),
+            orders=Count("id"),
+            avg_ov=Avg("total_amount"),
+            customers=Count("customer", distinct=True),
         )
 
-        item_count = OrderItem.objects.filter(
-            order__organization_id=org_id,
-            order__deleted_at__isnull=True,
-            deleted_at__isnull=True,
-            order__created_at__date=d,
-            order__status__in=[OrderStatus.COMPLETED, OrderStatus.DELIVERED],
-        ).aggregate(t=Sum('quantity'))['t'] or 0
+        item_count = (
+            OrderItem.objects.filter(
+                order__organization_id=org_id,
+                order__deleted_at__isnull=True,
+                deleted_at__isnull=True,
+                order__created_at__date=d,
+                order__status__in=[OrderStatus.COMPLETED, OrderStatus.DELIVERED],
+            ).aggregate(t=Sum("quantity"))["t"]
+            or 0
+        )
 
-        rev = _to_float(agg['revenue'])
-        oc = agg['orders'] or 0
+        rev = _to_float(agg["revenue"])
+        oc = agg["orders"] or 0
 
         return {
-            'date': d.isoformat(),
-            'day_of_week': d.strftime('%A'),
-            'revenue': rev,
-            'net_revenue': rev,  # Approximation when no agg data
-            'order_count': oc,
-            'item_count': item_count,
-            'customer_count': agg['customers'] or 0,
-            'avg_order_value': round(rev / oc, 2) if oc > 0 else 0,
+            "date": d.isoformat(),
+            "day_of_week": d.strftime("%A"),
+            "revenue": rev,
+            "net_revenue": rev,  # Approximation when no agg data
+            "order_count": oc,
+            "item_count": item_count,
+            "customer_count": agg["customers"] or 0,
+            "avg_order_value": round(rev / oc, 2) if oc > 0 else 0,
         }
 
     def _get_week_totals(self, org_id: str, start: date, end: date) -> dict:
@@ -246,12 +258,12 @@ class WeeklyTrendHandler(BaseReportHandler):
         )
 
         agg = qs.aggregate(
-            total_revenue=Sum('total_amount'),
-            order_count=Count('id'),
-            avg_order_value=Avg('total_amount'),
-            total_discount=Sum('discount_amount'),
-            total_tax=Sum('tax_amount'),
-            total_customers=Count('customer', distinct=True),
+            total_revenue=Sum("total_amount"),
+            order_count=Count("id"),
+            avg_order_value=Avg("total_amount"),
+            total_discount=Sum("discount_amount"),
+            total_tax=Sum("tax_amount"),
+            total_customers=Count("customer", distinct=True),
         )
 
         new_customers = Customer.objects.filter(
@@ -270,18 +282,22 @@ class WeeklyTrendHandler(BaseReportHandler):
         ).count()
 
         return {
-            'total_revenue': _to_float(agg['total_revenue']),
-            'order_count': agg['order_count'] or 0,
-            'avg_order_value': _to_float(agg['avg_order_value']),
-            'total_discount': _to_float(agg['total_discount']),
-            'total_tax': _to_float(agg['total_tax']),
-            'unique_customers': agg['total_customers'] or 0,
-            'new_customers': new_customers,
-            'cancelled_orders': cancelled,
+            "total_revenue": _to_float(agg["total_revenue"]),
+            "order_count": agg["order_count"] or 0,
+            "avg_order_value": _to_float(agg["avg_order_value"]),
+            "total_discount": _to_float(agg["total_discount"]),
+            "total_tax": _to_float(agg["total_tax"]),
+            "unique_customers": agg["total_customers"] or 0,
+            "new_customers": new_customers,
+            "cancelled_orders": cancelled,
         }
 
     def _get_top_sellers(
-        self, org_id: str, start: date, end: date, limit: int = 10,
+        self,
+        org_id: str,
+        start: date,
+        end: date,
+        limit: int = 10,
     ) -> List[dict]:
         """Top selling products for the week."""
         rows = (
@@ -294,22 +310,24 @@ class WeeklyTrendHandler(BaseReportHandler):
                 order__created_at__date__lte=end,
             )
             .values(
-                product_name=F('product__name'),
-                product_id_val=F('product__id'),
+                product_name=F("product__name"),
+                product_id_val=F("product__id"),
             )
             .annotate(
-                qty_sold=Sum('quantity'),
-                revenue=Sum('total_price'),
+                qty_sold=Sum("quantity"),
+                revenue=Sum("total_price"),
             )
-            .order_by('-revenue')[:limit]
+            .order_by("-revenue")[:limit]
         )
 
         return [
             {
-                'product_id': str(row['product_id_val']) if row['product_id_val'] else None,
-                'product_name': row['product_name'] or 'Unknown',
-                'qty_sold': row['qty_sold'] or 0,
-                'revenue': _to_float(row['revenue']),
+                "product_id": str(row["product_id_val"])
+                if row["product_id_val"]
+                else None,
+                "product_name": row["product_name"] or "Unknown",
+                "qty_sold": row["qty_sold"] or 0,
+                "revenue": _to_float(row["revenue"]),
             }
             for row in rows
         ]
@@ -318,14 +336,14 @@ class WeeklyTrendHandler(BaseReportHandler):
         """Determine trend directions from daily data."""
         if len(daily_breakdown) < 2:
             return {
-                'revenue_trend': 'stable',
-                'order_trend': 'stable',
-                'best_day': None,
-                'worst_day': None,
+                "revenue_trend": "stable",
+                "order_trend": "stable",
+                "best_day": None,
+                "worst_day": None,
             }
 
-        revenues = [d['revenue'] for d in daily_breakdown]
-        orders = [d['order_count'] for d in daily_breakdown]
+        revenues = [d["revenue"] for d in daily_breakdown]
+        orders = [d["order_count"] for d in daily_breakdown]
 
         # Simple trend: compare first half to second half
         mid = len(revenues) // 2
@@ -336,28 +354,28 @@ class WeeklyTrendHandler(BaseReportHandler):
 
         def trend(first, second):
             if second > first * 1.1:
-                return 'up'
+                return "up"
             elif second < first * 0.9:
-                return 'down'
-            return 'stable'
+                return "down"
+            return "stable"
 
         # Best and worst days
-        best = max(daily_breakdown, key=lambda d: d['revenue'])
-        worst = min(daily_breakdown, key=lambda d: d['revenue'])
+        best = max(daily_breakdown, key=lambda d: d["revenue"])
+        worst = min(daily_breakdown, key=lambda d: d["revenue"])
 
         return {
-            'revenue_trend': trend(first_half_rev, second_half_rev),
-            'order_trend': trend(first_half_ord, second_half_ord),
-            'best_day': {
-                'date': best['date'],
-                'day_of_week': best['day_of_week'],
-                'revenue': best['revenue'],
-                'order_count': best['order_count'],
+            "revenue_trend": trend(first_half_rev, second_half_rev),
+            "order_trend": trend(first_half_ord, second_half_ord),
+            "best_day": {
+                "date": best["date"],
+                "day_of_week": best["day_of_week"],
+                "revenue": best["revenue"],
+                "order_count": best["order_count"],
             },
-            'worst_day': {
-                'date': worst['date'],
-                'day_of_week': worst['day_of_week'],
-                'revenue': worst['revenue'],
-                'order_count': worst['order_count'],
+            "worst_day": {
+                "date": worst["date"],
+                "day_of_week": worst["day_of_week"],
+                "revenue": worst["revenue"],
+                "order_count": worst["order_count"],
             },
         }

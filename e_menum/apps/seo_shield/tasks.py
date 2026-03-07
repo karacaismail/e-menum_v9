@@ -22,16 +22,17 @@ from celery import shared_task
 from django.db.models import Count
 from django.utils import timezone
 
-logger = logging.getLogger('apps.seo_shield')
+logger = logging.getLogger("apps.seo_shield")
 
 
 # =============================================================================
 # RISK SCORE DECAY
 # =============================================================================
 
+
 @shared_task(
     bind=True,
-    name='seo_shield.decay_risk_scores',
+    name="seo_shield.decay_risk_scores",
     max_retries=2,
     default_retry_delay=60,
     soft_time_limit=300,
@@ -55,7 +56,7 @@ def decay_risk_scores(self, decay_factor: float = 0.9):
     from apps.seo_shield.ip_reputation import IPReputationManager
 
     logger.info(
-        'Starting risk score decay with factor %.2f',
+        "Starting risk score decay with factor %.2f",
         decay_factor,
     )
 
@@ -64,17 +65,18 @@ def decay_risk_scores(self, decay_factor: float = 0.9):
         updated_count = manager.decay_scores(decay_factor=decay_factor)
 
         summary = {
-            'records_updated': updated_count,
-            'decay_factor': decay_factor,
+            "records_updated": updated_count,
+            "decay_factor": decay_factor,
         }
         logger.info(
-            'Risk score decay complete: %d records updated (factor=%.2f)',
-            updated_count, decay_factor,
+            "Risk score decay complete: %d records updated (factor=%.2f)",
+            updated_count,
+            decay_factor,
         )
         return summary
 
     except Exception as exc:
-        logger.exception('Risk score decay failed: %s', exc)
+        logger.exception("Risk score decay failed: %s", exc)
         raise self.retry(exc=exc)
 
 
@@ -82,9 +84,10 @@ def decay_risk_scores(self, decay_factor: float = 0.9):
 # BLOCK LOG CLEANUP
 # =============================================================================
 
+
 @shared_task(
     bind=True,
-    name='seo_shield.cleanup_block_logs',
+    name="seo_shield.cleanup_block_logs",
     max_retries=1,
     default_retry_delay=120,
     soft_time_limit=300,
@@ -120,26 +123,29 @@ def cleanup_block_logs(self, retention_days: int = 30):
             batch_ids = list(
                 BlockLog.objects.filter(
                     created_at__lt=cutoff_date,
-                ).values_list('id', flat=True)[:batch_size]
+                ).values_list("id", flat=True)[:batch_size]
             )
             if not batch_ids:
                 break
             deleted, _ = BlockLog.objects.filter(id__in=batch_ids).delete()
             deleted_total += deleted
-            logger.debug('Deleted batch of %d block logs', deleted)
+            logger.debug("Deleted batch of %d block logs", deleted)
 
         logger.info(
-            'Block log cleanup complete: %d entries deleted (older than %s)',
-            deleted_total, cutoff_date.strftime('%Y-%m-%d'),
+            "Block log cleanup complete: %d entries deleted (older than %s)",
+            deleted_total,
+            cutoff_date.strftime("%Y-%m-%d"),
         )
         count = deleted_total
     else:
-        logger.info('No block logs older than %d days found for cleanup', retention_days)
+        logger.info(
+            "No block logs older than %d days found for cleanup", retention_days
+        )
 
     return {
-        'logs_deleted': count,
-        'cutoff_date': cutoff_date.strftime('%Y-%m-%d'),
-        'retention_days': retention_days,
+        "logs_deleted": count,
+        "cutoff_date": cutoff_date.strftime("%Y-%m-%d"),
+        "retention_days": retention_days,
     }
 
 
@@ -147,9 +153,10 @@ def cleanup_block_logs(self, retention_days: int = 30):
 # BOT WHITELIST VERIFICATION
 # =============================================================================
 
+
 @shared_task(
     bind=True,
-    name='seo_shield.verify_bot_whitelist',
+    name="seo_shield.verify_bot_whitelist",
     max_retries=1,
     default_retry_delay=120,
     soft_time_limit=300,
@@ -179,66 +186,82 @@ def verify_bot_whitelist(self):
     for entry in entries:
         total_checked += 1
 
-        if entry.verification_method == BotWhitelist.VerificationMethod.DNS and entry.dns_domain:
+        if (
+            entry.verification_method == BotWhitelist.VerificationMethod.DNS
+            and entry.dns_domain
+        ):
             # Attempt DNS resolution of the bot's domain
             try:
                 socket.gethostbyname(entry.dns_domain)
                 entry.last_verified = now
-                entry.save(update_fields=['last_verified', 'updated_at'])
+                entry.save(update_fields=["last_verified", "updated_at"])
                 verified_count += 1
-                results.append({
-                    'name': entry.name,
-                    'status': 'verified',
-                    'domain': entry.dns_domain,
-                })
+                results.append(
+                    {
+                        "name": entry.name,
+                        "status": "verified",
+                        "domain": entry.dns_domain,
+                    }
+                )
                 logger.debug(
-                    'Bot whitelist verified via DNS: %s (%s)',
-                    entry.name, entry.dns_domain,
+                    "Bot whitelist verified via DNS: %s (%s)",
+                    entry.name,
+                    entry.dns_domain,
                 )
             except (socket.gaierror, socket.herror, OSError) as exc:
                 failed_count += 1
-                results.append({
-                    'name': entry.name,
-                    'status': 'failed',
-                    'domain': entry.dns_domain,
-                    'error': str(exc),
-                })
+                results.append(
+                    {
+                        "name": entry.name,
+                        "status": "failed",
+                        "domain": entry.dns_domain,
+                        "error": str(exc),
+                    }
+                )
                 logger.warning(
-                    'Bot whitelist DNS verification failed for %s (%s): %s',
-                    entry.name, entry.dns_domain, exc,
+                    "Bot whitelist DNS verification failed for %s (%s): %s",
+                    entry.name,
+                    entry.dns_domain,
+                    exc,
                 )
 
         elif entry.verification_method == BotWhitelist.VerificationMethod.IP_RANGE:
             # IP range bots don't need periodic re-verification
             entry.last_verified = now
-            entry.save(update_fields=['last_verified', 'updated_at'])
+            entry.save(update_fields=["last_verified", "updated_at"])
             verified_count += 1
-            results.append({
-                'name': entry.name,
-                'status': 'verified',
-                'method': 'ip_range',
-            })
+            results.append(
+                {
+                    "name": entry.name,
+                    "status": "verified",
+                    "method": "ip_range",
+                }
+            )
 
         elif entry.verification_method == BotWhitelist.VerificationMethod.USER_AGENT:
             # User-Agent only bots are always considered verified
             entry.last_verified = now
-            entry.save(update_fields=['last_verified', 'updated_at'])
+            entry.save(update_fields=["last_verified", "updated_at"])
             verified_count += 1
-            results.append({
-                'name': entry.name,
-                'status': 'verified',
-                'method': 'user_agent',
-            })
+            results.append(
+                {
+                    "name": entry.name,
+                    "status": "verified",
+                    "method": "user_agent",
+                }
+            )
 
     summary = {
-        'total_checked': total_checked,
-        'verified': verified_count,
-        'failed': failed_count,
-        'details': results,
+        "total_checked": total_checked,
+        "verified": verified_count,
+        "failed": failed_count,
+        "details": results,
     }
     logger.info(
-        'Bot whitelist verification complete: %d checked, %d verified, %d failed',
-        total_checked, verified_count, failed_count,
+        "Bot whitelist verification complete: %d checked, %d verified, %d failed",
+        total_checked,
+        verified_count,
+        failed_count,
     )
     return summary
 
@@ -247,9 +270,10 @@ def verify_bot_whitelist(self):
 # SHIELD REPORT GENERATION
 # =============================================================================
 
+
 @shared_task(
     bind=True,
-    name='seo_shield.generate_shield_report',
+    name="seo_shield.generate_shield_report",
     max_retries=1,
     default_retry_delay=60,
     soft_time_limit=120,
@@ -280,9 +304,12 @@ def generate_shield_report(self):
     action_counts = dict(
         BlockLog.objects.filter(
             created_at__gte=last_24h,
-        ).values_list('action_taken').annotate(
-            count=Count('id'),
-        ).values_list('action_taken', 'count')
+        )
+        .values_list("action_taken")
+        .annotate(
+            count=Count("id"),
+        )
+        .values_list("action_taken", "count")
     )
 
     total_actions = sum(action_counts.values())
@@ -291,35 +318,43 @@ def generate_shield_report(self):
     top_ips = list(
         BlockLog.objects.filter(
             created_at__gte=last_24h,
-        ).values('ip_address').annotate(
-            count=Count('id'),
-        ).order_by('-count')[:10]
+        )
+        .values("ip_address")
+        .annotate(
+            count=Count("id"),
+        )
+        .order_by("-count")[:10]
     )
 
     # -- Top reasons --
     top_reasons = list(
         BlockLog.objects.filter(
             created_at__gte=last_24h,
-        ).values('reason').annotate(
-            count=Count('id'),
-        ).order_by('-count')[:5]
+        )
+        .values("reason")
+        .annotate(
+            count=Count("id"),
+        )
+        .order_by("-count")[:5]
     )
 
     # -- Risk score distribution --
     risk_distribution = {
-        'low_0_29': IPRiskScore.objects.filter(
-            risk_score__gte=0, risk_score__lt=30,
+        "low_0_29": IPRiskScore.objects.filter(
+            risk_score__gte=0,
+            risk_score__lt=30,
         ).count(),
-        'medium_30_59': IPRiskScore.objects.filter(
-            risk_score__gte=30, risk_score__lt=60,
+        "medium_30_59": IPRiskScore.objects.filter(
+            risk_score__gte=30,
+            risk_score__lt=60,
         ).count(),
-        'high_60_100': IPRiskScore.objects.filter(
+        "high_60_100": IPRiskScore.objects.filter(
             risk_score__gte=60,
         ).count(),
-        'whitelisted': IPRiskScore.objects.filter(
+        "whitelisted": IPRiskScore.objects.filter(
             is_whitelisted=True,
         ).count(),
-        'blacklisted': IPRiskScore.objects.filter(
+        "blacklisted": IPRiskScore.objects.filter(
             is_blacklisted=True,
         ).count(),
     }
@@ -327,46 +362,46 @@ def generate_shield_report(self):
     total_tracked_ips = IPRiskScore.objects.count()
 
     report = {
-        'period': {
-            'start': last_24h.isoformat(),
-            'end': now.isoformat(),
+        "period": {
+            "start": last_24h.isoformat(),
+            "end": now.isoformat(),
         },
-        'summary': {
-            'total_actions': total_actions,
-            'blocked': action_counts.get('blocked', 0),
-            'challenged': action_counts.get('challenged', 0),
-            'throttled': action_counts.get('throttled', 0),
-            'logged': action_counts.get('logged', 0),
+        "summary": {
+            "total_actions": total_actions,
+            "blocked": action_counts.get("blocked", 0),
+            "challenged": action_counts.get("challenged", 0),
+            "throttled": action_counts.get("throttled", 0),
+            "logged": action_counts.get("logged", 0),
         },
-        'top_ips': top_ips,
-        'top_reasons': top_reasons,
-        'risk_distribution': risk_distribution,
-        'total_tracked_ips': total_tracked_ips,
+        "top_ips": top_ips,
+        "top_reasons": top_reasons,
+        "risk_distribution": risk_distribution,
+        "total_tracked_ips": total_tracked_ips,
     }
 
     # Log the report
     logger.info(
-        'Shield Daily Report (%s to %s)\n'
-        '  Total actions: %d (blocked=%d, challenged=%d, throttled=%d, logged=%d)\n'
-        '  Top IPs: %s\n'
-        '  Top reasons: %s\n'
-        '  Risk distribution: low=%d, medium=%d, high=%d\n'
-        '  Tracked IPs: %d (whitelisted=%d, blacklisted=%d)',
-        last_24h.strftime('%Y-%m-%d %H:%M'),
-        now.strftime('%Y-%m-%d %H:%M'),
+        "Shield Daily Report (%s to %s)\n"
+        "  Total actions: %d (blocked=%d, challenged=%d, throttled=%d, logged=%d)\n"
+        "  Top IPs: %s\n"
+        "  Top reasons: %s\n"
+        "  Risk distribution: low=%d, medium=%d, high=%d\n"
+        "  Tracked IPs: %d (whitelisted=%d, blacklisted=%d)",
+        last_24h.strftime("%Y-%m-%d %H:%M"),
+        now.strftime("%Y-%m-%d %H:%M"),
         total_actions,
-        action_counts.get('blocked', 0),
-        action_counts.get('challenged', 0),
-        action_counts.get('throttled', 0),
-        action_counts.get('logged', 0),
-        ', '.join(f"{ip['ip_address']}({ip['count']})" for ip in top_ips[:5]),
-        ', '.join(f"{r['reason']}({r['count']})" for r in top_reasons),
-        risk_distribution['low_0_29'],
-        risk_distribution['medium_30_59'],
-        risk_distribution['high_60_100'],
+        action_counts.get("blocked", 0),
+        action_counts.get("challenged", 0),
+        action_counts.get("throttled", 0),
+        action_counts.get("logged", 0),
+        ", ".join(f"{ip['ip_address']}({ip['count']})" for ip in top_ips[:5]),
+        ", ".join(f"{r['reason']}({r['count']})" for r in top_reasons),
+        risk_distribution["low_0_29"],
+        risk_distribution["medium_30_59"],
+        risk_distribution["high_60_100"],
         total_tracked_ips,
-        risk_distribution['whitelisted'],
-        risk_distribution['blacklisted'],
+        risk_distribution["whitelisted"],
+        risk_distribution["blacklisted"],
     )
 
     return report

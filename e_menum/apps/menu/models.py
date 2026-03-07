@@ -33,9 +33,10 @@ from apps.core.models import (
 
 class LogoPosition(models.TextChoices):
     """Logo position options for theme customization."""
-    LEFT = 'left', _('Left')
-    CENTER = 'center', _('Center')
-    RIGHT = 'right', _('Right')
+
+    LEFT = "left", _("Left")
+    CENTER = "center", _("Center")
+    RIGHT = "right", _("Right")
 
 
 class Theme(TimeStampedMixin, SoftDeleteMixin, models.Model):
@@ -96,88 +97,86 @@ class Theme(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='themes',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this theme belongs to')
+        related_name="themes",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this theme belongs to"),
     )
 
     name = models.CharField(
-        max_length=100,
-        verbose_name=_('Name'),
-        help_text=_('Display name of the theme')
+        max_length=100, verbose_name=_("Name"), help_text=_("Display name of the theme")
     )
 
     slug = models.SlugField(
         max_length=100,
-        verbose_name=_('Slug'),
-        help_text=_('URL-friendly identifier (unique within organization)')
+        verbose_name=_("Slug"),
+        help_text=_("URL-friendly identifier (unique within organization)"),
     )
 
     description = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Description'),
-        help_text=_('Optional description of the theme')
+        verbose_name=_("Description"),
+        help_text=_("Optional description of the theme"),
     )
 
     # Color settings (hex format, e.g., #3B82F6)
     primary_color = models.CharField(
         max_length=7,
-        default='#3B82F6',
-        verbose_name=_('Primary color'),
-        help_text=_('Primary brand color (hex format, e.g., #3B82F6)')
+        default="#3B82F6",
+        verbose_name=_("Primary color"),
+        help_text=_("Primary brand color (hex format, e.g., #3B82F6)"),
     )
 
     secondary_color = models.CharField(
         max_length=7,
-        default='#10B981',
-        verbose_name=_('Secondary color'),
-        help_text=_('Secondary accent color (hex format)')
+        default="#10B981",
+        verbose_name=_("Secondary color"),
+        help_text=_("Secondary accent color (hex format)"),
     )
 
     background_color = models.CharField(
         max_length=7,
-        default='#FFFFFF',
-        verbose_name=_('Background color'),
-        help_text=_('Page background color (hex format)')
+        default="#FFFFFF",
+        verbose_name=_("Background color"),
+        help_text=_("Page background color (hex format)"),
     )
 
     text_color = models.CharField(
         max_length=7,
-        default='#1F2937',
-        verbose_name=_('Text color'),
-        help_text=_('Primary text color (hex format)')
+        default="#1F2937",
+        verbose_name=_("Text color"),
+        help_text=_("Primary text color (hex format)"),
     )
 
     accent_color = models.CharField(
         max_length=7,
         blank=True,
         null=True,
-        verbose_name=_('Accent color'),
-        help_text=_('Optional accent color for highlights (hex format)')
+        verbose_name=_("Accent color"),
+        help_text=_("Optional accent color for highlights (hex format)"),
     )
 
     # Typography settings
     font_family = models.CharField(
         max_length=100,
-        default='Inter',
-        verbose_name=_('Font family'),
-        help_text=_('Primary font family (e.g., Inter, Roboto, Open Sans)')
+        default="Inter",
+        verbose_name=_("Font family"),
+        help_text=_("Primary font family (e.g., Inter, Roboto, Open Sans)"),
     )
 
     heading_font_family = models.CharField(
         max_length=100,
         blank=True,
         null=True,
-        verbose_name=_('Heading font family'),
-        help_text=_('Optional separate font for headings')
+        verbose_name=_("Heading font family"),
+        help_text=_("Optional separate font for headings"),
     )
 
     # Layout settings
@@ -185,37 +184,37 @@ class Theme(TimeStampedMixin, SoftDeleteMixin, models.Model):
         max_length=20,
         choices=LogoPosition.choices,
         default=LogoPosition.LEFT,
-        verbose_name=_('Logo position'),
-        help_text=_('Position of logo in menu header')
+        verbose_name=_("Logo position"),
+        help_text=_("Position of logo in menu header"),
     )
 
     # Advanced customization
     custom_css = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Custom CSS'),
-        help_text=_('Custom CSS for advanced theme styling')
+        verbose_name=_("Custom CSS"),
+        help_text=_("Custom CSS for advanced theme styling"),
     )
 
     settings = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Settings'),
-        help_text=_('Additional theme settings (JSON)')
+        verbose_name=_("Settings"),
+        help_text=_("Additional theme settings (JSON)"),
     )
 
     # Status flags
     is_default = models.BooleanField(
         default=False,
-        verbose_name=_('Is default'),
-        help_text=_('Whether this is the default theme for the organization')
+        verbose_name=_("Is default"),
+        help_text=_("Whether this is the default theme for the organization"),
     )
 
     is_active = models.BooleanField(
         default=True,
         db_index=True,
-        verbose_name=_('Is active'),
-        help_text=_('Whether the theme is available for use')
+        verbose_name=_("Is active"),
+        help_text=_("Whether the theme is available for use"),
     )
 
     # Managers
@@ -223,22 +222,30 @@ class Theme(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'themes'
-        verbose_name = _('Theme')
-        verbose_name_plural = _('Themes')
-        ordering = ['-is_default', 'name']
-        unique_together = [['organization', 'slug']]
+        db_table = "themes"
+        verbose_name = _("Theme")
+        verbose_name_plural = _("Themes")
+        ordering = ["-is_default", "name"]
+        unique_together = [["organization", "slug"]]
         indexes = [
-            models.Index(fields=['organization', 'is_active'], name='theme_org_active_idx'),
-            models.Index(fields=['organization', 'is_default'], name='theme_org_default_idx'),
-            models.Index(fields=['organization', 'deleted_at'], name='theme_org_deleted_idx'),
+            models.Index(
+                fields=["organization", "is_active"], name="theme_org_active_idx"
+            ),
+            models.Index(
+                fields=["organization", "is_default"], name="theme_org_default_idx"
+            ),
+            models.Index(
+                fields=["organization", "deleted_at"], name="theme_org_deleted_idx"
+            ),
         ]
 
     def __str__(self) -> str:
         return f"{self.name} ({self.organization.name})"
 
     def __repr__(self) -> str:
-        return f"<Theme(id={self.id}, name='{self.name}', org='{self.organization.name}')>"
+        return (
+            f"<Theme(id={self.id}, name='{self.name}', org='{self.organization.name}')>"
+        )
 
     @property
     def is_available(self) -> bool:
@@ -267,7 +274,7 @@ class Theme(TimeStampedMixin, SoftDeleteMixin, models.Model):
             value: The value to set
         """
         self.settings[key] = value
-        self.save(update_fields=['settings', 'updated_at'])
+        self.save(update_fields=["settings", "updated_at"])
 
     def set_as_default(self) -> None:
         """
@@ -277,21 +284,24 @@ class Theme(TimeStampedMixin, SoftDeleteMixin, models.Model):
         and sets this theme as default.
         """
         # Clear default flag on other themes
-        Theme.objects.filter(
-            organization=self.organization,
-            is_default=True
-        ).exclude(pk=self.pk).update(is_default=False)
+        Theme.objects.filter(organization=self.organization, is_default=True).exclude(
+            pk=self.pk
+        ).update(is_default=False)
 
         # Set this theme as default
         self.is_default = True
-        self.save(update_fields=['is_default', 'updated_at'])
+        self.save(update_fields=["is_default", "updated_at"])
 
     @property
     def primary_color_rgb(self) -> str:
         """Convert primary hex color to RGB string for CSS rgba() usage."""
-        hex_color = self.primary_color.lstrip('#')
+        hex_color = self.primary_color.lstrip("#")
         try:
-            r, g, b = int(hex_color[0:2], 16), int(hex_color[2:4], 16), int(hex_color[4:6], 16)
+            r, g, b = (
+                int(hex_color[0:2], 16),
+                int(hex_color[2:4], 16),
+                int(hex_color[4:6], 16),
+            )
             return f"{r}, {g}, {b}"
         except (ValueError, IndexError):
             return "59, 130, 246"  # Default blue
@@ -304,20 +314,20 @@ class Theme(TimeStampedMixin, SoftDeleteMixin, models.Model):
             Dictionary of CSS variable names and values
         """
         variables = {
-            '--primary-color': self.primary_color,
-            '--secondary-color': self.secondary_color,
-            '--background-color': self.background_color,
-            '--text-color': self.text_color,
-            '--font-family': self.font_family,
+            "--primary-color": self.primary_color,
+            "--secondary-color": self.secondary_color,
+            "--background-color": self.background_color,
+            "--text-color": self.text_color,
+            "--font-family": self.font_family,
         }
 
         if self.accent_color:
-            variables['--accent-color'] = self.accent_color
+            variables["--accent-color"] = self.accent_color
 
         if self.heading_font_family:
-            variables['--heading-font-family'] = self.heading_font_family
+            variables["--heading-font-family"] = self.heading_font_family
         else:
-            variables['--heading-font-family'] = self.font_family
+            variables["--heading-font-family"] = self.font_family
 
         return variables
 
@@ -329,7 +339,7 @@ class Theme(TimeStampedMixin, SoftDeleteMixin, models.Model):
             CSS string with custom properties (e.g., "--primary-color: #3B82F6;")
         """
         variables = self.get_css_variables()
-        return ' '.join(f'{key}: {value};' for key, value in variables.items())
+        return " ".join(f"{key}: {value};" for key, value in variables.items())
 
 
 class Menu(TimeStampedMixin, SoftDeleteMixin, models.Model):
@@ -385,56 +395,54 @@ class Menu(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='menus',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this menu belongs to')
+        related_name="menus",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this menu belongs to"),
     )
 
     name = models.CharField(
-        max_length=100,
-        verbose_name=_('Name'),
-        help_text=_('Display name of the menu')
+        max_length=100, verbose_name=_("Name"), help_text=_("Display name of the menu")
     )
 
     slug = models.SlugField(
         max_length=100,
-        verbose_name=_('Slug'),
-        help_text=_('URL-friendly identifier (unique within organization)')
+        verbose_name=_("Slug"),
+        help_text=_("URL-friendly identifier (unique within organization)"),
     )
 
     description = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Description'),
-        help_text=_('Optional description of the menu')
+        verbose_name=_("Description"),
+        help_text=_("Optional description of the menu"),
     )
 
     # Publication settings
     is_published = models.BooleanField(
         default=False,
         db_index=True,
-        verbose_name=_('Is published'),
-        help_text=_('Whether the menu is visible to customers')
+        verbose_name=_("Is published"),
+        help_text=_("Whether the menu is visible to customers"),
     )
 
     published_at = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name=_('Published at'),
-        help_text=_('Timestamp when the menu was published')
+        verbose_name=_("Published at"),
+        help_text=_("Timestamp when the menu was published"),
     )
 
     is_default = models.BooleanField(
         default=False,
-        verbose_name=_('Is default'),
-        help_text=_('Whether this is the default menu for the organization')
+        verbose_name=_("Is default"),
+        help_text=_("Whether this is the default menu for the organization"),
     )
 
     # Styling
@@ -443,23 +451,23 @@ class Menu(TimeStampedMixin, SoftDeleteMixin, models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='menus',
-        verbose_name=_('Theme'),
-        help_text=_('Optional theme for styling customization')
+        related_name="menus",
+        verbose_name=_("Theme"),
+        help_text=_("Optional theme for styling customization"),
     )
 
     # Additional settings
     settings = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Settings'),
-        help_text=_('Additional menu settings (JSON)')
+        verbose_name=_("Settings"),
+        help_text=_("Additional menu settings (JSON)"),
     )
 
     sort_order = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Sort order'),
-        help_text=_('Display order for menus (lower numbers appear first)')
+        verbose_name=_("Sort order"),
+        help_text=_("Display order for menus (lower numbers appear first)"),
     )
 
     # Managers
@@ -467,23 +475,33 @@ class Menu(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'menus'
-        verbose_name = _('Menu')
-        verbose_name_plural = _('Menus')
-        ordering = ['sort_order', 'name']
-        unique_together = [['organization', 'slug']]
+        db_table = "menus"
+        verbose_name = _("Menu")
+        verbose_name_plural = _("Menus")
+        ordering = ["sort_order", "name"]
+        unique_together = [["organization", "slug"]]
         indexes = [
-            models.Index(fields=['organization', 'is_published'], name='menu_org_published_idx'),
-            models.Index(fields=['organization', 'is_default'], name='menu_org_default_idx'),
-            models.Index(fields=['organization', 'deleted_at'], name='menu_org_deleted_idx'),
-            models.Index(fields=['organization', 'sort_order'], name='menu_org_sort_idx'),
+            models.Index(
+                fields=["organization", "is_published"], name="menu_org_published_idx"
+            ),
+            models.Index(
+                fields=["organization", "is_default"], name="menu_org_default_idx"
+            ),
+            models.Index(
+                fields=["organization", "deleted_at"], name="menu_org_deleted_idx"
+            ),
+            models.Index(
+                fields=["organization", "sort_order"], name="menu_org_sort_idx"
+            ),
         ]
 
     def __str__(self) -> str:
         return f"{self.name} ({self.organization.name})"
 
     def __repr__(self) -> str:
-        return f"<Menu(id={self.id}, name='{self.name}', org='{self.organization.name}')>"
+        return (
+            f"<Menu(id={self.id}, name='{self.name}', org='{self.organization.name}')>"
+        )
 
     @property
     def is_available(self) -> bool:
@@ -512,7 +530,7 @@ class Menu(TimeStampedMixin, SoftDeleteMixin, models.Model):
             value: The value to set
         """
         self.settings[key] = value
-        self.save(update_fields=['settings', 'updated_at'])
+        self.save(update_fields=["settings", "updated_at"])
 
     def publish(self) -> None:
         """
@@ -521,9 +539,10 @@ class Menu(TimeStampedMixin, SoftDeleteMixin, models.Model):
         Sets is_published to True and records the publication timestamp.
         """
         from django.utils import timezone
+
         self.is_published = True
         self.published_at = timezone.now()
-        self.save(update_fields=['is_published', 'published_at', 'updated_at'])
+        self.save(update_fields=["is_published", "published_at", "updated_at"])
 
     def unpublish(self) -> None:
         """
@@ -533,7 +552,7 @@ class Menu(TimeStampedMixin, SoftDeleteMixin, models.Model):
         for historical reference.
         """
         self.is_published = False
-        self.save(update_fields=['is_published', 'updated_at'])
+        self.save(update_fields=["is_published", "updated_at"])
 
     def set_as_default(self) -> None:
         """
@@ -543,14 +562,13 @@ class Menu(TimeStampedMixin, SoftDeleteMixin, models.Model):
         and sets this menu as default.
         """
         # Clear default flag on other menus
-        Menu.objects.filter(
-            organization=self.organization,
-            is_default=True
-        ).exclude(pk=self.pk).update(is_default=False)
+        Menu.objects.filter(organization=self.organization, is_default=True).exclude(
+            pk=self.pk
+        ).update(is_default=False)
 
         # Set this menu as default
         self.is_default = True
-        self.save(update_fields=['is_default', 'updated_at'])
+        self.save(update_fields=["is_default", "updated_at"])
 
     @property
     def category_count(self) -> int:
@@ -626,82 +644,86 @@ class Category(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='categories',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this category belongs to')
+        related_name="categories",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this category belongs to"),
     )
 
     menu = models.ForeignKey(
         Menu,
         on_delete=models.CASCADE,
-        related_name='categories',
-        verbose_name=_('Menu'),
-        help_text=_('Menu this category belongs to')
+        related_name="categories",
+        verbose_name=_("Menu"),
+        help_text=_("Menu this category belongs to"),
     )
 
     parent = models.ForeignKey(
-        'self',
+        "self",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name='children',
-        verbose_name=_('Parent category'),
-        help_text=_('Parent category for nested structure (null for root categories)')
+        related_name="children",
+        verbose_name=_("Parent category"),
+        help_text=_("Parent category for nested structure (null for root categories)"),
     )
 
     name = models.CharField(
         max_length=100,
-        verbose_name=_('Name'),
-        help_text=_('Display name of the category')
+        verbose_name=_("Name"),
+        help_text=_("Display name of the category"),
     )
 
     slug = models.SlugField(
         max_length=100,
-        verbose_name=_('Slug'),
-        help_text=_('URL-friendly identifier (unique within menu)')
+        verbose_name=_("Slug"),
+        help_text=_("URL-friendly identifier (unique within menu)"),
     )
 
     description = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Description'),
-        help_text=_('Optional description of the category')
+        verbose_name=_("Description"),
+        help_text=_("Optional description of the category"),
     )
 
     image = models.URLField(
         blank=True,
         null=True,
         max_length=500,
-        verbose_name=_('Image URL'),
-        help_text=_('URL to category image')
+        verbose_name=_("Image URL"),
+        help_text=_("URL to category image"),
     )
 
     icon = models.CharField(
         max_length=100,
         blank=True,
         null=True,
-        verbose_name=_('Icon'),
-        help_text=_('Phosphor icon class (e.g., ph-fill ph-knife, ph-fill ph-hamburger)')
+        verbose_name=_("Icon"),
+        help_text=_(
+            "Phosphor icon class (e.g., ph-fill ph-knife, ph-fill ph-hamburger)"
+        ),
     )
 
     is_active = models.BooleanField(
         default=True,
         db_index=True,
-        verbose_name=_('Is active'),
-        help_text=_('Whether the category is visible/active')
+        verbose_name=_("Is active"),
+        help_text=_("Whether the category is visible/active"),
     )
 
     sort_order = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Sort order'),
-        help_text=_('Display order within parent category/menu (lower numbers appear first)')
+        verbose_name=_("Sort order"),
+        help_text=_(
+            "Display order within parent category/menu (lower numbers appear first)"
+        ),
     )
 
     # Managers
@@ -709,16 +731,18 @@ class Category(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'categories'
-        verbose_name = _('Category')
-        verbose_name_plural = _('Categories')
-        ordering = ['sort_order', 'name']
-        unique_together = [['menu', 'slug']]
+        db_table = "categories"
+        verbose_name = _("Category")
+        verbose_name_plural = _("Categories")
+        ordering = ["sort_order", "name"]
+        unique_together = [["menu", "slug"]]
         indexes = [
-            models.Index(fields=['menu', 'sort_order'], name='category_menu_sort_idx'),
-            models.Index(fields=['organization', 'deleted_at'], name='category_org_deleted_idx'),
-            models.Index(fields=['parent'], name='category_parent_idx'),
-            models.Index(fields=['menu', 'is_active'], name='category_menu_active_idx'),
+            models.Index(fields=["menu", "sort_order"], name="category_menu_sort_idx"),
+            models.Index(
+                fields=["organization", "deleted_at"], name="category_org_deleted_idx"
+            ),
+            models.Index(fields=["parent"], name="category_parent_idx"),
+            models.Index(fields=["menu", "is_active"], name="category_menu_active_idx"),
         ]
 
     def __str__(self) -> str:
@@ -758,7 +782,7 @@ class Category(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def product_count(self) -> int:
         """Return the number of active products in this category."""
         # Note: products relation will be available after Product model is created
-        if hasattr(self, 'products'):
+        if hasattr(self, "products"):
             return self.products.filter(deleted_at__isnull=True).count()
         return 0
 
@@ -806,9 +830,9 @@ class Category(TimeStampedMixin, SoftDeleteMixin, models.Model):
         Returns:
             String like "Beverages > Hot Drinks > Coffee"
         """
-        return ' > '.join(cat.name for cat in self.get_breadcrumb())
+        return " > ".join(cat.name for cat in self.get_breadcrumb())
 
-    def move_to(self, new_parent: 'Category' = None) -> None:
+    def move_to(self, new_parent: "Category" = None) -> None:
         """
         Move this category to a new parent.
 
@@ -825,7 +849,7 @@ class Category(TimeStampedMixin, SoftDeleteMixin, models.Model):
                 raise ValueError("Cannot move category to one of its descendants")
 
         self.parent = new_parent
-        self.save(update_fields=['parent', 'updated_at'])
+        self.save(update_fields=["parent", "updated_at"])
 
 
 class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
@@ -906,66 +930,66 @@ class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='products',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this product belongs to')
+        related_name="products",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this product belongs to"),
     )
 
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
-        related_name='products',
-        verbose_name=_('Category'),
-        help_text=_('Category this product belongs to')
+        related_name="products",
+        verbose_name=_("Category"),
+        help_text=_("Category this product belongs to"),
     )
 
     name = models.CharField(
         max_length=200,
-        verbose_name=_('Name'),
-        help_text=_('Display name of the product')
+        verbose_name=_("Name"),
+        help_text=_("Display name of the product"),
     )
 
     slug = models.SlugField(
         max_length=200,
-        verbose_name=_('Slug'),
-        help_text=_('URL-friendly identifier (unique within category)')
+        verbose_name=_("Slug"),
+        help_text=_("URL-friendly identifier (unique within category)"),
     )
 
     description = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Description'),
-        help_text=_('Full product description')
+        verbose_name=_("Description"),
+        help_text=_("Full product description"),
     )
 
     short_description = models.CharField(
         max_length=100,
         blank=True,
         null=True,
-        verbose_name=_('Short description'),
-        help_text=_('Brief description for listings (max 100 chars)')
+        verbose_name=_("Short description"),
+        help_text=_("Brief description for listings (max 100 chars)"),
     )
 
     # Pricing
     base_price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name=_('Base price'),
-        help_text=_('Base price in the default currency')
+        verbose_name=_("Base price"),
+        help_text=_("Base price in the default currency"),
     )
 
     currency = models.CharField(
         max_length=3,
-        default='TRY',
-        verbose_name=_('Currency'),
-        help_text=_('Currency code (e.g., TRY, USD, EUR)')
+        default="TRY",
+        verbose_name=_("Currency"),
+        help_text=_("Currency code (e.g., TRY, USD, EUR)"),
     )
 
     # Images
@@ -973,99 +997,101 @@ class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
         blank=True,
         null=True,
         max_length=500,
-        verbose_name=_('Image URL'),
-        help_text=_('Main product image URL')
+        verbose_name=_("Image URL"),
+        help_text=_("Main product image URL"),
     )
 
     gallery = models.JSONField(
         default=list,
         blank=True,
-        verbose_name=_('Gallery'),
-        help_text=_('Array of additional image URLs')
+        verbose_name=_("Gallery"),
+        help_text=_("Array of additional image URLs"),
     )
 
     # Availability & Status
     is_active = models.BooleanField(
         default=True,
         db_index=True,
-        verbose_name=_('Is active'),
-        help_text=_('Whether the product is visible on the menu')
+        verbose_name=_("Is active"),
+        help_text=_("Whether the product is visible on the menu"),
     )
 
     is_available = models.BooleanField(
         default=True,
         db_index=True,
-        verbose_name=_('Is available'),
-        help_text=_('Whether the product is in stock/available for ordering')
+        verbose_name=_("Is available"),
+        help_text=_("Whether the product is in stock/available for ordering"),
     )
 
     is_featured = models.BooleanField(
         default=False,
         db_index=True,
-        verbose_name=_('Is featured'),
-        help_text=_('Whether to highlight this product on the menu')
+        verbose_name=_("Is featured"),
+        help_text=_("Whether to highlight this product on the menu"),
     )
 
     is_chef_recommended = models.BooleanField(
         default=False,
         db_index=True,
-        verbose_name=_('Is chef recommended'),
-        help_text=_('Special chef recommendation flag')
+        verbose_name=_("Is chef recommended"),
+        help_text=_("Special chef recommendation flag"),
     )
 
     # Product attributes
     preparation_time = models.PositiveIntegerField(
         blank=True,
         null=True,
-        verbose_name=_('Preparation time'),
-        help_text=_('Estimated preparation time in minutes')
+        verbose_name=_("Preparation time"),
+        help_text=_("Estimated preparation time in minutes"),
     )
 
     calories = models.PositiveIntegerField(
         blank=True,
         null=True,
-        verbose_name=_('Calories'),
-        help_text=_('Calorie count (kcal)')
+        verbose_name=_("Calories"),
+        help_text=_("Calorie count (kcal)"),
     )
 
     spicy_level = models.PositiveSmallIntegerField(
         default=0,
-        verbose_name=_('Spicy level'),
-        help_text=_('Spiciness level 0-5 (0=not spicy, 5=very spicy)')
+        verbose_name=_("Spicy level"),
+        help_text=_("Spiciness level 0-5 (0=not spicy, 5=very spicy)"),
     )
 
     # Menu-v3 integration fields
     discount_percentage = models.PositiveSmallIntegerField(
         default=0,
-        verbose_name=_('Discount percentage'),
-        help_text=_('Discount percentage 0-100 (e.g., 10 means 10% off)')
+        verbose_name=_("Discount percentage"),
+        help_text=_("Discount percentage 0-100 (e.g., 10 means 10% off)"),
     )
 
     rating = models.DecimalField(
         max_digits=3,
         decimal_places=1,
         default=0,
-        verbose_name=_('Rating'),
-        help_text=_('Average customer rating 0.0-5.0')
+        verbose_name=_("Rating"),
+        help_text=_("Average customer rating 0.0-5.0"),
     )
 
     review_count = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Review count'),
-        help_text=_('Number of customer reviews/ratings')
+        verbose_name=_("Review count"),
+        help_text=_("Number of customer reviews/ratings"),
     )
 
     tags = models.JSONField(
         default=list,
         blank=True,
-        verbose_name=_('Tags'),
-        help_text=_('Array of tags for filtering (e.g., vegetarian, vegan, gluten-free)')
+        verbose_name=_("Tags"),
+        help_text=_(
+            "Array of tags for filtering (e.g., vegetarian, vegan, gluten-free)"
+        ),
     )
 
     sort_order = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Sort order'),
-        help_text=_('Display order within category (lower numbers appear first)')
+        verbose_name=_("Sort order"),
+        help_text=_("Display order within category (lower numbers appear first)"),
     )
 
     # Managers
@@ -1073,22 +1099,28 @@ class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'products'
-        verbose_name = _('Product')
-        verbose_name_plural = _('Products')
-        ordering = ['sort_order', 'name']
-        unique_together = [['category', 'slug']]
+        db_table = "products"
+        verbose_name = _("Product")
+        verbose_name_plural = _("Products")
+        ordering = ["sort_order", "name"]
+        unique_together = [["category", "slug"]]
         indexes = [
-            models.Index(fields=['category', 'sort_order'], name='product_category_sort_idx'),
-            models.Index(fields=['organization', 'deleted_at'], name='product_org_deleted_idx'),
             models.Index(
-                fields=['organization', 'is_active', 'is_available'],
-                name='product_org_active_avail_idx'
+                fields=["category", "sort_order"], name="product_category_sort_idx"
             ),
-            models.Index(fields=['organization', 'is_featured'], name='product_org_featured_idx'),
             models.Index(
-                fields=['organization', 'is_chef_recommended'],
-                name='product_org_chef_rec_idx'
+                fields=["organization", "deleted_at"], name="product_org_deleted_idx"
+            ),
+            models.Index(
+                fields=["organization", "is_active", "is_available"],
+                name="product_org_active_avail_idx",
+            ),
+            models.Index(
+                fields=["organization", "is_featured"], name="product_org_featured_idx"
+            ),
+            models.Index(
+                fields=["organization", "is_chef_recommended"],
+                name="product_org_chef_rec_idx",
             ),
         ]
 
@@ -1107,10 +1139,10 @@ class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def formatted_price(self) -> str:
         """Return formatted price with currency symbol."""
         currency_symbols = {
-            'TRY': '₺',
-            'USD': '$',
-            'EUR': '€',
-            'GBP': '£',
+            "TRY": "₺",
+            "USD": "$",
+            "EUR": "€",
+            "GBP": "£",
         }
         symbol = currency_symbols.get(self.currency, self.currency)
         return f"{symbol}{self.base_price:,.2f}"
@@ -1150,7 +1182,7 @@ class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
             self.gallery = []
         if image_url not in self.gallery:
             self.gallery.append(image_url)
-            self.save(update_fields=['gallery', 'updated_at'])
+            self.save(update_fields=["gallery", "updated_at"])
 
     def remove_gallery_image(self, image_url: str) -> bool:
         """
@@ -1164,7 +1196,7 @@ class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         if self.gallery and image_url in self.gallery:
             self.gallery.remove(image_url)
-            self.save(update_fields=['gallery', 'updated_at'])
+            self.save(update_fields=["gallery", "updated_at"])
             return True
         return False
 
@@ -1180,7 +1212,7 @@ class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
             self.tags = []
         if normalized_tag not in self.tags:
             self.tags.append(normalized_tag)
-            self.save(update_fields=['tags', 'updated_at'])
+            self.save(update_fields=["tags", "updated_at"])
 
     def remove_tag(self, tag: str) -> bool:
         """
@@ -1195,7 +1227,7 @@ class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
         normalized_tag = tag.lower().strip()
         if self.tags and normalized_tag in self.tags:
             self.tags.remove(normalized_tag)
-            self.save(update_fields=['tags', 'updated_at'])
+            self.save(update_fields=["tags", "updated_at"])
             return True
         return False
 
@@ -1220,7 +1252,7 @@ class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
             is_available: Whether the product is available
         """
         self.is_available = is_available
-        self.save(update_fields=['is_available', 'updated_at'])
+        self.save(update_fields=["is_available", "updated_at"])
 
     def toggle_featured(self) -> bool:
         """
@@ -1230,7 +1262,7 @@ class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
             New featured status
         """
         self.is_featured = not self.is_featured
-        self.save(update_fields=['is_featured', 'updated_at'])
+        self.save(update_fields=["is_featured", "updated_at"])
         return self.is_featured
 
     def toggle_chef_recommended(self) -> bool:
@@ -1241,7 +1273,7 @@ class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
             New chef recommended status
         """
         self.is_chef_recommended = not self.is_chef_recommended
-        self.save(update_fields=['is_chef_recommended', 'updated_at'])
+        self.save(update_fields=["is_chef_recommended", "updated_at"])
         return self.is_chef_recommended
 
     def get_spicy_display(self) -> str:
@@ -1252,8 +1284,8 @@ class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
             String with pepper emojis based on spicy level
         """
         if self.spicy_level == 0:
-            return _('Not spicy')
-        return '🌶️' * self.spicy_level
+            return _("Not spicy")
+        return "🌶️" * self.spicy_level
 
     @property
     def menu(self):
@@ -1263,14 +1295,14 @@ class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
     @property
     def variant_count(self) -> int:
         """Return the number of active variants for this product."""
-        if hasattr(self, 'variants'):
+        if hasattr(self, "variants"):
             return self.variants.filter(deleted_at__isnull=True).count()
         return 0
 
     @property
     def modifier_count(self) -> int:
         """Return the number of active modifiers for this product."""
-        if hasattr(self, 'modifiers'):
+        if hasattr(self, "modifiers"):
             return self.modifiers.filter(deleted_at__isnull=True).count()
         return 0
 
@@ -1338,49 +1370,49 @@ class ProductVariant(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
-        related_name='variants',
-        verbose_name=_('Product'),
-        help_text=_('Product this variant belongs to')
+        related_name="variants",
+        verbose_name=_("Product"),
+        help_text=_("Product this variant belongs to"),
     )
 
     name = models.CharField(
         max_length=100,
-        verbose_name=_('Name'),
-        help_text=_('Display name of the variant (e.g., Small, Large, Regular)')
+        verbose_name=_("Name"),
+        help_text=_("Display name of the variant (e.g., Small, Large, Regular)"),
     )
 
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name=_('Price'),
-        help_text=_('Price for this variant')
+        verbose_name=_("Price"),
+        help_text=_("Price for this variant"),
     )
 
     is_default = models.BooleanField(
         default=False,
         db_index=True,
-        verbose_name=_('Is default'),
-        help_text=_('Whether this is the default selected variant')
+        verbose_name=_("Is default"),
+        help_text=_("Whether this is the default selected variant"),
     )
 
     is_available = models.BooleanField(
         default=True,
         db_index=True,
-        verbose_name=_('Is available'),
-        help_text=_('Whether the variant is in stock/available')
+        verbose_name=_("Is available"),
+        help_text=_("Whether the variant is in stock/available"),
     )
 
     sort_order = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Sort order'),
-        help_text=_('Display order within the product (lower numbers appear first)')
+        verbose_name=_("Sort order"),
+        help_text=_("Display order within the product (lower numbers appear first)"),
     )
 
     # Managers
@@ -1388,15 +1420,23 @@ class ProductVariant(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'product_variants'
-        verbose_name = _('Product Variant')
-        verbose_name_plural = _('Product Variants')
-        ordering = ['sort_order', 'name']
+        db_table = "product_variants"
+        verbose_name = _("Product Variant")
+        verbose_name_plural = _("Product Variants")
+        ordering = ["sort_order", "name"]
         indexes = [
-            models.Index(fields=['product', 'sort_order'], name='variant_product_sort_idx'),
-            models.Index(fields=['product', 'is_default'], name='variant_product_default_idx'),
-            models.Index(fields=['product', 'deleted_at'], name='variant_product_deleted_idx'),
-            models.Index(fields=['product', 'is_available'], name='variant_product_avail_idx'),
+            models.Index(
+                fields=["product", "sort_order"], name="variant_product_sort_idx"
+            ),
+            models.Index(
+                fields=["product", "is_default"], name="variant_product_default_idx"
+            ),
+            models.Index(
+                fields=["product", "deleted_at"], name="variant_product_deleted_idx"
+            ),
+            models.Index(
+                fields=["product", "is_available"], name="variant_product_avail_idx"
+            ),
         ]
 
     def __str__(self) -> str:
@@ -1414,10 +1454,10 @@ class ProductVariant(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def formatted_price(self) -> str:
         """Return formatted price with currency symbol."""
         currency_symbols = {
-            'TRY': '₺',
-            'USD': '$',
-            'EUR': '€',
-            'GBP': '£',
+            "TRY": "₺",
+            "USD": "$",
+            "EUR": "€",
+            "GBP": "£",
         }
         currency = self.product.currency
         symbol = currency_symbols.get(currency, currency)
@@ -1441,14 +1481,13 @@ class ProductVariant(TimeStampedMixin, SoftDeleteMixin, models.Model):
         and sets this variant as default.
         """
         # Clear default flag on other variants
-        ProductVariant.objects.filter(
-            product=self.product,
-            is_default=True
-        ).exclude(pk=self.pk).update(is_default=False)
+        ProductVariant.objects.filter(product=self.product, is_default=True).exclude(
+            pk=self.pk
+        ).update(is_default=False)
 
         # Set this variant as default
         self.is_default = True
-        self.save(update_fields=['is_default', 'updated_at'])
+        self.save(update_fields=["is_default", "updated_at"])
 
     def set_availability(self, is_available: bool) -> None:
         """
@@ -1458,7 +1497,7 @@ class ProductVariant(TimeStampedMixin, SoftDeleteMixin, models.Model):
             is_available: Whether the variant is available
         """
         self.is_available = is_available
-        self.save(update_fields=['is_available', 'updated_at'])
+        self.save(update_fields=["is_available", "updated_at"])
 
     @property
     def organization(self):
@@ -1520,56 +1559,56 @@ class ProductModifier(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
-        related_name='modifiers',
-        verbose_name=_('Product'),
-        help_text=_('Product this modifier belongs to')
+        related_name="modifiers",
+        verbose_name=_("Product"),
+        help_text=_("Product this modifier belongs to"),
     )
 
     name = models.CharField(
         max_length=100,
-        verbose_name=_('Name'),
-        help_text=_('Display name of the modifier (e.g., Extra Cheese, No Onion)')
+        verbose_name=_("Name"),
+        help_text=_("Display name of the modifier (e.g., Extra Cheese, No Onion)"),
     )
 
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name=_('Price'),
-        help_text=_('Additional cost for this modifier (can be 0 for free mods)')
+        verbose_name=_("Price"),
+        help_text=_("Additional cost for this modifier (can be 0 for free mods)"),
     )
 
     is_default = models.BooleanField(
         default=False,
         db_index=True,
-        verbose_name=_('Is default'),
-        help_text=_('Whether this modifier is pre-selected by default')
+        verbose_name=_("Is default"),
+        help_text=_("Whether this modifier is pre-selected by default"),
     )
 
     is_required = models.BooleanField(
         default=False,
         db_index=True,
-        verbose_name=_('Is required'),
-        help_text=_('Whether the customer must select this modifier')
+        verbose_name=_("Is required"),
+        help_text=_("Whether the customer must select this modifier"),
     )
 
     max_quantity = models.PositiveIntegerField(
         default=1,
-        verbose_name=_('Max quantity'),
-        help_text=_('Maximum times this modifier can be added to the order')
+        verbose_name=_("Max quantity"),
+        help_text=_("Maximum times this modifier can be added to the order"),
     )
 
     sort_order = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Sort order'),
-        help_text=_('Display order within the product (lower numbers appear first)')
+        verbose_name=_("Sort order"),
+        help_text=_("Display order within the product (lower numbers appear first)"),
     )
 
     # Managers
@@ -1577,15 +1616,23 @@ class ProductModifier(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'product_modifiers'
-        verbose_name = _('Product Modifier')
-        verbose_name_plural = _('Product Modifiers')
-        ordering = ['sort_order', 'name']
+        db_table = "product_modifiers"
+        verbose_name = _("Product Modifier")
+        verbose_name_plural = _("Product Modifiers")
+        ordering = ["sort_order", "name"]
         indexes = [
-            models.Index(fields=['product', 'sort_order'], name='modifier_product_sort_idx'),
-            models.Index(fields=['product', 'is_required'], name='modifier_product_req_idx'),
-            models.Index(fields=['product', 'is_default'], name='modifier_product_default_idx'),
-            models.Index(fields=['product', 'deleted_at'], name='modifier_product_deleted_idx'),
+            models.Index(
+                fields=["product", "sort_order"], name="modifier_product_sort_idx"
+            ),
+            models.Index(
+                fields=["product", "is_required"], name="modifier_product_req_idx"
+            ),
+            models.Index(
+                fields=["product", "is_default"], name="modifier_product_default_idx"
+            ),
+            models.Index(
+                fields=["product", "deleted_at"], name="modifier_product_deleted_idx"
+            ),
         ]
 
     def __str__(self) -> str:
@@ -1603,12 +1650,12 @@ class ProductModifier(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def formatted_price(self) -> str:
         """Return formatted price with currency symbol."""
         if self.is_free:
-            return _('Free')
+            return _("Free")
         currency_symbols = {
-            'TRY': '₺',
-            'USD': '$',
-            'EUR': '€',
-            'GBP': '£',
+            "TRY": "₺",
+            "USD": "$",
+            "EUR": "€",
+            "GBP": "£",
         }
         currency = self.product.currency
         symbol = currency_symbols.get(currency, currency)
@@ -1627,7 +1674,7 @@ class ProductModifier(TimeStampedMixin, SoftDeleteMixin, models.Model):
             is_required: Whether the modifier is required
         """
         self.is_required = is_required
-        self.save(update_fields=['is_required', 'updated_at'])
+        self.save(update_fields=["is_required", "updated_at"])
 
     def set_as_default(self, is_default: bool = True) -> None:
         """
@@ -1637,7 +1684,7 @@ class ProductModifier(TimeStampedMixin, SoftDeleteMixin, models.Model):
             is_default: Whether the modifier is pre-selected
         """
         self.is_default = is_default
-        self.save(update_fields=['is_default', 'updated_at'])
+        self.save(update_fields=["is_default", "updated_at"])
 
     def update_max_quantity(self, max_quantity: int) -> None:
         """
@@ -1652,7 +1699,7 @@ class ProductModifier(TimeStampedMixin, SoftDeleteMixin, models.Model):
         if max_quantity < 1:
             raise ValueError("max_quantity must be at least 1")
         self.max_quantity = max_quantity
-        self.save(update_fields=['max_quantity', 'updated_at'])
+        self.save(update_fields=["max_quantity", "updated_at"])
 
     @property
     def organization(self):
@@ -1662,9 +1709,10 @@ class ProductModifier(TimeStampedMixin, SoftDeleteMixin, models.Model):
 
 class AllergenSeverity(models.TextChoices):
     """Allergen severity levels for product-allergen relationships."""
-    CONTAINS = 'contains', _('Contains')
-    MAY_CONTAIN = 'may_contain', _('May Contain')
-    TRACES = 'traces', _('Traces')
+
+    CONTAINS = "contains", _("Contains")
+    MAY_CONTAIN = "may_contain", _("May Contain")
+    TRACES = "traces", _("Traces")
 
 
 class Allergen(TimeStampedMixin, SoftDeleteMixin, models.Model):
@@ -1711,56 +1759,58 @@ class Allergen(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     name = models.CharField(
         max_length=100,
-        verbose_name=_('Name'),
-        help_text=_('Display name of the allergen (e.g., Gluten, Nuts, Dairy)')
+        verbose_name=_("Name"),
+        help_text=_("Display name of the allergen (e.g., Gluten, Nuts, Dairy)"),
     )
 
     slug = models.SlugField(
         max_length=100,
         unique=True,
-        verbose_name=_('Slug'),
-        help_text=_('URL-friendly identifier (globally unique)')
+        verbose_name=_("Slug"),
+        help_text=_("URL-friendly identifier (globally unique)"),
     )
 
     code = models.CharField(
         max_length=10,
         unique=True,
-        verbose_name=_('Code'),
-        help_text=_('Short code for the allergen (e.g., GLU, NUT, DAI)')
+        verbose_name=_("Code"),
+        help_text=_("Short code for the allergen (e.g., GLU, NUT, DAI)"),
     )
 
     icon = models.URLField(
         blank=True,
         null=True,
         max_length=500,
-        verbose_name=_('Icon URL'),
-        help_text=_('URL to allergen icon/image')
+        verbose_name=_("Icon URL"),
+        help_text=_("URL to allergen icon/image"),
     )
 
     description = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Description'),
-        help_text=_('Detailed description of the allergen and its sources')
+        verbose_name=_("Description"),
+        help_text=_("Detailed description of the allergen and its sources"),
     )
 
     sort_order = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Sort order'),
-        help_text=_('Display order for consistent listing (lower numbers appear first)')
+        verbose_name=_("Sort order"),
+        help_text=_(
+            "Display order for consistent listing (lower numbers appear first)"
+        ),
     )
 
     is_active = models.BooleanField(
         default=True,
         db_index=True,
-        verbose_name=_('Is active'),
-        help_text=_('Whether the allergen is available for selection')
+        verbose_name=_("Is active"),
+        help_text=_("Whether the allergen is available for selection"),
     )
 
     # Managers
@@ -1768,15 +1818,15 @@ class Allergen(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'allergens'
-        verbose_name = _('Allergen')
-        verbose_name_plural = _('Allergens')
-        ordering = ['sort_order', 'name']
+        db_table = "allergens"
+        verbose_name = _("Allergen")
+        verbose_name_plural = _("Allergens")
+        ordering = ["sort_order", "name"]
         indexes = [
-            models.Index(fields=['code'], name='allergen_code_idx'),
-            models.Index(fields=['slug'], name='allergen_slug_idx'),
-            models.Index(fields=['is_active'], name='allergen_active_idx'),
-            models.Index(fields=['deleted_at'], name='allergen_deleted_idx'),
+            models.Index(fields=["code"], name="allergen_code_idx"),
+            models.Index(fields=["slug"], name="allergen_slug_idx"),
+            models.Index(fields=["is_active"], name="allergen_active_idx"),
+            models.Index(fields=["deleted_at"], name="allergen_deleted_idx"),
         ]
 
     def __str__(self) -> str:
@@ -1837,39 +1887,39 @@ class ProductAllergen(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
-        related_name='product_allergens',
-        verbose_name=_('Product'),
-        help_text=_('Product this allergen association belongs to')
+        related_name="product_allergens",
+        verbose_name=_("Product"),
+        help_text=_("Product this allergen association belongs to"),
     )
 
     allergen = models.ForeignKey(
         Allergen,
         on_delete=models.CASCADE,
-        related_name='product_allergens',
-        verbose_name=_('Allergen'),
-        help_text=_('The allergen associated with this product')
+        related_name="product_allergens",
+        verbose_name=_("Allergen"),
+        help_text=_("The allergen associated with this product"),
     )
 
     severity = models.CharField(
         max_length=20,
         choices=AllergenSeverity.choices,
         default=AllergenSeverity.CONTAINS,
-        verbose_name=_('Severity'),
-        help_text=_('Level of allergen presence (contains/may_contain/traces)')
+        verbose_name=_("Severity"),
+        help_text=_("Level of allergen presence (contains/may_contain/traces)"),
     )
 
     notes = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Notes'),
-        help_text=_('Optional additional notes about this allergen in the product')
+        verbose_name=_("Notes"),
+        help_text=_("Optional additional notes about this allergen in the product"),
     )
 
     # Managers
@@ -1877,15 +1927,19 @@ class ProductAllergen(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'product_allergens'
-        verbose_name = _('Product Allergen')
-        verbose_name_plural = _('Product Allergens')
-        ordering = ['allergen__sort_order', 'allergen__name']
-        unique_together = [['product', 'allergen']]
+        db_table = "product_allergens"
+        verbose_name = _("Product Allergen")
+        verbose_name_plural = _("Product Allergens")
+        ordering = ["allergen__sort_order", "allergen__name"]
+        unique_together = [["product", "allergen"]]
         indexes = [
-            models.Index(fields=['product', 'allergen'], name='prod_allergen_prod_all_idx'),
-            models.Index(fields=['allergen', 'severity'], name='prod_allergen_sev_idx'),
-            models.Index(fields=['product', 'deleted_at'], name='prod_allergen_deleted_idx'),
+            models.Index(
+                fields=["product", "allergen"], name="prod_allergen_prod_all_idx"
+            ),
+            models.Index(fields=["allergen", "severity"], name="prod_allergen_sev_idx"),
+            models.Index(
+                fields=["product", "deleted_at"], name="prod_allergen_deleted_idx"
+            ),
         ]
 
     def __str__(self) -> str:
@@ -1966,24 +2020,26 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     product = models.OneToOneField(
         Product,
         on_delete=models.CASCADE,
-        related_name='nutrition_info',
-        verbose_name=_('Product'),
-        help_text=_('Product this nutrition info belongs to')
+        related_name="nutrition_info",
+        verbose_name=_("Product"),
+        help_text=_("Product this nutrition info belongs to"),
     )
 
     # Serving information
     serving_size = models.CharField(
         max_length=100,
-        default='100g',
-        verbose_name=_('Serving size'),
-        help_text=_('Description of serving size (e.g., "100g", "1 portion", "1 slice")')
+        default="100g",
+        verbose_name=_("Serving size"),
+        help_text=_(
+            'Description of serving size (e.g., "100g", "1 portion", "1 slice")'
+        ),
     )
 
     serving_size_grams = models.DecimalField(
@@ -1991,16 +2047,16 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         blank=True,
         null=True,
-        verbose_name=_('Serving size (grams)'),
-        help_text=_('Numeric serving size in grams for calculations')
+        verbose_name=_("Serving size (grams)"),
+        help_text=_("Numeric serving size in grams for calculations"),
     )
 
     # Energy
     calories = models.PositiveIntegerField(
         blank=True,
         null=True,
-        verbose_name=_('Calories'),
-        help_text=_('Energy in kcal per serving')
+        verbose_name=_("Calories"),
+        help_text=_("Energy in kcal per serving"),
     )
 
     # Macronutrients (in grams)
@@ -2009,8 +2065,8 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         blank=True,
         null=True,
-        verbose_name=_('Protein'),
-        help_text=_('Protein in grams per serving')
+        verbose_name=_("Protein"),
+        help_text=_("Protein in grams per serving"),
     )
 
     carbohydrates = models.DecimalField(
@@ -2018,8 +2074,8 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         blank=True,
         null=True,
-        verbose_name=_('Carbohydrates'),
-        help_text=_('Total carbohydrates in grams per serving')
+        verbose_name=_("Carbohydrates"),
+        help_text=_("Total carbohydrates in grams per serving"),
     )
 
     sugar = models.DecimalField(
@@ -2027,8 +2083,8 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         blank=True,
         null=True,
-        verbose_name=_('Sugar'),
-        help_text=_('Sugar content in grams per serving')
+        verbose_name=_("Sugar"),
+        help_text=_("Sugar content in grams per serving"),
     )
 
     fiber = models.DecimalField(
@@ -2036,8 +2092,8 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         blank=True,
         null=True,
-        verbose_name=_('Fiber'),
-        help_text=_('Dietary fiber in grams per serving')
+        verbose_name=_("Fiber"),
+        help_text=_("Dietary fiber in grams per serving"),
     )
 
     fat = models.DecimalField(
@@ -2045,8 +2101,8 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         blank=True,
         null=True,
-        verbose_name=_('Fat'),
-        help_text=_('Total fat in grams per serving')
+        verbose_name=_("Fat"),
+        help_text=_("Total fat in grams per serving"),
     )
 
     saturated_fat = models.DecimalField(
@@ -2054,8 +2110,8 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         blank=True,
         null=True,
-        verbose_name=_('Saturated fat'),
-        help_text=_('Saturated fat in grams per serving')
+        verbose_name=_("Saturated fat"),
+        help_text=_("Saturated fat in grams per serving"),
     )
 
     trans_fat = models.DecimalField(
@@ -2063,8 +2119,8 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         blank=True,
         null=True,
-        verbose_name=_('Trans fat'),
-        help_text=_('Trans fat in grams per serving')
+        verbose_name=_("Trans fat"),
+        help_text=_("Trans fat in grams per serving"),
     )
 
     # Micronutrients
@@ -2073,8 +2129,8 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         blank=True,
         null=True,
-        verbose_name=_('Cholesterol'),
-        help_text=_('Cholesterol in mg per serving')
+        verbose_name=_("Cholesterol"),
+        help_text=_("Cholesterol in mg per serving"),
     )
 
     sodium = models.DecimalField(
@@ -2082,8 +2138,8 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         blank=True,
         null=True,
-        verbose_name=_('Sodium'),
-        help_text=_('Sodium in mg per serving')
+        verbose_name=_("Sodium"),
+        help_text=_("Sodium in mg per serving"),
     )
 
     potassium = models.DecimalField(
@@ -2091,8 +2147,8 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         blank=True,
         null=True,
-        verbose_name=_('Potassium'),
-        help_text=_('Potassium in mg per serving')
+        verbose_name=_("Potassium"),
+        help_text=_("Potassium in mg per serving"),
     )
 
     calcium = models.DecimalField(
@@ -2100,8 +2156,8 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         blank=True,
         null=True,
-        verbose_name=_('Calcium'),
-        help_text=_('Calcium in mg per serving')
+        verbose_name=_("Calcium"),
+        help_text=_("Calcium in mg per serving"),
     )
 
     iron = models.DecimalField(
@@ -2109,8 +2165,8 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         blank=True,
         null=True,
-        verbose_name=_('Iron'),
-        help_text=_('Iron in mg per serving')
+        verbose_name=_("Iron"),
+        help_text=_("Iron in mg per serving"),
     )
 
     # Vitamins
@@ -2119,8 +2175,8 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         blank=True,
         null=True,
-        verbose_name=_('Vitamin A'),
-        help_text=_('Vitamin A in IU or mcg per serving')
+        verbose_name=_("Vitamin A"),
+        help_text=_("Vitamin A in IU or mcg per serving"),
     )
 
     vitamin_c = models.DecimalField(
@@ -2128,16 +2184,16 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         blank=True,
         null=True,
-        verbose_name=_('Vitamin C'),
-        help_text=_('Vitamin C in mg per serving')
+        verbose_name=_("Vitamin C"),
+        help_text=_("Vitamin C in mg per serving"),
     )
 
     # Flexible field for additional nutrients
     custom_nutrients = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Custom nutrients'),
-        help_text=_('Additional nutrients not covered by standard fields (JSON)')
+        verbose_name=_("Custom nutrients"),
+        help_text=_("Additional nutrients not covered by standard fields (JSON)"),
     )
 
     # Managers
@@ -2145,19 +2201,21 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'nutrition_info'
-        verbose_name = _('Nutrition Info')
-        verbose_name_plural = _('Nutrition Info')
+        db_table = "nutrition_info"
+        verbose_name = _("Nutrition Info")
+        verbose_name_plural = _("Nutrition Info")
         indexes = [
-            models.Index(fields=['product'], name='nutrition_product_idx'),
-            models.Index(fields=['deleted_at'], name='nutrition_deleted_idx'),
+            models.Index(fields=["product"], name="nutrition_product_idx"),
+            models.Index(fields=["deleted_at"], name="nutrition_deleted_idx"),
         ]
 
     def __str__(self) -> str:
         return f"Nutrition: {self.product.name}"
 
     def __repr__(self) -> str:
-        return f"<NutritionInfo(product='{self.product.name}', calories={self.calories})>"
+        return (
+            f"<NutritionInfo(product='{self.product.name}', calories={self.calories})>"
+        )
 
     @property
     def organization(self):
@@ -2167,29 +2225,30 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
     @property
     def has_macros(self) -> bool:
         """Check if any macronutrient data is available."""
-        return any([
-            self.protein is not None,
-            self.carbohydrates is not None,
-            self.fat is not None
-        ])
+        return any(
+            [
+                self.protein is not None,
+                self.carbohydrates is not None,
+                self.fat is not None,
+            ]
+        )
 
     @property
     def has_vitamins(self) -> bool:
         """Check if any vitamin data is available."""
-        return any([
-            self.vitamin_a is not None,
-            self.vitamin_c is not None
-        ])
+        return any([self.vitamin_a is not None, self.vitamin_c is not None])
 
     @property
     def has_minerals(self) -> bool:
         """Check if any mineral data is available."""
-        return any([
-            self.calcium is not None,
-            self.iron is not None,
-            self.sodium is not None,
-            self.potassium is not None
-        ])
+        return any(
+            [
+                self.calcium is not None,
+                self.iron is not None,
+                self.sodium is not None,
+                self.potassium is not None,
+            ]
+        )
 
     def get_macros_summary(self) -> dict:
         """
@@ -2199,11 +2258,11 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
             Dictionary with protein, carbs, and fat values (or None if not set)
         """
         return {
-            'protein': self.protein,
-            'carbohydrates': self.carbohydrates,
-            'fat': self.fat,
-            'fiber': self.fiber,
-            'sugar': self.sugar,
+            "protein": self.protein,
+            "carbohydrates": self.carbohydrates,
+            "fat": self.fat,
+            "fiber": self.fiber,
+            "sugar": self.sugar,
         }
 
     def get_custom_nutrient(self, key: str, default=None):
@@ -2228,7 +2287,7 @@ class NutritionInfo(TimeStampedMixin, SoftDeleteMixin, models.Model):
             value: The value to set
         """
         self.custom_nutrients[key] = value
-        self.save(update_fields=['custom_nutrients', 'updated_at'])
+        self.save(update_fields=["custom_nutrients", "updated_at"])
 
     def calculate_calories_from_macros(self) -> int:
         """

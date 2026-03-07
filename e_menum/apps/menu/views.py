@@ -91,6 +91,7 @@ logger = logging.getLogger(__name__)
 # THEME VIEWSET
 # =============================================================================
 
+
 class ThemeViewSet(BaseTenantViewSet):
     """
     ViewSet for theme management.
@@ -118,15 +119,15 @@ class ThemeViewSet(BaseTenantViewSet):
     """
 
     queryset = Theme.objects.all()
-    permission_resource = 'theme'
+    permission_resource = "theme"
 
     def get_serializer_class(self):
         """Return the appropriate serializer based on action."""
-        if self.action == 'list':
+        if self.action == "list":
             return ThemeListSerializer
-        elif self.action == 'create':
+        elif self.action == "create":
             return ThemeCreateSerializer
-        elif self.action in ['update', 'partial_update']:
+        elif self.action in ["update", "partial_update"]:
             return ThemeUpdateSerializer
         return ThemeDetailSerializer
 
@@ -137,18 +138,18 @@ class ThemeViewSet(BaseTenantViewSet):
         queryset = super().get_queryset()
 
         # Apply active filter if provided
-        is_active = self.request.query_params.get('is_active')
+        is_active = self.request.query_params.get("is_active")
         if is_active is not None:
-            queryset = queryset.filter(is_active=is_active.lower() == 'true')
+            queryset = queryset.filter(is_active=is_active.lower() == "true")
 
         # Apply search filter if provided
-        search = self.request.query_params.get('search')
+        search = self.request.query_params.get("search")
         if search:
             queryset = queryset.filter(name__icontains=search)
 
-        return queryset.order_by('-is_default', 'name')
+        return queryset.order_by("-is_default", "name")
 
-    @action(detail=True, methods=['post'], url_path='set-default')
+    @action(detail=True, methods=["post"], url_path="set-default")
     def set_default(self, request, pk=None):
         """
         Set this theme as the default for the organization.
@@ -165,14 +166,13 @@ class ThemeViewSet(BaseTenantViewSet):
         theme = self.get_object()
         theme.set_as_default()
 
-        return self.get_success_response({
-            'message': str(_('Theme set as default'))
-        })
+        return self.get_success_response({"message": str(_("Theme set as default"))})
 
 
 # =============================================================================
 # MENU VIEWSET
 # =============================================================================
+
 
 class MenuViewSet(PlanEnforcementMixin, BaseTenantViewSet):
     """
@@ -206,19 +206,19 @@ class MenuViewSet(PlanEnforcementMixin, BaseTenantViewSet):
     """
 
     queryset = Menu.objects.all()
-    permission_resource = 'menu'
+    permission_resource = "menu"
 
     # Plan enforcement: limit menu creation per plan
-    plan_limit_key = 'max_menus'
+    plan_limit_key = "max_menus"
     plan_limit_model = Menu
 
     def get_serializer_class(self):
         """Return the appropriate serializer based on action."""
-        if self.action == 'list':
+        if self.action == "list":
             return MenuListSerializer
-        elif self.action == 'create':
+        elif self.action == "create":
             return MenuCreateSerializer
-        elif self.action in ['update', 'partial_update']:
+        elif self.action in ["update", "partial_update"]:
             return MenuUpdateSerializer
         return MenuDetailSerializer
 
@@ -229,29 +229,28 @@ class MenuViewSet(PlanEnforcementMixin, BaseTenantViewSet):
         queryset = super().get_queryset()
 
         # Optimize with select_related
-        queryset = queryset.select_related('theme')
+        queryset = queryset.select_related("theme")
 
         # Prefetch categories for category_count
         queryset = queryset.prefetch_related(
             Prefetch(
-                'categories',
-                queryset=Category.objects.filter(deleted_at__isnull=True)
+                "categories", queryset=Category.objects.filter(deleted_at__isnull=True)
             )
         )
 
         # Apply published filter if provided
-        is_published = self.request.query_params.get('is_published')
+        is_published = self.request.query_params.get("is_published")
         if is_published is not None:
-            queryset = queryset.filter(is_published=is_published.lower() == 'true')
+            queryset = queryset.filter(is_published=is_published.lower() == "true")
 
         # Apply search filter if provided
-        search = self.request.query_params.get('search')
+        search = self.request.query_params.get("search")
         if search:
             queryset = queryset.filter(name__icontains=search)
 
-        return queryset.order_by('sort_order', 'name')
+        return queryset.order_by("sort_order", "name")
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def publish(self, request, pk=None):
         """
         Publish the menu, making it visible to customers.
@@ -269,12 +268,16 @@ class MenuViewSet(PlanEnforcementMixin, BaseTenantViewSet):
         menu = self.get_object()
         menu.publish()
 
-        return self.get_success_response({
-            'message': str(_('Menu published')),
-            'published_at': menu.published_at.isoformat() if menu.published_at else None
-        })
+        return self.get_success_response(
+            {
+                "message": str(_("Menu published")),
+                "published_at": menu.published_at.isoformat()
+                if menu.published_at
+                else None,
+            }
+        )
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def unpublish(self, request, pk=None):
         """
         Unpublish the menu, hiding it from customers.
@@ -291,11 +294,9 @@ class MenuViewSet(PlanEnforcementMixin, BaseTenantViewSet):
         menu = self.get_object()
         menu.unpublish()
 
-        return self.get_success_response({
-            'message': str(_('Menu unpublished'))
-        })
+        return self.get_success_response({"message": str(_("Menu unpublished"))})
 
-    @action(detail=True, methods=['post'], url_path='set-default')
+    @action(detail=True, methods=["post"], url_path="set-default")
     def set_default(self, request, pk=None):
         """
         Set this menu as the default for the organization.
@@ -312,14 +313,13 @@ class MenuViewSet(PlanEnforcementMixin, BaseTenantViewSet):
         menu = self.get_object()
         menu.set_as_default()
 
-        return self.get_success_response({
-            'message': str(_('Menu set as default'))
-        })
+        return self.get_success_response({"message": str(_("Menu set as default"))})
 
 
 # =============================================================================
 # CATEGORY VIEWSET
 # =============================================================================
+
 
 class CategoryViewSet(PlanEnforcementMixin, BaseTenantViewSet):
     """
@@ -352,19 +352,19 @@ class CategoryViewSet(PlanEnforcementMixin, BaseTenantViewSet):
     """
 
     queryset = Category.objects.all()
-    permission_resource = 'category'
+    permission_resource = "category"
 
     # Plan enforcement: limit category creation per plan
-    plan_limit_key = 'max_categories'
+    plan_limit_key = "max_categories"
     plan_limit_model = Category
 
     def get_serializer_class(self):
         """Return the appropriate serializer based on action."""
-        if self.action == 'list':
+        if self.action == "list":
             return CategoryListSerializer
-        elif self.action == 'create':
+        elif self.action == "create":
             return CategoryCreateSerializer
-        elif self.action in ['update', 'partial_update']:
+        elif self.action in ["update", "partial_update"]:
             return CategoryUpdateSerializer
         return CategoryDetailSerializer
 
@@ -375,37 +375,38 @@ class CategoryViewSet(PlanEnforcementMixin, BaseTenantViewSet):
         queryset = super().get_queryset()
 
         # Optimize with select_related
-        queryset = queryset.select_related('menu', 'parent')
+        queryset = queryset.select_related("menu", "parent")
 
         # Filter by menu if provided
-        menu_id = self.request.query_params.get('menu_id')
+        menu_id = self.request.query_params.get("menu_id")
         if menu_id:
             queryset = queryset.filter(menu_id=menu_id)
 
         # Filter by parent (null for root categories)
-        parent_id = self.request.query_params.get('parent_id')
+        parent_id = self.request.query_params.get("parent_id")
         if parent_id is not None:
-            if parent_id.lower() == 'null' or parent_id == '':
+            if parent_id.lower() == "null" or parent_id == "":
                 queryset = queryset.filter(parent__isnull=True)
             else:
                 queryset = queryset.filter(parent_id=parent_id)
 
         # Apply active filter if provided
-        is_active = self.request.query_params.get('is_active')
+        is_active = self.request.query_params.get("is_active")
         if is_active is not None:
-            queryset = queryset.filter(is_active=is_active.lower() == 'true')
+            queryset = queryset.filter(is_active=is_active.lower() == "true")
 
         # Apply search filter if provided
-        search = self.request.query_params.get('search')
+        search = self.request.query_params.get("search")
         if search:
             queryset = queryset.filter(name__icontains=search)
 
-        return queryset.order_by('sort_order', 'name')
+        return queryset.order_by("sort_order", "name")
 
 
 # =============================================================================
 # PRODUCT VIEWSET
 # =============================================================================
+
 
 class ProductViewSet(PlanEnforcementMixin, BaseTenantViewSet):
     """
@@ -444,19 +445,19 @@ class ProductViewSet(PlanEnforcementMixin, BaseTenantViewSet):
     """
 
     queryset = Product.objects.all()
-    permission_resource = 'product'
+    permission_resource = "product"
 
     # Plan enforcement: limit product creation per plan
-    plan_limit_key = 'max_products'
+    plan_limit_key = "max_products"
     plan_limit_model = Product
 
     def get_serializer_class(self):
         """Return the appropriate serializer based on action."""
-        if self.action == 'list':
+        if self.action == "list":
             return ProductListSerializer
-        elif self.action == 'create':
+        elif self.action == "create":
             return ProductCreateSerializer
-        elif self.action in ['update', 'partial_update']:
+        elif self.action in ["update", "partial_update"]:
             return ProductUpdateSerializer
         return ProductDetailSerializer
 
@@ -467,63 +468,71 @@ class ProductViewSet(PlanEnforcementMixin, BaseTenantViewSet):
         queryset = super().get_queryset()
 
         # Optimize with select_related and prefetch_related
-        queryset = queryset.select_related('category', 'category__menu')
+        queryset = queryset.select_related("category", "category__menu")
 
         # For detail view, prefetch related data
-        if self.action == 'retrieve':
+        if self.action == "retrieve":
             queryset = queryset.prefetch_related(
                 Prefetch(
-                    'variants',
-                    queryset=ProductVariant.objects.filter(deleted_at__isnull=True)
-                        .order_by('sort_order', 'name')
+                    "variants",
+                    queryset=ProductVariant.objects.filter(
+                        deleted_at__isnull=True
+                    ).order_by("sort_order", "name"),
                 ),
                 Prefetch(
-                    'modifiers',
-                    queryset=ProductModifier.objects.filter(deleted_at__isnull=True)
-                        .order_by('sort_order', 'name')
+                    "modifiers",
+                    queryset=ProductModifier.objects.filter(
+                        deleted_at__isnull=True
+                    ).order_by("sort_order", "name"),
                 ),
                 Prefetch(
-                    'product_allergens',
-                    queryset=ProductAllergen.objects.filter(deleted_at__isnull=True)
-                        .select_related('allergen')
+                    "product_allergens",
+                    queryset=ProductAllergen.objects.filter(
+                        deleted_at__isnull=True
+                    ).select_related("allergen"),
                 ),
             )
 
         # Filter by category if provided
-        category_id = self.request.query_params.get('category_id')
+        category_id = self.request.query_params.get("category_id")
         if category_id:
             queryset = queryset.filter(category_id=category_id)
 
         # Filter by menu if provided (via category)
-        menu_id = self.request.query_params.get('menu_id')
+        menu_id = self.request.query_params.get("menu_id")
         if menu_id:
             queryset = queryset.filter(category__menu_id=menu_id)
 
         # Apply boolean filters
-        for param in ['is_active', 'is_available', 'is_featured', 'is_chef_recommended']:
+        for param in [
+            "is_active",
+            "is_available",
+            "is_featured",
+            "is_chef_recommended",
+        ]:
             value = self.request.query_params.get(param)
             if value is not None:
-                queryset = queryset.filter(**{param: value.lower() == 'true'})
+                queryset = queryset.filter(**{param: value.lower() == "true"})
 
         # Apply search filter if provided
-        search = self.request.query_params.get('search')
+        search = self.request.query_params.get("search")
         if search:
             queryset = queryset.filter(
-                models.Q(name__icontains=search) |
-                models.Q(description__icontains=search) |
-                models.Q(short_description__icontains=search)
+                models.Q(name__icontains=search)
+                | models.Q(description__icontains=search)
+                | models.Q(short_description__icontains=search)
             )
 
         # Apply tag filter if provided
-        tags = self.request.query_params.get('tags')
+        tags = self.request.query_params.get("tags")
         if tags:
-            tag_list = [t.strip().lower() for t in tags.split(',')]
+            tag_list = [t.strip().lower() for t in tags.split(",")]
             for tag in tag_list:
                 queryset = queryset.filter(tags__contains=[tag])
 
-        return queryset.order_by('sort_order', 'name')
+        return queryset.order_by("sort_order", "name")
 
-    @action(detail=True, methods=['post'], url_path='toggle-featured')
+    @action(detail=True, methods=["post"], url_path="toggle-featured")
     def toggle_featured(self, request, pk=None):
         """
         Toggle the featured status of the product.
@@ -540,11 +549,9 @@ class ProductViewSet(PlanEnforcementMixin, BaseTenantViewSet):
         product = self.get_object()
         is_featured = product.toggle_featured()
 
-        return self.get_success_response({
-            'is_featured': is_featured
-        })
+        return self.get_success_response({"is_featured": is_featured})
 
-    @action(detail=True, methods=['post'], url_path='toggle-available')
+    @action(detail=True, methods=["post"], url_path="toggle-available")
     def toggle_available(self, request, pk=None):
         """
         Toggle the availability status of the product.
@@ -560,18 +567,19 @@ class ProductViewSet(PlanEnforcementMixin, BaseTenantViewSet):
         """
         product = self.get_object()
         product.is_available = not product.is_available
-        product.save(update_fields=['is_available', 'updated_at'])
+        product.save(update_fields=["is_available", "updated_at"])
 
-        return self.get_success_response({
-            'is_available': product.is_available
-        })
+        return self.get_success_response({"is_available": product.is_available})
 
 
 # =============================================================================
 # NESTED VIEWSETS (Variants, Modifiers)
 # =============================================================================
 
-class ProductVariantViewSet(StandardResponseMixin, SoftDeleteMixin, viewsets.ModelViewSet):
+
+class ProductVariantViewSet(
+    StandardResponseMixin, SoftDeleteMixin, viewsets.ModelViewSet
+):
     """
     ViewSet for product variant management.
 
@@ -590,17 +598,15 @@ class ProductVariantViewSet(StandardResponseMixin, SoftDeleteMixin, viewsets.Mod
 
     def get_product(self):
         """Get the parent product and validate organization."""
-        product_id = self.kwargs.get('product_pk')
-        organization = getattr(self.request, 'organization', None)
+        product_id = self.kwargs.get("product_pk")
+        organization = getattr(self.request, "organization", None)
 
         if not organization:
             return None
 
         try:
             return Product.objects.get(
-                id=product_id,
-                organization=organization,
-                deleted_at__isnull=True
+                id=product_id, organization=organization, deleted_at__isnull=True
             )
         except Product.DoesNotExist:
             return None
@@ -612,20 +618,22 @@ class ProductVariantViewSet(StandardResponseMixin, SoftDeleteMixin, viewsets.Mod
             return ProductVariant.objects.none()
 
         return ProductVariant.objects.filter(
-            product=product,
-            deleted_at__isnull=True
-        ).order_by('sort_order', 'name')
+            product=product, deleted_at__isnull=True
+        ).order_by("sort_order", "name")
 
     def perform_create(self, serializer):
         """Create variant linked to the parent product."""
         product = self.get_product()
         if not product:
             from rest_framework.exceptions import NotFound
-            raise NotFound(_('Product not found'))
+
+            raise NotFound(_("Product not found"))
         serializer.save(product=product)
 
 
-class ProductModifierViewSet(StandardResponseMixin, SoftDeleteMixin, viewsets.ModelViewSet):
+class ProductModifierViewSet(
+    StandardResponseMixin, SoftDeleteMixin, viewsets.ModelViewSet
+):
     """
     ViewSet for product modifier management.
 
@@ -644,17 +652,15 @@ class ProductModifierViewSet(StandardResponseMixin, SoftDeleteMixin, viewsets.Mo
 
     def get_product(self):
         """Get the parent product and validate organization."""
-        product_id = self.kwargs.get('product_pk')
-        organization = getattr(self.request, 'organization', None)
+        product_id = self.kwargs.get("product_pk")
+        organization = getattr(self.request, "organization", None)
 
         if not organization:
             return None
 
         try:
             return Product.objects.get(
-                id=product_id,
-                organization=organization,
-                deleted_at__isnull=True
+                id=product_id, organization=organization, deleted_at__isnull=True
             )
         except Product.DoesNotExist:
             return None
@@ -666,22 +672,23 @@ class ProductModifierViewSet(StandardResponseMixin, SoftDeleteMixin, viewsets.Mo
             return ProductModifier.objects.none()
 
         return ProductModifier.objects.filter(
-            product=product,
-            deleted_at__isnull=True
-        ).order_by('sort_order', 'name')
+            product=product, deleted_at__isnull=True
+        ).order_by("sort_order", "name")
 
     def perform_create(self, serializer):
         """Create modifier linked to the parent product."""
         product = self.get_product()
         if not product:
             from rest_framework.exceptions import NotFound
-            raise NotFound(_('Product not found'))
+
+            raise NotFound(_("Product not found"))
         serializer.save(product=product)
 
 
 # =============================================================================
 # ALLERGEN VIEWSET (Platform-level, read-only)
 # =============================================================================
+
 
 class AllergenViewSet(BaseReadOnlyViewSet):
     """
@@ -706,7 +713,7 @@ class AllergenViewSet(BaseReadOnlyViewSet):
 
     def get_serializer_class(self):
         """Return the appropriate serializer based on action."""
-        if self.action == 'list':
+        if self.action == "list":
             return AllergenListSerializer
         return AllergenDetailSerializer
 
@@ -715,19 +722,18 @@ class AllergenViewSet(BaseReadOnlyViewSet):
         queryset = super().get_queryset()
 
         # Apply active filter if provided
-        is_active = self.request.query_params.get('is_active')
+        is_active = self.request.query_params.get("is_active")
         if is_active is not None:
-            queryset = queryset.filter(is_active=is_active.lower() == 'true')
+            queryset = queryset.filter(is_active=is_active.lower() == "true")
 
         # Apply search filter if provided
-        search = self.request.query_params.get('search')
+        search = self.request.query_params.get("search")
         if search:
             queryset = queryset.filter(
-                models.Q(name__icontains=search) |
-                models.Q(code__icontains=search)
+                models.Q(name__icontains=search) | models.Q(code__icontains=search)
             )
 
-        return queryset.order_by('sort_order', 'name')
+        return queryset.order_by("sort_order", "name")
 
 
 # =============================================================================
@@ -735,11 +741,11 @@ class AllergenViewSet(BaseReadOnlyViewSet):
 # =============================================================================
 
 __all__ = [
-    'ThemeViewSet',
-    'MenuViewSet',
-    'CategoryViewSet',
-    'ProductViewSet',
-    'ProductVariantViewSet',
-    'ProductModifierViewSet',
-    'AllergenViewSet',
+    "ThemeViewSet",
+    "MenuViewSet",
+    "CategoryViewSet",
+    "ProductViewSet",
+    "ProductVariantViewSet",
+    "ProductModifierViewSet",
+    "AllergenViewSet",
 ]

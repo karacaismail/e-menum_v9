@@ -55,10 +55,10 @@ class SchedulerService:
 
         frequency = schedule.frequency
 
-        if frequency == 'DAILY':
+        if frequency == "DAILY":
             return base_dt
 
-        elif frequency == 'WEEKLY':
+        elif frequency == "WEEKLY":
             day_of_week = schedule.trigger_day_of_week or 0  # Monday default
             current_dow = base_date.weekday()
             days_until = (day_of_week - current_dow) % 7
@@ -70,7 +70,7 @@ class SchedulerService:
                 timezone.get_current_timezone(),
             )
 
-        elif frequency == 'BIWEEKLY':
+        elif frequency == "BIWEEKLY":
             day_of_week = schedule.trigger_day_of_week or 0
             current_dow = base_date.weekday()
             days_until = (day_of_week - current_dow) % 7
@@ -94,7 +94,7 @@ class SchedulerService:
                 timezone.get_current_timezone(),
             )
 
-        elif frequency == 'MONTHLY':
+        elif frequency == "MONTHLY":
             day_of_month = schedule.trigger_day_of_month or 1
             # Clamp to valid range
             day_of_month = min(day_of_month, 28)
@@ -116,7 +116,7 @@ class SchedulerService:
                 timezone.get_current_timezone(),
             )
 
-        elif frequency == 'QUARTERLY':
+        elif frequency == "QUARTERLY":
             day_of_month = schedule.trigger_day_of_month or 1
             day_of_month = min(day_of_month, 28)
 
@@ -134,13 +134,15 @@ class SchedulerService:
                 next_quarter = 1
                 year += 1
 
-            target_date = base_date.replace(year=year, month=next_quarter, day=day_of_month)
+            target_date = base_date.replace(
+                year=year, month=next_quarter, day=day_of_month
+            )
             return timezone.make_aware(
                 datetime.combine(target_date, trigger_time),
                 timezone.get_current_timezone(),
             )
 
-        elif frequency == 'YEARLY':
+        elif frequency == "YEARLY":
             day_of_month = schedule.trigger_day_of_month or 1
             day_of_month = min(day_of_month, 28)
 
@@ -169,14 +171,14 @@ class SchedulerService:
             is_active=True,
             deleted_at__isnull=True,
             next_run_at__lte=now,
-        ).select_related('report_definition', 'organization')
+        ).select_related("report_definition", "organization")
 
     def deliver_report(
         self,
         execution,
         channels: list,
         emails: list = None,
-        webhook_url: str = '',
+        webhook_url: str = "",
     ):
         """
         Deliver a completed report via configured channels.
@@ -191,20 +193,22 @@ class SchedulerService:
 
         for channel in channels:
             try:
-                if channel == 'DASHBOARD':
+                if channel == "DASHBOARD":
                     self._deliver_dashboard(execution)
-                elif channel == 'EMAIL':
+                elif channel == "EMAIL":
                     self._deliver_email(execution, emails)
-                elif channel == 'PUSH':
+                elif channel == "PUSH":
                     self._deliver_push(execution)
-                elif channel == 'WEBHOOK':
+                elif channel == "WEBHOOK":
                     self._deliver_webhook(execution, webhook_url)
                 else:
-                    logger.warning('Unknown delivery channel: %s', channel)
+                    logger.warning("Unknown delivery channel: %s", channel)
             except Exception as exc:
                 logger.error(
-                    'Delivery failed: channel=%s execution=%s error=%s',
-                    channel, execution.id, str(exc),
+                    "Delivery failed: channel=%s execution=%s error=%s",
+                    channel,
+                    execution.id,
+                    str(exc),
                     exc_info=True,
                 )
 
@@ -213,7 +217,7 @@ class SchedulerService:
         Mark the execution as delivered to dashboard.
         Dashboard delivery is implicit - the execution is queryable via API.
         """
-        logger.info('Report delivered to dashboard: %s', execution.id)
+        logger.info("Report delivered to dashboard: %s", execution.id)
 
     def _deliver_email(self, execution, emails: list):
         """
@@ -224,19 +228,19 @@ class SchedulerService:
             emails: List of email addresses
         """
         if not emails:
-            logger.warning('No email addresses for delivery: %s', execution.id)
+            logger.warning("No email addresses for delivery: %s", execution.id)
             return
 
         from django.core.mail import send_mail
         from django.conf import settings
 
-        subject = f'E-Menum Rapor: {execution.report.name if hasattr(execution, "report") and execution.report else "Rapor"}'
+        subject = f"E-Menum Rapor: {execution.report.name if hasattr(execution, 'report') and execution.report else 'Rapor'}"
         message = (
-            f'Raporunuz hazir.\n\n'
-            f'Rapor ID: {execution.id}\n'
-            f'Durum: {execution.status}\n'
-            f'Tamamlanma: {execution.finished_at}\n\n'
-            f'Sonuclari goruntulemek icin panele giris yapin.'
+            f"Raporunuz hazir.\n\n"
+            f"Rapor ID: {execution.id}\n"
+            f"Durum: {execution.status}\n"
+            f"Tamamlanma: {execution.finished_at}\n\n"
+            f"Sonuclari goruntulemek icin panele giris yapin."
         )
 
         try:
@@ -248,13 +252,15 @@ class SchedulerService:
                 fail_silently=False,
             )
             logger.info(
-                'Report email delivered: %s to %s',
-                execution.id, ', '.join(emails),
+                "Report email delivered: %s to %s",
+                execution.id,
+                ", ".join(emails),
             )
         except Exception as e:
             logger.error(
-                'Report email delivery failed: %s - %s',
-                execution.id, str(e),
+                "Report email delivery failed: %s - %s",
+                execution.id,
+                str(e),
             )
 
     def _deliver_push(self, execution):
@@ -266,9 +272,9 @@ class SchedulerService:
         """
         from apps.notifications.models import Notification
 
-        schedule = execution.schedule if hasattr(execution, 'schedule') else None
+        schedule = execution.schedule if hasattr(execution, "schedule") else None
         if not schedule or not schedule.organization:
-            logger.warning('No organization for push notification: %s', execution.id)
+            logger.warning("No organization for push notification: %s", execution.id)
             return
 
         # Create in-app notification for all active users of the organization
@@ -280,15 +286,15 @@ class SchedulerService:
             Notification.objects.create(
                 organization=schedule.organization,
                 user=user,
-                notification_type='SYSTEM',
-                title=f'Rapor hazir: {schedule.report.name if hasattr(schedule, "report") and schedule.report else "Rapor"}',
-                message='Zamanlanmis raporunuz tamamlandi. Sonuclari goruntulemek icin tiklayiniz.',
-                priority='NORMAL',
-                channel='IN_APP',
-                status='PENDING',
-                action_url=f'/admin/reporting/reportexecution/{execution.id}/change/',
+                notification_type="SYSTEM",
+                title=f"Rapor hazir: {schedule.report.name if hasattr(schedule, 'report') and schedule.report else 'Rapor'}",
+                message="Zamanlanmis raporunuz tamamlandi. Sonuclari goruntulemek icin tiklayiniz.",
+                priority="NORMAL",
+                channel="IN_APP",
+                status="PENDING",
+                action_url=f"/admin/reporting/reportexecution/{execution.id}/change/",
             )
-        logger.info('Report push notification created: %s', execution.id)
+        logger.info("Report push notification created: %s", execution.id)
 
     def _deliver_webhook(self, execution, webhook_url: str):
         """
@@ -299,7 +305,7 @@ class SchedulerService:
             webhook_url: Destination URL
         """
         if not webhook_url:
-            logger.warning('No webhook URL for delivery: %s', execution.id)
+            logger.warning("No webhook URL for delivery: %s", execution.id)
             return
 
         import json
@@ -307,27 +313,35 @@ class SchedulerService:
         from urllib.error import URLError
 
         payload = {
-            'event': 'report.completed',
-            'execution_id': str(execution.id),
-            'status': execution.status,
-            'finished_at': execution.finished_at.isoformat() if execution.finished_at else None,
-            'result_summary': execution.result_data.get('summary', {}) if execution.result_data else {},
+            "event": "report.completed",
+            "execution_id": str(execution.id),
+            "status": execution.status,
+            "finished_at": execution.finished_at.isoformat()
+            if execution.finished_at
+            else None,
+            "result_summary": execution.result_data.get("summary", {})
+            if execution.result_data
+            else {},
         }
 
         try:
             req = Request(
                 webhook_url,
-                data=json.dumps(payload).encode('utf-8'),
-                headers={'Content-Type': 'application/json'},
-                method='POST',
+                data=json.dumps(payload).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST",
             )
             with urlopen(req, timeout=30) as response:
                 logger.info(
-                    'Report webhook delivered: %s to %s (status %d)',
-                    execution.id, webhook_url, response.status,
+                    "Report webhook delivered: %s to %s (status %d)",
+                    execution.id,
+                    webhook_url,
+                    response.status,
                 )
         except (URLError, Exception) as e:
             logger.error(
-                'Report webhook delivery failed: %s to %s - %s',
-                execution.id, webhook_url, str(e),
+                "Report webhook delivery failed: %s to %s - %s",
+                execution.id,
+                webhook_url,
+                str(e),
             )

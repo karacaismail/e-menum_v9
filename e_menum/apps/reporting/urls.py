@@ -41,74 +41,68 @@ from apps.reporting.views import (
 )
 
 router = DefaultRouter()
-router.register(r'reports/catalog', ReportCatalogViewSet, basename='report-catalog')
-router.register(r'reports/executions', ReportExecutionViewSet, basename='report-execution')
-router.register(r'reports/schedules', ReportScheduleViewSet, basename='report-schedule')
-router.register(r'reports/favorites', ReportFavoriteViewSet, basename='report-favorite')
+router.register(r"reports/catalog", ReportCatalogViewSet, basename="report-catalog")
+router.register(
+    r"reports/executions", ReportExecutionViewSet, basename="report-execution"
+)
+router.register(r"reports/schedules", ReportScheduleViewSet, basename="report-schedule")
+router.register(r"reports/favorites", ReportFavoriteViewSet, basename="report-favorite")
 
 urlpatterns = [
     # Router-based URLs
-    path('', include(router.urls)),
-
+    path("", include(router.urls)),
     # Custom action URLs
     path(
-        'reports/run/',
+        "reports/run/",
         RunReportView.as_view(),
-        name='report-run',
+        name="report-run",
     ),
     path(
-        'reports/executions/<uuid:execution_id>/export/',
+        "reports/executions/<uuid:execution_id>/export/",
         ExportReportView.as_view(),
-        name='report-export',
+        name="report-export",
     ),
-
     # Dashboard
     path(
-        'dashboard/metrics/',
+        "dashboard/metrics/",
         DashboardMetricView.as_view(),
-        name='dashboard-metrics',
+        name="dashboard-metrics",
     ),
-
     # ─── F4 Innovation Features ───────────────────────────
     # Conversational analytics
     path(
-        'reports/chat/',
+        "reports/chat/",
         ConversationalView.as_view(),
-        name='report-chat',
+        name="report-chat",
     ),
-
     # Credit balance & usage
     path(
-        'reports/credits/',
+        "reports/credits/",
         CreditBalanceView.as_view(),
-        name='report-credits',
+        name="report-credits",
     ),
-
     # Voice query
     path(
-        'reports/voice/',
+        "reports/voice/",
         VoiceQueryView.as_view(),
-        name='report-voice',
+        name="report-voice",
     ),
-
     # Advanced export (white-label PDF, BI formats)
     path(
-        'reports/export/advanced/',
+        "reports/export/advanced/",
         AdvancedExportView.as_view(),
-        name='report-export-advanced',
+        name="report-export-advanced",
     ),
-
     # Industry benchmark comparison
     path(
-        'reports/benchmarks/',
+        "reports/benchmarks/",
         BenchmarkComparisonView.as_view(),
-        name='report-benchmarks',
+        name="report-benchmarks",
     ),
-
     # AI model information
     path(
-        'reports/ai/models/',
+        "reports/ai/models/",
         AIModelInfoView.as_view(),
-        name='report-ai-models',
+        name="report-ai-models",
     ),
 ]

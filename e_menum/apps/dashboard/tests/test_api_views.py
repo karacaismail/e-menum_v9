@@ -57,34 +57,34 @@ class TestAuthenticationRequired:
     """All dashboard API endpoints require staff authentication."""
 
     API_URLS = [
-        'dashboard:api-kpis',
-        'dashboard:api-qr-scan-trend',
-        'dashboard:api-org-activity-heatmap',
-        'dashboard:api-plan-distribution',
-        'dashboard:api-city-distribution',
-        'dashboard:api-insights',
-        'dashboard:api-recent-activity',
-        'dashboard:api-subscription-funnel',
-        'dashboard:api-search',
-        'dashboard:api-sidebar-pins',
-        'dashboard:api-sidebar-recent',
+        "dashboard:api-kpis",
+        "dashboard:api-qr-scan-trend",
+        "dashboard:api-org-activity-heatmap",
+        "dashboard:api-plan-distribution",
+        "dashboard:api-city-distribution",
+        "dashboard:api-insights",
+        "dashboard:api-recent-activity",
+        "dashboard:api-subscription-funnel",
+        "dashboard:api-search",
+        "dashboard:api-sidebar-pins",
+        "dashboard:api-sidebar-recent",
     ]
 
-    @pytest.mark.parametrize('url_name', API_URLS)
+    @pytest.mark.parametrize("url_name", API_URLS)
     def test_anonymous_redirected_to_login(self, anon_client, url_name):
         """Anonymous users should be redirected to admin login."""
         url = reverse(url_name)
         response = anon_client.get(url)
         assert response.status_code in (301, 302)
 
-    @pytest.mark.parametrize('url_name', API_URLS)
+    @pytest.mark.parametrize("url_name", API_URLS)
     def test_non_staff_redirected(self, regular_client, url_name):
         """Non-staff users should be redirected to admin login."""
         url = reverse(url_name)
         response = regular_client.get(url)
         assert response.status_code in (301, 302)
 
-    @pytest.mark.parametrize('url_name', API_URLS)
+    @pytest.mark.parametrize("url_name", API_URLS)
     def test_staff_gets_200(self, staff_client, url_name):
         """Staff users should get 200 OK."""
         url = reverse(url_name)
@@ -103,44 +103,48 @@ class TestAPIKpis:
 
     def test_returns_json(self, staff_client):
         """Should return valid JSON with success=True."""
-        url = reverse('dashboard:api-kpis')
+        url = reverse("dashboard:api-kpis")
         response = staff_client.get(url)
         data = response.json()
 
-        assert data['success'] is True
-        assert 'data' in data
+        assert data["success"] is True
+        assert "data" in data
 
     def test_contains_all_kpi_keys(self, staff_client):
         """Should contain all 6 KPI metric keys."""
-        url = reverse('dashboard:api-kpis')
-        data = staff_client.get(url).json()['data']
+        url = reverse("dashboard:api-kpis")
+        data = staff_client.get(url).json()["data"]
 
         expected_keys = {
-            'organizations', 'qr_scans', 'active_menus',
-            'pending_requests', 'mrr', 'trial_count',
+            "organizations",
+            "qr_scans",
+            "active_menus",
+            "pending_requests",
+            "mrr",
+            "trial_count",
         }
         assert set(data.keys()) == expected_keys
 
     def test_kpi_structure(self, staff_client):
         """Each KPI should have value, trend, change, label, icon."""
-        url = reverse('dashboard:api-kpis')
-        data = staff_client.get(url).json()['data']
+        url = reverse("dashboard:api-kpis")
+        data = staff_client.get(url).json()["data"]
 
         for key, kpi in data.items():
-            assert 'value' in kpi, f'{key} missing value'
-            assert 'trend' in kpi, f'{key} missing trend'
-            assert 'change' in kpi, f'{key} missing change'
-            assert 'label' in kpi, f'{key} missing label'
-            assert 'icon' in kpi, f'{key} missing icon'
+            assert "value" in kpi, f"{key} missing value"
+            assert "trend" in kpi, f"{key} missing trend"
+            assert "change" in kpi, f"{key} missing change"
+            assert "label" in kpi, f"{key} missing label"
+            assert "icon" in kpi, f"{key} missing icon"
 
     def test_trend_is_list_of_7(self, staff_client):
         """Trend should be a 7-element list (sparkline data)."""
-        url = reverse('dashboard:api-kpis')
-        data = staff_client.get(url).json()['data']
+        url = reverse("dashboard:api-kpis")
+        data = staff_client.get(url).json()["data"]
 
         for key, kpi in data.items():
-            assert isinstance(kpi['trend'], list), f'{key} trend not list'
-            assert len(kpi['trend']) == 7, f'{key} trend not 7 items'
+            assert isinstance(kpi["trend"], list), f"{key} trend not list"
+            assert len(kpi["trend"]) == 7, f"{key} trend not 7 items"
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -154,25 +158,25 @@ class TestAPIQRScanTrend:
 
     def test_default_30d(self, staff_client):
         """Default range should be 30 days."""
-        url = reverse('dashboard:api-qr-scan-trend')
+        url = reverse("dashboard:api-qr-scan-trend")
         data = staff_client.get(url).json()
 
-        assert data['success'] is True
-        assert len(data['data']['dates']) == 30
+        assert data["success"] is True
+        assert len(data["data"]["dates"]) == 30
 
     def test_custom_range_7d(self, staff_client):
         """?range=7d should return 7 days of data."""
-        url = reverse('dashboard:api-qr-scan-trend')
-        data = staff_client.get(url + '?range=7d').json()
+        url = reverse("dashboard:api-qr-scan-trend")
+        data = staff_client.get(url + "?range=7d").json()
 
-        assert len(data['data']['dates']) == 7
+        assert len(data["data"]["dates"]) == 7
 
     def test_custom_range_90d(self, staff_client):
         """?range=90d should return 90 days of data."""
-        url = reverse('dashboard:api-qr-scan-trend')
-        data = staff_client.get(url + '?range=90d').json()
+        url = reverse("dashboard:api-qr-scan-trend")
+        data = staff_client.get(url + "?range=90d").json()
 
-        assert len(data['data']['dates']) == 90
+        assert len(data["data"]["dates"]) == 90
 
 
 @pytest.mark.django_db
@@ -181,11 +185,11 @@ class TestAPIOrgActivityHeatmap:
 
     def test_returns_success(self, staff_client):
         """Should return success with list data."""
-        url = reverse('dashboard:api-org-activity-heatmap')
+        url = reverse("dashboard:api-org-activity-heatmap")
         data = staff_client.get(url).json()
 
-        assert data['success'] is True
-        assert isinstance(data['data'], list)
+        assert data["success"] is True
+        assert isinstance(data["data"], list)
 
 
 @pytest.mark.django_db
@@ -194,11 +198,11 @@ class TestAPIPlanDistribution:
 
     def test_returns_success(self, staff_client):
         """Should return success with list data."""
-        url = reverse('dashboard:api-plan-distribution')
+        url = reverse("dashboard:api-plan-distribution")
         data = staff_client.get(url).json()
 
-        assert data['success'] is True
-        assert isinstance(data['data'], list)
+        assert data["success"] is True
+        assert isinstance(data["data"], list)
 
 
 @pytest.mark.django_db
@@ -207,11 +211,11 @@ class TestAPICityDistribution:
 
     def test_returns_success(self, staff_client):
         """Should return success with list data."""
-        url = reverse('dashboard:api-city-distribution')
+        url = reverse("dashboard:api-city-distribution")
         data = staff_client.get(url).json()
 
-        assert data['success'] is True
-        assert isinstance(data['data'], list)
+        assert data["success"] is True
+        assert isinstance(data["data"], list)
 
 
 @pytest.mark.django_db
@@ -220,20 +224,20 @@ class TestAPISubscriptionFunnel:
 
     def test_returns_four_steps(self, staff_client):
         """Should return 4 funnel steps."""
-        url = reverse('dashboard:api-subscription-funnel')
+        url = reverse("dashboard:api-subscription-funnel")
         data = staff_client.get(url).json()
 
-        assert data['success'] is True
-        assert len(data['data']) == 4
+        assert data["success"] is True
+        assert len(data["data"]) == 4
 
     def test_each_step_has_name_and_count(self, staff_client):
         """Each step should have step name and count."""
-        url = reverse('dashboard:api-subscription-funnel')
-        steps = staff_client.get(url).json()['data']
+        url = reverse("dashboard:api-subscription-funnel")
+        steps = staff_client.get(url).json()["data"]
 
         for step in steps:
-            assert 'step' in step
-            assert 'count' in step
+            assert "step" in step
+            assert "count" in step
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -247,32 +251,32 @@ class TestAPIInsights:
 
     def test_returns_empty_when_no_insights(self, staff_client):
         """Should return empty list when no insights exist."""
-        url = reverse('dashboard:api-insights')
+        url = reverse("dashboard:api-insights")
         data = staff_client.get(url).json()
 
-        assert data['success'] is True
-        assert isinstance(data['data'], list)
-        assert len(data['data']) == 0
+        assert data["success"] is True
+        assert isinstance(data["data"], list)
+        assert len(data["data"]) == 0
 
     def test_returns_active_insights(self, staff_client):
         """Should return active insights ordered by priority."""
         from apps.dashboard.models import DashboardInsight
 
         DashboardInsight.objects.create(
-            type='warning',
-            title='Test Insight',
-            body='Test body text',
+            type="warning",
+            title="Test Insight",
+            body="Test body text",
             priority=90,
             is_active=True,
             expires_at=timezone.now() + timedelta(hours=24),
         )
 
-        url = reverse('dashboard:api-insights')
+        url = reverse("dashboard:api-insights")
         data = staff_client.get(url).json()
 
-        assert len(data['data']) == 1
-        assert data['data'][0]['title'] == 'Test Insight'
-        assert data['data'][0]['type'] == 'warning'
+        assert len(data["data"]) == 1
+        assert data["data"][0]["title"] == "Test Insight"
+        assert data["data"][0]["type"] == "warning"
 
     def test_deactivates_expired_insights(self, staff_client):
         """Should deactivate expired insights on fetch."""
@@ -280,9 +284,9 @@ class TestAPIInsights:
 
         # Create an already-expired insight
         insight = DashboardInsight.objects.create(
-            type='info',
-            title='Expired Insight',
-            body='Should be deactivated',
+            type="info",
+            title="Expired Insight",
+            body="Should be deactivated",
             priority=50,
             is_active=True,
             expires_at=timezone.now() - timedelta(hours=1),
@@ -290,11 +294,11 @@ class TestAPIInsights:
         # Force is_active=True bypassing save() logic
         DashboardInsight.objects.filter(pk=insight.pk).update(is_active=True)
 
-        url = reverse('dashboard:api-insights')
+        url = reverse("dashboard:api-insights")
         data = staff_client.get(url).json()
 
         # Should not appear in results
-        assert len(data['data']) == 0
+        assert len(data["data"]) == 0
 
         # Verify it was deactivated in DB
         insight.refresh_from_db()
@@ -306,18 +310,18 @@ class TestAPIInsights:
 
         for i in range(8):
             DashboardInsight.objects.create(
-                type='info',
-                title=f'Insight {i}',
-                body=f'Body {i}',
+                type="info",
+                title=f"Insight {i}",
+                body=f"Body {i}",
                 priority=i,
                 is_active=True,
                 expires_at=timezone.now() + timedelta(hours=24),
             )
 
-        url = reverse('dashboard:api-insights')
+        url = reverse("dashboard:api-insights")
         data = staff_client.get(url).json()
 
-        assert len(data['data']) <= 5
+        assert len(data["data"]) <= 5
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -331,11 +335,11 @@ class TestAPIRecentActivity:
 
     def test_returns_success(self, staff_client):
         """Should return success with list data."""
-        url = reverse('dashboard:api-recent-activity')
+        url = reverse("dashboard:api-recent-activity")
         data = staff_client.get(url).json()
 
-        assert data['success'] is True
-        assert isinstance(data['data'], list)
+        assert data["success"] is True
+        assert isinstance(data["data"], list)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -349,63 +353,65 @@ class TestAPISearch:
 
     def test_returns_empty_for_short_query(self, staff_client):
         """Should return empty groups for queries shorter than 2 chars."""
-        url = reverse('dashboard:api-search')
-        data = staff_client.get(url + '?q=a').json()
+        url = reverse("dashboard:api-search")
+        data = staff_client.get(url + "?q=a").json()
 
-        assert data['success'] is True
-        assert data['data']['groups'] == []
+        assert data["success"] is True
+        assert data["data"]["groups"] == []
 
     def test_returns_empty_for_no_query(self, staff_client):
         """Should return empty groups when no query provided."""
-        url = reverse('dashboard:api-search')
+        url = reverse("dashboard:api-search")
         data = staff_client.get(url).json()
 
-        assert data['success'] is True
-        assert data['data']['groups'] == []
+        assert data["success"] is True
+        assert data["data"]["groups"] == []
 
     def test_searches_organizations(self, staff_client):
         """Should find organizations matching query."""
-        OrganizationFactory(name='Istanbul Cafe ABC')
+        OrganizationFactory(name="Istanbul Cafe ABC")
 
-        url = reverse('dashboard:api-search')
-        data = staff_client.get(url + '?q=Istanbul').json()
+        url = reverse("dashboard:api-search")
+        data = staff_client.get(url + "?q=Istanbul").json()
 
-        assert data['success'] is True
-        groups = data['data']['groups']
+        assert data["success"] is True
+        groups = data["data"]["groups"]
         org_group = next(
-            (g for g in groups if g['label'] == 'Organizasyonlar'), None,
+            (g for g in groups if g["label"] == "Organizasyonlar"),
+            None,
         )
         assert org_group is not None
-        assert len(org_group['items']) >= 1
-        assert org_group['items'][0]['title'] == 'Istanbul Cafe ABC'
+        assert len(org_group["items"]) >= 1
+        assert org_group["items"][0]["title"] == "Istanbul Cafe ABC"
 
     def test_searches_users(self, staff_client):
         """Should find users matching query by email."""
-        UserFactory(email='searchable@example.com')
+        UserFactory(email="searchable@example.com")
 
-        url = reverse('dashboard:api-search')
-        data = staff_client.get(url + '?q=searchable').json()
+        url = reverse("dashboard:api-search")
+        data = staff_client.get(url + "?q=searchable").json()
 
-        groups = data['data']['groups']
+        groups = data["data"]["groups"]
         user_group = next(
-            (g for g in groups if g['label'] == 'Kullanıcılar'), None,
+            (g for g in groups if g["label"] == "Kullanıcılar"),
+            None,
         )
         assert user_group is not None
-        assert len(user_group['items']) >= 1
+        assert len(user_group["items"]) >= 1
 
     def test_search_result_structure(self, staff_client):
         """Each search result item should have title, subtitle, url."""
-        OrganizationFactory(name='Structure Test Org')
+        OrganizationFactory(name="Structure Test Org")
 
-        url = reverse('dashboard:api-search')
-        data = staff_client.get(url + '?q=Structure Test').json()
+        url = reverse("dashboard:api-search")
+        data = staff_client.get(url + "?q=Structure Test").json()
 
-        groups = data['data']['groups']
+        groups = data["data"]["groups"]
         if groups:
-            for item in groups[0]['items']:
-                assert 'title' in item
-                assert 'subtitle' in item
-                assert 'url' in item
+            for item in groups[0]["items"]:
+                assert "title" in item
+                assert "subtitle" in item
+                assert "url" in item
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -419,98 +425,104 @@ class TestAPISidebarPins:
 
     def test_get_pins_creates_default(self, staff_client):
         """GET pins should create default empty preference."""
-        url = reverse('dashboard:api-sidebar-pins')
+        url = reverse("dashboard:api-sidebar-pins")
         data = staff_client.get(url).json()
 
-        assert data['success'] is True
-        assert 'pins' in data['data']
-        assert data['data']['pins'] == []
+        assert data["success"] is True
+        assert "pins" in data["data"]
+        assert data["data"]["pins"] == []
 
     def test_save_and_retrieve_pins(self, staff_client):
         """Should save and retrieve pinned items."""
-        save_url = reverse('dashboard:api-sidebar-pins-save')
-        get_url = reverse('dashboard:api-sidebar-pins')
+        save_url = reverse("dashboard:api-sidebar-pins-save")
+        get_url = reverse("dashboard:api-sidebar-pins")
 
-        pins_data = {'pins': ['/admin/core/organization/', '/admin/menu/menu/']}
+        pins_data = {"pins": ["/admin/core/organization/", "/admin/menu/menu/"]}
 
         response = staff_client.post(
             save_url,
             data=json.dumps(pins_data),
-            content_type='application/json',
+            content_type="application/json",
         )
-        assert response.json()['success'] is True
+        assert response.json()["success"] is True
 
         # Retrieve saved pins
         data = staff_client.get(get_url).json()
-        assert data['data']['pins'] == pins_data['pins']
+        assert data["data"]["pins"] == pins_data["pins"]
 
     def test_save_pins_rejects_get(self, staff_client):
         """POST-only endpoint should reject GET requests."""
-        url = reverse('dashboard:api-sidebar-pins-save')
+        url = reverse("dashboard:api-sidebar-pins-save")
         response = staff_client.get(url)
         assert response.status_code == 405
 
     def test_get_recent_creates_default(self, staff_client):
         """GET recent should create default empty preference."""
-        url = reverse('dashboard:api-sidebar-recent')
+        url = reverse("dashboard:api-sidebar-recent")
         data = staff_client.get(url).json()
 
-        assert data['success'] is True
-        assert 'pages' in data['data']
-        assert data['data']['pages'] == []
+        assert data["success"] is True
+        assert "pages" in data["data"]
+        assert data["data"]["pages"] == []
 
     def test_save_and_retrieve_recent(self, staff_client):
         """Should save and retrieve recent pages."""
-        save_url = reverse('dashboard:api-sidebar-recent-save')
-        get_url = reverse('dashboard:api-sidebar-recent')
+        save_url = reverse("dashboard:api-sidebar-recent-save")
+        get_url = reverse("dashboard:api-sidebar-recent")
 
         page_data = {
-            'url': '/admin/core/organization/',
-            'label': 'Organizations',
+            "url": "/admin/core/organization/",
+            "label": "Organizations",
         }
 
         response = staff_client.post(
             save_url,
             data=json.dumps(page_data),
-            content_type='application/json',
+            content_type="application/json",
         )
-        assert response.json()['success'] is True
+        assert response.json()["success"] is True
 
         data = staff_client.get(get_url).json()
-        assert len(data['data']['pages']) == 1
-        assert data['data']['pages'][0]['url'] == page_data['url']
+        assert len(data["data"]["pages"]) == 1
+        assert data["data"]["pages"][0]["url"] == page_data["url"]
 
     def test_recent_pages_max_5(self, staff_client):
         """Recent pages should be limited to 5 entries."""
-        save_url = reverse('dashboard:api-sidebar-recent-save')
-        get_url = reverse('dashboard:api-sidebar-recent')
+        save_url = reverse("dashboard:api-sidebar-recent-save")
+        get_url = reverse("dashboard:api-sidebar-recent")
 
         for i in range(7):
             staff_client.post(
                 save_url,
-                data=json.dumps({
-                    'url': f'/admin/page/{i}/',
-                    'label': f'Page {i}',
-                }),
-                content_type='application/json',
+                data=json.dumps(
+                    {
+                        "url": f"/admin/page/{i}/",
+                        "label": f"Page {i}",
+                    }
+                ),
+                content_type="application/json",
             )
 
         data = staff_client.get(get_url).json()
-        assert len(data['data']['pages']) <= 5
+        assert len(data["data"]["pages"]) <= 5
 
     def test_recent_pages_deduplication(self, staff_client):
         """Visiting the same page should move it to top, not duplicate."""
-        save_url = reverse('dashboard:api-sidebar-recent-save')
-        get_url = reverse('dashboard:api-sidebar-recent')
+        save_url = reverse("dashboard:api-sidebar-recent-save")
+        get_url = reverse("dashboard:api-sidebar-recent")
 
-        page = {'url': '/admin/core/organization/', 'label': 'Orgs'}
+        page = {"url": "/admin/core/organization/", "label": "Orgs"}
 
         # Visit twice
-        staff_client.post(save_url, data=json.dumps(page), content_type='application/json')
-        staff_client.post(save_url, data=json.dumps(page), content_type='application/json')
+        staff_client.post(
+            save_url, data=json.dumps(page), content_type="application/json"
+        )
+        staff_client.post(
+            save_url, data=json.dumps(page), content_type="application/json"
+        )
 
         data = staff_client.get(get_url).json()
-        assert len(data['data']['pages']) == 1
+        assert len(data["data"]["pages"]) == 1
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -524,18 +536,18 @@ class TestMainboardView:
 
     def test_mainboard_requires_staff(self, anon_client):
         """Mainboard page should require authentication."""
-        url = reverse('dashboard:mainboard')
+        url = reverse("dashboard:mainboard")
         response = anon_client.get(url)
         assert response.status_code in (301, 302)
 
     def test_mainboard_returns_200(self, staff_client):
         """Mainboard page should return 200 for staff."""
-        url = reverse('dashboard:mainboard')
+        url = reverse("dashboard:mainboard")
         response = staff_client.get(url)
         assert response.status_code == 200
 
     def test_mainboard_uses_correct_template(self, staff_client):
         """Mainboard should use dashboard/mainboard.html template."""
-        url = reverse('dashboard:mainboard')
+        url = reverse("dashboard:mainboard")
         response = staff_client.get(url)
-        assert 'dashboard/mainboard.html' in [t.name for t in response.templates]
+        assert "dashboard/mainboard.html" in [t.name for t in response.templates]

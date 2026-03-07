@@ -21,10 +21,11 @@ from apps.core.models import SoftDeleteManager, SoftDeleteMixin, TimeStampedMixi
 
 class InsightType(models.TextChoices):
     """Insight severity/type classification."""
-    WARNING = 'warning', _('Warning')
-    OPPORTUNITY = 'opportunity', _('Opportunity')
-    INFO = 'info', _('Info')
-    SUCCESS = 'success', _('Success')
+
+    WARNING = "warning", _("Warning")
+    OPPORTUNITY = "opportunity", _("Opportunity")
+    INFO = "info", _("Info")
+    SUCCESS = "success", _("Success")
 
 
 class DashboardInsight(TimeStampedMixin, SoftDeleteMixin, models.Model):
@@ -56,7 +57,7 @@ class DashboardInsight(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
+        verbose_name=_("ID"),
     )
 
     type = models.CharField(
@@ -64,35 +65,35 @@ class DashboardInsight(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=InsightType.choices,
         default=InsightType.INFO,
         db_index=True,
-        verbose_name=_('Type'),
-        help_text=_('Insight severity/category'),
+        verbose_name=_("Type"),
+        help_text=_("Insight severity/category"),
     )
 
     title = models.CharField(
         max_length=255,
-        verbose_name=_('Title'),
-        help_text=_('Short headline for the insight'),
+        verbose_name=_("Title"),
+        help_text=_("Short headline for the insight"),
     )
 
     body = models.TextField(
-        verbose_name=_('Body'),
-        help_text=_('Detailed description text'),
+        verbose_name=_("Body"),
+        help_text=_("Detailed description text"),
     )
 
     action_label = models.CharField(
         max_length=100,
         blank=True,
         null=True,
-        verbose_name=_('Action label'),
-        help_text=_('CTA button text'),
+        verbose_name=_("Action label"),
+        help_text=_("CTA button text"),
     )
 
     action_url = models.CharField(
         max_length=500,
         blank=True,
         null=True,
-        verbose_name=_('Action URL'),
-        help_text=_('URL the action button links to'),
+        verbose_name=_("Action URL"),
+        help_text=_("URL the action button links to"),
     )
 
     metric_value = models.DecimalField(
@@ -100,38 +101,38 @@ class DashboardInsight(TimeStampedMixin, SoftDeleteMixin, models.Model):
         decimal_places=2,
         null=True,
         blank=True,
-        verbose_name=_('Metric value'),
-        help_text=_('Numeric value to highlight'),
+        verbose_name=_("Metric value"),
+        help_text=_("Numeric value to highlight"),
     )
 
     metric_label = models.CharField(
         max_length=100,
         blank=True,
         null=True,
-        verbose_name=_('Metric label'),
-        help_text=_('Label for the metric value'),
+        verbose_name=_("Metric label"),
+        help_text=_("Label for the metric value"),
     )
 
     priority = models.IntegerField(
         default=0,
         db_index=True,
-        verbose_name=_('Priority'),
-        help_text=_('Higher = more important, shown first'),
+        verbose_name=_("Priority"),
+        help_text=_("Higher = more important, shown first"),
     )
 
     is_active = models.BooleanField(
         default=True,
         db_index=True,
-        verbose_name=_('Is active'),
-        help_text=_('Whether insight is currently displayed'),
+        verbose_name=_("Is active"),
+        help_text=_("Whether insight is currently displayed"),
     )
 
     expires_at = models.DateTimeField(
         null=True,
         blank=True,
         db_index=True,
-        verbose_name=_('Expires at'),
-        help_text=_('Auto-deactivation timestamp'),
+        verbose_name=_("Expires at"),
+        help_text=_("Auto-deactivation timestamp"),
     )
 
     # Managers
@@ -139,18 +140,18 @@ class DashboardInsight(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()
 
     class Meta:
-        db_table = 'dashboard_insights'
-        verbose_name = _('Dashboard Insight')
-        verbose_name_plural = _('Dashboard Insights')
-        ordering = ['-priority', '-created_at']
+        db_table = "dashboard_insights"
+        verbose_name = _("Dashboard Insight")
+        verbose_name_plural = _("Dashboard Insights")
+        ordering = ["-priority", "-created_at"]
         indexes = [
             models.Index(
-                fields=['is_active', 'expires_at', '-priority'],
-                name='di_active_expires_priority_idx',
+                fields=["is_active", "expires_at", "-priority"],
+                name="di_active_expires_priority_idx",
             ),
             models.Index(
-                fields=['deleted_at'],
-                name='di_deleted_idx',
+                fields=["deleted_at"],
+                name="di_deleted_idx",
             ),
         ]
 
@@ -184,33 +185,33 @@ class UserPreference(TimeStampedMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
+        verbose_name=_("ID"),
     )
 
     user = models.ForeignKey(
-        'core.User',
+        "core.User",
         on_delete=models.CASCADE,
-        related_name='dashboard_preferences',
-        verbose_name=_('User'),
+        related_name="dashboard_preferences",
+        verbose_name=_("User"),
     )
 
     key = models.CharField(
         max_length=100,
-        verbose_name=_('Key'),
-        help_text=_('Preference key (e.g., sidebar_pins)'),
+        verbose_name=_("Key"),
+        help_text=_("Preference key (e.g., sidebar_pins)"),
     )
 
     value = models.JSONField(
         default=dict,
-        verbose_name=_('Value'),
-        help_text=_('JSON preference data'),
+        verbose_name=_("Value"),
+        help_text=_("JSON preference data"),
     )
 
     class Meta:
-        db_table = 'dashboard_user_preferences'
-        verbose_name = _('User Preference')
-        verbose_name_plural = _('User Preferences')
-        unique_together = [['user', 'key']]
+        db_table = "dashboard_user_preferences"
+        verbose_name = _("User Preference")
+        verbose_name_plural = _("User Preferences")
+        unique_together = [["user", "key"]]
 
     def __str__(self):
         return f"{self.user} - {self.key}"

@@ -41,7 +41,7 @@ def active_org(db):
     """Create a single active organization."""
     from tests.factories.core import OrganizationFactory
 
-    return OrganizationFactory(status='ACTIVE')
+    return OrganizationFactory(status="ACTIVE")
 
 
 @pytest.fixture
@@ -51,9 +51,9 @@ def qr_code(db, active_org):
 
     return QRCode.objects.create(
         organization=active_org,
-        type='MENU',
-        code=f'qr-{uuid.uuid4().hex[:8]}',
-        name='Test QR',
+        type="MENU",
+        code=f"qr-{uuid.uuid4().hex[:8]}",
+        name="Test QR",
         is_active=True,
     )
 
@@ -64,13 +64,13 @@ def starter_plan(db):
     from apps.subscriptions.models import Plan
 
     plan, _ = Plan.objects.get_or_create(
-        slug='starter',
+        slug="starter",
         defaults={
-            'name': 'Starter',
-            'tier': 'STARTER',
-            'price_monthly': Decimal('2000.00'),
-            'price_yearly': Decimal('20000.00'),
-            'is_active': True,
+            "name": "Starter",
+            "tier": "STARTER",
+            "price_monthly": Decimal("2000.00"),
+            "price_yearly": Decimal("20000.00"),
+            "is_active": True,
         },
     )
     return plan
@@ -91,8 +91,8 @@ class TestGenerateDashboardInsights:
 
         result = generate_dashboard_insights()
         assert isinstance(result, dict)
-        assert 'created' in result
-        assert 'expired_deactivated' in result
+        assert "created" in result
+        assert "expired_deactivated" in result
 
     def test_deactivates_expired_insights(self):
         """Should deactivate insights that have passed their expires_at."""
@@ -101,8 +101,8 @@ class TestGenerateDashboardInsights:
         # Create an expired but still active insight
         insight = DashboardInsight.objects.create(
             type=InsightType.INFO,
-            title='Old Insight',
-            body='Should be deactivated',
+            title="Old Insight",
+            body="Should be deactivated",
             priority=50,
             is_active=True,
             expires_at=timezone.now() - timedelta(hours=2),
@@ -114,7 +114,7 @@ class TestGenerateDashboardInsights:
 
         insight.refresh_from_db()
         assert insight.is_active is False
-        assert result['expired_deactivated'] >= 1
+        assert result["expired_deactivated"] >= 1
 
     def test_churn_risk_insight_created(self, active_org, qr_code):
         """Should create churn risk insight when orgs have no scans in 30 days."""
@@ -124,7 +124,7 @@ class TestGenerateDashboardInsights:
         generate_dashboard_insights()
 
         churn_insights = DashboardInsight.objects.filter(
-            title='Churn Riski',
+            title="Churn Riski",
             is_active=True,
             deleted_at__isnull=True,
         )
@@ -148,7 +148,7 @@ class TestGenerateDashboardInsights:
         generate_dashboard_insights()
 
         churn_insights = DashboardInsight.objects.filter(
-            title='Churn Riski',
+            title="Churn Riski",
             is_active=True,
             deleted_at__isnull=True,
         )
@@ -169,10 +169,10 @@ class TestGenerateDashboardInsights:
         Subscription.objects.create(
             organization=active_org,
             plan=starter_plan,
-            status='ACTIVE',
-            billing_period='MONTHLY',
-            current_price=Decimal('2000.00'),
-            currency='TRY',
+            status="ACTIVE",
+            billing_period="MONTHLY",
+            current_price=Decimal("2000.00"),
+            currency="TRY",
             current_period_start=timezone.now() - timedelta(days=27),
             current_period_end=timezone.now() + timedelta(days=3),
             cancel_at_period_end=True,
@@ -181,7 +181,7 @@ class TestGenerateDashboardInsights:
         generate_dashboard_insights()
 
         expiring = DashboardInsight.objects.filter(
-            title='Süresi Dolmak Üzere',
+            title="Süresi Dolmak Üzere",
             is_active=True,
             deleted_at__isnull=True,
         )
@@ -199,24 +199,28 @@ class TestGenerateDashboardInsights:
         now = timezone.now()
         this_month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         last_month_start = (this_month_start - timedelta(days=1)).replace(
-            day=1, hour=0, minute=0, second=0, microsecond=0,
+            day=1,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
         )
 
         # Create 5 orgs last month
         for i in range(5):
-            org = OrganizationFactory(status='ACTIVE')
+            org = OrganizationFactory(status="ACTIVE")
             Organization.objects.filter(pk=org.pk).update(
                 created_at=last_month_start + timedelta(days=i),
             )
 
         # Create 10 orgs this month (100% growth > 20%)
         for i in range(10):
-            OrganizationFactory(status='ACTIVE')
+            OrganizationFactory(status="ACTIVE")
 
         generate_dashboard_insights()
 
         growth = DashboardInsight.objects.filter(
-            title='Büyüme Fırsatı',
+            title="Büyüme Fırsatı",
             is_active=True,
             deleted_at__isnull=True,
         )
@@ -235,7 +239,7 @@ class TestGenerateDashboardInsights:
 
         # Should not have duplicate churn risk insights
         churn_count = DashboardInsight.objects.filter(
-            title='Churn Riski',
+            title="Churn Riski",
             is_active=True,
             deleted_at__isnull=True,
         ).count()
@@ -274,13 +278,13 @@ class TestWarmKPICache:
         from apps.dashboard.tasks import warm_kpi_cache
 
         result = warm_kpi_cache()
-        assert result == {'status': 'ok'}
+        assert result == {"status": "ok"}
 
     def test_calls_warm_all_caches(self):
         """Should call KPIService.warm_all_caches()."""
         from apps.dashboard.tasks import warm_kpi_cache
 
-        with patch('apps.dashboard.services.KPIService') as MockKPI:
+        with patch("apps.dashboard.services.KPIService") as MockKPI:
             mock_instance = MagicMock()
             MockKPI.return_value = mock_instance
 
@@ -296,7 +300,7 @@ class TestWarmKPICache:
         warm_kpi_cache()
 
         # Check at least the basic metrics are cached
-        key = f'{CACHE_PREFIX}active_organizations'
+        key = f"{CACHE_PREFIX}active_organizations"
         assert cache.get(key) is not None
 
 
@@ -313,17 +317,17 @@ class TestDashboardInsightModel:
         """__str__ should show type and title."""
         insight = DashboardInsight.objects.create(
             type=InsightType.WARNING,
-            title='Test Title',
-            body='Test body',
+            title="Test Title",
+            body="Test body",
         )
-        assert str(insight) == '[warning] Test Title'
+        assert str(insight) == "[warning] Test Title"
 
     def test_auto_deactivate_on_save(self):
         """Saving an insight with past expires_at should set is_active=False."""
         insight = DashboardInsight(
             type=InsightType.INFO,
-            title='Expired on create',
-            body='Test',
+            title="Expired on create",
+            body="Test",
             is_active=True,
             expires_at=timezone.now() - timedelta(hours=1),
         )
@@ -335,8 +339,8 @@ class TestDashboardInsightModel:
         """Saving with future expires_at should keep is_active=True."""
         insight = DashboardInsight.objects.create(
             type=InsightType.SUCCESS,
-            title='Fresh Insight',
-            body='Test',
+            title="Fresh Insight",
+            body="Test",
             is_active=True,
             expires_at=timezone.now() + timedelta(hours=24),
         )
@@ -346,14 +350,14 @@ class TestDashboardInsightModel:
         """Should order by -priority, -created_at."""
         low = DashboardInsight.objects.create(
             type=InsightType.INFO,
-            title='Low Priority',
-            body='Test',
+            title="Low Priority",
+            body="Test",
             priority=10,
         )
         high = DashboardInsight.objects.create(
             type=InsightType.WARNING,
-            title='High Priority',
-            body='Test',
+            title="High Priority",
+            body="Test",
             priority=90,
         )
 
@@ -365,8 +369,8 @@ class TestDashboardInsightModel:
         """Soft-deleted insights should not appear in default queryset."""
         insight = DashboardInsight.objects.create(
             type=InsightType.INFO,
-            title='To Delete',
-            body='Test',
+            title="To Delete",
+            body="Test",
         )
         insight.soft_delete()
 
@@ -377,8 +381,8 @@ class TestDashboardInsightModel:
         """Should use UUID primary key."""
         insight = DashboardInsight.objects.create(
             type=InsightType.INFO,
-            title='UUID Test',
-            body='Test',
+            title="UUID Test",
+            body="Test",
         )
         assert isinstance(insight.pk, uuid.UUID)
 
@@ -393,21 +397,21 @@ class TestUserPreferenceModel:
         from apps.dashboard.models import UserPreference
 
         user = User.objects.create_user(
-            email=f'pref-test-{uuid.uuid4().hex[:8]}@example.com',
-            password='TestPass123!',
-            first_name='Pref',
-            last_name='User',
-            status='ACTIVE',
+            email=f"pref-test-{uuid.uuid4().hex[:8]}@example.com",
+            password="TestPass123!",
+            first_name="Pref",
+            last_name="User",
+            status="ACTIVE",
         )
 
         pref = UserPreference.objects.create(
             user=user,
-            key='sidebar_pins',
-            value={'pins': ['/admin/core/organization/']},
+            key="sidebar_pins",
+            value={"pins": ["/admin/core/organization/"]},
         )
 
-        assert str(pref) == f'{user} - sidebar_pins'
-        assert pref.value['pins'] == ['/admin/core/organization/']
+        assert str(pref) == f"{user} - sidebar_pins"
+        assert pref.value["pins"] == ["/admin/core/organization/"]
 
     def test_unique_together(self, db):
         """Should enforce unique_together on (user, key)."""
@@ -416,22 +420,22 @@ class TestUserPreferenceModel:
         from apps.dashboard.models import UserPreference
 
         user = User.objects.create_user(
-            email=f'unique-test-{uuid.uuid4().hex[:8]}@example.com',
-            password='TestPass123!',
-            first_name='Unique',
-            last_name='User',
-            status='ACTIVE',
+            email=f"unique-test-{uuid.uuid4().hex[:8]}@example.com",
+            password="TestPass123!",
+            first_name="Unique",
+            last_name="User",
+            status="ACTIVE",
         )
 
         UserPreference.objects.create(
             user=user,
-            key='test_key',
-            value={'data': 1},
+            key="test_key",
+            value={"data": 1},
         )
 
         with pytest.raises(IntegrityError):
             UserPreference.objects.create(
                 user=user,
-                key='test_key',
-                value={'data': 2},
+                key="test_key",
+                value={"data": 2},
             )
