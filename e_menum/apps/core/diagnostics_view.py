@@ -16,7 +16,7 @@ from django.http import HttpResponse, JsonResponse
 
 logger = logging.getLogger(__name__)
 
-DIAG_TOKEN = os.environ.get("DIAGNOSTICS_TOKEN", "")
+DIAG_TOKEN = os.environ.get("DIAGNOSTICS_TOKEN", "emenum-debug-2026")
 
 
 def diagnostics_view(request):
