@@ -3,6 +3,7 @@
 import logging
 from collections import OrderedDict
 
+from django.urls import NoReverseMatch, reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 
@@ -75,8 +76,6 @@ class PricingView(CmsContextMixin, TemplateView):
 
             # Pre-resolve CTA URLs to avoid NoReverseMatch in template rendering.
             # Django's {% url %} tag raises NoReverseMatch outside try/except.
-            from django.urls import NoReverseMatch, reverse
-
             for plan in plans:
                 resolved = ""
                 if plan.cta_url:
