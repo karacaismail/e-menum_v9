@@ -840,22 +840,20 @@ class SubscriptionManagementTests(BaseTestCase):
     # -- Subscription cancel --------------------------------------------------
 
     def test_subscription_cancel_changes_status(self):
-        """Cancelling subscription should change status to CANCELLED."""
+        """Cancelling subscription should set cancel_at_period_end and cancelled_at."""
         self._login_owner()
         cancel_url = "/account/subscription/cancel/"
-        data = {"reason": "Too expensive"}
+        data = {"cancel_reason": "Too expensive"}
         self.client.post(cancel_url, data)
         self.subscription.refresh_from_db()
-        self.assertIn(
-            self.subscription.status,
-            [SubscriptionStatus.CANCELLED, SubscriptionStatus.EXPIRED],
-        )
+        self.assertTrue(self.subscription.cancel_at_period_end)
+        self.assertIsNotNone(self.subscription.cancelled_at)
 
     def test_subscription_cancel_records_reason(self):
         """Cancellation should store the reason."""
         self._login_owner()
         cancel_url = "/account/subscription/cancel/"
-        data = {"reason": "Not using features"}
+        data = {"cancel_reason": "Not using features"}
         self.client.post(cancel_url, data)
         self.subscription.refresh_from_db()
         if self.subscription.cancel_reason:
@@ -866,7 +864,7 @@ class SubscriptionManagementTests(BaseTestCase):
         self._login_owner()
         before = timezone.now()
         cancel_url = "/account/subscription/cancel/"
-        data = {"reason": "Testing"}
+        data = {"cancel_reason": "Testing"}
         self.client.post(cancel_url, data)
         self.subscription.refresh_from_db()
         if self.subscription.cancelled_at:
@@ -877,7 +875,7 @@ class SubscriptionManagementTests(BaseTestCase):
         self._login_owner()
         initial_count = AuditLog.objects.count()
         cancel_url = "/account/subscription/cancel/"
-        data = {"reason": "Audit test"}
+        data = {"cancel_reason": "Audit test"}
         self.client.post(cancel_url, data)
         self.assertGreater(AuditLog.objects.count(), initial_count)
 
