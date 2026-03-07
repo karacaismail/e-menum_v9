@@ -446,11 +446,64 @@ def build_ability_for_user(
         )
         ability.add_rule(rule)
 
+    # ── Plan-based feature gating ──────────────────────────────────────────
+    # Superusers bypass plan gating entirely
+    if not user.is_superuser and organization:
+        try:
+            from apps.subscriptions.models import FeaturePermission, PlanFeature, Subscription
+
+            # Get the org's active subscription and its plan
+            subscription = (
+                Subscription.objects.filter(
+                    organization=organization,
+                    deleted_at__isnull=True,
+                )
+                .select_related("plan")
+                .order_by("-created_at")
+                .first()
+            )
+
+            if subscription and subscription.plan:
+                plan = subscription.plan
+
+                # Find features that are disabled on this plan
+                disabled_feature_ids = list(
+                    PlanFeature.objects.filter(
+                        plan=plan,
+                        is_enabled=False,
+                    ).values_list("feature_id", flat=True)
+                )
+
+                if disabled_feature_ids:
+                    # Find permissions gated by these disabled features
+                    gated_permissions = FeaturePermission.objects.filter(
+                        feature_id__in=disabled_feature_ids,
+                    ).select_related("permission")
+
+                    # Add inverted (deny) rules — last-rule-wins means these
+                    # override any role-based grants added above.
+                    for fp in gated_permissions:
+                        perm = fp.permission
+                        ability.add_rule(Rule(
+                            action=perm.action,
+                            resource=perm.resource,
+                            inverted=True,
+                            reason="Feature not included in plan",
+                        ))
+
+        except Exception:
+            logger.exception(
+                "Plan gating lookup failed for user %s, org %s",
+                user.email,
+                getattr(organization, "id", None),
+            )
+
     logger.debug(
         "Built ability for user %s with %d rules", user.email, len(ability.rules)
     )
 
     return ability
+
 
 
 def check_permission(
