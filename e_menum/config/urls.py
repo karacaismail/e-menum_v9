@@ -54,6 +54,9 @@ from apps.menu.public_views import PublicMenuView, PublicMenuDetailView
 # Import admin upload view
 from shared.views.admin_upload import admin_upload_view
 
+# Import temporary diagnostics view (remove after debugging)
+from apps.core.diagnostics_view import diagnostics_view
+
 
 # =============================================================================
 # HEALTH CHECK & UTILITY VIEWS
@@ -514,6 +517,8 @@ urlpatterns = [
     # -------------------------------------------------------------------------
     path("health/", health_check, name="health-check"),
     path("healthz/", health_check, name="health-check-k8s"),  # Kubernetes style
+    # TEMPORARY: production diagnostics (protected by DIAGNOSTICS_TOKEN env)
+    path("diag/", diagnostics_view, name="diagnostics"),
     # -------------------------------------------------------------------------
     # API Versioned Routes
     # -------------------------------------------------------------------------
