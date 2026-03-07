@@ -118,7 +118,7 @@ class TestLoginView:
         assert b"csrfmiddlewaretoken" in resp.content
 
     def test_login_with_email(self, anon_client, user_with_password):
-        """POST with valid email + password → 302 redirect to profile."""
+        """POST with valid email + password → 302 redirect to dashboard."""
         resp = anon_client.post(
             reverse("accounts:login"),
             {
@@ -127,10 +127,10 @@ class TestLoginView:
             },
         )
         assert resp.status_code == 302
-        assert reverse("accounts:profile") in resp.url
+        assert reverse("accounts:dashboard") in resp.url
 
     def test_login_with_username(self, anon_client, user_with_username):
-        """POST with valid username + password → 302 redirect to profile."""
+        """POST with valid username + password → 302 redirect to dashboard."""
         resp = anon_client.post(
             reverse("accounts:login"),
             {
@@ -139,7 +139,7 @@ class TestLoginView:
             },
         )
         assert resp.status_code == 302
-        assert reverse("accounts:profile") in resp.url
+        assert reverse("accounts:dashboard") in resp.url
 
     def test_login_invalid_password(self, anon_client, user_with_password):
         """POST with wrong password → stays on login page (200)."""
@@ -164,10 +164,10 @@ class TestLoginView:
         assert resp.status_code == 200
 
     def test_login_redirects_authenticated_user(self, authed_client):
-        """Authenticated user visiting login page gets redirected to profile."""
+        """Authenticated user visiting login page gets redirected to dashboard."""
         resp = authed_client.get(reverse("accounts:login"))
         assert resp.status_code == 302
-        assert reverse("accounts:profile") in resp.url
+        assert reverse("accounts:dashboard") in resp.url
 
     def test_login_next_parameter(self, anon_client, user_with_password):
         """Login with ?next= parameter redirects to that URL after success."""
