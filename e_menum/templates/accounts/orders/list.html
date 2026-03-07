@@ -116,7 +116,7 @@ search by order number, and dropdown filters for status and type.
                             {{ order.customer_name|default:"-" }}
                         </td>
                         <td class="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">
-                            {{ order.table_name|default:"-" }}
+                            {{ order.table.name|default:"-" }}
                         </td>
                         <td class="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">
                             {% if order.type == 'DINE_IN' %}
