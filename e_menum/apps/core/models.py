@@ -2009,3 +2009,7 @@ class StaffMetric(TimeStampedMixin, SoftDeleteMixin, models.Model):
         return (
             f"<StaffMetric(id={self.id}, user='{self.user.email}', date={self.date})>"
         )
+
+
+# Import MigrationLog so Django discovers it (lives in migration_log.py to avoid circular imports)
+from apps.core.migration_log import MigrationLog  # noqa: F401, E402
