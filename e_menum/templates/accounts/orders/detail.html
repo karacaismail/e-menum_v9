@@ -377,7 +377,7 @@ and action buttons for status transitions via AJAX.
                 this.loading = true;
                 this.message = '';
                 try {
-                    const resp = await fetchWithCsrf("{% url 'accounts:order-status-update' order.pk %}", {
+                    const resp = await fetchWithCsrf("{% url 'accounts:order-update-status' order.pk %}", {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ action: action })
