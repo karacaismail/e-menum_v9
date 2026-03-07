@@ -50,7 +50,7 @@ from apps.subscriptions.models import (
 # ---------------------------------------------------------------------------
 
 REGISTER_URL = "/account/register/"
-RESTAURANT_URL = "/account/restaurant/"
+RESTAURANT_URL = "/account/restaurant-settings/"
 SUBSCRIPTION_URL = "/account/subscription/"
 SUBSCRIPTION_UPGRADE_URL = "/account/subscription/upgrade/"
 SUBSCRIPTION_EFT_URL = "/account/subscription/eft-info/"
