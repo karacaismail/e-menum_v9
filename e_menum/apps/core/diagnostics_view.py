@@ -113,13 +113,17 @@ def diagnostics_view(request):
 
     result["status"] = "errors_found" if errors else "ok"
 
-    # 8. Actually render pricing page with test client (catch real error)
+    # 8. Actually render pricing page with real host (bypass ALLOWED_HOSTS 400)
     try:
         from django.test import Client
 
-        c = Client()
-        resp = c.get("/tr/fiyatlandirma/")
-        result["pricing_render"] = {
+        c = Client(raise_request_exception=False)
+        resp = c.get(
+            "/tr/fiyatlandirma/",
+            HTTP_HOST="www.e-menum.net",
+            SERVER_NAME="www.e-menum.net",
+        )
+        pricing_result = {
             "status_code": resp.status_code,
             "ok": resp.status_code == 200,
         }
@@ -127,10 +131,12 @@ def diagnostics_view(request):
             exc_type, exc_val, exc_tb = resp.exc_info
             import traceback as tb_module
 
-            result["pricing_render"]["error"] = "".join(
+            pricing_result["traceback"] = "".join(
                 tb_module.format_exception(exc_type, exc_val, exc_tb)
             )
+        result["pricing_render"] = pricing_result
     except Exception:
         result["pricing_render"] = {"error": traceback.format_exc()}
 
     return JsonResponse(result, json_dumps_params={"indent": 2})
+
