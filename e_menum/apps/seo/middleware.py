@@ -119,8 +119,8 @@ class CanonicalDomainMiddleware:
     appended.
     """
 
-    # Hosts that should never be redirected (internal / health checks)
-    SKIP_HOSTS = {"localhost", "127.0.0.1", "0.0.0.0"}
+    # Hosts that should never be redirected (internal / health checks / test client)
+    SKIP_HOSTS = {"localhost", "127.0.0.1", "0.0.0.0", "testserver"}
 
     def __init__(self, get_response):
         self.get_response = get_response
