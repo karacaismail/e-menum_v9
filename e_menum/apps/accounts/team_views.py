@@ -79,8 +79,7 @@ def team_invite(request):
     role_id = (request.POST.get("role_id") or request.POST.get("role") or "").strip()
 
     if not email or not first_name or not last_name:
-        messages.error(request, _("E-posta, ad ve soyad zorunludur."))
-        return redirect("accounts:team-list")
+        return JsonResponse({"error": "E-posta, ad ve soyad zorunludur."}, status=400)
 
     # Check if user already exists in org
     if User.objects.filter(
