@@ -1507,10 +1507,6 @@ class TestCRUDMutations:
         """Test order cancellation."""
         import json
 
-        cancel_order = OrderFactory(
-            organization=owner_client.session.get("_auth_user_id") and None
-        )
-        # Create order with correct org
         from apps.core.models import User
 
         user = User.objects.get(pk=owner_client.session["_auth_user_id"])
