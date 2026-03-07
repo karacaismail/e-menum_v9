@@ -17,7 +17,9 @@ class CmsContextMixin:
         context = super().get_context_data(**kwargs)
         if self.page_slug:
             try:
-                hero = PageHero.objects.filter(page=self.page_slug, is_active=True).first()
+                hero = PageHero.objects.filter(
+                    page=self.page_slug, is_active=True
+                ).first()
                 context["hero"] = hero
             except Exception:
                 context["hero"] = None

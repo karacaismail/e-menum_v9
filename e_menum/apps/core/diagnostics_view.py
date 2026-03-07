@@ -7,7 +7,6 @@ Shows: applied/unapplied migrations, recent Django errors, DB status.
 REMOVE THIS FILE AFTER DEBUGGING IS COMPLETE.
 """
 
-import json
 import logging
 import os
 import traceback
@@ -65,7 +64,7 @@ def diagnostics_view(request):
 
     # 3. Test pricing view models
     try:
-        from apps.subscriptions.models import Plan, Feature
+        from apps.subscriptions.models import Plan
 
         plan_count = Plan.objects.filter(is_active=True, deleted_at__isnull=True).count()
         result["pricing_view_test"] = f"OK - {plan_count} active plans"
