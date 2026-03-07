@@ -201,7 +201,7 @@ urlpatterns = [
     path("team/", team_views.team_list, name="team-list"),
     path("team/invite/", team_views.team_invite, name="team-invite"),
     path(
-        "team/<uuid:user_id>/assign-role/",
+        "team/<uuid:user_id>/role/",
         team_views.team_assign_role,
         name="team-assign-role",
     ),

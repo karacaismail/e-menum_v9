@@ -140,10 +140,10 @@ def team_assign_role(request, user_id):
     member = get_object_or_404(
         User, id=user_id, organization=org, deleted_at__isnull=True
     )
-    role_id = request.POST.get("role_id", "").strip()
+    role_id = (request.POST.get("role_id") or request.POST.get("role") or "").strip()
 
     if not role_id:
-        return JsonResponse({"error": "role_id required"}, status=400)
+        return JsonResponse({"error": "role or role_id required"}, status=400)
 
     role = get_object_or_404(Role, id=role_id, scope=RoleScope.ORGANIZATION)
 
