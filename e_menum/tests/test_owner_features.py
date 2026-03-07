@@ -774,7 +774,7 @@ class SubscriptionManagementTests(BaseTestCase):
     # -- Invoice download -----------------------------------------------------
 
     def test_invoice_download_returns_pdf(self):
-        """GET /account/invoices/<uuid>/download-pdf/ should return a PDF."""
+        """GET /account/invoices/<uuid>/pdf/ should return a PDF."""
         self._login_owner()
         invoice = Invoice.objects.create(
             organization=self.organization,
@@ -788,7 +788,7 @@ class SubscriptionManagementTests(BaseTestCase):
             currency="TRY",
             due_date=timezone.now() + timedelta(days=7),
         )
-        url = f"/account/invoices/{invoice.pk}/download-pdf/"
+        url = f"/account/invoices/{invoice.pk}/pdf/"
         response = self.client.get(url)
         self.assertIn(response.status_code, [200, 302])
         if response.status_code == 200:
@@ -810,7 +810,7 @@ class SubscriptionManagementTests(BaseTestCase):
             currency="TRY",
             due_date=timezone.now(),
         )
-        url = f"/account/invoices/{invoice.pk}/download-pdf/"
+        url = f"/account/invoices/{invoice.pk}/pdf/"
         response = self.client.get(url)
         self.assertIn(response.status_code, [301, 302])
 
@@ -833,7 +833,7 @@ class SubscriptionManagementTests(BaseTestCase):
             due_date=timezone.now(),
         )
         self._login_owner()
-        url = f"/account/invoices/{invoice.pk}/download-pdf/"
+        url = f"/account/invoices/{invoice.pk}/pdf/"
         response = self.client.get(url)
         self.assertIn(response.status_code, [403, 404])
 
