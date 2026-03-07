@@ -13,14 +13,12 @@ Critical Rules:
 
 import logging
 from datetime import date, datetime, timedelta
-from decimal import Decimal
 from typing import List, Optional
 
-from django.db.models import Avg, Count, F, Q, Sum
-from django.db.models.functions import Coalesce
+from django.db.models import Avg, Count, F, Sum
 
 from apps.orders.choices import OrderStatus
-from apps.orders.models import Order, OrderItem
+from apps.orders.models import OrderItem
 from apps.reporting.services.report_engine import BaseReportHandler, register_handler
 
 logger = logging.getLogger(__name__)
@@ -158,7 +156,7 @@ class TopSellersHandler(BaseReportHandler):
             rev = _to_float(row['revenue'])
             qty = row['qty_sold'] or 0
             avg_p = _to_float(row['avg_price'])
-            base_p = _to_float(row['product_base_price'])
+            _to_float(row['product_base_price'])
 
             # Estimate margin: (avg_price - base_price * 0.4) / avg_price * 100
             # This is a rough estimate since we don't have cost_price on Product.

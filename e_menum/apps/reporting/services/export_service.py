@@ -24,7 +24,7 @@ import io
 import logging
 from datetime import datetime
 from decimal import Decimal
-from typing import Any, Dict, List, Optional
+from typing import Any, List
 
 from django.utils import timezone
 
@@ -237,9 +237,9 @@ class ExportService:
         """
         try:
             from reportlab.lib import colors
-            from reportlab.lib.pagesizes import A4, landscape
+            from reportlab.lib.pagesizes import A4
             from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-            from reportlab.lib.units import cm, mm
+            from reportlab.lib.units import cm
             from reportlab.platypus import (
                 Paragraph,
                 SimpleDocTemplate,

@@ -176,7 +176,7 @@ class TestDetectRedirectChainsInactiveIgnored(TestCase):
         """Soft-deleted redirects should not be considered."""
         from django.utils import timezone
 
-        r = Redirect.all_objects.create(
+        Redirect.all_objects.create(
             source_path='/deleted-a/',
             target_path='/deleted-b/',
             is_active=True,

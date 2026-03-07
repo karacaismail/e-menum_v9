@@ -16,19 +16,14 @@ Run with:
 import uuid
 
 import pytest
-from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
-from rest_framework.test import APIClient
 
-from apps.core.models import User, Organization, Session
+from apps.core.models import Session
 from apps.core.choices import UserStatus, OrganizationStatus, SessionStatus
-from apps.subscriptions.models import Plan
 from tests.factories.core import (
     OrganizationFactory,
     UserFactory,
-    AdminUserFactory,
-    SessionFactory,
 )
 
 
@@ -255,7 +250,7 @@ class TestLogin:
     def test_login_case_insensitive_email(self, api_client):
         """Test login is case-insensitive for email."""
         password = "SecurePassword123!"
-        user = UserFactory(
+        UserFactory(
             email='test.user@example.com',
             password=password,
             status=UserStatus.ACTIVE
@@ -872,7 +867,7 @@ class TestAuthEdgeCases:
     def test_login_with_whitespace_email(self, api_client):
         """Test login handles email with leading/trailing whitespace."""
         password = "SecurePassword123!"
-        user = UserFactory(
+        UserFactory(
             email='test@example.com',
             password=password,
             status=UserStatus.ACTIVE
@@ -912,7 +907,7 @@ class TestAuthEdgeCases:
             'email': user1.email,
             'password': password,
         })
-        login2 = api_client.post(get_login_url(), {
+        api_client.post(get_login_url(), {
             'email': user2.email,
             'password': password,
         })

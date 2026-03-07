@@ -27,12 +27,8 @@ Usage:
     python manage.py safe_migrate --applied-by deploy-pipeline
 """
 
-import ast
 import hashlib
-import os
-import re
 import socket
-import sys
 import time
 
 from django.apps import apps
@@ -506,7 +502,7 @@ class Command(BaseCommand):
     def _print_summary(self, success, failed, total):
         self.stdout.write('')
         self.stdout.write('=' * 60)
-        self.stdout.write(f'  Migration Summary')
+        self.stdout.write('  Migration Summary')
         self.stdout.write(f'  Total: {total}  |  Success: {success}  |  Failed: {failed}')
         self.stdout.write('=' * 60)
 

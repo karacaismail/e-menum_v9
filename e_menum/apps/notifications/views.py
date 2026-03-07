@@ -22,12 +22,9 @@ Critical Rules:
 
 import logging
 
-from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
 from apps.notifications.models import Notification
 from apps.notifications.choices import NotificationStatus

@@ -16,10 +16,9 @@ Critical Rules:
 
 import logging
 from datetime import date, datetime, timedelta
-from decimal import Decimal
 from typing import List, Optional
 
-from django.db.models import Avg, Count, F, Q, Sum
+from django.db.models import Avg, F, Sum
 
 from apps.analytics.models import ProductPerformance
 from apps.orders.choices import OrderStatus
@@ -352,8 +351,8 @@ class MenuPerformanceMatrixHandler(BaseReportHandler):
                 'type': 'alert',
                 'priority': 'high',
                 'message': (
-                    f"Over 30% of your products are in the 'Dog' quadrant. "
-                    f"Consider a menu redesign to focus on better-performing items."
+                    "Over 30% of your products are in the 'Dog' quadrant. "
+                    "Consider a menu redesign to focus on better-performing items."
                 ),
                 'product_id': None,
             })

@@ -9,7 +9,6 @@ import uuid
 
 from django.db import IntegrityError
 from django.test import TestCase
-from django.utils import timezone
 
 from apps.seo_shield.models import BlockLog, BotWhitelist, IPRiskScore, RuleSet
 

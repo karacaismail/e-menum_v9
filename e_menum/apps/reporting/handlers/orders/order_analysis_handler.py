@@ -13,13 +13,12 @@ Critical Rules:
 
 import logging
 from datetime import date, datetime, timedelta
-from decimal import Decimal
 from typing import List, Optional
 
-from django.db.models import Avg, Count, F, Q, Sum
+from django.db.models import Avg, Count, Q, Sum
 from django.db.models.functions import ExtractHour, TruncDate
 
-from apps.orders.choices import OrderStatus, OrderType
+from apps.orders.choices import OrderStatus
 from apps.orders.models import Order
 from apps.reporting.services.report_engine import BaseReportHandler, register_handler
 

@@ -13,12 +13,11 @@ Critical Rules:
 """
 
 import logging
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from decimal import Decimal
-from typing import Any, Dict, List, Optional
+from typing import List
 
-from django.db.models import Avg, Case, Count, F, Q, Sum, Value, When
-from django.db.models.functions import Coalesce
+from django.db.models import Avg, Count, F, Q, Sum
 
 from apps.reporting.services.report_engine import BaseReportHandler, register_handler
 

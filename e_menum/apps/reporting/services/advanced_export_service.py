@@ -93,9 +93,8 @@ class AdvancedExportService:
             from reportlab.lib import colors
             from reportlab.lib.pagesizes import A4
             from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-            from reportlab.lib.units import cm, mm
+            from reportlab.lib.units import cm
             from reportlab.platypus import (
-                Image,
                 Paragraph,
                 SimpleDocTemplate,
                 Spacer,

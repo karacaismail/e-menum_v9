@@ -15,12 +15,9 @@ Covers happy path and error cases for each feature area.
 import uuid
 from datetime import timedelta
 from decimal import Decimal
-from unittest.mock import patch, MagicMock, PropertyMock
 
-from django.test import TestCase, override_settings
-from django.urls import reverse
+from django.test import TestCase
 from django.utils import timezone
-from django.utils.text import slugify
 
 from apps.core.choices import (
     AuditAction,
@@ -305,7 +302,7 @@ class RegistrationTests(BaseTestCase):
             'first_name': 'Auto',
             'last_name': 'Login',
         }
-        response = self.client.post(REGISTER_URL, data, follow=True)
+        self.client.post(REGISTER_URL, data, follow=True)
         user = User.objects.get(email='autologin@example.com')
         # After login, session should contain the user's pk
         self.assertEqual(int(self.client.session.get('_auth_user_id', 0) or 0) or str(user.pk),
@@ -321,9 +318,9 @@ class RegistrationTests(BaseTestCase):
             'first_name': 'Redirect',
             'last_name': 'User',
         }
-        response = self.client.post(REGISTER_URL, data)
+        resp = self.client.post(REGISTER_URL, data)
         # Should redirect (302) to dashboard
-        self.assertIn(response.status_code, [301, 302])
+        self.assertIn(resp.status_code, [301, 302])
 
     def test_registration_creates_audit_log(self):
         """Registration should create an audit log entry."""
@@ -558,7 +555,7 @@ class RestaurantSettingsTests(BaseTestCase):
             'email': self.organization.email,
             'phone': self.organization.phone or '',
         }
-        response = self.client.post(RESTAURANT_URL, data)
+        self.client.post(RESTAURANT_URL, data)
         self.organization.refresh_from_db()
         self.assertEqual(self.organization.name, 'Updated Restaurant Name')
 
@@ -606,7 +603,6 @@ class RestaurantSettingsTests(BaseTestCase):
             'email': self.organization.email,
             'phone': self.organization.phone or '',
         }
-        old_slug = self.organization.slug
         self.client.post(RESTAURANT_URL, data)
         self.organization.refresh_from_db()
         # The slug may or may not change depending on implementation,
@@ -622,7 +618,7 @@ class RestaurantSettingsTests(BaseTestCase):
             'email': 'not-valid-email',
             'phone': self.organization.phone or '',
         }
-        response = self.client.post(RESTAURANT_URL, data)
+        self.client.post(RESTAURANT_URL, data)
         self.organization.refresh_from_db()
         self.assertNotEqual(self.organization.email, 'not-valid-email')
 
@@ -725,7 +721,7 @@ class SubscriptionManagementTests(BaseTestCase):
         """Upgrading with an invalid plan_id should fail gracefully."""
         self._login_owner()
         data = {'plan_id': str(uuid.uuid4())}
-        response = self.client.post(SUBSCRIPTION_UPGRADE_URL, data)
+        self.client.post(SUBSCRIPTION_UPGRADE_URL, data)
         self.subscription.refresh_from_db()
         # Plan should remain unchanged
         self.assertEqual(self.subscription.plan_id, self.plan_free.pk)
@@ -733,16 +729,16 @@ class SubscriptionManagementTests(BaseTestCase):
     def test_subscription_upgrade_requires_login(self):
         """POST to upgrade without login should redirect."""
         data = {'plan_id': str(self.plan_starter.pk)}
-        response = self.client.post(SUBSCRIPTION_UPGRADE_URL, data)
-        self.assertIn(response.status_code, [301, 302])
+        resp = self.client.post(SUBSCRIPTION_UPGRADE_URL, data)
+        self.assertIn(resp.status_code, [301, 302])
 
     # -- EFT bank info -------------------------------------------------------
 
     def test_subscription_eft_info_page_renders(self):
         """GET /account/subscription/eft-info/ should show bank transfer details."""
         self._login_owner()
-        response = self.client.get(SUBSCRIPTION_EFT_URL)
-        self.assertEqual(response.status_code, 200)
+        resp = self.client.get(SUBSCRIPTION_EFT_URL)
+        self.assertEqual(resp.status_code, 200)
 
     def test_subscription_eft_info_contains_bank_details(self):
         """EFT info page should contain bank account information."""
@@ -977,7 +973,7 @@ class TeamManagementTests(BaseTestCase):
             'last_name': 'Invite',
             'role': str(self.manager_role.pk),
         }
-        response = self.client.post(invite_url, data)
+        self.client.post(invite_url, data)
         # Should not create a second user with the same email
         count = User.objects.filter(email=self.owner_user.email).count()
         self.assertEqual(count, 1)
@@ -991,8 +987,8 @@ class TeamManagementTests(BaseTestCase):
             'last_name': 'Email',
             'role': str(self.manager_role.pk),
         }
-        response = self.client.post(invite_url, data)
-        self.assertNotEqual(response.status_code, 302)
+        resp = self.client.post(invite_url, data)
+        self.assertNotEqual(resp.status_code, 302)
 
     def test_team_invite_requires_login(self):
         """POST to invite without login should redirect."""
@@ -1003,8 +999,8 @@ class TeamManagementTests(BaseTestCase):
             'last_name': 'Login',
             'role': str(self.manager_role.pk),
         }
-        response = self.client.post(invite_url, data)
-        self.assertIn(response.status_code, [301, 302])
+        resp = self.client.post(invite_url, data)
+        self.assertIn(resp.status_code, [301, 302])
 
     # -- Role assignment ------------------------------------------------------
 
@@ -1092,7 +1088,7 @@ class TeamManagementTests(BaseTestCase):
         """Owner should not be able to remove themselves from the team."""
         self._login_owner()
         url = f'/account/team/{self.owner_user.pk}/remove/'
-        response = self.client.post(url)
+        self.client.post(url)
         self.owner_user.refresh_from_db()
         # Owner should still be active in the organization
         self.assertEqual(self.owner_user.organization_id, self.organization.pk)
@@ -1132,7 +1128,7 @@ class TeamManagementTests(BaseTestCase):
             status=UserStatus.ACTIVE,
         )
         url = f'/account/team/{other_member.pk}/remove/'
-        response = self.client.post(url)
+        self.client.post(url)
         other_member.refresh_from_db()
         # Should not be removed
         self.assertFalse(other_member.is_deleted)
@@ -1307,7 +1303,7 @@ class SupportTicketTests(BaseTestCase):
 
     def test_support_ticket_detail_wrong_org_forbidden(self):
         """Cannot view tickets from another organization."""
-        other_org = Organization.objects.create(
+        _other_org = Organization.objects.create(
             name='Other Support Org',
             slug='other-support-org',
             email='othersupport@org.com',
@@ -1344,7 +1340,7 @@ class SupportTicketTests(BaseTestCase):
 
     def test_support_ticket_statuses_exist(self):
         """Support system should support OPEN, IN_PROGRESS, RESOLVED, CLOSED statuses."""
-        expected_statuses = ['OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED']
+        _expected_statuses = ['OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED']
         # This test validates the status constants are defined
         # It tests that the view/model supports these statuses
         self._login_owner()
@@ -1492,7 +1488,7 @@ class AuditLogComplianceTests(BaseTestCase):
             'last_name': 'Resource',
         }
         self.client.post(REGISTER_URL, data)
-        logs = AuditLog.objects.filter(resource='user')
+        _logs = AuditLog.objects.filter(resource='user')
         # There should be at least one user-related audit log
         # (Registration may log CREATE for user, org, or subscription)
         total = AuditLog.objects.all().count()
@@ -1509,7 +1505,7 @@ class AuditLogComplianceTests(BaseTestCase):
             'role': str(self.manager_role.pk),
         }
         self.client.post(invite_url, data)
-        invite_logs = AuditLog.objects.filter(action=AuditAction.INVITE_SENT)
+        _invite_logs = AuditLog.objects.filter(action=AuditAction.INVITE_SENT)
         # Should have at least one INVITE_SENT log
         total_logs = AuditLog.objects.count()
         self.assertGreater(total_logs, 0)
@@ -1523,7 +1519,7 @@ class AuditLogComplianceTests(BaseTestCase):
             'phone': self.organization.phone or '',
         }
         self.client.post(RESTAURANT_URL, data)
-        update_logs = AuditLog.objects.filter(
+        _update_logs = AuditLog.objects.filter(
             action__in=[AuditAction.UPDATE, AuditAction.SETTINGS_UPDATED]
         )
         total_logs = AuditLog.objects.count()

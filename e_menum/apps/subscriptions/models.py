@@ -19,6 +19,8 @@ Critical Rules:
 """
 
 import uuid
+from datetime import datetime
+from decimal import Decimal
 
 from django.db import models
 from django.utils import timezone
@@ -1269,7 +1271,6 @@ class Subscription(TimeStampedMixin, SoftDeleteMixin, models.Model):
         Args:
             payment_details: Optional payment details to store
         """
-        from django.utils import timezone
 
         self.status = SubscriptionStatus.ACTIVE
         if payment_details:

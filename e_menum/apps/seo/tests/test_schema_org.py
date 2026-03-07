@@ -12,7 +12,6 @@ Covers:
 
 import json
 from types import SimpleNamespace
-from unittest.mock import MagicMock
 
 from django.test import TestCase
 
@@ -20,11 +19,9 @@ from apps.seo.schema_org import (
     ArticleSchema,
     BreadcrumbListSchema,
     FAQPageSchema,
-    LocalBusinessSchema,
     OrganizationSchema,
     ProductSchema,
     SchemaBuilder,
-    WebPageSchema,
 )
 
 

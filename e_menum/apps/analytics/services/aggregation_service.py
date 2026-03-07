@@ -16,19 +16,15 @@ import logging
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 
-from django.db import models as db_models
 from django.db.models import (
     Avg,
     Count,
     DecimalField,
-    F,
-    Max,
     Min,
-    Q,
     Sum,
     Value,
 )
-from django.db.models.functions import Coalesce, TruncDate, TruncHour
+from django.db.models.functions import Coalesce
 from django.utils import timezone
 
 from apps.analytics.choices import Granularity, MetricType, PeriodType
@@ -213,8 +209,6 @@ class AggregationService:
         Returns:
             SalesAggregation: The created/updated aggregation record
         """
-        from apps.orders.models import Order
-
         hour_start = datetime.combine(target_date, datetime.min.time().replace(hour=hour))
         hour_end = hour_start + timedelta(hours=1)
 

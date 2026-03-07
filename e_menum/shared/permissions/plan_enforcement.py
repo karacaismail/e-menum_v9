@@ -40,7 +40,7 @@ Usage:
 """
 
 import logging
-from typing import Optional, Tuple
+from typing import Tuple
 
 from django.utils.translation import gettext_lazy as _
 from rest_framework import permissions, status
@@ -227,7 +227,7 @@ class PlanEnforcementService:
         Returns dict with each limit key and its status.
         """
         from apps.menu.models import Menu, Category, Product
-        from apps.core.models import User, UserRole
+        from apps.core.models import UserRole
         from apps.orders.models import QRCode
 
         plan = PlanEnforcementService.get_active_plan(organization)

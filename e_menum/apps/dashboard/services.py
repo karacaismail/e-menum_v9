@@ -15,12 +15,12 @@ Usage:
 
 import json
 import logging
-from datetime import date, timedelta
+from datetime import timedelta
 from decimal import Decimal
 from typing import Any, Optional
 
 from django.core.cache import cache
-from django.db.models import Count, Q, Sum
+from django.db.models import Count, Sum
 from django.db.models.functions import Coalesce
 from django.utils import timezone
 

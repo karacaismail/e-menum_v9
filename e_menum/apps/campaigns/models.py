@@ -23,7 +23,6 @@ from django.utils.translation import gettext_lazy as _
 from apps.campaigns.choices import (
     CampaignStatus,
     CampaignType,
-    CouponStatus,
     DiscountType,
 )
 from apps.core.models import (

@@ -129,7 +129,6 @@ def admin_seo_dashboard(request):
         pass
 
     # Top 404 paths (last 30 days, aggregated by path)
-    from django.db.models import Max as DbMax
     top_404s = (
         NotFound404Log.objects.filter(date__gte=thirty_days_ago)
         .values('path')

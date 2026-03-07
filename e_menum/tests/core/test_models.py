@@ -20,13 +20,7 @@ from apps.core.models import (
     Organization,
     User,
     Branch,
-    Role,
-    Permission,
-    Session,
-    UserRole,
-    RolePermission,
     AuditLog,
-    SoftDeleteManager,
 )
 from tests.factories.core import (
     OrganizationFactory,

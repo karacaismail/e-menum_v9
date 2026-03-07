@@ -41,9 +41,7 @@ Usage:
 
 import io
 import logging
-import math
 
-from PIL import Image
 
 from apps.orders.services.qr_generator import QRGeneratorService, PRINT_SIZES
 
@@ -505,7 +503,7 @@ def _render_modern(data_url, design_size, org_name, org_logo_url, colors,
     primary = colors['primary']
     secondary = colors['secondary']
     text_col = colors['text']
-    accent = colors['accent']
+    colors['accent']
 
     # -- Background
     c.setFillColor(HexColor(bg))
@@ -619,7 +617,7 @@ def _render_rustic(data_url, design_size, org_name, org_logo_url, colors,
     bg = colors['background']
     primary = colors['primary']
     secondary = colors['secondary']
-    text_col = colors['text']
+    colors['text']
     accent = colors['accent']
 
     # -- Kraft-paper background
@@ -742,7 +740,7 @@ def _render_vibrant(data_url, design_size, org_name, org_logo_url, colors,
     bg = colors['background']
     primary = colors['primary']
     secondary = colors['secondary']
-    text_col = colors['text']
+    colors['text']
     accent = colors['accent']
 
     # -- Background

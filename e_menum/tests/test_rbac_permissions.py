@@ -29,7 +29,7 @@ import pytest
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 
-from apps.core.choices import PermissionAction, RoleScope
+from apps.core.choices import RoleScope
 from apps.core.models import (
     Organization,
     Permission,
@@ -730,7 +730,7 @@ class TestOrganizationIsolation:
 
     def test_condition_check_blocks_cross_org_subject(self):
         """Condition-based subject check blocks cross-tenant access."""
-        ability = build_ability_for_user(self.user_a, self.org_a)
+        _ability = build_ability_for_user(self.user_a, self.org_a)
 
         # Create a mock subject belonging to Org B
         subject_b = SimpleNamespace(organization_id=self.org_b.id)
@@ -1163,13 +1163,10 @@ class TestPlanBasedRestriction:
 
     def _setup_plan_gating(self):
         """Set up feature-permission gating infrastructure."""
-        from apps.subscriptions.choices import FeatureType, PlanTier, SubscriptionStatus
+        from apps.subscriptions.choices import FeatureType
         from apps.subscriptions.models import (
             Feature,
             FeaturePermission,
-            Plan,
-            PlanFeature,
-            Subscription,
         )
 
         # Create a feature

@@ -26,8 +26,6 @@ Critical Rules:
     - Never expose deleted_at field in public API responses
 """
 
-from decimal import Decimal
-from typing import Any, Dict, Optional
 
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -43,17 +41,12 @@ from apps.subscriptions.models import (
     OrganizationUsage,
 )
 from apps.subscriptions.choices import (
-    FeatureType,
-    PlanTier,
     SubscriptionStatus,
-    InvoiceStatus,
     BillingPeriod,
-    SubscriptionPaymentMethod,
 )
 from shared.serializers.base import (
     TenantModelSerializer,
     SoftDeleteModelSerializer,
-    BaseModelSerializer,
     MinimalSerializer,
 )
 

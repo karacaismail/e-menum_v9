@@ -16,8 +16,7 @@ Helpers:
 
 import logging
 import re
-from collections import Counter
-from typing import Any, Dict, List, Optional
+from typing import Dict, List
 
 from django.utils import timezone
 

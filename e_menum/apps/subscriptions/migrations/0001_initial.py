@@ -2,7 +2,6 @@
 # This migration creates all subscription-related models
 
 import uuid
-from decimal import Decimal
 from django.db import migrations, models
 import django.db.models.deletion
 

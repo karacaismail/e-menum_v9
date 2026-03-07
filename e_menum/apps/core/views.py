@@ -35,12 +35,6 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView,
-)
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 
 from django.db import models
@@ -49,8 +43,6 @@ from apps.core.models import User, Session, AuditLog, Organization
 from apps.core.choices import AuditAction, SessionStatus
 from apps.core.serializers import (
     LoginSerializer,
-    LoginResponseSerializer,
-    CustomTokenObtainPairSerializer,
     CustomTokenRefreshSerializer,
     LogoutSerializer,
     UserSerializer,
@@ -71,7 +63,6 @@ from apps.core.serializers import (
 )
 from shared.utils.exceptions import (
     ErrorCodes,
-    AuthenticationException,
 )
 from shared.views import BaseTenantViewSet, BaseModelViewSet
 
@@ -302,7 +293,7 @@ class LogoutView(APIView):
 
         try:
             serializer.save()
-        except Exception as e:
+        except Exception:
             # Log error but don't fail - user is already authenticated
             pass
 
@@ -368,13 +359,13 @@ class TokenRefreshView(APIView):
 
         try:
             serializer.is_valid(raise_exception=True)
-        except InvalidToken as e:
+        except InvalidToken:
             return build_error_response(
                 code=ErrorCodes.AUTH_REFRESH_TOKEN_INVALID,
                 message=str(_('Invalid or expired refresh token')),
                 status_code=status.HTTP_401_UNAUTHORIZED
             )
-        except TokenError as e:
+        except TokenError:
             return build_error_response(
                 code=ErrorCodes.AUTH_REFRESH_TOKEN_EXPIRED,
                 message=str(_('Refresh token has expired')),
@@ -702,7 +693,6 @@ class SessionRevokeAllView(APIView):
     def post(self, request, *args, **kwargs):
         """Revoke all sessions except current."""
         # Get current session's token from the request
-        current_token = None
         auth_header = request.META.get('HTTP_AUTHORIZATION', '')
         if auth_header.startswith('Bearer '):
             # We can't easily identify the "current" session from access token

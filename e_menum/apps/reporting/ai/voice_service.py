@@ -48,7 +48,6 @@ import tempfile
 from typing import Any, Dict, Optional
 
 from django.conf import settings
-from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 

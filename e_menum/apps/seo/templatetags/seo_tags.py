@@ -167,8 +167,6 @@ def seo_jsonld(context, schema_type):
     """
     from apps.seo.schema_org import (
         FAQPageSchema,
-        LocalBusinessSchema,
-        OrganizationSchema,
     )
 
     schema_type_lower = schema_type.lower().replace('-', '_').replace(' ', '_')

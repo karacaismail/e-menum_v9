@@ -518,7 +518,7 @@ class LoginAuditLogFactory(AuditLogFactory):
 
     action = "LOGIN"
     resource = "session"
-    description = factory.LazyAttribute(lambda o: f"User logged in")
+    description = factory.LazyAttribute(lambda o: "User logged in")
 
 
 class UpdateAuditLogFactory(AuditLogFactory):

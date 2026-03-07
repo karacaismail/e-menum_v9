@@ -41,7 +41,9 @@ from datetime import date, timedelta
 from decimal import Decimal
 from typing import Any, Dict, List, Optional
 
-from django.db.models import Avg, Count, Q
+from django.db.models import Avg
+
+from apps.reporting.models import IndustryBenchmark
 from django.utils import timezone
 
 logger = logging.getLogger(__name__)
@@ -134,7 +136,6 @@ class BenchmarkService:
                 - sample_size (int)
                 - message (str): Human-readable comparison summary
         """
-        from apps.reporting.models import IndustryBenchmark
 
         # Determine org category (default to 'restaurant')
         category = self._get_org_category(org_id)
@@ -232,7 +233,6 @@ class BenchmarkService:
         Returns:
             list: Created IndustryBenchmark instances
         """
-        from apps.reporting.models import IndustryBenchmark
 
         logger.info(
             'Generating benchmarks: period_type=%s period_start=%s',

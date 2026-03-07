@@ -43,7 +43,7 @@ Usage:
 """
 
 import logging
-from typing import TYPE_CHECKING, Dict, List, Optional, Type, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Type
 
 from rest_framework import permissions
 from rest_framework.request import Request
@@ -51,10 +51,7 @@ from rest_framework.views import APIView
 
 from shared.permissions.abilities import (
     # Core permission checking
-    build_ability_for_user,
     check_permission,
-    require_permission,
-    # Already implemented DRF classes
     AllowPublicRead,
     HasOrganizationPermission,
     HasPlatformPermission,
@@ -64,7 +61,7 @@ from shared.permissions.abilities import (
 )
 
 if TYPE_CHECKING:
-    from apps.core.models import Organization, User
+    pass
 
 
 logger = logging.getLogger(__name__)

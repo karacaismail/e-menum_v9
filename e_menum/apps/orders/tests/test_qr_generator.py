@@ -16,7 +16,6 @@ Uses pytest-django with Factory Boy factories and PIL for image verification.
 
 import io
 import os
-import uuid
 from unittest.mock import MagicMock, patch
 
 import pytest

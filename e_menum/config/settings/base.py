@@ -31,11 +31,11 @@ except ImportError:
         def __call__(self, key, default=None, cast=None):
             value = os.environ.get(key, default)
             if cast and value is not None:
-                if cast == bool:
+                if cast is bool:
                     return str(value).lower() in ('true', '1', 'yes')
-                if cast == int:
+                if cast is int:
                     return int(value)
-                if cast == list:
+                if cast is list:
                     return [x.strip() for x in str(value).split(',') if x.strip()]
             return value
 

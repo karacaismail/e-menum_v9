@@ -6,7 +6,6 @@ Fixtures follow pytest-django best practices for Django project testing.
 """
 
 import uuid
-from typing import Any, Generator
 
 import pytest
 from django.test import Client
@@ -23,7 +22,7 @@ def django_db_setup(django_db_setup, django_db_blocker):
     """
     with django_db_blocker.unblock():
         # Import here to avoid import errors before Django setup
-        from apps.subscriptions.models import Plan, Feature
+        from apps.subscriptions.models import Plan
         from apps.core.models import Role
 
         # Create default plans if they don't exist

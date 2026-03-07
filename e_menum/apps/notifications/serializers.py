@@ -11,16 +11,9 @@ API Endpoints:
     /api/v1/notifications/read-all/  - Mark all as read
 """
 
-from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from apps.notifications.models import Notification
-from apps.notifications.choices import (
-    NotificationChannel,
-    NotificationPriority,
-    NotificationStatus,
-    NotificationType,
-)
 
 
 class NotificationListSerializer(serializers.ModelSerializer):

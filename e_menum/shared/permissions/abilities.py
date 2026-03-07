@@ -45,7 +45,7 @@ CASL Concepts Mapped to Django:
 import logging
 import re
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from django.core.exceptions import PermissionDenied
 from django.db.models import Model
@@ -53,7 +53,7 @@ from rest_framework import permissions
 from rest_framework.request import Request
 
 if TYPE_CHECKING:
-    from apps.core.models import Organization, Permission, Role, User
+    from apps.core.models import Organization, User
 
 
 logger = logging.getLogger(__name__)
@@ -418,7 +418,6 @@ def build_ability_for_user(
         return ability
 
     # Get user's role assignments
-    user_role_filters = {'user': user}
 
     # If organization context exists, include org-scoped roles
     if organization:

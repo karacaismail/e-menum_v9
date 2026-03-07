@@ -30,16 +30,13 @@ Critical Rules:
 """
 
 import logging
-from typing import Optional
 
 from django.db import models
-from django.db.models import Count, Prefetch
-from django.utils import timezone
+from django.db.models import Prefetch
 from django.utils.translation import gettext_lazy as _
-from rest_framework import status, viewsets
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
 
 from apps.menu.models import (
     Theme,
@@ -50,7 +47,6 @@ from apps.menu.models import (
     ProductModifier,
     Allergen,
     ProductAllergen,
-    NutritionInfo,
 )
 from apps.menu.serializers import (
     # Theme
@@ -76,9 +72,6 @@ from apps.menu.serializers import (
     # Related
     ProductVariantSerializer,
     ProductModifierSerializer,
-    ProductAllergenSerializer,
-    NutritionInfoSerializer,
-    # Allergen
     AllergenListSerializer,
     AllergenDetailSerializer,
 )

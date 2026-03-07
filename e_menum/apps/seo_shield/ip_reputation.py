@@ -23,7 +23,6 @@ Usage:
 import logging
 
 from django.db.models import F
-from django.utils import timezone
 
 logger = logging.getLogger('apps.seo_shield')
 

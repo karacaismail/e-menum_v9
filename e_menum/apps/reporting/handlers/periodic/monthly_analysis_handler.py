@@ -14,16 +14,15 @@ Critical Rules:
 import calendar
 import logging
 from datetime import date, datetime, timedelta
-from decimal import Decimal
 from typing import List, Optional
 
-from django.db.models import Avg, Count, F, Q, Sum
+from django.db.models import Avg, Count, F, Sum
 from django.db.models.functions import ExtractHour, TruncDate
 
 from apps.analytics.choices import Granularity
-from apps.analytics.models import CustomerMetric, ProductPerformance, SalesAggregation
+from apps.analytics.models import SalesAggregation
 from apps.customers.models import Customer
-from apps.orders.choices import OrderStatus, OrderType, PaymentMethod
+from apps.orders.choices import OrderStatus
 from apps.orders.models import Order, OrderItem, QRScan
 from apps.reporting.services.report_engine import BaseReportHandler, register_handler
 

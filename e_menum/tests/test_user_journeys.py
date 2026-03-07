@@ -18,7 +18,7 @@ Function-based views use _get_org(request) helper and redirect to profile when N
 
 import uuid
 from decimal import Decimal
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from io import BytesIO
 
 import pytest

@@ -78,7 +78,7 @@ Usage:
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Type, TYPE_CHECKING
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
 from django.db import models
 from django.utils import timezone

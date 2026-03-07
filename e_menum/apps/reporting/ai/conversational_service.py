@@ -47,12 +47,9 @@ Critical Rules:
 """
 
 import logging
-import re
-import uuid
 from datetime import timedelta
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
-from django.conf import settings
 from django.utils import timezone
 
 logger = logging.getLogger(__name__)
@@ -244,7 +241,7 @@ class ConversationalAnalyticsService:
         org_id = session.organization_id
 
         # Save user message
-        user_msg = ConversationMessage.objects.create(
+        ConversationMessage.objects.create(
             session=session,
             role='user',
             content=message,

@@ -6,7 +6,7 @@ rate limiting, risk-based blocking, challenge action, log action, and
 BlockLog audit trail creation.
 """
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 from django.core.cache import cache
 from django.test import TestCase, RequestFactory, override_settings

@@ -39,12 +39,13 @@ Critical Rules:
 """
 
 import logging
-from datetime import date, datetime
+from datetime import date
 from typing import Optional
 
 from django.db import transaction
+
+from apps.reporting.models import CreditBalance, CreditTransaction
 from django.db.models import Sum
-from django.utils import timezone
 
 from shared.utils.exceptions import AppException
 
@@ -457,7 +458,7 @@ class CreditService:
                 - breakdown_by_type: Dict of consumption by reference_type
                 - transaction_count: Number of transactions in period
         """
-        from apps.reporting.models import CreditBalance, CreditTransaction
+        from apps.reporting.models import CreditTransaction
 
         balance = self.get_balance(org_id)
 

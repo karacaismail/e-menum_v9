@@ -14,11 +14,9 @@ Critical Rules:
 
 import logging
 from datetime import date, datetime, timedelta
-from decimal import Decimal
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
-from django.db.models import Avg, Count, F, Q, Sum
-from django.db.models.functions import TruncDate
+from django.db.models import Avg, Count, Sum
 
 from apps.reporting.services.report_engine import BaseReportHandler, register_handler
 

@@ -15,14 +15,14 @@ Run with:
 """
 
 import uuid
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
-from django.http import HttpRequest, JsonResponse
+from django.http import JsonResponse
 from django.test import RequestFactory
 
 from apps.core.choices import OrganizationStatus, UserStatus
-from apps.core.models import Organization, User
+from apps.core.models import Organization
 from shared.middleware.tenant import (
     TenantMiddleware,
     TenantContextMixin,
@@ -486,7 +486,7 @@ class TestOrganizationCache:
         middleware(request1)
 
         # Modify org in database (but cache should still have old reference)
-        original_org = middleware._organization_cache[org.id]
+        middleware._organization_cache[org.id]
 
         # Second request should use cache
         request2 = RequestFactory().get(

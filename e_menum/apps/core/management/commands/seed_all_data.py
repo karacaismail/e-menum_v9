@@ -26,7 +26,6 @@ from decimal import Decimal
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from django.utils.text import slugify
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
@@ -1007,7 +1006,7 @@ class Command(BaseCommand):
                 break
             status, resp_time = statuses_data[i]
             created_at = rand_recent(24)
-            sr = ServiceRequest.objects.create(
+            ServiceRequest.objects.create(
                 organization=org,
                 branch=tables[i].branch,
                 table=tables[i],

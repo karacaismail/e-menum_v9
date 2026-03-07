@@ -26,16 +26,12 @@ Critical Rules:
 """
 
 import logging
-from typing import Optional
 
-from django.db import models
-from django.db.models import Count, Prefetch, Q
+from django.db.models import Prefetch, Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from rest_framework import status, viewsets
+from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
 
 from apps.orders.models import (
     Zone,
@@ -48,14 +44,9 @@ from apps.orders.models import (
 )
 from apps.orders.choices import (
     TableStatus,
-    QRCodeType,
     OrderStatus,
-    OrderType,
-    OrderItemStatus,
     PaymentStatus,
-    PaymentMethod,
     ServiceRequestStatus,
-    ServiceRequestType,
 )
 from apps.orders.serializers import (
     # Zone
@@ -81,8 +72,6 @@ from apps.orders.serializers import (
     OrderCreateSerializer,
     OrderUpdateSerializer,
     # Order Item
-    OrderItemSerializer,
-    # Service Request
     ServiceRequestListSerializer,
     ServiceRequestDetailSerializer,
     ServiceRequestCreateSerializer,
@@ -91,9 +80,6 @@ from apps.orders.serializers import (
 from shared.permissions.plan_enforcement import PlanEnforcementMixin
 from shared.views.base import (
     BaseTenantViewSet,
-    BaseTenantReadOnlyViewSet,
-    StandardResponseMixin,
-    SoftDeleteMixin,
 )
 
 

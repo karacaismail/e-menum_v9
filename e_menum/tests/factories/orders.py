@@ -24,7 +24,7 @@ import factory
 from django.utils import timezone
 from factory.django import DjangoModelFactory
 
-from tests.factories.core import OrganizationFactory, UserFactory
+from tests.factories.core import OrganizationFactory
 
 
 class ZoneFactory(DjangoModelFactory):

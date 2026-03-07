@@ -20,8 +20,8 @@ Usage:
 """
 
 import logging
-from datetime import date, datetime
-from typing import List, Optional
+from datetime import date
+from typing import List
 
 from django.utils import timezone
 

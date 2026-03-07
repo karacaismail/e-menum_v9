@@ -256,7 +256,6 @@ class ThemeAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
         """Display visual color picker preview with current colors."""
         primary = obj.primary_color if obj.pk else '#3B82F6'
         secondary = obj.secondary_color if obj.pk else '#10B981'
-        accent = obj.accent_color if obj.pk else ''
         bg = obj.background_color if obj.pk else '#FFFFFF'
         text = obj.text_color if obj.pk else '#1F2937'
 
@@ -822,7 +821,7 @@ class ProductAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin
                     level='warning',
                 )
                 return
-            except Exception as e:
+            except Exception:
                 error_count += 1
 
         msg = _('AI descriptions generated for %(success)d product(s).') % {'success': success_count}

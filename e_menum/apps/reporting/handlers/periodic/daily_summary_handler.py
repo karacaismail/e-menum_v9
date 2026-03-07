@@ -12,10 +12,9 @@ Critical Rules:
 
 import logging
 from datetime import date, datetime, timedelta
-from decimal import Decimal
 from typing import List, Optional
 
-from django.db.models import Avg, Count, F, Q, Sum
+from django.db.models import Avg, Count, F, Sum
 from django.db.models.functions import ExtractHour
 
 from apps.analytics.choices import Granularity
@@ -273,7 +272,6 @@ class DailySummaryHandler(BaseReportHandler):
         ).values('customer').distinct().count()
 
         # Returning: customers with >1 total orders who ordered today
-        from django.db.models import Subquery, OuterRef
         returning = (
             Order.objects.filter(
                 organization_id=org_id,

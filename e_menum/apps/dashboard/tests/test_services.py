@@ -15,7 +15,6 @@ Uses pytest-django fixtures with in-memory Django cache.
 import uuid
 from datetime import timedelta
 from decimal import Decimal
-from unittest.mock import patch
 
 import pytest
 from django.core.cache import cache

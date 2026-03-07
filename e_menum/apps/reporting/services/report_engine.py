@@ -24,16 +24,21 @@ Usage:
         user=request.user,
     )
 """
+from __future__ import annotations
 
 import logging
+from typing import TYPE_CHECKING
+
 import time
 from abc import ABC, abstractmethod
-from datetime import datetime
-from typing import Any, Dict, List, Optional, Type
+from typing import Dict, List, Optional, Type
 
 from django.utils import timezone
 
-from shared.utils.exceptions import AppException, ErrorCodes
+from shared.utils.exceptions import AppException
+
+if TYPE_CHECKING:
+    from apps.reporting.models import ReportExecution
 
 logger = logging.getLogger(__name__)
 

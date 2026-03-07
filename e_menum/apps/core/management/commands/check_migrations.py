@@ -30,14 +30,11 @@ import json
 import sys
 from io import StringIO
 
-from django.apps import apps
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import connections
-from django.db.migrations.autodetector import MigrationAutodetector
 from django.db.migrations.executor import MigrationExecutor
 from django.db.migrations.loader import MigrationLoader
-from django.db.migrations.state import ProjectState
 
 
 class Command(BaseCommand):

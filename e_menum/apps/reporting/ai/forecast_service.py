@@ -41,8 +41,7 @@ import logging
 import math
 import statistics
 from datetime import date, timedelta
-from decimal import Decimal
-from typing import Dict, List, Optional, Tuple
+from typing import List, Tuple
 
 from django.utils import timezone
 
@@ -388,7 +387,7 @@ class ForecastService:
         Returns:
             list[dict]: Daily forecasts with bounds
         """
-        n = len(values)
+        len(values)
         forecast = []
 
         for t in range(1, days_ahead + 1):

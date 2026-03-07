@@ -15,7 +15,6 @@ from django.utils import timezone
 
 from apps.website.models import (
     BlogPost,
-    BrandAsset,
     CareerPosition,
     CaseStudy,
     CompanyStat,
@@ -30,7 +29,6 @@ from apps.website.models import (
     IndustryReport,
     InvestorFinancial,
     InvestorPage,
-    InvestorPresentation,
     LegalPage,
     Milestone,
     NavigationLink,

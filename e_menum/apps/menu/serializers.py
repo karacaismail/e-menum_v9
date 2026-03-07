@@ -29,11 +29,7 @@ Critical Rules:
     - Always validate cross-tenant references
 """
 
-from decimal import Decimal
-from typing import Any, Dict, List, Optional
 
-from django.db import transaction
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -48,13 +44,10 @@ from apps.menu.models import (
     Allergen,
     ProductAllergen,
     NutritionInfo,
-    LogoPosition,
-    AllergenSeverity,
 )
 from shared.serializers.base import (
     TenantModelSerializer,
     SoftDeleteModelSerializer,
-    BaseModelSerializer,
     MinimalSerializer,
 )
 

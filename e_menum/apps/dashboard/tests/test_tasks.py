@@ -121,7 +121,7 @@ class TestGenerateDashboardInsights:
         from apps.dashboard.tasks import generate_dashboard_insights
 
         # active_org exists but has NO QR scans at all
-        result = generate_dashboard_insights()
+        generate_dashboard_insights()
 
         churn_insights = DashboardInsight.objects.filter(
             title='Churn Riski',
@@ -145,7 +145,7 @@ class TestGenerateDashboardInsights:
             organization=active_org,
         )
 
-        result = generate_dashboard_insights()
+        generate_dashboard_insights()
 
         churn_insights = DashboardInsight.objects.filter(
             title='Churn Riski',
@@ -178,7 +178,7 @@ class TestGenerateDashboardInsights:
             cancel_at_period_end=True,
         )
 
-        result = generate_dashboard_insights()
+        generate_dashboard_insights()
 
         expiring = DashboardInsight.objects.filter(
             title='Süresi Dolmak Üzere',
@@ -213,7 +213,7 @@ class TestGenerateDashboardInsights:
         for i in range(10):
             OrganizationFactory(status='ACTIVE')
 
-        result = generate_dashboard_insights()
+        generate_dashboard_insights()
 
         growth = DashboardInsight.objects.filter(
             title='Büyüme Fırsatı',

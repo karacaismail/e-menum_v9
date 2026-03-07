@@ -27,8 +27,7 @@ Critical Rules:
     - Always validate cross-tenant references
 """
 
-from decimal import Decimal
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from django.db import transaction
 from django.utils import timezone
@@ -50,16 +49,9 @@ from apps.orders.choices import (
     QRCodeType,
     OrderStatus,
     OrderType,
-    OrderItemStatus,
-    PaymentStatus,
-    PaymentMethod,
-    ServiceRequestStatus,
-    ServiceRequestType,
 )
 from shared.serializers.base import (
     TenantModelSerializer,
-    SoftDeleteModelSerializer,
-    BaseModelSerializer,
     MinimalSerializer,
 )
 
@@ -741,7 +733,7 @@ class QRCodeCreateSerializer(TenantModelSerializer):
         attrs = super().validate(attrs)
 
         qr_type = attrs.get('type', QRCodeType.MENU)
-        menu = attrs.get('menu_id')
+        attrs.get('menu_id')
         table = attrs.get('table_id')
 
         if qr_type == QRCodeType.TABLE and not table:
@@ -1153,7 +1145,6 @@ class OrderCreateSerializer(TenantModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         """Create order with table handling and optional items."""
-        from django.utils import timezone
 
         table = validated_data.pop('table_id', None)
         items_data = validated_data.pop('items', [])

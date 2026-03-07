@@ -17,7 +17,7 @@ Task schedule (configured in config/celery.py):
 """
 
 import logging
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 
 from celery import shared_task
 from django.utils import timezone

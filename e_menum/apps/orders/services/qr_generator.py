@@ -40,7 +40,6 @@ from qrcode.image.styles.moduledrawers import RoundedModuleDrawer
 from PIL import Image, ImageDraw, ImageFont
 
 from django.conf import settings
-from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 

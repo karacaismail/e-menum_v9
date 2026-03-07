@@ -13,9 +13,7 @@ Uses pytest-django with Django test Client and AdminUserFactory.
 """
 
 import json
-import uuid
 from datetime import timedelta
-from decimal import Decimal
 
 import pytest
 from django.test import Client
@@ -367,7 +365,7 @@ class TestAPISearch:
 
     def test_searches_organizations(self, staff_client):
         """Should find organizations matching query."""
-        org = OrganizationFactory(name='Istanbul Cafe ABC')
+        OrganizationFactory(name='Istanbul Cafe ABC')
 
         url = reverse('dashboard:api-search')
         data = staff_client.get(url + '?q=Istanbul').json()
@@ -383,7 +381,7 @@ class TestAPISearch:
 
     def test_searches_users(self, staff_client):
         """Should find users matching query by email."""
-        user = UserFactory(email='searchable@example.com')
+        UserFactory(email='searchable@example.com')
 
         url = reverse('dashboard:api-search')
         data = staff_client.get(url + '?q=searchable').json()

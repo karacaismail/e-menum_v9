@@ -21,11 +21,9 @@ Critical Rules:
 """
 
 import logging
-from datetime import date, datetime, timedelta
-from decimal import Decimal
-from typing import Any, Dict, List, Optional
+from datetime import date, timedelta
 
-from django.db.models import Avg, Count, F, Q, Sum
+from django.db.models import Avg, Count, Sum
 
 logger = logging.getLogger(__name__)
 

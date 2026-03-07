@@ -13,7 +13,7 @@ Usage:
 """
 
 import logging
-from datetime import datetime, time, timedelta
+from datetime import datetime, timedelta
 
 from django.utils import timezone
 

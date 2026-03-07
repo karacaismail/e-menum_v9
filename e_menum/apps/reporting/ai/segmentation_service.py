@@ -36,12 +36,10 @@ Critical Rules:
 """
 
 import logging
-import math
-from datetime import date, timedelta
 from decimal import Decimal
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List
 
-from django.db.models import Avg, Count, Max, Q, Sum
+from django.db.models import Count, Max, Q, Sum
 from django.utils import timezone
 
 logger = logging.getLogger(__name__)

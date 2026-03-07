@@ -42,7 +42,7 @@ Usage:
         path('api/v1/auth/', include(('apps.core.urls', 'core'), namespace='auth')),
 """
 
-from django.urls import path, include
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from apps.core.views import (

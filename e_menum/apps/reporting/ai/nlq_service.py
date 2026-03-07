@@ -42,28 +42,15 @@ import json
 import logging
 from datetime import date, datetime, timedelta
 from decimal import Decimal
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from django.conf import settings
 from django.db.models import (
     Avg,
     Count,
-    DecimalField,
-    F,
     Max,
     Min,
-    Q,
     Sum,
-    Value,
-)
-from django.db.models.functions import (
-    Coalesce,
-    ExtractHour,
-    ExtractMonth,
-    ExtractWeekDay,
-    TruncDate,
-    TruncMonth,
-    TruncWeek,
 )
 from django.utils import timezone
 
