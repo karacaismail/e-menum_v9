@@ -1,9 +1,9 @@
 """
 Production diagnostics endpoint.
-Protected by DIAGNOSTICS_TOKEN env variable.
+Protected by DIAGNOSTICS_TOKEN env variable (default: emenum-debug-2026).
 Access: GET /diag/?token=<DIAGNOSTICS_TOKEN>
 
-Shows: applied/unapplied migrations, recent Django errors, DB status.
+Tests key model queries that could cause 500 errors on pricing/orders pages.
 REMOVE THIS FILE AFTER DEBUGGING IS COMPLETE.
 """
 
@@ -21,24 +21,22 @@ DIAG_TOKEN = os.environ.get("DIAGNOSTICS_TOKEN", "emenum-debug-2026")
 def diagnostics_view(request):
     """Secret-protected production diagnostics."""
     token = request.GET.get("token", "")
-
-    # Require a non-empty token that matches exactly
     if not DIAG_TOKEN or token != DIAG_TOKEN:
         return HttpResponse("Not found", status=404)
 
+    errors = []
     result = {
         "status": "ok",
         "migrations": {},
         "db_tables": [],
-        "errors": [],
-        "pricing_view_test": None,
-        "order_model_test": None,
+        "errors": errors,
+        "tests": {},
     }
 
     # 1. Migration status
     try:
-        from django.db.migrations.executor import MigrationExecutor
         from django.db import connections
+        from django.db.migrations.executor import MigrationExecutor
 
         connection = connections["default"]
         executor = MigrationExecutor(connection)
@@ -46,72 +44,72 @@ def diagnostics_view(request):
         unapplied = [f"{m[0].app_label}.{m[0].name}" for m in plan]
         result["migrations"]["unapplied"] = unapplied
         result["migrations"]["unapplied_count"] = len(unapplied)
-    except Exception as e:
-        result["migrations"]["error"] = str(e)
-        result["errors"].append(f"Migration check: {traceback.format_exc()}")
+    except Exception:
+        result["migrations"]["error"] = traceback.format_exc()
+        errors.append("Migration check failed")
 
-    # 2. Check critical DB tables exist
+    # 2. List DB tables
     try:
         from django.db import connection
 
         with connection.cursor() as cursor:
             cursor.execute(
-                "SELECT table_name FROM information_schema.tables WHERE table_schema='public' ORDER BY table_name;"
+                "SELECT table_name FROM information_schema.tables"
+                " WHERE table_schema='public' ORDER BY table_name;"
             )
             result["db_tables"] = [row[0] for row in cursor.fetchall()]
-    except Exception as e:
-        result["errors"].append(f"DB table check: {str(e)}")
+    except Exception:
+        errors.append(f"DB table check failed: {traceback.format_exc()}")
 
-    # 3. Test pricing view models
+    # 3. Test pricing models (Plan query)
     try:
         from apps.subscriptions.models import Plan
 
-        plan_count = Plan.objects.filter(is_active=True, deleted_at__isnull=True).count()
-        result["pricing_view_test"] = f"OK - {plan_count} active plans"
-    except Exception as e:
-        result["pricing_view_test"] = f"ERROR: {str(e)}"
-        result["errors"].append(f"Pricing Plan query: {traceback.format_exc()}")
+        count = Plan.objects.filter(is_active=True, deleted_at__isnull=True).count()
+        result["tests"]["plan"] = f"OK - {count} active plans"
+    except Exception:
+        result["tests"]["plan"] = f"ERROR: {traceback.format_exc()}"
+        errors.append("Plan query failed")
 
-    # 4. Test order model
+    # 4. Test Order model
     try:
         from apps.orders.models import Order
 
-        order_count = Order.objects.count()
-        result["order_model_test"] = f"OK - {order_count} orders"
-    except Exception as e:
-        result["order_model_test"] = f"ERROR: {str(e)}"
-        result["errors"].append(f"Order query: {traceback.format_exc()}")
+        count = Order.objects.count()
+        result["tests"]["order"] = f"OK - {count} orders"
+    except Exception:
+        result["tests"]["order"] = f"ERROR: {traceback.format_exc()}"
+        errors.append("Order query failed")
 
     # 5. Test FAQ model
     try:
         from apps.website.models import FAQ
 
-        faq_count = FAQ.objects.filter(is_active=True, page__in=["pricing", "both"]).count()
-        result["faq_test"] = f"OK - {faq_count} pricing FAQs"
-    except Exception as e:
-        result["faq_test"] = f"ERROR: {str(e)}"
-        result["errors"].append(f"FAQ query: {traceback.format_exc()}")
+        count = FAQ.objects.filter(is_active=True, page__in=["pricing", "both"]).count()
+        result["tests"]["faq"] = f"OK - {count} pricing FAQs"
+    except Exception:
+        result["tests"]["faq"] = f"ERROR: {traceback.format_exc()}"
+        errors.append("FAQ query failed")
 
     # 6. Test Organization model (plan FK)
     try:
         from apps.core.models import Organization
 
-        org_count = Organization.objects.count()
-        result["org_test"] = f"OK - {org_count} orgs"
-    except Exception as e:
-        result["org_test"] = f"ERROR: {str(e)}"
-        result["errors"].append(f"Organization query: {traceback.format_exc()}")
+        count = Organization.objects.count()
+        result["tests"]["organization"] = f"OK - {count} orgs"
+    except Exception:
+        result["tests"]["organization"] = f"ERROR: {traceback.format_exc()}"
+        errors.append("Organization query failed")
 
-    # 7. Test PageHero
+    # 7. Test PageHero model
     try:
         from apps.website.models import PageHero
 
         hero = PageHero.objects.filter(page="pricing", is_active=True).first()
-        result["pagehero_test"] = f"OK - hero={'yes' if hero else 'not found'}"
-    except Exception as e:
-        result["pagehero_test"] = f"ERROR: {str(e)}"
-        result["errors"].append(f"PageHero query: {traceback.format_exc()}")
+        result["tests"]["pagehero"] = f"OK - hero={'found' if hero else 'not found'}"
+    except Exception:
+        result["tests"]["pagehero"] = f"ERROR: {traceback.format_exc()}"
+        errors.append("PageHero query failed")
 
-    result["status"] = "errors_found" if result["errors"] else "ok"
-
+    result["status"] = "errors_found" if errors else "ok"
     return JsonResponse(result, json_dumps_params={"indent": 2})
