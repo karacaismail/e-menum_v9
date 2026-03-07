@@ -76,7 +76,7 @@ def team_invite(request):
     email = request.POST.get("email", "").strip().lower()
     first_name = request.POST.get("first_name", "").strip()
     last_name = request.POST.get("last_name", "").strip()
-    role_id = request.POST.get("role_id", "").strip()
+    role_id = (request.POST.get("role_id") or request.POST.get("role") or "").strip()
 
     if not email or not first_name or not last_name:
         messages.error(request, _("E-posta, ad ve soyad zorunludur."))
