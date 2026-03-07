@@ -134,7 +134,7 @@ def product_create(request):
                 is_chef_recommended=cd.get("is_chef_recommended", False),
                 preparation_time=cd.get("preparation_time"),
                 calories=cd.get("calories"),
-                spicy_level=cd.get("spicy_level", 0),
+                spicy_level=cd.get("spicy_level") or 0,
                 tags=tags,
             )
             product.save()
@@ -237,7 +237,7 @@ def product_edit(request, product_id):
             product.is_chef_recommended = cd.get("is_chef_recommended", False)
             product.preparation_time = cd.get("preparation_time")
             product.calories = cd.get("calories")
-            product.spicy_level = cd.get("spicy_level", 0)
+            product.spicy_level = cd.get("spicy_level") or 0
             tags = (
                 [t.strip() for t in cd.get("tags", "").split(",") if t.strip()]
                 if cd.get("tags")
