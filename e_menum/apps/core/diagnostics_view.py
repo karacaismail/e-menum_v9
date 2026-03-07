@@ -112,4 +112,25 @@ def diagnostics_view(request):
         errors.append("PageHero query failed")
 
     result["status"] = "errors_found" if errors else "ok"
+
+    # 8. Actually render pricing page with test client (catch real error)
+    try:
+        from django.test import Client
+
+        c = Client()
+        resp = c.get("/tr/fiyatlandirma/")
+        result["pricing_render"] = {
+            "status_code": resp.status_code,
+            "ok": resp.status_code == 200,
+        }
+        if resp.status_code != 200 and hasattr(resp, "exc_info") and resp.exc_info:
+            exc_type, exc_val, exc_tb = resp.exc_info
+            import traceback as tb_module
+
+            result["pricing_render"]["error"] = "".join(
+                tb_module.format_exception(exc_type, exc_val, exc_tb)
+            )
+    except Exception:
+        result["pricing_render"] = {"error": traceback.format_exc()}
+
     return JsonResponse(result, json_dumps_params={"indent": 2})
