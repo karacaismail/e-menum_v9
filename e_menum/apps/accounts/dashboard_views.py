@@ -9,7 +9,6 @@ import logging
 
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.http import require_GET
 

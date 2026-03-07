@@ -1,6 +1,5 @@
 """Product management views for the restaurant owner portal."""
 
-import json
 import logging
 
 from django.contrib import messages
@@ -82,7 +81,7 @@ def product_create(request):
     org = _get_org(request)
     if not org:
         return redirect('accounts:profile')
-    from apps.menu.models import Product, Category, Allergen
+    from apps.menu.models import Product, Category
 
     if request.method == 'POST':
         form = ProductForm(request.POST, organization=org)

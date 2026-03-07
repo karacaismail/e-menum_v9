@@ -8,7 +8,6 @@ from django.db.models import Avg, Count, Sum
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET
 
 logger = logging.getLogger(__name__)
