@@ -450,7 +450,11 @@ def build_ability_for_user(
     # Superusers bypass plan gating entirely
     if not user.is_superuser and organization:
         try:
-            from apps.subscriptions.models import FeaturePermission, PlanFeature, Subscription
+            from apps.subscriptions.models import (
+                FeaturePermission,
+                PlanFeature,
+                Subscription,
+            )
 
             # Get the org's active subscription and its plan
             subscription = (
@@ -484,12 +488,14 @@ def build_ability_for_user(
                     # override any role-based grants added above.
                     for fp in gated_permissions:
                         perm = fp.permission
-                        ability.add_rule(Rule(
-                            action=perm.action,
-                            resource=perm.resource,
-                            inverted=True,
-                            reason="Feature not included in plan",
-                        ))
+                        ability.add_rule(
+                            Rule(
+                                action=perm.action,
+                                resource=perm.resource,
+                                inverted=True,
+                                reason="Feature not included in plan",
+                            )
+                        )
 
         except Exception:
             logger.exception(
@@ -503,7 +509,6 @@ def build_ability_for_user(
     )
 
     return ability
-
 
 
 def check_permission(
