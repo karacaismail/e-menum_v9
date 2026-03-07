@@ -24,32 +24,40 @@ def order_list(request):
         return redirect("accounts:profile")
     from apps.orders.models import Order
 
-    qs = (
-        Order.objects.filter(
-            organization=org,
-            deleted_at__isnull=True,
+    try:
+        qs = (
+            Order.objects.filter(
+                organization=org,
+                deleted_at__isnull=True,
+            )
+            .select_related("table")
+            .order_by("-created_at")
         )
-        .select_related("table")
-        .order_by("-created_at")
-    )
 
-    # Filter by status
-    status = request.GET.get("status")
-    if status:
-        qs = qs.filter(status=status)
+        # Filter by status
+        status = request.GET.get("status")
+        if status:
+            qs = qs.filter(status=status)
 
-    # Filter by type
-    order_type = request.GET.get("type")
-    if order_type:
-        qs = qs.filter(type=order_type)
+        # Filter by type
+        order_type = request.GET.get("type")
+        if order_type:
+            qs = qs.filter(type=order_type)
 
-    # Search by order number
-    search = request.GET.get("q", "").strip()
-    if search:
-        qs = qs.filter(order_number__icontains=search)
+        # Search by order number
+        search = request.GET.get("q", "").strip()
+        if search:
+            qs = qs.filter(order_number__icontains=search)
 
-    paginator = Paginator(qs, 20)
-    page = paginator.get_page(request.GET.get("page", 1))
+        paginator = Paginator(qs, 20)
+        page = paginator.get_page(request.GET.get("page", 1))
+
+    except Exception:
+        logger.exception("Failed to load orders list")
+        page = None
+        status = request.GET.get("status", "")
+        order_type = request.GET.get("type", "")
+        search = request.GET.get("q", "")
 
     # Status choices for filter
     status_choices = [
