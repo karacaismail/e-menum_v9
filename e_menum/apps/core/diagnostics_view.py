@@ -113,27 +113,34 @@ def diagnostics_view(request):
 
     result["status"] = "errors_found" if errors else "ok"
 
-    # 8. Actually render pricing page with real host (bypass ALLOWED_HOSTS 400)
+    # 8. Directly call PricingView and render to string to catch real 500 cause
     try:
-        from django.test import Client
+        from django.template.loader import render_to_string
+        from django.test import RequestFactory
 
-        c = Client(raise_request_exception=False)
-        resp = c.get(
-            "/tr/fiyatlandirma/",
-            HTTP_HOST="www.e-menum.net",
-            SERVER_NAME="www.e-menum.net",
-        )
-        pricing_result = {
-            "status_code": resp.status_code,
-            "ok": resp.status_code == 200,
+        from apps.website.views.pricing import PricingView
+
+        factory = RequestFactory()
+        req = factory.get("/tr/fiyatlandirma/")
+        req.LANGUAGE_CODE = "tr"
+
+        # Get context
+        view = PricingView()
+        view.request = req
+        view.args = []
+        view.kwargs = {}
+        ctx = view.get_context_data()
+
+        # Render template
+        html = render_to_string("website/pricing.html", ctx, request=req)
+        result["pricing_render"] = {
+            "ok": True,
+            "html_length": len(html),
         }
-        if resp.status_code != 200 and hasattr(resp, "exc_info") and resp.exc_info:
-            exc_type, exc_val, exc_tb = resp.exc_info
-            pricing_result["traceback"] = "".join(
-                traceback.format_exception(exc_type, exc_val, exc_tb)
-            )
-        result["pricing_render"] = pricing_result
     except Exception:
-        result["pricing_render"] = {"error": traceback.format_exc()}
+        result["pricing_render"] = {
+            "ok": False,
+            "traceback": traceback.format_exc(),
+        }
 
     return JsonResponse(result, json_dumps_params={"indent": 2})
