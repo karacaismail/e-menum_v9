@@ -223,7 +223,7 @@ class RegistrationTests(BaseTestCase):
         data = {
             "email": "newowner@newrestaurant.com",
             "password": VALID_PASSWORD,
-            "password_confirm": VALID_PASSWORD,
+            "confirm_password": VALID_PASSWORD,
             "business_name": "New Restaurant",
             "first_name": "Jane",
             "last_name": "Doe",
@@ -238,7 +238,7 @@ class RegistrationTests(BaseTestCase):
         data = {
             "email": "owner@brand-new.com",
             "password": VALID_PASSWORD,
-            "password_confirm": VALID_PASSWORD,
+            "confirm_password": VALID_PASSWORD,
             "business_name": "Brand New Cafe",
             "first_name": "Ali",
             "last_name": "Veli",
@@ -253,7 +253,7 @@ class RegistrationTests(BaseTestCase):
         data = {
             "email": "trial@example.com",
             "password": VALID_PASSWORD,
-            "password_confirm": VALID_PASSWORD,
+            "confirm_password": VALID_PASSWORD,
             "business_name": "Trial Cafe",
             "first_name": "Trial",
             "last_name": "User",
@@ -272,7 +272,7 @@ class RegistrationTests(BaseTestCase):
         data = {
             "email": "trial14@example.com",
             "password": VALID_PASSWORD,
-            "password_confirm": VALID_PASSWORD,
+            "confirm_password": VALID_PASSWORD,
             "business_name": "Fourteen Days Cafe",
             "first_name": "Fourteen",
             "last_name": "Days",
@@ -291,7 +291,7 @@ class RegistrationTests(BaseTestCase):
         data = {
             "email": "slug@example.com",
             "password": VALID_PASSWORD,
-            "password_confirm": VALID_PASSWORD,
+            "confirm_password": VALID_PASSWORD,
             "business_name": "Cafe Istanbul Bebek",
             "first_name": "Slug",
             "last_name": "Test",
@@ -306,7 +306,7 @@ class RegistrationTests(BaseTestCase):
         data = {
             "email": "autologin@example.com",
             "password": VALID_PASSWORD,
-            "password_confirm": VALID_PASSWORD,
+            "confirm_password": VALID_PASSWORD,
             "business_name": "Auto Login Cafe",
             "first_name": "Auto",
             "last_name": "Login",
@@ -324,7 +324,7 @@ class RegistrationTests(BaseTestCase):
         data = {
             "email": "redirect@example.com",
             "password": VALID_PASSWORD,
-            "password_confirm": VALID_PASSWORD,
+            "confirm_password": VALID_PASSWORD,
             "business_name": "Redirect Cafe",
             "first_name": "Redirect",
             "last_name": "User",
@@ -339,7 +339,7 @@ class RegistrationTests(BaseTestCase):
         data = {
             "email": "audit@example.com",
             "password": VALID_PASSWORD,
-            "password_confirm": VALID_PASSWORD,
+            "confirm_password": VALID_PASSWORD,
             "business_name": "Audit Cafe",
             "first_name": "Audit",
             "last_name": "Test",
@@ -352,7 +352,7 @@ class RegistrationTests(BaseTestCase):
         data = {
             "email": "ownerrole@example.com",
             "password": VALID_PASSWORD,
-            "password_confirm": VALID_PASSWORD,
+            "confirm_password": VALID_PASSWORD,
             "business_name": "Owner Role Cafe",
             "first_name": "Owner",
             "last_name": "Role",
@@ -373,7 +373,7 @@ class RegistrationTests(BaseTestCase):
         data = {
             "email": "owner@testrestaurant.com",  # already exists in setUp
             "password": VALID_PASSWORD,
-            "password_confirm": VALID_PASSWORD,
+            "confirm_password": VALID_PASSWORD,
             "business_name": "Duplicate Email Cafe",
             "first_name": "Dup",
             "last_name": "Email",
@@ -386,7 +386,7 @@ class RegistrationTests(BaseTestCase):
         """Missing email field should return a validation error."""
         data = {
             "password": VALID_PASSWORD,
-            "password_confirm": VALID_PASSWORD,
+            "confirm_password": VALID_PASSWORD,
             "business_name": "No Email Cafe",
             "first_name": "No",
             "last_name": "Email",
@@ -410,7 +410,7 @@ class RegistrationTests(BaseTestCase):
         data = {
             "email": "nobiz@example.com",
             "password": VALID_PASSWORD,
-            "password_confirm": VALID_PASSWORD,
+            "confirm_password": VALID_PASSWORD,
             "first_name": "No",
             "last_name": "Biz",
         }
@@ -422,7 +422,7 @@ class RegistrationTests(BaseTestCase):
         data = {
             "email": "nofirst@example.com",
             "password": VALID_PASSWORD,
-            "password_confirm": VALID_PASSWORD,
+            "confirm_password": VALID_PASSWORD,
             "business_name": "No First Cafe",
             "last_name": "Name",
         }
@@ -434,7 +434,7 @@ class RegistrationTests(BaseTestCase):
         data = {
             "email": "nolast@example.com",
             "password": VALID_PASSWORD,
-            "password_confirm": VALID_PASSWORD,
+            "confirm_password": VALID_PASSWORD,
             "business_name": "No Last Cafe",
             "first_name": "No",
         }
@@ -446,7 +446,7 @@ class RegistrationTests(BaseTestCase):
         data = {
             "email": "shortpass@example.com",
             "password": "Short1!",
-            "password_confirm": "Short1!",
+            "confirm_password": "Short1!",
             "business_name": "Short Pass Cafe",
             "first_name": "Short",
             "last_name": "Pass",
@@ -456,11 +456,11 @@ class RegistrationTests(BaseTestCase):
         self.assertFalse(User.objects.filter(email="shortpass@example.com").exists())
 
     def test_registration_password_mismatch_fails(self):
-        """Mismatched password and password_confirm should be rejected."""
+        """Mismatched password and confirm_password should be rejected."""
         data = {
             "email": "mismatch@example.com",
             "password": VALID_PASSWORD,
-            "password_confirm": "DifferentPass123!",
+            "confirm_password": "DifferentPass123!",
             "business_name": "Mismatch Cafe",
             "first_name": "Mis",
             "last_name": "Match",
@@ -474,7 +474,7 @@ class RegistrationTests(BaseTestCase):
         data = {
             "email": "not-an-email",
             "password": VALID_PASSWORD,
-            "password_confirm": VALID_PASSWORD,
+            "confirm_password": VALID_PASSWORD,
             "business_name": "Bad Email Cafe",
             "first_name": "Bad",
             "last_name": "Email",
@@ -487,7 +487,7 @@ class RegistrationTests(BaseTestCase):
         data = {
             "email": "slugcollide@example.com",
             "password": VALID_PASSWORD,
-            "password_confirm": VALID_PASSWORD,
+            "confirm_password": VALID_PASSWORD,
             "business_name": "Test Restaurant",  # same as setUp org
             "first_name": "Slug",
             "last_name": "Collide",
@@ -502,7 +502,7 @@ class RegistrationTests(BaseTestCase):
         data = {
             "email": "active@example.com",
             "password": VALID_PASSWORD,
-            "password_confirm": VALID_PASSWORD,
+            "confirm_password": VALID_PASSWORD,
             "business_name": "Active Status Cafe",
             "first_name": "Active",
             "last_name": "Status",
@@ -1506,7 +1506,7 @@ class AuditLogComplianceTests(BaseTestCase):
         data = {
             "email": "auditres@example.com",
             "password": VALID_PASSWORD,
-            "password_confirm": VALID_PASSWORD,
+            "confirm_password": VALID_PASSWORD,
             "business_name": "Audit Resource Cafe",
             "first_name": "Audit",
             "last_name": "Resource",

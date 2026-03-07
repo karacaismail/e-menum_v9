@@ -13,7 +13,20 @@ sidebar visibility is handled here.
 import json
 import logging
 
+from django.conf import settings
+
 from shared.permissions.abilities import build_ability_for_user
+
+
+def debug_context(request):
+    """
+    Always add 'debug' to template context.
+
+    Django's debug context processor only adds it when DEBUG is True and
+    request IP is in INTERNAL_IPS. Base layout (base.html) uses {% if debug %}
+    for Tailwind CDN vs built CSS, so we need it always defined.
+    """
+    return {"debug": getattr(settings, "DEBUG", False)}
 
 logger = logging.getLogger(__name__)
 
