@@ -72,6 +72,28 @@ class PricingView(CmsContextMixin, TemplateView):
             ).order_by("sort_order")
 
             plans = list(plans_qs.prefetch_related("display_features"))
+
+            # Pre-resolve CTA URLs to avoid NoReverseMatch in template rendering.
+            # Django's {% url %} tag raises NoReverseMatch outside try/except.
+            from django.urls import NoReverseMatch, reverse
+
+            for plan in plans:
+                resolved = ""
+                if plan.cta_url:
+                    if ":" in plan.cta_url:
+                        try:
+                            resolved = reverse(plan.cta_url)
+                        except NoReverseMatch:
+                            logger.warning(
+                                "Plan %s has invalid cta_url: %s",
+                                plan.id,
+                                plan.cta_url,
+                            )
+                            resolved = "/"
+                    else:
+                        resolved = plan.cta_url
+                plan._resolved_cta_url = resolved
+
             context["plans"] = plans
 
             # Build comparison matrix grouped by category

@@ -1,35 +1,39 @@
 {% load i18n %}
 {% comment %}============================================================================
-   PRICING CARDS — Plan comparison cards from database with monthly/yearly toggle
+PRICING CARDS — Plan comparison cards from database with monthly/yearly toggle
 
-   Context:
-   - plans (queryset from view — Plan objects with display_features prefetched)
+Context:
+- plans (queryset from view — Plan objects with display_features prefetched)
 
-   Design: Dark theme, 6-column grid with animated cards, ribbon badges,
-   glow effects, and Alpine.js yearly/monthly price toggle.
+Design: Dark theme, 6-column grid with animated cards, ribbon badges,
+glow effects, and Alpine.js yearly/monthly price toggle.
 
-   Usage:
-   {% include "website/partials/_pricing_cards.html" %}
-   ============================================================================{% endcomment %}
+Usage:
+{% include "website/partials/_pricing_cards.html" %}
+============================================================================{% endcomment %}
 
 {% if plans %}
 <section class="pricing-section" x-data="pricingApp()" x-init="init()">
 
     {# ── TOGGLE ── #}
-    <div class="reveal" id="toggle-row" style="margin-top:32px;display:flex;flex-wrap:wrap;align-items:center;gap:16px;">
+    <div class="reveal" id="toggle-row"
+        style="margin-top:32px;display:flex;flex-wrap:wrap;align-items:center;gap:16px;">
         <div class="toggle-wrap">
             <span class="tlabel" :class="!yearly?'on':'off'">{% trans "Aylık" %}</span>
-            <button class="tog-btn" :class="{on:yearly}" @click="toggle()" role="switch" :aria-checked="yearly" aria-label="{% trans 'Yıllık faturalama' %}"></button>
+            <button class="tog-btn" :class="{on:yearly}" @click="toggle()" role="switch" :aria-checked="yearly"
+                aria-label="{% trans 'Yıllık faturalama' %}"></button>
             <span class="tlabel" :class="yearly?'on':'off'">{% trans "Yıllık" %}</span>
         </div>
         <span class="save-pill" :class="{hide:!yearly}">{% trans "2 AY BEDAVA" %}</span>
-        <span x-show="yearly" x-transition style="font-size:12px;color:var(--muted);">{% trans "Yıllık ödemede 10 ay ücreti alınır." %}</span>
+        <span x-show="yearly" x-transition style="font-size:12px;color:var(--muted);">{% trans "Yıllık ödemede 10 ay
+            ücreti alınır." %}</span>
     </div>
 
     {# ── CARDS GRID ── #}
     <div class="pgrid">
         {% for plan in plans %}
-        <div class="pc {{ plan.card_css_class }} reveal" {% if plan.has_glow_effect or plan.highlight_text %}style="position:relative;overflow:hidden;"{% endif %}>
+        <div class="pc {{ plan.card_css_class }} reveal" {% if plan.has_glow_effect or plan.highlight_text
+            %}style="position:relative;overflow:hidden;" {% endif %}>
 
             {# Ribbon #}
             {% if plan.highlight_text and plan.ribbon_color %}
@@ -42,7 +46,9 @@
             {% endif %}
 
             {# Badge #}
-            <div class="tbadge"><div class="tdot"></div>{{ plan.badge_label|default:plan.name }}</div>
+            <div class="tbadge">
+                <div class="tdot"></div>{{ plan.badge_label|default:plan.name }}
+            </div>
 
             {# Name #}
             <h3>{{ plan.name }}</h3>
@@ -55,29 +61,33 @@
             {# Price Block #}
             <div class="pblock">
                 {% if plan.is_custom %}
-                    {# Enterprise / custom price #}
-                    <div style="font-size:26px;font-weight:800;color:var(--c);letter-spacing:-.03em;line-height:1;">{{ plan.custom_price_text|default:"Özel Fiyat" }}</div>
-                    {% if plan.price_label %}
-                    <p class="pper" style="color:rgba(245,158,11,.55);">{{ plan.price_label }}</p>
-                    {% endif %}
+                {# Enterprise / custom price #}
+                <div style="font-size:26px;font-weight:800;color:var(--c);letter-spacing:-.03em;line-height:1;">{{
+                    plan.custom_price_text|default:"Özel Fiyat" }}</div>
+                {% if plan.price_label %}
+                <p class="pper" style="color:rgba(245,158,11,.55);">{{ plan.price_label }}</p>
+                {% endif %}
                 {% elif plan.price_monthly == 0 %}
-                    {# Free plan #}
-                    <div class="pamount"><span class="pnum" :class="{flip:anim}">0</span><span class="pcurr">TL</span></div>
-                    {% if plan.price_label %}
-                    <p class="pper">{{ plan.price_label }}</p>
-                    {% else %}
-                    <p class="pper">{% trans "Sonsuza kadar ücretsiz" %}</p>
-                    {% endif %}
+                {# Free plan #}
+                <div class="pamount"><span class="pnum" :class="{flip:anim}">0</span><span class="pcurr">TL</span></div>
+                {% if plan.price_label %}
+                <p class="pper">{{ plan.price_label }}</p>
                 {% else %}
-                    {# Paid plan with toggle #}
-                    <div class="pamount">
-                        <span class="pnum" :class="{flip:anim}" x-text="fp({{ plan.price_monthly|floatformat:0 }})">{{ plan.price_monthly|floatformat:0|default:"0" }}</span>
-                        <span class="pcurr">TL / {% trans "ay" %}</span>
-                    </div>
-                    <p class="pper" x-show="!yearly">{% if plan.price_label %}{{ plan.price_label }}{% else %}{% trans "Aylık faturalanır" %}{% endif %}</p>
-                    <p class="pper" x-show="yearly">
-                        <span style="color:var(--gold);font-weight:700;" x-text="'{% trans "Yılda" %} '+ fp({{ plan.price_monthly|floatformat:0 }}*10) +' TL'"></span>
-                    </p>
+                <p class="pper">{% trans "Sonsuza kadar ücretsiz" %}</p>
+                {% endif %}
+                {% else %}
+                {# Paid plan with toggle #}
+                <div class="pamount">
+                    <span class="pnum" :class="{flip:anim}" x-text="fp({{ plan.price_monthly|floatformat:0 }})">{{
+                        plan.price_monthly|floatformat:0|default:"0" }}</span>
+                    <span class="pcurr">TL / {% trans "ay" %}</span>
+                </div>
+                <p class="pper" x-show="!yearly">{% if plan.price_label %}{{ plan.price_label }}{% else %}{% trans
+                    "Aylık faturalanır" %}{% endif %}</p>
+                <p class="pper" x-show="yearly">
+                    <span style="color:var(--gold);font-weight:700;" x-text="'{% trans " Yılda"
+                        %} '+ fp({{ plan.price_monthly|floatformat:0 }}*10) +' TL'"></span>
+                </p>
                 {% endif %}
             </div>
 
@@ -98,7 +108,9 @@
                     {% if feature.icon_svg %}
                     {{ feature.icon_svg|safe }}
                     {% else %}
-                    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <polyline points="20 6 9 17 4 12" />
+                    </svg>
                     {% endif %}
                     {{ feature.text }}
                 </li>
@@ -109,18 +121,18 @@
             {% endwith %}
 
             {# CTA Button #}
-            {% if plan.cta_url %}
-                {% if ":" in plan.cta_url %}
-                <a href="{% url plan.cta_url %}" class="cta {{ plan.cta_style|default:'cta-out' }}">{{ plan.cta_text|default:"Başla" }}</a>
-                {% else %}
-                <a href="{{ plan.cta_url }}" class="cta {{ plan.cta_style|default:'cta-out' }}">{{ plan.cta_text|default:"Başla" }}</a>
-                {% endif %}
+            {% if plan._resolved_cta_url %}
+            <a href="{{ plan._resolved_cta_url }}" class="cta {{ plan.cta_style|default:'cta-out' }}">{{
+                plan.cta_text|default:"Başla" }}</a>
             {% elif plan.is_custom %}
-                <a href="{% url 'website:contact' %}" class="cta {{ plan.cta_style|default:'cta-ent' }}">{{ plan.cta_text|default:"İletişime Geçin" }}</a>
+            <a href="{% url 'website:contact' %}" class="cta {{ plan.cta_style|default:'cta-ent' }}">{{
+                plan.cta_text|default:"İletişime Geçin" }}</a>
             {% elif plan.price_monthly == 0 %}
-                <a href="{% url 'website:demo' %}" class="cta {{ plan.cta_style|default:'cta-out' }}">{{ plan.cta_text|default:"Ücretsiz Başla" }}</a>
+            <a href="{% url 'website:demo' %}" class="cta {{ plan.cta_style|default:'cta-out' }}">{{
+                plan.cta_text|default:"Ücretsiz Başla" }}</a>
             {% else %}
-                <a href="{% url 'website:demo' %}" class="cta {{ plan.cta_style|default:'cta-out' }}">{{ plan.cta_text|default:"14 Gün Dene" }}</a>
+            <a href="{% url 'website:demo' %}" class="cta {{ plan.cta_style|default:'cta-out' }}">{{
+                plan.cta_text|default:"14 Gün Dene" }}</a>
             {% endif %}
         </div>
         {% endfor %}
