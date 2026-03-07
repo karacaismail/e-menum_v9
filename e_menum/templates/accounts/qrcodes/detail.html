@@ -8,7 +8,7 @@
    table, and action buttons (toggle active, download).
    ========================================================================= #}
 
-{% block page_title %}{{ qr.name }} - {% trans "QR Kod" %}{% endblock %}
+{% block page_title %}{{ qr.name|default:qr.code }} - {% trans "QR Kod" %}{% endblock %}
 
 {% block panel_title %}{% trans "QR Kod Detayi" %}{% endblock %}
 
@@ -19,7 +19,7 @@
 </li>
 <li class="flex items-center">
     <i class="ph ph-caret-right text-xs mx-1.5"></i>
-    <span class="text-gray-500 dark:text-gray-400 text-sm">{{ qr.name }}</span>
+    <span class="text-gray-500 dark:text-gray-400 text-sm">{{ qr.name|default:qr.code }}</span>
 </li>
 {% endblock %}
 
@@ -29,7 +29,7 @@
     {# ── Header ── #}
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ qr.name }}</h2>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ qr.name|default:qr.code }}</h2>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-mono mt-1">{{ qr.code }}</p>
         </div>
         <div class="flex items-center gap-3">
@@ -42,12 +42,12 @@
 
             {# Type Badge #}
             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold
-                {% if qr.qr_type == 'MENU' %}bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400
-                {% elif qr.qr_type == 'TABLE' %}bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
-                {% elif qr.qr_type == 'CAMPAIGN' %}bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400
+                {% if qr.type == 'MENU' %}bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400
+                {% elif qr.type == 'TABLE' %}bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
+                {% elif qr.type == 'CAMPAIGN' %}bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400
                 {% else %}bg-gray-100 text-gray-700 dark:bg-gray-600 dark:text-gray-300
                 {% endif %}">
-                {{ qr.get_qr_type_display|default:qr.qr_type }}
+                {{ qr.get_type_display|default:qr.type }}
             </span>
         </div>
     </div>
