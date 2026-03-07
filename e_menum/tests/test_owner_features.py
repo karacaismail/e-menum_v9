@@ -71,44 +71,53 @@ class BaseTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Create shared test data for all tests in the class."""
-        cls.plan_free = Plan.objects.create(
-            name="Free",
+        cls.plan_free, _ = Plan.objects.get_or_create(
             slug="free",
-            tier=PlanTier.FREE,
-            price_monthly=Decimal("0.00"),
-            price_yearly=Decimal("0.00"),
-            trial_days=14,
-            is_default=True,
-            is_active=True,
-            is_public=True,
-            limits={"max_menus": 1, "max_products": 50, "max_users": 2},
-            feature_flags={"ai_content_generation": False},
+            defaults={
+                "name": "Free",
+                "tier": PlanTier.FREE,
+                "price_monthly": Decimal("0.00"),
+                "price_yearly": Decimal("0.00"),
+                "trial_days": 14,
+                "is_default": True,
+                "is_active": True,
+                "is_public": True,
+                "limits": {"max_menus": 1, "max_products": 50, "max_users": 2},
+                "feature_flags": {"ai_content_generation": False},
+            },
         )
 
-        cls.plan_starter = Plan.objects.create(
-            name="Starter",
+        cls.plan_starter, _ = Plan.objects.get_or_create(
             slug="starter",
-            tier=PlanTier.STARTER,
-            price_monthly=Decimal("2000.00"),
-            price_yearly=Decimal("20000.00"),
-            trial_days=14,
-            is_active=True,
-            is_public=True,
-            limits={"max_menus": 3, "max_products": 200, "max_users": 5},
-            feature_flags={"ai_content_generation": True},
+            defaults={
+                "name": "Starter",
+                "tier": PlanTier.STARTER,
+                "price_monthly": Decimal("2000.00"),
+                "price_yearly": Decimal("20000.00"),
+                "trial_days": 14,
+                "is_active": True,
+                "is_public": True,
+                "limits": {"max_menus": 3, "max_products": 200, "max_users": 5},
+                "feature_flags": {"ai_content_generation": True},
+            },
         )
 
-        cls.plan_growth = Plan.objects.create(
-            name="Growth",
+        cls.plan_growth, _ = Plan.objects.get_or_create(
             slug="growth",
-            tier=PlanTier.GROWTH,
-            price_monthly=Decimal("4000.00"),
-            price_yearly=Decimal("40000.00"),
-            trial_days=14,
-            is_active=True,
-            is_public=True,
-            limits={"max_menus": 10, "max_products": 500, "max_users": 15},
-            feature_flags={"ai_content_generation": True, "analytics_advanced": True},
+            defaults={
+                "name": "Growth",
+                "tier": PlanTier.GROWTH,
+                "price_monthly": Decimal("4000.00"),
+                "price_yearly": Decimal("40000.00"),
+                "trial_days": 14,
+                "is_active": True,
+                "is_public": True,
+                "limits": {"max_menus": 10, "max_products": 500, "max_users": 15},
+                "feature_flags": {
+                    "ai_content_generation": True,
+                    "analytics_advanced": True,
+                },
+            },
         )
 
     def setUp(self):
