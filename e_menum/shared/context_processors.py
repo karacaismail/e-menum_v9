@@ -28,6 +28,7 @@ def debug_context(request):
     """
     return {"debug": getattr(settings, "DEBUG", False)}
 
+
 logger = logging.getLogger(__name__)
 
 # ─── Mapping: Admin URL → E-Menum Resource ──────────────────────────
