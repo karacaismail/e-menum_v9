@@ -234,7 +234,7 @@ urlpatterns = [
         name="subscription-upgrade",
     ),
     path(
-        "subscription/eft/",
+        "subscription/eft-info/",
         subscription_views.subscription_eft_info,
         name="subscription-eft",
     ),
