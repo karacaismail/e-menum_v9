@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.http import require_POST
 
 logger = logging.getLogger(__name__)
@@ -289,6 +290,7 @@ BRANDED_TEMPLATE_CHOICES = ("ELEGANT", "MODERN", "RUSTIC", "VIBRANT", "MINIMAL")
 
 
 @login_required(login_url="/account/login/")
+@xframe_options_sameorigin
 def qrcode_branded_preview(request, qr_id):
     """Return a branded design preview as inline PDF for iframe rendering.
 

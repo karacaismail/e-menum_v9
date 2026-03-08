@@ -33,7 +33,7 @@
 
         {% firstof title hero.title "" as the_title %}
         {% if the_title %}
-        <h1 class="hero-h1" data-hero-enter style="opacity:1;">
+        <h1 class="hero-h1" data-hero-enter>
           <span class="hero-slide-h1">{{ the_title }}</span>
           {% firstof title_highlight hero.title_highlight "" as the_highlight %}
           {% if the_highlight %}
@@ -44,7 +44,7 @@
 
         {% firstof subtitle hero.subtitle "" as the_subtitle %}
         {% if the_subtitle %}
-        <p class="hero-sub" data-hero-enter style="opacity:1;margin-left:auto;margin-right:auto;">
+        <p class="hero-sub" data-hero-enter>
           {{ the_subtitle }}
         </p>
         {% endif %}

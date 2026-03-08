@@ -188,7 +188,28 @@
 
     {# ── Branded Design (Markali Tasarim) ── #}
     {% if design_templates %}
-    <div x-data="{
+    <style>
+      .tpl-card {
+        position: relative; cursor: pointer; border-radius: 14px;
+        border: 1.5px solid; transition: all .2s ease; overflow: hidden;
+      }
+      .tpl-card::before {
+        content: ''; position: absolute; inset: 0;
+        border-radius: 13px; opacity: 0; transition: opacity .2s;
+      }
+      .tpl-card:hover::before { opacity: 1; }
+      .size-pill { transition: all .15s ease; }
+      .dl-btn { position: relative; overflow: hidden; }
+      .dl-btn::after {
+        content: ''; position: absolute; top: 0; left: -100%;
+        width: 60%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,.15), transparent);
+        transition: left .5s ease;
+      }
+      .dl-btn:hover::after { left: 150%; }
+    </style>
+    <div
+      x-data="{
         selectedTemplate: 'ELEGANT',
         selectedSize: 'A4',
         tableName: '',
@@ -210,143 +231,332 @@
                 custom_text: this.customText,
             });
             this.previewUrl = `{% url 'accounts:qrcode-preview-branded' qr.pk %}?${params}`;
-            this.previewLoading = false;
+            setTimeout(() => this.previewLoading = false, 800);
         },
         refreshPreview() {
+            this.previewLoading = true;
             this.updatePreview();
-            // Force iframe reload
-            const iframe = this.$refs.previewFrame;
-            if (iframe) iframe.src = this.previewUrl;
+            this.$nextTick(() => {
+                const iframe = this.$refs.previewFrame;
+                if (iframe) { iframe.src = ''; iframe.src = this.previewUrl; }
+                setTimeout(() => this.previewLoading = false, 1000);
+            });
+        },
+        templates: [
+          { key:'ELEGANT', icon:'ph-crown',       label:'{% trans "Zarif" %}',    color:'amber',  desc:'{% trans "Lüks restoranlar" %}', sub:'{% trans "Altın aksan · Çift çerçeve · Serif" %}' },
+          { key:'MODERN',  icon:'ph-lightning',   label:'{% trans "Modern" %}',   color:'blue',   desc:'{% trans "Trend kafeler" %}',     sub:'{% trans "Degrade · Yuvarlak kart · Sans-serif" %}' },
+          { key:'RUSTIC',  icon:'ph-tree',        label:'{% trans "Rustik" %}',   color:'orange', desc:'{% trans "Butik mekanlar" %}',    sub:'{% trans "Toprak tonlar · Dekoratif çerçeve" %}' },
+          { key:'VIBRANT', icon:'ph-palette',     label:'{% trans "Canlı" %}',    color:'pink',   desc:'{% trans "Dikkat çekici" %}',     sub:'{% trans "Cesur renkler · Renkli QR çerçeve" %}' },
+          { key:'MINIMAL', icon:'ph-minus-circle',label:'{% trans "Minimal" %}',  color:'slate',  desc:'{% trans "Premium markalar" %}',  sub:'{% trans "Ultra-temiz · Maksimum boşluk" %}' },
+        ],
+        sizes: [
+          { key:'10x20cm', label:'10×20', hint:'{% trans "Masa kartı" %}' },
+          { key:'A5',      label:'A5',    hint:'{% trans "Duvar ilanı" %}' },
+          { key:'A4',      label:'A4',    hint:'{% trans "Standart" %}' },
+          { key:'15x30cm', label:'15×30', hint:'{% trans "Ayaklı stand" %}' },
+          { key:'20x40cm', label:'20×40', hint:'{% trans "Büyük poster" %}' },
+        ],
+        colorFor(c) {
+          return {
+            amber:  { ring:'ring-amber-400/60',  bg:'bg-amber-400/10', icon:'text-amber-400', border:'border-amber-400/40' },
+            blue:   { ring:'ring-blue-400/60',   bg:'bg-blue-400/10',  icon:'text-blue-400',  border:'border-blue-400/40' },
+            orange: { ring:'ring-orange-400/60', bg:'bg-orange-400/10',icon:'text-orange-400',border:'border-orange-400/40' },
+            pink:   { ring:'ring-pink-400/60',   bg:'bg-pink-400/10',  icon:'text-pink-400',  border:'border-pink-400/40' },
+            slate:  { ring:'ring-slate-400/60',  bg:'bg-slate-400/10', icon:'text-slate-300', border:'border-slate-400/40' },
+          }[c];
         }
-    }" class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm mb-6">
-        <h3 class="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2 mb-4">
-            <i class="ph ph-paint-brush text-primary-500"></i>{% trans "Markali Tasarim" %}
-        </h3>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">{% trans "Restoran markaniza uygun sablonlardan birini secin. Tema renkleriniz otomatik olarak uygulanir." %}</p>
-
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-
-            {# Left: Controls #}
-            <div class="lg:col-span-3 space-y-5">
-
-                {# Template Selection Grid #}
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                    {% for tpl in design_templates %}
-                    <button
-                        type="button"
-                        @click="selectedTemplate = '{{ tpl.key }}'"
-                        :class="selectedTemplate === '{{ tpl.key }}'
-                            ? 'ring-2 ring-primary-500 border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                            : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 bg-white dark:bg-gray-700/50'"
-                        class="relative flex flex-col items-center gap-2 p-3 rounded-xl border transition-all text-center"
-                    >
-                        <div
-                            class="h-10 w-10 rounded-lg flex items-center justify-center"
-                            :class="selectedTemplate === '{{ tpl.key }}'
-                                ? 'bg-primary-100 dark:bg-primary-800/40 text-primary-600 dark:text-primary-400'
-                                : 'bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-400'"
-                        >
-                            <i class="ph {{ tpl.icon }} text-xl"></i>
-                        </div>
-                        <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ tpl.name_tr }}</span>
-                        <span class="text-[10px] text-gray-400 dark:text-gray-500 leading-tight hidden sm:block">{{ tpl.description }}</span>
-                        <div
-                            x-show="selectedTemplate === '{{ tpl.key }}'"
-                            x-transition
-                            class="absolute -top-1.5 -right-1.5 h-5 w-5 bg-primary-500 text-white rounded-full flex items-center justify-center shadow-sm"
-                        >
-                            <i class="ph ph-check text-xs"></i>
-                        </div>
-                    </button>
-                    {% endfor %}
-                </div>
-
-                {# Size Selection #}
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">{% trans "Kagit Boyutu" %}</label>
-                    <div class="flex flex-wrap gap-2">
-                        {% for size_key, size_label in print_sizes.items %}
-                        <button
-                            type="button"
-                            @click="selectedSize = '{{ size_key }}'"
-                            :class="selectedSize === '{{ size_key }}'
-                                ? 'bg-primary-500 text-white border-primary-500'
-                                : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'"
-                            class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition-colors"
-                        >
-                            {{ size_label }}
-                        </button>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                {# Advanced options toggle #}
-                <button
-                    type="button"
-                    @click="showAdvanced = !showAdvanced"
-                    class="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                >
-                    <i class="ph" :class="showAdvanced ? 'ph-caret-up' : 'ph-caret-down'"></i>
-                    <span x-text="showAdvanced ? '{% trans "Gelismis secenekleri gizle" %}' : '{% trans "Gelismis secenekler" %}'"></span>
-                </button>
-
-                <div x-show="showAdvanced" x-collapse class="space-y-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">{% trans "Masa Adi" %}</label>
-                        <input type="text" x-model="tableName" @change="refreshPreview()"
-                            placeholder="{% trans 'ornegin: Masa 5' %}"
-                            class="w-full sm:w-64 px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">{% trans "Ozel Yazi" %}</label>
-                        <input type="text" x-model="customText" @change="refreshPreview()"
-                            placeholder="{% trans 'ornegin: Menumuzu kesfet!' %}"
-                            class="w-full sm:w-96 px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
-                    </div>
-                </div>
-
-                {# Action buttons #}
-                <div class="flex items-center gap-3">
-                    <a
-                        :href="`{% url 'accounts:qrcode-download-branded' qr.pk %}?design_template=${selectedTemplate}&design_size=${selectedSize}&table_name=${encodeURIComponent(tableName)}&custom_text=${encodeURIComponent(customText)}`"
-                        class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors"
-                    >
-                        <i class="ph ph-file-pdf"></i>
-                        {% trans "Markali PDF Indir" %}
-                    </a>
-                    <button
-                        type="button"
-                        @click="refreshPreview()"
-                        class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
-                    >
-                        <i class="ph ph-arrows-clockwise"></i>
-                        {% trans "Onizleme Yenile" %}
-                    </button>
-                </div>
-            </div>
-
-            {# Right: Live Preview #}
-            <div class="lg:col-span-2">
-                <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    <i class="ph ph-eye text-primary-500 mr-1"></i>{% trans "Canli Onizleme" %}
-                </label>
-                <div class="relative bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden" style="min-height: 400px;">
-                    <iframe
-                        x-ref="previewFrame"
-                        :src="previewUrl"
-                        class="w-full border-0 rounded-xl"
-                        style="height: 500px;"
-                        title="{% trans 'Tasarim Onizleme' %}"
-                    ></iframe>
-                    <div x-show="previewLoading" class="absolute inset-0 flex items-center justify-center bg-gray-50/80 dark:bg-gray-900/80">
-                        <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                            <i class="ph ph-spinner-gap animate-spin text-xl"></i>
-                            {% trans "Yukleniyor..." %}
-                        </div>
-                    </div>
-                </div>
-            </div>
+      }"
+      class="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden shadow-2xl mb-6"
+    >
+      {# ── Header ── #}
+      <div class="px-5 py-4 border-b border-gray-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-primary-500/15 border border-primary-500/25 flex items-center justify-center">
+            <i class="ph ph-paint-brush-household text-primary-400 text-base"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-white leading-none">{% trans "Markalı Tasarım" %}</h3>
+            <p class="text-xs text-gray-500 mt-0.5">{% trans "Şablonu seç · Boyut ayarla · İndir" %}</p>
+          </div>
         </div>
+        {# Step indicator #}
+        <div class="hidden sm:flex items-center gap-1.5">
+          <template x-for="(s,i) in ['{% trans "Şablon" %}','{% trans "Boyut" %}','{% trans "İndir" %}']" :key="i">
+            <div class="flex items-center gap-1.5">
+              <div class="flex items-center gap-1">
+                <div class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
+                  :class="i === 0 ? 'bg-primary-500 text-white' : 'bg-gray-700 text-gray-400'">
+                  <span x-text="i+1"></span>
+                </div>
+                <span class="text-xs text-gray-500 font-medium" x-text="s"></span>
+              </div>
+              <div x-show="i < 2" class="w-4 h-px bg-gray-700"></div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      {# ── Body: two-col on lg ── #}
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_320px]">
+        {# LEFT: Controls #}
+        <div class="p-5 space-y-6 border-b border-gray-800 lg:border-b-0 lg:border-r">
+
+          {# ── STEP 1: Template ── #}
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-5 h-5 rounded-full bg-primary-500 text-white text-[10px] font-bold flex items-center justify-center shrink-0">1</span>
+              <span class="text-xs font-bold text-gray-200 uppercase tracking-wider">{% trans "Şablon Seç" %}</span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+              <template x-for="tpl in templates" :key="tpl.key">
+                <button
+                  type="button"
+                  @click="selectedTemplate = tpl.key"
+                  :class="[
+                    'tpl-card p-3 flex flex-col items-center gap-2 text-center group',
+                    selectedTemplate === tpl.key
+                      ? colorFor(tpl.color).ring + ' ' + colorFor(tpl.color).bg + ' ' + colorFor(tpl.color).border + ' ring-1'
+                      : 'border-gray-700/70 bg-gray-800/50 hover:border-gray-600 hover:bg-gray-800'
+                  ]"
+                >
+                  <div class="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
+                    :class="selectedTemplate === tpl.key
+                      ? colorFor(tpl.color).bg + ' ' + colorFor(tpl.color).border + ' border'
+                      : 'bg-gray-700/60 border border-gray-600/40 group-hover:bg-gray-700'"
+                  >
+                    <i class="ph text-lg transition-colors"
+                      :class="[tpl.icon, selectedTemplate === tpl.key ? colorFor(tpl.color).icon : 'text-gray-400 group-hover:text-gray-300']">
+                    </i>
+                  </div>
+                  <span class="text-xs font-semibold leading-none transition-colors"
+                    :class="selectedTemplate === tpl.key ? 'text-white' : 'text-gray-400 group-hover:text-gray-200'"
+                    x-text="tpl.label">
+                  </span>
+                  <span class="text-[10px] text-gray-500 leading-tight hidden sm:block"
+                    x-text="tpl.sub">
+                  </span>
+                  <div x-show="selectedTemplate === tpl.key"
+                    x-transition:enter="transition ease-out duration-150"
+                    x-transition:enter-start="opacity-0 scale-50"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-primary-500 border-2 border-gray-900 flex items-center justify-center shadow-md">
+                    <i class="ph ph-check text-white text-[10px] font-bold"></i>
+                  </div>
+                </button>
+              </template>
+            </div>
+            {# Selected template detail pill #}
+            <template x-for="tpl in templates" :key="tpl.key">
+              <div x-show="selectedTemplate === tpl.key"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 translate-y-1"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                class="mt-2.5 flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-800/60 border border-gray-700/60">
+                <i class="ph text-sm shrink-0" :class="[tpl.icon, colorFor(tpl.color).icon]"></i>
+                <div>
+                  <span class="text-xs font-semibold text-gray-200" x-text="tpl.label + ' — '"></span>
+                  <span class="text-xs text-gray-400" x-text="tpl.desc + '. ' + tpl.sub"></span>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          {# Divider #}
+          <div class="h-px bg-gradient-to-r from-transparent via-gray-700/60 to-transparent"></div>
+
+          {# ── STEP 2: Size ── #}
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-5 h-5 rounded-full bg-gray-700 text-gray-300 text-[10px] font-bold flex items-center justify-center shrink-0">2</span>
+              <span class="text-xs font-bold text-gray-200 uppercase tracking-wider">{% trans "Kağıt Boyutu" %}</span>
+            </div>
+            <div class="grid grid-cols-5 gap-2">
+              <template x-for="sz in sizes" :key="sz.key">
+                <button
+                  type="button"
+                  @click="selectedSize = sz.key; updatePreview()"
+                  :class="[
+                    'size-pill flex flex-col items-center gap-1 py-2.5 px-1 rounded-xl border text-center',
+                    selectedSize === sz.key
+                      ? 'bg-primary-500/15 border-primary-500/50 ring-1 ring-primary-500/40'
+                      : 'bg-gray-800/50 border-gray-700/60 hover:border-gray-600 hover:bg-gray-800'
+                  ]"
+                >
+                  <span class="text-xs font-bold leading-none"
+                    :class="selectedSize === sz.key ? 'text-primary-300' : 'text-gray-300'"
+                    x-text="sz.label">
+                  </span>
+                  <span class="text-[9px] leading-tight hidden sm:block"
+                    :class="selectedSize === sz.key ? 'text-primary-400/70' : 'text-gray-600'"
+                    x-text="sz.hint">
+                  </span>
+                </button>
+              </template>
+            </div>
+          </div>
+
+          {# Divider #}
+          <div class="h-px bg-gradient-to-r from-transparent via-gray-700/60 to-transparent"></div>
+
+          {# ── Advanced (collapsible) ── #}
+          <div>
+            <button
+              type="button"
+              @click="showAdvanced = !showAdvanced"
+              class="flex items-center gap-2 text-xs font-semibold text-gray-400 hover:text-primary-400 transition-colors group w-full"
+            >
+              <div class="w-5 h-5 rounded-full bg-gray-700/60 border border-gray-600/50 flex items-center justify-center transition-colors group-hover:border-primary-500/40 group-hover:bg-primary-500/10">
+                <i class="ph text-[10px]" :class="showAdvanced ? 'ph-minus text-primary-400' : 'ph-plus text-gray-400 group-hover:text-primary-400'"></i>
+              </div>
+              <span>{% trans "Gelişmiş Seçenekler" %}</span>
+              <span class="text-gray-600 text-[10px] ml-auto" x-show="!showAdvanced">{% trans "Masa adı · Özel yazı" %}</span>
+            </button>
+            <div x-show="showAdvanced"
+              x-transition:enter="transition ease-out duration-200"
+              x-transition:enter-start="opacity-0 -translate-y-2"
+              x-transition:enter-end="opacity-100 translate-y-0"
+              x-transition:leave="transition ease-in duration-150"
+              x-transition:leave-start="opacity-100 translate-y-0"
+              x-transition:leave-end="opacity-0 -translate-y-2"
+              class="mt-3 space-y-3"
+            >
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-gray-400 mb-1.5">
+                    <i class="ph ph-table mr-1 text-gray-500"></i>{% trans "Masa Adı" %}
+                  </label>
+                  <input
+                    type="text"
+                    x-model="tableName"
+                    @change="refreshPreview()"
+                    placeholder="{% trans 'örn: Masa 5' %}"
+                    class="w-full px-3 py-2 text-sm rounded-lg border border-gray-700 bg-gray-800/80 text-gray-200 placeholder-gray-600 focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/60 outline-none transition-all"
+                  >
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-400 mb-1.5">
+                    <i class="ph ph-text-aa mr-1 text-gray-500"></i>{% trans "Özel Yazı" %}
+                  </label>
+                  <input
+                    type="text"
+                    x-model="customText"
+                    @change="refreshPreview()"
+                    placeholder="{% trans 'örn: Menümüzü keşfet!' %}"
+                    class="w-full px-3 py-2 text-sm rounded-lg border border-gray-700 bg-gray-800/80 text-gray-200 placeholder-gray-600 focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/60 outline-none transition-all"
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {# Divider #}
+          <div class="h-px bg-gradient-to-r from-transparent via-gray-700/60 to-transparent"></div>
+
+          {# ── STEP 3: Download CTA ── #}
+          <div class="space-y-2.5">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-5 h-5 rounded-full bg-gray-700 text-gray-300 text-[10px] font-bold flex items-center justify-center shrink-0">3</span>
+              <span class="text-xs font-bold text-gray-200 uppercase tracking-wider">{% trans "İndir" %}</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {# Primary: Download PDF #}
+              <a
+                :href="`{% url 'accounts:qrcode-download-branded' qr.pk %}?design_template=${selectedTemplate}&design_size=${selectedSize}&table_name=${encodeURIComponent(tableName)}&custom_text=${encodeURIComponent(customText)}`"
+                class="dl-btn inline-flex items-center justify-center gap-2.5 px-5 py-3 text-sm font-bold text-white bg-primary-600 hover:bg-primary-500 rounded-xl shadow-lg shadow-primary-900/30 transition-colors"
+              >
+                <i class="ph ph-file-pdf text-base"></i>
+                <span>{% trans "Markalı PDF İndir" %}</span>
+                <i class="ph ph-arrow-square-out text-xs opacity-70 ml-auto"></i>
+              </a>
+              {# Secondary: Refresh preview #}
+              <button
+                type="button"
+                @click="refreshPreview()"
+                class="inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-gray-300 bg-gray-800 hover:bg-gray-750 border border-gray-700 hover:border-gray-600 rounded-xl transition-all"
+              >
+                <i class="ph ph-arrows-clockwise text-base" :class="previewLoading ? 'animate-spin' : ''"></i>
+                {% trans "Önizlemeyi Yenile" %}
+              </button>
+            </div>
+            {# Trust microcopy #}
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 pt-0.5">
+              <span class="flex items-center gap-1 text-[10px] text-gray-600">
+                <i class="ph ph-check-circle text-primary-600"></i> {% trans "Yüksek çözünürlük" %}
+              </span>
+              <span class="text-gray-700 text-[10px]">·</span>
+              <span class="flex items-center gap-1 text-[10px] text-gray-600">
+                <i class="ph ph-check-circle text-primary-600"></i> {% trans "Baskıya hazır PDF" %}
+              </span>
+              <span class="text-gray-700 text-[10px]">·</span>
+              <span class="flex items-center gap-1 text-[10px] text-gray-600">
+                <i class="ph ph-check-circle text-primary-600"></i> {% trans "Tema rengin otomatik" %}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {# RIGHT: Preview Panel #}
+        <div class="flex flex-col bg-gray-950/50">
+          {# Preview header #}
+          <div class="px-4 py-3 border-b border-gray-800 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-2">
+              <i class="ph ph-eye text-primary-400 text-sm"></i>
+              <span class="text-xs font-bold text-gray-300">{% trans "Canlı Önizleme" %}</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded-md text-[10px] font-semibold text-gray-400"
+                x-text="templates.find(t => t.key === selectedTemplate)?.label">
+              </span>
+              <span class="text-gray-700 text-[10px]">·</span>
+              <span class="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded-md text-[10px] font-semibold text-gray-400"
+                x-text="selectedSize">
+              </span>
+            </div>
+          </div>
+          {# Iframe container #}
+          <div class="relative flex-1 min-h-[400px] lg:min-h-0 overflow-hidden">
+            {# Loading overlay #}
+            <div
+              x-show="previewLoading"
+              x-transition:enter="transition ease-out duration-200"
+              x-transition:enter-start="opacity-0"
+              x-transition:enter-end="opacity-100"
+              x-transition:leave="transition ease-in duration-150"
+              x-transition:leave-start="opacity-100"
+              x-transition:leave-end="opacity-0"
+              class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-gray-950/80 backdrop-blur-sm"
+            >
+              <div class="w-8 h-8 rounded-full border-2 border-gray-700 border-t-primary-400 animate-spin"></div>
+              <span class="text-xs text-gray-500 font-medium">{% trans "Önizleme hazırlanıyor…" %}</span>
+            </div>
+            {# Empty/Error state #}
+            <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 pointer-events-none"
+              x-show="!previewUrl">
+              <div class="w-12 h-12 rounded-2xl bg-gray-800 border border-gray-700 flex items-center justify-center">
+                <i class="ph ph-image text-xl text-gray-600"></i>
+              </div>
+              <p class="text-xs text-gray-600">{% trans "Şablon seçin, önizleme belirir" %}</p>
+            </div>
+            {# The iframe #}
+            <iframe
+              x-ref="previewFrame"
+              :src="previewUrl"
+              @load="previewLoading = false"
+              class="w-full h-full border-0 absolute inset-0"
+              style="min-height: 440px;"
+              title="{% trans 'Tasarım Önizleme' %}"
+              x-show="previewUrl"
+            ></iframe>
+          </div>
+          {# Preview footer hint #}
+          <div class="px-4 py-2.5 border-t border-gray-800 shrink-0">
+            <p class="text-[10px] text-gray-600 flex items-center gap-1.5">
+              <i class="ph ph-info text-gray-700"></i>
+              {% trans "Önizleme yaklaşık görünümdür. İndirilen PDF tam çözünürlüklü olacaktır." %}
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
     {% endif %}
 

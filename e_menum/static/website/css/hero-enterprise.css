@@ -80,7 +80,6 @@
   font-size:.72rem;font-weight:700;
   letter-spacing:.1em;text-transform:uppercase;color:#4ade80;
   backdrop-filter:blur(12px);
-  opacity:0;
 }
 .hero-badge-dot {
   width:7px;height:7px;border-radius:50%;
@@ -95,7 +94,7 @@
   font-size:clamp(2.4rem,3.8vw,3.6rem);
   font-weight:900; line-height:1.08;
   letter-spacing:-.03em;
-  margin-top:22px; opacity:0;
+  margin-top:22px;
   color: var(--hero-text);
 }
 .hero-slide-h1 { display:block; min-height:1.1em; }
@@ -107,13 +106,11 @@
   font-size:.97rem;line-height:1.75;
   color:rgba(178,215,187,.85);
   max-width:480px;
-  opacity:0;
   min-height:3.2em;
 }
 .hero-pains {
   margin-top:26px;
   display:flex;flex-direction:column;gap:11px;
-  opacity:0;
 }
 .hero-pain {
   display:flex;align-items:flex-start;gap:12px;
@@ -127,7 +124,7 @@
 }
 .hero-pain:hover .hero-pain-ic { background:rgba(34,197,94,.25);transform:scale(1.12); }
 
-.hero-cta-row { margin-top:34px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;opacity:0; }
+.hero-cta-row { margin-top:34px;display:flex;align-items:center;gap:18px;flex-wrap:wrap; }
 .hero-btn-primary {
   position:relative;
   display:inline-flex;align-items:center;gap:10px;
@@ -164,13 +161,11 @@
   margin-top:13px;
   font-size:.75rem;color:var(--hero-muted);
   display:flex;align-items:center;gap:10px;
-  opacity:0;
 }
 .hero-micro span { display:flex;align-items:center;gap:5px; }
 
 .hero-trust-row {
   margin-top:22px;display:flex;align-items:center;gap:12px;
-  opacity:0;
 }
 .hero-avs { display:flex; }
 .hero-av {
@@ -187,7 +182,6 @@
   position:relative;
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
-  opacity:0;
 }
 .hero-slide-card {
   position:relative;
