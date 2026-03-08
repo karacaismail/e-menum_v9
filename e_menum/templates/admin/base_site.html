@@ -314,6 +314,97 @@
 
         {# Footer #}
         {% block footer %}
+        {# ═══════════════════════════════════════════ #}
+        {# CMS QUICK LINKS FOOTER                     #}
+        {# ═══════════════════════════════════════════ #}
+        {% if user.is_superuser %}
+        <div class="cms-quick-links" x-data="{ linksOpen: false }">
+            <button class="cms-quick-links-toggle" @click="linksOpen = !linksOpen">
+                <i class="ph ph-grid-nine"></i>
+                <span>{% trans "CMS Quick Links" %}</span>
+                <i class="ph" :class="linksOpen ? 'ph-caret-up' : 'ph-caret-down'" style="margin-left:auto;font-size:12px;opacity:.5"></i>
+            </button>
+            <div class="cms-quick-links-grid" x-show="linksOpen" x-transition x-cloak>
+                {# Layout & Settings #}
+                <div class="cms-link-group">
+                    <h4><i class="ph ph-layout"></i> {% trans "Layout" %}</h4>
+                    <a href="/admin/website/sitesettings/">{% trans "Site Settings" %}</a>
+                    <a href="/admin/website/pagehero/">{% trans "Page Heroes" %}</a>
+                    <a href="/admin/website/homesection/">{% trans "Home Sections" %}</a>
+                    <a href="/admin/website/navigationlink/">{% trans "Navigation Links" %}</a>
+                </div>
+                {# Content #}
+                <div class="cms-link-group">
+                    <h4><i class="ph ph-article"></i> {% trans "Content" %}</h4>
+                    <a href="/admin/website/featurecategory/">{% trans "Feature Categories" %}</a>
+                    <a href="/admin/website/blogpost/">{% trans "Blog Posts" %}</a>
+                    <a href="/admin/website/faq/">{% trans "FAQ" %}</a>
+                    <a href="/admin/website/legalpage/">{% trans "Legal Pages" %}</a>
+                    <a href="/admin/website/plandisplayfeature/">{% trans "Plan Features" %}</a>
+                </div>
+                {# Social Proof #}
+                <div class="cms-link-group">
+                    <h4><i class="ph ph-quotes"></i> {% trans "Social Proof" %}</h4>
+                    <a href="/admin/website/testimonial/">{% trans "Testimonials" %}</a>
+                    <a href="/admin/website/trustbadge/">{% trans "Trust Badges" %}</a>
+                    <a href="/admin/website/trustlocation/">{% trans "Trust Locations" %}</a>
+                    <a href="/admin/website/companyvalue/">{% trans "Company Values" %}</a>
+                    <a href="/admin/website/companystat/">{% trans "Company Stats" %}</a>
+                    <a href="/admin/website/teammember/">{% trans "Team Members" %}</a>
+                </div>
+                {# Solutions #}
+                <div class="cms-link-group">
+                    <h4><i class="ph ph-lightbulb"></i> {% trans "Solutions" %}</h4>
+                    <a href="/admin/website/sector/">{% trans "Sectors" %}</a>
+                    <a href="/admin/website/solutionpage/">{% trans "Solution Pages" %}</a>
+                    <a href="/admin/website/casestudy/">{% trans "Case Studies" %}</a>
+                    <a href="/admin/website/roicalculatorconfig/">{% trans "ROI Calculator" %}</a>
+                </div>
+                {# Resources #}
+                <div class="cms-link-group">
+                    <h4><i class="ph ph-books"></i> {% trans "Resources" %}</h4>
+                    <a href="/admin/website/resourcecategory/">{% trans "Resource Categories" %}</a>
+                    <a href="/admin/website/industryreport/">{% trans "Industry Reports" %}</a>
+                    <a href="/admin/website/freetool/">{% trans "Free Tools" %}</a>
+                    <a href="/admin/website/webinar/">{% trans "Webinars" %}</a>
+                </div>
+                {# Corporate #}
+                <div class="cms-link-group">
+                    <h4><i class="ph ph-buildings"></i> {% trans "Corporate" %}</h4>
+                    <a href="/admin/website/careerposition/">{% trans "Career Positions" %}</a>
+                    <a href="/admin/website/pressrelease/">{% trans "Press Releases" %}</a>
+                    <a href="/admin/website/milestone/">{% trans "Milestones" %}</a>
+                    <a href="/admin/website/brandasset/">{% trans "Brand Assets" %}</a>
+                </div>
+                {# Investors #}
+                <div class="cms-link-group">
+                    <h4><i class="ph ph-bank"></i> {% trans "Investors" %}</h4>
+                    <a href="/admin/website/investorpage/">{% trans "Investor Pages" %}</a>
+                    <a href="/admin/website/investorpresentation/">{% trans "Presentations" %}</a>
+                    <a href="/admin/website/investorfinancial/">{% trans "Financials" %}</a>
+                </div>
+                {# Partners #}
+                <div class="cms-link-group">
+                    <h4><i class="ph ph-handshake"></i> {% trans "Partners" %}</h4>
+                    <a href="/admin/website/partnerprogram/">{% trans "Partner Programs" %}</a>
+                    <a href="/admin/website/partnertier/">{% trans "Partner Tiers" %}</a>
+                </div>
+                {# Support #}
+                <div class="cms-link-group">
+                    <h4><i class="ph ph-lifebuoy"></i> {% trans "Support" %}</h4>
+                    <a href="/admin/website/helpcategory/">{% trans "Help Categories" %}</a>
+                    <a href="/admin/website/helparticle/">{% trans "Help Articles" %}</a>
+                </div>
+                {# Form Submissions #}
+                <div class="cms-link-group">
+                    <h4><i class="ph ph-envelope"></i> {% trans "Forms" %}</h4>
+                    <a href="/admin/website/contactsubmission/">{% trans "Contact Submissions" %}</a>
+                    <a href="/admin/website/demorequest/">{% trans "Demo Requests" %}</a>
+                    <a href="/admin/website/newslettersubscriber/">{% trans "Newsletter" %}</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
         <footer class="admin-footer">
             <div class="footer-left">
                 <span class="footer-brand">E-Menum Platform</span>
@@ -555,21 +646,50 @@ function adminSidebar() {
             website: {
                 label: 'Website CMS',
                 items: [
+                    /* ── Layout & Settings ── */
                     { label: 'Site Settings', url: '/admin/website/sitesettings/', icon: 'gear' },
                     { label: 'Page Heroes', url: '/admin/website/pagehero/', icon: 'image' },
                     { label: 'Home Sections', url: '/admin/website/homesection/', icon: 'layout' },
                     { label: 'Navigation Links', url: '/admin/website/navigationlink/', icon: 'list' },
+                    /* ── Content & Marketing ── */
                     { label: 'Feature Categories', url: '/admin/website/featurecategory/', icon: 'grid-four' },
+                    { label: 'Blog Posts', url: '/admin/website/blogpost/', icon: 'article' },
+                    { label: 'FAQ', url: '/admin/website/faq/', icon: 'question' },
+                    { label: 'Legal Pages', url: '/admin/website/legalpage/', icon: 'file-text' },
+                    { label: 'Plan Display Features', url: '/admin/website/plandisplayfeature/', icon: 'list-checks' },
+                    /* ── Social Proof ── */
                     { label: 'Testimonials', url: '/admin/website/testimonial/', icon: 'quotes' },
                     { label: 'Trust Badges', url: '/admin/website/trustbadge/', icon: 'shield-check' },
                     { label: 'Trust Locations', url: '/admin/website/trustlocation/', icon: 'map-pin' },
-                    { label: 'Team Members', url: '/admin/website/teammember/', icon: 'users' },
                     { label: 'Company Values', url: '/admin/website/companyvalue/', icon: 'heart' },
                     { label: 'Company Stats', url: '/admin/website/companystat/', icon: 'chart-line-up' },
-                    { label: 'FAQ', url: '/admin/website/faq/', icon: 'question' },
-                    { label: 'Blog Posts', url: '/admin/website/blogpost/', icon: 'article' },
-                    { label: 'Legal Pages', url: '/admin/website/legalpage/', icon: 'file-text' },
-                    { label: 'Plan Display Features', url: '/admin/website/plandisplayfeature/', icon: 'list-checks' },
+                    { label: 'Team Members', url: '/admin/website/teammember/', icon: 'users' },
+                    /* ── Solutions & Case Studies ── */
+                    { label: 'Sectors', url: '/admin/website/sector/', icon: 'factory' },
+                    { label: 'Solution Pages', url: '/admin/website/solutionpage/', icon: 'lightbulb' },
+                    { label: 'Case Studies', url: '/admin/website/casestudy/', icon: 'briefcase' },
+                    { label: 'ROI Calculator', url: '/admin/website/roicalculatorconfig/', icon: 'calculator' },
+                    /* ── Resources ── */
+                    { label: 'Resource Categories', url: '/admin/website/resourcecategory/', icon: 'folders' },
+                    { label: 'Industry Reports', url: '/admin/website/industryreport/', icon: 'file-chart' },
+                    { label: 'Free Tools', url: '/admin/website/freetool/', icon: 'wrench' },
+                    { label: 'Webinars', url: '/admin/website/webinar/', icon: 'video-camera' },
+                    /* ── Corporate ── */
+                    { label: 'Career Positions', url: '/admin/website/careerposition/', icon: 'graduation-cap' },
+                    { label: 'Press Releases', url: '/admin/website/pressrelease/', icon: 'newspaper-clipping' },
+                    { label: 'Milestones', url: '/admin/website/milestone/', icon: 'flag-banner' },
+                    { label: 'Brand Assets', url: '/admin/website/brandasset/', icon: 'palette' },
+                    /* ── Investors ── */
+                    { label: 'Investor Pages', url: '/admin/website/investorpage/', icon: 'bank' },
+                    { label: 'Investor Presentations', url: '/admin/website/investorpresentation/', icon: 'presentation-chart' },
+                    { label: 'Investor Financials', url: '/admin/website/investorfinancial/', icon: 'currency-circle-dollar' },
+                    /* ── Partners ── */
+                    { label: 'Partner Programs', url: '/admin/website/partnerprogram/', icon: 'handshake' },
+                    { label: 'Partner Tiers', url: '/admin/website/partnertier/', icon: 'medal' },
+                    /* ── Support ── */
+                    { label: 'Help Categories', url: '/admin/website/helpcategory/', icon: 'book-open' },
+                    { label: 'Help Articles', url: '/admin/website/helparticle/', icon: 'lifebuoy' },
+                    /* ── Form Submissions ── */
                     { label: 'Contact Submissions', url: '/admin/website/contactsubmission/', icon: 'envelope' },
                     { label: 'Demo Requests', url: '/admin/website/demorequest/', icon: 'phone' },
                     { label: 'Newsletter Subscribers', url: '/admin/website/newslettersubscriber/', icon: 'newspaper' },
@@ -1019,12 +1139,40 @@ function mobileNav() {
                     { label: 'Site Settings', url: '/admin/website/sitesettings/', icon: 'gear' },
                     { label: 'Page Heroes', url: '/admin/website/pagehero/', icon: 'image' },
                     { label: 'Home Sections', url: '/admin/website/homesection/', icon: 'layout' },
-                    { label: 'Blog Posts', url: '/admin/website/blogpost/', icon: 'article' },
-                    { label: 'Legal Pages', url: '/admin/website/legalpage/', icon: 'file-text' },
                     { label: 'Navigation', url: '/admin/website/navigationlink/', icon: 'list' },
+                    { label: 'Features', url: '/admin/website/featurecategory/', icon: 'grid-four' },
+                    { label: 'Blog Posts', url: '/admin/website/blogpost/', icon: 'article' },
                     { label: 'FAQ', url: '/admin/website/faq/', icon: 'question' },
+                    { label: 'Legal Pages', url: '/admin/website/legalpage/', icon: 'file-text' },
                     { label: 'Testimonials', url: '/admin/website/testimonial/', icon: 'quotes' },
-                    { label: 'Team Members', url: '/admin/website/teammember/', icon: 'users' }
+                    { label: 'Trust Badges', url: '/admin/website/trustbadge/', icon: 'shield-check' },
+                    { label: 'Trust Locations', url: '/admin/website/trustlocation/', icon: 'map-pin' },
+                    { label: 'Team Members', url: '/admin/website/teammember/', icon: 'users' },
+                    { label: 'Company Values', url: '/admin/website/companyvalue/', icon: 'heart' },
+                    { label: 'Company Stats', url: '/admin/website/companystat/', icon: 'chart-line-up' },
+                    { label: 'Plan Features', url: '/admin/website/plandisplayfeature/', icon: 'list-checks' },
+                    { label: 'Sectors', url: '/admin/website/sector/', icon: 'factory' },
+                    { label: 'Solutions', url: '/admin/website/solutionpage/', icon: 'lightbulb' },
+                    { label: 'Case Studies', url: '/admin/website/casestudy/', icon: 'briefcase' },
+                    { label: 'ROI Calculator', url: '/admin/website/roicalculatorconfig/', icon: 'calculator' },
+                    { label: 'Resources', url: '/admin/website/resourcecategory/', icon: 'folders' },
+                    { label: 'Reports', url: '/admin/website/industryreport/', icon: 'file-chart' },
+                    { label: 'Free Tools', url: '/admin/website/freetool/', icon: 'wrench' },
+                    { label: 'Webinars', url: '/admin/website/webinar/', icon: 'video-camera' },
+                    { label: 'Careers', url: '/admin/website/careerposition/', icon: 'graduation-cap' },
+                    { label: 'Press', url: '/admin/website/pressrelease/', icon: 'newspaper-clipping' },
+                    { label: 'Milestones', url: '/admin/website/milestone/', icon: 'flag-banner' },
+                    { label: 'Brand Assets', url: '/admin/website/brandasset/', icon: 'palette' },
+                    { label: 'Investors', url: '/admin/website/investorpage/', icon: 'bank' },
+                    { label: 'Presentations', url: '/admin/website/investorpresentation/', icon: 'presentation-chart' },
+                    { label: 'Financials', url: '/admin/website/investorfinancial/', icon: 'currency-circle-dollar' },
+                    { label: 'Partners', url: '/admin/website/partnerprogram/', icon: 'handshake' },
+                    { label: 'Partner Tiers', url: '/admin/website/partnertier/', icon: 'medal' },
+                    { label: 'Help Categories', url: '/admin/website/helpcategory/', icon: 'book-open' },
+                    { label: 'Help Articles', url: '/admin/website/helparticle/', icon: 'lifebuoy' },
+                    { label: 'Contacts', url: '/admin/website/contactsubmission/', icon: 'envelope' },
+                    { label: 'Demo Requests', url: '/admin/website/demorequest/', icon: 'phone' },
+                    { label: 'Newsletter', url: '/admin/website/newslettersubscriber/', icon: 'newspaper' }
                 ]
             },
             seo: {

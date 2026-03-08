@@ -112,7 +112,7 @@ class SEOShieldMiddlewareTests(TestCase):
         response = self.middleware(request)
         # After exceeding the limit, subsequent requests get 429
         self.assertEqual(response.status_code, 429)
-        self.assertIn("TOO_MANY_REQUESTS", response.content.decode())
+        self.assertIn("429", response.content.decode())
 
     @override_settings(
         SHIELD_ENABLED=True,
@@ -338,14 +338,10 @@ class SEOShieldMiddlewareTests(TestCase):
         self.assertEqual(call_kwargs["action"], "block")
 
     @override_settings(SHIELD_ENABLED=True)
-    def test_429_response_json_format(self):
-        """429 response body is valid JSON with expected structure."""
-        import json
-
+    def test_429_response_html_format(self):
+        """429 response returns styled HTML error page."""
         response = self.middleware._get_response_429()
         self.assertEqual(response.status_code, 429)
-        self.assertEqual(response["Content-Type"], "application/json")
-
-        body = json.loads(response.content)
-        self.assertFalse(body["success"])
-        self.assertEqual(body["error"]["code"], "TOO_MANY_REQUESTS")
+        self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
+        self.assertIn(b"429", response.content)
+        self.assertIn(b"<!DOCTYPE html>", response.content)
