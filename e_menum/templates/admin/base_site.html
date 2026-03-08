@@ -79,7 +79,11 @@
     {# ═══════════════════════════════════════════ #}
     <aside class="rail-sidebar">
         <div class="rail-logo">
-            <div class="logo-mark">E</div>
+            {% if marketing.logo_icon_url %}
+        <img src="{{ marketing.logo_icon_url }}" alt="{{ marketing.company_name|default:'E-Menum' }}" class="logo-mark" style="width:32px;height:32px;border-radius:8px;object-fit:contain">
+        {% else %}
+        <div class="logo-mark">E</div>
+        {% endif %}
         </div>
 
         <nav class="rail-nav">
@@ -208,7 +212,7 @@
     <aside class="accordion-sidebar" x-show="!collapsed" x-transition.opacity.duration.150ms>
         <div class="sidebar-header">
             <div class="sidebar-brand">
-                <span class="brand-name">E-Menum</span>
+                <span class="brand-name">{{ marketing.company_name|default:"E-Menum" }}</span>
                 <span class="brand-badge">Admin</span>
             </div>
             <h3 class="sidebar-group-title" x-text="groups[activeGroup]?.label || 'Menu'"></h3>

@@ -4,70 +4,123 @@
 {% block title %}{% trans "QR Kod Onizleme Araci" %} — E-Menum{% endblock %}
 
 {% block content %}
-{% include "website/partials/_hero_enterprise_simple.html" with badge_text="Ücretsiz Araç" title="QR Kod Önizleme" title_highlight="Aracı" subtitle="QR kodunuzu farklı tasarımlarla önizleyin. Renk, logo ve stil seçeneklerini deneyin." hero_id="hero-qr-preview" %}
+{% include "website/partials/_hero_enterprise_simple.html" with badge_text="Ücretsiz Araç" title="QR Kod Önizleme" title_highlight="Aracı" subtitle="QR kodunuzu farklı tasarımlarla önizleyin. Renk, boyut ve stil seçeneklerini anında deneyin." hero_id="hero-qr-preview" %}
 
 <section class="py-12 lg:py-20" x-data="qrPreview()">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-            {# Config Card #}
-            <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6 lg:p-8">
-                <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                    <i class="ph ph-gear text-primary-400"></i>
+            {# ── Config Card ── #}
+            <div class="bg-gray-900/80 backdrop-blur-sm rounded-2xl border border-gray-800/80 p-6 lg:p-8 space-y-6">
+                <h2 class="text-base font-bold text-white flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-primary-500/15 border border-primary-500/25 flex items-center justify-center">
+                        <i class="ph ph-gear text-primary-400 text-xs"></i>
+                    </div>
                     {% trans "QR Kod Ayarlari" %}
                 </h2>
 
-                <div class="space-y-5">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "URL / Metin" %}</label>
-                        <input type="text" x-model="url" placeholder="https://example.com"
-                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 outline-none">
+                {# URL / Text #}
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1.5">{% trans "URL / Metin" %}</label>
+                    <input type="text" x-model="url" placeholder="https://example.com"
+                        class="w-full px-4 py-2.5 rounded-xl bg-gray-800/80 border border-gray-700/60 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/40 outline-none text-sm transition-all">
+                </div>
+
+                {# Quick presets #}
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-2.5">{% trans "Hızlı Stil" %}</label>
+                    <div class="grid grid-cols-6 gap-2">
+                        <template x-for="preset in presets" :key="preset.name">
+                            <button type="button" @click="applyPreset(preset)"
+                                class="flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all"
+                                :class="currentPreset === preset.name ? 'border-primary-500 bg-primary-500/10 ring-1 ring-primary-500/30' : 'border-gray-700/50 hover:border-gray-600 hover:bg-gray-800/50'">
+                                <div class="w-7 h-7 rounded-lg border border-gray-600/40 overflow-hidden shadow-sm"
+                                    :style="`background: linear-gradient(135deg, ${preset.fg} 50%, ${preset.bg} 50%)`"></div>
+                                <span class="text-[9px] text-gray-500 leading-none" x-text="preset.name"></span>
+                            </button>
+                        </template>
                     </div>
+                </div>
+
+                {# Colors #}
+                <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "On Plan Rengi" %}</label>
-                        <div class="flex items-center gap-3">
-                            <input type="color" x-model="fgColor" class="w-10 h-10 rounded cursor-pointer border-0 bg-transparent">
-                            <span class="text-sm text-gray-400 font-mono" x-text="fgColor"></span>
+                        <label class="block text-xs font-semibold text-gray-400 mb-1.5">{% trans "Ön Plan Rengi" %}</label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" x-model="fgColor" class="w-8 h-8 rounded-lg cursor-pointer border-0 bg-transparent shrink-0">
+                            <span class="text-xs text-gray-400 font-mono" x-text="fgColor"></span>
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Arka Plan Rengi" %}</label>
-                        <div class="flex items-center gap-3">
-                            <input type="color" x-model="bgColor" class="w-10 h-10 rounded cursor-pointer border-0 bg-transparent">
-                            <span class="text-sm text-gray-400 font-mono" x-text="bgColor"></span>
+                        <label class="block text-xs font-semibold text-gray-400 mb-1.5">{% trans "Arka Plan Rengi" %}</label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" x-model="bgColor" class="w-8 h-8 rounded-lg cursor-pointer border-0 bg-transparent shrink-0">
+                            <span class="text-xs text-gray-400 font-mono" x-text="bgColor"></span>
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Boyut" %}</label>
-                        <input type="range" x-model.number="size" min="128" max="512" step="64"
-                            class="w-full accent-primary-500">
-                        <div class="flex justify-between text-xs text-gray-500 mt-1">
-                            <span>128px</span>
-                            <span x-text="size + 'px'" class="text-primary-400 font-semibold"></span>
-                            <span>512px</span>
-                        </div>
+                </div>
+
+                {# Size slider #}
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1.5">{% trans "Boyut" %}</label>
+                    <input type="range" x-model.number="size" min="128" max="512" step="64"
+                        class="w-full accent-primary-500">
+                    <div class="flex justify-between text-xs text-gray-600 mt-1.5">
+                        <span>128px</span>
+                        <span class="text-primary-400 font-bold" x-text="size + 'px'"></span>
+                        <span>512px</span>
+                    </div>
+                </div>
+
+                {# Error Correction #}
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-2.5">{% trans "Hata Düzeltme" %}</label>
+                    <div class="grid grid-cols-4 gap-2">
+                        <template x-for="ec in ecLevels" :key="ec.key">
+                            <button type="button" @click="ecLevel = ec.key"
+                                class="flex flex-col items-center gap-0.5 p-2 rounded-xl border transition-all text-center"
+                                :class="ecLevel === ec.key ? 'bg-primary-500/15 border-primary-500/40 text-primary-300' : 'border-gray-700/50 text-gray-400 hover:border-gray-600'">
+                                <span class="text-xs font-bold" x-text="ec.key"></span>
+                                <span class="text-[9px] opacity-60" x-text="ec.label"></span>
+                            </button>
+                        </template>
                     </div>
                 </div>
             </div>
 
-            {# Preview Card #}
-            <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6 lg:p-8 flex flex-col items-center justify-center">
-                <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2 self-start">
-                    <i class="ph ph-eye text-primary-400"></i>
+            {# ── Preview Card ── #}
+            <div class="bg-gray-900/80 backdrop-blur-sm rounded-2xl border border-gray-800/80 p-6 lg:p-8 flex flex-col items-center">
+                <h2 class="text-base font-bold text-white mb-6 flex items-center gap-2.5 self-start w-full">
+                    <div class="w-7 h-7 rounded-lg bg-primary-500/15 border border-primary-500/25 flex items-center justify-center">
+                        <i class="ph ph-eye text-primary-400 text-xs"></i>
+                    </div>
                     {% trans "Onizleme" %}
+                    <span class="ml-auto text-[10px] text-gray-600 font-mono" x-text="size + 'px'"></span>
                 </h2>
 
-                <div class="bg-white rounded-xl p-6 mb-6" :style="`background-color: ${bgColor}`">
-                    <canvas x-ref="qrCanvas" :width="size" :height="size" class="block"></canvas>
+                <div class="rounded-2xl p-6 mb-4 transition-all duration-300" :style="`background-color: ${bgColor}`">
+                    <img x-show="qrDataUrl" :src="qrDataUrl" alt="QR Code" class="block" :width="Math.min(size, 280)" :height="Math.min(size, 280)">
+                    <div x-show="!qrDataUrl" class="flex items-center justify-center" :style="`width:${Math.min(size,280)}px;height:${Math.min(size,280)}px`">
+                        <i class="ph ph-qr-code text-5xl opacity-20" :style="`color: ${fgColor}`"></i>
+                    </div>
                 </div>
 
-                <p class="text-xs text-gray-500 text-center mb-4">{% trans "Gercek QR kodunuz E-Menum panelinde olusturulur." %}</p>
+                {# Download #}
+                <button type="button" @click="downloadQR()" :disabled="!qrDataUrl"
+                    class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-bold text-white bg-primary-600 hover:bg-primary-500 rounded-xl shadow-lg shadow-primary-900/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed mb-2">
+                    <i class="ph ph-download-simple"></i>
+                    {% trans "PNG İndir" %}
+                </button>
+                <p class="text-[10px] text-gray-600 mb-6 text-center">{% trans "Ücretsiz, filigransız" %}</p>
 
-                <a href="{% url 'website:pricing' %}"
-                   class="inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors">
-                    <i class="ph ph-rocket-launch"></i>
-                    {% trans "14 Gun Ucretsiz Dene" %}
-                </a>
+                <div class="w-full mt-auto pt-4 border-t border-gray-800/60 space-y-3">
+                    <p class="text-xs text-gray-500 text-center">{% trans "Gerçek QR kodunuz E-Menum panelinde oluşturulur." %}</p>
+                    <a href="{% url 'website:demo' %}"
+                        class="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-primary-600 hover:bg-primary-500 rounded-xl transition-colors">
+                        <i class="ph ph-rocket-launch"></i>
+                        {% trans "14 Gün Ücretsiz Dene" %}
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -84,23 +137,61 @@ document.addEventListener('alpine:init', () => {
         fgColor: '#1A6B5A',
         bgColor: '#FFFFFF',
         size: 256,
+        ecLevel: 'M',
+        currentPreset: 'E-Menum',
+        qrDataUrl: '',
+
+        presets: [
+            { name: 'E-Menum', fg: '#1A6B5A', bg: '#FFFFFF' },
+            { name: 'Koyu',    fg: '#FFFFFF', bg: '#111827' },
+            { name: 'Klasik',  fg: '#000000', bg: '#FFFFFF' },
+            { name: 'Altın',   fg: '#92400E', bg: '#FFFBEB' },
+            { name: 'Deniz',   fg: '#0E7490', bg: '#F0FDFA' },
+            { name: 'Gece',    fg: '#22D3EE', bg: '#0F172A' },
+        ],
+        ecLevels: [
+            { key: 'L', label: '%7' },
+            { key: 'M', label: '%15' },
+            { key: 'Q', label: '%25' },
+            { key: 'H', label: '%30' },
+        ],
 
         init() {
-            this.renderQR();
-            this.$watch('url', () => this.renderQR());
-            this.$watch('fgColor', () => this.renderQR());
-            this.$watch('bgColor', () => this.renderQR());
-            this.$watch('size', () => this.renderQR());
+            this.$nextTick(() => this.renderQR());
+            ['url', 'fgColor', 'bgColor', 'size', 'ecLevel'].forEach(p => {
+                this.$watch(p, () => this.renderQR());
+            });
         },
 
-        renderQR() {
-            const canvas = this.$refs.qrCanvas;
-            if (!canvas || !this.url) return;
-            QRCode.toCanvas(canvas, this.url, {
-                width: this.size,
-                color: { dark: this.fgColor, light: this.bgColor },
-                margin: 2,
-            });
+        applyPreset(p) {
+            this.fgColor = p.fg;
+            this.bgColor = p.bg;
+            this.currentPreset = p.name;
+        },
+
+        async renderQR() {
+            if (!this.url) { this.qrDataUrl = ''; return; }
+            try {
+                this.qrDataUrl = await QRCode.toDataURL(this.url, {
+                    width: this.size,
+                    color: { dark: this.fgColor, light: this.bgColor },
+                    margin: 2,
+                    errorCorrectionLevel: this.ecLevel,
+                });
+            } catch (e) {
+                console.error('QR generation error:', e);
+                this.qrDataUrl = '';
+            }
+        },
+
+        downloadQR() {
+            if (!this.qrDataUrl) return;
+            var a = document.createElement('a');
+            a.href = this.qrDataUrl;
+            a.download = 'qr-code.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
     }));
 });

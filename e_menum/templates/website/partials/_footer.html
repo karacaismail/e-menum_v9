@@ -77,10 +77,19 @@
             {# Column 1 — Brand #}
             <div class="col-span-2 md:col-span-3 lg:col-span-1">
                 <a href="{% url 'website:home' %}" class="flex items-center gap-2 mb-4">
+                    {% if marketing.logo_dark_url or marketing.logo_url %}
+                    <img src="{{ marketing.logo_dark_url|default:marketing.logo_url }}" alt="{{ marketing.company_name }}"
+                         class="h-8 w-auto brightness-0 invert"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="items-center justify-center w-8 h-8 rounded-lg bg-primary-600 text-white" style="display:none">
+                        <i class="ph ph-fork-knife text-lg"></i>
+                    </div>
+                    {% else %}
                     <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-primary-600 text-white">
                         <i class="ph ph-fork-knife text-lg"></i>
                     </div>
-                    <span class="text-lg font-bold text-white font-heading">E-Menum</span>
+                    <span class="text-lg font-bold text-white font-heading">{{ marketing.company_name|default:"E-Menum" }}</span>
+                    {% endif %}
                 </a>
                 <p class="text-sm text-gray-300 mb-5 leading-relaxed">
                     {{ marketing.description }}

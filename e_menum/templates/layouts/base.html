@@ -38,8 +38,13 @@
     <link rel="alternate" hreflang="x-default" href="{{ request.scheme }}://{{ request.get_host }}/tr{{ request.path|cut:request.LANGUAGE_CODE }}">
 
     {# Favicon #}
+    {% if marketing.favicon_url %}
+    <link rel="icon" href="{{ marketing.favicon_url }}">
+    <link rel="apple-touch-icon" href="{{ marketing.logo_icon_url|default:marketing.favicon_url }}">
+    {% else %}
     <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
     <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.svg' %}">
+    {% endif %}
 
     {# Page Title #}
     <title>{% block full_title %}{% block page_title %}{% endblock %} | E-Menum{% endblock %}</title>

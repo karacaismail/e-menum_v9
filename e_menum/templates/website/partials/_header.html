@@ -20,14 +20,23 @@
 
             {# Logo #}
             <a href="{% url 'website:home' %}" class="flex items-center gap-2 group" aria-label="E-Menum Ana Sayfa">
+                {% if marketing.logo_url %}
+                <img src="{{ marketing.logo_url }}" alt="{{ marketing.company_name }}"
+                     class="h-9 w-auto transition-all"
+                     :class="scrolled ? '' : 'brightness-0 invert'"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="items-center justify-center w-9 h-9 rounded-lg bg-primary-600 text-white" style="display:none">
+                    <i class="ph ph-fork-knife text-xl"></i>
+                </div>
+                {% else %}
                 <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-primary-600 text-white">
                     <i class="ph ph-fork-knife text-xl"></i>
                 </div>
                 <span class="text-xl font-bold tracking-tight font-heading"
-                      :class="scrolled ? 'text-gray-900 dark:text-white' : 'text-white'"
-                >
-                    E-Menum
+                      :class="scrolled ? 'text-gray-900 dark:text-white' : 'text-white'">
+                    {{ marketing.company_name|default:"E-Menum" }}
                 </span>
+                {% endif %}
             </a>
 
             {# Desktop Navigation — Mega Menu #}

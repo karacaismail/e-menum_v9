@@ -22,8 +22,8 @@
             <button class="tog-btn" :class="{on:yearly}" @click="toggle()" role="switch" :aria-checked="yearly" aria-label="{% trans 'Yıllık faturalama' %}"></button>
             <span class="tlabel" :class="yearly?'on':'off'">{% trans "Yıllık" %}</span>
         </div>
-        <span class="save-pill" :class="{hide:!yearly}">{% trans "2 AY BEDAVA" %}</span>
-        <span x-show="yearly" x-transition style="font-size:12px;color:var(--muted);">{% trans "Yıllık ödemede 10 ay ücreti alınır." %}</span>
+        <span class="save-pill" :class="{hide:!yearly}">{{ marketing.pricing_yearly_badge|default:"2 AY BEDAVA" }}</span>
+        {% if marketing.pricing_yearly_note %}<span x-show="yearly" x-transition style="font-size:12px;color:var(--muted);">{{ marketing.pricing_yearly_note }}</span>{% endif %}
     </div>
 
     {# ── CARDS GRID ── #}
@@ -71,13 +71,19 @@
                 {% else %}
                     {# Paid plan with toggle #}
                     <div class="pamount">
-                        <span class="pnum" :class="{flip:anim}" x-text="fp({{ plan.price_monthly|floatformat:0 }})">{{ plan.price_monthly|floatformat:0|default:"0" }}</span>
+                        <span class="pnum" :class="{flip:anim}" x-text="yearly ? fp({{ plan.yearly_per_month }}) : fp({{ plan.price_monthly|floatformat:0 }})">{{ plan.price_monthly|floatformat:0|default:"0" }}</span>
                         <span class="pcurr">TL / {% trans "ay" %}</span>
                     </div>
                     <p class="pper" x-show="!yearly">{% if plan.price_label %}{{ plan.price_label }}{% else %}{% trans "Aylık faturalanır" %}{% endif %}</p>
                     <p class="pper" x-show="yearly">
-                        <span style="color:var(--gold);font-weight:700;" x-text="'{% trans "Yılda" %} '+ fp({{ plan.price_monthly|floatformat:0 }}*10) +' TL'"></span>
+                        <span style="color:var(--gold);font-weight:700;" x-text="'{% trans "Yılda" %} '+ fp({{ plan.price_yearly|floatformat:0 }}) +' TL'"></span>
                     </p>
+                    {% if plan.yearly_savings > 0 %}
+                    <p class="save-tag" x-show="yearly" x-transition>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span x-text="fp({{ plan.yearly_savings|floatformat:0 }}) + ' TL {% trans "tasarruf" %}'"></span>
+                    </p>
+                    {% endif %}
                 {% endif %}
             </div>
 

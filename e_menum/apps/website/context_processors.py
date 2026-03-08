@@ -161,6 +161,11 @@ def _build_context():
         ]
 
     return {
+        # Brand logos
+        "logo_url": settings.logo_url,
+        "logo_icon_url": settings.logo_icon_url,
+        "logo_dark_url": settings.logo_dark_url,
+        "favicon_url": settings.favicon_url,
         # Company info
         "company_name": settings.company_name,
         "tagline": settings.tagline,
@@ -211,6 +216,9 @@ def _build_context():
         "cta_secondary_url": settings.cta_secondary_url,
         # Admin login URL
         "login_url": settings.login_url,
+        # Pricing promo
+        "pricing_yearly_badge": settings.pricing_yearly_badge,
+        "pricing_yearly_note": settings.pricing_yearly_note,
         # Current year for copyright
         "year": datetime.now().year,
     }
@@ -221,6 +229,11 @@ def _default_context():
     from django.conf import settings as django_settings
 
     return {
+        # Brand logos
+        "logo_url": "",
+        "logo_icon_url": "",
+        "logo_dark_url": "",
+        "favicon_url": "",
         "company_name": "E-Menum",
         "tagline": _("QR Menunuz, Isletmenizin Dijital Vitrini"),
         "description": _(
@@ -264,6 +277,9 @@ def _default_context():
         "cta_primary_url": "website:demo",
         "cta_secondary_url": "website:demo",
         "login_url": "/admin/",
+        # Pricing promo
+        "pricing_yearly_badge": "2 AY BEDAVA",
+        "pricing_yearly_note": "Yillik odemede 10 ay ucreti alinir.",
         "year": datetime.now().year,
     }
 

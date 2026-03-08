@@ -23,6 +23,32 @@ class SiteSettings(TimeStampedModel):
     )
     description = models.TextField(_("aciklama"), blank=True)
 
+    # Brand logos
+    logo_url = models.URLField(
+        _("logo URL (yatay)"),
+        blank=True,
+        max_length=500,
+        help_text=_("Ana logo (navbar, footer). PNG/SVG, tercihen seffaf arkaplan."),
+    )
+    logo_icon_url = models.URLField(
+        _("logo ikon URL (kare)"),
+        blank=True,
+        max_length=500,
+        help_text=_("Kare ikon versiyonu (favicon, mobil). PNG/SVG."),
+    )
+    logo_dark_url = models.URLField(
+        _("logo URL (koyu tema)"),
+        blank=True,
+        max_length=500,
+        help_text=_("Koyu temada kullanilan logo versiyonu."),
+    )
+    favicon_url = models.URLField(
+        _("favicon URL"),
+        blank=True,
+        max_length=500,
+        help_text=_("Tarayici sekmesi ikonu. 32x32 veya SVG."),
+    )
+
     # Contact info
     phone = models.CharField(_("telefon"), max_length=30, default="+90 850 123 4567")
     email = models.EmailField(_("e-posta"), default="info@e-menum.net")
@@ -93,6 +119,17 @@ class SiteSettings(TimeStampedModel):
     vat_no = models.CharField(_("vergi no"), max_length=30, blank=True)
     mersis_no = models.CharField(_("mersis no"), max_length=30, blank=True)
     trade_registry = models.CharField(_("ticaret sicil"), max_length=100, blank=True)
+
+    # Pricing promo
+    pricing_yearly_badge = models.CharField(
+        _("yillik promo rozeti"), max_length=50, default="2 AY BEDAVA",
+        help_text=_("Yillik toggle badge metni (orn. '2 AY BEDAVA', '%17 INDIRIM')"),
+    )
+    pricing_yearly_note = models.CharField(
+        _("yillik promo notu"), max_length=200, blank=True,
+        default="Yillik odemede 10 ay ucreti alinir.",
+        help_text=_("Toggle altinda gosterilen aciklama metni."),
+    )
 
     # Status page
     status_page_url = models.URLField(

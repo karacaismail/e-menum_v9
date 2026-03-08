@@ -66,8 +66,9 @@
         <div class="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-gray-700">
             {# Logo #}
             <a href="{% url 'accounts:dashboard' %}" class="flex items-center space-x-2">
-                <img src="{% static 'images/logo.svg' %}" alt="E-Menum" class="h-8 w-auto" onerror="this.style.display='none'">
-                <span class="text-xl font-bold text-primary-600 dark:text-primary-400">E-Menum</span>
+                <img src="{{ marketing.logo_url|default:'' }}" alt="{{ marketing.company_name|default:'E-Menum' }}" class="h-8 w-auto"
+                     onerror="this.src='{% static 'images/logo.svg' %}';this.onerror=null">
+                <span class="text-xl font-bold text-primary-600 dark:text-primary-400">{{ marketing.company_name|default:"E-Menum" }}</span>
             </a>
 
             {# Close Button (Mobile) #}

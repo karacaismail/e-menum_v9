@@ -7,63 +7,159 @@
 {% include "website/partials/_hero_enterprise_simple.html" with badge_text="Ücretsiz Araç" title="QR Kod" title_highlight="Tasarlayıcı" subtitle="Markanıza özel QR kod tasarlayın. Renk, şekil, logo ve çerçeve seçenekleriyle profesyonel QR kodlar oluşturun." hero_id="hero-qr-designer" %}
 
 <section class="py-12 lg:py-20" x-data="qrDesigner()">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
-            {# Config #}
-            <div class="lg:col-span-3 bg-gray-900 rounded-2xl border border-gray-800 p-6 lg:p-8">
-                <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                    <i class="ph ph-sliders text-primary-400"></i>
-                    {% trans "Tasarim Secenekleri" %}
-                </h2>
+            {# ── LEFT: Config Panels ── #}
+            <div class="lg:col-span-3 space-y-5">
 
-                <div class="space-y-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "URL" %}</label>
-                        <input type="text" x-model="url" placeholder="https://restoraniniz.e-menum.net"
-                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 outline-none">
+                {# ── STEP 1: Content Type + Input ── #}
+                <div class="bg-gray-900/80 backdrop-blur-sm rounded-2xl border border-gray-800/80 p-6">
+                    <div class="flex items-center gap-2.5 mb-5">
+                        <div class="w-7 h-7 rounded-lg bg-primary-500/15 border border-primary-500/25 flex items-center justify-center">
+                            <span class="text-xs font-bold text-primary-400">1</span>
+                        </div>
+                        <h2 class="text-sm font-bold text-white">{% trans "İçerik Türü" %}</h2>
+                    </div>
+
+                    {# Content type tabs #}
+                    <div class="flex flex-wrap gap-1.5 mb-5">
+                        <template x-for="ct in contentTypes" :key="ct.key">
+                            <button type="button" @click="contentType = ct.key"
+                                class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl border transition-all"
+                                :class="contentType === ct.key
+                                    ? 'bg-primary-500/15 border-primary-500/40 text-primary-300 shadow-sm shadow-primary-500/10'
+                                    : 'border-gray-700/60 text-gray-400 hover:border-gray-600 hover:text-gray-300 hover:bg-gray-800/50'">
+                                <i class="ph text-sm" :class="ct.icon"></i>
+                                <span x-text="ct.label"></span>
+                            </button>
+                        </template>
+                    </div>
+
+                    {# Dynamic inputs #}
+                    <div class="space-y-4">
+                        {# URL #}
+                        <div x-show="contentType === 'url'" x-transition>
+                            <label class="block text-xs font-semibold text-gray-400 mb-1.5">URL</label>
+                            <input type="url" x-model="url" placeholder="https://restoraniniz.com"
+                                class="w-full px-4 py-2.5 rounded-xl bg-gray-800/80 border border-gray-700/60 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/40 outline-none text-sm transition-all">
+                        </div>
+
+                        {# Wi-Fi #}
+                        <div x-show="contentType === 'wifi'" x-transition class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-400 mb-1.5">{% trans "Ağ Adı (SSID)" %}</label>
+                                <input type="text" x-model="wifiSsid" placeholder="MyNetwork"
+                                    class="w-full px-4 py-2.5 rounded-xl bg-gray-800/80 border border-gray-700/60 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500/50 outline-none text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-400 mb-1.5">{% trans "Şifre" %}</label>
+                                <input type="text" x-model="wifiPassword" placeholder="********"
+                                    class="w-full px-4 py-2.5 rounded-xl bg-gray-800/80 border border-gray-700/60 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500/50 outline-none text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-400 mb-1.5">{% trans "Şifreleme" %}</label>
+                                <div class="flex gap-2">
+                                    <template x-for="enc in ['WPA','WEP','nopass']" :key="enc">
+                                        <button type="button" @click="wifiEncryption = enc"
+                                            class="px-3.5 py-1.5 text-xs font-semibold rounded-lg border transition-all"
+                                            :class="wifiEncryption === enc ? 'bg-primary-500/15 border-primary-500/40 text-primary-300' : 'border-gray-700/60 text-gray-400 hover:border-gray-600'">
+                                            <span x-text="enc === 'nopass' ? '{% trans 'Açık' %}' : enc"></span>
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Text #}
+                        <div x-show="contentType === 'text'" x-transition>
+                            <label class="block text-xs font-semibold text-gray-400 mb-1.5">{% trans "Metin" %}</label>
+                            <textarea x-model="text" rows="3" placeholder="{% trans 'Herhangi bir metin yazın...' %}"
+                                class="w-full px-4 py-2.5 rounded-xl bg-gray-800/80 border border-gray-700/60 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500/50 outline-none text-sm resize-none"></textarea>
+                        </div>
+
+                        {# Email #}
+                        <div x-show="contentType === 'email'" x-transition>
+                            <label class="block text-xs font-semibold text-gray-400 mb-1.5">{% trans "E-posta Adresi" %}</label>
+                            <input type="email" x-model="email" placeholder="info@example.com"
+                                class="w-full px-4 py-2.5 rounded-xl bg-gray-800/80 border border-gray-700/60 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500/50 outline-none text-sm">
+                        </div>
+
+                        {# Phone #}
+                        <div x-show="contentType === 'phone'" x-transition>
+                            <label class="block text-xs font-semibold text-gray-400 mb-1.5">{% trans "Telefon Numarası" %}</label>
+                            <input type="tel" x-model="phone" placeholder="+90 555 123 4567"
+                                class="w-full px-4 py-2.5 rounded-xl bg-gray-800/80 border border-gray-700/60 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500/50 outline-none text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                {# ── STEP 2: Style ── #}
+                <div class="bg-gray-900/80 backdrop-blur-sm rounded-2xl border border-gray-800/80 p-6">
+                    <div class="flex items-center gap-2.5 mb-5">
+                        <div class="w-7 h-7 rounded-lg bg-primary-500/15 border border-primary-500/25 flex items-center justify-center">
+                            <span class="text-xs font-bold text-primary-400">2</span>
+                        </div>
+                        <h2 class="text-sm font-bold text-white">{% trans "Stil & Renk" %}</h2>
                     </div>
 
                     {# Color presets #}
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">{% trans "Renk Sablon" %}</label>
-                        <div class="grid grid-cols-5 gap-2">
+                    <div class="mb-5">
+                        <label class="block text-xs font-semibold text-gray-400 mb-2.5">{% trans "Renk Şablonu" %}</label>
+                        <div class="grid grid-cols-4 sm:grid-cols-8 gap-2">
                             <template x-for="preset in presets" :key="preset.name">
                                 <button type="button" @click="applyPreset(preset)"
-                                    class="flex flex-col items-center gap-1.5 p-2 rounded-lg border transition-all"
-                                    :class="currentPreset === preset.name ? 'border-primary-500 bg-primary-900/20' : 'border-gray-700 hover:border-gray-600'">
-                                    <div class="w-8 h-8 rounded-md border border-gray-700" :style="`background: linear-gradient(135deg, ${preset.fg} 50%, ${preset.bg} 50%)`"></div>
-                                    <span class="text-[10px] text-gray-400" x-text="preset.name"></span>
+                                    class="flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all"
+                                    :class="currentPreset === preset.name ? 'border-primary-500 bg-primary-500/10 ring-1 ring-primary-500/30' : 'border-gray-700/50 hover:border-gray-600 hover:bg-gray-800/50'">
+                                    <div class="w-7 h-7 rounded-lg border border-gray-600/40 overflow-hidden shadow-sm"
+                                        :style="`background: linear-gradient(135deg, ${preset.fg} 50%, ${preset.bg} 50%)`"></div>
+                                    <span class="text-[9px] text-gray-500 leading-none truncate w-full text-center" x-text="preset.name"></span>
                                 </button>
                             </template>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
+                    {# Custom colors #}
+                    <div class="grid grid-cols-2 gap-4 mb-5">
                         <div>
-                            <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "QR Rengi" %}</label>
+                            <label class="block text-xs font-semibold text-gray-400 mb-1.5">{% trans "QR Rengi" %}</label>
                             <div class="flex items-center gap-2">
-                                <input type="color" x-model="fgColor" class="w-8 h-8 rounded cursor-pointer border-0 bg-transparent">
-                                <input type="text" x-model="fgColor" class="flex-1 px-3 py-2 text-xs rounded-lg bg-gray-800 border border-gray-700 text-gray-300 font-mono focus:ring-2 focus:ring-primary-500 outline-none">
+                                <input type="color" x-model="fgColor" class="w-8 h-8 rounded-lg cursor-pointer border-0 bg-transparent shrink-0">
+                                <input type="text" x-model="fgColor" class="flex-1 px-3 py-1.5 text-xs rounded-lg bg-gray-800/80 border border-gray-700/60 text-gray-300 font-mono focus:ring-2 focus:ring-primary-500/50 outline-none">
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Arka Plan" %}</label>
+                            <label class="block text-xs font-semibold text-gray-400 mb-1.5">{% trans "Arka Plan" %}</label>
                             <div class="flex items-center gap-2">
-                                <input type="color" x-model="bgColor" class="w-8 h-8 rounded cursor-pointer border-0 bg-transparent">
-                                <input type="text" x-model="bgColor" class="flex-1 px-3 py-2 text-xs rounded-lg bg-gray-800 border border-gray-700 text-gray-300 font-mono focus:ring-2 focus:ring-primary-500 outline-none">
+                                <input type="color" x-model="bgColor" class="w-8 h-8 rounded-lg cursor-pointer border-0 bg-transparent shrink-0">
+                                <input type="text" x-model="bgColor" class="flex-1 px-3 py-1.5 text-xs rounded-lg bg-gray-800/80 border border-gray-700/60 text-gray-300 font-mono focus:ring-2 focus:ring-primary-500/50 outline-none">
                             </div>
                         </div>
                     </div>
 
+                    {# Error correction #}
+                    <div class="mb-5">
+                        <label class="block text-xs font-semibold text-gray-400 mb-2.5">{% trans "Hata Düzeltme Seviyesi" %}</label>
+                        <div class="grid grid-cols-4 gap-2">
+                            <template x-for="ec in ecLevels" :key="ec.key">
+                                <button type="button" @click="ecLevel = ec.key"
+                                    class="flex flex-col items-center gap-0.5 p-2.5 rounded-xl border transition-all text-center"
+                                    :class="ecLevel === ec.key ? 'bg-primary-500/15 border-primary-500/40 text-primary-300' : 'border-gray-700/50 text-gray-400 hover:border-gray-600 hover:bg-gray-800/50'">
+                                    <span class="text-sm font-bold" x-text="ec.key"></span>
+                                    <span class="text-[9px] opacity-60" x-text="ec.label"></span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+
                     {# Frame style #}
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">{% trans "Cerceve Stili" %}</label>
-                        <div class="flex flex-wrap gap-2">
+                    <div class="mb-5">
+                        <label class="block text-xs font-semibold text-gray-400 mb-2.5">{% trans "Çerçeve" %}</label>
+                        <div class="flex gap-2">
                             <template x-for="f in frames" :key="f.key">
                                 <button type="button" @click="frame = f.key"
-                                    class="px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors"
-                                    :class="frame === f.key ? 'bg-primary-500 text-white border-primary-500' : 'text-gray-400 border-gray-700 hover:border-gray-600'">
+                                    class="px-4 py-2 text-xs font-semibold rounded-xl border transition-all"
+                                    :class="frame === f.key ? 'bg-primary-500/15 border-primary-500/40 text-primary-300' : 'border-gray-700/50 text-gray-400 hover:border-gray-600 hover:bg-gray-800/50'">
                                     <span x-text="f.label"></span>
                                 </button>
                             </template>
@@ -72,32 +168,81 @@
 
                     {# Label #}
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Alt Yazi (opsiyonel)" %}</label>
-                        <input type="text" x-model="label" placeholder="{% trans 'orn. Menumuzu Tara' %}"
-                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 outline-none">
+                        <label class="block text-xs font-semibold text-gray-400 mb-1.5">{% trans "Alt Yazı" %} <span class="text-gray-600 font-normal">({% trans "opsiyonel" %})</span></label>
+                        <input type="text" x-model="label" placeholder="{% trans 'örn. Menümüzü Tara' %}"
+                            class="w-full px-4 py-2.5 rounded-xl bg-gray-800/80 border border-gray-700/60 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500/50 outline-none text-sm">
                     </div>
                 </div>
             </div>
 
-            {# Preview #}
-            <div class="lg:col-span-2 bg-gray-900 rounded-2xl border border-gray-800 p-6 lg:p-8 flex flex-col items-center">
-                <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2 self-start">
-                    <i class="ph ph-eye text-primary-400"></i>
-                    {% trans "Onizleme" %}
-                </h2>
+            {# ── RIGHT: Preview + Actions ── #}
+            <div class="lg:col-span-2 space-y-5">
+                <div class="lg:sticky lg:top-24 space-y-5">
 
-                <div class="rounded-xl p-6 mb-2" :class="frame !== 'none' ? 'border-2' : ''" :style="`background-color: ${bgColor}; border-color: ${fgColor}40`">
-                    <canvas x-ref="qrCanvas" width="256" height="256" class="block rounded"></canvas>
-                </div>
-                <p x-show="label" x-text="label" class="text-sm font-semibold mt-2 mb-4" :style="`color: ${fgColor}`"></p>
+                    {# Preview Card #}
+                    <div class="bg-gray-900/80 backdrop-blur-sm rounded-2xl border border-gray-800/80 p-6 flex flex-col items-center">
+                        <div class="flex items-center gap-2.5 mb-5 self-start w-full">
+                            <div class="w-7 h-7 rounded-lg bg-primary-500/15 border border-primary-500/25 flex items-center justify-center">
+                                <i class="ph ph-eye text-primary-400 text-xs"></i>
+                            </div>
+                            <h2 class="text-sm font-bold text-white">{% trans "Önizleme" %}</h2>
+                            <span class="ml-auto text-[10px] text-gray-600 font-mono" x-text="contentType.toUpperCase()"></span>
+                        </div>
 
-                <div class="w-full mt-auto pt-4 space-y-3">
-                    <p class="text-xs text-gray-500 text-center">{% trans "Tam ozellikli QR tasarimciyi E-Menum panelinde kullanin." %}</p>
-                    <a href="{% url 'website:pricing' %}"
-                       class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors">
-                        <i class="ph ph-rocket-launch"></i>
-                        {% trans "14 Gun Ucretsiz Dene" %}
-                    </a>
+                        {# QR Preview #}
+                        <div class="rounded-2xl p-5 mb-3 transition-all duration-300"
+                            :class="frame !== 'none' ? (frame === 'rounded' ? 'border-2 rounded-3xl' : 'border-2') : ''"
+                            :style="`background-color: ${bgColor}; border-color: ${fgColor}30`">
+                            <img x-show="qrDataUrl" :src="qrDataUrl" alt="QR Code" class="block rounded" width="220" height="220">
+                            <div x-show="!qrDataUrl" class="w-[220px] h-[220px] flex items-center justify-center">
+                                <div class="text-center">
+                                    <i class="ph ph-qr-code text-5xl opacity-30" :style="`color: ${fgColor}`"></i>
+                                    <p class="text-xs mt-2 opacity-40" :style="`color: ${fgColor}`">{% trans "İçerik girin" %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p x-show="label" x-text="label" class="text-sm font-semibold mb-4 transition-colors" :style="`color: ${fgColor}`"></p>
+
+                        {# Download button #}
+                        <button type="button" @click="downloadQR()" :disabled="!qrDataUrl"
+                            class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-bold text-white bg-primary-600 hover:bg-primary-500 rounded-xl shadow-lg shadow-primary-900/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+                            <i class="ph ph-download-simple"></i>
+                            {% trans "PNG İndir" %}
+                        </button>
+                        <p class="text-[10px] text-gray-600 mt-2 text-center">{% trans "Ücretsiz, filigransız, anında indirin" %}</p>
+                    </div>
+
+                    {# Premium CTA #}
+                    <div class="bg-gradient-to-br from-gray-900 via-gray-900 to-primary-950/20 rounded-2xl border border-gray-700/50 p-5">
+                        <div class="flex items-start gap-3 mb-4">
+                            <div class="w-8 h-8 rounded-xl bg-primary-500/15 border border-primary-500/25 flex items-center justify-center shrink-0">
+                                <i class="ph ph-crown text-primary-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-white mb-0.5">{% trans "Daha Fazlası mı Gerekiyor?" %}</h3>
+                                <p class="text-[11px] text-gray-400 leading-relaxed">{% trans "E-Menum panelinde profesyonel QR yönetimi" %}</p>
+                            </div>
+                        </div>
+                        <ul class="space-y-2 mb-4">
+                            <li class="flex items-center gap-2 text-xs text-gray-400">
+                                <i class="ph ph-check-circle text-primary-500 text-sm shrink-0"></i>{% trans "Logo gömme & markalı tasarım" %}
+                            </li>
+                            <li class="flex items-center gap-2 text-xs text-gray-400">
+                                <i class="ph ph-check-circle text-primary-500 text-sm shrink-0"></i>{% trans "Tarama analitiği & cihaz detayları" %}
+                            </li>
+                            <li class="flex items-center gap-2 text-xs text-gray-400">
+                                <i class="ph ph-check-circle text-primary-500 text-sm shrink-0"></i>{% trans "Baskıya hazır PDF indirme" %}
+                            </li>
+                            <li class="flex items-center gap-2 text-xs text-gray-400">
+                                <i class="ph ph-check-circle text-primary-500 text-sm shrink-0"></i>{% trans "Dinamik QR — hedefi istediğiniz zaman değiştirin" %}
+                            </li>
+                        </ul>
+                        <a href="{% url 'website:demo' %}"
+                            class="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-primary-600 hover:bg-primary-500 rounded-xl transition-colors">
+                            <i class="ph ph-rocket-launch"></i>
+                            {% trans "14 Gün Ücretsiz Dene" %}
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -111,44 +256,101 @@
 <script>
 document.addEventListener('alpine:init', () => {
     Alpine.data('qrDesigner', () => ({
+        contentType: 'url',
         url: 'https://e-menum.net',
+        text: '',
+        wifiSsid: '',
+        wifiPassword: '',
+        wifiEncryption: 'WPA',
+        email: '',
+        phone: '',
         fgColor: '#1A6B5A',
         bgColor: '#FFFFFF',
+        ecLevel: 'M',
         frame: 'none',
         label: '',
         currentPreset: 'E-Menum',
+        qrDataUrl: '',
+
+        contentTypes: [
+            { key: 'url',   icon: 'ph-link',      label: 'URL' },
+            { key: 'wifi',  icon: 'ph-wifi-high',  label: 'Wi-Fi' },
+            { key: 'text',  icon: 'ph-text-aa',    label: '{% trans "Metin" %}' },
+            { key: 'email', icon: 'ph-envelope',   label: '{% trans "E-posta" %}' },
+            { key: 'phone', icon: 'ph-phone',      label: '{% trans "Telefon" %}' },
+        ],
         presets: [
             { name: 'E-Menum', fg: '#1A6B5A', bg: '#FFFFFF' },
-            { name: 'Koyu', fg: '#FFFFFF', bg: '#111827' },
-            { name: 'Klasik', fg: '#000000', bg: '#FFFFFF' },
-            { name: 'Altin', fg: '#92400E', bg: '#FFFBEB' },
-            { name: 'Deniz', fg: '#0E7490', bg: '#F0FDFA' },
+            { name: 'Koyu',    fg: '#FFFFFF', bg: '#111827' },
+            { name: 'Klasik',  fg: '#000000', bg: '#FFFFFF' },
+            { name: 'Altın',   fg: '#92400E', bg: '#FFFBEB' },
+            { name: 'Deniz',   fg: '#0E7490', bg: '#F0FDFA' },
+            { name: 'Gece',    fg: '#22D3EE', bg: '#0F172A' },
+            { name: 'Gül',     fg: '#BE185D', bg: '#FFF1F2' },
+            { name: 'Mor',     fg: '#7C3AED', bg: '#F5F3FF' },
+        ],
+        ecLevels: [
+            { key: 'L', label: '%7' },
+            { key: 'M', label: '%15' },
+            { key: 'Q', label: '%25' },
+            { key: 'H', label: '%30' },
         ],
         frames: [
-            { key: 'none', label: 'Yok' },
-            { key: 'simple', label: 'Basit' },
-            { key: 'rounded', label: 'Yuvarlatilmis' },
+            { key: 'none',    label: '{% trans "Yok" %}' },
+            { key: 'simple',  label: '{% trans "Basit" %}' },
+            { key: 'rounded', label: '{% trans "Yuvarlak" %}' },
         ],
 
         init() {
-            this.renderQR();
-            this.$watch('url', () => this.renderQR());
-            this.$watch('fgColor', () => this.renderQR());
-            this.$watch('bgColor', () => this.renderQR());
-        },
-        applyPreset(preset) {
-            this.fgColor = preset.fg;
-            this.bgColor = preset.bg;
-            this.currentPreset = preset.name;
-        },
-        renderQR() {
-            const canvas = this.$refs.qrCanvas;
-            if (!canvas || !this.url) return;
-            QRCode.toCanvas(canvas, this.url, {
-                width: 256,
-                color: { dark: this.fgColor, light: this.bgColor },
-                margin: 2,
+            this.$nextTick(() => this.renderQR());
+            ['url','text','wifiSsid','wifiPassword','wifiEncryption','email','phone',
+             'contentType','fgColor','bgColor','ecLevel'].forEach(p => {
+                this.$watch(p, () => this.renderQR());
             });
+        },
+
+        getContent() {
+            switch (this.contentType) {
+                case 'wifi':
+                    if (!this.wifiSsid) return '';
+                    return 'WIFI:T:' + this.wifiEncryption + ';S:' + this.wifiSsid + ';P:' + this.wifiPassword + ';;';
+                case 'email': return this.email ? ('mailto:' + this.email) : '';
+                case 'phone': return this.phone ? ('tel:' + this.phone) : '';
+                case 'text':  return this.text;
+                default:      return this.url;
+            }
+        },
+
+        async renderQR() {
+            const content = this.getContent();
+            if (!content) { this.qrDataUrl = ''; return; }
+            try {
+                this.qrDataUrl = await QRCode.toDataURL(content, {
+                    width: 280,
+                    color: { dark: this.fgColor, light: this.bgColor },
+                    margin: 2,
+                    errorCorrectionLevel: this.ecLevel,
+                });
+            } catch (e) {
+                console.error('QR generation error:', e);
+                this.qrDataUrl = '';
+            }
+        },
+
+        applyPreset(p) {
+            this.fgColor = p.fg;
+            this.bgColor = p.bg;
+            this.currentPreset = p.name;
+        },
+
+        downloadQR() {
+            if (!this.qrDataUrl) return;
+            var a = document.createElement('a');
+            a.href = this.qrDataUrl;
+            a.download = 'qr-code.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
     }));
 });

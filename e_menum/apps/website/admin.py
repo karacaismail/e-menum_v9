@@ -236,6 +236,15 @@ class SiteSettingsAdmin(TabbedTranslationAdmin):
 
     fieldsets = (
         (
+            _("Marka & Logo"),
+            {
+                "fields": ("logo_url", "logo_icon_url", "logo_dark_url", "favicon_url"),
+                "description": _(
+                    "Logo URL'lerini girin. PNG/SVG formatinda, tercihen seffaf arkaplanli."
+                ),
+            },
+        ),
+        (
             _("Sirket Bilgileri"),
             {
                 "fields": ("company_name", "tagline", "description"),
@@ -277,9 +286,42 @@ class SiteSettingsAdmin(TabbedTranslationAdmin):
             },
         ),
         (
+            _("Duyuru Bandi"),
+            {
+                "fields": (
+                    "announcement_is_active",
+                    "announcement_text",
+                    "announcement_url",
+                ),
+            },
+        ),
+        (
+            _("Cerez Banneri"),
+            {
+                "fields": ("cookie_banner_title", "cookie_banner_text"),
+                "classes": ("collapse",),
+            },
+        ),
+        (
+            _("Yasal Bilgiler"),
+            {
+                "fields": ("vat_no", "mersis_no", "trade_registry"),
+                "classes": ("collapse",),
+            },
+        ),
+        (
+            _("Fiyatlandirma Promosyon"),
+            {
+                "fields": ("pricing_yearly_badge", "pricing_yearly_note"),
+                "description": _(
+                    "Fiyatlandirma sayfasindaki yillik toggle rozeti ve aciklama metni."
+                ),
+            },
+        ),
+        (
             _("Diger"),
             {
-                "fields": ("login_url",),
+                "fields": ("login_url", "status_page_url"),
             },
         ),
         (
