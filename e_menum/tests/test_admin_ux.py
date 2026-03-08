@@ -216,7 +216,9 @@ class TestAdminSearchAPI:
         response = client.get("/admin/api/search/?q=test")
         assert response.status_code == 200
         data = response.json()
-        assert "results" in data
+        # API returns { success: true, data: { groups: [...] } }
+        assert data.get("success") is True
+        assert "data" in data
 
     def test_search_api_requires_auth(self, client):
         """Search API should require authentication."""
@@ -229,8 +231,9 @@ class TestAdminSearchAPI:
         response = client.get("/admin/api/search/?q=a")
         assert response.status_code == 200
         data = response.json()
-        # Should return empty or limited results for single char
-        assert "results" in data
+        # Should return valid response structure for single char
+        assert data.get("success") is True
+        assert "data" in data
 
 
 @pytest.mark.django_db
