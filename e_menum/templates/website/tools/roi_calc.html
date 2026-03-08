@@ -1,0 +1,137 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "ROI Hesaplayici" %} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="hero-gradient hero-gradient-resources pattern-dots">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 lg:pt-32 lg:pb-16">
+        <div class="max-w-3xl">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-400 text-sm font-semibold mb-6">
+                <i class="ph ph-chart-line-up"></i>
+                {% trans "Ücretsiz Araç" %}
+            </span>
+            <h1 class="heading-display text-4xl lg:text-5xl text-white mb-4">{% trans "ROI Hesaplayici" %}</h1>
+            <p class="text-lg text-gray-300">{% trans "Dijital menuye gecis yatirim getirinizi hesaplayin. Gelir artisi, maliyet dususu ve toplam kazancinizi gorun." %}</p>
+        </div>
+    </div>
+</section>
+
+<section class="py-12 lg:py-20" x-data="roiCalculator()">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+            {# Input Card #}
+            <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6 lg:p-8">
+                <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                    <i class="ph ph-faders text-primary-400"></i>
+                    {% trans "Isletme Bilgileri" %}
+                </h2>
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Aylik Musteri Sayisi" %}</label>
+                        <input type="number" x-model.number="monthlyCustomers" min="100" max="50000"
+                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-primary-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Ortalama Hesap Tutari (TL)" %}</label>
+                        <input type="number" x-model.number="avgTicket" min="10" max="5000"
+                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-primary-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Masa Sayisi" %}</label>
+                        <input type="number" x-model.number="tables" min="5" max="500"
+                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-primary-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Garson Sayisi" %}</label>
+                        <input type="number" x-model.number="waiters" min="1" max="50"
+                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-primary-500 outline-none">
+                    </div>
+                </div>
+            </div>
+
+            {# Results Card #}
+            <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6 lg:p-8">
+                <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                    <i class="ph ph-trophy text-amber-400"></i>
+                    {% trans "Tahmini ROI" %}
+                </h2>
+
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center py-3 border-b border-gray-800">
+                        <span class="text-sm text-gray-400">{% trans "Dijital menu ile gelir artisi (%8)" %}</span>
+                        <span class="text-lg font-bold text-green-400" x-text="'+' + formatCurrency(revenueIncrease)"></span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 border-b border-gray-800">
+                        <span class="text-sm text-gray-400">{% trans "Baski maliyeti tasarrufu" %}</span>
+                        <span class="text-lg font-bold text-green-400" x-text="'+' + formatCurrency(printSaving)"></span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 border-b border-gray-800">
+                        <span class="text-sm text-gray-400">{% trans "Zaman tasarrufu (garson verimi)" %}</span>
+                        <span class="text-lg font-bold text-green-400" x-text="'+' + formatCurrency(timeSaving)"></span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 border-b border-gray-800">
+                        <span class="text-sm text-gray-400">{% trans "E-Menum yillik maliyet" %}</span>
+                        <span class="text-lg font-bold text-red-400" x-text="'-' + formatCurrency(emenumCost)"></span>
+                    </div>
+                    <div class="flex justify-between items-center py-4 bg-primary-900/20 rounded-xl px-4 mt-4">
+                        <span class="text-sm font-semibold text-primary-300">{% trans "Yillik Net Kazanc" %}</span>
+                        <span class="text-2xl font-bold text-primary-400" x-text="formatCurrency(netGain)"></span>
+                    </div>
+                    <div class="flex justify-between items-center py-3">
+                        <span class="text-sm text-gray-400">{% trans "ROI" %}</span>
+                        <span class="text-xl font-bold text-amber-400" x-text="roiPercent + '%'"></span>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-gray-800">
+                    <a href="{% url 'website:pricing' %}"
+                       class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors">
+                        <i class="ph ph-rocket-launch"></i>
+                        {% trans "14 Gun Ucretsiz Dene" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('roiCalculator', () => ({
+        monthlyCustomers: 2000,
+        avgTicket: 250,
+        tables: 25,
+        waiters: 4,
+
+        get revenueIncrease() {
+            return this.monthlyCustomers * this.avgTicket * 0.08 * 12;
+        },
+        get printSaving() {
+            return this.tables * 4 * 3.5 * 4 * 12;
+        },
+        get timeSaving() {
+            return this.waiters * 200 * 12;
+        },
+        get emenumCost() {
+            return 0;
+        },
+        get netGain() {
+            return this.revenueIncrease + this.printSaving + this.timeSaving - this.emenumCost;
+        },
+        get roiPercent() {
+            if (this.emenumCost === 0) return '∞';
+            return Math.round((this.netGain / this.emenumCost) * 100);
+        },
+        formatCurrency(val) {
+            return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', minimumFractionDigits: 0 }).format(val);
+        }
+    }));
+});
+</script>
+{% endblock %}

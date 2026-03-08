@@ -58,7 +58,7 @@ class ReportDetailView(CmsContextMixin, DetailView):
 
 
 class ToolDetailView(CmsContextMixin, DetailView):
-    """Free tool detail."""
+    """Free tool detail — renders per-tool custom template if available."""
 
     template_name = "website/resources/tool_detail.html"
     context_object_name = "tool"
@@ -74,6 +74,23 @@ class ToolDetailView(CmsContextMixin, DetailView):
             return queryset.get(slug=slug)
         except FreeTool.DoesNotExist:
             raise Http404
+
+    def get_template_names(self):
+        """Use the tool's custom template if it exists, otherwise fallback."""
+        tool = self.get_object()
+        if tool.template_name:
+            from django.template.loader import get_template
+            from django.template import TemplateDoesNotExist
+
+            try:
+                get_template(tool.template_name)
+                return [tool.template_name]
+            except TemplateDoesNotExist:
+                logger.warning(
+                    "Tool template '%s' not found, using fallback",
+                    tool.template_name,
+                )
+        return [self.template_name]
 
 
 class WebinarDetailView(CmsContextMixin, DetailView):

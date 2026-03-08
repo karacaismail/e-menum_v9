@@ -222,17 +222,8 @@
                     {% endif %}
                 </div>
 
-                {# Footer language selector + theme toggle #}
+                {# Footer language selector #}
                 <div class="flex items-center gap-3">
-                    <button
-                        @click="darkMode = !darkMode"
-                        class="p-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
-                        :aria-label="darkMode ? '{% trans 'Açık temaya geç' %}' : '{% trans 'Koyu temaya geç' %}'"
-                    >
-                        <i class="ph ph-sun text-lg" x-show="darkMode" x-cloak></i>
-                        <i class="ph ph-moon text-lg" x-show="!darkMode"></i>
-                    </button>
-
                     <div class="flex items-center gap-1 text-xs">
                         {% get_available_languages as footer_languages %}
                         {% for lang_code, lang_name in footer_languages %}

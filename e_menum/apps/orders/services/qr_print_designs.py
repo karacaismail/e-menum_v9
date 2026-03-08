@@ -96,31 +96,31 @@ TEMPLATE_INFO = {
     "ELEGANT": {
         "name": "Elegant",
         "name_tr": "Zarif",
-        "description": "Beyaz zemin, ince cizgiler, serif baslk, ust logolu.",
+        "description": "Premium altin aksan, cift cerceve, serif tipografi. Luks restoranlar icin.",
         "icon": "ph-crown",
     },
     "MODERN": {
         "name": "Modern",
         "name_tr": "Modern",
-        "description": "Degrade baslik, yuvarlak QR, sans-serif, minimal.",
+        "description": "Degrade baslik, yuvarlatilmis kart, sans-serif. Trend kafeler icin.",
         "icon": "ph-lightning",
     },
     "RUSTIC": {
         "name": "Rustic",
         "name_tr": "Rustik",
-        "description": "Kahverengi tonlar, sicak palet, dokulu his.",
+        "description": "Sicak toprak tonlari, dekoratif cerceveler. Butik mekanlar icin.",
         "icon": "ph-tree",
     },
     "VIBRANT": {
         "name": "Vibrant",
         "name_tr": "Canli",
-        "description": "Cesur renkler, renkli QR cerceve, belirgin logo.",
+        "description": "Cesur marka renkleri, renkli QR cerceve. Dikkat cekici tasarim.",
         "icon": "ph-palette",
     },
     "MINIMAL": {
         "name": "Minimal",
         "name_tr": "Minimal",
-        "description": "Sadece QR + kucuk yazi, maksimum bosluk.",
+        "description": "Ultra-temiz, maksimum bosluk, rafine tipografi. Premium markalar icin.",
         "icon": "ph-minus-circle",
     },
 }
@@ -437,6 +437,27 @@ def _render_elegant(
         fill=0,
         stroke=1,
     )
+
+    # -- Corner ornaments (premium detail)
+    corner_len = min(page_w, page_h) * 0.06
+    c.setStrokeColor(HexColor(accent))
+    c.setLineWidth(1.5)
+    # Top-left
+    c.line(margin, page_h - margin, margin + corner_len, page_h - margin)
+    c.line(margin, page_h - margin, margin, page_h - margin - corner_len)
+    # Top-right
+    c.line(
+        page_w - margin, page_h - margin, page_w - margin - corner_len, page_h - margin
+    )
+    c.line(
+        page_w - margin, page_h - margin, page_w - margin, page_h - margin - corner_len
+    )
+    # Bottom-left
+    c.line(margin, margin, margin + corner_len, margin)
+    c.line(margin, margin, margin, margin + corner_len)
+    # Bottom-right
+    c.line(page_w - margin, margin, page_w - margin - corner_len, margin)
+    c.line(page_w - margin, margin, page_w - margin, margin + corner_len)
 
     # -- Logo at top center
     logo_pil = _load_logo_pil(org_logo_url)

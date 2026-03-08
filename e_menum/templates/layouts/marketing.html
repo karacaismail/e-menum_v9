@@ -13,9 +13,18 @@
    - _cookie_banner.html → GDPR cookie consent
 {% endcomment %}
 
-{% block html_class %}scroll-smooth{% endblock %}
+{% block html_class %}scroll-smooth dark{% endblock %}
 
-{% block body_class %}min-h-screen bg-white{% endblock %}
+{% block body_class %}min-h-screen bg-gray-950{% endblock %}
+
+{% block inline_js %}
+{{ block.super }}
+<script>
+    // Force dark mode on storefront — override any localStorage preference
+    document.documentElement.classList.add('dark');
+    localStorage.setItem('darkMode', 'true');
+</script>
+{% endblock %}
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'website/css/marketing.css' %}">

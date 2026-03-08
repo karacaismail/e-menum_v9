@@ -190,6 +190,17 @@ def qrcode_create_api(request):
     if table_id:
         qr.table_id = table_id
     qr.save()
+
+    # Ensure QR image is generated (signal should handle this,
+    # but call explicitly as safety net)
+    if not qr.qr_image_url:
+        try:
+            from apps.orders.services.qr_generator import QRGeneratorService
+
+            QRGeneratorService.generate_and_save(qr, force=False)
+        except Exception:
+            logger.warning("Failed to generate QR image for %s", qr.code)
+
     return JsonResponse(
         {"success": True, "qr": {"id": str(qr.id), "code": qr.code}}, status=201
     )
@@ -275,6 +286,58 @@ def qrcode_download_print(request, qr_id):
 
 
 BRANDED_TEMPLATE_CHOICES = ("ELEGANT", "MODERN", "RUSTIC", "VIBRANT", "MINIMAL")
+
+
+@login_required(login_url="/account/login/")
+def qrcode_branded_preview(request, qr_id):
+    """Return a branded design preview as inline PDF for iframe rendering.
+
+    Query params same as download-branded.
+    """
+    org = _get_org(request)
+    if not org:
+        return redirect("accounts:profile")
+    from apps.orders.models import QRCode
+    from apps.orders.services.qr_generator import QRGeneratorService
+    from apps.orders.services.qr_print_designs import QRPrintDesignService
+
+    qr = get_object_or_404(QRCode, id=qr_id, organization=org, deleted_at__isnull=True)
+
+    design_template = request.GET.get("design_template", "ELEGANT").upper()
+    if design_template not in BRANDED_TEMPLATE_CHOICES:
+        design_template = "ELEGANT"
+
+    design_size = request.GET.get("design_size", "A4")
+    if design_size not in PRINT_SIZE_LABELS:
+        design_size = "A4"
+
+    table_name = request.GET.get("table_name", "").strip() or None
+    custom_text = request.GET.get("custom_text", "").strip() or None
+
+    target_url = QRGeneratorService.get_target_url(qr)
+    org_name = getattr(org, "name", "") or ""
+    org_logo_url = getattr(org, "logo", None) or None
+    theme_colors = QRPrintDesignService.get_theme_colors_from_org(org)
+
+    if not table_name and hasattr(qr, "table") and qr.table:
+        table_name = getattr(qr.table, "name", None) or getattr(qr.table, "label", None)
+
+    buf = QRPrintDesignService.generate_branded_print(
+        data_url=target_url,
+        design_template=design_template,
+        design_size=design_size,
+        org_name=org_name,
+        org_logo_url=org_logo_url,
+        theme_colors=theme_colors,
+        table_name=table_name,
+        custom_text=custom_text,
+    )
+
+    buf.seek(0)
+    response = HttpResponse(buf.read(), content_type="application/pdf")
+    response["Content-Disposition"] = "inline"
+    response["Cache-Control"] = "no-cache"
+    return response
 
 
 @login_required(login_url="/account/login/")

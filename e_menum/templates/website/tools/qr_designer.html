@@ -1,0 +1,167 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "QR Kod Tasarlayici" %} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="hero-gradient hero-gradient-resources pattern-dots">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 lg:pt-32 lg:pb-16">
+        <div class="max-w-3xl">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-400 text-sm font-semibold mb-6">
+                <i class="ph ph-paint-brush"></i>
+                {% trans "Ücretsiz Araç" %}
+            </span>
+            <h1 class="heading-display text-4xl lg:text-5xl text-white mb-4">{% trans "QR Kod Tasarlayici" %}</h1>
+            <p class="text-lg text-gray-300">{% trans "Markaniza ozel QR kod tasarlayin. Renk, sekil, logo ve cerceve secenekleriyle profesyonel QR kodlar olusturun." %}</p>
+        </div>
+    </div>
+</section>
+
+<section class="py-12 lg:py-20" x-data="qrDesigner()">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+
+            {# Config #}
+            <div class="lg:col-span-3 bg-gray-900 rounded-2xl border border-gray-800 p-6 lg:p-8">
+                <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                    <i class="ph ph-sliders text-primary-400"></i>
+                    {% trans "Tasarim Secenekleri" %}
+                </h2>
+
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "URL" %}</label>
+                        <input type="text" x-model="url" placeholder="https://restoraniniz.e-menum.net"
+                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 outline-none">
+                    </div>
+
+                    {# Color presets #}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">{% trans "Renk Sablon" %}</label>
+                        <div class="grid grid-cols-5 gap-2">
+                            <template x-for="preset in presets" :key="preset.name">
+                                <button type="button" @click="applyPreset(preset)"
+                                    class="flex flex-col items-center gap-1.5 p-2 rounded-lg border transition-all"
+                                    :class="currentPreset === preset.name ? 'border-primary-500 bg-primary-900/20' : 'border-gray-700 hover:border-gray-600'">
+                                    <div class="w-8 h-8 rounded-md border border-gray-700" :style="`background: linear-gradient(135deg, ${preset.fg} 50%, ${preset.bg} 50%)`"></div>
+                                    <span class="text-[10px] text-gray-400" x-text="preset.name"></span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "QR Rengi" %}</label>
+                            <div class="flex items-center gap-2">
+                                <input type="color" x-model="fgColor" class="w-8 h-8 rounded cursor-pointer border-0 bg-transparent">
+                                <input type="text" x-model="fgColor" class="flex-1 px-3 py-2 text-xs rounded-lg bg-gray-800 border border-gray-700 text-gray-300 font-mono focus:ring-2 focus:ring-primary-500 outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Arka Plan" %}</label>
+                            <div class="flex items-center gap-2">
+                                <input type="color" x-model="bgColor" class="w-8 h-8 rounded cursor-pointer border-0 bg-transparent">
+                                <input type="text" x-model="bgColor" class="flex-1 px-3 py-2 text-xs rounded-lg bg-gray-800 border border-gray-700 text-gray-300 font-mono focus:ring-2 focus:ring-primary-500 outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Frame style #}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">{% trans "Cerceve Stili" %}</label>
+                        <div class="flex flex-wrap gap-2">
+                            <template x-for="f in frames" :key="f.key">
+                                <button type="button" @click="frame = f.key"
+                                    class="px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors"
+                                    :class="frame === f.key ? 'bg-primary-500 text-white border-primary-500' : 'text-gray-400 border-gray-700 hover:border-gray-600'">
+                                    <span x-text="f.label"></span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+
+                    {# Label #}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Alt Yazi (opsiyonel)" %}</label>
+                        <input type="text" x-model="label" placeholder="{% trans 'orn. Menumuzu Tara' %}"
+                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 outline-none">
+                    </div>
+                </div>
+            </div>
+
+            {# Preview #}
+            <div class="lg:col-span-2 bg-gray-900 rounded-2xl border border-gray-800 p-6 lg:p-8 flex flex-col items-center">
+                <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2 self-start">
+                    <i class="ph ph-eye text-primary-400"></i>
+                    {% trans "Onizleme" %}
+                </h2>
+
+                <div class="rounded-xl p-6 mb-2" :class="frame !== 'none' ? 'border-2' : ''" :style="`background-color: ${bgColor}; border-color: ${fgColor}40`">
+                    <canvas x-ref="qrCanvas" width="256" height="256" class="block rounded"></canvas>
+                </div>
+                <p x-show="label" x-text="label" class="text-sm font-semibold mt-2 mb-4" :style="`color: ${fgColor}`"></p>
+
+                <div class="w-full mt-auto pt-4 space-y-3">
+                    <p class="text-xs text-gray-500 text-center">{% trans "Tam ozellikli QR tasarimciyi E-Menum panelinde kullanin." %}</p>
+                    <a href="{% url 'website:pricing' %}"
+                       class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors">
+                        <i class="ph ph-rocket-launch"></i>
+                        {% trans "14 Gun Ucretsiz Dene" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('qrDesigner', () => ({
+        url: 'https://e-menum.net',
+        fgColor: '#1A6B5A',
+        bgColor: '#FFFFFF',
+        frame: 'none',
+        label: '',
+        currentPreset: 'E-Menum',
+        presets: [
+            { name: 'E-Menum', fg: '#1A6B5A', bg: '#FFFFFF' },
+            { name: 'Koyu', fg: '#FFFFFF', bg: '#111827' },
+            { name: 'Klasik', fg: '#000000', bg: '#FFFFFF' },
+            { name: 'Altin', fg: '#92400E', bg: '#FFFBEB' },
+            { name: 'Deniz', fg: '#0E7490', bg: '#F0FDFA' },
+        ],
+        frames: [
+            { key: 'none', label: 'Yok' },
+            { key: 'simple', label: 'Basit' },
+            { key: 'rounded', label: 'Yuvarlatilmis' },
+        ],
+
+        init() {
+            this.renderQR();
+            this.$watch('url', () => this.renderQR());
+            this.$watch('fgColor', () => this.renderQR());
+            this.$watch('bgColor', () => this.renderQR());
+        },
+        applyPreset(preset) {
+            this.fgColor = preset.fg;
+            this.bgColor = preset.bg;
+            this.currentPreset = preset.name;
+        },
+        renderQR() {
+            const canvas = this.$refs.qrCanvas;
+            if (!canvas || !this.url) return;
+            QRCode.toCanvas(canvas, this.url, {
+                width: 256,
+                color: { dark: this.fgColor, light: this.bgColor },
+                margin: 2,
+            });
+        }
+    }));
+});
+</script>
+{% endblock %}

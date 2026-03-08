@@ -483,13 +483,13 @@
 
         // Fetch wrapper with CSRF
         async function fetchWithCsrf(url, options = {}) {
-            const defaultOptions = {
-                headers: {
-                    'X-CSRFToken': getCsrfToken(),
-                    'Content-Type': 'application/json',
-                },
+            options.headers = {
+                'X-CSRFToken': getCsrfToken(),
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                ...(options.headers || {}),
             };
-            return fetch(url, { ...defaultOptions, ...options });
+            return fetch(url, options);
         }
     </script>
 

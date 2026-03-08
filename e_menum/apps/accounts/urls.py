@@ -193,6 +193,11 @@ urlpatterns = [
         qr_views.qrcode_download_branded_print,
         name="qrcode-download-branded",
     ),
+    path(
+        "qr-codes/<uuid:qr_id>/preview-branded/",
+        qr_views.qrcode_branded_preview,
+        name="qrcode-preview-branded",
+    ),
     # ── Customer Management ───────────────────────────────────────────────
     path("customers/", customer_views.customer_list, name="customer-list"),
     path(

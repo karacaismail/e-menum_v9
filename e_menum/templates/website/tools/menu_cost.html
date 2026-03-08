@@ -1,0 +1,123 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Menu Maliyet Hesaplayici" %} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="hero-gradient hero-gradient-resources pattern-dots">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 lg:pt-32 lg:pb-16">
+        <div class="max-w-3xl">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-400 text-sm font-semibold mb-6">
+                <i class="ph ph-calculator"></i>
+                {% trans "Ücretsiz Araç" %}
+            </span>
+            <h1 class="heading-display text-4xl lg:text-5xl text-white mb-4">{% trans "Menu Maliyet Hesaplayici" %}</h1>
+            <p class="text-lg text-gray-300">{% trans "Basili menu maliyetinizi hesaplayin ve dijital menuye geciste ne kadar tasarruf edebileceginizi gorun." %}</p>
+        </div>
+    </div>
+</section>
+
+<section class="py-12 lg:py-20" x-data="menuCostCalculator()">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+            {# Input Card #}
+            <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6 lg:p-8">
+                <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                    <i class="ph ph-note-pencil text-primary-400"></i>
+                    {% trans "Mevcut Menu Bilgileri" %}
+                </h2>
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Menu Sayfa Sayisi" %}</label>
+                        <input type="number" x-model.number="pages" min="1" max="100"
+                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Masa Sayisi" %}</label>
+                        <input type="number" x-model.number="tables" min="1" max="500"
+                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Yillik Yeniden Basim Sayisi" %}</label>
+                        <input type="number" x-model.number="reprintsPerYear" min="1" max="24"
+                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Sayfa Basina Baski Maliyeti (TL)" %}</label>
+                        <input type="number" x-model.number="costPerPage" min="0.1" max="50" step="0.1"
+                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                    </div>
+                </div>
+            </div>
+
+            {# Results Card #}
+            <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6 lg:p-8">
+                <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                    <i class="ph ph-chart-bar text-primary-400"></i>
+                    {% trans "Maliyet Analizi" %}
+                </h2>
+
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center py-3 border-b border-gray-800">
+                        <span class="text-sm text-gray-400">{% trans "Tek Basim Maliyeti" %}</span>
+                        <span class="text-lg font-bold text-white" x-text="formatCurrency(singlePrintCost)"></span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 border-b border-gray-800">
+                        <span class="text-sm text-gray-400">{% trans "Yillik Basim Maliyeti" %}</span>
+                        <span class="text-lg font-bold text-red-400" x-text="formatCurrency(yearlyPrintCost)"></span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 border-b border-gray-800">
+                        <span class="text-sm text-gray-400">{% trans "E-Menum Yillik Maliyet" %}</span>
+                        <span class="text-lg font-bold text-primary-400" x-text="formatCurrency(emenumYearlyCost)"></span>
+                    </div>
+                    <div class="flex justify-between items-center py-4 bg-primary-900/20 rounded-xl px-4 mt-4">
+                        <span class="text-sm font-semibold text-primary-300">{% trans "Yillik Tasarruf" %}</span>
+                        <span class="text-2xl font-bold text-primary-400" x-text="formatCurrency(yearlySaving)"></span>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-gray-800">
+                    <a href="{% url 'website:pricing' %}"
+                       class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors">
+                        <i class="ph ph-rocket-launch"></i>
+                        {% trans "14 Gun Ucretsiz Dene" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('menuCostCalculator', () => ({
+        pages: 4,
+        tables: 20,
+        reprintsPerYear: 4,
+        costPerPage: 3.5,
+        emenumMonthly: 0,
+
+        get singlePrintCost() {
+            return this.pages * this.tables * this.costPerPage;
+        },
+        get yearlyPrintCost() {
+            return this.singlePrintCost * this.reprintsPerYear;
+        },
+        get emenumYearlyCost() {
+            return this.emenumMonthly * 12;
+        },
+        get yearlySaving() {
+            return Math.max(0, this.yearlyPrintCost - this.emenumYearlyCost);
+        },
+        formatCurrency(val) {
+            return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', minimumFractionDigits: 0 }).format(val);
+        }
+    }));
+});
+</script>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends "layouts/marketing.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "QR Kod Onizleme Araci" %} — E-Menum{% endblock %}
+
+{% block content %}
+<section class="hero-gradient hero-gradient-resources pattern-dots">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 lg:pt-32 lg:pb-16">
+        <div class="max-w-3xl">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-400 text-sm font-semibold mb-6">
+                <i class="ph ph-qr-code"></i>
+                {% trans "Ücretsiz Araç" %}
+            </span>
+            <h1 class="heading-display text-4xl lg:text-5xl text-white mb-4">{% trans "QR Kod Onizleme Araci" %}</h1>
+            <p class="text-lg text-gray-300">{% trans "QR kodunuzu farkli tasarimlarla onizleyin. Renk, logo ve stil seceneklerini deneyin." %}</p>
+        </div>
+    </div>
+</section>
+
+<section class="py-12 lg:py-20" x-data="qrPreview()">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+            {# Config Card #}
+            <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6 lg:p-8">
+                <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                    <i class="ph ph-gear text-primary-400"></i>
+                    {% trans "QR Kod Ayarlari" %}
+                </h2>
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "URL / Metin" %}</label>
+                        <input type="text" x-model="url" placeholder="https://example.com"
+                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "On Plan Rengi" %}</label>
+                        <div class="flex items-center gap-3">
+                            <input type="color" x-model="fgColor" class="w-10 h-10 rounded cursor-pointer border-0 bg-transparent">
+                            <span class="text-sm text-gray-400 font-mono" x-text="fgColor"></span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Arka Plan Rengi" %}</label>
+                        <div class="flex items-center gap-3">
+                            <input type="color" x-model="bgColor" class="w-10 h-10 rounded cursor-pointer border-0 bg-transparent">
+                            <span class="text-sm text-gray-400 font-mono" x-text="bgColor"></span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Boyut" %}</label>
+                        <input type="range" x-model.number="size" min="128" max="512" step="64"
+                            class="w-full accent-primary-500">
+                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                            <span>128px</span>
+                            <span x-text="size + 'px'" class="text-primary-400 font-semibold"></span>
+                            <span>512px</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Preview Card #}
+            <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6 lg:p-8 flex flex-col items-center justify-center">
+                <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2 self-start">
+                    <i class="ph ph-eye text-primary-400"></i>
+                    {% trans "Onizleme" %}
+                </h2>
+
+                <div class="bg-white rounded-xl p-6 mb-6" :style="`background-color: ${bgColor}`">
+                    <canvas x-ref="qrCanvas" :width="size" :height="size" class="block"></canvas>
+                </div>
+
+                <p class="text-xs text-gray-500 text-center mb-4">{% trans "Gercek QR kodunuz E-Menum panelinde olusturulur." %}</p>
+
+                <a href="{% url 'website:pricing' %}"
+                   class="inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors">
+                    <i class="ph ph-rocket-launch"></i>
+                    {% trans "14 Gun Ucretsiz Dene" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('qrPreview', () => ({
+        url: 'https://e-menum.net',
+        fgColor: '#1A6B5A',
+        bgColor: '#FFFFFF',
+        size: 256,
+
+        init() {
+            this.renderQR();
+            this.$watch('url', () => this.renderQR());
+            this.$watch('fgColor', () => this.renderQR());
+            this.$watch('bgColor', () => this.renderQR());
+            this.$watch('size', () => this.renderQR());
+        },
+
+        renderQR() {
+            const canvas = this.$refs.qrCanvas;
+            if (!canvas || !this.url) return;
+            QRCode.toCanvas(canvas, this.url, {
+                width: this.size,
+                color: { dark: this.fgColor, light: this.bgColor },
+                margin: 2,
+            });
+        }
+    }));
+});
+</script>
+{% endblock %}
