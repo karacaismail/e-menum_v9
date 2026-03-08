@@ -122,11 +122,15 @@ class SiteSettings(TimeStampedModel):
 
     # Pricing promo
     pricing_yearly_badge = models.CharField(
-        _("yillik promo rozeti"), max_length=50, default="2 AY BEDAVA",
+        _("yillik promo rozeti"),
+        max_length=50,
+        default="2 AY BEDAVA",
         help_text=_("Yillik toggle badge metni (orn. '2 AY BEDAVA', '%17 INDIRIM')"),
     )
     pricing_yearly_note = models.CharField(
-        _("yillik promo notu"), max_length=200, blank=True,
+        _("yillik promo notu"),
+        max_length=200,
+        blank=True,
         default="Yillik odemede 10 ay ucreti alinir.",
         help_text=_("Toggle altinda gosterilen aciklama metni."),
     )
