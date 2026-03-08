@@ -8,10 +8,12 @@
 <link rel="stylesheet" href="{% static 'admin/css/sidebar.css' %}">
 <link rel="stylesheet" href="{% static 'admin/css/content.css' %}">
 <link rel="stylesheet" href="{% static 'admin/css/image-upload-widget.css' %}">
+<link rel="stylesheet" href="{% static 'admin/css/admin-ux.css' %}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
 <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
+<script src="{% static 'admin/js/admin-ux.js' %}" defer></script>
 {% endblock %}
 
 {% block bodyclass %}admin-layout-body{% endblock %}
@@ -268,6 +270,13 @@
 
             {% if user.is_authenticated %}
             <div class="topbar-actions">
+                {# ── Command Palette Trigger ── #}
+                <button class="ux-cmd-trigger" @click="$store.cmdPalette.toggle()" title="{% trans 'Search' %} (Ctrl+K)">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <span>{% trans 'Search...' %}</span>
+                    <span class="ux-cmd-trigger-kbd">&#8984;K</span>
+                </button>
+
                 {# ── Notification Bell Dropdown ── #}
                 {% include "partials/_notification_widget.html" %}
 
@@ -425,6 +434,187 @@
         </footer>
         {% endblock %}
     </main>
+
+    {% if user.is_authenticated %}
+    {# ═══════════════════════════════════════════ #}
+    {# TOAST NOTIFICATION STACK                    #}
+    {# ═══════════════════════════════════════════ #}
+    <div class="ux-toast-stack" x-data>
+        <template x-for="toast in $store.toasts.items" :key="toast.id">
+            <div class="ux-toast"
+                 :class="'ux-toast--' + toast.type + (toast.visible ? '' : ' toast-leaving')"
+                 x-show="true"
+                 x-transition>
+                <span class="ux-toast-icon">
+                    <i class="ph"
+                       :class="{
+                           'ph-check-circle': toast.type === 'success',
+                           'ph-x-circle': toast.type === 'error',
+                           'ph-warning': toast.type === 'warning',
+                           'ph-info': toast.type === 'info'
+                       }"></i>
+                </span>
+                <span class="ux-toast-content" x-text="toast.message"></span>
+                <button class="ux-toast-dismiss" @click="$store.toasts.dismiss(toast.id)">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+        </template>
+    </div>
+
+    {# ═══════════════════════════════════════════ #}
+    {# COMMAND PALETTE (Ctrl+K)                    #}
+    {# ═══════════════════════════════════════════ #}
+    <div class="ux-cmd-overlay"
+         x-data
+         x-show="$store.cmdPalette.open"
+         x-transition.opacity.duration.150ms
+         @click.self="$store.cmdPalette.close()"
+         @keydown.escape.window="$store.cmdPalette.close()"
+         x-cloak
+         style="display:none">
+        <div class="ux-cmd-dialog" @click.stop>
+            <div class="ux-cmd-input-wrapper">
+                <i class="ph ph-magnifying-glass"></i>
+                <input type="text"
+                       class="ux-cmd-input"
+                       placeholder="{% trans 'Search pages, models, actions...' %}"
+                       x-model="$store.cmdPalette.query"
+                       @input.debounce.200ms="$store.cmdPalette.search($event.target.value)"
+                       @keydown.down.prevent="$store.cmdPalette.selectNext()"
+                       @keydown.up.prevent="$store.cmdPalette.selectPrev()"
+                       @keydown.enter.prevent="$store.cmdPalette.go()"
+                       x-ref="cmdInput"
+                       x-effect="if ($store.cmdPalette.open) { $nextTick(() => $refs.cmdInput?.focus()) }">
+                <span class="ux-cmd-kbd">ESC</span>
+            </div>
+
+            <div class="ux-cmd-results">
+                <template x-if="$store.cmdPalette.loading">
+                    <div class="ux-cmd-loading">
+                        <i class="ph ph-spinner-gap"></i>
+                        <span>{% trans 'Searching...' %}</span>
+                    </div>
+                </template>
+
+                <template x-if="!$store.cmdPalette.loading && $store.cmdPalette.results.length === 0">
+                    <div class="ux-cmd-empty">
+                        <i class="ph ph-magnifying-glass"></i>
+                        <p>{% trans 'No results found' %}</p>
+                    </div>
+                </template>
+
+                <template x-if="!$store.cmdPalette.loading && $store.cmdPalette.results.length > 0">
+                    <div>
+                        <template x-for="(item, idx) in $store.cmdPalette.results" :key="item.url || idx">
+                            <a :href="item.url"
+                               class="ux-cmd-item"
+                               :class="{ 'selected': idx === $store.cmdPalette.selectedIndex }"
+                               @click="$store.cmdPalette.go(idx)"
+                               @mouseenter="$store.cmdPalette.selectedIndex = idx">
+                                <i class="ph" :class="'ph-' + (item.icon || 'file')"></i>
+                                <span class="ux-cmd-item-label" x-text="item.label"></span>
+                                <span class="ux-cmd-item-cat" x-text="item.category"></span>
+                            </a>
+                        </template>
+                    </div>
+                </template>
+            </div>
+
+            <div class="ux-cmd-footer">
+                <span><kbd>&uarr;</kbd> <kbd>&darr;</kbd> {% trans 'navigate' %}</span>
+                <span><kbd>&#9166;</kbd> {% trans 'open' %}</span>
+                <span><kbd>esc</kbd> {% trans 'close' %}</span>
+            </div>
+        </div>
+    </div>
+
+    {# ═══════════════════════════════════════════ #}
+    {# CONFIRM DIALOG                              #}
+    {# ═══════════════════════════════════════════ #}
+    <div class="ux-confirm-overlay"
+         x-data
+         x-show="$store.confirm.open"
+         x-transition.opacity.duration.150ms
+         @keydown.escape.window="$store.confirm.cancel()"
+         x-cloak
+         style="display:none">
+        <div class="ux-confirm-dialog" @click.stop>
+            <h3 class="ux-confirm-title" x-text="$store.confirm.title"></h3>
+            <p class="ux-confirm-message" x-text="$store.confirm.message"></p>
+            <div class="ux-confirm-actions">
+                <button class="ux-confirm-btn ux-confirm-btn--cancel"
+                        @click="$store.confirm.cancel()"
+                        x-text="$store.confirm.cancelLabel"></button>
+                <button class="ux-confirm-btn"
+                        :class="$store.confirm.variant === 'danger' ? 'ux-confirm-btn--danger' : 'ux-confirm-btn--primary'"
+                        @click="$store.confirm.accept()"
+                        x-text="$store.confirm.confirmLabel"></button>
+            </div>
+        </div>
+    </div>
+
+    {# ═══════════════════════════════════════════ #}
+    {# KEYBOARD SHORTCUTS HELP MODAL               #}
+    {# ═══════════════════════════════════════════ #}
+    <div class="ux-shortcuts-modal" id="keyboard-shortcuts-modal" onclick="if(event.target===this)this.style.display='none'">
+        <div class="ux-shortcuts-dialog">
+            <h3><i class="ph ph-keyboard"></i> {% trans 'Keyboard Shortcuts' %}</h3>
+
+            <div class="ux-shortcuts-group">
+                <h4>{% trans 'Global' %}</h4>
+                <div class="ux-shortcut-row">
+                    <span class="ux-shortcut-label">{% trans 'Command palette' %}</span>
+                    <span class="ux-shortcut-keys"><kbd>&#8984;</kbd><kbd>K</kbd></span>
+                </div>
+                <div class="ux-shortcut-row">
+                    <span class="ux-shortcut-label">{% trans 'Keyboard shortcuts' %}</span>
+                    <span class="ux-shortcut-keys"><kbd>?</kbd></span>
+                </div>
+            </div>
+
+            <div class="ux-shortcuts-group">
+                <h4>{% trans 'Navigation' %} (g + key)</h4>
+                <div class="ux-shortcut-row">
+                    <span class="ux-shortcut-label">{% trans 'Dashboard' %}</span>
+                    <span class="ux-shortcut-keys"><kbd>g</kbd><kbd>d</kbd></span>
+                </div>
+                <div class="ux-shortcut-row">
+                    <span class="ux-shortcut-label">{% trans 'Users' %}</span>
+                    <span class="ux-shortcut-keys"><kbd>g</kbd><kbd>u</kbd></span>
+                </div>
+                <div class="ux-shortcut-row">
+                    <span class="ux-shortcut-label">{% trans 'Organizations' %}</span>
+                    <span class="ux-shortcut-keys"><kbd>g</kbd><kbd>o</kbd></span>
+                </div>
+                <div class="ux-shortcut-row">
+                    <span class="ux-shortcut-label">{% trans 'Menus' %}</span>
+                    <span class="ux-shortcut-keys"><kbd>g</kbd><kbd>m</kbd></span>
+                </div>
+                <div class="ux-shortcut-row">
+                    <span class="ux-shortcut-label">{% trans 'Products' %}</span>
+                    <span class="ux-shortcut-keys"><kbd>g</kbd><kbd>p</kbd></span>
+                </div>
+                <div class="ux-shortcut-row">
+                    <span class="ux-shortcut-label">{% trans 'Settings' %}</span>
+                    <span class="ux-shortcut-keys"><kbd>g</kbd><kbd>s</kbd></span>
+                </div>
+            </div>
+
+            <div class="ux-shortcuts-group">
+                <h4>{% trans 'List view' %}</h4>
+                <div class="ux-shortcut-row">
+                    <span class="ux-shortcut-label">{% trans 'Focus row' %}</span>
+                    <span class="ux-shortcut-keys"><kbd>Tab</kbd></span>
+                </div>
+                <div class="ux-shortcut-row">
+                    <span class="ux-shortcut-label">{% trans 'Open record' %}</span>
+                    <span class="ux-shortcut-keys"><kbd>Enter</kbd></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
     {% if user.is_authenticated %}
     {# Mobile bottom navigation bar #}

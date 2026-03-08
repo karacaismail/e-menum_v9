@@ -61,8 +61,15 @@
 
 {% block content %}
 <div id="content-main">
-    <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.model_name }}_form" novalidate>
+    <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.model_name }}_form" novalidate
+          x-data="formGuard">
         {% csrf_token %}
+
+        {# Unsaved changes indicator #}
+        <div class="ux-unsaved-indicator" x-show="isDirty" x-transition x-cloak>
+            <i class="ph ph-warning-circle"></i>
+            <span>{% trans 'Unsaved changes' %}</span>
+        </div>
 
         {% block form_top %}{% endblock %}
 

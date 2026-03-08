@@ -34,6 +34,11 @@
 <div class="content-title-bar">
     <h1 class="page-title">{{ cl.opts.verbose_name_plural|capfirst }}</h1>
     <div class="title-actions">
+        {% if cl.result_count %}
+        <span class="ux-result-count" title="{% trans 'Total records' %}">
+            {{ cl.result_count }}
+        </span>
+        {% endif %}
         {% block object-tools %}
             {% change_list_object_tools %}
         {% endblock %}

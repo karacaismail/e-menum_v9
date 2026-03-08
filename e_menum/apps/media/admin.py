@@ -19,32 +19,43 @@ from shared.permissions.admin_permission_mixin import EMenumPermissionMixin
 
 class MediaInline(admin.TabularInline):
     """Inline to show media files inside a folder."""
+
     model = Media
     extra = 0
-    fields = ['thumbnail_preview', 'name', 'media_type', 'status', 'file_size_display']
-    readonly_fields = ['thumbnail_preview', 'name', 'media_type', 'status', 'file_size_display']
+    fields = ["thumbnail_preview", "name", "media_type", "status", "file_size_display"]
+    readonly_fields = [
+        "thumbnail_preview",
+        "name",
+        "media_type",
+        "status",
+        "file_size_display",
+    ]
     show_change_link = True
     max_num = 0  # Don't allow adding from inline
     can_delete = False
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        return qs.filter(deleted_at__isnull=True)[:10]
+        return qs.filter(deleted_at__isnull=True)
 
-    @admin.display(description=_('Preview'))
+    @admin.display(description=_("Preview"))
     def thumbnail_preview(self, obj):
         if obj.url and obj.is_image:
             return format_html(
                 '<img src="{}" style="max-height: 32px; max-width: 48px; '
                 'object-fit: cover; border-radius: 4px;" />',
-                obj.thumbnail_url or obj.url
+                obj.thumbnail_url or obj.url,
             )
-        icon = {'VIDEO': 'ph-film-strip', 'DOCUMENT': 'ph-file-text', 'AUDIO': 'ph-music-note'}.get(obj.media_type, 'ph-file')
+        icon = {
+            "VIDEO": "ph-film-strip",
+            "DOCUMENT": "ph-file-text",
+            "AUDIO": "ph-music-note",
+        }.get(obj.media_type, "ph-file")
         return format_html(
             '<i class="ph {}" style="font-size: 24px; color: #818cf8;"></i>', icon
         )
 
-    @admin.display(description=_('Size'))
+    @admin.display(description=_("Size"))
     def file_size_display(self, obj):
         return obj.human_readable_size
 
@@ -54,38 +65,42 @@ class MediaFolderAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     """Admin interface for MediaFolder management."""
 
     list_display = [
-        'name', 'organization', 'parent', 'is_public',
-        'media_count', 'children_count', 'sort_order', 'created_at'
+        "name",
+        "organization",
+        "parent",
+        "is_public",
+        "media_count",
+        "children_count",
+        "sort_order",
+        "created_at",
     ]
-    list_filter = [
-        'is_public', 'organization', 'created_at'
-    ]
-    search_fields = ['name', 'slug', 'description', 'organization__name']
+    list_filter = ["is_public", "organization", "created_at"]
+    search_fields = ["name", "slug", "description", "organization__name"]
     readonly_fields = [
-        'id', 'created_at', 'updated_at', 'media_count', 'children_count'
+        "id",
+        "created_at",
+        "updated_at",
+        "media_count",
+        "children_count",
     ]
-    ordering = ['organization', 'parent', 'sort_order', 'name']
-    prepopulated_fields = {'slug': ('name',)}
+    ordering = ["organization", "parent", "sort_order", "name"]
+    prepopulated_fields = {"slug": ("name",)}
 
     fieldsets = (
-        (None, {
-            'fields': ('id', 'organization', 'parent', 'name', 'slug')
-        }),
-        (_('Details'), {
-            'fields': ('description', 'is_public', 'sort_order')
-        }),
-        (_('Statistics'), {
-            'fields': ('media_count', 'children_count'),
-            'classes': ('collapse',)
-        }),
-        (_('Metadata'), {
-            'fields': ('metadata',),
-            'classes': ('collapse',)
-        }),
-        (_('Timestamps'), {
-            'fields': ('created_at', 'updated_at', 'deleted_at'),
-            'classes': ('collapse',)
-        }),
+        (None, {"fields": ("id", "organization", "parent", "name", "slug")}),
+        (_("Details"), {"fields": ("description", "is_public", "sort_order")}),
+        (
+            _("Statistics"),
+            {"fields": ("media_count", "children_count"), "classes": ("collapse",)},
+        ),
+        (_("Metadata"), {"fields": ("metadata",), "classes": ("collapse",)}),
+        (
+            _("Timestamps"),
+            {
+                "fields": ("created_at", "updated_at", "deleted_at"),
+                "classes": ("collapse",),
+            },
+        ),
     )
 
     inlines = [MediaInline]
@@ -95,19 +110,22 @@ class MediaFolderAdmin(EMenumPermissionMixin, admin.ModelAdmin):
         qs = super().get_queryset(request)
         return qs.filter(deleted_at__isnull=True)
 
-    @admin.display(description=_('Media Count'))
+    @admin.display(description=_("Media Count"))
     def media_count(self, obj):
         """Display the number of media files in this folder."""
         count = obj.media_count
         if count > 0:
-            url = reverse('admin:media_media_changelist') + f'?folder__id__exact={obj.pk}'
+            url = (
+                reverse("admin:media_media_changelist") + f"?folder__id__exact={obj.pk}"
+            )
             return format_html(
                 '<a href="{}" style="color: #818cf8; font-weight: 600;">{}</a>',
-                url, count
+                url,
+                count,
             )
         return format_html('<span style="color: #6c757d;">0</span>')
 
-    @admin.display(description=_('Subfolders'))
+    @admin.display(description=_("Subfolders"))
     def children_count(self, obj):
         """Display the number of child folders."""
         return obj.children_count
@@ -118,154 +136,185 @@ class MediaAdmin(EMenumPermissionMixin, admin.ModelAdmin):
     """Admin interface for Media management."""
 
     list_display = [
-        'thumbnail_preview', 'name', 'organization', 'folder',
-        'media_type_badge', 'status_badge', 'file_size_display',
-        'is_public', 'usage_count', 'created_at'
+        "thumbnail_preview",
+        "name",
+        "organization",
+        "folder",
+        "media_type_badge",
+        "status_badge",
+        "file_size_display",
+        "is_public",
+        "usage_count",
+        "created_at",
     ]
     list_filter = [
-        'media_type', 'status', 'storage', 'is_public',
-        'organization', 'created_at'
+        "media_type",
+        "status",
+        "storage",
+        "is_public",
+        "organization",
+        "created_at",
     ]
     search_fields = [
-        'name', 'original_filename', 'alt_text', 'title',
-        'organization__name', 'folder__name'
+        "name",
+        "original_filename",
+        "alt_text",
+        "title",
+        "organization__name",
+        "folder__name",
     ]
     readonly_fields = [
-        'id', 'thumbnail_preview_large', 'file_size_display',
-        'dimensions', 'duration_formatted', 'human_readable_size',
-        'usage_count', 'last_used_at', 'created_at', 'updated_at'
+        "id",
+        "thumbnail_preview_large",
+        "file_size_display",
+        "dimensions",
+        "duration_formatted",
+        "human_readable_size",
+        "usage_count",
+        "last_used_at",
+        "created_at",
+        "updated_at",
     ]
-    ordering = ['-created_at']
-    date_hierarchy = 'created_at'
+    ordering = ["-created_at"]
+    date_hierarchy = "created_at"
     list_per_page = 50
 
     fieldsets = (
-        (None, {
-            'fields': ('id', 'organization', 'folder', 'uploaded_by')
-        }),
-        (_('File Information'), {
-            'fields': (
-                'name', 'original_filename', 'media_type', 'status',
-                'mime_type', 'storage'
-            )
-        }),
-        (_('Preview'), {
-            'fields': ('thumbnail_preview_large',),
-            'classes': ('collapse',)
-        }),
-        (_('URLs'), {
-            'fields': ('file_path', 'url', 'thumbnail_url')
-        }),
-        (_('Dimensions & Size'), {
-            'fields': (
-                'file_size', 'human_readable_size',
-                'width', 'height', 'dimensions',
-                'duration', 'duration_formatted'
-            ),
-            'classes': ('collapse',)
-        }),
-        (_('SEO & Accessibility'), {
-            'fields': ('alt_text', 'title', 'caption', 'is_public')
-        }),
-        (_('Usage Statistics'), {
-            'fields': ('usage_count', 'last_used_at'),
-            'classes': ('collapse',)
-        }),
-        (_('Metadata'), {
-            'fields': ('metadata',),
-            'classes': ('collapse',)
-        }),
-        (_('Timestamps'), {
-            'fields': ('created_at', 'updated_at', 'deleted_at'),
-            'classes': ('collapse',)
-        }),
+        (None, {"fields": ("id", "organization", "folder", "uploaded_by")}),
+        (
+            _("File Information"),
+            {
+                "fields": (
+                    "name",
+                    "original_filename",
+                    "media_type",
+                    "status",
+                    "mime_type",
+                    "storage",
+                )
+            },
+        ),
+        (
+            _("Preview"),
+            {"fields": ("thumbnail_preview_large",), "classes": ("collapse",)},
+        ),
+        (_("URLs"), {"fields": ("file_path", "url", "thumbnail_url")}),
+        (
+            _("Dimensions & Size"),
+            {
+                "fields": (
+                    "file_size",
+                    "human_readable_size",
+                    "width",
+                    "height",
+                    "dimensions",
+                    "duration",
+                    "duration_formatted",
+                ),
+                "classes": ("collapse",),
+            },
+        ),
+        (
+            _("SEO & Accessibility"),
+            {"fields": ("alt_text", "title", "caption", "is_public")},
+        ),
+        (
+            _("Usage Statistics"),
+            {"fields": ("usage_count", "last_used_at"), "classes": ("collapse",)},
+        ),
+        (_("Metadata"), {"fields": ("metadata",), "classes": ("collapse",)}),
+        (
+            _("Timestamps"),
+            {
+                "fields": ("created_at", "updated_at", "deleted_at"),
+                "classes": ("collapse",),
+            },
+        ),
     )
 
     def get_queryset(self, request):
         """Filter out soft-deleted media and optimize queries."""
         qs = super().get_queryset(request)
         return qs.filter(deleted_at__isnull=True).select_related(
-            'organization', 'folder', 'uploaded_by'
+            "organization", "folder", "uploaded_by"
         )
 
-    @admin.display(description=_('Preview'))
+    @admin.display(description=_("Preview"))
     def thumbnail_preview(self, obj):
         """Display a small thumbnail preview."""
         if obj.thumbnail_url:
             return format_html(
                 '<img src="{}" style="max-height: 40px; max-width: 60px; '
                 'object-fit: cover; border-radius: 4px;" />',
-                obj.thumbnail_url
+                obj.thumbnail_url,
             )
         elif obj.url and obj.is_image:
             return format_html(
                 '<img src="{}" style="max-height: 40px; max-width: 60px; '
                 'object-fit: cover; border-radius: 4px;" />',
-                obj.url
+                obj.url,
             )
-        return format_html(
-            '<span style="color: #999;">No preview</span>'
-        )
+        return format_html('<span style="color: #999;">No preview</span>')
 
-    @admin.display(description=_('Preview'))
+    @admin.display(description=_("Preview"))
     def thumbnail_preview_large(self, obj):
         """Display a larger thumbnail preview for detail view."""
         if obj.thumbnail_url:
             return format_html(
                 '<img src="{}" style="max-height: 200px; max-width: 300px; '
                 'object-fit: contain; border-radius: 8px; border: 1px solid #ddd;" />',
-                obj.thumbnail_url
+                obj.thumbnail_url,
             )
         elif obj.url and obj.is_image:
             return format_html(
                 '<img src="{}" style="max-height: 200px; max-width: 300px; '
                 'object-fit: contain; border-radius: 8px; border: 1px solid #ddd;" />',
-                obj.url
+                obj.url,
             )
-        return format_html(
-            '<span style="color: #999;">No preview available</span>'
-        )
+        return format_html('<span style="color: #999;">No preview available</span>')
 
-    @admin.display(description=_('Type'))
+    @admin.display(description=_("Type"))
     def media_type_badge(self, obj):
         """Display media type with color-coded badge."""
         colors = {
-            'IMAGE': '#3B82F6',     # Blue
-            'VIDEO': '#EF4444',     # Red
-            'DOCUMENT': '#10B981',  # Green
-            'AUDIO': '#8B5CF6',     # Purple
+            "IMAGE": "#3B82F6",  # Blue
+            "VIDEO": "#EF4444",  # Red
+            "DOCUMENT": "#10B981",  # Green
+            "AUDIO": "#8B5CF6",  # Purple
         }
-        color = colors.get(obj.media_type, '#6B7280')
+        color = colors.get(obj.media_type, "#6B7280")
         return format_html(
             '<span style="background-color: {}; color: white; '
-            'padding: 2px 8px; border-radius: 4px; font-size: 11px; '
+            "padding: 2px 8px; border-radius: 4px; font-size: 11px; "
             'font-weight: 500;">{}</span>',
-            color, obj.get_media_type_display()
+            color,
+            obj.get_media_type_display(),
         )
 
-    @admin.display(description=_('Status'))
+    @admin.display(description=_("Status"))
     def status_badge(self, obj):
         """Display status with color-coded badge."""
         colors = {
-            'PENDING': '#F59E0B',     # Amber
-            'PROCESSING': '#3B82F6',  # Blue
-            'READY': '#10B981',       # Green
-            'FAILED': '#EF4444',      # Red
+            "PENDING": "#F59E0B",  # Amber
+            "PROCESSING": "#3B82F6",  # Blue
+            "READY": "#10B981",  # Green
+            "FAILED": "#EF4444",  # Red
         }
-        color = colors.get(obj.status, '#6B7280')
+        color = colors.get(obj.status, "#6B7280")
         return format_html(
             '<span style="background-color: {}; color: white; '
-            'padding: 2px 8px; border-radius: 4px; font-size: 11px; '
+            "padding: 2px 8px; border-radius: 4px; font-size: 11px; "
             'font-weight: 500;">{}</span>',
-            color, obj.get_status_display()
+            color,
+            obj.get_status_display(),
         )
 
-    @admin.display(description=_('Size'))
+    @admin.display(description=_("Size"))
     def file_size_display(self, obj):
         """Display file size in human-readable format."""
         return obj.human_readable_size
 
-    @admin.display(description=_('Dimensions'))
+    @admin.display(description=_("Dimensions"))
     def dimensions(self, obj):
         """Display dimensions for images/videos."""
-        return obj.dimensions or '-'
+        return obj.dimensions or "-"
