@@ -1,7 +1,13 @@
 {% extends "admin/base_site.html" %}
-{% load i18n static %}
+{% load i18n static log %}
 
 {% block title %}Dashboard | E-Menum Admin{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<link rel="stylesheet" href="{% static 'admin/css/enterprise-dashboard.css' %}">
+{% endblock %}
 
 {% block breadcrumbs %}
 <nav class="breadcrumbs" aria-label="{% trans 'Breadcrumb' %}">
@@ -17,143 +23,423 @@
 {% block content_title %}{% endblock %}
 
 {% block content %}
-<div class="dashboard">
-    {# Welcome Section #}
-    <div class="dashboard-welcome">
-        <div class="welcome-text">
-            <h1>{% trans 'Welcome back' %}{% if user.get_short_name %}, {{ user.get_short_name }}{% endif %}</h1>
-            <p>{% trans 'Here is what is happening with your platform today.' %}</p>
+<div class="ed" x-data="enterpriseDashboard()" x-init="init()">
+
+    {# ═══════════════════════════════════════════ #}
+    {# ROW 0: Welcome Header                       #}
+    {# ═══════════════════════════════════════════ #}
+    <div class="ed-header">
+        <div class="ed-header-left">
+            <h1 class="ed-greeting" x-text="greeting + '{% if user.get_short_name %}, {{ user.get_short_name }}{% endif %}'">
+                {% trans 'Welcome back' %}{% if user.get_short_name %}, {{ user.get_short_name }}{% endif %}
+            </h1>
+            <p class="ed-subtitle">{% trans 'Platform overview and key metrics at a glance.' %}</p>
         </div>
-        <div class="welcome-date">
-            <i class="ph ph-calendar-blank"></i>
-            <span>{% now "d F Y" %}</span>
+        <div class="ed-header-right">
+            <div class="ed-live-clock">
+                <i class="ph ph-clock"></i>
+                <span x-text="liveClock">--:--</span>
+            </div>
+            <span class="ed-date-badge">
+                <i class="ph ph-calendar-blank"></i>
+                {% now "d M Y" %}
+            </span>
+            <button @click="refreshAll()" class="ed-refresh-btn" :class="{ 'spinning': refreshing }">
+                <i class="ph ph-arrow-clockwise"></i>
+            </button>
         </div>
     </div>
 
-    {# Quick Stats #}
-    <div class="dashboard-stats">
-        {% for app in app_list %}
-        <div class="stat-card">
-            <div class="stat-icon">
-                {% if app.app_label == 'core' %}
-                    <i class="ph ph-shield-check"></i>
-                {% elif app.app_label == 'menu' %}
-                    <i class="ph ph-fork-knife"></i>
-                {% elif app.app_label == 'orders' %}
-                    <i class="ph ph-receipt"></i>
-                {% elif app.app_label == 'customers' %}
-                    <i class="ph ph-users-three"></i>
-                {% elif app.app_label == 'media' %}
-                    <i class="ph ph-image"></i>
-                {% elif app.app_label == 'notifications' %}
-                    <i class="ph ph-bell"></i>
-                {% else %}
-                    <i class="ph ph-squares-four"></i>
-                {% endif %}
-            </div>
-            <div class="stat-info">
-                <span class="stat-label">{{ app.name }}</span>
-                <span class="stat-value">{{ app.models|length }} {% trans 'models' %}</span>
-            </div>
-            <a href="{{ app.app_url }}" class="stat-link" title="{% trans 'Manage' %} {{ app.name }}">
-                <i class="ph ph-arrow-right"></i>
-            </a>
-        </div>
-        {% endfor %}
-    </div>
-
-    {# Main Content Grid #}
-    <div class="dashboard-grid">
-        {# Quick Access - App List #}
-        <div class="dashboard-card dashboard-card--wide">
-            <div class="card-header">
-                <h2><i class="ph ph-grid-four"></i> {% trans 'Quick Access' %}</h2>
-            </div>
-            <div class="card-body">
-                <div class="quick-access-grid">
-                    {% for app in app_list %}
-                        {% for model in app.models %}
-                        <a href="{{ model.admin_url }}" class="quick-access-item">
-                            <div class="qa-icon">
-                                {% if model.object_name == 'Organization' %}<i class="ph ph-buildings"></i>
-                                {% elif model.object_name == 'User' %}<i class="ph ph-users"></i>
-                                {% elif model.object_name == 'Menu' %}<i class="ph ph-book-open"></i>
-                                {% elif model.object_name == 'Product' %}<i class="ph ph-package"></i>
-                                {% elif model.object_name == 'Category' %}<i class="ph ph-folders"></i>
-                                {% elif model.object_name == 'Order' %}<i class="ph ph-receipt"></i>
-                                {% elif model.object_name == 'Customer' %}<i class="ph ph-user"></i>
-                                {% elif model.object_name == 'Theme' %}<i class="ph ph-palette"></i>
-                                {% elif model.object_name == 'QRCode' %}<i class="ph ph-qr-code"></i>
-                                {% elif model.object_name == 'Table' %}<i class="ph ph-armchair"></i>
-                                {% elif model.object_name == 'Zone' %}<i class="ph ph-map-trifold"></i>
-                                {% elif model.object_name == 'Media' %}<i class="ph ph-image"></i>
-                                {% elif model.object_name == 'Branch' %}<i class="ph ph-map-pin"></i>
-                                {% elif model.object_name == 'Role' %}<i class="ph ph-shield"></i>
-                                {% elif model.object_name == 'AuditLog' %}<i class="ph ph-clipboard-text"></i>
-                                {% elif model.object_name == 'Notification' %}<i class="ph ph-bell"></i>
-                                {% else %}<i class="ph ph-dot"></i>
-                                {% endif %}
-                            </div>
-                            <div class="qa-info">
-                                <span class="qa-name">{{ model.name }}</span>
-                                <span class="qa-app">{{ app.name }}</span>
-                            </div>
-                            <div class="qa-actions">
-                                {% if model.add_url %}
-                                <a href="{{ model.add_url }}" class="qa-action" title="{% trans 'Add' %}">
-                                    <i class="ph ph-plus"></i>
-                                </a>
-                                {% endif %}
-                            </div>
-                        </a>
-                        {% endfor %}
-                    {% endfor %}
+    {# ═══════════════════════════════════════════ #}
+    {# ROW 1: KPI Strip (6 cards)                  #}
+    {# ═══════════════════════════════════════════ #}
+    <div class="ed-kpi-strip">
+        <template x-for="(kpi, idx) in kpis" :key="idx">
+            <div class="ed-kpi-card" :class="{ 'loading': kpiLoading }">
+                <div class="ed-kpi-icon" :style="'background:' + kpi.bg + ';color:' + kpi.color">
+                    <i class="ph" :class="'ph-' + kpi.icon"></i>
                 </div>
+                <div class="ed-kpi-body">
+                    <span class="ed-kpi-label" x-text="kpi.label"></span>
+                    <span class="ed-kpi-value" x-text="kpi.displayValue"></span>
+                    <span class="ed-kpi-trend"
+                          :class="{ 'trend-up': kpi.change > 0, 'trend-down': kpi.change < 0, 'trend-neutral': kpi.change === 0 }">
+                        <i class="ph" :class="kpi.change > 0 ? 'ph-trend-up' : kpi.change < 0 ? 'ph-trend-down' : 'ph-minus'"></i>
+                        <span x-text="(kpi.change > 0 ? '+' : '') + kpi.change + '%'"></span>
+                    </span>
+                </div>
+                <div class="ed-kpi-spark" :id="'spark-' + idx"></div>
+            </div>
+        </template>
+    </div>
+
+    {# ═══════════════════════════════════════════ #}
+    {# ROW 2: System Health Strip                  #}
+    {# ═══════════════════════════════════════════ #}
+    <div class="ed-health-strip">
+        <div class="ed-health-card">
+            <div class="ed-health-dot dot-green"></div>
+            <div class="ed-health-info">
+                <span class="ed-health-label">{% trans 'Server' %}</span>
+                <span class="ed-health-value">{% trans 'Online' %}</span>
+            </div>
+        </div>
+        <div class="ed-health-card">
+            <div class="ed-health-dot dot-green"></div>
+            <div class="ed-health-info">
+                <span class="ed-health-label">{% trans 'Database' %}</span>
+                <span class="ed-health-value">PostgreSQL</span>
+            </div>
+        </div>
+        <div class="ed-health-card">
+            <div class="ed-health-dot dot-green"></div>
+            <div class="ed-health-info">
+                <span class="ed-health-label">{% trans 'Cache' %}</span>
+                <span class="ed-health-value">Redis</span>
+            </div>
+        </div>
+        <div class="ed-health-card">
+            <div class="ed-health-dot dot-green"></div>
+            <div class="ed-health-info">
+                <span class="ed-health-label">Django</span>
+                <span class="ed-health-value">{{ django_version|default:"5.x" }}</span>
+            </div>
+        </div>
+        <div class="ed-health-card">
+            <div class="ed-health-dot dot-green"></div>
+            <div class="ed-health-info">
+                <span class="ed-health-label">Python</span>
+                <span class="ed-health-value">{{ python_version|default:"3.13" }}</span>
+            </div>
+        </div>
+        <div class="ed-health-card">
+            <div class="ed-health-info">
+                <span class="ed-health-label">{% trans 'Uptime' %}</span>
+                <span class="ed-health-value" x-text="uptime">—</span>
+            </div>
+        </div>
+    </div>
+
+    {# ═══════════════════════════════════════════ #}
+    {# ROW 3: Charts + Quick Actions               #}
+    {# ═══════════════════════════════════════════ #}
+    <div class="ed-main-grid">
+        {# QR Trend Chart #}
+        <div class="ed-card ed-card-chart">
+            <div class="ed-card-header">
+                <h2><i class="ph ph-chart-line-up"></i> {% trans 'QR Scans Trend' %}</h2>
+                <select class="ed-range-select" x-model="dateRange" @change="fetchQrTrend()">
+                    <option value="7d">{% trans '7 Days' %}</option>
+                    <option value="30d" selected>{% trans '30 Days' %}</option>
+                    <option value="90d">{% trans '90 Days' %}</option>
+                </select>
+            </div>
+            <div class="ed-card-body">
+                <div id="qrTrendChart" style="width:100%;height:260px"></div>
             </div>
         </div>
 
-        {# Recent Actions #}
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h2><i class="ph ph-clock-counter-clockwise"></i> {% trans 'Recent Actions' %}</h2>
+        {# Quick Actions #}
+        <div class="ed-card ed-card-actions">
+            <div class="ed-card-header">
+                <h2><i class="ph ph-lightning"></i> {% trans 'Quick Actions' %}</h2>
             </div>
-            <div class="card-body">
-                {% load log %}
+            <div class="ed-card-body ed-actions-grid">
+                <a href="/admin/core/organization/add/" class="ed-action-item">
+                    <div class="ed-action-icon" style="background:rgba(59,130,246,0.1);color:#3b82f6"><i class="ph ph-buildings"></i></div>
+                    <span>{% trans 'Add Organization' %}</span>
+                </a>
+                <a href="/admin/core/user/add/" class="ed-action-item">
+                    <div class="ed-action-icon" style="background:rgba(16,185,129,0.1);color:#10b981"><i class="ph ph-user-plus"></i></div>
+                    <span>{% trans 'Add User' %}</span>
+                </a>
+                <a href="/admin/orders/order/" class="ed-action-item">
+                    <div class="ed-action-icon" style="background:rgba(245,158,11,0.1);color:#f59e0b"><i class="ph ph-receipt"></i></div>
+                    <span>{% trans 'View Orders' %}</span>
+                </a>
+                <a href="/admin/dashboard/" class="ed-action-item">
+                    <div class="ed-action-icon" style="background:rgba(139,92,246,0.1);color:#8b5cf6"><i class="ph ph-chart-bar"></i></div>
+                    <span>{% trans 'Analytics' %}</span>
+                </a>
+                <a href="/admin/subscriptions/subscription/" class="ed-action-item">
+                    <div class="ed-action-icon" style="background:rgba(236,72,153,0.1);color:#ec4899"><i class="ph ph-credit-card"></i></div>
+                    <span>{% trans 'Subscriptions' %}</span>
+                </a>
+                <a href="/admin/settings/" class="ed-action-item">
+                    <div class="ed-action-icon" style="background:rgba(107,114,128,0.1);color:#6b7280"><i class="ph ph-gear-six"></i></div>
+                    <span>{% trans 'Settings' %}</span>
+                </a>
+                <a href="/admin/seo-dashboard/" class="ed-action-item">
+                    <div class="ed-action-icon" style="background:rgba(14,165,233,0.1);color:#0ea5e9"><i class="ph ph-magnifying-glass"></i></div>
+                    <span>{% trans 'SEO Dashboard' %}</span>
+                </a>
+                <a href="/admin/reports/" class="ed-action-item">
+                    <div class="ed-action-icon" style="background:rgba(168,85,247,0.1);color:#a855f7"><i class="ph ph-file-text"></i></div>
+                    <span>{% trans 'Reports' %}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ═══════════════════════════════════════════ #}
+    {# ROW 4: Plan Distribution + Recent Activity  #}
+    {# ═══════════════════════════════════════════ #}
+    <div class="ed-secondary-grid">
+        {# Plan Distribution Donut #}
+        <div class="ed-card">
+            <div class="ed-card-header">
+                <h2><i class="ph ph-chart-donut"></i> {% trans 'Plan Distribution' %}</h2>
+            </div>
+            <div class="ed-card-body">
+                <div id="planDonutChart" style="width:100%;height:280px"></div>
+            </div>
+        </div>
+
+        {# Recent Activity #}
+        <div class="ed-card ed-card-activity">
+            <div class="ed-card-header">
+                <h2><i class="ph ph-clock-counter-clockwise"></i> {% trans 'Recent Activity' %}</h2>
+                <a href="/admin/core/auditlog/" class="ed-header-link">{% trans 'View All' %} →</a>
+            </div>
+            <div class="ed-card-body ed-activity-list">
                 {% get_admin_log 15 as admin_log for_user user %}
                 {% if not admin_log %}
-                <div class="empty-state">
+                <div class="ed-empty">
                     <i class="ph ph-clock"></i>
                     <p>{% trans 'No recent actions.' %}</p>
                 </div>
                 {% else %}
-                <div class="activity-list">
-                    {% for entry in admin_log %}
-                    <div class="activity-item">
-                        <div class="activity-icon {% if entry.is_addition %}activity-icon--add{% elif entry.is_change %}activity-icon--change{% elif entry.is_deletion %}activity-icon--delete{% endif %}">
-                            {% if entry.is_addition %}
-                                <i class="ph ph-plus"></i>
-                            {% elif entry.is_change %}
-                                <i class="ph ph-pencil"></i>
-                            {% elif entry.is_deletion %}
-                                <i class="ph ph-trash"></i>
-                            {% endif %}
-                        </div>
-                        <div class="activity-content">
-                            {% if entry.is_deletion or not entry.get_admin_url %}
-                                <span class="activity-object">{{ entry.object_repr }}</span>
-                            {% else %}
-                                <a href="{{ entry.get_admin_url }}" class="activity-object">{{ entry.object_repr }}</a>
-                            {% endif %}
-                            <span class="activity-meta">
-                                {{ entry.content_type.name }} &middot; {{ entry.action_time|timesince }} {% trans 'ago' %}
-                            </span>
-                        </div>
+                {% for entry in admin_log %}
+                <div class="ed-activity-item">
+                    <div class="ed-activity-icon {% if entry.is_addition %}icon-add{% elif entry.is_change %}icon-change{% elif entry.is_deletion %}icon-delete{% endif %}">
+                        {% if entry.is_addition %}<i class="ph ph-plus"></i>
+                        {% elif entry.is_change %}<i class="ph ph-pencil-simple"></i>
+                        {% elif entry.is_deletion %}<i class="ph ph-trash-simple"></i>
+                        {% endif %}
                     </div>
-                    {% endfor %}
+                    <div class="ed-activity-content">
+                        {% if entry.is_deletion or not entry.get_admin_url %}
+                        <span class="ed-activity-object">{{ entry.object_repr|truncatechars:50 }}</span>
+                        {% else %}
+                        <a href="{{ entry.get_admin_url }}" class="ed-activity-object">{{ entry.object_repr|truncatechars:50 }}</a>
+                        {% endif %}
+                        <span class="ed-activity-meta">
+                            <span class="ed-activity-type">{{ entry.content_type.name }}</span>
+                            <span>&middot;</span>
+                            <span>{{ entry.action_time|timesince }} {% trans 'ago' %}</span>
+                        </span>
+                    </div>
                 </div>
+                {% endfor %}
                 {% endif %}
             </div>
         </div>
     </div>
+
+    {# ═══════════════════════════════════════════ #}
+    {# ROW 5: Quick Access Grid (All Models)       #}
+    {# ═══════════════════════════════════════════ #}
+    <div class="ed-card">
+        <div class="ed-card-header">
+            <h2><i class="ph ph-grid-nine"></i> {% trans 'Quick Access' %}</h2>
+            <span class="ed-header-badge">{{ app_list|length }} {% trans 'apps' %}</span>
+        </div>
+        <div class="ed-card-body">
+            <div class="ed-qa-grid">
+                {% for app in app_list %}
+                {% for model in app.models %}
+                <a href="{{ model.admin_url }}" class="ed-qa-item" title="{{ model.name }} ({{ app.name }})">
+                    <i class="ph {% if model.object_name == 'Organization' %}ph-buildings{% elif model.object_name == 'User' %}ph-users{% elif model.object_name == 'Menu' %}ph-book-open{% elif model.object_name == 'Product' %}ph-package{% elif model.object_name == 'Category' %}ph-folders{% elif model.object_name == 'Order' %}ph-receipt{% elif model.object_name == 'Customer' %}ph-user{% elif model.object_name == 'Theme' %}ph-palette{% elif model.object_name == 'QRCode' %}ph-qr-code{% elif model.object_name == 'Table' %}ph-armchair{% elif model.object_name == 'Zone' %}ph-map-trifold{% elif model.object_name == 'Media' %}ph-image{% elif model.object_name == 'Branch' %}ph-map-pin{% elif model.object_name == 'Role' %}ph-shield{% elif model.object_name == 'Plan' %}ph-credit-card{% elif model.object_name == 'Subscription' %}ph-repeat{% elif model.object_name == 'Campaign' %}ph-megaphone{% elif model.object_name == 'BlogPost' %}ph-article{% elif model.object_name == 'AuditLog' %}ph-clipboard-text{% else %}ph-dot{% endif %}"></i>
+                    <span class="ed-qa-name">{{ model.name }}</span>
+                    <span class="ed-qa-app">{{ app.name }}</span>
+                </a>
+                {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
 </div>
+
+{# ═══ Dashboard JavaScript ═══ #}
+<script>
+function enterpriseDashboard() {
+    return {
+        greeting: '',
+        liveClock: '--:--',
+        uptime: '—',
+        refreshing: false,
+        kpiLoading: true,
+        dateRange: '30d',
+        kpis: [
+            { label: '{% trans "Organizations" %}', displayValue: '—', change: 0, icon: 'buildings', bg: 'rgba(59,130,246,0.1)', color: '#3b82f6', trend: [] },
+            { label: '{% trans "QR Scans Today" %}', displayValue: '—', change: 0, icon: 'qr-code', bg: 'rgba(16,185,129,0.1)', color: '#10b981', trend: [] },
+            { label: '{% trans "Active Menus" %}', displayValue: '—', change: 0, icon: 'book-open', bg: 'rgba(245,158,11,0.1)', color: '#f59e0b', trend: [] },
+            { label: '{% trans "Pending Requests" %}', displayValue: '—', change: 0, icon: 'bell-ringing', bg: 'rgba(239,68,68,0.1)', color: '#ef4444', trend: [] },
+            { label: '{% trans "MRR" %}', displayValue: '—', change: 0, icon: 'currency-circle-dollar', bg: 'rgba(139,92,246,0.1)', color: '#8b5cf6', trend: [] },
+            { label: '{% trans "Active Trials" %}', displayValue: '—', change: 0, icon: 'hourglass', bg: 'rgba(236,72,153,0.1)', color: '#ec4899', trend: [] }
+        ],
+        _qrChart: null,
+        _donutChart: null,
+        _startTime: Date.now(),
+
+        init() {
+            this.updateGreeting();
+            this.updateClock();
+            setInterval(() => this.updateClock(), 1000);
+            this.fetchKpis();
+            this.fetchQrTrend();
+            this.fetchPlanDistribution();
+        },
+
+        updateGreeting() {
+            const h = new Date().getHours();
+            if (h < 6) this.greeting = '{% trans "İyi geceler" %}';
+            else if (h < 12) this.greeting = '{% trans "Günaydın" %}';
+            else if (h < 18) this.greeting = '{% trans "İyi günler" %}';
+            else this.greeting = '{% trans "İyi akşamlar" %}';
+        },
+
+        updateClock() {
+            const now = new Date();
+            this.liveClock = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            /* uptime */
+            const diff = Math.floor((Date.now() - this._startTime) / 1000);
+            const m = Math.floor(diff / 60);
+            const h = Math.floor(m / 60);
+            if (h > 0) this.uptime = h + 'h ' + (m % 60) + 'm';
+            else this.uptime = m + 'm ' + (diff % 60) + 's';
+        },
+
+        async fetchKpis() {
+            this.kpiLoading = true;
+            try {
+                const resp = await fetch('/admin/api/kpis/');
+                const json = await resp.json();
+                if (json.success) {
+                    const d = json.data;
+                    const keys = ['organizations', 'qr_scans', 'active_menus', 'pending_requests', 'mrr', 'trial_count'];
+                    keys.forEach((key, i) => {
+                        if (d[key]) {
+                            const val = d[key].value;
+                            this.kpis[i].displayValue = d[key].format === 'currency'
+                                ? '₺' + Number(val).toLocaleString('tr-TR')
+                                : Number(val).toLocaleString('tr-TR');
+                            this.kpis[i].change = d[key].change || 0;
+                            this.kpis[i].trend = d[key].trend || [];
+                        }
+                    });
+                    this.$nextTick(() => this.renderSparklines());
+                }
+            } catch (e) { console.error('KPI fetch error:', e); }
+            this.kpiLoading = false;
+        },
+
+        renderSparklines() {
+            this.kpis.forEach((kpi, i) => {
+                const el = document.getElementById('spark-' + i);
+                if (!el || !kpi.trend || kpi.trend.length < 2) return;
+                const chart = echarts.init(el, null, { renderer: 'svg' });
+                chart.setOption({
+                    grid: { top: 4, right: 4, bottom: 4, left: 4 },
+                    xAxis: { type: 'category', show: false, data: kpi.trend.map((_, j) => j) },
+                    yAxis: { type: 'value', show: false },
+                    series: [{
+                        type: 'line', data: kpi.trend, smooth: true, symbol: 'none',
+                        lineStyle: { width: 2, color: kpi.color },
+                        areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: kpi.color.replace(')', ',0.3)').replace('rgb', 'rgba') },
+                            { offset: 1, color: kpi.color.replace(')', ',0)').replace('rgb', 'rgba') }
+                        ])}
+                    }],
+                    animation: true
+                });
+            });
+        },
+
+        async fetchQrTrend() {
+            try {
+                const resp = await fetch('/admin/api/qr-scan-trend/?range=' + this.dateRange);
+                const json = await resp.json();
+                if (json.success && json.data) {
+                    this.renderQrChart(json.data);
+                }
+            } catch (e) { console.error('QR trend error:', e); }
+        },
+
+        renderQrChart(data) {
+            const el = document.getElementById('qrTrendChart');
+            if (!el) return;
+            if (!this._qrChart) this._qrChart = echarts.init(el, null, { renderer: 'svg' });
+            const dates = data.map(d => d.date || d.label);
+            const values = data.map(d => d.count || d.value || 0);
+            this._qrChart.setOption({
+                tooltip: { trigger: 'axis', backgroundColor: '#1f2937', borderColor: '#374151', textStyle: { color: '#f9fafb', fontSize: 12 } },
+                grid: { top: 20, right: 20, bottom: 30, left: 50 },
+                xAxis: { type: 'category', data: dates, axisLabel: { color: '#9ca3af', fontSize: 11 }, axisLine: { lineStyle: { color: '#374151' } } },
+                yAxis: { type: 'value', axisLabel: { color: '#9ca3af', fontSize: 11 }, splitLine: { lineStyle: { color: '#1f2937' } } },
+                series: [{
+                    type: 'line', data: values, smooth: true, symbol: 'circle', symbolSize: 6,
+                    lineStyle: { width: 2.5, color: '#3b82f6' },
+                    itemStyle: { color: '#3b82f6' },
+                    areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: 'rgba(59,130,246,0.25)' },
+                        { offset: 1, color: 'rgba(59,130,246,0)' }
+                    ])}
+                }],
+                animation: true
+            });
+        },
+
+        async fetchPlanDistribution() {
+            try {
+                const resp = await fetch('/admin/api/plan-distribution/');
+                const json = await resp.json();
+                if (json.success && json.data) {
+                    this.renderDonutChart(json.data);
+                }
+            } catch (e) { console.error('Plan distribution error:', e); }
+        },
+
+        renderDonutChart(data) {
+            const el = document.getElementById('planDonutChart');
+            if (!el) return;
+            if (!this._donutChart) this._donutChart = echarts.init(el, null, { renderer: 'svg' });
+            const colors = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#ec4899'];
+            const chartData = data.map((d, i) => ({
+                name: d.name || d.plan || d.label,
+                value: d.count || d.value,
+                itemStyle: { color: colors[i % colors.length] }
+            }));
+            this._donutChart.setOption({
+                tooltip: { trigger: 'item', backgroundColor: '#1f2937', borderColor: '#374151', textStyle: { color: '#f9fafb', fontSize: 12 } },
+                legend: { bottom: 10, textStyle: { color: '#9ca3af', fontSize: 11 }, itemWidth: 10, itemHeight: 10 },
+                series: [{
+                    type: 'pie', radius: ['45%', '72%'], center: ['50%', '42%'],
+                    data: chartData, label: { show: false },
+                    emphasis: { label: { show: true, fontSize: 14, fontWeight: 'bold', color: '#f9fafb' }, itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0,0,0,0.3)' } }
+                }],
+                animation: true
+            });
+        },
+
+        async refreshAll() {
+            this.refreshing = true;
+            await Promise.all([
+                this.fetchKpis(),
+                this.fetchQrTrend(),
+                this.fetchPlanDistribution()
+            ]);
+            setTimeout(() => { this.refreshing = false; }, 600);
+        }
+    };
+}
+
+/* Handle chart resize */
+window.addEventListener('resize', function() {
+    document.querySelectorAll('[_echarts_instance_]').forEach(function(el) {
+        echarts.getInstanceByDom(el)?.resize();
+    });
+});
+</script>
 {% endblock %}

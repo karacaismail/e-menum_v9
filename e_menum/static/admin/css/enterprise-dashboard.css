@@ -1,0 +1,614 @@
+/* ═══════════════════════════════════════════════════════════
+   ENTERPRISE DASHBOARD — Admin Index Page
+   Modern, dark-themed, enterprise-grade admin command center
+   ═══════════════════════════════════════════════════════════ */
+
+.ed {
+    max-width: 1440px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ── Header ── */
+.ed-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 4px;
+}
+
+.ed-greeting {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.3;
+}
+
+.ed-subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin: 4px 0 0;
+}
+
+.ed-header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.ed-live-clock {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.ed-live-clock i {
+    font-size: 15px;
+    color: var(--accent-light);
+}
+
+.ed-date-badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--text-dim);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+.ed-refresh-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 16px;
+}
+
+.ed-refresh-btn:hover {
+    border-color: var(--accent-border);
+    color: var(--accent-light);
+}
+
+.ed-refresh-btn.spinning i {
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ── KPI Strip ── */
+.ed-kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+}
+
+.ed-kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.ed-kpi-card:hover {
+    border-color: var(--accent-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.ed-kpi-card.loading .ed-kpi-value {
+    background: var(--border);
+    border-radius: 4px;
+    color: transparent;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
+.ed-kpi-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.ed-kpi-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ed-kpi-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ed-kpi-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+}
+
+.ed-kpi-trend {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.ed-kpi-trend.trend-up { color: #10b981; }
+.ed-kpi-trend.trend-down { color: #ef4444; }
+.ed-kpi-trend.trend-neutral { color: var(--text-dim); }
+
+.ed-kpi-spark {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 80px;
+    height: 40px;
+    opacity: 0.6;
+}
+
+/* ── System Health Strip ── */
+.ed-health-strip {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+    overflow-x: auto;
+}
+
+.ed-health-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    flex: 1;
+    min-width: 0;
+    transition: background 0.15s;
+}
+
+.ed-health-card:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.ed-health-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.dot-green { background: #10b981; box-shadow: 0 0 6px rgba(16, 185, 129, 0.4); }
+.dot-yellow { background: #f59e0b; box-shadow: 0 0 6px rgba(245, 158, 11, 0.4); }
+.dot-red { background: #ef4444; box-shadow: 0 0 6px rgba(239, 68, 68, 0.4); }
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.ed-health-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.ed-health-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.ed-health-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+/* ── Cards ── */
+.ed-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.ed-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+}
+
+.ed-card-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    text-transform: none;
+    letter-spacing: 0;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.ed-card-header h2 i {
+    font-size: 18px;
+    color: var(--accent-light);
+}
+
+.ed-header-link {
+    font-size: 12px;
+    color: var(--accent-light) !important;
+    text-decoration: none !important;
+    font-weight: 500;
+}
+
+.ed-header-link:hover {
+    text-decoration: underline !important;
+}
+
+.ed-header-badge {
+    font-size: 11px;
+    color: var(--text-dim);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.ed-card-body {
+    padding: 0;
+}
+
+.ed-range-select {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* ── Main Grid (chart + actions) ── */
+.ed-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+}
+
+/* ── Quick Actions ── */
+.ed-actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    padding: 2px !important;
+}
+
+.ed-action-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    color: var(--text-secondary) !important;
+    text-decoration: none !important;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.15s;
+}
+
+.ed-action-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-primary) !important;
+}
+
+.ed-action-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+}
+
+/* ── Secondary Grid (donut + activity) ── */
+.ed-secondary-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 20px;
+}
+
+/* ── Activity List ── */
+.ed-activity-list {
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+.ed-activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    transition: background 0.12s;
+}
+
+.ed-activity-item:last-child {
+    border-bottom: none;
+}
+
+.ed-activity-item:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.ed-activity-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.ed-activity-icon.icon-add {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.ed-activity-icon.icon-change {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.ed-activity-icon.icon-delete {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.ed-activity-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ed-activity-object {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+a.ed-activity-object:hover {
+    color: var(--accent-light);
+}
+
+.ed-activity-meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--text-dim);
+}
+
+.ed-activity-type {
+    text-transform: capitalize;
+}
+
+.ed-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    color: var(--text-dim);
+    gap: 8px;
+}
+
+.ed-empty i {
+    font-size: 28px;
+    opacity: 0.4;
+}
+
+.ed-empty p {
+    margin: 0;
+    font-size: 13px;
+}
+
+/* ── Quick Access Grid ── */
+.ed-qa-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.ed-qa-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    color: var(--text-secondary) !important;
+    text-decoration: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    border-right: 1px solid rgba(255, 255, 255, 0.03);
+    transition: all 0.12s;
+    font-size: 13px;
+}
+
+.ed-qa-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-primary) !important;
+}
+
+.ed-qa-item i {
+    font-size: 16px;
+    color: var(--accent-light);
+    opacity: 0.7;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.ed-qa-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+
+.ed-qa-app {
+    font-size: 10px;
+    color: var(--text-dim);
+    white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 1280px) {
+    .ed-kpi-strip {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1100px) {
+    .ed-main-grid {
+        grid-template-columns: 1fr;
+    }
+    .ed-secondary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .ed-header {
+        flex-direction: column;
+        gap: 12px;
+    }
+    .ed-header-right {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    .ed-greeting {
+        font-size: 20px;
+    }
+    .ed-kpi-strip {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .ed-kpi-card {
+        padding: 12px;
+    }
+    .ed-kpi-value {
+        font-size: 18px;
+    }
+    .ed-kpi-spark {
+        display: none;
+    }
+    .ed-health-strip {
+        flex-wrap: wrap;
+    }
+    .ed-health-card {
+        flex: 0 0 auto;
+        min-width: 120px;
+    }
+    .ed-actions-grid {
+        grid-template-columns: 1fr;
+    }
+    .ed-qa-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .ed-kpi-strip {
+        grid-template-columns: 1fr;
+    }
+    .ed-qa-grid {
+        grid-template-columns: 1fr;
+    }
+    .ed {
+        gap: 14px;
+    }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+    .ed-kpi-card.loading .ed-kpi-value { animation: none; }
+    .ed-health-dot { animation: none; }
+    .ed-refresh-btn.spinning i { animation: none; }
+    .ed-kpi-card, .ed-action-item, .ed-activity-item, .ed-qa-item {
+        transition: none;
+    }
+}

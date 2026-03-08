@@ -29,6 +29,23 @@ def debug_context(request):
     return {"debug": getattr(settings, "DEBUG", False)}
 
 
+def platform_info(request):
+    """
+    Provide Django/Python version info for the admin dashboard.
+    Only computed for staff users on admin pages.
+    """
+    import sys
+
+    import django
+
+    if not getattr(request, "path", "").startswith("/admin"):
+        return {}
+    return {
+        "django_version": django.get_version(),
+        "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
+    }
+
+
 logger = logging.getLogger(__name__)
 
 # ─── Mapping: Admin URL → E-Menum Resource ──────────────────────────

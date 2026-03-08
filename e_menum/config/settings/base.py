@@ -243,6 +243,7 @@ TEMPLATES = [
                 "apps.website.context_processors.marketing_context",
                 "apps.website.context_processors.deploy_info_context",
                 "apps.seo.context_processors.seo_context",
+                "shared.context_processors.platform_info",
             ],
         },
     },
