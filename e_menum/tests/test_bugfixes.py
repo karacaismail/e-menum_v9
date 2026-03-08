@@ -176,9 +176,7 @@ class TestTableManagementURLs:
         """Deleting a zone via API should work."""
         from apps.orders.models import Zone
 
-        zone = Zone.objects.create(
-            organization=org, name="ToDelete", slug="todelete"
-        )
+        zone = Zone.objects.create(organization=org, name="ToDelete", slug="todelete")
         resp = logged_in_client.post(
             f"/account/api/zones/{zone.pk}/",
             data=json.dumps({}),
@@ -198,9 +196,7 @@ class TestTableManagementURLs:
         zone = Zone.objects.create(organization=org, name="Main", slug="main")
         resp = logged_in_client.post(
             "/account/api/tables/create/",
-            data=json.dumps(
-                {"zone_id": str(zone.pk), "name": "Masa 1", "capacity": 4}
-            ),
+            data=json.dumps({"zone_id": str(zone.pk), "name": "Masa 1", "capacity": 4}),
             content_type="application/json",
         )
         assert resp.status_code in (200, 201)
@@ -210,9 +206,7 @@ class TestTableManagementURLs:
         from apps.orders.models import Zone, Table
 
         zone = Zone.objects.create(organization=org, name="Main", slug="main")
-        table = Table.objects.create(
-            organization=org, zone=zone, name="T1", slug="t1"
-        )
+        table = Table.objects.create(organization=org, zone=zone, name="T1", slug="t1")
         resp = logged_in_client.post(
             f"/account/api/tables/{table.pk}/",
             data=json.dumps({}),

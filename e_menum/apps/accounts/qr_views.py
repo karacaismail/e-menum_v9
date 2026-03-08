@@ -56,12 +56,12 @@ def qrcode_list(request):
         qs = qs.filter(type=qr_type)
 
     # Context for create modal dropdowns
-    menus = Menu.objects.filter(
-        organization=org, deleted_at__isnull=True
-    ).order_by("name")
-    tables = Table.objects.filter(
-        organization=org, deleted_at__isnull=True
-    ).order_by("name")
+    menus = Menu.objects.filter(organization=org, deleted_at__isnull=True).order_by(
+        "name"
+    )
+    tables = Table.objects.filter(organization=org, deleted_at__isnull=True).order_by(
+        "name"
+    )
 
     return render(
         request,
