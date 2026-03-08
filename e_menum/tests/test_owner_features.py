@@ -711,7 +711,7 @@ class SubscriptionManagementTests(BaseTestCase):
         data = {"plan_id": str(self.plan_starter.pk)}
         self.client.post(SUBSCRIPTION_UPGRADE_URL, data)
         req = UpgradeRequest.objects.filter(
-            organization=self.org,
+            organization=self.organization,
             requested_plan=self.plan_starter,
         ).first()
         self.assertIsNotNone(req)
