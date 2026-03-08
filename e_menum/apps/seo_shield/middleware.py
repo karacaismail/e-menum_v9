@@ -297,22 +297,174 @@ class SEOShieldMiddleware:
     @staticmethod
     def _get_response_429() -> HttpResponse:
         """
-        Return a 429 Too Many Requests response with a JSON body.
+        Return a 429 Too Many Requests response.
+
+        For API requests (Accept: application/json or /api/ paths),
+        returns JSON. Otherwise returns a styled HTML error page.
 
         Returns:
-            HttpResponse with status 429 and JSON error body.
+            HttpResponse with status 429.
         """
-        body = json.dumps(
-            {
-                "success": False,
-                "error": {
-                    "code": "TOO_MANY_REQUESTS",
-                    "message": "Too Many Requests",
-                },
-            }
-        )
+        # Check if this is an API request — return JSON for those
+        # (handled by the calling context via request, but we keep
+        #  the static method signature for backward compatibility)
+        html = """<!DOCTYPE html>
+<html lang="tr" style="height:100%">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>429 — Çok Fazla İstek</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  height:100%;font-family:'Inter',system-ui,sans-serif;
+  background:#0f172a;color:#e2e8f0;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;position:relative;
+}
+/* animated gradient bg */
+body::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 600px 400px at 20% 50%,rgba(59,130,246,.12),transparent),
+    radial-gradient(ellipse 500px 500px at 80% 20%,rgba(168,85,247,.10),transparent),
+    radial-gradient(ellipse 400px 300px at 60% 80%,rgba(244,63,94,.08),transparent);
+  animation:bgPulse 8s ease-in-out infinite alternate;
+}
+@keyframes bgPulse{
+  0%{opacity:.6;transform:scale(1)}
+  100%{opacity:1;transform:scale(1.05)}
+}
+.container{
+  position:relative;z-index:1;text-align:center;padding:2rem;
+  max-width:520px;width:100%;
+}
+/* big 429 number */
+.code{
+  font-size:clamp(7rem,20vw,12rem);font-weight:800;
+  line-height:1;letter-spacing:-.04em;
+  background:linear-gradient(135deg,#3b82f6,#a855f7,#f43f5e);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  filter:drop-shadow(0 0 60px rgba(139,92,246,.3));
+  animation:codeGlow 3s ease-in-out infinite alternate;
+  user-select:none;
+}
+@keyframes codeGlow{
+  0%{filter:drop-shadow(0 0 40px rgba(139,92,246,.2))}
+  100%{filter:drop-shadow(0 0 80px rgba(139,92,246,.4))}
+}
+/* animated bar under code */
+.bar{
+  width:120px;height:4px;margin:1.5rem auto;border-radius:9999px;
+  background:linear-gradient(90deg,#3b82f6,#a855f7,#f43f5e,#3b82f6);
+  background-size:300% 100%;
+  animation:barSlide 3s linear infinite;
+}
+@keyframes barSlide{0%{background-position:0% 0}100%{background-position:300% 0}}
+h1{font-size:1.375rem;font-weight:700;color:#f1f5f9;margin-bottom:.5rem}
+p{font-size:.9rem;color:#94a3b8;line-height:1.6;max-width:400px;margin:0 auto}
+.hint{
+  margin-top:2rem;padding:1rem 1.25rem;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:12px;font-size:.8rem;color:#64748b;
+  display:flex;align-items:center;gap:.75rem;
+}
+.hint svg{flex-shrink:0;width:20px;height:20px;color:#475569}
+.actions{margin-top:2rem;display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:.625rem 1.25rem;border-radius:10px;
+  font-size:.8125rem;font-weight:600;
+  text-decoration:none;transition:all .2s;cursor:pointer;border:0;
+}
+.btn-primary{
+  background:linear-gradient(135deg,#3b82f6,#6366f1);
+  color:#fff;box-shadow:0 4px 16px rgba(99,102,241,.3);
+}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(99,102,241,.4)}
+.btn-ghost{
+  background:rgba(255,255,255,.06);color:#cbd5e1;
+  border:1px solid rgba(255,255,255,.08);
+}
+.btn-ghost:hover{background:rgba(255,255,255,.1);color:#f1f5f9}
+/* countdown */
+.countdown{
+  margin-top:1.5rem;font-size:.75rem;color:#475569;
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+}
+.countdown span{
+  font-variant-numeric:tabular-nums;font-weight:600;color:#94a3b8;
+}
+/* floating particles */
+.particle{
+  position:fixed;border-radius:50%;pointer-events:none;
+  background:rgba(139,92,246,.15);
+  animation:float linear infinite;
+}
+@keyframes float{
+  0%{transform:translateY(100vh) scale(0);opacity:0}
+  10%{opacity:1}
+  90%{opacity:1}
+  100%{transform:translateY(-10vh) scale(1);opacity:0}
+}
+@media(prefers-reduced-motion:reduce){
+  .particle,.bar,body::before,.code{animation:none!important}
+}
+</style>
+</head>
+<body>
+<!-- floating particles -->
+<div class="particle" style="width:6px;height:6px;left:10%;animation-duration:12s;animation-delay:0s"></div>
+<div class="particle" style="width:4px;height:4px;left:25%;animation-duration:16s;animation-delay:2s"></div>
+<div class="particle" style="width:8px;height:8px;left:50%;animation-duration:10s;animation-delay:4s"></div>
+<div class="particle" style="width:5px;height:5px;left:70%;animation-duration:14s;animation-delay:1s"></div>
+<div class="particle" style="width:3px;height:3px;left:85%;animation-duration:18s;animation-delay:3s"></div>
+<div class="particle" style="width:7px;height:7px;left:40%;animation-duration:11s;animation-delay:5s"></div>
+
+<div class="container">
+  <div class="code">429</div>
+  <div class="bar"></div>
+  <h1>Yavaşlayın, çok hızlısınız!</h1>
+  <p>Kısa sürede çok fazla istek gönderdiniz. Sunucumuzu korumak için geçici olarak erişiminizi yavaşlattık.</p>
+
+  <div class="hint">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+    </svg>
+    <span>Birkaç saniye bekleyip tekrar deneyin. Sorun devam ederse sayfayı yenileyin.</span>
+  </div>
+
+  <div class="countdown" id="cd">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    Otomatik yenileme: <span id="ct">15</span>s
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-primary" onclick="location.reload()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+      Tekrar Dene
+    </button>
+    <button class="btn btn-ghost" onclick="history.back()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Geri Dön
+    </button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var s=15,el=document.getElementById('ct');
+  var t=setInterval(function(){s--;if(el)el.textContent=s;if(s<=0){clearInterval(t);location.reload();}},1000);
+})();
+</script>
+</body>
+</html>"""
         return HttpResponse(
-            content=body,
-            content_type="application/json",
+            content=html,
+            content_type="text/html; charset=utf-8",
             status=429,
         )

@@ -138,12 +138,7 @@
                 <span class="rail-item-label">Analitik</span>
                 <span class="rail-tooltip">Analitik</span>
             </button>
-            <button class="rail-item" :class="{ 'active': activeGroup === 'notifications' }"
-                @click="setGroup('notifications')" title="Bildirimler" x-show="hasGroupItems('notifications')">
-                <span class="rail-item-icon"><i class="ph-bold ph-bell"></i></span>
-                <span class="rail-item-label">Bildirimler</span>
-                <span class="rail-tooltip">Bildirimler</span>
-            </button>
+            {# Notifications moved to topbar dropdown widget #}
             <button class="rail-item" :class="{ 'active': activeGroup === 'ai' }"
                 @click="setGroup('ai')" title="AI & API" x-show="hasGroupItems('ai')">
                 <span class="rail-item-icon"><i class="ph-bold ph-sparkle"></i></span>
@@ -273,6 +268,9 @@
 
             {% if user.is_authenticated %}
             <div class="topbar-actions">
+                {# ── Notification Bell Dropdown ── #}
+                {% include "partials/_notification_widget.html" %}
+
                 <a href="/" class="topbar-btn" target="_blank" title="{% trans 'View site' %}">
                     <i class="ph ph-arrow-square-out"></i>
                     <span>{% trans 'View site' %}</span>
@@ -407,7 +405,7 @@ function adminSidebar() {
     else if (path.includes('/inventory/')) initialGroup = 'inventory';
     else if (path.includes('/campaigns/')) initialGroup = 'campaigns';
     else if (path.includes('/analytics/')) initialGroup = 'analytics';
-    else if (path.includes('/notifications/')) initialGroup = 'notifications';
+    else if (path.includes('/notifications/')) initialGroup = 'dashboard';
     else if (path.includes('/reporting/')) initialGroup = 'reports';
     else if (path.includes('/dashboard/') || path.includes('/settings')) initialGroup = 'dashboard';
     else if (path.includes('/website/')) initialGroup = 'website';
@@ -539,12 +537,7 @@ function adminSidebar() {
                     { label: 'Customer Metrics', url: '/admin/analytics/customermetric/', icon: 'users' },
                 ]
             },
-            notifications: {
-                label: 'Notifications',
-                items: [
-                    { label: 'Notifications', url: '/admin/notifications/notification/', icon: 'bell' },
-                ]
-            },
+            /* notifications group removed — widget lives in topbar */
             ai: {
                 label: 'AI Services',
                 items: [
@@ -1006,12 +999,6 @@ function mobileNav() {
                     { label: 'Products', url: '/admin/analytics/productperformance/', icon: 'trend-up' }
                 ]
             },
-            notifications: {
-                label: 'Notifications',
-                items: [
-                    { label: 'Notifications', url: '/admin/notifications/notification/', icon: 'bell' }
-                ]
-            },
             ai: {
                 label: 'AI Services',
                 items: [
@@ -1091,5 +1078,96 @@ if (typeof MutationObserver !== 'undefined') {
         bodyObserver.observe(document.body, { childList: true, subtree: true });
     });
 }
+
+/* ═══════════════════════════════════════════════════════════
+   CSRF-aware fetch helper for admin panel
+   ═══════════════════════════════════════════════════════════ */
+window.fetchWithCsrf = function(url, opts) {
+    opts = opts || {};
+    opts.headers = opts.headers || {};
+    // Get CSRF token from cookie
+    var match = document.cookie.match(/csrftoken=([^;]+)/);
+    if (match) opts.headers['X-CSRFToken'] = match[1];
+    opts.credentials = 'same-origin';
+    return fetch(url, opts);
+};
+
+/* ═══════════════════════════════════════════════════════════
+   Notification dropdown widget — Alpine.js component
+   ═══════════════════════════════════════════════════════════ */
+window.notificationWidget = function() {
+    return {
+        open: false,
+        loading: false,
+        unreadCount: 0,
+        notifications: [],
+        activeTab: '',
+        tabs: [
+            { key: '', label: '{{ "Tümü"|escapejs }}' },
+            { key: 'ORDER', label: '{{ "Siparişler"|escapejs }}' },
+            { key: 'SYSTEM', label: '{{ "Sistem"|escapejs }}' },
+            { key: 'PROMOTION', label: '{{ "Promosyon"|escapejs }}' },
+            { key: 'PAYMENT', label: '{{ "Ödeme"|escapejs }}' },
+        ],
+
+        init() {
+            this.fetchCount();
+            setInterval(() => this.fetchCount(), 30000);
+        },
+
+        toggle() {
+            this.open = !this.open;
+            if (this.open) this.fetchNotifications();
+        },
+
+        async fetchCount() {
+            try {
+                var resp = await fetch('/account/api/notifications/count/');
+                var data = await resp.json();
+                this.unreadCount = data.count || 0;
+            } catch (e) { /* silent */ }
+        },
+
+        async fetchNotifications() {
+            this.loading = true;
+            try {
+                var url = '/account/api/notifications/' + (this.activeTab ? '?type=' + this.activeTab : '');
+                var resp = await fetch(url);
+                var data = await resp.json();
+                this.notifications = data.notifications || [];
+            } catch (e) {
+                this.notifications = [];
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async markRead(notif) {
+            if (notif.read) return;
+            try {
+                await fetchWithCsrf('/account/api/notifications/' + notif.id + '/read/', { method: 'POST' });
+                notif.read = true;
+                this.unreadCount = Math.max(0, this.unreadCount - 1);
+            } catch (e) { /* silent */ }
+        },
+
+        async markAllRead() {
+            try {
+                await fetchWithCsrf('/account/api/notifications/read-all/', { method: 'POST' });
+                this.notifications.forEach(function(n) { n.read = true; });
+                this.unreadCount = 0;
+            } catch (e) { /* silent */ }
+        },
+
+        timeAgo(isoStr) {
+            if (!isoStr) return '';
+            var diff = (Date.now() - new Date(isoStr).getTime()) / 1000;
+            if (diff < 60) return '{{ "Az önce"|escapejs }}';
+            if (diff < 3600) return Math.floor(diff / 60) + ' {{ "dk önce"|escapejs }}';
+            if (diff < 86400) return Math.floor(diff / 3600) + ' {{ "sa önce"|escapejs }}';
+            return Math.floor(diff / 86400) + ' {{ "gün önce"|escapejs }}';
+        }
+    };
+};
 </script>
 {% endblock body %}
