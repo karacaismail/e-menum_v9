@@ -703,26 +703,31 @@ class SubscriptionManagementTests(BaseTestCase):
 
     # -- Plan upgrade ---------------------------------------------------------
 
-    def test_subscription_upgrade_changes_plan(self):
-        """POST to upgrade should change the subscription plan."""
-        self._login_owner()
-        data = {"plan_id": str(self.plan_starter.pk)}
-        self.client.post(SUBSCRIPTION_UPGRADE_URL, data)
-        self.subscription.refresh_from_db()
-        self.assertEqual(self.subscription.plan_id, self.plan_starter.pk)
+    def test_subscription_upgrade_creates_pending_request(self):
+        """POST to upgrade should create an UpgradeRequest with PENDING status."""
+        from apps.subscriptions.models import UpgradeRequest
 
-    def test_subscription_upgrade_updates_price(self):
-        """Upgrading should update the current_price to the new plan price."""
+        self._login_owner()
+        data = {"plan_id": str(self.plan_starter.pk)}
+        self.client.post(SUBSCRIPTION_UPGRADE_URL, data)
+        req = UpgradeRequest.objects.filter(
+            organization=self.org,
+            requested_plan=self.plan_starter,
+        ).first()
+        self.assertIsNotNone(req)
+        self.assertEqual(req.status, "PENDING")
+
+    def test_subscription_upgrade_does_not_change_plan_directly(self):
+        """Upgrade should NOT change the plan until superadmin approves."""
         self._login_owner()
         data = {"plan_id": str(self.plan_starter.pk)}
         self.client.post(SUBSCRIPTION_UPGRADE_URL, data)
         self.subscription.refresh_from_db()
-        self.assertEqual(
-            self.subscription.current_price, self.plan_starter.price_monthly
-        )
+        # Plan should remain unchanged (still free)
+        self.assertEqual(self.subscription.plan_id, self.plan_free.pk)
 
     def test_subscription_upgrade_creates_audit_log(self):
-        """Plan upgrade should create an audit log entry."""
+        """Plan upgrade request should create an audit log entry."""
         self._login_owner()
         initial_count = AuditLog.objects.count()
         data = {"plan_id": str(self.plan_starter.pk)}
