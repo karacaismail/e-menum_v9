@@ -4,17 +4,8 @@
 {% block title %}{{ case_study.title }} — E-Menum{% endblock %}
 
 {% block content %}
-<section class="hero-gradient hero-gradient-customers pattern-dots">
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24">
-        <div class="max-w-3xl">
-            {% if case_study.company_logo %}
-            <img src="{{ case_study.company_logo.url }}" alt="{{ case_study.company_name }}" class="h-12 object-contain mb-6" loading="lazy">
-            {% endif %}
-            <h1 class="heading-display text-4xl lg:text-5xl text-white mb-4">{{ case_study.title }}</h1>
-            <p class="text-lg text-gray-300">{{ case_study.company_name }}</p>
-        </div>
-    </div>
-</section>
+{# Hero — Enterprise #}
+{% include "website/partials/_hero_enterprise_simple.html" with badge_text="Başarı Hikayesi" title=study.title subtitle=study.subtitle hero_id="hero-case-detail" %}
 
 <section class="py-16 lg:py-24">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

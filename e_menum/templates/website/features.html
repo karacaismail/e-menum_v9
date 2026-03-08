@@ -6,8 +6,8 @@
 
 {% block content %}
 
-{# Hero #}
-{% include "website/partials/_hero.html" %}
+{# Hero — Enterprise #}
+{% include "website/partials/_hero_enterprise_simple.html" with badge_text="50+ Özellik" title="Tek Platformda Her Şey" title_highlight="50'den Fazla Özellik" subtitle="QR menü, sipariş yönetimi, AI içerik üretimi, analitik, çoklu şube yönetimi ve daha fazlası." hero_id="hero-features" show_cta=True %}
 
 {# Feature Categories — from database #}
 {% if feature_categories %}

@@ -1,0 +1,70 @@
+{% load i18n static %}
+{% comment %}============================================================================
+   ENTERPRISE HERO SECTION — Simple version (sub-pages)
+
+   Same atmospheric design but without slideshow. Single centered content.
+
+   Usage:
+   {% include "website/partials/_hero_enterprise_simple.html" with badge_text="Özellikler" title="Tüm Özellikler" subtitle="..." hero_id="hero-features" %}
+   ============================================================================{% endcomment %}
+
+{% firstof hero_id "hero-page" as hid %}
+
+<section class="hero-enterprise -mt-16 lg:-mt-20" id="{{ hid }}">
+  {# Atmosphere #}
+  <div class="hero-atm">
+    <div class="hero-orb hero-orb-a"></div>
+    <div class="hero-orb hero-orb-b"></div>
+    <div class="hero-orb hero-orb-c"></div>
+    <div class="hero-grid-bg"></div>
+    <div class="hero-noise"></div>
+  </div>
+
+  <div class="hero-enterprise-inner">
+    <div class="hero-enterprise-body hero-centered">
+      <div style="position:relative;z-index:2;">
+        {% firstof badge_text hero.badge_text "" as the_badge %}
+        {% if the_badge %}
+        <div class="hero-badge" data-hero-enter>
+          <span class="hero-badge-dot"></span>
+          <span>{{ the_badge }}</span>
+        </div>
+        {% endif %}
+
+        {% firstof title hero.title "" as the_title %}
+        {% if the_title %}
+        <h1 class="hero-h1" data-hero-enter style="opacity:1;">
+          <span class="hero-slide-h1">{{ the_title }}</span>
+          {% firstof title_highlight hero.title_highlight "" as the_highlight %}
+          {% if the_highlight %}
+          <span class="hero-slide-h1 hero-grad">{{ the_highlight }}</span>
+          {% endif %}
+        </h1>
+        {% endif %}
+
+        {% firstof subtitle hero.subtitle "" as the_subtitle %}
+        {% if the_subtitle %}
+        <p class="hero-sub" data-hero-enter style="opacity:1;margin-left:auto;margin-right:auto;">
+          {{ the_subtitle }}
+        </p>
+        {% endif %}
+
+        {% if show_cta %}
+        <div class="hero-cta-row" data-hero-enter style="justify-content:center;">
+          <a href="{% url 'website:demo' %}" class="hero-btn-primary">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            {% firstof cta_text "14 Gün Ücretsiz Başla" as the_cta %}
+            {{ the_cta }}
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  initHeroSimple('{{ hid }}');
+});
+</script>

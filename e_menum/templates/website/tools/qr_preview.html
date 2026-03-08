@@ -4,18 +4,7 @@
 {% block title %}{% trans "QR Kod Onizleme Araci" %} — E-Menum{% endblock %}
 
 {% block content %}
-<section class="hero-gradient hero-gradient-resources pattern-dots">
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 lg:pt-32 lg:pb-16">
-        <div class="max-w-3xl">
-            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-400 text-sm font-semibold mb-6">
-                <i class="ph ph-qr-code"></i>
-                {% trans "Ücretsiz Araç" %}
-            </span>
-            <h1 class="heading-display text-4xl lg:text-5xl text-white mb-4">{% trans "QR Kod Onizleme Araci" %}</h1>
-            <p class="text-lg text-gray-300">{% trans "QR kodunuzu farkli tasarimlarla onizleyin. Renk, logo ve stil seceneklerini deneyin." %}</p>
-        </div>
-    </div>
-</section>
+{% include "website/partials/_hero_enterprise_simple.html" with badge_text="Ücretsiz Araç" title="QR Kod Önizleme" title_highlight="Aracı" subtitle="QR kodunuzu farklı tasarımlarla önizleyin. Renk, logo ve stil seçeneklerini deneyin." hero_id="hero-qr-preview" %}
 
 <section class="py-12 lg:py-20" x-data="qrPreview()">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">

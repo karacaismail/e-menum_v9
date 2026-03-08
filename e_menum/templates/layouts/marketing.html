@@ -28,8 +28,10 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'website/css/marketing.css' %}">
-{# Plus Jakarta Sans for headings + JetBrains Mono for code #}
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'website/css/hero-enterprise.css' %}?v=1">
+{# Plus Jakarta Sans + Fraunces for hero display headings + JetBrains Mono for code #}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,800;0,9..144,900;1,9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 {# WCAG 2.2 AAA — high-contrast overrides, elderly-friendly font sizing #}
 <link rel="stylesheet" href="{% static 'website/css/accessibility.css' %}">
 {% endblock %}
@@ -50,6 +52,9 @@
 
 {% block extra_js %}
 {{ block.super }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="{% static 'website/js/hero-enterprise.js' %}?v=1"></script>
 <script src="{% static 'website/js/marketing.js' %}?v=2"></script>
 
 {# WhatsApp Floating Button #}

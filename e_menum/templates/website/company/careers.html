@@ -4,20 +4,8 @@
 {% block title %}{% trans "Kariyer" %} — E-Menum{% endblock %}
 
 {% block content %}
-<section class="hero-gradient hero-gradient-careers pattern-dots">
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24 text-center">
-        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-500/10 text-primary-400 text-sm font-semibold mb-6">
-            <i class="ph ph-briefcase"></i>
-            {% trans "Kariyer" %}
-        </span>
-        <h1 class="heading-display text-4xl lg:text-5xl text-white mb-6">
-            {% if hero %}{{ hero.title }}{% else %}{% trans "Geleceği Birlikte İnşa Edelim" %}{% endif %}
-        </h1>
-        <p class="text-lg text-gray-300 max-w-2xl mx-auto">
-            {% if hero %}{{ hero.subtitle }}{% else %}{% trans "E-Menum ekibine katılın ve F&B sektörünün dijital dönüşümüne öncülük edin." %}{% endif %}
-        </p>
-    </div>
-</section>
+{# Hero — Enterprise #}
+{% include "website/partials/_hero_enterprise_simple.html" with badge_text="Kariyer" title="Geleceği Birlikte" title_highlight="İnşa Edelim" subtitle="E-Menum ekibine katılın ve F&B sektörünün dijital dönüşümüne öncülük edin." hero_id="hero-careers" %}
 
 <section class="py-16 lg:py-24 bg-white dark:bg-gray-950">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

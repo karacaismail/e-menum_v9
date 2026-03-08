@@ -4,14 +4,8 @@
 {% block title %}{{ release.title }} — E-Menum{% endblock %}
 
 {% block content %}
-<section class="hero-gradient hero-gradient-press pattern-dots">
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24">
-        <div class="max-w-3xl">
-            <div class="text-sm text-gray-400 mb-4">{{ release.published_at|date:"d F Y" }}</div>
-            <h1 class="heading-display text-4xl lg:text-5xl text-white">{{ release.title }}</h1>
-        </div>
-    </div>
-</section>
+{# Hero — Enterprise #}
+{% include "website/partials/_hero_enterprise_simple.html" with badge_text="Basın" title=release.title hero_id="hero-press-detail" %}
 
 <section class="py-16 lg:py-24">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

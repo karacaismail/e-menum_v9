@@ -4,12 +4,8 @@
 {% block title %}{% trans "ROI Hesaplayıcı" %} — E-Menum{% endblock %}
 
 {% block content %}
-<section class="hero-gradient hero-gradient-customers pattern-dots">
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24 text-center">
-        <h1 class="heading-display text-4xl lg:text-5xl text-white mb-6">{% trans "ROI Hesaplayıcı" %}</h1>
-        <p class="text-lg text-gray-300 max-w-2xl mx-auto">{% trans "E-Menum'un işletmenize sağlayacağı yatırım getirisini hesaplayın." %}</p>
-    </div>
-</section>
+{# Hero — Enterprise #}
+{% include "website/partials/_hero_enterprise_simple.html" with badge_text="ROI Hesaplayıcı" title="Yatırım Getirisi" title_highlight="Hesaplayıcı" subtitle="Dijital menüye geçişin işletmenize sağlayacağı tasarrufu ve gelir artışını hesaplayın." hero_id="hero-roi-calc" %}
 
 <section class="py-16 lg:py-24">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">

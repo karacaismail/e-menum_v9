@@ -4,18 +4,8 @@
 {% block title %}{{ tool.title }} — E-Menum{% endblock %}
 
 {% block content %}
-<section class="hero-gradient hero-gradient-resources pattern-dots">
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24">
-        <div class="max-w-3xl">
-            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-400 text-sm font-semibold mb-6">
-                <i class="ph ph-wrench"></i>
-                {% trans "Ücretsiz Araç" %}
-            </span>
-            <h1 class="heading-display text-4xl lg:text-5xl text-white mb-6">{{ tool.title }}</h1>
-            <p class="text-lg text-gray-300">{{ tool.description }}</p>
-        </div>
-    </div>
-</section>
+{# Hero — Enterprise #}
+{% include "website/partials/_hero_enterprise_simple.html" with badge_text="Ücretsiz Araç" title=tool.title subtitle=tool.description hero_id="hero-tool-detail" %}
 
 <section class="py-16 lg:py-24">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

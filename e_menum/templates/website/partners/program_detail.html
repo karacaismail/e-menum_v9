@@ -4,14 +4,8 @@
 {% block title %}{{ program.title }} — E-Menum{% endblock %}
 
 {% block content %}
-<section class="hero-gradient hero-gradient-partners pattern-dots">
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24">
-        <div class="max-w-3xl">
-            <h1 class="heading-display text-4xl lg:text-5xl text-white mb-6">{{ program.title }}</h1>
-            <p class="text-lg text-gray-300">{{ program.description }}</p>
-        </div>
-    </div>
-</section>
+{# Hero — Enterprise #}
+{% include "website/partials/_hero_enterprise_simple.html" with badge_text="Partner Programı" title=program.title subtitle=program.description hero_id="hero-partner-detail" %}
 
 {# Tiers #}
 {% if program.tiers.all %}

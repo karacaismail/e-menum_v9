@@ -1,0 +1,243 @@
+{% load i18n static %}
+{% comment %}============================================================================
+   ENTERPRISE HERO SECTION — Full slideshow version (home page)
+
+   Features:
+   - GSAP entrance animations
+   - 6-slide SVG-animated carousel
+   - Atmospheric orbs, grid background, noise texture
+   - Fraunces + Plus Jakarta Sans typography
+   - Trust row, city bar, floating stats & QR
+
+   Usage:
+   {% include "website/partials/_hero_enterprise.html" %}
+   ============================================================================{% endcomment %}
+
+<section class="hero-enterprise -mt-16 lg:-mt-20" id="hero-home">
+  {# Atmosphere #}
+  <div class="hero-atm">
+    <div class="hero-orb hero-orb-a"></div>
+    <div class="hero-orb hero-orb-b"></div>
+    <div class="hero-orb hero-orb-c"></div>
+    <div class="hero-grid-bg"></div>
+    <div class="hero-noise"></div>
+  </div>
+
+  <div class="hero-enterprise-inner">
+    <div class="hero-enterprise-body">
+      {# ════════ LEFT ════════ #}
+      <div style="position:relative;z-index:2;">
+        <div class="hero-badge" data-hero-enter>
+          <span class="hero-badge-dot"></span>
+          <span class="hero-badge-txt">{% trans "#1 Dijital Menü Platformu" %}</span>
+        </div>
+        <h1 class="hero-h1" data-hero-enter>
+          <span class="hero-slide-h1 hero-h1-static">{% trans "Basılı menüye harcadığınız" %}</span>
+          <span class="hero-slide-h1 hero-grad hero-h1-dyn">{% trans "son para bu olsun." %}</span>
+        </h1>
+        <p class="hero-sub" data-hero-enter>
+          {% trans "1.200+ restoran, cafe ve esnaf QR menüye geçti. Fiyatları saniyeler içinde güncelleyin, müşterinizi etkileyin, masrafı kesin." %}
+        </p>
+        <div class="hero-pains" data-hero-enter>
+          <div class="hero-pain">
+            <div class="hero-pain-ic">
+              <svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 6l3 3 5-5" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="hero-pain-text">{% trans "Basılı menü masrafı ve baskı bekleme süresi sıfırlanır" %}</span>
+          </div>
+          <div class="hero-pain">
+            <div class="hero-pain-ic">
+              <svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 6l3 3 5-5" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="hero-pain-text">{% trans "Fiyat değişti mi? Tüm menüyü değil, sadece o satırı güncelleyin" %}</span>
+          </div>
+          <div class="hero-pain">
+            <div class="hero-pain-ic">
+              <svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 6l3 3 5-5" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="hero-pain-text">{% trans "Müşteri telefonuyla okutunca şık menünüzü görür" %}</span>
+          </div>
+        </div>
+        <div class="hero-cta-row" data-hero-enter>
+          <a href="{% url 'website:demo' %}" class="hero-btn-primary">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            {% trans "14 Gün Ücretsiz Başla" %}
+          </a>
+          <a href="{% url 'website:demo' %}" class="hero-btn-ghost">
+            {% trans "Demo gör" %}
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+        <p class="hero-micro" data-hero-enter>
+          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>{% trans "Kredi kartı gerekmez" %}</span>
+          <span style="opacity:.3">·</span>
+          <span>{% trans "2 dk kurulum" %}</span>
+          <span style="opacity:.3">·</span>
+          <span>{% trans "İstediğin zaman iptal" %}</span>
+        </p>
+        <div class="hero-trust-row" data-hero-enter>
+          <div class="hero-avs">
+            <div class="hero-av" style="background:linear-gradient(135deg,#14532d,#22c55e)">AY</div>
+            <div class="hero-av" style="background:linear-gradient(135deg,#166534,#4ade80)">MK</div>
+            <div class="hero-av" style="background:linear-gradient(135deg,#0d1f10,#86efac)">FT</div>
+            <div class="hero-av" style="background:linear-gradient(135deg,#1c2b1f,#4ade80)">+</div>
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;">
+              <span style="color:#fbbf24;font-size:.68rem;">★★★★★</span>
+              <span style="color:var(--hero-muted);font-size:.68rem;margin-left:4px;">4.9 / 5</span>
+            </div>
+            <p style="font-size:.73rem;color:var(--hero-muted)"><strong style="color:#86efac">{% trans "1.200+ işletme" %}</strong> {% trans "güveniyor" %}</p>
+          </div>
+        </div>
+      </div>
+
+      {# ════════ RIGHT ════════ #}
+      <div class="hero-showcase" data-hero-enter>
+        {# Stats float #}
+        <div class="hero-stats-float" data-hero-float>
+          <div class="hero-sf-live">
+            <div class="hero-sf-dot"></div>
+            <span class="hero-sf-label">{% trans "Canlı" %}</span>
+          </div>
+          <div class="hero-sf-num">847</div>
+          <div class="hero-sf-sub">{% trans "işletme aktif şu an" %}</div>
+          <div class="hero-sf-bars">
+            <div class="hero-sf-bar" style="height:40%"></div>
+            <div class="hero-sf-bar" style="height:60%"></div>
+            <div class="hero-sf-bar" style="height:45%"></div>
+            <div class="hero-sf-bar" style="height:70%"></div>
+            <div class="hero-sf-bar" style="height:55%"></div>
+            <div class="hero-sf-bar hi" style="height:100%"></div>
+          </div>
+        </div>
+
+        {# Main slide card #}
+        <div class="hero-slide-card">
+          <div class="hero-slide-anim"></div>
+          <div class="hero-slide-content">
+            <div class="hero-slide-info-label hero-sl-label">
+              <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="rgba(34,197,94,.3)"/><circle cx="5" cy="5" r="2" fill="#22c55e"/></svg>
+              {% trans "QR Menü" %}
+            </div>
+            <div class="hero-slide-info-title hero-sl-title">{% trans "Müşteri telefonuyla okutunca menü açılıyor" %}</div>
+            <div class="hero-slide-info-desc hero-sl-desc">{% trans "Garson \"menü ne?\" diye sormadan müşteri kendi menüsünü görüyor. Şık, hızlı, modern." %}</div>
+            <div class="hero-stat-row">
+              <div class="hero-stat-chip"><div class="hero-stat-num hero-st">%94</div><div class="hero-stat-lbl">{% trans "memnuniyet" %}</div></div>
+              <div class="hero-stat-chip"><div class="hero-stat-num hero-st">3sn</div><div class="hero-stat-lbl">{% trans "açılma süresi" %}</div></div>
+              <div class="hero-stat-chip"><div class="hero-stat-num hero-st">0₺</div><div class="hero-stat-lbl">{% trans "baskı masrafı" %}</div></div>
+            </div>
+          </div>
+        </div>
+
+        {# QR float #}
+        <div class="hero-qr-float" data-hero-float>
+          <div class="hero-qr-lbl">{% trans "Hemen Test Et" %}</div>
+          <div class="hero-qr-box"></div>
+          <div class="hero-qr-sub">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/></svg>
+            {% trans "Telefonla okut" %}
+          </div>
+        </div>
+
+        {# Slide navigation #}
+        <div class="hero-slide-nav">
+          {% for i in "012345" %}
+          <div class="hero-sn-item {% if forloop.first %}active{% endif %}" onclick="heroGoSlide_hero_home({{ forloop.counter0 }})">
+            <div class="hero-sn-fill hero-sn-fill-{{ forloop.counter0 }}"></div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    {# ════════ CITY BAR ════════ #}
+    <div style="position:relative;z-index:2;padding:0;" data-hero-enter>
+      <div class="hero-sep-grad"></div>
+      <div class="hero-city-bar">
+        <div class="hero-city"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>İstanbul — 450+</div>
+        <div class="hero-city"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Ankara — 120+</div>
+        <div class="hero-city"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>İzmir — 95+</div>
+        <div class="hero-city"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Antalya — 80+</div>
+        <div class="hero-city"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Adana — 45+</div>
+        <div class="hero-city"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Gaziantep — 40+</div>
+        <div class="hero-city"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Konya — 35+</div>
+        <div class="hero-city"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>{% trans "Diğer İller" %} — 160+</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var homeSlides = [
+    {
+      badge: '{% trans "#1 Dijital Menü Platformu" %}',
+      h1s: '{% trans "Basılı menüye harcadığınız" %}',
+      h1d: '{% trans "son para bu olsun." %}',
+      sub: '{% trans "1.200+ restoran, cafe ve esnaf QR menüye geçti. Fiyatları saniyeler içinde güncelleyin, masrafı kesin." %}',
+      p: ['{% trans "Basılı menü masrafı ve baskı bekleme süresi sıfırlanır" %}','{% trans "Fiyat değişti mi? Tüm menüyü değil, sadece o satırı" %}','{% trans "Müşteri telefonuyla okutunca şık menünüzü görür" %}'],
+      label: '{% trans "QR Menü" %}', title: '{% trans "Müşteri telefonuyla okutunca menü açılıyor" %}',
+      desc: '{% trans "Garson \"menü ne?\" diye sormadan müşteri kendi menüsünü görüyor. Şık, hızlı, modern." %}',
+      stats: [{n:'%94',l:'{% trans "memnuniyet" %}'},{n:'3sn',l:'{% trans "açılma süresi" %}'},{n:'0₺',l:'{% trans "baskı masrafı" %}'}],
+      anim: 'qr', gradClass: 'grad'
+    },
+    {
+      badge: '{% trans "Anlık Güncelleme" %}',
+      h1s: '{% trans "Fiyat değiştiyse" %}',
+      h1d: '{% trans "1 tıkla tüm menü güncellenir." %}',
+      sub: '{% trans "Malzeme fiyatı arttı mı? Menüye gir, rakamı değiştir, kaydet. 30 saniye. Müşteri anında görür." %}',
+      p: ['{% trans "Artık matbaa beklemek yok, atık menü yok" %}','{% trans "Yeni ürün eklemek de 2 dakika sürer" %}','{% trans "Fotoğraf, açıklama, fiyat — hepsi yönetilebilir" %}'],
+      label: '{% trans "Fiyat Güncelleme" %}', title: '{% trans "Fiyat değişti, menü anında güncellendi" %}',
+      desc: '{% trans "Tek panelden tüm menü kontrolü. Değişiklikleri kaydettiğinde canlıya geçer — baskı beklemeden." %}',
+      stats: [{n:'<2dk',l:'{% trans "güncelleme" %}'},{n:'{% trans "Anlık" %}',l:'{% trans "yayına giriş" %}'},{n:'{% trans "Sıfır" %}',l:'{% trans "atık baskı" %}'}],
+      anim: 'price', gradClass: 'grad2'
+    },
+    {
+      badge: '{% trans "Sipariş Yönetimi" %}',
+      h1s: '{% trans "Sipariş geldi," %}',
+      h1d: '{% trans "mutfak bildirim aldı." %}',
+      sub: '{% trans "Müşteri QR ile sipariş verir, siz anlık bildirim alırsınız. Masaya gitmeye gerek yok, yanlış anlamaya yer yok." %}',
+      p: ['{% trans "Masadan direkt sipariş alma özelliği" %}','{% trans "Mutfak ve kasa ayrı ekranlarda takip eder" %}','{% trans "Sipariş geçmişi ve analitik raporlar" %}'],
+      label: '{% trans "Sipariş Akışı" %}', title: '{% trans "Masadan sipariş, anlık mutfak bildirimi" %}',
+      desc: '{% trans "Garson-müşteri iletişimini dijitalleştir. Hata azalır, hız artar, müşteri memnuniyeti yükselir." %}',
+      stats: [{n:'-%40',l:'{% trans "sipariş hatası" %}'},{n:'2dk',l:'{% trans "daha hızlı" %}'},{n:'{% trans "Canlı" %}',l:'{% trans "takip" %}'}],
+      anim: 'order', gradClass: 'grad'
+    },
+    {
+      badge: '{% trans "Kampanya Motoru" %}',
+      h1s: '{% trans "Hafta sonu kampanyasını" %}',
+      h1d: '{% trans "cuma akşamı hazırla." %}',
+      sub: '{% trans "Öğle menüsü indirimi, happy hour, özel combo — hepsini takvimle ayarlayın, otomatik devreye girsin." %}',
+      p: ['{% trans "Kampanya başlangıç/bitiş tarihi ayarlanır" %}','{% trans "Belirli saatlerde otomatik fiyat değişimi" %}','{% trans "QR bannerlarla kampanyayı duyur" %}'],
+      label: '{% trans "Kampanya" %}', title: '{% trans "Kampanya koy, müşteri aksın" %}',
+      desc: '{% trans "Sezonluk ve saatlik kampanyaları önceden planlayın. Sistem otomatik açar, otomatik kapatır." %}',
+      stats: [{n:'+28%',l:'{% trans "ziyaret artışı" %}'},{n:'Auto',l:'{% trans "kampanya" %}'},{n:'{% trans "Takvim" %}',l:'{% trans "planlama" %}'}],
+      anim: 'campaign', gradClass: 'grad2'
+    },
+    {
+      badge: '{% trans "Analitik & Büyüme" %}',
+      h1s: '{% trans "En çok bakılan ürün neydi?" %}',
+      h1d: '{% trans "Artık biliyorsunuz." %}',
+      sub: '{% trans "Menü tıklamaları, sipariş trendleri, pik saatler — veriler gerçek zamanlı. Kararları sezgiyle değil, veriyle alın." %}',
+      p: ['{% trans "Hangi ürün çok bakılıp alınmıyor? Bulun" %}','{% trans "Hangi saatte sipariş yoğunluğu var?" %}','{% trans "Aylık büyüme ve gelir trendi raporu" %}'],
+      label: '{% trans "Analitik" %}', title: '{% trans "Veriye dayalı menü kararları" %}',
+      desc: '{% trans "Hangi ürün tıklanıyor ama satılmıyor? Hangi kategori görünmüyor? Dashboard\'da görün, harekete geçin." %}',
+      stats: [{n:'{% trans "Gerçek Zamanlı" %}',l:'dashboard'},{n:'30+',l:'{% trans "metrik" %}'},{n:'PDF',l:'{% trans "rapor" %}'}],
+      anim: 'analytics', gradClass: 'grad'
+    },
+    {
+      badge: '{% trans "Çoklu Şube" %}',
+      h1s: '{% trans "5 şube, 1 panel." %}',
+      h1d: '{% trans "Hepsini merkezden yönet." %}',
+      sub: '{% trans "3 börekçiniz, 2 cafeniz mi var? Hepsinin menüsünü tek panelden yönetin. Şube bazlı fiyatlar da desteklenir." %}',
+      p: ['{% trans "Her şubeye ayrı menü veya ortak şablon" %}','{% trans "Şube bazlı analitik kıyaslama" %}','{% trans "Yönetici ve personel yetki kontrolü" %}'],
+      label: '{% trans "Çoklu Şube" %}', title: '{% trans "Tüm şubeleri tek ekrandan yönet" %}',
+      desc: '{% trans "Franchise veya çok şubeli işletmeler için tasarlandı. Merkezi kontrol, yerel esneklik." %}',
+      stats: [{n:'{% trans "Sınırsız" %}',l:'{% trans "şube" %}'},{n:'{% trans "Rol" %}',l:'{% trans "bazlı erişim" %}'},{n:'{% trans "Tek" %}',l:'{% trans "panel" %}'}],
+      anim: 'branches', gradClass: 'grad2'
+    }
+  ];
+  initHeroSlideshow(homeSlides, 'hero-home');
+});
+</script>

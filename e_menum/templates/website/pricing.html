@@ -198,27 +198,13 @@
 
 {% block content %}
 
+{# Hero — Enterprise #}
+{% include "website/partials/_hero_enterprise_simple.html" with badge_text="Fiyatlandırma" title="İşletmenizin büyüklüğüne göre" title_highlight="en doğru planı seçin." subtitle="Her ölçekteki işletme için esnek paketler. İstediğiniz zaman yükseltin veya geçiş yapın." hero_id="hero-pricing" %}
+
 {# Background Grid Effect #}
 <div class="pricing-bg"></div>
 
-<div style="position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:80px 20px 120px;">
-
-    {# ── HEADER ── #}
-    <div class="reveal" id="h1">
-        <div class="eyebrow">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-            {% trans "Fiyatlandırma" %}
-        </div>
-        {% if hero %}
-        <h1 class="sec-title">{{ hero.title|safe }}</h1>
-        {% if hero.subtitle %}
-        <p class="sec-sub">{{ hero.subtitle }}</p>
-        {% endif %}
-        {% else %}
-        <h1 class="sec-title">{% trans "İşletmenizin büyüklüğüne göre" %}<br>{% trans "en doğru" %} <span class="hi">{% trans "planı seçin." %}</span></h1>
-        <p class="sec-sub">{% trans "Her ölçekteki işletme için esnek paketler. İstediğiniz zaman yükseltin veya geçiş yapın." %}</p>
-        {% endif %}
-    </div>
+<div style="position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:40px 20px 120px;">
 
     {# ── PRICING CARDS ── #}
     {% include "website/partials/_pricing_cards.html" %}

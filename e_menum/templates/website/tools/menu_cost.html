@@ -4,18 +4,7 @@
 {% block title %}{% trans "Menu Maliyet Hesaplayici" %} — E-Menum{% endblock %}
 
 {% block content %}
-<section class="hero-gradient hero-gradient-resources pattern-dots">
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 lg:pt-32 lg:pb-16">
-        <div class="max-w-3xl">
-            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-400 text-sm font-semibold mb-6">
-                <i class="ph ph-calculator"></i>
-                {% trans "Ücretsiz Araç" %}
-            </span>
-            <h1 class="heading-display text-4xl lg:text-5xl text-white mb-4">{% trans "Menu Maliyet Hesaplayici" %}</h1>
-            <p class="text-lg text-gray-300">{% trans "Basili menu maliyetinizi hesaplayin ve dijital menuye geciste ne kadar tasarruf edebileceginizi gorun." %}</p>
-        </div>
-    </div>
-</section>
+{% include "website/partials/_hero_enterprise_simple.html" with badge_text="Ücretsiz Araç" title="Menü Maliyet" title_highlight="Hesaplayıcı" subtitle="Basılı menü maliyetinizi hesaplayın ve dijital menüye geçişte ne kadar tasarruf edebileceğinizi görün." hero_id="hero-menu-cost" %}
 
 <section class="py-12 lg:py-20" x-data="menuCostCalculator()">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
