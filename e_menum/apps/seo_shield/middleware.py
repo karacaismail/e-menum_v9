@@ -31,7 +31,6 @@ Usage in settings.py MIDDLEWARE:
     ]
 """
 
-import json
 import logging
 
 from django.conf import settings
