@@ -639,6 +639,7 @@ function adminSidebar() {
             media: {
                 label: 'Media',
                 items: [
+                    { label: 'Media Library', url: '/admin/media-library/', icon: 'images' },
                     { label: 'Media Files', url: '/admin/media/media/', icon: 'image' },
                     { label: 'Media Folders', url: '/admin/media/mediafolder/', icon: 'folder' },
                 ]
@@ -733,7 +734,7 @@ function adminSidebar() {
         isUrlAllowed(url) {
             if (_allAllowed) return true;
             // Dashboard, settings, and non-model URLs are always allowed for staff
-            if (url === '/admin/' || url.includes('/settings') || url.includes('/reports/') || url.includes('/permission-matrix/') || url.includes('/seo-dashboard') || url.includes('/shield-dashboard')) return true;
+            if (url === '/admin/' || url.includes('/settings') || url.includes('/reports/') || url.includes('/permission-matrix/') || url.includes('/seo-dashboard') || url.includes('/shield-dashboard') || url.includes('/media-library')) return true;
             return _allowedAdminUrls.indexOf(url) !== -1;
         },
 
@@ -1129,6 +1130,7 @@ function mobileNav() {
             media: {
                 label: 'Media',
                 items: [
+                    { label: 'Library', url: '/admin/media-library/', icon: 'images' },
                     { label: 'Files', url: '/admin/media/media/', icon: 'image' },
                     { label: 'Folders', url: '/admin/media/mediafolder/', icon: 'folder' }
                 ]

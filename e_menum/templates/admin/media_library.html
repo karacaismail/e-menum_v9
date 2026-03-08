@@ -1,0 +1,564 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans 'Media Library' %} | E-Menum Admin{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin/css/media-library.css' %}">
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs" aria-label="{% trans 'Breadcrumb' %}">
+    <a href="{% url 'admin:index' %}"><i class="ph ph-house"></i> {% trans 'Home' %}</a>
+    <span class="breadcrumb-sep"><i class="ph ph-caret-right"></i></span>
+    <span class="breadcrumb-current">{% trans 'Media Library' %}</span>
+</nav>
+{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block content %}
+<div class="ml" x-data="mediaLibrary()" x-init="init()"
+     @dragover.prevent="globalDragover = true"
+     @dragleave.prevent="globalDragover = false"
+     @drop.prevent="handleGlobalDrop($event)">
+
+    {# ═══ Global Drop Overlay ═══ #}
+    <div class="ml-drop-overlay" x-show="globalDragover" x-transition.opacity x-cloak>
+        <div class="ml-drop-overlay-inner">
+            <i class="ph ph-cloud-arrow-up"></i>
+            <h3>{% trans 'Drop files to upload' %}</h3>
+            <p>{% trans 'Supported: Images, Videos, PDFs' %}</p>
+        </div>
+    </div>
+
+    {# ═══ Header Bar ═══ #}
+    <div class="ml-header">
+        <div class="ml-header-left">
+            <h1 class="ml-title">
+                <i class="ph ph-images"></i>
+                {% trans 'Media Library' %}
+            </h1>
+            <span class="ml-count" x-show="!loading" x-text="totalCount + ' {% trans "files" %}'"></span>
+        </div>
+        <div class="ml-header-right">
+            <div class="ml-search">
+                <i class="ph ph-magnifying-glass"></i>
+                <input type="text" x-model.debounce.300ms="searchQuery" @input="fetchMedia()"
+                       placeholder="{% trans 'Search media...' %}">
+                <button x-show="searchQuery" @click="searchQuery=''; fetchMedia()" class="ml-search-clear">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+            <div class="ml-filters">
+                <select x-model="typeFilter" @change="fetchMedia()" class="ml-select">
+                    <option value="">{% trans 'All Types' %}</option>
+                    <option value="IMAGE">{% trans 'Images' %}</option>
+                    <option value="VIDEO">{% trans 'Videos' %}</option>
+                    <option value="DOCUMENT">{% trans 'Documents' %}</option>
+                    <option value="AUDIO">{% trans 'Audio' %}</option>
+                </select>
+            </div>
+            <div class="ml-view-toggle">
+                <button @click="viewMode='grid'" :class="{ active: viewMode==='grid' }" title="{% trans 'Grid view' %}">
+                    <i class="ph ph-grid-four"></i>
+                </button>
+                <button @click="viewMode='list'" :class="{ active: viewMode==='list' }" title="{% trans 'List view' %}">
+                    <i class="ph ph-list"></i>
+                </button>
+            </div>
+            <label class="ml-upload-btn">
+                <i class="ph ph-upload-simple"></i>
+                <span>{% trans 'Upload' %}</span>
+                <input type="file" multiple accept="image/*,video/mp4,video/webm,application/pdf,audio/*"
+                       @change="handleFileSelect($event)" style="display:none">
+            </label>
+        </div>
+    </div>
+
+    {# ═══ Upload Progress Bar ═══ #}
+    <div class="ml-upload-progress" x-show="uploads.length > 0" x-transition x-cloak>
+        <div class="ml-upload-bar">
+            <div class="ml-upload-info">
+                <i class="ph ph-cloud-arrow-up"></i>
+                <span x-text="uploadingCount + ' {% trans "file(s) uploading..." %}'"></span>
+            </div>
+            <div class="ml-upload-track">
+                <div class="ml-upload-fill" :style="'width:' + totalProgress + '%'"></div>
+            </div>
+            <span class="ml-upload-pct" x-text="Math.round(totalProgress) + '%'"></span>
+        </div>
+        <div class="ml-upload-files">
+            <template x-for="(up, idx) in uploads" :key="idx">
+                <div class="ml-upload-file" :class="{ 'done': up.done, 'error': up.error }">
+                    <i class="ph" :class="up.error ? 'ph-warning-circle' : up.done ? 'ph-check-circle' : 'ph-spinner-gap animate-spin'"></i>
+                    <span x-text="up.name" class="ml-upload-fname"></span>
+                    <span class="ml-upload-fsize" x-text="humanSize(up.size)"></span>
+                </div>
+            </template>
+        </div>
+    </div>
+
+    {# ═══ Main Content ═══ #}
+    <div class="ml-body">
+        {# Folder Sidebar #}
+        <aside class="ml-sidebar" x-show="showFolders">
+            <div class="ml-sidebar-header">
+                <h3><i class="ph ph-folder-simple"></i> {% trans 'Folders' %}</h3>
+                <button @click="createFolder()" class="ml-sidebar-add" title="{% trans 'New folder' %}">
+                    <i class="ph ph-plus"></i>
+                </button>
+            </div>
+            <div class="ml-folder-tree">
+                <button class="ml-folder-item"
+                        :class="{ active: !currentFolder }"
+                        @click="currentFolder = null; fetchMedia()">
+                    <i class="ph ph-house-simple"></i>
+                    <span>{% trans 'All Files' %}</span>
+                </button>
+                <template x-for="folder in folders" :key="folder.id">
+                    <button class="ml-folder-item"
+                            :class="{ active: currentFolder === folder.id }"
+                            @click="currentFolder = folder.id; fetchMedia()">
+                        <i class="ph ph-folder"></i>
+                        <span x-text="folder.name"></span>
+                        <span class="ml-folder-badge" x-text="folder.media_count || 0" x-show="folder.media_count > 0"></span>
+                    </button>
+                </template>
+            </div>
+        </aside>
+
+        {# Media Grid/List #}
+        <div class="ml-content">
+            {# Folder toggle for mobile #}
+            <button class="ml-folder-toggle" @click="showFolders = !showFolders">
+                <i class="ph" :class="showFolders ? 'ph-sidebar-simple' : 'ph-folder'"></i>
+            </button>
+
+            {# Loading State #}
+            <div class="ml-loading" x-show="loading" x-cloak>
+                <i class="ph ph-spinner-gap animate-spin"></i>
+                <span>{% trans 'Loading...' %}</span>
+            </div>
+
+            {# Empty State #}
+            <div class="ml-empty" x-show="!loading && items.length === 0" x-cloak>
+                <i class="ph ph-image-broken"></i>
+                <h3>{% trans 'No media files found' %}</h3>
+                <p x-show="searchQuery || typeFilter">{% trans 'Try changing your filters.' %}</p>
+                <p x-show="!searchQuery && !typeFilter">{% trans 'Drag and drop files here or click Upload to get started.' %}</p>
+            </div>
+
+            {# Grid View #}
+            <div class="ml-grid" x-show="!loading && items.length > 0 && viewMode==='grid'" x-cloak>
+                <template x-for="item in items" :key="item.id">
+                    <div class="ml-card" @click="selectItem(item)"
+                         :class="{ selected: selectedItem?.id === item.id }">
+                        <div class="ml-card-thumb">
+                            <template x-if="item.is_image && (item.url || item.thumbnail_url)">
+                                <img :src="item.thumbnail_url || item.url" :alt="item.alt_text || item.name" loading="lazy">
+                            </template>
+                            <template x-if="!item.is_image || (!item.url && !item.thumbnail_url)">
+                                <div class="ml-card-icon">
+                                    <i class="ph" :class="{
+                                        'ph-file-image': item.media_type === 'IMAGE',
+                                        'ph-file-video': item.media_type === 'VIDEO',
+                                        'ph-file-pdf': item.media_type === 'DOCUMENT',
+                                        'ph-file-audio': item.media_type === 'AUDIO'
+                                    }"></i>
+                                </div>
+                            </template>
+                            <div class="ml-card-overlay">
+                                <button @click.stop="previewItem(item)" title="{% trans 'Preview' %}">
+                                    <i class="ph ph-eye"></i>
+                                </button>
+                                <button @click.stop="deleteItem(item)" title="{% trans 'Delete' %}">
+                                    <i class="ph ph-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="ml-card-info">
+                            <span class="ml-card-name" x-text="item.name || item.original_filename"></span>
+                            <span class="ml-card-meta" x-text="humanSize(item.file_size)"></span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            {# List View #}
+            <div class="ml-list" x-show="!loading && items.length > 0 && viewMode==='list'" x-cloak>
+                <div class="ml-list-header">
+                    <span class="ml-list-col-thumb"></span>
+                    <span class="ml-list-col-name">{% trans 'Name' %}</span>
+                    <span class="ml-list-col-type">{% trans 'Type' %}</span>
+                    <span class="ml-list-col-size">{% trans 'Size' %}</span>
+                    <span class="ml-list-col-date">{% trans 'Date' %}</span>
+                    <span class="ml-list-col-actions"></span>
+                </div>
+                <template x-for="item in items" :key="item.id">
+                    <div class="ml-list-row" @click="selectItem(item)"
+                         :class="{ selected: selectedItem?.id === item.id }">
+                        <span class="ml-list-col-thumb">
+                            <template x-if="item.is_image && (item.url || item.thumbnail_url)">
+                                <img :src="item.thumbnail_url || item.url" :alt="item.name" loading="lazy">
+                            </template>
+                            <template x-if="!item.is_image || (!item.url && !item.thumbnail_url)">
+                                <i class="ph" :class="{
+                                    'ph-file-image': item.media_type === 'IMAGE',
+                                    'ph-file-video': item.media_type === 'VIDEO',
+                                    'ph-file-pdf': item.media_type === 'DOCUMENT',
+                                    'ph-file-audio': item.media_type === 'AUDIO'
+                                }"></i>
+                            </template>
+                        </span>
+                        <span class="ml-list-col-name" x-text="item.name || item.original_filename"></span>
+                        <span class="ml-list-col-type">
+                            <span class="ml-type-badge" :class="'type-' + (item.media_type||'').toLowerCase()"
+                                  x-text="item.media_type"></span>
+                        </span>
+                        <span class="ml-list-col-size" x-text="humanSize(item.file_size)"></span>
+                        <span class="ml-list-col-date" x-text="formatDate(item.created_at)"></span>
+                        <span class="ml-list-col-actions">
+                            <button @click.stop="previewItem(item)" title="{% trans 'Preview' %}"><i class="ph ph-eye"></i></button>
+                            <button @click.stop="deleteItem(item)" title="{% trans 'Delete' %}"><i class="ph ph-trash"></i></button>
+                        </span>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        {# Detail Sidebar #}
+        <aside class="ml-detail" x-show="selectedItem" x-transition.opacity x-cloak>
+            <div class="ml-detail-header">
+                <h3>{% trans 'Details' %}</h3>
+                <button @click="selectedItem = null" class="ml-detail-close">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+            <template x-if="selectedItem">
+                <div class="ml-detail-body">
+                    {# Preview #}
+                    <div class="ml-detail-preview" @click="previewItem(selectedItem)">
+                        <template x-if="selectedItem.is_image && (selectedItem.url || selectedItem.thumbnail_url)">
+                            <img :src="selectedItem.url || selectedItem.thumbnail_url" :alt="selectedItem.name">
+                        </template>
+                        <template x-if="!selectedItem.is_image">
+                            <div class="ml-detail-icon">
+                                <i class="ph" :class="{
+                                    'ph-file-video': selectedItem.media_type === 'VIDEO',
+                                    'ph-file-pdf': selectedItem.media_type === 'DOCUMENT',
+                                    'ph-file-audio': selectedItem.media_type === 'AUDIO'
+                                }" style="font-size:48px"></i>
+                            </div>
+                        </template>
+                    </div>
+
+                    {# File Info #}
+                    <div class="ml-detail-info">
+                        <div class="ml-detail-row">
+                            <label>{% trans 'Filename' %}</label>
+                            <span x-text="selectedItem.original_filename || selectedItem.name"></span>
+                        </div>
+                        <div class="ml-detail-row">
+                            <label>{% trans 'Type' %}</label>
+                            <span x-text="selectedItem.mime_type || selectedItem.media_type"></span>
+                        </div>
+                        <div class="ml-detail-row">
+                            <label>{% trans 'Size' %}</label>
+                            <span x-text="humanSize(selectedItem.file_size)"></span>
+                        </div>
+                        <div class="ml-detail-row" x-show="selectedItem.width && selectedItem.height">
+                            <label>{% trans 'Dimensions' %}</label>
+                            <span x-text="(selectedItem.width || '') + ' × ' + (selectedItem.height || '')"></span>
+                        </div>
+                        <div class="ml-detail-row">
+                            <label>{% trans 'Uploaded' %}</label>
+                            <span x-text="formatDate(selectedItem.created_at)"></span>
+                        </div>
+                        <div class="ml-detail-row">
+                            <label>{% trans 'URL' %}</label>
+                            <div class="ml-url-row">
+                                <input type="text" :value="selectedItem.url" readonly class="ml-url-input" @click="$event.target.select()">
+                                <button @click="copyUrl(selectedItem.url)" class="ml-copy-btn" title="{% trans 'Copy URL' %}">
+                                    <i class="ph ph-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Editable Fields #}
+                    <div class="ml-detail-edit">
+                        <div class="ml-detail-field">
+                            <label>{% trans 'Title' %}</label>
+                            <input type="text" x-model="selectedItem.title" @change="updateItem(selectedItem)">
+                        </div>
+                        <div class="ml-detail-field">
+                            <label>{% trans 'Alt Text' %}</label>
+                            <input type="text" x-model="selectedItem.alt_text" @change="updateItem(selectedItem)"
+                                   placeholder="{% trans 'Describe this image for accessibility' %}">
+                        </div>
+                        <div class="ml-detail-field">
+                            <label>{% trans 'Caption' %}</label>
+                            <textarea x-model="selectedItem.caption" @change="updateItem(selectedItem)" rows="2"
+                                      placeholder="{% trans 'Optional caption' %}"></textarea>
+                        </div>
+                    </div>
+
+                    {# Actions #}
+                    <div class="ml-detail-actions">
+                        <a :href="selectedItem.url" target="_blank" class="ml-btn ml-btn-secondary">
+                            <i class="ph ph-arrow-square-out"></i> {% trans 'Open' %}
+                        </a>
+                        <button @click="deleteItem(selectedItem)" class="ml-btn ml-btn-danger">
+                            <i class="ph ph-trash"></i> {% trans 'Delete' %}
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </aside>
+    </div>
+
+    {# ═══ Preview Modal ═══ #}
+    <div class="ml-modal" x-show="previewOpen" @keydown.escape.window="previewOpen = false" x-transition.opacity x-cloak>
+        <div class="ml-modal-backdrop" @click="previewOpen = false"></div>
+        <div class="ml-modal-content">
+            <button class="ml-modal-close" @click="previewOpen = false">
+                <i class="ph ph-x"></i>
+            </button>
+            <template x-if="previewItem && previewItem.is_image">
+                <img :src="previewItem.url" :alt="previewItem.name" class="ml-modal-img">
+            </template>
+            <template x-if="previewItem && previewItem.media_type === 'VIDEO'">
+                <video :src="previewItem.url" controls class="ml-modal-video"></video>
+            </template>
+            <template x-if="previewItem && !previewItem.is_image && previewItem.media_type !== 'VIDEO'">
+                <div class="ml-modal-file">
+                    <i class="ph ph-file" style="font-size:64px;color:var(--text-dim)"></i>
+                    <p x-text="previewItem.name"></p>
+                </div>
+            </template>
+        </div>
+    </div>
+</div>
+
+{# ═══ JavaScript ═══ #}
+<script>
+function mediaLibrary() {
+    return {
+        /* State */
+        items: [],
+        folders: [],
+        loading: true,
+        viewMode: localStorage.getItem('ml-view') || 'grid',
+        searchQuery: '',
+        typeFilter: '',
+        currentFolder: null,
+        selectedItem: null,
+        showFolders: window.innerWidth > 1024,
+        totalCount: 0,
+        previewOpen: false,
+        previewItem: null,
+        globalDragover: false,
+
+        /* Upload */
+        uploads: [],
+
+        get uploadingCount() { return this.uploads.filter(u => !u.done && !u.error).length; },
+        get totalProgress() {
+            if (!this.uploads.length) return 0;
+            return this.uploads.reduce((sum, u) => sum + u.progress, 0) / this.uploads.length;
+        },
+
+        init() {
+            this.fetchFolders();
+            this.fetchMedia();
+            this.$watch('viewMode', v => localStorage.setItem('ml-view', v));
+        },
+
+        /* Data fetch */
+        async fetchMedia() {
+            this.loading = true;
+            try {
+                let url = '/api/v1/media/?ordering=-created_at';
+                if (this.searchQuery) url += '&search=' + encodeURIComponent(this.searchQuery);
+                if (this.typeFilter) url += '&media_type=' + this.typeFilter;
+                if (this.currentFolder) url += '&folder=' + this.currentFolder;
+
+                const resp = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                const json = await resp.json();
+
+                if (Array.isArray(json)) {
+                    this.items = json.map(i => ({ ...i, is_image: i.media_type === 'IMAGE' }));
+                    this.totalCount = json.length;
+                } else if (json.results) {
+                    this.items = json.results.map(i => ({ ...i, is_image: i.media_type === 'IMAGE' }));
+                    this.totalCount = json.count || json.results.length;
+                } else if (json.data) {
+                    const d = Array.isArray(json.data) ? json.data : (json.data.results || []);
+                    this.items = d.map(i => ({ ...i, is_image: i.media_type === 'IMAGE' }));
+                    this.totalCount = json.data.count || d.length;
+                }
+            } catch (e) { console.error('Media fetch error:', e); }
+            this.loading = false;
+        },
+
+        async fetchFolders() {
+            try {
+                const resp = await fetch('/api/v1/media/folders/', { headers: { 'Accept': 'application/json' } });
+                const json = await resp.json();
+                this.folders = Array.isArray(json) ? json : (json.results || json.data || []);
+            } catch (e) { console.error('Folder fetch error:', e); }
+        },
+
+        /* Upload */
+        handleGlobalDrop(e) {
+            this.globalDragover = false;
+            const files = e.dataTransfer?.files;
+            if (files?.length) this.uploadFiles(files);
+        },
+
+        handleFileSelect(e) {
+            const files = e.target.files;
+            if (files?.length) this.uploadFiles(files);
+            e.target.value = '';
+        },
+
+        async uploadFiles(files) {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value
+                || document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
+
+            for (const file of files) {
+                const up = { name: file.name, size: file.size, progress: 0, done: false, error: false };
+                this.uploads.push(up);
+
+                const fd = new FormData();
+                fd.append('file', file);
+                if (this.currentFolder) fd.append('folder', this.currentFolder);
+
+                try {
+                    const xhr = new XMLHttpRequest();
+                    xhr.upload.onprogress = (e) => {
+                        if (e.lengthComputable) up.progress = (e.loaded / e.total) * 100;
+                    };
+
+                    await new Promise((resolve, reject) => {
+                        xhr.onload = () => {
+                            if (xhr.status >= 200 && xhr.status < 300) {
+                                up.done = true;
+                                up.progress = 100;
+                                resolve();
+                            } else {
+                                up.error = true;
+                                reject(new Error('Upload failed'));
+                            }
+                        };
+                        xhr.onerror = () => { up.error = true; reject(new Error('Network error')); };
+                        xhr.open('POST', '/admin/api/upload/');
+                        xhr.setRequestHeader('X-CSRFToken', csrfToken);
+                        xhr.send(fd);
+                    });
+                } catch (e) {
+                    console.error('Upload error:', e);
+                }
+            }
+            /* Refresh list after all uploads */
+            setTimeout(() => {
+                this.fetchMedia();
+                this.fetchFolders();
+                /* Clear completed after 3s */
+                setTimeout(() => {
+                    this.uploads = this.uploads.filter(u => !u.done);
+                }, 3000);
+            }, 500);
+        },
+
+        /* Folder */
+        async createFolder() {
+            const name = prompt('{% trans "Folder name:" %}');
+            if (!name?.trim()) return;
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value
+                || document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
+            try {
+                await fetch('/api/v1/media/folders/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                    body: JSON.stringify({ name: name.trim() })
+                });
+                this.fetchFolders();
+            } catch (e) { console.error('Create folder error:', e); }
+        },
+
+        /* Selection & Preview */
+        selectItem(item) {
+            this.selectedItem = this.selectedItem?.id === item.id ? null : item;
+        },
+
+        previewItem(item) {
+            this.previewItem = item;
+            this.previewOpen = true;
+        },
+
+        /* Update metadata */
+        async updateItem(item) {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value
+                || document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
+            try {
+                await fetch('/api/v1/media/' + item.id + '/', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                    body: JSON.stringify({ title: item.title, alt_text: item.alt_text, caption: item.caption })
+                });
+            } catch (e) { console.error('Update error:', e); }
+        },
+
+        /* Delete */
+        async deleteItem(item) {
+            if (!confirm('{% trans "Delete this file?" %} ' + (item.name || item.original_filename))) return;
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value
+                || document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
+            try {
+                await fetch('/api/v1/media/' + item.id + '/delete/', {
+                    method: 'DELETE',
+                    headers: { 'X-CSRFToken': csrfToken }
+                });
+                if (this.selectedItem?.id === item.id) this.selectedItem = null;
+                this.fetchMedia();
+            } catch (e) { console.error('Delete error:', e); }
+        },
+
+        /* Clipboard */
+        async copyUrl(url) {
+            try {
+                await navigator.clipboard.writeText(window.location.origin + url);
+            } catch (e) {
+                const el = document.createElement('textarea');
+                el.value = window.location.origin + url;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+            }
+        },
+
+        /* Helpers */
+        humanSize(bytes) {
+            if (!bytes) return '—';
+            const units = ['B', 'KB', 'MB', 'GB'];
+            let i = 0;
+            let size = bytes;
+            while (size >= 1024 && i < units.length - 1) { size /= 1024; i++; }
+            return size.toFixed(i > 0 ? 1 : 0) + ' ' + units[i];
+        },
+
+        formatDate(iso) {
+            if (!iso) return '—';
+            try {
+                return new Date(iso).toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' });
+            } catch (e) { return iso; }
+        }
+    };
+}
+</script>
+{% csrf_token %}
+{% endblock %}

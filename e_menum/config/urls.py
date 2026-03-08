@@ -54,6 +54,9 @@ from apps.menu.public_views import PublicMenuView, PublicMenuDetailView
 # Import admin upload view
 from shared.views.admin_upload import admin_upload_view
 
+# Import enterprise media library view
+from apps.media.library_view import media_library
+
 # Import temporary diagnostics view (remove after debugging)
 from apps.core.diagnostics_view import diagnostics_view
 
@@ -492,6 +495,8 @@ urlpatterns = [
     path(
         "admin/shield-dashboard/", admin_shield_dashboard, name="admin-shield-dashboard"
     ),
+    # Enterprise media library
+    path("admin/media-library/", media_library, name="admin-media-library"),
     # Admin AJAX upload endpoint for image upload widgets
     path("admin/api/upload/", admin_upload_view, name="admin-upload"),
     # -------------------------------------------------------------------------
