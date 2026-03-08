@@ -251,46 +251,6 @@
     </div>
     {% endif %}
 
-    {# ── Delete Confirmation Modal ── #}
-    <div x-show="showDeleteModal"
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-         @keydown.escape.window="showDeleteModal = false"
-         x-cloak>
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full p-6"
-             @click.away="showDeleteModal = false">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                    <i class="ph ph-warning text-xl text-red-600 dark:text-red-400"></i>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{% trans "Delete Product" %}</h3>
-            </div>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
-                {% trans "Are you sure you want to delete" %}
-                <strong class="text-gray-900 dark:text-white" x-text="deleteProductName"></strong>?
-                {% trans "This action cannot be undone." %}
-            </p>
-            <div class="flex items-center justify-end gap-3">
-                <button @click="showDeleteModal = false"
-                        type="button"
-                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors">
-                    {% trans "Cancel" %}
-                </button>
-                <form :action="deleteUrl" method="post" class="inline">
-                    {% csrf_token %}
-                    <button type="submit"
-                            class="px-4 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
-                        {% trans "Delete" %}
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
 
 </div>
 {% endblock %}
@@ -300,14 +260,27 @@
 <script>
 function productList() {
     return {
-        showDeleteModal: false,
-        deleteProductName: '',
-        deleteUrl: '',
-
-        confirmDelete(id, name) {
-            this.deleteProductName = name;
-            this.deleteUrl = '{% url "accounts:product-list" %}' + id + '/delete/';
-            this.showDeleteModal = true;
+        async confirmDelete(id, name) {
+            var confirmed = await Alpine.store('confirm').show({
+                title: '{% filter escapejs %}{% trans "Delete Product" %}{% endfilter %}',
+                message: name + ' {% filter escapejs %}{% trans "urununu silmek istediginize emin misiniz? Bu islem geri alinamaz." %}{% endfilter %}',
+                confirmText: '{% filter escapejs %}{% trans "Delete" %}{% endfilter %}',
+                danger: true
+            });
+            if (!confirmed) return;
+            try {
+                var resp = await fetchWithCsrf('{% url "accounts:product-list" %}' + id + '/delete/', { method: 'POST' });
+                if (!resp.ok) throw new Error('Delete failed');
+                var row = document.querySelector('[data-row-id="' + id + '"]');
+                if (row) {
+                    row.style.transition = 'opacity 300ms ease, transform 300ms ease';
+                    row.style.opacity = '0';
+                    setTimeout(function() { row.remove(); }, 300);
+                }
+                Alpine.store('toasts').success('{% filter escapejs %}{% trans "Urun silindi." %}{% endfilter %}');
+            } catch (err) {
+                Alpine.store('toasts').error('{% filter escapejs %}{% trans "Silme islemi basarisiz oldu." %}{% endfilter %}');
+            }
         },
 
         async toggleStatus(productId, field, event) {
@@ -315,22 +288,35 @@ function productList() {
             btn.disabled = true;
 
             try {
-                const response = await fetch('{% url "accounts:product-list" %}' + productId + '/toggle/', {
+                const response = await fetchWithCsrf('{% url "accounts:product-list" %}' + productId + '/toggle/', {
                     method: 'POST',
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
-                        'Content-Type': 'application/json',
-                    },
                     body: JSON.stringify({ field: field }),
                 });
 
                 if (response.ok) {
-                    window.location.reload();
+                    const data = await response.json();
+                    if (field === 'is_active') {
+                        const isActive = data.value !== undefined ? data.value : !btn.classList.contains('bg-green-100');
+                        btn.className = isActive
+                            ? 'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-colors bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                            : 'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-colors bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400';
+                        btn.innerHTML = isActive
+                            ? '<i class="ph ph-circle-fill text-xs"></i> {% filter escapejs %}{% trans "Active" %}{% endfilter %}'
+                            : '<i class="ph ph-circle text-xs"></i> {% filter escapejs %}{% trans "Inactive" %}{% endfilter %}';
+                    }
+                    if (field === 'is_featured') {
+                        const icon = btn.querySelector('i');
+                        const isFeatured = data.value !== undefined ? data.value : icon.classList.contains('ph-star');
+                        icon.className = isFeatured
+                            ? 'ph ph-star-fill text-amber-500 text-xl'
+                            : 'ph ph-star text-gray-400 text-xl';
+                    }
+                    Alpine.store('toasts').success(data.message || '{% filter escapejs %}{% trans "Guncellendi." %}{% endfilter %}');
                 } else {
-                    console.error('Toggle failed');
+                    Alpine.store('toasts').error('{% filter escapejs %}{% trans "Islem basarisiz oldu." %}{% endfilter %}');
                 }
             } catch (err) {
-                console.error('Toggle error:', err);
+                Alpine.store('toasts').error('{% filter escapejs %}{% trans "Baglanti hatasi." %}{% endfilter %}');
             } finally {
                 btn.disabled = false;
             }

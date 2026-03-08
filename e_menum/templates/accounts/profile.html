@@ -4,7 +4,15 @@
 {% block title %}{% trans "Profil" %}{% endblock %}
 
 {% block panel_content %}
-<div class="max-w-2xl mx-auto py-10 px-4">
+<div class="max-w-2xl mx-auto py-10 px-4" x-data="formGuard()">
+
+    {# Unsaved changes indicator #}
+    <div x-show="isDirty" x-transition
+         class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-amber-500 text-white px-4 py-2 rounded-full shadow-lg text-sm font-medium flex items-center gap-2"
+         x-cloak>
+        <i class="ph ph-floppy-disk animate-pulse"></i>
+        {% trans "Kaydedilmemis degisiklikler var" %}
+    </div>
     {# Page Header #}
     <div class="mb-8">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
@@ -94,9 +102,13 @@
             {# Submit Button #}
             <div class="pt-2">
                 <button type="submit"
-                        class="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3 text-base font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-xl shadow-md hover:shadow-lg transition-all">
-                    <i class="ph ph-floppy-disk"></i>
-                    {% trans "Kaydet" %}
+                        x-data="{ submitting: false }"
+                        @click="if(!submitting){ submitting = true; $nextTick(() => $el.closest('form').submit()); }"
+                        :disabled="submitting"
+                        class="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3 text-base font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+                    <i class="ph ph-floppy-disk" x-show="!submitting"></i>
+                    <i class="ph ph-spinner-gap animate-spin" x-show="submitting" x-cloak></i>
+                    <span x-text="submitting ? '{% trans "Kaydediliyor..." %}' : '{% trans "Kaydet" %}'"></span>
                 </button>
             </div>
         </form>

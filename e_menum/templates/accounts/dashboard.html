@@ -2,10 +2,10 @@
 {% load static i18n %}
 
 {# =========================================================================
-   Restaurant Owner Dashboard
-   
-   Displays KPIs, charts (QR trends, revenue, order status, top products),
-   recent orders table, and quick action cards.
+   Restaurant Owner Dashboard — v2
+
+   Displays welcome greeting, quick actions, KPIs, charts (QR trends,
+   revenue, order status, top products), and recent orders table.
    ========================================================================= #}
 
 {% block page_title %}{% trans "Dashboard" %}{% endblock %}
@@ -18,10 +18,62 @@
 
 {% block panel_content %}
 
-{# ── 1. KPI Strip ── #}
+{# ── 1. Welcome Greeting ── #}
+<div class="mb-6" x-data="{
+    greeting: (() => {
+        const h = new Date().getHours();
+        if (h < 12) return '{% trans "Gunaydin" %}';
+        if (h < 18) return '{% trans "Iyi gunler" %}';
+        return '{% trans "Iyi aksamlar" %}';
+    })()
+}">
+    <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+        <span x-text="greeting"></span>, {{ user.first_name|default:user.email }}
+    </h2>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+        {% now "d F Y, l" %}
+    </p>
+</div>
+
+{# ── 2. Quick Actions (Prominent at top) ── #}
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+    <a href="{% url 'accounts:menu-create' %}"
+       class="flex items-center gap-3 p-3.5 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-all text-sm font-medium text-gray-700 dark:text-gray-300 card-hover-lift">
+        <div class="h-9 w-9 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+            <i class="ph ph-plus-circle text-lg text-primary-600 dark:text-primary-400"></i>
+        </div>
+        <span>{% trans "Menu Olustur" %}</span>
+    </a>
+
+    <a href="{% url 'accounts:product-create' %}"
+       class="flex items-center gap-3 p-3.5 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-600 transition-all text-sm font-medium text-gray-700 dark:text-gray-300 card-hover-lift">
+        <div class="h-9 w-9 rounded-lg bg-green-50 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0">
+            <i class="ph ph-fork-knife text-lg text-green-600 dark:text-green-400"></i>
+        </div>
+        <span>{% trans "Urun Ekle" %}</span>
+    </a>
+
+    <a href="{% url 'accounts:qrcode-list' %}"
+       class="flex items-center gap-3 p-3.5 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-amber-300 dark:hover:border-amber-600 transition-all text-sm font-medium text-gray-700 dark:text-gray-300 card-hover-lift">
+        <div class="h-9 w-9 rounded-lg bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
+            <i class="ph ph-qr-code text-lg text-amber-600 dark:text-amber-400"></i>
+        </div>
+        <span>{% trans "QR Kodlar" %}</span>
+    </a>
+
+    <a href="{% url 'accounts:analytics' %}"
+       class="flex items-center gap-3 p-3.5 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 transition-all text-sm font-medium text-gray-700 dark:text-gray-300 card-hover-lift">
+        <div class="h-9 w-9 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+            <i class="ph ph-chart-line text-lg text-blue-600 dark:text-blue-400"></i>
+        </div>
+        <span>{% trans "Analitik" %}</span>
+    </a>
+</div>
+
+{# ── 3. KPI Strip ── #}
 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
     {% for key, kpi in kpis.items %}
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 shadow-sm hover:shadow-md transition-shadow">
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 shadow-sm card-hover-lift">
         <div class="flex items-center justify-between mb-2">
             <div class="h-9 w-9 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center">
                 <i class="{{ kpi.icon }} text-lg text-primary-600 dark:text-primary-400"></i>
@@ -43,10 +95,15 @@
         </p>
         <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ kpi.label }}</p>
     </div>
+    {% empty %}
+    {# KPI Skeleton Loading #}
+    {% for i in "123456" %}
+    <div class="panel-skeleton skeleton-kpi rounded-xl"></div>
+    {% endfor %}
     {% endfor %}
 </div>
 
-{# ── 2. Charts Row: QR Scan Trend + Revenue Trend ── #}
+{# ── 4. Charts Row: QR Scan Trend + Revenue Trend ── #}
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
     {# QR Scan Trend Chart #}
     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm"
@@ -63,7 +120,11 @@
                 <option value="90">90 {% trans "gun" %}</option>
             </select>
         </div>
-        <div id="qr-trend-chart" style="height: 260px;"></div>
+        <div id="qr-trend-chart" style="height: 260px;">
+            <div class="flex items-center justify-center h-full text-gray-400 dark:text-gray-500">
+                <i class="ph ph-spinner-gap animate-spin text-2xl"></i>
+            </div>
+        </div>
     </div>
 
     {# Revenue Trend Chart #}
@@ -73,11 +134,15 @@
                 <i class="ph ph-chart-bar text-primary-500"></i>{% trans "Gelir Trendi" %}
             </h3>
         </div>
-        <div id="revenue-chart" style="height: 260px;"></div>
+        <div id="revenue-chart" style="height: 260px;">
+            <div class="flex items-center justify-center h-full text-gray-400 dark:text-gray-500">
+                <i class="ph ph-spinner-gap animate-spin text-2xl"></i>
+            </div>
+        </div>
     </div>
 </div>
 
-{# ── 3. Second Charts Row: Order Status + Top Products ── #}
+{# ── 5. Second Charts Row: Order Status + Top Products ── #}
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
     {# Order Status Distribution (Donut) #}
     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
@@ -86,7 +151,11 @@
                 <i class="ph ph-chart-donut text-primary-500"></i>{% trans "Siparis Durum Dagilimi" %}
             </h3>
         </div>
-        <div id="order-status-chart" style="height: 280px;"></div>
+        <div id="order-status-chart" style="height: 280px;">
+            <div class="flex items-center justify-center h-full text-gray-400 dark:text-gray-500">
+                <i class="ph ph-spinner-gap animate-spin text-2xl"></i>
+            </div>
+        </div>
     </div>
 
     {# Top 10 Products (Horizontal Bar) #}
@@ -96,17 +165,21 @@
                 <i class="ph ph-ranking text-primary-500"></i>{% trans "En Cok Satan 10 Urun" %}
             </h3>
         </div>
-        <div id="top-products-chart" style="height: 280px;"></div>
+        <div id="top-products-chart" style="height: 280px;">
+            <div class="flex items-center justify-center h-full text-gray-400 dark:text-gray-500">
+                <i class="ph ph-spinner-gap animate-spin text-2xl"></i>
+            </div>
+        </div>
     </div>
 </div>
 
-{# ── 4. Recent Orders Table ── #}
+{# ── 6. Recent Orders Table ── #}
 <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
     <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
         <h3 class="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
             <i class="ph ph-receipt text-primary-500"></i>{% trans "Son Siparisler" %}
         </h3>
-        <a href="{% url 'accounts:order-list' %}" class="text-xs text-primary-600 hover:text-primary-700 dark:text-primary-400">{% trans "Tumunu Gor" %} &rarr;</a>
+        <a href="{% url 'accounts:order-list' %}" class="text-xs text-primary-600 hover:text-primary-700 dark:text-primary-400 font-medium transition-colors">{% trans "Tumunu Gor" %} &rarr;</a>
     </div>
     <div class="overflow-x-auto">
         <table class="w-full">
@@ -128,23 +201,25 @@
                     <td class="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">{{ order.table_name }}</td>
                     <td class="px-5 py-3 text-sm font-medium text-gray-900 dark:text-white tabular-nums">&#8378;{{ order.total_amount|floatformat:0 }}</td>
                     <td class="px-5 py-3">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold
                             {% if order.status == 'COMPLETED' %}bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400
                             {% elif order.status == 'PENDING' %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400
                             {% elif order.status == 'PREPARING' %}bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400
                             {% elif order.status == 'CANCELLED' %}bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400
                             {% else %}bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300
                             {% endif %}">
-                            {{ order.status }}
+                            {{ order.get_status_display|default:order.status }}
                         </span>
                     </td>
-                    <td class="px-5 py-3 text-sm text-gray-500 dark:text-gray-400">{{ order.created_at|slice:":10" }}</td>
+                    <td class="px-5 py-3 text-sm text-gray-500 dark:text-gray-400">{{ order.created_at|date:"d.m.Y H:i" }}</td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6" class="px-5 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
-                        <i class="ph ph-receipt text-3xl mb-2 block opacity-40"></i>
-                        {% trans "Henuz siparis bulunmuyor." %}
+                    <td colspan="6" class="px-5 py-12 text-center">
+                        <div class="flex flex-col items-center">
+                            <i class="ph ph-receipt text-4xl text-gray-300 dark:text-gray-600 mb-2"></i>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Henuz siparis bulunmuyor." %}</p>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
@@ -153,40 +228,9 @@
     </div>
 </div>
 
-{# ── 5. Quick Actions Panel ── #}
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-    {# Create Menu #}
-    <a href="{% url 'accounts:menu-create' %}"
-       class="flex flex-col items-center justify-center p-5 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-md transition-all text-sm font-medium text-gray-700 dark:text-gray-300">
-        <i class="ph ph-plus-circle text-2xl text-primary-500 mb-2"></i>
-        <span>{% trans "Menu Olustur" %}</span>
-    </a>
-
-    {# Add Product #}
-    <a href="{% url 'accounts:product-create' %}"
-       class="flex flex-col items-center justify-center p-5 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-md transition-all text-sm font-medium text-gray-700 dark:text-gray-300">
-        <i class="ph ph-fork-knife text-2xl text-secondary-500 mb-2"></i>
-        <span>{% trans "Urun Ekle" %}</span>
-    </a>
-
-    {# QR Codes #}
-    <a href="{% url 'accounts:qrcode-list' %}"
-       class="flex flex-col items-center justify-center p-5 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-md transition-all text-sm font-medium text-gray-700 dark:text-gray-300">
-        <i class="ph ph-qr-code text-2xl text-accent-500 mb-2"></i>
-        <span>{% trans "QR Kodlar" %}</span>
-    </a>
-
-    {# Analytics #}
-    <a href="{% url 'accounts:analytics' %}"
-       class="flex flex-col items-center justify-center p-5 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-md transition-all text-sm font-medium text-gray-700 dark:text-gray-300">
-        <i class="ph ph-chart-line text-2xl text-blue-500 mb-2"></i>
-        <span>{% trans "Analitik" %}</span>
-    </a>
-</div>
-
 {% endblock %}
 
-{# ── 6. JavaScript: ECharts Initialization ── #}
+{# ── 7. JavaScript: ECharts Initialization ── #}
 {% block extra_js %}
 {{ block.super }}
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
@@ -197,6 +241,10 @@ document.addEventListener('DOMContentLoaded', function() {
         return cookie ? cookie.split('=')[1] : '';
     })();
 
+    var isDark = document.documentElement.classList.contains('dark');
+    var textColor = isDark ? '#9CA3AF' : '#6B7280';
+    var splitLineColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+
     // ── QR Trend Line Chart ──
     function loadQrTrend(days) {
         fetch('/account/api/dashboard/qr-trend/?days=' + (days || 30))
@@ -204,6 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(function(data) {
                 var chartDom = document.getElementById('qr-trend-chart');
                 if (!chartDom) return;
+                chartDom.innerHTML = '';
                 var chart = echarts.init(chartDom);
                 chart.setOption({
                     grid: { top: 8, right: 16, bottom: 24, left: 48 },
@@ -214,11 +263,13 @@ document.addEventListener('DOMContentLoaded', function() {
                             var dt = new Date(d);
                             return dt.getDate() + '/' + (dt.getMonth() + 1);
                         }),
-                        boundaryGap: false
+                        boundaryGap: false,
+                        axisLabel: { color: textColor, fontSize: 11 }
                     },
                     yAxis: {
                         type: 'value',
-                        splitLine: { lineStyle: { color: 'rgba(128,128,128,0.1)' } }
+                        splitLine: { lineStyle: { color: splitLineColor } },
+                        axisLabel: { color: textColor, fontSize: 11 }
                     },
                     series: [{
                         type: 'line',
@@ -233,7 +284,6 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(function(err) { console.error('QR trend load error:', err); });
     }
-    // Expose globally so Alpine.js select can call it
     window.loadQrTrend = loadQrTrend;
     loadQrTrend(30);
 
@@ -244,6 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(function(data) {
                 var chartDom = document.getElementById('revenue-chart');
                 if (!chartDom) return;
+                chartDom.innerHTML = '';
                 var chart = echarts.init(chartDom);
                 chart.setOption({
                     grid: { top: 8, right: 16, bottom: 24, left: 64 },
@@ -259,12 +310,15 @@ document.addEventListener('DOMContentLoaded', function() {
                             var dt = new Date(d);
                             return dt.getDate() + '/' + (dt.getMonth() + 1);
                         }),
-                        boundaryGap: true
+                        boundaryGap: true,
+                        axisLabel: { color: textColor, fontSize: 11 }
                     },
                     yAxis: {
                         type: 'value',
-                        splitLine: { lineStyle: { color: 'rgba(128,128,128,0.1)' } },
+                        splitLine: { lineStyle: { color: splitLineColor } },
                         axisLabel: {
+                            color: textColor,
+                            fontSize: 11,
                             formatter: function(v) { return '\u20BA' + (v / 1000).toFixed(0) + 'K'; }
                         }
                     },
@@ -286,6 +340,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(function(data) {
                 var chartDom = document.getElementById('order-status-chart');
                 if (!chartDom) return;
+                chartDom.innerHTML = '';
                 var chart = echarts.init(chartDom);
                 var colors = {
                     PENDING: '#f59e0b',
@@ -307,7 +362,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
                     legend: {
                         bottom: 0,
-                        textStyle: { color: '#9CA3AF', fontSize: 11 }
+                        textStyle: { color: textColor, fontSize: 11 }
                     },
                     series: [{
                         type: 'pie',
@@ -332,6 +387,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(function(data) {
                 var chartDom = document.getElementById('top-products-chart');
                 if (!chartDom) return;
+                chartDom.innerHTML = '';
                 var chart = echarts.init(chartDom);
                 var products = (data.products || []).slice().reverse();
                 chart.setOption({
@@ -339,12 +395,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
                     xAxis: {
                         type: 'value',
-                        splitLine: { lineStyle: { color: 'rgba(128,128,128,0.1)' } }
+                        splitLine: { lineStyle: { color: splitLineColor } },
+                        axisLabel: { color: textColor, fontSize: 11 }
                     },
                     yAxis: {
                         type: 'category',
                         data: products.map(function(p) { return p.product__name || '-'; }),
-                        axisLabel: { color: '#9CA3AF', fontSize: 11, width: 110, overflow: 'truncate' }
+                        axisLabel: { color: textColor, fontSize: 11, width: 110, overflow: 'truncate' }
                     },
                     series: [{
                         type: 'bar',

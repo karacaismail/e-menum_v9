@@ -68,8 +68,21 @@ search by order number, and dropdown filters for status and type.
 
             {# Search Button #}
             <button @click="applyFilters()"
-                class="px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors">
-                <i class="ph ph-funnel mr-1"></i>{% trans "Filtrele" %}
+                class="px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors inline-flex items-center gap-1.5">
+                <i class="ph ph-funnel"></i>
+                {% trans "Filtrele" %}
+                <span x-show="(search || status || type)"
+                      x-text="[search, status, type].filter(Boolean).length"
+                      class="h-5 min-w-[20px] rounded-full bg-white/20 text-xs flex items-center justify-center font-bold"
+                      x-cloak></span>
+            </button>
+
+            {# Clear Filters #}
+            <button x-show="(search || status || type)"
+                    @click="search=''; status=''; type=''; applyFilters()"
+                    class="text-xs text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 transition-colors inline-flex items-center gap-1"
+                    x-cloak>
+                <i class="ph ph-x-circle"></i> {% trans "Temizle" %}
             </button>
         </div>
     </div>

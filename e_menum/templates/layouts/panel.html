@@ -2,11 +2,18 @@
 {% load static i18n %}
 
 {# =========================================================================
-   Restaurant Owner Panel Layout
+   Restaurant Owner Panel Layout — v2
 
    Extends base.html (inherits Tailwind, Alpine.js, dark mode, messages).
    Provides a sidebar-based layout for the restaurant owner management portal.
    All navigation links point to /account/ prefixed URLs.
+
+   Features:
+   - Collapsible sidebar with section groups
+   - Global toast notification system
+   - Global confirm dialog (Promise-based)
+   - Page content enter animation
+   - Enhanced breadcrumbs
    ========================================================================= #}
 
 {% block robots %}noindex, nofollow{% endblock %}
@@ -20,6 +27,11 @@
 {% block navigation %}{% endblock %}
 
 {% block main_class %}{% endblock %}
+
+{% block extra_head %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'panel/css/panel.css' %}">
+{% endblock %}
 
 {% block content %}
 {# Panel Layout with Sidebar #}
@@ -51,24 +63,30 @@
         x-transition:leave="transition-opacity ease-linear duration-300"
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
-        class="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"
+        class="fixed inset-0 z-40 bg-gray-600/75 lg:hidden"
         @click="sidebarOpen = false"
         aria-hidden="true"
     ></div>
 
     {# ── Sidebar ── #}
     <aside
-        class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto flex flex-col"
-        :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"
+        class="fixed inset-y-0 left-0 z-50 bg-white dark:bg-gray-800 shadow-lg transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto flex flex-col"
+        :class="{
+            '-translate-x-full': !sidebarOpen,
+            'translate-x-0': sidebarOpen,
+            'w-64': !sidebarCollapsed,
+            'w-[72px]': sidebarCollapsed && !sidebarOpen,
+            'sidebar-collapsed': sidebarCollapsed && !sidebarOpen
+        }"
         x-cloak
     >
         {# Sidebar Header #}
         <div class="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-gray-700">
             {# Logo #}
-            <a href="{% url 'accounts:dashboard' %}" class="flex items-center space-x-2">
-                <img src="{{ marketing.logo_url|default:'' }}" alt="{{ marketing.company_name|default:'E-Menum' }}" class="h-8 w-auto"
+            <a href="{% url 'accounts:dashboard' %}" class="flex items-center space-x-2 min-w-0">
+                <img src="{{ marketing.logo_url|default:'' }}" alt="{{ marketing.company_name|default:'E-Menum' }}" class="h-8 w-8 flex-shrink-0 object-contain"
                      onerror="this.src='{% static 'images/logo.svg' %}';this.onerror=null">
-                <span class="text-xl font-bold text-primary-600 dark:text-primary-400">{{ marketing.company_name|default:"E-Menum" }}</span>
+                <span class="text-xl font-bold text-primary-600 dark:text-primary-400 truncate sidebar-text">{{ marketing.company_name|default:"E-Menum" }}</span>
             </a>
 
             {# Close Button (Mobile) #}
@@ -83,16 +101,16 @@
 
         {# Organization Selector #}
         {% if user.organization %}
-        <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+        <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 sidebar-org-info">
             <div class="flex items-center space-x-3">
                 {% if user.organization.logo %}
-                <img src="{{ user.organization.logo }}" alt="{{ user.organization.name }}" class="h-10 w-10 rounded-full object-cover">
+                <img src="{{ user.organization.logo }}" alt="{{ user.organization.name }}" class="h-10 w-10 rounded-full object-cover flex-shrink-0">
                 {% else %}
-                <div class="h-10 w-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center">
+                <div class="h-10 w-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center flex-shrink-0">
                     <i class="ph ph-storefront text-xl text-primary-600 dark:text-primary-400"></i>
                 </div>
                 {% endif %}
-                <div class="flex-1 min-w-0">
+                <div class="flex-1 min-w-0 sidebar-text">
                     <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
                         {{ user.organization.name }}
                     </p>
@@ -105,31 +123,38 @@
         {% endif %}
 
         {# Navigation Menu #}
-        <nav class="flex-1 px-2 py-4 space-y-1 overflow-y-auto" aria-label="{% trans 'Main Navigation' %}">
+        <nav class="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto" aria-label="{% trans 'Main Navigation' %}">
+
+            {# ═══════ Section: Business ═══════ #}
+            <div class="sidebar-section-label">
+                <span class="sidebar-text">{% trans "Isletme" %}</span>
+            </div>
 
             {# 1. Dashboard #}
             <a
                 href="{{ dashboard_url }}"
-                class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors touch-target {% if current_path == dashboard_url %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                class="sidebar-nav-link flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors touch-target {% if current_path == dashboard_url %}bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 sidebar-nav-active{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                :title="sidebarCollapsed ? '{% trans "Dashboard" %}' : ''"
             >
-                <i class="ph ph-squares-four mr-3 text-xl"></i>
-                {% trans "Dashboard" %}
+                <i class="ph ph-squares-four mr-3 text-xl sidebar-nav-icon"></i>
+                <span class="sidebar-text">{% trans "Dashboard" %}</span>
             </a>
 
             {# 2. Menu Management (Collapsible) #}
             <div x-data="{ open: {% if '/account/menus' in current_path or '/account/products' in current_path or '/account/themes' in current_path %}true{% else %}false{% endif %} }">
                 <button
                     @click="open = !open"
-                    class="flex items-center justify-between w-full px-4 py-3 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/menus' in current_path or '/account/products' in current_path or '/account/themes' in current_path %}bg-primary-50 text-primary-700 dark:bg-primary-950 dark:text-primary-300{% else %}text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %}"
+                    class="sidebar-nav-link flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/menus' in current_path or '/account/products' in current_path or '/account/themes' in current_path %}bg-primary-50 text-primary-700 dark:bg-primary-950/50 dark:text-primary-300 sidebar-nav-active{% else %}text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %}"
                     :aria-expanded="open"
+                    :title="sidebarCollapsed ? '{% trans "Menus" %}' : ''"
                 >
                     <span class="flex items-center">
-                        <i class="ph ph-book-open mr-3 text-xl"></i>
-                        {% trans "Menus" %}
+                        <i class="ph ph-book-open mr-3 text-xl sidebar-nav-icon"></i>
+                        <span class="sidebar-text">{% trans "Menus" %}</span>
                     </span>
-                    <i class="ph ph-caret-down transition-transform" :class="{ 'rotate-180': open }"></i>
+                    <i class="ph ph-caret-down transition-transform sidebar-caret" :class="{ 'rotate-180': open }"></i>
                 </button>
-                <div x-show="open" x-collapse class="mt-1 space-y-1 pl-11">
+                <div x-show="open" x-collapse class="mt-1 space-y-0.5 pl-11 sidebar-sub-menu">
                     <a
                         href="{{ menu_list_url }}"
                         class="block px-4 py-2 text-sm rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 {% if current_path == menu_list_url %}text-primary-700 dark:text-primary-300 font-medium bg-gray-50 dark:bg-gray-700{% else %}text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white{% endif %}"
@@ -154,10 +179,11 @@
             {# 3. Orders #}
             <a
                 href="{{ order_list_url }}"
-                class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/orders' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                class="sidebar-nav-link flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/orders' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 sidebar-nav-active{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                :title="sidebarCollapsed ? '{% trans "Orders" %}' : ''"
             >
-                <i class="ph ph-receipt mr-3 text-xl"></i>
-                {% trans "Orders" %}
+                <i class="ph ph-receipt mr-3 text-xl sidebar-nav-icon"></i>
+                <span class="sidebar-text">{% trans "Orders" %}</span>
                 {% block order_count_badge %}{% endblock %}
             </a>
 
@@ -165,16 +191,17 @@
             <div x-data="{ open: {% if '/account/tables' in current_path or '/account/qrcodes' in current_path %}true{% else %}false{% endif %} }">
                 <button
                     @click="open = !open"
-                    class="flex items-center justify-between w-full px-4 py-3 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/tables' in current_path or '/account/qrcodes' in current_path %}bg-primary-50 text-primary-700 dark:bg-primary-950 dark:text-primary-300{% else %}text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %}"
+                    class="sidebar-nav-link flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/tables' in current_path or '/account/qrcodes' in current_path %}bg-primary-50 text-primary-700 dark:bg-primary-950/50 dark:text-primary-300 sidebar-nav-active{% else %}text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %}"
                     :aria-expanded="open"
+                    :title="sidebarCollapsed ? '{% trans "Tables & QR" %}' : ''"
                 >
                     <span class="flex items-center">
-                        <i class="ph ph-qr-code mr-3 text-xl"></i>
-                        {% trans "Tables & QR" %}
+                        <i class="ph ph-qr-code mr-3 text-xl sidebar-nav-icon"></i>
+                        <span class="sidebar-text">{% trans "Tables & QR" %}</span>
                     </span>
-                    <i class="ph ph-caret-down transition-transform" :class="{ 'rotate-180': open }"></i>
+                    <i class="ph ph-caret-down transition-transform sidebar-caret" :class="{ 'rotate-180': open }"></i>
                 </button>
-                <div x-show="open" x-collapse class="mt-1 space-y-1 pl-11">
+                <div x-show="open" x-collapse class="mt-1 space-y-0.5 pl-11 sidebar-sub-menu">
                     <a
                         href="{{ table_management_url }}"
                         class="block px-4 py-2 text-sm rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 {% if current_path == table_management_url or '/account/tables' in current_path %}text-primary-700 dark:text-primary-300 font-medium bg-gray-50 dark:bg-gray-700{% else %}text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white{% endif %}"
@@ -193,91 +220,110 @@
             {# 5. Customers #}
             <a
                 href="{{ customer_list_url }}"
-                class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/customers' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                class="sidebar-nav-link flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/customers' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 sidebar-nav-active{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                :title="sidebarCollapsed ? '{% trans "Customers" %}' : ''"
             >
-                <i class="ph ph-users mr-3 text-xl"></i>
-                {% trans "Customers" %}
+                <i class="ph ph-users mr-3 text-xl sidebar-nav-icon"></i>
+                <span class="sidebar-text">{% trans "Customers" %}</span>
             </a>
 
             {# 6. Team Management #}
             <a
                 href="{{ team_list_url }}"
-                class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/team' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                class="sidebar-nav-link flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/team' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 sidebar-nav-active{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                :title="sidebarCollapsed ? '{% trans "Team" %}' : ''"
             >
-                <i class="ph ph-users-three mr-3 text-xl"></i>
-                {% trans "Team" %}
+                <i class="ph ph-users-three mr-3 text-xl sidebar-nav-icon"></i>
+                <span class="sidebar-text">{% trans "Team" %}</span>
             </a>
 
             {# 7. Analytics #}
             <a
                 href="{{ analytics_url }}"
-                class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/analytics' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                class="sidebar-nav-link flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/analytics' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 sidebar-nav-active{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                :title="sidebarCollapsed ? '{% trans "Analytics" %}' : ''"
             >
-                <i class="ph ph-chart-line mr-3 text-xl"></i>
-                {% trans "Analytics" %}
+                <i class="ph ph-chart-line mr-3 text-xl sidebar-nav-icon"></i>
+                <span class="sidebar-text">{% trans "Analytics" %}</span>
             </a>
 
-            {# 7. Separator #}
-            <div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
+            {# ═══════ Section: Settings ═══════ #}
+            <div class="sidebar-section-label mt-4">
+                <span class="sidebar-text">{% trans "Ayarlar" %}</span>
+            </div>
 
             {# 8. Profile #}
             <a
                 href="{{ profile_url }}"
-                class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/profile' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                class="sidebar-nav-link flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/profile' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 sidebar-nav-active{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                :title="sidebarCollapsed ? '{% trans "Profile" %}' : ''"
             >
-                <i class="ph ph-user-circle mr-3 text-xl"></i>
-                {% trans "Profile" %}
+                <i class="ph ph-user-circle mr-3 text-xl sidebar-nav-icon"></i>
+                <span class="sidebar-text">{% trans "Profile" %}</span>
             </a>
 
             {# 9. Restaurant Settings #}
             <a
                 href="{{ restaurant_settings_url }}"
-                class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/restaurant-settings' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                class="sidebar-nav-link flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/restaurant-settings' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 sidebar-nav-active{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                :title="sidebarCollapsed ? '{% trans "Restaurant" %}' : ''"
             >
-                <i class="ph ph-storefront mr-3 text-xl"></i>
-                {% trans "Restaurant" %}
+                <i class="ph ph-storefront mr-3 text-xl sidebar-nav-icon"></i>
+                <span class="sidebar-text">{% trans "Restaurant" %}</span>
             </a>
 
             {# 10. Account Settings #}
             <a
                 href="{{ settings_url }}"
-                class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/settings' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                class="sidebar-nav-link flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/settings' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 sidebar-nav-active{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                :title="sidebarCollapsed ? '{% trans "Settings" %}' : ''"
             >
-                <i class="ph ph-gear mr-3 text-xl"></i>
-                {% trans "Settings" %}
+                <i class="ph ph-gear mr-3 text-xl sidebar-nav-icon"></i>
+                <span class="sidebar-text">{% trans "Settings" %}</span>
             </a>
 
-            {# 10. Subscription #}
+            {# 11. Subscription #}
             <a
                 href="{{ subscription_url }}"
-                class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/subscription' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                class="sidebar-nav-link flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/subscription' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 sidebar-nav-active{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                :title="sidebarCollapsed ? '{% trans "Subscription" %}' : ''"
             >
-                <i class="ph ph-credit-card mr-3 text-xl"></i>
-                {% trans "Subscription" %}
+                <i class="ph ph-credit-card mr-3 text-xl sidebar-nav-icon"></i>
+                <span class="sidebar-text">{% trans "Subscription" %}</span>
             </a>
 
-            {# 11. Support Tickets #}
+            {# 12. Support Tickets #}
             <a
                 href="{{ support_list_url }}"
-                class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/support' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                class="sidebar-nav-link flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/support' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 sidebar-nav-active{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
+                :title="sidebarCollapsed ? '{% trans "Support" %}' : ''"
             >
-                <i class="ph ph-headset mr-3 text-xl"></i>
-                {% trans "Support" %}
+                <i class="ph ph-headset mr-3 text-xl sidebar-nav-icon"></i>
+                <span class="sidebar-text">{% trans "Support" %}</span>
             </a>
 
         </nav>
+
+        {# Desktop Collapse Toggle #}
+        <button
+            @click="sidebarCollapsed = !sidebarCollapsed; localStorage.setItem('sidebarCollapsed', sidebarCollapsed)"
+            class="hidden lg:flex items-center justify-center p-2 mx-3 mb-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors sidebar-collapse-btn"
+            :title="sidebarCollapsed ? '{% trans 'Kenar cubugunu genislet' %}' : '{% trans 'Kenar cubugunu daralt' %}'"
+        >
+            <i class="ph text-lg transition-transform duration-300" :class="sidebarCollapsed ? 'ph-caret-double-right' : 'ph-caret-double-left'"></i>
+        </button>
 
         {# Sidebar Footer - User Info & Logout #}
         <div class="flex-shrink-0 p-4 border-t border-gray-200 dark:border-gray-700">
             <div class="flex items-center">
                 {% if user.avatar %}
-                <img src="{{ user.avatar }}" alt="{{ user.get_full_name }}" class="h-10 w-10 rounded-full object-cover">
+                <img src="{{ user.avatar }}" alt="{{ user.get_full_name }}" class="h-10 w-10 rounded-full object-cover flex-shrink-0">
                 {% else %}
-                <div class="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                <div class="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center flex-shrink-0">
                     <i class="ph ph-user text-xl text-gray-600 dark:text-gray-300"></i>
                 </div>
                 {% endif %}
-                <div class="ml-3 flex-1 min-w-0">
+                <div class="ml-3 flex-1 min-w-0 sidebar-user-details">
                     <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
                         {{ user.get_full_name|default:user.email }}
                     </p>
@@ -399,11 +445,11 @@
         <main class="flex-1 overflow-y-auto p-4 lg:p-6">
             {# Breadcrumb Navigation #}
             {% block breadcrumb %}
-            <nav class="mb-4" aria-label="{% trans 'Breadcrumb' %}">
-                <ol class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+            <nav class="mb-5" aria-label="{% trans 'Breadcrumb' %}">
+                <ol class="flex items-center flex-wrap gap-1 text-sm">
                     <li>
-                        <a href="{{ dashboard_url }}" class="hover:text-primary-600 dark:hover:text-primary-400">
-                            <i class="ph ph-house"></i>
+                        <a href="{{ dashboard_url }}" class="text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                            <i class="ph ph-house text-base"></i>
                         </a>
                     </li>
                     {% block breadcrumb_items %}{% endblock %}
@@ -411,11 +457,80 @@
             </nav>
             {% endblock %}
 
-            {# Page Content #}
-            {% block panel_content %}{% endblock %}
+            {# Page Content with enter animation #}
+            <div class="panel-content-enter">
+                {% block panel_content %}{% endblock %}
+            </div>
         </main>
     </div>
 </div>
+
+{# ── Global Toast Notification Stack ── #}
+<div id="panel-toast-stack" x-data>
+    <template x-for="toast in $store.toasts.items" :key="toast.id">
+        <div
+            x-show="toast.visible"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+            x-transition:leave-end="opacity-0 translate-y-2 scale-95"
+            :class="{
+                'bg-green-600': toast.type === 'success',
+                'bg-red-600': toast.type === 'error',
+                'bg-amber-500': toast.type === 'warning',
+                'bg-blue-600': toast.type === 'info',
+            }"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg text-white text-sm font-medium"
+        >
+            <i :class="{
+                'ph ph-check-circle': toast.type === 'success',
+                'ph ph-x-circle': toast.type === 'error',
+                'ph ph-warning': toast.type === 'warning',
+                'ph ph-info': toast.type === 'info',
+            }" class="text-lg flex-shrink-0"></i>
+            <span class="flex-1" x-text="toast.message"></span>
+            <button @click="$store.toasts.dismiss(toast.id)" class="opacity-70 hover:opacity-100 ml-2 flex-shrink-0">
+                <i class="ph ph-x"></i>
+            </button>
+        </div>
+    </template>
+</div>
+
+{# ── Global Confirm Dialog ── #}
+<div x-data x-show="$store.confirm.open" x-cloak
+     class="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4"
+     @keydown.escape.window="$store.confirm.cancel()">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 max-w-md w-full p-6"
+         @click.away="$store.confirm.cancel()"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 scale-95"
+         x-transition:enter-end="opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-95">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="h-10 w-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
+                <i class="ph ph-warning text-xl text-red-600 dark:text-red-400"></i>
+            </div>
+            <h3 class="text-base font-semibold text-gray-900 dark:text-white" x-text="$store.confirm.title"></h3>
+        </div>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-6" x-text="$store.confirm.message"></p>
+        <div class="flex items-center justify-end gap-3">
+            <button @click="$store.confirm.cancel()"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                {% trans "Iptal" %}
+            </button>
+            <button @click="$store.confirm.accept()"
+                    :class="$store.confirm.confirmClass"
+                    class="px-4 py-2 text-sm font-semibold rounded-lg shadow-sm transition-colors"
+                    x-text="$store.confirm.confirmText">
+            </button>
+        </div>
+    </div>
+</div>
+
 {% endwith %}
 {% endblock %}
 
@@ -423,6 +538,7 @@
 
 {% block extra_js %}
 {{ block.super }}
+<script src="{% static 'panel/js/panel.js' %}"></script>
 <script>
     // Panel-specific JavaScript utilities
     document.addEventListener('alpine:init', () => {
@@ -445,16 +561,6 @@
                     this.selected.push(id);
                 }
                 this.selectAll = this.selected.length === document.querySelectorAll('[data-row-id]').length;
-            }
-        }));
-
-        // Confirmation dialog component
-        Alpine.data('confirmDialog', (message, onConfirm) => ({
-            show: false,
-            message: message,
-            confirm() {
-                this.show = false;
-                if (typeof onConfirm === 'function') onConfirm();
             }
         }));
     });

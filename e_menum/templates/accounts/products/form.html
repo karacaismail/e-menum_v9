@@ -19,6 +19,14 @@
 {% block panel_content %}
 <div x-data="productForm()" x-cloak>
 
+    {# Unsaved changes indicator #}
+    <div x-show="isDirty" x-transition
+         class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-amber-500 text-white px-4 py-2 rounded-full shadow-lg text-sm font-medium flex items-center gap-2"
+         x-cloak>
+        <i class="ph ph-floppy-disk animate-pulse"></i>
+        {% trans "Kaydedilmemis degisiklikler var" %}
+    </div>
+
     {# ── Page Header ── #}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
@@ -479,9 +487,14 @@
                 <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
                     <div class="space-y-3">
                         <button type="submit"
-                                class="w-full px-4 py-3 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2">
-                            <i class="ph ph-check-circle text-lg"></i>
-                            {% if product %}{% trans "Update Product" %}{% else %}{% trans "Create Product" %}{% endif %}
+                                x-data="{ submitting: false }"
+                                @click="if(!submitting){ submitting = true; $nextTick(() => $el.closest('form').submit()); }"
+                                :disabled="submitting"
+                                class="w-full px-4 py-3 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+                            <i class="ph ph-check-circle text-lg" x-show="!submitting"></i>
+                            <i class="ph ph-spinner-gap text-lg animate-spin" x-show="submitting" x-cloak></i>
+                            <span x-show="!submitting">{% if product %}{% trans "Update Product" %}{% else %}{% trans "Create Product" %}{% endif %}</span>
+                            <span x-show="submitting" x-cloak>{% trans "Kaydediliyor..." %}</span>
                         </button>
                         <a href="{% url 'accounts:product-list' %}"
                            class="w-full px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors flex items-center justify-center gap-2">
@@ -500,7 +513,29 @@
 <script>
 function productForm() {
     return {
-        // Form-level Alpine.js state can be extended here
+        isDirty: false,
+        _initialData: null,
+        init() {
+            this.$nextTick(() => {
+                const form = this.$el.querySelector('form');
+                if (form) {
+                    this._initialData = new FormData(form);
+                    form.addEventListener('input', () => this._checkDirty(form));
+                    form.addEventListener('change', () => this._checkDirty(form));
+                    window.addEventListener('beforeunload', (e) => {
+                        if (this.isDirty) { e.preventDefault(); e.returnValue = ''; }
+                    });
+                }
+            });
+        },
+        _checkDirty(form) {
+            const current = new FormData(form);
+            let dirty = false;
+            for (const [key, val] of current.entries()) {
+                if (this._initialData.get(key) !== val) { dirty = true; break; }
+            }
+            this.isDirty = dirty;
+        }
     };
 }
 </script>

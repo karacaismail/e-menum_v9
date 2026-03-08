@@ -158,51 +158,6 @@
     {% endfor %}
 </div>
 
-{# ── Delete Confirmation Dialog ── #}
-<div x-data="deleteDialog()" x-cloak>
-    <template x-teleport="body">
-        <div x-show="open"
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition ease-in duration-150"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
-             @keydown.escape.window="open = false">
-            <div @click.away="open = false"
-                 class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl w-full max-w-md p-6">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="h-10 w-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
-                        <i class="ph ph-warning text-xl text-red-600 dark:text-red-400"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-semibold text-gray-900 dark:text-white">{% trans "Menu Sil" %}</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                            <span x-text="menuName"></span> {% trans "menusunu silmek istediginize emin misiniz?" %}
-                        </p>
-                    </div>
-                </div>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mb-5">
-                    {% trans "Bu islem geri alinamaz. Menuye ait tum kategoriler ve urun baglantilari kaldirilacaktir." %}
-                </p>
-                <div class="flex items-center justify-end gap-3">
-                    <button type="button"
-                            @click="open = false"
-                            class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">
-                        {% trans "Iptal" %}
-                    </button>
-                    <button type="button"
-                            @click="executeDelete()"
-                            class="px-4 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-sm transition-all">
-                        {% trans "Evet, Sil" %}
-                    </button>
-                </div>
-            </div>
-        </div>
-    </template>
-</div>
-
 {% else %}
 
 {# ── Empty State ── #}
@@ -232,32 +187,15 @@
 document.addEventListener('alpine:init', function() {
 
     /**
-     * Utility: fetch wrapper with CSRF token
-     */
-    function fetchWithCsrf(url, options) {
-        options = options || {};
-        var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')
-            ? document.querySelector('[name=csrfmiddlewaretoken]').value
-            : (document.cookie.split(';').find(function(c) { return c.trim().startsWith('csrftoken='); }) || '').split('=')[1] || '';
-
-        options.headers = Object.assign({
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken,
-            'X-Requested-With': 'XMLHttpRequest'
-        }, options.headers || {});
-
-        return fetch(url, options);
-    }
-
-    /**
-     * Menu list manager — handles publish toggle, set-default, copy link
+     * Menu list manager — handles publish toggle, set-default, copy link, delete
+     * Uses global toast ($store.toasts) and confirm ($store.confirm) from panel.js
      */
     Alpine.data('menuListManager', function() {
         return {
             copyToClipboard: function(text) {
                 var fullUrl = window.location.origin + text;
                 navigator.clipboard.writeText(fullUrl).then(function() {
-                    // Visual feedback could be added here
+                    Alpine.store('toasts').success('{% filter escapejs %}{% trans "Link kopyalandi!" %}{% endfilter %}');
                 });
             },
 
@@ -283,23 +221,32 @@ document.addEventListener('alpine:init', function() {
                             badge.textContent = '{% filter escapejs %}{% trans "Taslak" %}{% endfilter %}';
                         }
                     }
-                    // Update button icon and text
+                    // Update button
+                    var btn = document.getElementById('btn-publish-' + menuId);
+                    if (btn) {
+                        btn.className = newState
+                            ? 'px-3 py-2 text-sm font-medium rounded-lg border transition-all inline-flex items-center gap-1.5 text-yellow-700 dark:text-yellow-300 border-yellow-300 dark:border-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
+                            : 'px-3 py-2 text-sm font-medium rounded-lg border transition-all inline-flex items-center gap-1.5 text-green-700 dark:text-green-300 border-green-300 dark:border-green-600 hover:bg-green-50 dark:hover:bg-green-900/20';
+                        btn.setAttribute('onclick', '');
+                    }
                     var icon = document.getElementById('icon-publish-' + menuId);
                     var text = document.getElementById('text-publish-' + menuId);
-                    if (icon) {
-                        icon.className = newState ? 'ph ph-eye-slash text-sm' : 'ph ph-eye text-sm';
-                    }
-                    if (text) {
-                        text.textContent = newState
-                            ? '{% filter escapejs %}{% trans "Kaldir" %}{% endfilter %}'
-                            : '{% filter escapejs %}{% trans "Yayinla" %}{% endfilter %}';
-                    }
-                    // Reload to get clean state for subsequent toggles
-                    window.location.reload();
+                    if (icon) icon.className = newState ? 'ph ph-eye-slash text-sm' : 'ph ph-eye text-sm';
+                    if (text) text.textContent = newState
+                        ? '{% filter escapejs %}{% trans "Kaldir" %}{% endfilter %}'
+                        : '{% filter escapejs %}{% trans "Yayinla" %}{% endfilter %}';
+                    // Toast feedback instead of reload
+                    Alpine.store('toasts').success(
+                        newState
+                            ? '{% filter escapejs %}{% trans "Menu yayinlandi." %}{% endfilter %}'
+                            : '{% filter escapejs %}{% trans "Menu yayindan kaldirildi." %}{% endfilter %}'
+                    );
+                    // Reload for clean @click binding state
+                    setTimeout(function() { window.location.reload(); }, 800);
                 })
                 .catch(function(err) {
                     console.error('Publish toggle error:', err);
-                    alert('{% filter escapejs %}{% trans "Islem basarisiz oldu. Lutfen tekrar deneyin." %}{% endfilter %}');
+                    Alpine.store('toasts').error('{% filter escapejs %}{% trans "Islem basarisiz oldu. Lutfen tekrar deneyin." %}{% endfilter %}');
                 });
             },
 
@@ -312,70 +259,38 @@ document.addEventListener('alpine:init', function() {
                     return resp.json();
                 })
                 .then(function() {
-                    // Reload to reflect all badge changes across cards
-                    window.location.reload();
+                    Alpine.store('toasts').success('{% filter escapejs %}{% trans "Varsayilan menu guncellendi." %}{% endfilter %}');
+                    setTimeout(function() { window.location.reload(); }, 800);
                 })
                 .catch(function(err) {
                     console.error('Set default error:', err);
-                    alert('{% filter escapejs %}{% trans "Islem basarisiz oldu. Lutfen tekrar deneyin." %}{% endfilter %}');
+                    Alpine.store('toasts').error('{% filter escapejs %}{% trans "Islem basarisiz oldu. Lutfen tekrar deneyin." %}{% endfilter %}');
                 });
             },
 
-            confirmDelete: function(menuId, menuName) {
-                window.dispatchEvent(new CustomEvent('open-delete-dialog', {
-                    detail: { menuId: menuId, menuName: menuName }
-                }));
-            }
-        };
-    });
-
-    /**
-     * Delete confirmation dialog
-     */
-    Alpine.data('deleteDialog', function() {
-        return {
-            open: false,
-            menuId: null,
-            menuName: '',
-
-            init: function() {
-                var self = this;
-                window.addEventListener('open-delete-dialog', function(e) {
-                    self.menuId = e.detail.menuId;
-                    self.menuName = e.detail.menuName;
-                    self.open = true;
+            confirmDelete: async function(menuId, menuName) {
+                var confirmed = await Alpine.store('confirm').show({
+                    title: '{% filter escapejs %}{% trans "Menu Sil" %}{% endfilter %}',
+                    message: menuName + ' {% filter escapejs %}{% trans "menusunu silmek istediginize emin misiniz? Bu islem geri alinamaz." %}{% endfilter %}',
+                    confirmText: '{% filter escapejs %}{% trans "Evet, Sil" %}{% endfilter %}',
+                    danger: true
                 });
-            },
-
-            executeDelete: function() {
-                var self = this;
-                var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')
-                    ? document.querySelector('[name=csrfmiddlewaretoken]').value
-                    : (document.cookie.split(';').find(function(c) { return c.trim().startsWith('csrftoken='); }) || '').split('=')[1] || '';
-
-                fetch('/account/menus/' + self.menuId + '/delete/', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': csrfToken,
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(function(resp) {
+                if (!confirmed) return;
+                try {
+                    var resp = await fetchWithCsrf('/account/menus/' + menuId + '/delete/', { method: 'POST' });
                     if (!resp.ok) throw new Error('Delete failed');
-                    var card = document.getElementById('menu-card-' + self.menuId);
+                    var card = document.getElementById('menu-card-' + menuId);
                     if (card) {
                         card.style.transition = 'opacity 300ms ease, transform 300ms ease';
                         card.style.opacity = '0';
                         card.style.transform = 'scale(0.95)';
                         setTimeout(function() { card.remove(); }, 300);
                     }
-                    self.open = false;
-                })
-                .catch(function(err) {
+                    Alpine.store('toasts').success('{% filter escapejs %}{% trans "Menu silindi." %}{% endfilter %}');
+                } catch (err) {
                     console.error('Delete error:', err);
-                    alert('{% filter escapejs %}{% trans "Silme islemi basarisiz oldu." %}{% endfilter %}');
-                    self.open = false;
-                });
+                    Alpine.store('toasts').error('{% filter escapejs %}{% trans "Silme islemi basarisiz oldu." %}{% endfilter %}');
+                }
             }
         };
     });
