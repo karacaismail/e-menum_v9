@@ -15,12 +15,14 @@
 
 {% block html_class %}scroll-smooth{% endblock %}
 
-{% block body_class %}min-h-screen bg-white dark:bg-gray-950{% endblock %}
+{% block body_class %}min-h-screen bg-white{% endblock %}
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'website/css/marketing.css' %}">
 {# Plus Jakarta Sans for headings + JetBrains Mono for code #}
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+{# WCAG 2.2 AAA — high-contrast overrides, elderly-friendly font sizing #}
+<link rel="stylesheet" href="{% static 'website/css/accessibility.css' %}">
 {% endblock %}
 
 

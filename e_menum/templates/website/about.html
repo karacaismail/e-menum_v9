@@ -1,5 +1,5 @@
 {% extends "layouts/marketing.html" %}
-{% load static i18n %}
+{% load static i18n website_tags %}
 
 {% block page_title %}{% if hero %}{{ hero.title }}{% else %}{% trans "Hakkımızda" %}{% endif %}{% endblock %}
 {% block meta_description %}{% trans "E-Menum - Türkiye'nin yapay zeka destekli dijital menü platformu. Misyonumuz, ekibimiz ve değerlerimiz." %}{% endblock %}
@@ -68,7 +68,7 @@
         <div class="grid sm:grid-cols-2 lg:grid-cols-{{ team_members|length|default:'5' }} gap-8">
             {% for member in team_members %}
             <div class="text-center" data-reveal>
-                <img src="https://i.pravatar.cc/96?img={{ forloop.counter|add:30 }}"
+                <img src="{{ member.name|gender_avatar:forloop.counter }}"
                      alt="{{ member.name }}"
                      class="w-24 h-24 mx-auto mb-4 rounded-full object-cover"
                      loading="lazy">

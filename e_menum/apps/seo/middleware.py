@@ -104,11 +104,13 @@ def models_F(field_name):
 
 class CanonicalDomainMiddleware:
     """
-    Enforce a single canonical domain.
+    Enforce a single canonical domain with wildcard subdomain redirect.
 
     If ``settings.SEO_CANONICAL_DOMAIN`` is set (e.g. ``"e-menum.net"``)
     and the request's ``Host`` header does not match, the middleware issues
-    a 301 redirect to the canonical domain.
+    a 301 redirect to the canonical domain.  This covers **all** subdomains
+    including wildcard (``*.e-menum.net``): ``www``, ``api``, ``blog``,
+    ``anything.e-menum.net`` → ``e-menum.net``.
 
     Requests to localhost, 127.0.0.1, or the server IP (``SERVER_IP`` env)
     are **excluded** so health checks, direct IP access, and reverse-proxy

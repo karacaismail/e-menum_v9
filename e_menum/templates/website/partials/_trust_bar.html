@@ -37,14 +37,21 @@
         </div>
         {% endif %}
 
-        {# Marquee logos #}
+        {# Marquee logos — realistic restaurant/cafe brand images #}
         <div class="logo-marquee overflow-hidden">
-            <div class="flex items-center space-x-16 animate-marquee">
-                {% for i in "123456789012" %}
-                <div class="flex-shrink-0 h-8 w-28 bg-gray-300/50 dark:bg-gray-700/50 rounded-lg flex items-center justify-center">
-                    <span class="text-xs text-gray-600 dark:text-gray-300 font-medium">{% trans "İşletme" %} {{ forloop.counter }}</span>
-                </div>
-                {% endfor %}
+            <div class="flex items-center space-x-10 animate-marquee">
+                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=140&h=48&fit=crop" alt="Lezzet Duragi" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=140&h=48&fit=crop" alt="Cafe Mola" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=140&h=48&fit=crop" alt="The Burger House" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=140&h=48&fit=crop" alt="Deniz Restaurant" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=140&h=48&fit=crop" alt="Anadolu Sofrasi" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=140&h=48&fit=crop" alt="Green Bowl" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=140&h=48&fit=crop" alt="Grand Hotel Istanbul" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=140&h=48&fit=crop" alt="Tatli Dukkan" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=140&h=48&fit=crop" alt="Pizza Lab" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=140&h=48&fit=crop" alt="Catering Plus" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=140&h=48&fit=crop" alt="Kebapci Oguz" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=140&h=48&fit=crop" alt="Acai Corner" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
             </div>
         </div>
     </div>

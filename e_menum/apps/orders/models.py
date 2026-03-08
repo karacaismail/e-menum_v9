@@ -1916,7 +1916,7 @@ class Order(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def customer_name(self) -> str:
         """Get customer name from customer object or customer_info."""
         if self.customer:
-            return self.customer.full_name
+            return self.customer.name or ""
         return self.customer_info.get("name", _("Guest"))
 
     @property

@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n website_tags %}
 {% comment %}============================================================================
    TESTIMONIALS — Customer reviews from database
 
@@ -37,7 +37,7 @@
                     {{ t.quote }}
                 </p>
                 <div class="flex items-center">
-                    <img src="https://i.pravatar.cc/80?img={{ forloop.counter|add:10 }}"
+                    <img src="{{ t.author_name|gender_avatar:forloop.counter }}"
                          alt="{{ t.author_name }}"
                          class="w-12 h-12 rounded-full object-cover mr-4"
                          loading="lazy">

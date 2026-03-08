@@ -189,3 +189,17 @@ class FeatureType(models.TextChoices):
     BOOLEAN = "BOOLEAN", "Boolean"
     LIMIT = "LIMIT", "Limit"
     USAGE = "USAGE", "Usage"
+
+
+class UpgradeRequestStatus(models.TextChoices):
+    """
+    Status values for plan upgrade requests.
+
+    - PENDING: Awaiting superadmin review
+    - APPROVED: Superadmin approved, plan upgraded
+    - REJECTED: Superadmin rejected the request
+    """
+
+    PENDING = "PENDING", "Pending"
+    APPROVED = "APPROVED", "Approved"
+    REJECTED = "REJECTED", "Rejected"

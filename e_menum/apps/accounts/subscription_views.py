@@ -45,7 +45,7 @@ def _get_org(request):
 @login_required(login_url="/account/login/")
 @require_POST
 def subscription_upgrade(request):
-    """Upgrade/change subscription plan."""
+    """Create a plan upgrade request (requires superadmin approval)."""
     org = _get_org(request)
     if not org:
         return redirect("accounts:profile")
@@ -55,9 +55,22 @@ def subscription_upgrade(request):
         messages.error(request, _("Plan seçimi gerekli."))
         return redirect("accounts:subscription")
 
-    from apps.subscriptions.models import Plan, Subscription
+    from apps.subscriptions.models import Plan, Subscription, UpgradeRequest
 
     plan = get_object_or_404(Plan, id=plan_id, is_active=True, deleted_at__isnull=True)
+
+    # Check for existing pending request
+    existing = UpgradeRequest.objects.filter(
+        organization=org,
+        status="PENDING",
+        deleted_at__isnull=True,
+    ).first()
+    if existing:
+        messages.warning(
+            request,
+            _("Zaten bekleyen bir upgrade talebiniz var."),
+        )
+        return redirect("accounts:subscription")
 
     subscription = (
         Subscription.objects.filter(
@@ -69,35 +82,77 @@ def subscription_upgrade(request):
         .first()
     )
 
-    if subscription:
-        try:
-            old_plan_name = subscription.plan.name if subscription.plan else "None"
-            subscription.plan = plan
-            subscription.current_price = plan.price_monthly
-            subscription.save(update_fields=["plan", "current_price", "updated_at"])
+    current_plan = subscription.plan if subscription else None
 
-            AuditLog.log_action(
-                action=AuditAction.SUBSCRIPTION_UPDATED,
-                resource="subscription",
-                resource_id=str(subscription.id),
-                user=request.user,
-                organization=org,
-                description=f"Plan upgraded: {old_plan_name} -> {plan.name}",
-                ip_address=get_client_ip(request),
-                user_agent=request.META.get("HTTP_USER_AGENT", "")[:500],
-            )
+    try:
+        upgrade_req = UpgradeRequest.objects.create(
+            organization=org,
+            current_plan=current_plan,
+            requested_plan=plan,
+            requested_by=request.user,
+        )
 
-            messages.success(
-                request,
-                _("Planınız %(plan)s olarak güncellendi.") % {"plan": plan.name},
+        AuditLog.log_action(
+            action=AuditAction.SUBSCRIPTION_UPDATED,
+            resource="upgrade_request",
+            resource_id=str(upgrade_req.id),
+            user=request.user,
+            organization=org,
+            description=(f"Upgrade request: {current_plan or 'None'} -> {plan.name}"),
+            ip_address=get_client_ip(request),
+            user_agent=request.META.get("HTTP_USER_AGENT", "")[:500],
+        )
+
+        # Send notification to superadmins
+        _notify_superadmins_upgrade(org, plan, request.user)
+
+        messages.success(
+            request,
+            _(
+                "%(plan)s planına geçiş talebiniz iletildi. "
+                "Yönetici onayından sonra aktif olacaktır."
             )
-        except Exception as e:
-            logger.error(f"Subscription upgrade failed: {e}")
-            messages.error(request, _("Plan güncellenirken bir hata oluştu."))
-    else:
-        messages.error(request, _("Aktif abonelik bulunamadı."))
+            % {"plan": plan.name},
+        )
+    except Exception as e:
+        logger.error(f"Upgrade request creation failed: {e}")
+        messages.error(request, _("Talep oluşturulurken bir hata oluştu."))
 
     return redirect("accounts:subscription")
+
+
+def _notify_superadmins_upgrade(org, plan, requester):
+    """Create in-app notifications for superadmins about an upgrade request."""
+    try:
+        from apps.core.models import User
+        from apps.notifications.models import Notification
+
+        superadmins = User.objects.filter(
+            is_superuser=True,
+            status="ACTIVE",
+            deleted_at__isnull=True,
+        )
+        for admin_user in superadmins:
+            admin_org = getattr(admin_user, "organization", None)
+            if not admin_org:
+                continue
+            Notification.objects.create(
+                organization=admin_org,
+                user=admin_user,
+                notification_type="SYSTEM",
+                title=_("Yeni Plan Upgrade Talebi"),
+                message=_(
+                    "%(org)s, %(plan)s planına geçiş talep etti. Talep eden: %(user)s"
+                )
+                % {
+                    "org": org.name,
+                    "plan": plan.name,
+                    "user": requester.email,
+                },
+                priority="HIGH",
+            )
+    except Exception as e:
+        logger.warning(f"Failed to notify superadmins: {e}")
 
 
 @login_required(login_url="/account/login/")

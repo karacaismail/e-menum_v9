@@ -214,6 +214,80 @@ def table_delete(request, table_id):
 
 
 @login_required(login_url="/account/login/")
+@require_POST
+def zone_api_detail(request, zone_id):
+    """Edit or soft-delete a zone via API (handles POST for both PUT/DELETE from JS)."""
+    org = _get_org(request)
+    if not org:
+        return JsonResponse({"error": "Unauthorized"}, status=403)
+    from apps.orders.models import Zone
+
+    zone = get_object_or_404(
+        Zone, id=zone_id, organization=org, deleted_at__isnull=True
+    )
+
+    # Check if this is a delete request (JS sends DELETE method via fetchWithCsrf)
+    method = request.META.get("HTTP_X_HTTP_METHOD_OVERRIDE", request.method)
+    if method == "DELETE":
+        zone.soft_delete()
+        return JsonResponse({"success": True})
+
+    # Otherwise treat as update
+    try:
+        body = json.loads(request.body)
+    except (json.JSONDecodeError, ValueError):
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+    if "name" in body:
+        zone.name = body["name"].strip()
+    if "description" in body:
+        zone.description = body["description"]
+    if "color" in body:
+        zone.color = body["color"]
+    if "capacity" in body:
+        zone.capacity = body["capacity"]
+    if "is_active" in body:
+        zone.is_active = bool(body["is_active"])
+    zone.save()
+    return JsonResponse({"success": True})
+
+
+@login_required(login_url="/account/login/")
+@require_POST
+def table_api_detail(request, table_id):
+    """Edit or soft-delete a table via API (handles POST for both PUT/DELETE from JS)."""
+    org = _get_org(request)
+    if not org:
+        return JsonResponse({"error": "Unauthorized"}, status=403)
+    from apps.orders.models import Table
+
+    table = get_object_or_404(
+        Table, id=table_id, organization=org, deleted_at__isnull=True
+    )
+
+    # Check if this is a delete request
+    method = request.META.get("HTTP_X_HTTP_METHOD_OVERRIDE", request.method)
+    if method == "DELETE":
+        table.soft_delete()
+        return JsonResponse({"success": True})
+
+    # Otherwise treat as update
+    try:
+        body = json.loads(request.body)
+    except (json.JSONDecodeError, ValueError):
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+    if "name" in body:
+        table.name = body["name"].strip()
+    if "capacity" in body:
+        table.capacity = body["capacity"]
+    if "status" in body and body["status"] in ("AVAILABLE", "OCCUPIED", "RESERVED"):
+        table.status = body["status"]
+    if "is_active" in body:
+        table.is_active = bool(body["is_active"])
+    table.save()
+    return JsonResponse({"success": True})
+
+
+@login_required(login_url="/account/login/")
 @require_GET
 def table_api(request):
     """JSON for table status polling (15s)."""

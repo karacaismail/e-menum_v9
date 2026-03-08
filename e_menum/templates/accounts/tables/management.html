@@ -369,9 +369,8 @@ document.addEventListener('alpine:init', () => {
                 const url = this.zoneForm.id
                     ? `/account/api/zones/${this.zoneForm.id}/`
                     : '/account/api/zones/';
-                const method = this.zoneForm.id ? 'PUT' : 'POST';
                 const resp = await fetchWithCsrf(url, {
-                    method: method,
+                    method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         name: this.zoneForm.name,
@@ -392,7 +391,13 @@ document.addEventListener('alpine:init', () => {
         async deleteZone(id, name) {
             if (!confirm('{% trans "Bu bolgeyi silmek istediginizden emin misiniz?" %}\n\n' + name)) return;
             try {
-                const resp = await fetchWithCsrf(`/account/api/zones/${id}/`, { method: 'DELETE' });
+                const resp = await fetchWithCsrf(`/account/api/zones/${id}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-HTTP-Method-Override': 'DELETE'
+                    }
+                });
                 const data = await resp.json();
                 if (data.success) window.location.reload();
             } catch (err) {
@@ -406,10 +411,9 @@ document.addEventListener('alpine:init', () => {
             try {
                 const url = this.tableForm.id
                     ? `/account/api/tables/${this.tableForm.id}/`
-                    : '/account/api/tables/';
-                const method = this.tableForm.id ? 'PUT' : 'POST';
+                    : '/account/api/tables/create/';
                 const resp = await fetchWithCsrf(url, {
-                    method: method,
+                    method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         zone_id: this.tableForm.zone_id,
@@ -432,7 +436,13 @@ document.addEventListener('alpine:init', () => {
         async deleteTable(id, name) {
             if (!confirm('{% trans "Bu masayi silmek istediginizden emin misiniz?" %}\n\n' + name)) return;
             try {
-                const resp = await fetchWithCsrf(`/account/api/tables/${id}/`, { method: 'DELETE' });
+                const resp = await fetchWithCsrf(`/account/api/tables/${id}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-HTTP-Method-Override': 'DELETE'
+                    }
+                });
                 const data = await resp.json();
                 if (data.success) window.location.reload();
             } catch (err) {

@@ -40,6 +40,7 @@ from apps.subscriptions.models import (
     Plan,
     PlanFeature,
     Subscription,
+    UpgradeRequest,
 )
 from apps.website.models import PlanDisplayFeature
 from shared.permissions.admin_permission_mixin import EMenumPermissionMixin
@@ -1929,3 +1930,121 @@ class FeaturePermissionAdmin(EMenumPermissionMixin, admin.ModelAdmin):
 
     permission_display.short_description = _("Permission")
     permission_display.admin_order_field = "permission__resource"
+
+
+# =============================================================================
+# UPGRADE REQUEST ADMIN
+# =============================================================================
+
+
+@admin.register(UpgradeRequest)
+class UpgradeRequestAdmin(EMenumPermissionMixin, admin.ModelAdmin):
+    """Admin for managing subscription upgrade requests."""
+
+    list_display = (
+        "organization",
+        "current_plan",
+        "requested_plan",
+        "status_badge",
+        "requested_by",
+        "requested_at",
+        "reviewed_by",
+        "reviewed_at",
+    )
+    list_filter = ("status", "requested_at")
+    search_fields = (
+        "organization__name",
+        "requested_by__email",
+    )
+    readonly_fields = (
+        "organization",
+        "current_plan",
+        "requested_plan",
+        "requested_by",
+        "requested_at",
+    )
+    actions = ["approve_requests", "reject_requests"]
+
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .filter(deleted_at__isnull=True)
+            .select_related(
+                "organization",
+                "current_plan",
+                "requested_plan",
+                "requested_by",
+                "reviewed_by",
+            )
+        )
+
+    def status_badge(self, obj):
+        colors = {
+            "PENDING": ("#f59e0b", "#451a03"),
+            "APPROVED": ("#10b981", "#022c22"),
+            "REJECTED": ("#ef4444", "#450a0a"),
+        }
+        bg, fg = colors.get(obj.status, ("#6b7280", "#1f2937"))
+        return format_html(
+            '<span style="background:{};color:{};padding:3px 10px;'
+            'border-radius:12px;font-size:11px;font-weight:600;">{}</span>',
+            bg,
+            fg,
+            obj.get_status_display(),
+        )
+
+    status_badge.short_description = _("Status")
+
+    @admin.action(description=_("Approve selected upgrade requests"))
+    def approve_requests(self, request, queryset):
+        count = 0
+        for req in queryset.filter(status="PENDING"):
+            req.approve(reviewer=request.user, note="Approved via admin")
+            _send_upgrade_result_notification(req, approved=True)
+            count += 1
+        self.message_user(
+            request, _("%(count)d request(s) approved.") % {"count": count}
+        )
+
+    @admin.action(description=_("Reject selected upgrade requests"))
+    def reject_requests(self, request, queryset):
+        count = 0
+        for req in queryset.filter(status="PENDING"):
+            req.reject(reviewer=request.user, note="Rejected via admin")
+            _send_upgrade_result_notification(req, approved=False)
+            count += 1
+        self.message_user(
+            request, _("%(count)d request(s) rejected.") % {"count": count}
+        )
+
+
+def _send_upgrade_result_notification(upgrade_req, approved=True):
+    """Notify the requester about the upgrade decision."""
+    try:
+        from apps.notifications.models import Notification
+
+        org = upgrade_req.organization
+        if approved:
+            title = _("Plan Upgrade Onaylandı")
+            message = _(
+                "%(plan)s planına geçiş talebiniz onaylandı. Yeni planınız aktif."
+            ) % {"plan": upgrade_req.requested_plan.name}
+        else:
+            title = _("Plan Upgrade Reddedildi")
+            message = _("%(plan)s planına geçiş talebiniz reddedildi.") % {
+                "plan": upgrade_req.requested_plan.name
+            }
+            if upgrade_req.review_note:
+                message += f" Not: {upgrade_req.review_note}"
+
+        Notification.objects.create(
+            organization=org,
+            user=upgrade_req.requested_by,
+            notification_type="SYSTEM",
+            title=title,
+            message=message,
+            priority="HIGH",
+        )
+    except Exception:
+        pass

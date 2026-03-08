@@ -38,7 +38,8 @@ def qrcode_list(request):
     org = _get_org(request)
     if not org:
         return redirect("accounts:profile")
-    from apps.orders.models import QRCode
+    from apps.orders.models import QRCode, Table
+    from apps.menu.models import Menu
 
     qs = (
         QRCode.objects.filter(
@@ -54,12 +55,22 @@ def qrcode_list(request):
     if qr_type:
         qs = qs.filter(type=qr_type)
 
+    # Context for create modal dropdowns
+    menus = Menu.objects.filter(
+        organization=org, deleted_at__isnull=True
+    ).order_by("name")
+    tables = Table.objects.filter(
+        organization=org, deleted_at__isnull=True
+    ).order_by("name")
+
     return render(
         request,
         "accounts/qrcodes/list.html",
         {
             "qrcodes": qs[:100],
             "current_type": qr_type,
+            "menus": menus,
+            "tables": tables,
         },
     )
 
@@ -139,6 +150,49 @@ def qrcode_create(request):
     qr.save()
     messages.success(request, _("QR kod olusturuldu."))
     return redirect("accounts:qrcode-detail", qr_id=qr.id)
+
+
+@login_required(login_url="/account/login/")
+@require_POST
+def qrcode_create_api(request):
+    """Generate a new QR code via JSON API (called from Alpine.js modal)."""
+    org = _get_org(request)
+    if not org:
+        return JsonResponse({"error": "Unauthorized"}, status=403)
+    from apps.orders.models import QRCode
+    import json as _json
+    import uuid
+
+    try:
+        body = _json.loads(request.body)
+    except (ValueError, _json.JSONDecodeError):
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+    qr_type = body.get("qr_type", "MENU")
+    name = body.get("name", "").strip()
+    menu_id = body.get("menu_id") or None
+    table_id = body.get("table_id") or None
+
+    if not name:
+        return JsonResponse({"error": "Name is required"}, status=400)
+
+    code = str(uuid.uuid4())[:8].upper()
+
+    qr = QRCode(
+        organization=org,
+        type=qr_type,
+        code=code,
+        name=name,
+        is_active=True,
+    )
+    if menu_id:
+        qr.menu_id = menu_id
+    if table_id:
+        qr.table_id = table_id
+    qr.save()
+    return JsonResponse(
+        {"success": True, "qr": {"id": str(qr.id), "code": qr.code}}, status=201
+    )
 
 
 @login_required(login_url="/account/login/")

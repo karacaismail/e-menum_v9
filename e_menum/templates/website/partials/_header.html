@@ -1,10 +1,13 @@
 {% load i18n website_tags %}
 
+{# Skip-to-content link — WCAG 2.4.1 #}
+<a href="#main-content" class="skip-to-content">{% trans "Ana içeriğe geç" %}</a>
+
 <header
     class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
     x-data="{ scrolled: false, mobileOpen: false, openDropdown: null }"
     x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 20 })"
-    :class="scrolled ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-md shadow-lg' : 'bg-gray-950/80 backdrop-blur-sm'"
+    :class="scrolled ? 'bg-white/95 backdrop-blur-md shadow-lg' : 'bg-gray-950/80 backdrop-blur-sm'"
     role="banner"
     @mouseleave="openDropdown = null"
 >
@@ -72,17 +75,6 @@
                         </div>
                     </div>
                 </div>
-
-                {# Dark/Light mode toggle #}
-                <button
-                    @click="darkMode = !darkMode"
-                    class="p-2 rounded-lg transition-colors"
-                    :class="scrolled ? 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800' : 'text-white hover:bg-white/10'"
-                    :aria-label="darkMode ? '{% trans 'Açık temaya geç' %}' : '{% trans 'Koyu temaya geç' %}'"
-                >
-                    <i class="ph ph-sun text-lg" x-show="darkMode" x-cloak></i>
-                    <i class="ph ph-moon text-lg" x-show="!darkMode"></i>
-                </button>
 
                 {# Login #}
                 <a href="{{ marketing.login_url }}"

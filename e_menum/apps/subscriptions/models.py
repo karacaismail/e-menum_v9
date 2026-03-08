@@ -43,6 +43,7 @@ from apps.subscriptions.choices import (
     PlanTier,
     SubscriptionPaymentMethod,
     SubscriptionStatus,
+    UpgradeRequestStatus,
 )
 
 
@@ -2523,3 +2524,143 @@ class OrganizationUsage(TimeStampedMixin, models.Model):
         """Set a value in usage metadata."""
         self.metadata[key] = value
         self.save(update_fields=["metadata", "updated_at"])
+
+
+class UpgradeRequest(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    Upgrade request model - tracks plan upgrade requests that require
+    superadmin approval before activation.
+
+    Flow:
+    1. Restaurant owner clicks "Upgrade" -> creates PENDING request
+    2. Superadmin reviews in Django Admin
+    3. Superadmin approves -> plan upgraded, notification sent
+    4. Superadmin rejects -> notification sent with reason
+
+    Critical Rules:
+    - EVERY query MUST filter by organization (multi-tenant isolation)
+    - Use soft_delete() - never call delete() directly
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    organization = models.ForeignKey(
+        "core.Organization",
+        on_delete=models.CASCADE,
+        related_name="upgrade_requests",
+        verbose_name=_("Organization"),
+    )
+    current_plan = models.ForeignKey(
+        Plan,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="upgrade_from_requests",
+        verbose_name=_("Current Plan"),
+    )
+    requested_plan = models.ForeignKey(
+        Plan,
+        on_delete=models.CASCADE,
+        related_name="upgrade_to_requests",
+        verbose_name=_("Requested Plan"),
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=UpgradeRequestStatus.choices,
+        default=UpgradeRequestStatus.PENDING,
+        db_index=True,
+        verbose_name=_("Status"),
+    )
+    requested_by = models.ForeignKey(
+        "core.User",
+        on_delete=models.CASCADE,
+        related_name="upgrade_requests",
+        verbose_name=_("Requested By"),
+    )
+    reviewed_by = models.ForeignKey(
+        "core.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="reviewed_upgrade_requests",
+        verbose_name=_("Reviewed By"),
+    )
+    requested_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("Requested At"),
+    )
+    reviewed_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_("Reviewed At"),
+    )
+    review_note = models.TextField(
+        blank=True,
+        default="",
+        verbose_name=_("Review Note"),
+    )
+
+    objects = SoftDeleteManager()
+    all_objects = models.Manager()
+
+    class Meta:
+        db_table = "subscriptions_upgrade_request"
+        verbose_name = _("Upgrade Request")
+        verbose_name_plural = _("Upgrade Requests")
+        ordering = ["-requested_at"]
+
+    def __str__(self):
+        return (
+            f"{self.organization} : "
+            f"{self.current_plan or '?'} -> {self.requested_plan} "
+            f"({self.status})"
+        )
+
+    def approve(self, reviewer, note=""):
+        """Approve the upgrade request and apply the plan change."""
+        from django.utils import timezone as tz
+
+        self.status = UpgradeRequestStatus.APPROVED
+        self.reviewed_by = reviewer
+        self.reviewed_at = tz.now()
+        self.review_note = note
+        self.save(
+            update_fields=[
+                "status",
+                "reviewed_by",
+                "reviewed_at",
+                "review_note",
+                "updated_at",
+            ]
+        )
+
+        # Apply plan change to active subscription
+        subscription = (
+            Subscription.objects.filter(
+                organization=self.organization,
+                deleted_at__isnull=True,
+            )
+            .order_by("-created_at")
+            .first()
+        )
+        if subscription:
+            subscription.plan = self.requested_plan
+            subscription.current_price = self.requested_plan.price_monthly
+            subscription.save(update_fields=["plan", "current_price", "updated_at"])
+
+    def reject(self, reviewer, note=""):
+        """Reject the upgrade request."""
+        from django.utils import timezone as tz
+
+        self.status = UpgradeRequestStatus.REJECTED
+        self.reviewed_by = reviewer
+        self.reviewed_at = tz.now()
+        self.review_note = note
+        self.save(
+            update_fields=[
+                "status",
+                "reviewed_by",
+                "reviewed_at",
+                "review_note",
+                "updated_at",
+            ]
+        )

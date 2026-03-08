@@ -18,6 +18,7 @@ from . import analytics_views
 from . import subscription_views
 from . import support_views
 from . import team_views
+from . import notification_views
 from . import restaurant_views
 
 app_name = "accounts"
@@ -148,11 +149,35 @@ urlpatterns = [
         "tables/<uuid:table_id>/delete/", table_views.table_delete, name="table-delete"
     ),
     path("api/tables/", table_views.table_api, name="table-api"),
+    # ── Zone & Table API (AJAX from Alpine.js templates) ─────────────────
+    path("api/zones/", table_views.zone_create, name="zone-create-api"),
+    path(
+        "api/zones/<uuid:zone_id>/",
+        table_views.zone_api_detail,
+        name="zone-api-detail",
+    ),
+    path(
+        "api/tables/create/",
+        table_views.table_create,
+        name="table-create-api",
+    ),
+    path(
+        "api/tables/<uuid:table_id>/",
+        table_views.table_api_detail,
+        name="table-api-detail",
+    ),
     # ── QR Code Management ────────────────────────────────────────────────
     path("qr-codes/", qr_views.qrcode_list, name="qrcode-list"),
     path("qr-codes/create/", qr_views.qrcode_create, name="qrcode-create"),
     path("qr-codes/<uuid:qr_id>/", qr_views.qrcode_detail, name="qrcode-detail"),
     path("qr-codes/<uuid:qr_id>/toggle/", qr_views.qrcode_toggle, name="qrcode-toggle"),
+    # ── QR Code API (AJAX from Alpine.js templates) ──────────────────────
+    path(
+        "api/qrcodes/<uuid:qr_id>/toggle/",
+        qr_views.qrcode_toggle,
+        name="qrcode-toggle-api",
+    ),
+    path("api/qrcodes/", qr_views.qrcode_create_api, name="qrcode-create-api"),
     path(
         "qr-codes/<uuid:qr_id>/download/",
         qr_views.qrcode_download,
@@ -247,5 +272,26 @@ urlpatterns = [
         "invoices/<uuid:invoice_id>/pdf/",
         subscription_views.invoice_download_pdf,
         name="invoice-download-pdf",
+    ),
+    # ── Notification API (navbar widget) ────────────────────────────────
+    path(
+        "api/notifications/count/",
+        notification_views.notification_unread_count,
+        name="notification-count-api",
+    ),
+    path(
+        "api/notifications/",
+        notification_views.notification_list,
+        name="notification-list-api",
+    ),
+    path(
+        "api/notifications/<uuid:notification_id>/read/",
+        notification_views.notification_mark_read,
+        name="notification-mark-read-api",
+    ),
+    path(
+        "api/notifications/read-all/",
+        notification_views.notification_mark_all_read,
+        name="notification-mark-all-read-api",
     ),
 ]

@@ -321,7 +321,10 @@
                 </div>
 
                 {# Header Actions #}
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2">
+                    {# Notification Widget #}
+                    {% include "partials/_notification_widget.html" %}
+
                     {# Dark Mode Toggle #}
                     <button
                         @click="darkMode = !darkMode"
@@ -373,7 +376,7 @@
                             <a href="{{ settings_url }}" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                                 <i class="ph ph-gear text-lg"></i>{% trans "Settings" %}
                             </a>
-                            {% if user.is_staff %}
+                            {% if user.is_superuser %}
                             <a href="/admin/" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                                 <i class="ph ph-shield-check text-lg"></i>{% trans "Admin Panel" %}
                             </a>
@@ -453,6 +456,81 @@
                 if (typeof onConfirm === 'function') onConfirm();
             }
         }));
+    });
+
+    // Notification widget Alpine component
+    window.notificationWidget = () => ({
+        open: false,
+        loading: false,
+        unreadCount: 0,
+        notifications: [],
+        activeTab: '',
+        tabs: [
+            { key: '', label: '{{ "Tümü"|escapejs }}' },
+            { key: 'ORDER', label: '{{ "Siparişler"|escapejs }}' },
+            { key: 'SYSTEM', label: '{{ "Sistem"|escapejs }}' },
+            { key: 'PROMOTION', label: '{{ "Promosyon"|escapejs }}' },
+            { key: 'PAYMENT', label: '{{ "Ödeme"|escapejs }}' },
+        ],
+
+        init() {
+            this.fetchCount();
+            // Poll every 30s
+            setInterval(() => this.fetchCount(), 30000);
+        },
+
+        toggle() {
+            this.open = !this.open;
+            if (this.open) this.fetchNotifications();
+        },
+
+        async fetchCount() {
+            try {
+                const resp = await fetch('/account/api/notifications/count/');
+                const data = await resp.json();
+                this.unreadCount = data.count || 0;
+            } catch (e) { /* silent */ }
+        },
+
+        async fetchNotifications() {
+            this.loading = true;
+            try {
+                const url = '/account/api/notifications/' + (this.activeTab ? '?type=' + this.activeTab : '');
+                const resp = await fetch(url);
+                const data = await resp.json();
+                this.notifications = data.notifications || [];
+            } catch (e) {
+                this.notifications = [];
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async markRead(notif) {
+            if (notif.read) return;
+            try {
+                await fetchWithCsrf('/account/api/notifications/' + notif.id + '/read/', { method: 'POST' });
+                notif.read = true;
+                this.unreadCount = Math.max(0, this.unreadCount - 1);
+            } catch (e) { /* silent */ }
+        },
+
+        async markAllRead() {
+            try {
+                await fetchWithCsrf('/account/api/notifications/read-all/', { method: 'POST' });
+                this.notifications.forEach(n => n.read = true);
+                this.unreadCount = 0;
+            } catch (e) { /* silent */ }
+        },
+
+        timeAgo(isoStr) {
+            if (!isoStr) return '';
+            const diff = (Date.now() - new Date(isoStr).getTime()) / 1000;
+            if (diff < 60) return '{{ "Az önce"|escapejs }}';
+            if (diff < 3600) return Math.floor(diff / 60) + ' {{ "dk önce"|escapejs }}';
+            if (diff < 86400) return Math.floor(diff / 3600) + ' {{ "sa önce"|escapejs }}';
+            return Math.floor(diff / 86400) + ' {{ "gün önce"|escapejs }}';
+        }
     });
 
     // Auto-hide flash messages after 5 seconds

@@ -26,8 +26,7 @@ ALLOWED_HOSTS = env.list(  # noqa: F405
     "ALLOWED_HOSTS",
     default=[  # noqa: F405
         SITE_DOMAIN,  # noqa: F405
-        f"www.{SITE_DOMAIN}",  # noqa: F405
-        f"api.{SITE_DOMAIN}",  # noqa: F405
+        f".{SITE_DOMAIN}",  # noqa: F405  — wildcard: *.e-menum.net
     ],
 )
 
