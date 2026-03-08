@@ -97,7 +97,7 @@
                         {{ user.organization.name }}
                     </p>
                     <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
-                        {{ user.organization.plan.name|default:"Free Plan" }}
+                        {% if user.organization.plan %}{{ user.organization.plan.name }}{% else %}{% trans "Ucretsiz Plan" %}{% endif %}
                     </p>
                 </div>
             </div>

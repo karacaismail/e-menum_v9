@@ -120,14 +120,11 @@ search by order number, and dropdown filters for status and type.
                         </td>
                         <td class="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">
                             {% if order.type == 'DINE_IN' %}
-                            <span class="inline-flex items-center gap-1"><i class="ph ph-fork-knife"></i>{% trans
-                                "Restoranda" %}</span>
+                            <span class="inline-flex items-center gap-1"><i class="ph ph-fork-knife"></i>{% trans "Restoranda" %}</span>
                             {% elif order.type == 'TAKEAWAY' %}
-                            <span class="inline-flex items-center gap-1"><i class="ph ph-bag"></i>{% trans "Paket"
-                                %}</span>
+                            <span class="inline-flex items-center gap-1"><i class="ph ph-bag"></i>{% trans "Paket" %}</span>
                             {% elif order.type == 'DELIVERY' %}
-                            <span class="inline-flex items-center gap-1"><i class="ph ph-moped"></i>{% trans "Kurye"
-                                %}</span>
+                            <span class="inline-flex items-center gap-1"><i class="ph ph-moped"></i>{% trans "Kurye" %}</span>
                             {% else %}
                             {{ order.type|default:"-" }}
                             {% endif %}
@@ -164,10 +161,8 @@ search by order number, and dropdown filters for status and type.
                         <td colspan="8" class="px-5 py-16 text-center">
                             <div class="flex flex-col items-center">
                                 <i class="ph ph-receipt text-5xl text-gray-300 dark:text-gray-600 mb-3"></i>
-                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">{% trans "Henuz siparis
-                                    bulunmuyor." %}</p>
-                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">{% trans "Siparisler burada
-                                    listelenecektir." %}</p>
+                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">{% trans "Henuz siparis bulunmuyor." %}</p>
+                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">{% trans "Siparisler burada listelenecektir." %}</p>
                             </div>
                         </td>
                     </tr>

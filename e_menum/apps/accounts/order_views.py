@@ -102,6 +102,18 @@ def order_detail(request, order_id):
     # Determine available next status transitions
     transitions = _get_transitions(order.status)
 
+    # Status timeline steps (key, label, number)
+    from django.utils.translation import gettext as _
+
+    steps = [
+        ("PENDING", _("Beklemede"), 1),
+        ("CONFIRMED", _("Onaylandi"), 2),
+        ("PREPARING", _("Hazirlaniyor"), 3),
+        ("READY", _("Hazir"), 4),
+        ("DELIVERED", _("Teslim Edildi"), 5),
+        ("COMPLETED", _("Tamamlandi"), 6),
+    ]
+
     return render(
         request,
         "accounts/orders/detail.html",
@@ -109,6 +121,7 @@ def order_detail(request, order_id):
             "order": order,
             "items": items,
             "transitions": transitions,
+            "steps": steps,
         },
     )
 
