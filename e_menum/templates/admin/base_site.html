@@ -79,11 +79,8 @@
     {# ═══════════════════════════════════════════ #}
     <aside class="rail-sidebar">
         <div class="rail-logo">
-            {% if marketing.logo_icon_url %}
-        <img src="{{ marketing.logo_icon_url }}" alt="{{ marketing.company_name|default:'E-Menum' }}" class="logo-mark" style="width:32px;height:32px;border-radius:8px;object-fit:contain">
-        {% else %}
-        <div class="logo-mark">E</div>
-        {% endif %}
+            <img src="{% if marketing.logo_icon_url %}{{ marketing.logo_icon_url }}{% else %}{% static 'images/favicon.svg' %}{% endif %}" alt="{{ marketing.company_name|default:'E-Menum' }}" class="logo-mark" style="width:32px;height:32px;border-radius:8px;object-fit:contain"
+             onerror="this.src='{% static 'images/favicon.svg' %}';this.onerror=null">
         </div>
 
         <nav class="rail-nav">

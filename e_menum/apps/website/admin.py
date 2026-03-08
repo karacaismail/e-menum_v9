@@ -231,6 +231,9 @@ class NewsletterSubscriberAdmin(admin.ModelAdmin):
 
 @admin.register(SiteSettings)
 class SiteSettingsAdmin(TabbedTranslationAdmin):
+    from .forms import SiteSettingsAdminForm
+
+    form = SiteSettingsAdminForm
     list_display = ["company_name", "email", "phone"]
     readonly_fields = ["id", "created_at", "updated_at"]
 
@@ -781,6 +784,9 @@ class LegalPageAdmin(TabbedTranslationAdmin):
 
 @admin.register(BlogPost)
 class BlogPostAdmin(TabbedTranslationAdmin):
+    from .forms import BlogPostAdminForm
+
+    form = BlogPostAdminForm
     list_display = [
         "title_short",
         "category",
@@ -801,7 +807,7 @@ class BlogPostAdmin(TabbedTranslationAdmin):
         (
             _("Icerik"),
             {
-                "fields": ("title", "slug", "excerpt", "content"),
+                "fields": ("title", "slug", "cover_image_url", "excerpt", "content"),
             },
         ),
         (

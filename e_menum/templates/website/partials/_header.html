@@ -7,7 +7,7 @@
     class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
     x-data="{ scrolled: false, mobileOpen: false, openDropdown: null }"
     x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 20 })"
-    :class="scrolled ? 'bg-white/95 backdrop-blur-md shadow-lg' : 'bg-gray-950/80 backdrop-blur-sm'"
+    :class="scrolled ? 'bg-white dark:bg-gray-900 shadow-lg' : 'bg-gray-950/80 backdrop-blur-sm'"
     role="banner"
     @mouseleave="openDropdown = null"
 >
@@ -20,22 +20,15 @@
 
             {# Logo #}
             <a href="{% url 'website:home' %}" class="flex items-center gap-2 group" aria-label="E-Menum Ana Sayfa">
-                {% if marketing.logo_url %}
-                <img src="{{ marketing.logo_url }}" alt="{{ marketing.company_name }}"
+                <img src="{{ marketing.logo_url|default:'' }}" alt="{{ marketing.company_name|default:'E-Menum' }}"
                      class="h-9 w-auto transition-all"
                      :class="scrolled ? '' : 'brightness-0 invert'"
-                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                <div class="items-center justify-center w-9 h-9 rounded-lg bg-primary-600 text-white" style="display:none">
-                    <i class="ph ph-fork-knife text-xl"></i>
-                </div>
-                {% else %}
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-primary-600 text-white">
-                    <i class="ph ph-fork-knife text-xl"></i>
-                </div>
-                <span class="text-xl font-bold tracking-tight font-heading"
-                      :class="scrolled ? 'text-gray-900 dark:text-white' : 'text-white'">
-                    {{ marketing.company_name|default:"E-Menum" }}
-                </span>
+                     onerror="this.src='{% static 'images/logo.svg' %}';this.onerror=null"
+                     {% if not marketing.logo_url %}style="display:none"{% endif %}>
+                {% if not marketing.logo_url %}
+                <img src="{% static 'images/logo.svg' %}" alt="{{ marketing.company_name|default:'E-Menum' }}"
+                     class="h-9 w-auto transition-all"
+                     :class="scrolled ? '' : 'brightness-0 invert'">
                 {% endif %}
             </a>
 

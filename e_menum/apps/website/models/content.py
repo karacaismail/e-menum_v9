@@ -172,6 +172,12 @@ class BlogPost(SEOMixin, TimeStampedModel):
     )
     published_at = models.DateTimeField(_("yayin tarihi"), null=True, blank=True)
     meta_description = models.CharField(_("meta aciklama"), max_length=300, blank=True)
+    cover_image_url = models.URLField(
+        _("kapak gorseli URL"),
+        max_length=500,
+        blank=True,
+        help_text=_("Blog kart onizlemesinde gosterilir. PNG/JPG, 16:9 oran."),
+    )
     is_featured = models.BooleanField(_("one cikan"), default=False)
 
     class Meta:

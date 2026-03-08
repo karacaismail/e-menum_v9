@@ -98,14 +98,14 @@ urlpatterns = [
     # =========================================================================
     path(_("basin/"), views.PressView.as_view(), name="press"),
     path(
-        _("basin/") + "<slug:slug>/",
-        views.PressDetailView.as_view(),
-        name="press_detail",
-    ),
-    path(
         _("basin/marka-kaynaklari/"),
         views.BrandAssetsView.as_view(),
         name="brand_assets",
+    ),
+    path(
+        _("basin/") + "<slug:slug>/",
+        views.PressDetailView.as_view(),
+        name="press_detail",
     ),
     # =========================================================================
     # Investor Relations

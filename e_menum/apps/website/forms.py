@@ -9,6 +9,8 @@ NewsletterForm  — Footer newsletter signup
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
+from shared.widgets import ImageUploadWidget
+
 from .models import ContactSubmission, DemoRequest, NewsletterSubscriber
 
 
@@ -144,4 +146,38 @@ class NewsletterForm(forms.ModelForm):
                     "placeholder": _("E-posta adresiniz"),
                 }
             ),
+        }
+
+
+# =============================================================================
+# ADMIN FORMS
+# =============================================================================
+
+
+class SiteSettingsAdminForm(forms.ModelForm):
+    """SiteSettings admin form with image upload widgets for logo fields."""
+
+    class Meta:
+        from .models import SiteSettings
+
+        model = SiteSettings
+        fields = "__all__"
+        widgets = {
+            "logo_url": ImageUploadWidget(subfolder="site_assets"),
+            "logo_icon_url": ImageUploadWidget(subfolder="site_assets"),
+            "logo_dark_url": ImageUploadWidget(subfolder="site_assets"),
+            "favicon_url": ImageUploadWidget(subfolder="site_assets"),
+        }
+
+
+class BlogPostAdminForm(forms.ModelForm):
+    """BlogPost admin form with image upload widget for cover image."""
+
+    class Meta:
+        from .models import BlogPost
+
+        model = BlogPost
+        fields = "__all__"
+        widgets = {
+            "cover_image_url": ImageUploadWidget(subfolder="site_assets"),
         }

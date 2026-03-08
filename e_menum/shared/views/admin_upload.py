@@ -130,7 +130,7 @@ def admin_upload_view(request):
 
     # Determine subfolder based on field context
     subfolder = request.POST.get("subfolder", "menu_items")
-    if subfolder not in ("menu_items", "logos", "gallery", "categories"):
+    if subfolder not in ("menu_items", "logos", "gallery", "categories", "site_assets"):
         subfolder = "menu_items"
 
     # Generate UUID filename
