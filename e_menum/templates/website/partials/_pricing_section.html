@@ -13,7 +13,7 @@
    ============================================================================{% endcomment %}
 
 {% if plans %}
-<section class="pricing-embed" x-data="pricingEmbed()" x-init="init()">
+<section class="pricing-embed pricing-section" x-data="pricingEmbed()" x-init="init()">
     <style>
         /* ── SCOPED PRICING EMBED ── */
         .pricing-embed{position:relative;z-index:1;padding:80px 0;
@@ -191,7 +191,7 @@
         {# Card Grid #}
         <div class="pe-grid">
             {% for plan in plans %}
-            <div class="pe-card {{ plan.card_css_class }}" {% if plan.has_glow_effect or plan.highlight_text %}style="position:relative;overflow:hidden;"{% endif %}>
+            <div class="pe-card pricing-card {{ plan.card_css_class }}" {% if plan.has_glow_effect or plan.highlight_text %}style="position:relative;overflow:hidden;"{% endif %}>
 
                 {# Ribbon #}
                 {% if plan.highlight_text and plan.ribbon_color %}
@@ -303,7 +303,7 @@
     <script>
     function pricingEmbed(){
       return {
-        yearly:false,anim:false,
+        yearly:true,anim:false,
         init(){},
         toggle(){this.anim=true;this.yearly=!this.yearly;setTimeout(()=>this.anim=false,400);},
         fp(val){return val.toLocaleString('tr-TR');}

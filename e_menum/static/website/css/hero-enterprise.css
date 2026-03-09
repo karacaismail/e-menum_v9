@@ -97,9 +97,26 @@
   margin-top:22px;
   color: var(--hero-text);
 }
-.hero-slide-h1 { display:block; min-height:1.1em; }
+.hero-h1-line { display:block; min-height:1.1em; }
 .hero-grad { background:linear-gradient(135deg,#fff 0%,#86efac 45%,#22c55e 100%); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
 .hero-grad2{ background:linear-gradient(135deg,#22c55e 0%,#4ade80 60%,#fbbf24 100%); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+
+/* ─── WORD-BY-WORD REVEAL ─── */
+.hero-word-wrap { display:inline-block; overflow:hidden; vertical-align:bottom; }
+.hero-word { display:inline-block; will-change:transform,opacity; }
+.hero-grad-word {
+  background:linear-gradient(135deg,#fff 0%,#86efac 45%,#22c55e 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+/* ─── REDUCED MOTION ─── */
+@media (prefers-reduced-motion: reduce) {
+  .hero-orb { opacity:1 !important; }
+  [data-hero-enter], [data-hero-float] { opacity:1 !important; transform:none !important; }
+  .hero-badge-dot { animation:none; }
+  .hero-btn-primary { animation:none; }
+  .qr-beam { animation:none !important; }
+}
 
 .hero-sub {
   margin-top:18px;

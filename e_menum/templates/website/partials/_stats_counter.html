@@ -1,21 +1,38 @@
 {% load i18n %}
 {% comment %}============================================================================
-   STATS COUNTER — Animated counters from database
+   STATS COUNTER — GSAP animated counters from database
 
    Context:
    - stat_counters (queryset from view, CompanyStat model)
+
+   Animation classes:
+   - .stats-section  → section-level trigger for homepage-animations.js
+   - .stat-card      → individual card stagger entrance
 
    Usage:
    {% include "website/partials/_stats_counter.html" %}
    ============================================================================{% endcomment %}
 
 {% if stat_counters %}
-<section class="py-16 lg:py-20 bg-white dark:bg-gray-950">
+<section class="stats-section py-16 lg:py-24 bg-white dark:bg-gray-950">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-2 lg:grid-cols-{{ stat_counters|length|default:'4' }} gap-8">
+        {# Section header #}
+        <div class="text-center mb-14" data-reveal>
+            <div class="inline-flex items-center px-4 py-1.5 mb-6 text-xs font-bold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/50 rounded-full tracking-wide uppercase">
+                {% trans "Rakamlarla E-Menum" %}
+            </div>
+            <h2 class="heading-sans text-3xl sm:text-4xl text-gray-900 dark:text-white mb-4">
+                {% trans "Rakamlar Kendini Anlatır" %}
+            </h2>
+            <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                {% trans "Türkiye'nin dört bir yanında işletmelerin güvendiği platform." %}
+            </p>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-{{ stat_counters|length|default:'4' }} gap-6 lg:gap-8">
             {% for stat in stat_counters %}
-            <div class="text-center" data-reveal>
-                <div class="text-4xl lg:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-2">
+            <div class="stat-card text-center p-6 lg:p-8 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-200/50 dark:border-gray-800/50">
+                <div class="text-4xl lg:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-2 font-serif">
                     {{ stat.value }}
                 </div>
                 <p class="text-sm text-gray-600 dark:text-gray-300 font-medium">{{ stat.label }}</p>

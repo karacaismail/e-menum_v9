@@ -7,6 +7,7 @@ from django.views.generic import TemplateView
 from .mixins import CmsContextMixin
 from ..models import (
     CompanyStat,
+    FAQ,
     HomeSection,
     Testimonial,
     TrustBadge,
@@ -64,6 +65,12 @@ class HomeView(CmsContextMixin, TemplateView):
             is_active=True,
             deleted_at__isnull=True,
         ).order_by("sort_order")
+
+        # FAQ — general questions for homepage
+        context["faqs"] = FAQ.objects.filter(
+            is_active=True,
+            page__in=["both", "general"],
+        ).order_by("sort_order")[:8]
 
         # Pricing plans — all public plans for pricing section
         try:

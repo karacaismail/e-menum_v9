@@ -1,0 +1,123 @@
+{% load i18n %}
+{% comment %}============================================================================
+   FEATURE BENTO GRID — Apple/Linear-style responsive grid
+
+   Shows key features in varying card sizes with micro-animations.
+   GSAP: ScrollTrigger.batch for staggered entrance.
+   ============================================================================{% endcomment %}
+
+<section class="bento-section py-16 lg:py-24 bg-white dark:bg-gray-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {# Section header #}
+        <div class="text-center mb-14" data-reveal>
+            <h2 class="heading-sans text-3xl sm:text-4xl text-gray-900 dark:text-white mb-4">
+                {% trans "Tek Platformda Her Şey" %}
+            </h2>
+            <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                {% trans "50'den fazla özellikle işletmenizi dijitalleştirin." %}
+            </p>
+        </div>
+
+        {# Bento grid #}
+        <div class="bento-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
+            {# Large card — QR Menu (spans 2 cols, 2 rows) #}
+            <div class="bento-card sm:col-span-2 sm:row-span-2 relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-50 to-green-50 dark:from-primary-950/40 dark:to-green-950/30 border border-primary-200/50 dark:border-primary-800/30 p-8 group hover:shadow-xl transition-shadow duration-300">
+                <div class="relative z-10">
+                    <div class="w-12 h-12 rounded-xl bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center mb-4">
+                        <i class="ph ph-qr-code text-2xl text-primary-600 dark:text-primary-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{% trans "QR Menü" %}</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed max-w-sm">
+                        {% trans "Müşteri QR kodu okutunca şık dijital menünüz açılır. Fotoğraflı, kategorili, alerjenlı." %}
+                    </p>
+                </div>
+                {# Mini phone mockup illustration #}
+                <div class="absolute bottom-4 right-4 w-28 h-44 bg-gray-800 rounded-2xl opacity-20 dark:opacity-30 group-hover:opacity-40 transition-opacity"></div>
+            </div>
+
+            {# Medium card — Analytics (spans 2 cols) #}
+            <div class="bento-card sm:col-span-2 relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/20 border border-blue-200/50 dark:border-blue-800/30 p-6 group hover:shadow-xl transition-shadow duration-300">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center mb-3">
+                            <i class="ph ph-chart-line-up text-xl text-blue-600 dark:text-blue-400"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{% trans "Analitik Dashboard" %}</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">{% trans "Gerçek zamanlı QR tarama, sipariş trendleri ve gelir raporları." %}</p>
+                    </div>
+                    {# Mini chart bars #}
+                    <div class="flex items-end gap-1.5 h-16 ml-4 flex-shrink-0">
+                        <div class="bento-micro-bar w-3 rounded-t bg-blue-300 dark:bg-blue-600" style="height:40%"></div>
+                        <div class="bento-micro-bar w-3 rounded-t bg-blue-400 dark:bg-blue-500" style="height:60%"></div>
+                        <div class="bento-micro-bar w-3 rounded-t bg-blue-300 dark:bg-blue-600" style="height:45%"></div>
+                        <div class="bento-micro-bar w-3 rounded-t bg-blue-500 dark:bg-blue-400" style="height:80%"></div>
+                        <div class="bento-micro-bar w-3 rounded-t bg-blue-400 dark:bg-blue-500" style="height:55%"></div>
+                        <div class="bento-micro-bar w-3 rounded-t bg-blue-600 dark:bg-blue-300" style="height:100%"></div>
+                    </div>
+                </div>
+            </div>
+
+            {# Small card — Order Management #}
+            <div class="bento-card rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/20 border border-amber-200/50 dark:border-amber-800/30 p-6 hover:shadow-xl transition-shadow duration-300">
+                <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center mb-3">
+                    <i class="ph ph-bell-ringing text-xl text-amber-600 dark:text-amber-400"></i>
+                </div>
+                <h3 class="text-base font-bold text-gray-900 dark:text-white mb-1">{% trans "Sipariş Yönetimi" %}</h3>
+                <p class="text-xs text-gray-600 dark:text-gray-400">{% trans "Masadan sipariş, mutfak bildirimi, canlı takip." %}</p>
+            </div>
+
+            {# Small card — Campaigns #}
+            <div class="bento-card rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/20 border border-purple-200/50 dark:border-purple-800/30 p-6 hover:shadow-xl transition-shadow duration-300">
+                <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center mb-3">
+                    <i class="ph ph-megaphone text-xl text-purple-600 dark:text-purple-400"></i>
+                </div>
+                <h3 class="text-base font-bold text-gray-900 dark:text-white mb-1">{% trans "Kampanya Motoru" %}</h3>
+                <p class="text-xs text-gray-600 dark:text-gray-400">{% trans "Happy hour, öğle menüsü, otomatik kampanya." %}</p>
+            </div>
+
+            {# Small card — Multi-branch #}
+            <div class="bento-card rounded-2xl bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-950/30 dark:to-teal-950/20 border border-cyan-200/50 dark:border-cyan-800/30 p-6 hover:shadow-xl transition-shadow duration-300">
+                <div class="w-10 h-10 rounded-xl bg-cyan-100 dark:bg-cyan-900/50 flex items-center justify-center mb-3">
+                    <i class="ph ph-git-branch text-xl text-cyan-600 dark:text-cyan-400"></i>
+                </div>
+                <h3 class="text-base font-bold text-gray-900 dark:text-white mb-1">{% trans "Çoklu Şube" %}</h3>
+                <p class="text-xs text-gray-600 dark:text-gray-400">{% trans "Tüm şubeleri tek panelden yönetin." %}</p>
+            </div>
+
+            {# Small card — AI Content #}
+            <div class="bento-card rounded-2xl bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-950/30 dark:to-red-950/20 border border-rose-200/50 dark:border-rose-800/30 p-6 hover:shadow-xl transition-shadow duration-300">
+                <div class="w-10 h-10 rounded-xl bg-rose-100 dark:bg-rose-900/50 flex items-center justify-center mb-3">
+                    <i class="ph ph-magic-wand text-xl text-rose-600 dark:text-rose-400"></i>
+                </div>
+                <h3 class="text-base font-bold text-gray-900 dark:text-white mb-1">{% trans "AI İçerik" %}</h3>
+                <p class="text-xs text-gray-600 dark:text-gray-400">{% trans "Yapay zeka ile menü açıklaması ve SEO." %}</p>
+            </div>
+
+            {# Small card — Allergen #}
+            <div class="bento-card rounded-2xl bg-gradient-to-br from-yellow-50 to-lime-50 dark:from-yellow-950/30 dark:to-lime-950/20 border border-yellow-200/50 dark:border-yellow-800/30 p-6 hover:shadow-xl transition-shadow duration-300">
+                <div class="w-10 h-10 rounded-xl bg-yellow-100 dark:bg-yellow-900/50 flex items-center justify-center mb-3">
+                    <i class="ph ph-warning-diamond text-xl text-yellow-600 dark:text-yellow-400"></i>
+                </div>
+                <h3 class="text-base font-bold text-gray-900 dark:text-white mb-1">{% trans "Alerjen Yönetimi" %}</h3>
+                <p class="text-xs text-gray-600 dark:text-gray-400">{% trans "14 alerjen, diyet filtreleri, uyarılar." %}</p>
+            </div>
+
+            {# Small card — Themes #}
+            <div class="bento-card rounded-2xl bg-gradient-to-br from-gray-50 to-slate-50 dark:from-gray-900 dark:to-slate-950/40 border border-gray-200/50 dark:border-gray-800/50 p-6 hover:shadow-xl transition-shadow duration-300">
+                <div class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-3">
+                    <i class="ph ph-palette text-xl text-gray-600 dark:text-gray-400"></i>
+                </div>
+                <h3 class="text-base font-bold text-gray-900 dark:text-white mb-1">{% trans "Özel Temalar" %}</h3>
+                <p class="text-xs text-gray-600 dark:text-gray-400">{% trans "Markanıza uygun menü tasarımı." %}</p>
+            </div>
+        </div>
+
+        {# Link to all features #}
+        <div class="text-center mt-10" data-reveal>
+            <a href="{% url 'website:features' %}" class="inline-flex items-center text-primary-600 dark:text-primary-400 font-semibold hover:underline">
+                {% trans "Tüm Özellikleri Gör" %}
+                <i class="ph ph-arrow-right ml-1"></i>
+            </a>
+        </div>
+    </div>
+</section>

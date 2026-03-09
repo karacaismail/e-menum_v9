@@ -580,7 +580,7 @@ class Command(BaseCommand):
                 "color": "purple",
                 "step_number": 4,
                 "sort_order": 23,
-                "is_active": True,
+                "is_active": False,
             },
         ]
         for step in steps:

@@ -1,23 +1,40 @@
 {% load i18n %}
 {% comment %}============================================================================
-   TRUST BAR — Location-based social proof + trust badges
+   TRUST BAR — GSAP-animated counters + trust badges + logo marquee
 
    Context:
    - trust_locations (queryset from view)
    - trust_badges (queryset from view)
-
-   Usage:
-   {% include "website/partials/_trust_bar.html" %}
    ============================================================================{% endcomment %}
 
-<section class="py-12 bg-gray-50 dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800">
+<section class="trust-bar-section py-12 bg-gray-50 dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {# Animated counter strip #}
+        <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 mb-8">
+            <div class="trust-badge-item text-center">
+                <div class="text-2xl lg:text-3xl font-bold text-primary-600 dark:text-primary-400" data-counter data-target="1200" data-suffix="+">0</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-1">{% trans "Aktif İşletme" %}</div>
+            </div>
+            <div class="trust-badge-item text-center">
+                <div class="text-2xl lg:text-3xl font-bold text-primary-600 dark:text-primary-400" data-counter data-target="7">0</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-1">{% trans "Şehir" %}</div>
+            </div>
+            <div class="trust-badge-item text-center">
+                <div class="text-2xl lg:text-3xl font-bold text-primary-600 dark:text-primary-400" data-counter data-target="99" data-suffix=".9%">0</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-1">{% trans "Uptime" %}</div>
+            </div>
+            <div class="trust-badge-item text-center">
+                <div class="text-2xl lg:text-3xl font-bold text-primary-600 dark:text-primary-400" data-counter data-target="4" data-suffix=".9★">0</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-1">{% trans "Müşteri Puanı" %}</div>
+            </div>
+        </div>
 
         {# Location-based trust signals #}
         {% if trust_locations %}
         <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mb-8">
             {% for loc in trust_locations %}
-            <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
+            <div class="trust-badge-item flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
                 <i class="ph ph-map-pin text-primary-500"></i>
                 {{ loc.text }}
             </div>
@@ -29,7 +46,7 @@
         {% if trust_badges %}
         <div class="flex flex-wrap items-center justify-center gap-6 mb-8">
             {% for badge in trust_badges %}
-            <div class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+            <div class="trust-badge-item flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                 <i class="ph {{ badge.icon }} text-lg text-green-600 dark:text-green-400"></i>
                 <span class="text-xs font-medium text-gray-700 dark:text-gray-300">{{ badge.label }}</span>
             </div>
@@ -37,21 +54,12 @@
         </div>
         {% endif %}
 
-        {# Marquee logos — realistic restaurant/cafe brand images #}
+        {# Brand logos marquee — CSS text-based (no stock photos) #}
         <div class="logo-marquee overflow-hidden">
-            <div class="flex items-center space-x-10 animate-marquee">
-                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=140&h=48&fit=crop" alt="Lezzet Duragi" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
-                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=140&h=48&fit=crop" alt="Cafe Mola" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
-                <img src="https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=140&h=48&fit=crop" alt="The Burger House" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
-                <img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=140&h=48&fit=crop" alt="Deniz Restaurant" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
-                <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=140&h=48&fit=crop" alt="Anadolu Sofrasi" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
-                <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=140&h=48&fit=crop" alt="Green Bowl" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
-                <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=140&h=48&fit=crop" alt="Grand Hotel Istanbul" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
-                <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=140&h=48&fit=crop" alt="Tatli Dukkan" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
-                <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=140&h=48&fit=crop" alt="Pizza Lab" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
-                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=140&h=48&fit=crop" alt="Catering Plus" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
-                <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=140&h=48&fit=crop" alt="Kebapci Oguz" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
-                <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=140&h=48&fit=crop" alt="Acai Corner" class="h-10 w-auto rounded-lg opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all flex-shrink-0" loading="lazy">
+            <div class="flex items-center space-x-12 animate-marquee">
+                {% for name in "Lezzet Durağı,Cafe Mola,The Burger House,Deniz Restaurant,Anadolu Sofrası,Green Bowl,Grand Hotel,Pizza Lab,Tatlı Dükkan,Kebapçı Oğuz,Acai Corner,Çiçek Pastanesi"|split:"," %}
+                <span class="text-sm font-semibold text-gray-400 dark:text-gray-600 whitespace-nowrap tracking-wide uppercase flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity">{{ name }}</span>
+                {% endfor %}
             </div>
         </div>
     </div>
