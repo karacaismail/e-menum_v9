@@ -68,7 +68,7 @@ input[type="checkbox"],
 input[type="radio"] {
   width: 18px;
   height: 18px;
-  accent-color: var(--emenum-primary, #1A6B5A);
+  accent-color: var(--emenum-accent-indigo, #6366f1);
 }
 
 /* ---- Inline Groups ---- */

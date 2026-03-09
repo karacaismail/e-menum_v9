@@ -31,12 +31,35 @@ class DashboardView(OrganizationRequiredMixin, View):
         kpis = service.get_all_kpis()
         recent_orders = service.get_recent_orders(limit=5)
 
+        # Onboarding checklist: check completion status for each step
+        onboarding_steps = self._get_onboarding_steps(org)
+
         context = {
             "kpis": kpis,
             "recent_orders": recent_orders,
             "kpis_json": json.dumps(kpis, default=str),
+            "onboarding_steps": onboarding_steps,
+            "onboarding_complete": all(s["done"] for s in onboarding_steps),
         }
         return render(request, self.template_name, context)
+
+    def _get_onboarding_steps(self, org):
+        """Build onboarding checklist status for the given organization."""
+        from e_menum.apps.menus.models import Menu
+        from e_menum.apps.products.models import Product
+        from e_menum.apps.qrcodes.models import QRCode
+
+        has_restaurant_info = bool(org.name and org.phone)
+        has_menu = Menu.objects.filter(organization=org, deleted_at__isnull=True).exists()
+        has_product = Product.objects.filter(organization=org, deleted_at__isnull=True).exists()
+        has_qr = QRCode.objects.filter(organization=org, deleted_at__isnull=True).exists()
+
+        return [
+            {"key": "restaurant", "done": has_restaurant_info, "url": "accounts:restaurant-settings"},
+            {"key": "menu", "done": has_menu, "url": "accounts:menu-create"},
+            {"key": "product", "done": has_product, "url": "accounts:product-create"},
+            {"key": "qrcode", "done": has_qr, "url": "accounts:qrcode-list"},
+        ]
 
 
 # ─── API endpoints (AJAX / JSON) ────────────────────────────────────────────

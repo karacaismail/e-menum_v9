@@ -22,12 +22,12 @@ body, html {
 /* ── Links ───────────────────────────────────────────────── */
 
 a:link, a:visited {
-    color: var(--info, #3b82f6);
+    color: var(--accent-light, #818cf8);
     text-decoration: none;
 }
 
 a:hover {
-    color: var(--accent-light, #818cf8);
+    color: #a5b4fc;
 }
 
 
@@ -697,6 +697,130 @@ input[name="_continue"]:hover {
 
 .deletelink:hover {
     background: rgba(239, 68, 68, 0.1);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   BUTTON VARIANT SYSTEM
+   ═══════════════════════════════════════════════════════════ */
+
+.btn-admin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: var(--font, 'Inter', system-ui, sans-serif);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none !important;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.btn-admin:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Primary — Indigo */
+.btn-admin-primary {
+    background: var(--accent, #6366f1);
+    color: #fff !important;
+}
+
+.btn-admin-primary:hover {
+    background: #5558e6;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+}
+
+/* Success — Green */
+.btn-admin-success {
+    background: var(--emenum-success, #22c55e);
+    color: #fff !important;
+}
+
+.btn-admin-success:hover {
+    background: var(--emenum-success-dark, #16a34a);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
+}
+
+/* Danger — Red */
+.btn-admin-danger {
+    background: var(--danger, #ef4444);
+    color: #fff !important;
+}
+
+.btn-admin-danger:hover {
+    background: var(--emenum-danger-dark, #dc2626);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+}
+
+/* Warning — Amber */
+.btn-admin-warning {
+    background: var(--emenum-warning, #f59e0b);
+    color: #0f1219 !important;
+}
+
+.btn-admin-warning:hover {
+    background: var(--emenum-warning-dark, #d97706);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+}
+
+/* Ghost — Transparent with border */
+.btn-admin-ghost {
+    background: transparent;
+    color: var(--text-secondary, #94a3b8) !important;
+    border: 1px solid var(--border, rgba(255, 255, 255, 0.06));
+}
+
+.btn-admin-ghost:hover {
+    background: var(--surface-hover, #252d3d);
+    color: var(--text-primary, #f1f5f9) !important;
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+/* Ghost Danger — Red ghost */
+.btn-admin-ghost-danger {
+    background: transparent;
+    color: var(--danger, #ef4444) !important;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.btn-admin-ghost-danger:hover {
+    background: rgba(239, 68, 68, 0.08);
+    color: #f87171 !important;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Small size */
+.btn-admin-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    gap: 4px;
+}
+
+/* Icon-only button */
+.btn-admin-icon {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border-radius: 8px;
+}
+
+.btn-admin-icon.btn-admin-sm {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
 }
 
 

@@ -86,7 +86,29 @@
                         {% if action_form and actions_on_top and cl.show_admin_actions %}
                             {% admin_actions %}
                         {% endif %}
-                        {% result_list cl %}
+                        {% if cl.result_count %}
+                            {% result_list cl %}
+                        {% else %}
+                            <div class="ux-empty-state">
+                                <i class="ph ph-database ux-empty-state-icon"></i>
+                                <h3 class="ux-empty-state-title">{% translate "No records found" %}</h3>
+                                <p class="ux-empty-state-message">
+                                    {% if cl.has_active_filters or cl.query %}
+                                        {% translate "Try adjusting your search or filter criteria." %}
+                                    {% else %}
+                                        {% blocktranslate with name=cl.opts.verbose_name_plural|capfirst %}No {{ name }} have been created yet.{% endblocktranslate %}
+                                    {% endif %}
+                                </p>
+                                {% if cl.has_add_permission %}
+                                    {% if not cl.has_active_filters and not cl.query %}
+                                        <a href="{% url cl.opts|admin_urlname:'add' %}" class="ux-empty-state-action">
+                                            <i class="ph ph-plus"></i>
+                                            {% blocktranslate with name=cl.opts.verbose_name %}Add {{ name }}{% endblocktranslate %}
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        {% endif %}
                         {% if action_form and actions_on_bottom and cl.show_admin_actions %}
                             {% admin_actions %}
                         {% endif %}

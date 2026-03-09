@@ -200,6 +200,7 @@ document.addEventListener('alpine:init', function() {
             },
 
             togglePublish: function(menuId, currentlyPublished) {
+                var self = this;
                 var newState = !currentlyPublished;
                 fetchWithCsrf('/account/menus/' + menuId + '/toggle-publish/', {
                     method: 'POST',
@@ -221,13 +222,17 @@ document.addEventListener('alpine:init', function() {
                             badge.textContent = '{% filter escapejs %}{% trans "Taslak" %}{% endfilter %}';
                         }
                     }
-                    // Update button
+                    // Update button styling and re-bind click with new state
                     var btn = document.getElementById('btn-publish-' + menuId);
                     if (btn) {
                         btn.className = newState
                             ? 'px-3 py-2 text-sm font-medium rounded-lg border transition-all inline-flex items-center gap-1.5 text-yellow-700 dark:text-yellow-300 border-yellow-300 dark:border-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
                             : 'px-3 py-2 text-sm font-medium rounded-lg border transition-all inline-flex items-center gap-1.5 text-green-700 dark:text-green-300 border-green-300 dark:border-green-600 hover:bg-green-50 dark:hover:bg-green-900/20';
-                        btn.setAttribute('onclick', '');
+                        // Update Alpine x-on:click binding by setting attribute
+                        btn.setAttribute('x-on:click', 'togglePublish(' + menuId + ', ' + newState + ')');
+                        btn.title = newState
+                            ? '{% filter escapejs %}{% trans "Yayindan Kaldir" %}{% endfilter %}'
+                            : '{% filter escapejs %}{% trans "Yayinla" %}{% endfilter %}';
                     }
                     var icon = document.getElementById('icon-publish-' + menuId);
                     var text = document.getElementById('text-publish-' + menuId);
@@ -235,14 +240,12 @@ document.addEventListener('alpine:init', function() {
                     if (text) text.textContent = newState
                         ? '{% filter escapejs %}{% trans "Kaldir" %}{% endfilter %}'
                         : '{% filter escapejs %}{% trans "Yayinla" %}{% endfilter %}';
-                    // Toast feedback instead of reload
+                    // Toast feedback — no reload needed
                     Alpine.store('toasts').success(
                         newState
                             ? '{% filter escapejs %}{% trans "Menu yayinlandi." %}{% endfilter %}'
                             : '{% filter escapejs %}{% trans "Menu yayindan kaldirildi." %}{% endfilter %}'
                     );
-                    // Reload for clean @click binding state
-                    setTimeout(function() { window.location.reload(); }, 800);
                 })
                 .catch(function(err) {
                     console.error('Publish toggle error:', err);
@@ -259,8 +262,27 @@ document.addEventListener('alpine:init', function() {
                     return resp.json();
                 })
                 .then(function() {
+                    // Remove old default badges
+                    document.querySelectorAll('[id^="badge-default-"]').forEach(function(el) {
+                        el.remove();
+                    });
+                    // Remove old "set default" buttons
+                    document.querySelectorAll('[id^="btn-default-"]').forEach(function(el) {
+                        el.remove();
+                    });
+                    // Add new default badge to the target menu card
+                    var card = document.getElementById('menu-card-' + menuId);
+                    if (card) {
+                        var badgeContainer = card.querySelector('.flex.items-center.gap-1\\.5');
+                        if (badgeContainer) {
+                            var newBadge = document.createElement('span');
+                            newBadge.id = 'badge-default-' + menuId;
+                            newBadge.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
+                            newBadge.textContent = '{% filter escapejs %}{% trans "Varsayilan" %}{% endfilter %}';
+                            badgeContainer.appendChild(newBadge);
+                        }
+                    }
                     Alpine.store('toasts').success('{% filter escapejs %}{% trans "Varsayilan menu guncellendi." %}{% endfilter %}');
-                    setTimeout(function() { window.location.reload(); }, 800);
                 })
                 .catch(function(err) {
                     console.error('Set default error:', err);

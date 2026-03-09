@@ -97,7 +97,7 @@
             <div class="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
                 {# Active Toggle #}
                 <button
-                    @click="toggleActive({{ qr.pk }}, active)"
+                    @click="toggleActive({{ qr.pk }}, active); active = !active"
                     class="flex items-center gap-2 text-xs font-medium transition-colors"
                     :class="active ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500'"
                 >
@@ -255,11 +255,17 @@ document.addEventListener('alpine:init', () => {
                 });
                 const data = await resp.json();
                 if (data.success) {
-                    // Alpine reactivity will handle the UI update via x-data on each card
-                    window.location.reload();
+                    Alpine.store('toasts').success(
+                        currentState
+                            ? '{% filter escapejs %}{% trans "QR kod devre disi birakildi." %}{% endfilter %}'
+                            : '{% filter escapejs %}{% trans "QR kod aktif edildi." %}{% endfilter %}'
+                    );
+                } else {
+                    Alpine.store('toasts').error('{% filter escapejs %}{% trans "Islem basarisiz oldu." %}{% endfilter %}');
                 }
             } catch (err) {
                 console.error('Toggle error:', err);
+                Alpine.store('toasts').error('{% filter escapejs %}{% trans "Islem basarisiz oldu." %}{% endfilter %}');
             }
         },
 
@@ -274,10 +280,16 @@ document.addEventListener('alpine:init', () => {
                 });
                 const data = await resp.json();
                 if (data.success) {
-                    window.location.reload();
+                    this.createModalOpen = false;
+                    Alpine.store('toasts').success('{% filter escapejs %}{% trans "QR kod olusturuldu." %}{% endfilter %}');
+                    // Reload to show new QR in grid (new card needs server rendering)
+                    setTimeout(() => window.location.reload(), 600);
+                } else {
+                    Alpine.store('toasts').error(data.message || '{% filter escapejs %}{% trans "QR kod olusturulamadi." %}{% endfilter %}');
                 }
             } catch (err) {
                 console.error('QR create error:', err);
+                Alpine.store('toasts').error('{% filter escapejs %}{% trans "QR kod olusturulamadi." %}{% endfilter %}');
             } finally {
                 this.loading = false;
             }

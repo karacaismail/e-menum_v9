@@ -1,92 +1,397 @@
 /*
  * E-Menum Admin Changelist Styles
- * Custom styling for Django admin list views.
+ * Modern table, pagination, and filter panel styling.
  */
 
-/* ---- Table Styles ---- */
+/* ═══════════════════════════════════════════════════════════
+   TABLE — Zebra, Hover, Sticky Header
+   ═══════════════════════════════════════════════════════════ */
+
 #changelist table {
   border-collapse: separate;
   border-spacing: 0;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
+  width: 100%;
 }
 
+/* Sticky table header */
 #changelist table thead th {
   background: var(--emenum-bg-surface, #1a1f2e);
   color: var(--emenum-text-secondary, #94a3b8);
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   padding: 12px 16px;
   border-bottom: 1px solid var(--emenum-border, rgba(255,255,255,0.06));
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
+/* Sort indicator on active column */
+#changelist table thead th.sorted {
+  color: var(--accent-light, #818cf8);
+}
+
+#changelist table thead th.sorted a {
+  color: var(--accent-light, #818cf8) !important;
+}
+
+#changelist table thead th a {
+  color: inherit !important;
+  text-decoration: none !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+#changelist table thead th a:hover {
+  color: var(--emenum-text-primary, #f1f5f9) !important;
+}
+
+/* Zebra striping */
+#changelist table tbody tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+/* Row body cells */
 #changelist table tbody td {
-  padding: 10px 16px;
-  border-bottom: 1px solid var(--emenum-border, rgba(255,255,255,0.06));
-  font-size: 0.875rem;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--emenum-border, rgba(255,255,255,0.04));
+  font-size: 13px;
+  color: var(--text-secondary, #94a3b8);
+  vertical-align: middle;
+  transition: background 0.1s ease;
 }
 
-#changelist table tbody tr:hover td {
-  background: rgba(99, 102, 241, 0.04);
+#changelist table tbody th {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--emenum-border, rgba(255,255,255,0.04));
+  font-size: 13px;
+  vertical-align: middle;
 }
 
-/* ---- Filter Sidebar ---- */
+#changelist table tbody th a {
+  color: var(--emenum-text-primary, #f1f5f9) !important;
+  font-weight: 500;
+}
+
+/* Row hover — more visible */
+#changelist table tbody tr:hover td,
+#changelist table tbody tr:hover th {
+  background: rgba(99, 102, 241, 0.06) !important;
+}
+
+/* Checkbox column fixed width */
+#changelist table .action-checkbox-column {
+  width: 40px;
+  padding-left: 14px !important;
+  padding-right: 6px !important;
+}
+
+#changelist table td input[type="checkbox"],
+#changelist table th input[type="checkbox"] {
+  accent-color: var(--emenum-accent-indigo, #6366f1);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Row action links (edit, delete) */
+#changelist table .nowrap {
+  white-space: nowrap;
+  text-align: right;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   FILTER SIDEBAR — Collapsible, Badge, Clear All
+   ═══════════════════════════════════════════════════════════ */
+
 #changelist-filter {
-  border-radius: 8px;
-  padding: 16px;
+  border-radius: 10px;
+  padding: 0;
+  overflow: hidden;
 }
 
 #changelist-filter h2 {
-  font-size: 0.75rem;
+  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 12px;
+  letter-spacing: 0.06em;
+  margin: 0;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
+/* Filter section titles — collapsible appearance */
 #changelist-filter h3 {
   font-weight: 600;
-  font-size: 0.875rem;
-  margin-top: 16px;
-  margin-bottom: 8px;
+  font-size: 12px;
+  margin: 0;
+  padding: 12px 16px 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted, #64748b);
+  cursor: default;
+  user-select: none;
+  border-top: 1px solid var(--emenum-border, rgba(255,255,255,0.04));
+}
+
+#changelist-filter h3:first-of-type {
+  border-top: none;
+}
+
+/* Filter list items */
+#changelist-filter ul {
+  margin: 0;
+  padding: 2px 8px 10px;
+  list-style: none;
 }
 
 #changelist-filter ul li {
-  padding: 4px 0;
+  margin-bottom: 1px;
 }
 
+#changelist-filter ul li a {
+  display: block;
+  color: var(--text-secondary, #94a3b8) !important;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.1s ease;
+  text-decoration: none !important;
+}
+
+#changelist-filter ul li a:hover {
+  color: var(--emenum-text-primary, #f1f5f9) !important;
+  background: var(--surface-hover, #252d3d);
+}
+
+/* Active filter highlight */
 #changelist-filter ul li.selected a {
-  color: var(--emenum-accent-indigo, #6366f1);
-  font-weight: 600;
+  color: var(--accent-light, #818cf8) !important;
+  background: rgba(99, 102, 241, 0.1);
+  font-weight: 500;
 }
 
-/* ---- Search Bar ---- */
+/* Clear all filters link */
+#changelist-filter-extra-actions {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--emenum-border, rgba(255,255,255,0.04));
+}
+
+#changelist-filter-extra-actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--emenum-danger, #ef4444) !important;
+  text-decoration: none !important;
+  padding: 4px 10px;
+  border-radius: 6px;
+  transition: background 0.1s ease;
+}
+
+#changelist-filter-extra-actions a:hover {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   SEARCH BAR
+   ═══════════════════════════════════════════════════════════ */
+
 #changelist-search {
   margin-bottom: 16px;
 }
 
 #changelist-search input[type="text"] {
-  border-radius: 9999px;
-  padding: 8px 16px;
-  font-size: 0.875rem;
-  border: 1px solid var(--emenum-border, #e5e7eb);
-  min-width: 300px;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 13px;
+  border: 1px solid var(--emenum-border, rgba(255,255,255,0.06));
+  min-width: 320px;
+  background: var(--emenum-bg-surface, #1a1f2e);
+  color: var(--emenum-text-primary, #f1f5f9);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
 }
 
-/* ---- Pagination ---- */
+#changelist-search input[type="text"]:focus {
+  border-color: var(--emenum-accent-indigo, #6366f1);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   PAGINATION — Pill buttons, Active indigo
+   ═══════════════════════════════════════════════════════════ */
+
 .paginator {
-  font-size: 0.875rem;
-  padding: 12px 0;
+  font-size: 13px;
+  padding: 14px 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
 }
 
-/* ---- Actions Bar ---- */
+.paginator a {
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--text-secondary, #94a3b8) !important;
+  border: 1px solid var(--emenum-border, rgba(255,255,255,0.06));
+  transition: all 0.12s ease;
+  text-decoration: none !important;
+  font-size: 13px;
+}
+
+.paginator a:hover {
+  background: var(--emenum-bg-surface, #1a1f2e);
+  color: var(--emenum-text-primary, #f1f5f9) !important;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Active page */
+.paginator .this-page {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: var(--emenum-accent-indigo, #6366f1);
+  color: #fff !important;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+/* "X results" info */
+.paginator .result-count {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-muted, #64748b);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   ACTIONS BAR
+   ═══════════════════════════════════════════════════════════ */
+
 .actions {
-  padding: 8px 0;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .actions select {
   border-radius: 6px;
   padding: 6px 12px;
-  font-size: 0.875rem;
+  font-size: 13px;
+  min-width: 200px;
+  background: var(--emenum-bg-card, #1e2533);
+  border: 1px solid var(--emenum-border, rgba(255,255,255,0.06));
+  color: var(--emenum-text-primary, #f1f5f9);
+}
+
+.actions .button,
+.actions input[type="submit"] {
+  padding: 6px 16px;
+  font-size: 12px;
+  border-radius: 6px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   CHANGELIST CONTENT LAYOUT
+   ═══════════════════════════════════════════════════════════ */
+
+.changelist-content {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.changelist-results {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Content title bar */
+.content-title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.title-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* Result count badge */
+.ux-result-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--accent-light, #818cf8);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 28px;
+  height: 28px;
+  border: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .changelist-content {
+    flex-direction: column;
+  }
+
+  #changelist-filter {
+    margin-left: 0;
+    order: -1;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  #changelist table thead th {
+    padding: 10px 12px;
+    font-size: 10px;
+  }
+
+  #changelist table tbody td,
+  #changelist table tbody th {
+    padding: 9px 12px;
+    font-size: 12px;
+  }
+
+  #changelist-search input[type="text"] {
+    min-width: 100%;
+  }
+
+  .content-title-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .title-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
 }

@@ -17,6 +17,7 @@
 {% endblock %}
 
 {% block panel_content %}
+<div class="panel-content-enter">
 
 {# ── 1. Welcome Greeting ── #}
 <div class="mb-6" x-data="{
@@ -34,6 +35,68 @@
         {% now "d F Y, l" %}
     </p>
 </div>
+
+{# ── 1.5 Onboarding Checklist (shown until all steps complete or dismissed) ── #}
+{% if not onboarding_complete %}
+<div x-data="{ dismissed: localStorage.getItem('onboarding_dismissed') === 'true' }"
+     x-show="!dismissed"
+     x-transition
+     class="mb-6 bg-gradient-to-r from-primary-50 to-blue-50 dark:from-primary-900/20 dark:to-blue-900/20 rounded-xl border border-primary-200 dark:border-primary-800 p-5">
+    <div class="flex items-start justify-between mb-3">
+        <div>
+            <h3 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <i class="ph ph-rocket-launch text-primary-600 dark:text-primary-400"></i>
+                {% trans "Baslangic Rehberi" %}
+            </h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                {% trans "Isletmenizi kurmak icin asagidaki adimlari tamamlayin." %}
+            </p>
+        </div>
+        <button @click="dismissed = true; localStorage.setItem('onboarding_dismissed', 'true')"
+                class="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg transition-colors"
+                title="{% trans 'Kapat' %}">
+            <i class="ph ph-x text-lg"></i>
+        </button>
+    </div>
+
+    {# Progress bar — calculated via x-data #}
+    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-4"
+         x-data="{ progress: {% for step in onboarding_steps %}{% if step.done %}1{% else %}0{% endif %}{% if not forloop.last %}+{% endif %}{% endfor %} }">
+        <div class="bg-primary-600 h-2 rounded-full transition-all duration-500"
+             :style="'width: ' + (progress / {{ onboarding_steps|length }}) * 100 + '%'"></div>
+    </div>
+
+    {# Steps #}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {% for step in onboarding_steps %}
+        <a href="{% if not step.done %}{% url step.url %}{% else %}#{% endif %}"
+           class="flex items-center gap-3 p-3 rounded-lg transition-all
+                  {% if step.done %}bg-white/50 dark:bg-gray-800/50{% else %}bg-white dark:bg-gray-800 hover:shadow-md{% endif %}">
+            <div class="h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0
+                        {% if step.done %}bg-green-100 dark:bg-green-900/30{% else %}bg-gray-100 dark:bg-gray-700{% endif %}">
+                {% if step.done %}
+                <i class="ph ph-check-circle text-green-600 dark:text-green-400"></i>
+                {% else %}
+                <span class="text-xs font-bold text-gray-500 dark:text-gray-400">{{ forloop.counter }}</span>
+                {% endif %}
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium {% if step.done %}text-gray-400 dark:text-gray-500 line-through{% else %}text-gray-900 dark:text-white{% endif %}">
+                    {% if step.key == 'restaurant' %}{% trans "Restoran bilgilerini doldur" %}
+                    {% elif step.key == 'menu' %}{% trans "Ilk menunu olustur" %}
+                    {% elif step.key == 'product' %}{% trans "Ilk urununu ekle" %}
+                    {% elif step.key == 'qrcode' %}{% trans "QR kodunu indir" %}
+                    {% endif %}
+                </p>
+            </div>
+            {% if not step.done %}
+            <i class="ph ph-arrow-right text-gray-400"></i>
+            {% endif %}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 
 {# ── 2. Quick Actions (Prominent at top) ── #}
 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
@@ -228,6 +291,8 @@
     </div>
 </div>
 
+
+</div>
 {% endblock %}
 
 {# ── 7. JavaScript: ECharts Initialization ── #}
@@ -276,8 +341,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         data: data.values,
                         smooth: true,
                         symbol: 'none',
-                        lineStyle: { width: 2, color: '#1A6B5A' },
-                        areaStyle: { opacity: 0.1, color: '#1A6B5A' }
+                        lineStyle: { width: 2, color: '#6366f1' },
+                        areaStyle: { opacity: 0.1, color: '#6366f1' }
                     }]
                 });
                 window.addEventListener('resize', function() { chart.resize(); });

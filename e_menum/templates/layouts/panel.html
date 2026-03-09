@@ -491,6 +491,11 @@
                 'ph ph-info': toast.type === 'info',
             }" class="text-lg flex-shrink-0"></i>
             <span class="flex-1" x-text="toast.message"></span>
+            <button x-show="toast.undoable"
+                    @click="$store.toasts.undo(toast.id)"
+                    class="toast-undo-btn">
+                {% trans "Geri Al" %}
+            </button>
             <button @click="$store.toasts.dismiss(toast.id)" class="opacity-70 hover:opacity-100 ml-2 flex-shrink-0">
                 <i class="ph ph-x"></i>
             </button>
@@ -532,6 +537,68 @@
 </div>
 
 {% endwith %}
+
+{# ── Keyboard Shortcuts Modal ── #}
+<div id="panel-shortcuts-modal"
+     style="display: none;"
+     class="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 p-4"
+     onclick="if(event.target===this)this.style.display='none'">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 max-w-md w-full p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-base font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                <i class="ph ph-keyboard text-primary-500"></i>
+                {% trans "Klavye Kisayollari" %}
+            </h3>
+            <button onclick="document.getElementById('panel-shortcuts-modal').style.display='none'"
+                    class="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg">
+                <i class="ph ph-x text-lg"></i>
+            </button>
+        </div>
+
+        <div class="space-y-4">
+            <div>
+                <h4 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">{% trans "Genel" %}</h4>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-600 dark:text-gray-400">{% trans "Arama" %}</span>
+                        <div class="flex items-center gap-1">
+                            <kbd class="px-1.5 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded font-mono text-gray-500 dark:text-gray-400">⌘/Ctrl</kbd>
+                            <span class="text-gray-400">+</span>
+                            <kbd class="px-1.5 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded font-mono text-gray-500 dark:text-gray-400">K</kbd>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-600 dark:text-gray-400">{% trans "Kisayollari goster" %}</span>
+                        <kbd class="px-1.5 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded font-mono text-gray-500 dark:text-gray-400">?</kbd>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">{% trans "Form" %}</h4>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-600 dark:text-gray-400">{% trans "Formu kaydet" %}</span>
+                        <div class="flex items-center gap-1">
+                            <kbd class="px-1.5 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded font-mono text-gray-500 dark:text-gray-400">⌘/Ctrl</kbd>
+                            <span class="text-gray-400">+</span>
+                            <kbd class="px-1.5 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded font-mono text-gray-500 dark:text-gray-400">S</kbd>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">{% trans "Navigasyon" %}</h4>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-600 dark:text-gray-400">{% trans "Dialog/modal kapat" %}</span>
+                        <kbd class="px-1.5 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded font-mono text-gray-500 dark:text-gray-400">Esc</kbd>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block footer %}{% endblock %}

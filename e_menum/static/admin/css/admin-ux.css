@@ -604,6 +604,175 @@
 }
 
 
+/* ═══════════════════════════════════════════════════════════
+   EMPTY STATE
+   ═══════════════════════════════════════════════════════════ */
+
+.ux-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    text-align: center;
+}
+
+.ux-empty-state-icon {
+    font-size: 48px;
+    color: var(--text-dim, #475569);
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.ux-empty-state-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary, #f1f5f9);
+    margin: 0 0 8px;
+}
+
+.ux-empty-state-message {
+    font-size: 13px;
+    color: var(--text-muted, #64748b);
+    margin: 0 0 20px;
+    max-width: 360px;
+    line-height: 1.5;
+}
+
+.ux-empty-state-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    background: var(--accent, #6366f1);
+    color: #fff !important;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none !important;
+    transition: all 0.15s ease;
+}
+
+.ux-empty-state-action:hover {
+    background: #5558e6;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+}
+
+/* Variant: search empty */
+.ux-empty-state--search .ux-empty-state-icon {
+    color: var(--emenum-warning, #f59e0b);
+    opacity: 0.6;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   CARD HOVER EFFECT (Admin Dashboard)
+   ═══════════════════════════════════════════════════════════ */
+
+.ux-card-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.ux-card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    border-color: rgba(99, 102, 241, 0.15);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   SKELETON LOADING (Admin)
+   ═══════════════════════════════════════════════════════════ */
+
+.admin-skeleton {
+    background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0.03) 25%,
+        rgba(255, 255, 255, 0.06) 50%,
+        rgba(255, 255, 255, 0.03) 75%
+    );
+    background-size: 200% 100%;
+    animation: admin-shimmer 1.5s ease-in-out infinite;
+    border-radius: 6px;
+}
+
+@keyframes admin-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Skeleton presets */
+.admin-skeleton-row {
+    height: 44px;
+    margin-bottom: 2px;
+}
+
+.admin-skeleton-card {
+    height: 96px;
+}
+
+.admin-skeleton-chart {
+    height: 260px;
+}
+
+.admin-skeleton-text {
+    height: 14px;
+    width: 60%;
+    margin-bottom: 8px;
+}
+
+.admin-skeleton-text-sm {
+    height: 10px;
+    width: 40%;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   BADGE SYSTEM
+   ═══════════════════════════════════════════════════════════ */
+
+.ux-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.ux-badge--success {
+    background: rgba(34, 197, 94, 0.12);
+    color: #4ade80;
+}
+
+.ux-badge--warning {
+    background: rgba(245, 158, 11, 0.12);
+    color: #fbbf24;
+}
+
+.ux-badge--danger {
+    background: rgba(239, 68, 68, 0.12);
+    color: #f87171;
+}
+
+.ux-badge--info {
+    background: rgba(59, 130, 246, 0.12);
+    color: #60a5fa;
+}
+
+.ux-badge--neutral {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-muted, #64748b);
+}
+
+.ux-badge--primary {
+    background: rgba(99, 102, 241, 0.12);
+    color: #818cf8;
+}
+
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
     .ux-toast-stack {

@@ -1,13 +1,14 @@
 /*
  * E-Menum Admin Base Styles
  * Extends Django admin with custom branding and dark theme overrides.
- * Brand colors: Primary #1A6B5A, Accent #F5A623, Dark BG #111827
+ * Brand colors: Primary Indigo #6366f1, Dark BG #111827
  */
 
 /* ---- Root Variables ---- */
 :root {
-  --emenum-primary: #1A6B5A;
-  --emenum-primary-dark: #0f5c4b;
+  --emenum-primary: #6366f1;
+  --emenum-primary-dark: #4f46e5;
+  --emenum-primary-light: #818cf8;
   --emenum-accent: #F5A623;
   --emenum-bg-dark: #111827;
   --emenum-bg-surface: #1a1f2e;
@@ -17,6 +18,14 @@
   --emenum-text-muted: #64748b;
   --emenum-border: rgba(255, 255, 255, 0.06);
   --emenum-accent-indigo: #6366f1;
+  --emenum-success: #22c55e;
+  --emenum-success-dark: #16a34a;
+  --emenum-warning: #f59e0b;
+  --emenum-warning-dark: #d97706;
+  --emenum-danger: #ef4444;
+  --emenum-danger-dark: #dc2626;
+  --emenum-info: #3b82f6;
+  --emenum-info-dark: #2563eb;
   --emenum-radius: 8px;
 }
 
@@ -38,10 +47,11 @@
 
 /* ---- Module Headers ---- */
 .module h2, .module caption {
-  background: var(--emenum-primary) !important;
-  color: white;
+  background: rgba(99, 102, 241, 0.08) !important;
+  color: var(--emenum-text-primary);
   font-weight: 600;
   border-radius: var(--emenum-radius) var(--emenum-radius) 0 0;
+  border-bottom: 1px solid rgba(99, 102, 241, 0.15);
 }
 
 /* ---- Links ---- */
@@ -50,7 +60,7 @@ a:link, a:visited {
 }
 
 a:hover {
-  color: #818cf8;
+  color: var(--emenum-primary-light, #818cf8);
 }
 
 /* ---- Buttons ---- */
@@ -60,7 +70,7 @@ a:hover {
   border-radius: var(--emenum-radius);
   font-weight: 600;
   padding: 8px 16px;
-  transition: background 150ms ease;
+  transition: all 150ms ease;
 }
 
 .button:hover, input[type=submit]:hover {
@@ -68,8 +78,8 @@ a:hover {
 }
 
 .button.default {
-  background: var(--emenum-accent) !important;
-  color: #0F1923;
+  background: var(--emenum-primary) !important;
+  color: #fff;
 }
 
 /* ---- Dashboard ---- */
