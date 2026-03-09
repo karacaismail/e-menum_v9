@@ -50,6 +50,17 @@ class StaticPageSitemap(Sitemap):
         "website:contact",
         "website:demo",
         "website:blog",
+        "website:solutions",
+        "website:customers",
+        "website:roi_calculator",
+        "website:resources",
+        "website:careers",
+        "website:press",
+        "website:brand_assets",
+        "website:investor",
+        "website:partners",
+        "website:support",
+        "website:sitemap_html",
     ]
 
     def items(self):

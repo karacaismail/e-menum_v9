@@ -2234,7 +2234,9 @@ class Command(BaseCommand):
     # =========================================================================
     def _seed_navigation_links(self):
         links = [
-            # FOOTER — Urun
+            # ─────────────────────────────────────────────────────
+            # FOOTER — Urun (3 links — no duplicates)
+            # ─────────────────────────────────────────────────────
             {
                 "location": "footer_product",
                 "label_tr": "Ozellikler",
@@ -2254,32 +2256,26 @@ class Command(BaseCommand):
             {
                 "location": "footer_product",
                 "label_tr": "Demo",
-                "label_en": "Demo",
+                "label_en": "Request Demo",
                 "url": "website:demo",
                 "sort_order": 3,
                 "is_active": True,
             },
-            {
-                "location": "footer_product",
-                "label_tr": "Neler Yeni",
-                "label_en": "What's New",
-                "url": "website:blog",
-                "sort_order": 4,
-                "is_active": True,
-            },
-            # FOOTER — Cozumler
+            # ─────────────────────────────────────────────────────
+            # FOOTER — Cozumler (3 links)
+            # ─────────────────────────────────────────────────────
             {
                 "location": "footer_solutions",
-                "label_tr": "Restoranlar",
-                "label_en": "Restaurants",
+                "label_tr": "Cozumler",
+                "label_en": "Solutions",
                 "url": "website:solutions",
                 "sort_order": 1,
                 "is_active": True,
             },
             {
                 "location": "footer_solutions",
-                "label_tr": "Basari Hikayeleri",
-                "label_en": "Case Studies",
+                "label_tr": "Musteriler",
+                "label_en": "Customers",
                 "url": "website:customers",
                 "sort_order": 2,
                 "is_active": True,
@@ -2292,15 +2288,36 @@ class Command(BaseCommand):
                 "sort_order": 3,
                 "is_active": True,
             },
+            # ─────────────────────────────────────────────────────
+            # FOOTER — Kaynaklar (3 links — blog only here, no duplicate)
+            # ─────────────────────────────────────────────────────
             {
-                "location": "footer_solutions",
+                "location": "footer_resources",
+                "label_tr": "Blog",
+                "label_en": "Blog",
+                "url": "website:blog",
+                "sort_order": 1,
+                "is_active": True,
+            },
+            {
+                "location": "footer_resources",
+                "label_tr": "Kaynaklar",
+                "label_en": "Resources",
+                "url": "website:resources",
+                "sort_order": 2,
+                "is_active": True,
+            },
+            {
+                "location": "footer_resources",
                 "label_tr": "Marka Kaynaklari",
                 "label_en": "Brand Assets",
                 "url": "website:brand_assets",
-                "sort_order": 4,
+                "sort_order": 3,
                 "is_active": True,
             },
-            # FOOTER — Sirket
+            # ─────────────────────────────────────────────────────
+            # FOOTER — Sirket (5 links — iletisim only here)
+            # ─────────────────────────────────────────────────────
             {
                 "location": "footer_company",
                 "label_tr": "Hakkimizda",
@@ -2327,13 +2344,23 @@ class Command(BaseCommand):
             },
             {
                 "location": "footer_company",
-                "label_tr": "Iletisim",
-                "label_en": "Contact",
-                "url": "website:contact",
+                "label_tr": "Yatirimci",
+                "label_en": "Investor Relations",
+                "url": "website:investor",
                 "sort_order": 4,
                 "is_active": True,
             },
-            # FOOTER — Destek
+            {
+                "location": "footer_company",
+                "label_tr": "Iletisim",
+                "label_en": "Contact",
+                "url": "website:contact",
+                "sort_order": 5,
+                "is_active": True,
+            },
+            # ─────────────────────────────────────────────────────
+            # FOOTER — Destek (2 links — no broken status.e-menum)
+            # ─────────────────────────────────────────────────────
             {
                 "location": "footer_support",
                 "label_tr": "Yardim Merkezi",
@@ -2344,21 +2371,15 @@ class Command(BaseCommand):
             },
             {
                 "location": "footer_support",
-                "label_tr": "Iletisim",
-                "label_en": "Contact Us",
-                "url": "website:contact",
+                "label_tr": "Partnerler",
+                "label_en": "Partners",
+                "url": "website:partners",
                 "sort_order": 2,
                 "is_active": True,
             },
-            {
-                "location": "footer_support",
-                "label_tr": "Sistem Durumu",
-                "label_en": "System Status",
-                "url": "https://status.e-menum.net",
-                "sort_order": 3,
-                "is_active": True,
-            },
-            # FOOTER — Yasal
+            # ─────────────────────────────────────────────────────
+            # FOOTER — Yasal (4 links)
+            # ─────────────────────────────────────────────────────
             {
                 "location": "footer_legal",
                 "label_tr": "Gizlilik Politikasi",
@@ -2391,62 +2412,35 @@ class Command(BaseCommand):
                 "sort_order": 4,
                 "is_active": True,
             },
-            # FOOTER — Kaynaklar
-            {
-                "location": "footer_resources",
-                "label_tr": "Blog",
-                "label_en": "Blog",
-                "url": "website:blog",
-                "sort_order": 1,
-                "is_active": True,
-            },
-            {
-                "location": "footer_resources",
-                "label_tr": "Sektor Raporlari",
-                "label_en": "Industry Reports",
-                "url": "website:resources",
-                "sort_order": 2,
-                "is_active": True,
-            },
-            {
-                "location": "footer_resources",
-                "label_tr": "Ucretsiz Araclar",
-                "label_en": "Free Tools",
-                "url": "/tr/kaynaklar/araclar/qr-kod-tasarlayici/",
-                "sort_order": 3,
-                "is_active": True,
-            },
-            {
-                "location": "footer_resources",
-                "label_tr": "QR Kod Tasarlayici",
-                "label_en": "QR Code Designer",
-                "url": "/tr/kaynaklar/araclar/qr-kod-tasarlayici/",
-                "sort_order": 4,
-                "is_active": True,
-            },
-            # FOOTER — Yatirimci
-            {
-                "location": "footer_investors",
-                "label_tr": "Yatirimci Iliskileri",
-                "label_en": "Investor Relations",
-                "url": "website:investor",
-                "sort_order": 1,
-                "is_active": True,
-            },
-            {
-                "location": "footer_investors",
-                "label_tr": "Partner Programi",
-                "label_en": "Partner Program",
-                "url": "website:partners",
-                "sort_order": 2,
-                "is_active": True,
-            },
         ]
         for link in links:
             NavigationLink.objects.update_or_create(
                 location=link["location"], sort_order=link["sort_order"], defaults=link
             )
+
+        # Clean up orphaned links from previous seed runs
+        # (e.g. removed Sistem Durumu, duplicate blog, investors column)
+        all_footer_locations = {lnk["location"] for lnk in links}
+        orphaned = NavigationLink.objects.filter(
+            location__startswith="footer_"
+        ).exclude(location__in=all_footer_locations)
+        orphaned_count = orphaned.count()
+        orphaned.delete()
+
+        # Also delete stale sort_order entries within active locations
+        for loc in all_footer_locations:
+            max_order = max(
+                lnk["sort_order"] for lnk in links if lnk["location"] == loc
+            )
+            stale = NavigationLink.objects.filter(
+                location=loc, sort_order__gt=max_order
+            )
+            orphaned_count += stale.count()
+            stale.delete()
+
         self.stdout.write(f"  ✓ NavigationLink ({len(links)})")
+        if orphaned_count:
+            self.stdout.write(f"    ↳ Cleaned {orphaned_count} orphaned link(s)")
 
     # =========================================================================
     # 16. SECTORS (8)

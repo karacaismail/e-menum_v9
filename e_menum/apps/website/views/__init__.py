@@ -27,6 +27,7 @@ from .company import (
 from .investor import InvestorView
 from .partners import PartnersView, PartnerProgramDetailView
 from .support import SupportView, HelpCategoryView, HelpArticleView
+from .sitemap_html import SitemapHTMLView
 
 __all__ = [
     "CmsContextMixin",
@@ -64,4 +65,5 @@ __all__ = [
     "SupportView",
     "HelpCategoryView",
     "HelpArticleView",
+    "SitemapHTMLView",
 ]

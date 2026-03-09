@@ -135,10 +135,8 @@ class SiteSettings(TimeStampedModel):
         help_text=_("Toggle altinda gosterilen aciklama metni."),
     )
 
-    # Status page
-    status_page_url = models.URLField(
-        _("durum sayfasi URL"), blank=True, default="https://status.e-menum.net"
-    )
+    # Status page (leave blank until a monitoring service is deployed)
+    status_page_url = models.URLField(_("durum sayfasi URL"), blank=True, default="")
 
     class Meta:
         verbose_name = _("Site Ayarlari")

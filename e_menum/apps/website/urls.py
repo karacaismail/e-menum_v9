@@ -121,6 +121,10 @@ urlpatterns = [
         name="partner_detail",
     ),
     # =========================================================================
+    # HTML Sitemap (user-facing)
+    # =========================================================================
+    path(_("site-haritasi/"), views.SitemapHTMLView.as_view(), name="sitemap_html"),
+    # =========================================================================
     # Support / Help Center
     # =========================================================================
     path(_("destek/"), views.SupportView.as_view(), name="support"),

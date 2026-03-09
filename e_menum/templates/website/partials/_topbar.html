@@ -62,7 +62,8 @@
 
             {# Right side — Utility links #}
             <div class="flex items-center gap-3 text-xs text-gray-200 shrink-0">
-                {# Status page #}
+                {# Status page — only show if URL is configured #}
+                {% if marketing.status_page_url %}
                 <a href="{{ marketing.status_page_url }}"
                    class="inline-flex items-center gap-1.5 hover:text-white transition-colors"
                    target="_blank"
@@ -74,8 +75,8 @@
                     <i class="ph ph-pulse text-sm"></i>
                     {% trans "Status" %}
                 </a>
-
                 <span class="text-gray-500">|</span>
+                {% endif %}
 
                 {# Email #}
                 <a href="mailto:{{ marketing.email }}"
