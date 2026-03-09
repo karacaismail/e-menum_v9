@@ -2262,7 +2262,7 @@ class Command(BaseCommand):
                 "is_active": True,
             },
             # ─────────────────────────────────────────────────────
-            # FOOTER — Cozumler (3 links)
+            # FOOTER — Cozumler (1 link — all sub-sectors on same page)
             # ─────────────────────────────────────────────────────
             {
                 "location": "footer_solutions",
@@ -2270,22 +2270,6 @@ class Command(BaseCommand):
                 "label_en": "Solutions",
                 "url": "website:solutions",
                 "sort_order": 1,
-                "is_active": True,
-            },
-            {
-                "location": "footer_solutions",
-                "label_tr": "Musteriler",
-                "label_en": "Customers",
-                "url": "website:customers",
-                "sort_order": 2,
-                "is_active": True,
-            },
-            {
-                "location": "footer_solutions",
-                "label_tr": "ROI Hesaplayici",
-                "label_en": "ROI Calculator",
-                "url": "website:roi_calculator",
-                "sort_order": 3,
                 "is_active": True,
             },
             # ─────────────────────────────────────────────────────
