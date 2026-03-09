@@ -50,12 +50,22 @@ class DashboardView(OrganizationRequiredMixin, View):
         from e_menum.apps.qrcodes.models import QRCode
 
         has_restaurant_info = bool(org.name and org.phone)
-        has_menu = Menu.objects.filter(organization=org, deleted_at__isnull=True).exists()
-        has_product = Product.objects.filter(organization=org, deleted_at__isnull=True).exists()
-        has_qr = QRCode.objects.filter(organization=org, deleted_at__isnull=True).exists()
+        has_menu = Menu.objects.filter(
+            organization=org, deleted_at__isnull=True
+        ).exists()
+        has_product = Product.objects.filter(
+            organization=org, deleted_at__isnull=True
+        ).exists()
+        has_qr = QRCode.objects.filter(
+            organization=org, deleted_at__isnull=True
+        ).exists()
 
         return [
-            {"key": "restaurant", "done": has_restaurant_info, "url": "accounts:restaurant-settings"},
+            {
+                "key": "restaurant",
+                "done": has_restaurant_info,
+                "url": "accounts:restaurant-settings",
+            },
             {"key": "menu", "done": has_menu, "url": "accounts:menu-create"},
             {"key": "product", "done": has_product, "url": "accounts:product-create"},
             {"key": "qrcode", "done": has_qr, "url": "accounts:qrcode-list"},
