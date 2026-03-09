@@ -45,9 +45,9 @@ class DashboardView(OrganizationRequiredMixin, View):
 
     def _get_onboarding_steps(self, org):
         """Build onboarding checklist status for the given organization."""
-        from e_menum.apps.menus.models import Menu
-        from e_menum.apps.products.models import Product
-        from e_menum.apps.qrcodes.models import QRCode
+        from apps.menus.models import Menu
+        from apps.products.models import Product
+        from apps.qrcodes.models import QRCode
 
         has_restaurant_info = bool(org.name and org.phone)
         has_menu = Menu.objects.filter(
