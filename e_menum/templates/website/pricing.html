@@ -37,17 +37,39 @@
     /* TOGGLE */
     .toggle-wrap{display:flex;align-items:center;gap:14px;background:var(--surface, #0d1120);
       border:1px solid rgba(255,255,255,0.07);border-radius:100px;padding:6px 18px;width:fit-content;}
-    .tlabel{font-size:14px;font-weight:600;transition:color .2s;}
+    .tlabel{font-size:14px;font-weight:600;transition:color .25s;user-select:none;cursor:pointer;}
     .tlabel.on{color:var(--accent);}
     .tlabel.off{color:var(--muted, #6b7280);}
-    .tog-btn{position:relative;width:52px;height:28px;background:rgba(255,255,255,0.12);
-      border:1px solid rgba(255,255,255,0.1);border-radius:100px;cursor:pointer;
-      transition:background .3s,border-color .3s;outline:none;}
+
+    /* Toggle Switch — fully reset <button> defaults */
+    .tog-btn{
+      -webkit-appearance:none;-moz-appearance:none;appearance:none;
+      position:relative;display:inline-block;vertical-align:middle;
+      width:52px;height:28px;min-width:52px;min-height:28px;
+      padding:0;margin:0;
+      background:rgba(255,255,255,0.10);
+      border:2px solid rgba(255,255,255,0.12);border-radius:100px;
+      cursor:pointer;outline:none;
+      transition:background .3s ease,border-color .3s ease,box-shadow .3s ease;
+      box-sizing:border-box;
+      flex-shrink:0;
+    }
+    .tog-btn:hover{background:rgba(255,255,255,0.16);border-color:rgba(255,255,255,0.2);}
+    .tog-btn:focus-visible{box-shadow:0 0 0 3px rgba(0,229,195,0.35);}
     .tog-btn.on{background:var(--accent);border-color:var(--accent);}
-    .tog-btn::after{content:'';position:absolute;top:2px;left:2px;width:22px;height:22px;
-      background:#ffffff;border-radius:50%;
-      transition:transform .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 2px 8px rgba(0,0,0,.25);}
-    .tog-btn.on::after{transform:translateX(24px);}
+    .tog-btn.on:hover{background:#00d4b3;border-color:#00d4b3;}
+
+    /* Toggle Knob */
+    .tog-btn::after{
+      content:'';position:absolute;
+      top:2px;left:2px;
+      width:20px;height:20px;
+      background:#fff;border-radius:50%;
+      transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;
+      box-shadow:0 1px 4px rgba(0,0,0,.3);
+    }
+    .tog-btn.on::after{transform:translateX(24px);box-shadow:0 1px 6px rgba(0,0,0,.25);}
+
     .save-pill{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.35);
       color:var(--gold);font-size:11px;font-weight:700;letter-spacing:1px;
       border-radius:100px;padding:3px 12px;

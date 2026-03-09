@@ -19,7 +19,7 @@
     <div class="reveal" id="toggle-row" style="margin-top:32px;display:flex;flex-wrap:wrap;align-items:center;gap:16px;">
         <div class="toggle-wrap">
             <span class="tlabel" :class="!yearly?'on':'off'">{% trans "Aylık" %}</span>
-            <button class="tog-btn" :class="{on:yearly}" @click="toggle()" role="switch" :aria-checked="yearly" aria-label="{% trans 'Yıllık faturalama' %}"></button>
+            <button type="button" class="tog-btn" :class="{on:yearly}" @click="toggle()" role="switch" :aria-checked="yearly.toString()" aria-label="{% trans 'Yıllık faturalama' %}"></button>
             <span class="tlabel" :class="yearly?'on':'off'">{% trans "Yıllık" %}</span>
         </div>
         <span class="save-pill" :class="{hide:!yearly}">{{ marketing.pricing_yearly_badge|default:"2 AY BEDAVA" }}</span>
