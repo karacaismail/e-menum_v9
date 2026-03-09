@@ -1,0 +1,314 @@
+{% load i18n %}
+{% comment %}============================================================================
+   PRICING SECTION — Self-contained pricing cards with toggle.
+
+   Reusable across any marketing page (home, features, solutions, etc.).
+   Pulls data from the `plans` context variable (queryset of Plan objects).
+
+   Includes its own scoped CSS + Alpine.js so it works independently
+   without requiring the pricing page's extra_head or extra_js blocks.
+
+   Usage:
+   {% include "website/partials/_pricing_section.html" %}
+   ============================================================================{% endcomment %}
+
+{% if plans %}
+<section class="pricing-embed" x-data="pricingEmbed()" x-init="init()">
+    <style>
+        /* ── SCOPED PRICING EMBED ── */
+        .pricing-embed{position:relative;z-index:1;padding:80px 0;
+          background:linear-gradient(180deg,#060a14 0%,#0d1120 100%);}
+
+        .pricing-embed .pe-inner{max-width:1400px;margin:0 auto;padding:0 20px;}
+
+        /* Header */
+        .pricing-embed .pe-badge{display:inline-flex;align-items:center;gap:8px;
+          background:rgba(0,229,195,.08);border:1px solid rgba(0,229,195,.2);
+          border-radius:100px;padding:4px 14px;font-size:12px;font-weight:700;
+          letter-spacing:2px;text-transform:uppercase;color:#00e5c3;margin-bottom:20px;}
+        .pricing-embed .pe-title{font-size:clamp(26px,4vw,42px);font-weight:800;
+          line-height:1.15;letter-spacing:-.03em;margin-bottom:12px;color:#fff;}
+        .pricing-embed .pe-title .hi{color:#00e5c3;}
+        .pricing-embed .pe-sub{color:#6b7280;font-size:15px;max-width:520px;}
+
+        /* Toggle */
+        .pricing-embed .pe-toggle-wrap{display:flex;align-items:center;gap:14px;
+          background:#0d1120;border:1px solid rgba(255,255,255,0.07);
+          border-radius:100px;padding:6px 18px;width:fit-content;}
+        .pricing-embed .pe-tlabel{font-size:14px;font-weight:600;transition:color .25s;
+          user-select:none;cursor:pointer;}
+        .pricing-embed .pe-tlabel.on{color:#00e5c3;}
+        .pricing-embed .pe-tlabel.off{color:#6b7280;}
+        .pricing-embed .pe-tog{
+          -webkit-appearance:none;-moz-appearance:none;appearance:none;
+          position:relative;display:inline-block;vertical-align:middle;
+          width:52px;height:28px;min-width:52px;min-height:28px;
+          padding:0;margin:0;background:rgba(255,255,255,0.10);
+          border:2px solid rgba(255,255,255,0.12);border-radius:100px;
+          cursor:pointer;outline:none;box-sizing:border-box;flex-shrink:0;
+          transition:background .3s,border-color .3s,box-shadow .3s;}
+        .pricing-embed .pe-tog:hover{background:rgba(255,255,255,0.16);border-color:rgba(255,255,255,0.2);}
+        .pricing-embed .pe-tog:focus-visible{box-shadow:0 0 0 3px rgba(0,229,195,0.35);}
+        .pricing-embed .pe-tog.on{background:#00e5c3;border-color:#00e5c3;}
+        .pricing-embed .pe-tog.on:hover{background:#00d4b3;border-color:#00d4b3;}
+        .pricing-embed .pe-tog::after{content:'';position:absolute;top:2px;left:2px;
+          width:20px;height:20px;background:#fff;border-radius:50%;
+          transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;
+          box-shadow:0 1px 4px rgba(0,0,0,.3);}
+        .pricing-embed .pe-tog.on::after{transform:translateX(24px);}
+        .pricing-embed .pe-save{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.35);
+          color:#f59e0b;font-size:11px;font-weight:700;letter-spacing:1px;
+          border-radius:100px;padding:3px 12px;transition:opacity .3s,transform .3s;}
+        .pricing-embed .pe-save.hide{opacity:0;transform:translateY(4px);pointer-events:none;}
+
+        /* Card Grid */
+        .pricing-embed .pe-grid{display:grid;
+          grid-template-columns:repeat({{ plans|length|default:"6" }},1fr);
+          gap:14px;margin-top:40px;}
+        @media(max-width:1280px){.pricing-embed .pe-grid{grid-template-columns:repeat(3,1fr);}}
+        @media(max-width:820px){.pricing-embed .pe-grid{grid-template-columns:repeat(2,1fr);}}
+        @media(max-width:540px){.pricing-embed .pe-grid{grid-template-columns:1fr;}}
+
+        /* Card */
+        .pricing-embed .pe-card{position:relative;background:#0d1120;
+          border:1px solid rgba(255,255,255,0.07);border-radius:16px;
+          padding:26px 20px 24px;display:flex;flex-direction:column;overflow:hidden;
+          transition:transform .3s ease,box-shadow .3s ease,border-color .3s;}
+        .pricing-embed .pe-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+          background:linear-gradient(90deg,transparent,var(--c),transparent);
+          opacity:0;transition:opacity .3s;}
+        .pricing-embed .pe-card:hover{transform:translateY(-6px);}
+        .pricing-embed .pe-card:hover::before{opacity:.6;}
+        .pricing-embed .pe-card.free  {--c:#94a3b8;}
+        .pricing-embed .pe-card.start {--c:#38bdf8;}
+        .pricing-embed .pe-card.grow  {--c:#34d399;}
+        .pricing-embed .pe-card.pro   {--c:#00e5c3;border-color:rgba(0,229,195,.35);
+          background:linear-gradient(160deg,#0d1f1d 0%,#0d1120 100%);
+          box-shadow:0 0 40px rgba(0,229,195,.1);}
+        .pricing-embed .pe-card.biz   {--c:#a855f7;}
+        .pricing-embed .pe-card.ent   {--c:#f59e0b;border-color:rgba(245,158,11,.3);
+          background:linear-gradient(160deg,#1a1508 0%,#0d1120 100%);}
+
+        /* Ribbon */
+        .pricing-embed .pe-ribbon{position:absolute;top:15px;right:-30px;transform:rotate(35deg);
+          font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
+          padding:4px 38px;pointer-events:none;}
+        .pricing-embed .pe-ribbon.teal{background:#00e5c3;color:#020408;}
+        .pricing-embed .pe-ribbon.gold{background:#f59e0b;color:#020408;}
+        .pricing-embed .pe-ribbon.purple{background:#a855f7;color:#020408;}
+
+        /* Badge */
+        .pricing-embed .pe-badge-card{display:inline-flex;align-items:center;gap:5px;
+          border:1px solid rgba(255,255,255,.1);border-radius:100px;
+          padding:2px 10px;font-size:10px;font-weight:700;letter-spacing:1.5px;
+          text-transform:uppercase;color:var(--c);background:rgba(255,255,255,.04);
+          width:fit-content;margin-bottom:12px;}
+        .pricing-embed .pe-dot{width:6px;height:6px;border-radius:50%;background:var(--c);
+          animation:pe-pdot 2s infinite;}
+        @keyframes pe-pdot{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 60%,transparent);}
+          50%{box-shadow:0 0 0 5px transparent;}}
+
+        .pricing-embed .pe-card h3{font-size:18px;font-weight:800;letter-spacing:-.02em;
+          margin-bottom:4px;color:#fff;}
+        .pricing-embed .pe-tagline{font-size:12px;color:#6b7280;margin-bottom:18px;
+          min-height:34px;line-height:1.5;}
+
+        /* Price */
+        .pricing-embed .pe-pblock{margin-bottom:20px;}
+        .pricing-embed .pe-pamount{display:flex;align-items:baseline;gap:4px;line-height:1;}
+        .pricing-embed .pe-pnum{font-size:34px;font-weight:800;letter-spacing:-.04em;color:var(--c);
+          transition:all .4s cubic-bezier(.34,1.2,.64,1);}
+        .pricing-embed .pe-pcurr{font-size:13px;font-weight:600;color:#6b7280;}
+        .pricing-embed .pe-pper{font-size:11px;color:#6b7280;margin-top:4px;}
+        .pricing-embed .pe-save-tag{display:inline-flex;align-items:center;gap:4px;
+          background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.25);
+          color:#34d399;font-size:10px;font-weight:700;
+          border-radius:100px;padding:2px 10px;margin-top:6px;}
+
+        /* Motto */
+        .pricing-embed .pe-motto{font-size:12.5px;font-style:italic;color:rgba(255,255,255,.4);
+          border-left:2px solid rgba(255,255,255,.08);padding-left:10px;
+          margin-bottom:20px;min-height:38px;line-height:1.5;flex:1;}
+        .pricing-embed .pe-cdiv{height:1px;background:rgba(255,255,255,0.07);margin-bottom:18px;}
+
+        /* Feature List */
+        .pricing-embed .pe-flist{list-style:none;display:flex;flex-direction:column;
+          gap:8px;margin-bottom:24px;padding:0;}
+        .pricing-embed .pe-flist li{display:flex;align-items:flex-start;gap:8px;
+          font-size:12.5px;color:rgba(255,255,255,.6);}
+        .pricing-embed .pe-flist li svg{width:15px;height:15px;flex-shrink:0;margin-top:2px;color:var(--c);}
+
+        /* CTA */
+        .pricing-embed .pe-cta{display:block;width:100%;padding:11px 14px;border-radius:10px;
+          font-size:12.5px;font-weight:700;letter-spacing:.3px;text-align:center;
+          cursor:pointer;border:1px solid transparent;transition:all .25s;
+          text-decoration:none;margin-top:auto;}
+        .pricing-embed .pe-cta-prim{background:var(--c);color:#020408;}
+        .pricing-embed .pe-cta-prim:hover{filter:brightness(1.12) saturate(1.1);transform:scale(1.02);}
+        .pricing-embed .pe-cta-out{background:transparent;border-color:rgba(255,255,255,.15);color:#e8eaf0;}
+        .pricing-embed .pe-cta-out:hover{border-color:var(--c);color:var(--c);}
+        .pricing-embed .pe-cta-ent{background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(245,158,11,.04));
+          border-color:rgba(245,158,11,.4);color:#f59e0b;}
+        .pricing-embed .pe-cta-ent:hover{background:rgba(245,158,11,.22);border-color:#f59e0b;}
+
+        /* Glow */
+        .pricing-embed .pe-glow{position:absolute;width:300px;height:300px;
+          background:radial-gradient(circle,rgba(0,229,195,.1) 0%,transparent 70%);
+          border-radius:50%;pointer-events:none;top:-80px;left:50%;transform:translateX(-50%);}
+
+        /* Flip animation */
+        .pricing-embed .pe-flip{animation:pe-flipin .35s cubic-bezier(.34,1.3,.64,1);}
+        @keyframes pe-flipin{from{opacity:0;transform:translateY(10px) scale(.9);}to{opacity:1;transform:none;}}
+
+        /* Footer link */
+        .pricing-embed .pe-allplans{display:flex;justify-content:center;margin-top:32px;}
+        .pricing-embed .pe-allplans a{color:#00e5c3;font-weight:600;font-size:14px;
+          text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+        .pricing-embed .pe-allplans a:hover{text-decoration:underline;}
+    </style>
+
+    <div class="pe-inner">
+        {# Section Header #}
+        <div style="text-align:center;margin-bottom:10px;">
+            <div class="pe-badge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                {% trans "Fiyatlandirma" %}
+            </div>
+            <h2 class="pe-title">{% trans "Isletmenize uygun" %} <span class="hi">{% trans "plani secin." %}</span></h2>
+            <p class="pe-sub" style="margin:0 auto;">{% trans "Ucretsiz baslayin, buyudukce yukseltin. Istediginiz zaman gecis yapin." %}</p>
+        </div>
+
+        {# Toggle #}
+        <div style="margin-top:28px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px;">
+            <div class="pe-toggle-wrap">
+                <span class="pe-tlabel" :class="!yearly?'on':'off'">{% trans "Aylik" %}</span>
+                <button type="button" class="pe-tog" :class="{on:yearly}" @click="toggle()" role="switch" :aria-checked="yearly.toString()" aria-label="{% trans 'Yillik faturalama' %}"></button>
+                <span class="pe-tlabel" :class="yearly?'on':'off'">{% trans "Yillik" %}</span>
+            </div>
+            <span class="pe-save" :class="{hide:!yearly}">{{ marketing.pricing_yearly_badge|default:"2 AY BEDAVA" }}</span>
+        </div>
+
+        {# Card Grid #}
+        <div class="pe-grid">
+            {% for plan in plans %}
+            <div class="pe-card {{ plan.card_css_class }}" {% if plan.has_glow_effect or plan.highlight_text %}style="position:relative;overflow:hidden;"{% endif %}>
+
+                {# Ribbon #}
+                {% if plan.highlight_text and plan.ribbon_color %}
+                <div class="pe-ribbon {{ plan.ribbon_color }}">{{ plan.highlight_text }}</div>
+                {% endif %}
+
+                {# Glow #}
+                {% if plan.has_glow_effect %}
+                <div class="pe-glow"></div>
+                {% endif %}
+
+                {# Badge #}
+                <div class="pe-badge-card"><div class="pe-dot"></div>{{ plan.badge_label|default:plan.name }}</div>
+
+                {# Name #}
+                <h3>{{ plan.name }}</h3>
+
+                {# Tagline #}
+                {% if plan.short_description %}
+                <p class="pe-tagline">{{ plan.short_description }}</p>
+                {% endif %}
+
+                {# Price Block #}
+                <div class="pe-pblock">
+                    {% if plan.is_custom %}
+                        <div style="font-size:26px;font-weight:800;color:var(--c);letter-spacing:-.03em;line-height:1;">{{ plan.custom_price_text|default:"Ozel Fiyat" }}</div>
+                        {% if plan.price_label %}
+                        <p class="pe-pper" style="color:rgba(245,158,11,.55);">{{ plan.price_label }}</p>
+                        {% endif %}
+                    {% elif plan.price_monthly == 0 %}
+                        <div class="pe-pamount"><span class="pe-pnum" :class="{pe-flip:anim}">0</span><span class="pe-pcurr">TL</span></div>
+                        {% if plan.price_label %}
+                        <p class="pe-pper">{{ plan.price_label }}</p>
+                        {% else %}
+                        <p class="pe-pper">{% trans "Sonsuza kadar ucretsiz" %}</p>
+                        {% endif %}
+                    {% else %}
+                        <div class="pe-pamount">
+                            <span class="pe-pnum" :class="{'pe-flip':anim}" x-text="yearly ? fp({{ plan.yearly_per_month }}) : fp({{ plan.price_monthly|floatformat:0 }})">{{ plan.price_monthly|floatformat:0|default:"0" }}</span>
+                            <span class="pe-pcurr">TL / {% trans "ay" %}</span>
+                        </div>
+                        <p class="pe-pper" x-show="!yearly">{% if plan.price_label %}{{ plan.price_label }}{% else %}{% trans "Aylik faturalanir" %}{% endif %}</p>
+                        <p class="pe-pper" x-show="yearly">
+                            <span style="color:#f59e0b;font-weight:700;" x-text="'{% trans "Yilda" %} '+ fp({{ plan.price_yearly|floatformat:0 }}) +' TL'"></span>
+                        </p>
+                        {% if plan.yearly_savings > 0 %}
+                        <p class="pe-save-tag" x-show="yearly" x-transition>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span x-text="fp({{ plan.yearly_savings|floatformat:0 }}) + ' TL {% trans "tasarruf" %}'"></span>
+                        </p>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                {# Motto #}
+                {% if plan.motto %}
+                <p class="pe-motto">"{{ plan.motto }}"</p>
+                {% endif %}
+
+                <div class="pe-cdiv"></div>
+
+                {# Display Features #}
+                {% with features=plan.display_features.all %}
+                {% if features %}
+                <ul class="pe-flist">
+                    {% for feature in features %}
+                    {% if feature.is_active %}
+                    <li>
+                        {% if feature.icon_svg %}
+                        {{ feature.icon_svg|safe }}
+                        {% else %}
+                        <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                        {% endif %}
+                        {{ feature.text }}
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
+
+                {# CTA #}
+                {% if plan.cta_url %}
+                    {% if ":" in plan.cta_url %}
+                    <a href="{% url plan.cta_url %}" class="pe-cta {{ plan.cta_style|default:'pe-cta-out' }}">{{ plan.cta_text|default:"Basla" }}</a>
+                    {% else %}
+                    <a href="{{ plan.cta_url }}" class="pe-cta {{ plan.cta_style|default:'pe-cta-out' }}">{{ plan.cta_text|default:"Basla" }}</a>
+                    {% endif %}
+                {% elif plan.is_custom %}
+                    <a href="{% url 'website:contact' %}" class="pe-cta {{ plan.cta_style|default:'pe-cta-ent' }}">{{ plan.cta_text|default:"Iletisime Gecin" }}</a>
+                {% elif plan.price_monthly == 0 %}
+                    <a href="{% url 'website:demo' %}" class="pe-cta {{ plan.cta_style|default:'pe-cta-out' }}">{{ plan.cta_text|default:"Ucretsiz Basla" }}</a>
+                {% else %}
+                    <a href="{% url 'website:demo' %}" class="pe-cta {{ plan.cta_style|default:'pe-cta-out' }}">{{ plan.cta_text|default:"14 Gun Dene" }}</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        {# "View All Plans" link — visible on non-pricing pages #}
+        <div class="pe-allplans">
+            <a href="{% url 'website:pricing' %}">
+                {% trans "Tum Planlari Karsilastir" %}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+        </div>
+    </div>
+
+    <script>
+    function pricingEmbed(){
+      return {
+        yearly:false,anim:false,
+        init(){},
+        toggle(){this.anim=true;this.yearly=!this.yearly;setTimeout(()=>this.anim=false,400);},
+        fp(val){return val.toLocaleString('tr-TR');}
+      };
+    }
+    </script>
+</section>
+{% endif %}

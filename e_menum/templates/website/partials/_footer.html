@@ -70,12 +70,12 @@
         </div>
     </div>
 
-    {# ═══════ Layer 2: 6-Column Grid ═══════ #}
+    {# ═══════ Layer 2: 8-Column Grid ═══════ #}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-10">
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-6">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-8 gap-8 lg:gap-5">
 
             {# Column 1 — Brand #}
-            <div class="col-span-2 md:col-span-3 lg:col-span-1">
+            <div class="col-span-2 md:col-span-3 lg:col-span-2">
                 <a href="{% url 'website:home' %}" class="flex items-center gap-2 mb-4">
                     <img src="{{ marketing.logo_dark_url|default:marketing.logo_url }}" alt="{{ marketing.company_name|default:'E-Menum' }}"
                          class="h-8 w-auto brightness-0 invert"
@@ -162,7 +162,21 @@
                 </ul>
             </div>
 
-            {# Column 6 — Yasal #}
+            {# Column 6 — Destek #}
+            <div>
+                <h3 class="text-xs font-semibold text-white uppercase tracking-wider mb-4">{% trans "Destek" %}</h3>
+                <ul class="space-y-2.5">
+                    {% for link in marketing.footer_support_links %}
+                    <li>
+                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-300 hover:text-white transition-colors">
+                            {{ link.label }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            {# Column 7 — Yasal #}
             <div>
                 <h3 class="text-xs font-semibold text-white uppercase tracking-wider mb-4">{% trans "Yasal" %}</h3>
                 <ul class="space-y-2.5">
@@ -173,6 +187,11 @@
                         </a>
                     </li>
                     {% endfor %}
+                    <li>
+                        <a href="/sitemap.xml" class="text-sm text-gray-300 hover:text-white transition-colors">
+                            {% trans "Site Haritası" %}
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

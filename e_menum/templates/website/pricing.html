@@ -342,9 +342,8 @@
         this.yearly = !this.yearly;
         setTimeout(() => this.anim = false, 400);
       },
-      fp(monthly) {
-        const v = this.yearly ? monthly * 10 : monthly;
-        return v.toLocaleString('tr-TR');
+      fp(val) {
+        return val.toLocaleString('tr-TR');
       }
     };
   }

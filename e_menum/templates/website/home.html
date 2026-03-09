@@ -22,6 +22,9 @@
 <section class="py-16 lg:py-24 bg-white dark:bg-gray-950">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16" data-reveal>
+            <div class="inline-flex items-center px-4 py-1.5 mb-6 text-xs font-bold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/50 rounded-full tracking-wide uppercase">
+                {% trans "Sorun → Çözüm" %}
+            </div>
             <h2 class="heading-sans text-3xl sm:text-4xl text-gray-900 dark:text-white mb-4 text-balance">
                 {% trans "Neden Dijital Menü?" %}
             </h2>
@@ -32,12 +35,42 @@
 
         <div class="grid md:grid-cols-3 gap-8">
             {% for card in problem_solution_cards %}
-            <div class="text-center p-8 rounded-2xl bg-{{ card.color|default:'gray' }}-50 dark:bg-{{ card.color|default:'gray' }}-950/30 border border-{{ card.color|default:'gray' }}-100 dark:border-{{ card.color|default:'gray' }}-900/50" data-reveal>
-                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-{{ card.color|default:'gray' }}-100 dark:bg-{{ card.color|default:'gray' }}-900/50 flex items-center justify-center">
-                    <i class="ph {{ card.icon }} text-3xl text-{{ card.color|default:'gray' }}-500"></i>
+            <div class="text-center p-8 rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg
+                 {% if card.color == 'green' %}bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-900/50
+                 {% elif card.color == 'amber' %}bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900/50
+                 {% elif card.color == 'rose' %}bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-900/50
+                 {% elif card.color == 'red' %}bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900/50
+                 {% elif card.color == 'purple' %}bg-purple-50 dark:bg-purple-950/30 border-purple-200 dark:border-purple-900/50
+                 {% elif card.color == 'cyan' %}bg-cyan-50 dark:bg-cyan-950/30 border-cyan-200 dark:border-cyan-900/50
+                 {% elif card.color == 'primary' %}bg-primary-50 dark:bg-primary-950/30 border-primary-200 dark:border-primary-900/50
+                 {% elif card.color == 'blue' %}bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-900/50
+                 {% else %}bg-gray-50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-800
+                 {% endif %}" data-reveal>
+                <div class="w-16 h-16 mx-auto mb-5 rounded-2xl flex items-center justify-center
+                     {% if card.color == 'green' %}bg-green-100 dark:bg-green-900/50
+                     {% elif card.color == 'amber' %}bg-amber-100 dark:bg-amber-900/50
+                     {% elif card.color == 'rose' %}bg-rose-100 dark:bg-rose-900/50
+                     {% elif card.color == 'red' %}bg-red-100 dark:bg-red-900/50
+                     {% elif card.color == 'purple' %}bg-purple-100 dark:bg-purple-900/50
+                     {% elif card.color == 'cyan' %}bg-cyan-100 dark:bg-cyan-900/50
+                     {% elif card.color == 'primary' %}bg-primary-100 dark:bg-primary-900/50
+                     {% elif card.color == 'blue' %}bg-blue-100 dark:bg-blue-900/50
+                     {% else %}bg-gray-100 dark:bg-gray-800
+                     {% endif %}">
+                    <i class="ph {{ card.icon }} text-3xl
+                         {% if card.color == 'green' %}text-green-600 dark:text-green-400
+                         {% elif card.color == 'amber' %}text-amber-600 dark:text-amber-400
+                         {% elif card.color == 'rose' %}text-rose-600 dark:text-rose-400
+                         {% elif card.color == 'red' %}text-red-600 dark:text-red-400
+                         {% elif card.color == 'purple' %}text-purple-600 dark:text-purple-400
+                         {% elif card.color == 'cyan' %}text-cyan-600 dark:text-cyan-400
+                         {% elif card.color == 'primary' %}text-primary-600 dark:text-primary-400
+                         {% elif card.color == 'blue' %}text-blue-600 dark:text-blue-400
+                         {% else %}text-gray-600 dark:text-gray-400
+                         {% endif %}"></i>
                 </div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ card.title }}</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-300">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">{{ card.title }}</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                     {{ card.description }}
                 </p>
             </div>
@@ -160,91 +193,7 @@
 {% include "website/partials/_testimonials.html" %}
 
 {% comment %}PRICING SUMMARY{% endcomment %}
-{% if summary_plans %}
-<section class="py-16 lg:py-24 bg-white dark:bg-gray-950">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12" data-reveal>
-            <h2 class="heading-sans text-3xl sm:text-4xl text-gray-900 dark:text-white mb-4">
-                {% trans "İşletmenize Uygun Plan" %}
-            </h2>
-            <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                {% trans "Ücretsiz başlayın, büyüdükçe yükseltin." %}
-            </p>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            {% for plan in summary_plans %}
-            <div class="{% if plan.highlight_text %}pricing-card-recommended{% endif %} bg-white dark:bg-gray-900 rounded-2xl {% if not plan.highlight_text %}border border-gray-200 dark:border-gray-800{% endif %} p-6 text-center card-hover relative" data-reveal>
-                {% if plan.highlight_text %}
-                <div class="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span class="px-3 py-0.5 text-xs font-bold text-white bg-primary-600 rounded-full uppercase">{{ plan.highlight_text }}</span>
-                </div>
-                {% endif %}
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{{ plan.name }}</h3>
-                {% if plan.short_description %}
-                <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">{{ plan.short_description }}</p>
-                {% endif %}
-                <div class="text-3xl font-bold {% if plan.highlight_text %}text-primary-600 dark:text-primary-400{% else %}text-gray-900 dark:text-white{% endif %} my-4">
-                    {% if plan.is_custom %}
-                    {{ plan.custom_price_text|default:"Özel" }}
-                    {% elif plan.price_monthly == 0 %}
-                    {% trans "0 TL" %}
-                    {% else %}
-                    {{ plan.price_monthly|floatformat:0 }} TL<span class="text-sm text-gray-700 dark:text-gray-300">/{% trans "ay" %}</span>
-                    {% endif %}
-                </div>
-                {% if plan.motto %}
-                <p class="text-xs italic text-gray-400 dark:text-gray-500 mb-4 border-l-2 border-gray-200 dark:border-gray-700 pl-3">"{{ plan.motto }}"</p>
-                {% endif %}
-
-                {# Display Features #}
-                {% with features=plan.display_features.all %}
-                {% if features %}
-                <ul class="text-left space-y-2 mb-6 text-sm text-gray-700 dark:text-gray-200">
-                    {% for feature in features %}
-                    {% if feature.is_active %}
-                    <li class="flex items-center gap-2">
-                        {% if feature.icon_svg %}
-                        <span class="w-4 h-4 flex-shrink-0 text-primary-500">{{ feature.icon_svg|safe }}</span>
-                        {% else %}
-                        <i class="ph ph-check text-green-600 dark:text-green-400"></i>
-                        {% endif %}
-                        <span class="{% if feature.is_highlighted %}font-semibold{% endif %}">{{ feature.text }}</span>
-                    </li>
-                    {% endif %}
-                    {% endfor %}
-                </ul>
-                {% endif %}
-                {% endwith %}
-
-                {% if plan.cta_url %}
-                    {% if ":" in plan.cta_url %}
-                    <a href="{% url plan.cta_url %}" class="block px-4 py-2.5 text-sm font-semibold {% if plan.highlight_text %}text-white bg-primary-600 hover:bg-primary-700 shadow-md{% else %}text-primary-600 border-2 border-primary-600 hover:bg-primary-50 dark:hover:bg-primary-950{% endif %} rounded-xl transition-all">
-                        {{ plan.cta_text|default:"Başla" }}
-                    </a>
-                    {% else %}
-                    <a href="{{ plan.cta_url }}" class="block px-4 py-2.5 text-sm font-semibold {% if plan.highlight_text %}text-white bg-primary-600 hover:bg-primary-700 shadow-md{% else %}text-primary-600 border-2 border-primary-600 hover:bg-primary-50 dark:hover:bg-primary-950{% endif %} rounded-xl transition-all">
-                        {{ plan.cta_text|default:"Başla" }}
-                    </a>
-                    {% endif %}
-                {% else %}
-                <a href="{% url 'website:demo' %}" class="block px-4 py-2.5 text-sm font-semibold {% if plan.highlight_text %}text-white bg-primary-600 hover:bg-primary-700 shadow-md{% else %}text-primary-600 border-2 border-primary-600 hover:bg-primary-50 dark:hover:bg-primary-950{% endif %} rounded-xl transition-all">
-                    {{ plan.cta_text|default_if_none:"" }}{% if not plan.cta_text %}{% if plan.trial_days %}{% blocktrans with days=plan.trial_days %}{{ days }} Gün Dene{% endblocktrans %}{% else %}{% trans "Başla" %}{% endif %}{% endif %}
-                </a>
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
-
-        <div class="text-center mt-8">
-            <a href="{% url 'website:pricing' %}" class="inline-flex items-center text-primary-600 dark:text-primary-400 font-semibold hover:underline">
-                {% trans "Tüm Planları Karşılaştır" %}
-                <i class="ph ph-arrow-right ml-1"></i>
-            </a>
-        </div>
-    </div>
-</section>
-{% endif %}
+{% include "website/partials/_pricing_section.html" %}
 
 {% comment %}CTA BANNER{% endcomment %}
 {% include "website/partials/_cta_banner.html" with title="Dijital Menünüzü Bugün Oluşturun" subtitle="14 gün ücretsiz deneme. Kredi kartı gerekmez. 2 dakikada kurulum." button_text="14 Gün Ücretsiz Başla" button_url="website:demo" secondary_text="Canlı Demo İzle" secondary_url="website:demo" %}

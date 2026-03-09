@@ -1,86 +1,167 @@
 {% extends "layouts/marketing.html" %}
 {% load i18n static %}
 
-{% block title %}{% trans "ROI Hesaplayici" %} — E-Menum{% endblock %}
+{% block title %}{% trans "ROI Hesaplayıcı" %} — E-Menum{% endblock %}
 
 {% block content %}
 {% include "website/partials/_hero_enterprise_simple.html" with badge_text="Ücretsiz Araç" title="ROI" title_highlight="Hesaplayıcı" subtitle="Dijital menüye geçiş yatırım getirinizi hesaplayın. Gelir artışı, maliyet düşüşü ve toplam kazancınızı görün." hero_id="hero-roi" %}
 
 <section class="py-12 lg:py-20" x-data="roiCalculator()">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-            {# Input Card #}
-            <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6 lg:p-8">
-                <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                    <i class="ph ph-faders text-primary-400"></i>
-                    {% trans "Isletme Bilgileri" %}
-                </h2>
+            {# ── LEFT: Input Card ── #}
+            <div class="bg-gray-900/80 backdrop-blur-sm rounded-2xl border border-gray-800/80 p-6 lg:p-8">
+                <div class="flex items-center gap-2.5 mb-6">
+                    <div class="w-7 h-7 rounded-lg bg-primary-500/15 border border-primary-500/25 flex items-center justify-center">
+                        <span class="text-xs font-bold text-primary-400">1</span>
+                    </div>
+                    <h2 class="text-sm font-bold text-white">{% trans "İşletme Bilgileri" %}</h2>
+                </div>
 
                 <div class="space-y-5">
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Aylik Musteri Sayisi" %}</label>
+                        <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-400 mb-1.5">
+                            <i class="ph ph-users text-primary-400"></i>
+                            {% trans "Aylık Müşteri Sayısı" %}
+                        </label>
                         <input type="number" x-model.number="monthlyCustomers" min="100" max="50000"
-                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-primary-500 outline-none">
+                            class="w-full px-4 py-2.5 rounded-xl bg-gray-800/80 border border-gray-700/60 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/40 outline-none text-sm transition-all">
+                        <p class="text-[10px] text-gray-600 mt-1">{% trans "Aylık ortalama toplam müşteri trafiğiniz" %}</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Ortalama Hesap Tutari (TL)" %}</label>
+                        <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-400 mb-1.5">
+                            <i class="ph ph-receipt text-primary-400"></i>
+                            {% trans "Ortalama Hesap Tutarı (₺)" %}
+                        </label>
                         <input type="number" x-model.number="avgTicket" min="10" max="5000"
-                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-primary-500 outline-none">
+                            class="w-full px-4 py-2.5 rounded-xl bg-gray-800/80 border border-gray-700/60 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/40 outline-none text-sm transition-all">
+                        <p class="text-[10px] text-gray-600 mt-1">{% trans "Kişi başı ortalama harcama tutarı" %}</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Masa Sayisi" %}</label>
+                        <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-400 mb-1.5">
+                            <i class="ph ph-armchair text-primary-400"></i>
+                            {% trans "Masa Sayısı" %}
+                        </label>
                         <input type="number" x-model.number="tables" min="5" max="500"
-                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-primary-500 outline-none">
+                            class="w-full px-4 py-2.5 rounded-xl bg-gray-800/80 border border-gray-700/60 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/40 outline-none text-sm transition-all">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Garson Sayisi" %}</label>
+                        <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-400 mb-1.5">
+                            <i class="ph ph-user text-primary-400"></i>
+                            {% trans "Garson Sayısı" %}
+                        </label>
                         <input type="number" x-model.number="waiters" min="1" max="50"
-                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-primary-500 outline-none">
+                            class="w-full px-4 py-2.5 rounded-xl bg-gray-800/80 border border-gray-700/60 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/40 outline-none text-sm transition-all">
                     </div>
                 </div>
             </div>
 
-            {# Results Card #}
-            <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6 lg:p-8">
-                <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                    <i class="ph ph-trophy text-amber-400"></i>
-                    {% trans "Tahmini ROI" %}
-                </h2>
+            {# ── RIGHT: Results Card ── #}
+            <div class="lg:sticky lg:top-24 space-y-5">
+                <div class="bg-gray-900/80 backdrop-blur-sm rounded-2xl border border-gray-800/80 p-6 lg:p-8">
+                    <div class="flex items-center gap-2.5 mb-6">
+                        <div class="w-7 h-7 rounded-lg bg-amber-500/15 border border-amber-500/25 flex items-center justify-center">
+                            <i class="ph ph-trophy text-amber-400 text-xs"></i>
+                        </div>
+                        <h2 class="text-sm font-bold text-white">{% trans "Tahmini ROI" %}</h2>
+                    </div>
 
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center py-3 border-b border-gray-800">
-                        <span class="text-sm text-gray-400">{% trans "Dijital menu ile gelir artisi (%8)" %}</span>
-                        <span class="text-lg font-bold text-green-400" x-text="'+' + formatCurrency(revenueIncrease)"></span>
+                    <div class="space-y-3">
+                        {# Revenue increase #}
+                        <div class="p-3.5 rounded-xl bg-green-950/30 border border-green-900/30">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="flex items-center gap-1.5 text-xs text-gray-400">
+                                    <i class="ph ph-trend-up text-green-400"></i>
+                                    {% trans "Dijital menü ile gelir artışı" %}
+                                    <span class="text-[10px] text-gray-600">(+%8)</span>
+                                </span>
+                                <span class="text-sm font-bold text-green-400" x-text="'+' + formatCurrency(revenueIncrease)"></span>
+                            </div>
+                            <div class="h-1 rounded-full bg-gray-800 overflow-hidden">
+                                <div class="h-full rounded-full bg-green-500/60 transition-all duration-700" :style="`width: ${Math.min(100, (revenueIncrease / (revenueIncrease + printSaving + timeSaving)) * 100)}%`"></div>
+                            </div>
+                        </div>
+
+                        {# Print savings #}
+                        <div class="p-3.5 rounded-xl bg-green-950/20 border border-green-900/20">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="flex items-center gap-1.5 text-xs text-gray-400">
+                                    <i class="ph ph-printer text-green-400"></i>
+                                    {% trans "Baskı maliyeti tasarrufu" %}
+                                </span>
+                                <span class="text-sm font-bold text-green-400" x-text="'+' + formatCurrency(printSaving)"></span>
+                            </div>
+                            <div class="h-1 rounded-full bg-gray-800 overflow-hidden">
+                                <div class="h-full rounded-full bg-green-500/40 transition-all duration-700" :style="`width: ${Math.min(100, (printSaving / (revenueIncrease + printSaving + timeSaving)) * 100)}%`"></div>
+                            </div>
+                        </div>
+
+                        {# Time savings #}
+                        <div class="p-3.5 rounded-xl bg-green-950/10 border border-green-900/15">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="flex items-center gap-1.5 text-xs text-gray-400">
+                                    <i class="ph ph-clock text-green-400"></i>
+                                    {% trans "Zaman tasarrufu (garson verimi)" %}
+                                </span>
+                                <span class="text-sm font-bold text-green-400" x-text="'+' + formatCurrency(timeSaving)"></span>
+                            </div>
+                            <div class="h-1 rounded-full bg-gray-800 overflow-hidden">
+                                <div class="h-full rounded-full bg-green-500/30 transition-all duration-700" :style="`width: ${Math.min(100, (timeSaving / (revenueIncrease + printSaving + timeSaving)) * 100)}%`"></div>
+                            </div>
+                        </div>
+
+                        {# E-Menum cost #}
+                        <div class="p-3.5 rounded-xl bg-red-950/15 border border-red-900/20">
+                            <div class="flex items-center justify-between">
+                                <span class="flex items-center gap-1.5 text-xs text-gray-400">
+                                    <i class="ph ph-minus-circle text-red-400"></i>
+                                    {% trans "E-Menum yıllık maliyet" %}
+                                </span>
+                                <span class="text-sm font-bold text-red-400" x-text="'-' + formatCurrency(emenumCost)"></span>
+                            </div>
+                        </div>
+
+                        {# Divider #}
+                        <div class="border-t border-dashed border-gray-700/50 my-2"></div>
+
+                        {# Net gain highlight #}
+                        <div class="p-4 rounded-xl bg-gradient-to-br from-primary-950/40 to-primary-900/20 border border-primary-700/30">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-semibold text-primary-300 flex items-center gap-1.5">
+                                    <i class="ph ph-chart-line-up text-lg"></i>
+                                    {% trans "Yıllık Net Kazanç" %}
+                                </span>
+                                <span class="text-2xl font-bold text-primary-400" x-text="formatCurrency(netGain)"></span>
+                            </div>
+                        </div>
+
+                        {# ROI percentage #}
+                        <div class="flex items-center justify-between px-4 py-3">
+                            <span class="text-sm text-gray-400 font-medium">{% trans "ROI" %}</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-2xl font-bold text-amber-400" x-text="roiPercent + '%'"></span>
+                                <i class="ph ph-rocket text-amber-400"></i>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex justify-between items-center py-3 border-b border-gray-800">
-                        <span class="text-sm text-gray-400">{% trans "Baski maliyeti tasarrufu" %}</span>
-                        <span class="text-lg font-bold text-green-400" x-text="'+' + formatCurrency(printSaving)"></span>
-                    </div>
-                    <div class="flex justify-between items-center py-3 border-b border-gray-800">
-                        <span class="text-sm text-gray-400">{% trans "Zaman tasarrufu (garson verimi)" %}</span>
-                        <span class="text-lg font-bold text-green-400" x-text="'+' + formatCurrency(timeSaving)"></span>
-                    </div>
-                    <div class="flex justify-between items-center py-3 border-b border-gray-800">
-                        <span class="text-sm text-gray-400">{% trans "E-Menum yillik maliyet" %}</span>
-                        <span class="text-lg font-bold text-red-400" x-text="'-' + formatCurrency(emenumCost)"></span>
-                    </div>
-                    <div class="flex justify-between items-center py-4 bg-primary-900/20 rounded-xl px-4 mt-4">
-                        <span class="text-sm font-semibold text-primary-300">{% trans "Yillik Net Kazanc" %}</span>
-                        <span class="text-2xl font-bold text-primary-400" x-text="formatCurrency(netGain)"></span>
-                    </div>
-                    <div class="flex justify-between items-center py-3">
-                        <span class="text-sm text-gray-400">{% trans "ROI" %}</span>
-                        <span class="text-xl font-bold text-amber-400" x-text="roiPercent + '%'"></span>
+
+                    <div class="mt-5 pt-4 border-t border-gray-800/60">
+                        <a href="{% url 'website:pricing' %}"
+                           class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-bold text-white bg-primary-600 hover:bg-primary-500 rounded-xl shadow-lg shadow-primary-900/30 transition-all">
+                            <i class="ph ph-rocket-launch"></i>
+                            {% trans "14 Gün Ücretsiz Dene" %}
+                        </a>
+                        <p class="text-[10px] text-gray-600 mt-2 text-center">{% trans "Kredi kartı gerekmez. İstediğin zaman iptal." %}</p>
                     </div>
                 </div>
 
-                <div class="mt-6 pt-4 border-t border-gray-800">
-                    <a href="{% url 'website:pricing' %}"
-                       class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors">
-                        <i class="ph ph-rocket-launch"></i>
-                        {% trans "14 Gun Ucretsiz Dene" %}
-                    </a>
+                {# Info note #}
+                <div class="flex items-start gap-2.5 px-4 py-3 rounded-xl bg-gray-900/40 border border-gray-800/40">
+                    <i class="ph ph-info text-gray-600 text-sm mt-0.5 shrink-0"></i>
+                    <p class="text-[10px] text-gray-600 leading-relaxed">
+                        {% trans "Hesaplama varsayımları: Dijital menü ile %8 gelir artışı (sektör ortalaması), garson başına aylık 200₺ verimlilik kazancı, masa başı 4 sayfa menü maliyeti." %}
+                    </p>
                 </div>
             </div>
         </div>
@@ -108,7 +189,7 @@ document.addEventListener('alpine:init', () => {
             return this.waiters * 200 * 12;
         },
         get emenumCost() {
-            return 0;
+            return 2000 * 12;
         },
         get netGain() {
             return this.revenueIncrease + this.printSaving + this.timeSaving - this.emenumCost;

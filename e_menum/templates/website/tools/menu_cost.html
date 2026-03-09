@@ -1,78 +1,164 @@
 {% extends "layouts/marketing.html" %}
 {% load i18n static %}
 
-{% block title %}{% trans "Menu Maliyet Hesaplayici" %} — E-Menum{% endblock %}
+{% block title %}{% trans "Menü Maliyet Hesaplayıcı" %} — E-Menum{% endblock %}
 
 {% block content %}
 {% include "website/partials/_hero_enterprise_simple.html" with badge_text="Ücretsiz Araç" title="Menü Maliyet" title_highlight="Hesaplayıcı" subtitle="Basılı menü maliyetinizi hesaplayın ve dijital menüye geçişte ne kadar tasarruf edebileceğinizi görün." hero_id="hero-menu-cost" %}
 
 <section class="py-12 lg:py-20" x-data="menuCostCalculator()">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-            {# Input Card #}
-            <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6 lg:p-8">
-                <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                    <i class="ph ph-note-pencil text-primary-400"></i>
-                    {% trans "Mevcut Menu Bilgileri" %}
-                </h2>
+            {# ── LEFT: Input Card ── #}
+            <div class="bg-gray-900/80 backdrop-blur-sm rounded-2xl border border-gray-800/80 p-6 lg:p-8">
+                <div class="flex items-center gap-2.5 mb-6">
+                    <div class="w-7 h-7 rounded-lg bg-primary-500/15 border border-primary-500/25 flex items-center justify-center">
+                        <span class="text-xs font-bold text-primary-400">1</span>
+                    </div>
+                    <h2 class="text-sm font-bold text-white">{% trans "Mevcut Menü Bilgileri" %}</h2>
+                </div>
 
                 <div class="space-y-5">
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Menu Sayfa Sayisi" %}</label>
+                        <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-400 mb-1.5">
+                            <i class="ph ph-file-text text-primary-400"></i>
+                            {% trans "Menü Sayfa Sayısı" %}
+                        </label>
                         <input type="number" x-model.number="pages" min="1" max="100"
-                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                            class="w-full px-4 py-2.5 rounded-xl bg-gray-800/80 border border-gray-700/60 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/40 outline-none text-sm transition-all">
+                        <p class="text-[10px] text-gray-600 mt-1">{% trans "Tek bir menüdeki toplam sayfa sayısı" %}</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Masa Sayisi" %}</label>
+                        <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-400 mb-1.5">
+                            <i class="ph ph-armchair text-primary-400"></i>
+                            {% trans "Masa Sayısı" %}
+                        </label>
                         <input type="number" x-model.number="tables" min="1" max="500"
-                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                            class="w-full px-4 py-2.5 rounded-xl bg-gray-800/80 border border-gray-700/60 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/40 outline-none text-sm transition-all">
+                        <p class="text-[10px] text-gray-600 mt-1">{% trans "Her masaya bir menü koyulduğu varsayılır" %}</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Yillik Yeniden Basim Sayisi" %}</label>
+                        <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-400 mb-1.5">
+                            <i class="ph ph-calendar-dots text-primary-400"></i>
+                            {% trans "Yıllık Yeniden Basım Sayısı" %}
+                        </label>
                         <input type="number" x-model.number="reprintsPerYear" min="1" max="24"
-                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                            class="w-full px-4 py-2.5 rounded-xl bg-gray-800/80 border border-gray-700/60 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/40 outline-none text-sm transition-all">
+                        <p class="text-[10px] text-gray-600 mt-1">{% trans "Fiyat değişikliği, yıpranma vb. nedenlerle yılda kaç kez bastırıyorsunuz" %}</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-1.5">{% trans "Sayfa Basina Baski Maliyeti (TL)" %}</label>
+                        <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-400 mb-1.5">
+                            <i class="ph ph-coins text-primary-400"></i>
+                            {% trans "Sayfa Başına Baskı Maliyeti (₺)" %}
+                        </label>
                         <input type="number" x-model.number="costPerPage" min="0.1" max="50" step="0.1"
-                            class="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                            class="w-full px-4 py-2.5 rounded-xl bg-gray-800/80 border border-gray-700/60 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/40 outline-none text-sm transition-all">
+                        <p class="text-[10px] text-gray-600 mt-1">{% trans "Laminasyon ve ciltleme dahil sayfa başı ortalama maliyet" %}</p>
                     </div>
                 </div>
             </div>
 
-            {# Results Card #}
-            <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6 lg:p-8">
-                <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                    <i class="ph ph-chart-bar text-primary-400"></i>
-                    {% trans "Maliyet Analizi" %}
-                </h2>
+            {# ── RIGHT: Results Card ── #}
+            <div class="lg:sticky lg:top-24 space-y-5">
+                <div class="bg-gray-900/80 backdrop-blur-sm rounded-2xl border border-gray-800/80 p-6 lg:p-8">
+                    <div class="flex items-center gap-2.5 mb-6">
+                        <div class="w-7 h-7 rounded-lg bg-amber-500/15 border border-amber-500/25 flex items-center justify-center">
+                            <i class="ph ph-chart-bar text-amber-400 text-xs"></i>
+                        </div>
+                        <h2 class="text-sm font-bold text-white">{% trans "Maliyet Analizi" %}</h2>
+                    </div>
 
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center py-3 border-b border-gray-800">
-                        <span class="text-sm text-gray-400">{% trans "Tek Basim Maliyeti" %}</span>
-                        <span class="text-lg font-bold text-white" x-text="formatCurrency(singlePrintCost)"></span>
-                    </div>
-                    <div class="flex justify-between items-center py-3 border-b border-gray-800">
-                        <span class="text-sm text-gray-400">{% trans "Yillik Basim Maliyeti" %}</span>
-                        <span class="text-lg font-bold text-red-400" x-text="formatCurrency(yearlyPrintCost)"></span>
-                    </div>
-                    <div class="flex justify-between items-center py-3 border-b border-gray-800">
-                        <span class="text-sm text-gray-400">{% trans "E-Menum Yillik Maliyet" %}</span>
-                        <span class="text-lg font-bold text-primary-400" x-text="formatCurrency(emenumYearlyCost)"></span>
-                    </div>
-                    <div class="flex justify-between items-center py-4 bg-primary-900/20 rounded-xl px-4 mt-4">
-                        <span class="text-sm font-semibold text-primary-300">{% trans "Yillik Tasarruf" %}</span>
-                        <span class="text-2xl font-bold text-primary-400" x-text="formatCurrency(yearlySaving)"></span>
-                    </div>
-                </div>
+                    <div class="space-y-3">
+                        {# Single print cost #}
+                        <div class="p-3.5 rounded-xl bg-gray-800/40 border border-gray-700/30">
+                            <div class="flex items-center justify-between">
+                                <span class="flex items-center gap-1.5 text-xs text-gray-400">
+                                    <i class="ph ph-printer text-gray-500"></i>
+                                    {% trans "Tek Basım Maliyeti" %}
+                                </span>
+                                <span class="text-sm font-bold text-white" x-text="formatCurrency(singlePrintCost)"></span>
+                            </div>
+                            <p class="text-[10px] text-gray-600 mt-1" x-text="pages + ' {% trans 'sayfa' %} × ' + tables + ' {% trans 'masa' %} × ' + formatCurrency(costPerPage)"></p>
+                        </div>
 
-                <div class="mt-6 pt-4 border-t border-gray-800">
-                    <a href="{% url 'website:pricing' %}"
-                       class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors">
-                        <i class="ph ph-rocket-launch"></i>
-                        {% trans "14 Gun Ucretsiz Dene" %}
-                    </a>
+                        {# Yearly print cost — highlighted as problem #}
+                        <div class="p-3.5 rounded-xl bg-red-950/25 border border-red-900/30">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="flex items-center gap-1.5 text-xs text-gray-400">
+                                    <i class="ph ph-warning-circle text-red-400"></i>
+                                    {% trans "Yıllık Baskı Maliyeti" %}
+                                </span>
+                                <span class="text-lg font-bold text-red-400" x-text="formatCurrency(yearlyPrintCost)"></span>
+                            </div>
+                            <div class="h-1.5 rounded-full bg-gray-800 overflow-hidden">
+                                <div class="h-full rounded-full bg-red-500/60 transition-all duration-700" style="width:100%"></div>
+                            </div>
+                            <p class="text-[10px] text-gray-600 mt-1.5" x-text="'{% trans 'Yılda' %} ' + reprintsPerYear + ' {% trans 'basım' %} × ' + formatCurrency(singlePrintCost)"></p>
+                        </div>
+
+                        {# E-Menum cost #}
+                        <div class="p-3.5 rounded-xl bg-primary-950/20 border border-primary-900/25">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="flex items-center gap-1.5 text-xs text-gray-400">
+                                    <i class="ph ph-qr-code text-primary-400"></i>
+                                    {% trans "E-Menum Yıllık Maliyet" %}
+                                </span>
+                                <span class="text-lg font-bold text-primary-400" x-text="formatCurrency(emenumYearlyCost)"></span>
+                            </div>
+                            <div class="h-1.5 rounded-full bg-gray-800 overflow-hidden">
+                                <div class="h-full rounded-full bg-primary-500/40 transition-all duration-700"
+                                     :style="`width: ${yearlyPrintCost > 0 ? Math.min(100, (emenumYearlyCost / yearlyPrintCost) * 100) : 0}%`"></div>
+                            </div>
+                            <p class="text-[10px] text-gray-600 mt-1.5">{% trans "Starter plan: aylık 2.000₺ × 12 ay" %}</p>
+                        </div>
+
+                        {# Divider #}
+                        <div class="border-t border-dashed border-gray-700/50 my-2"></div>
+
+                        {# Savings highlight #}
+                        <div class="p-4 rounded-xl bg-gradient-to-br from-green-950/40 to-green-900/20 border border-green-700/30">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-semibold text-green-300 flex items-center gap-1.5">
+                                    <i class="ph ph-piggy-bank text-lg"></i>
+                                    {% trans "Yıllık Tasarruf" %}
+                                </span>
+                                <span class="text-2xl font-bold text-green-400" x-text="formatCurrency(yearlySaving)"></span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] text-green-500/70 font-medium" x-text="savingsPercent + '{% trans 'daha ucuz' %}'"></span>
+                            </div>
+                        </div>
+
+                        {# Visual comparison bar #}
+                        <div class="p-3 rounded-xl bg-gray-800/30">
+                            <p class="text-[10px] text-gray-500 mb-2 font-semibold uppercase tracking-wider">{% trans "Maliyet Karşılaştırması" %}</p>
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] text-gray-500 w-16 shrink-0">{% trans "Basılı" %}</span>
+                                    <div class="flex-1 h-2.5 rounded-full bg-gray-800 overflow-hidden">
+                                        <div class="h-full rounded-full bg-red-500/70 transition-all duration-700" style="width:100%"></div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] text-gray-500 w-16 shrink-0">{% trans "Dijital" %}</span>
+                                    <div class="flex-1 h-2.5 rounded-full bg-gray-800 overflow-hidden">
+                                        <div class="h-full rounded-full bg-primary-500/70 transition-all duration-700"
+                                             :style="`width: ${yearlyPrintCost > 0 ? Math.min(100, (emenumYearlyCost / yearlyPrintCost) * 100) : 0}%`"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 pt-4 border-t border-gray-800/60">
+                        <a href="{% url 'website:pricing' %}"
+                           class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-bold text-white bg-primary-600 hover:bg-primary-500 rounded-xl shadow-lg shadow-primary-900/30 transition-all">
+                            <i class="ph ph-rocket-launch"></i>
+                            {% trans "14 Gün Ücretsiz Dene" %}
+                        </a>
+                        <p class="text-[10px] text-gray-600 mt-2 text-center">{% trans "Kredi kartı gerekmez. İstediğin zaman iptal." %}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -89,7 +175,7 @@ document.addEventListener('alpine:init', () => {
         tables: 20,
         reprintsPerYear: 4,
         costPerPage: 3.5,
-        emenumMonthly: 0,
+        emenumMonthly: 2000,
 
         get singlePrintCost() {
             return this.pages * this.tables * this.costPerPage;
@@ -102,6 +188,10 @@ document.addEventListener('alpine:init', () => {
         },
         get yearlySaving() {
             return Math.max(0, this.yearlyPrintCost - this.emenumYearlyCost);
+        },
+        get savingsPercent() {
+            if (this.yearlyPrintCost === 0) return '%0 ';
+            return '%' + Math.round((this.yearlySaving / this.yearlyPrintCost) * 100) + ' ';
         },
         formatCurrency(val) {
             return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', minimumFractionDigits: 0 }).format(val);

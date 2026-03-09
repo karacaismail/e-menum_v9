@@ -65,19 +65,20 @@ class HomeView(CmsContextMixin, TemplateView):
             deleted_at__isnull=True,
         ).order_by("sort_order")
 
-        # Pricing summary — top 3 plans from subscriptions
+        # Pricing plans — all public plans for pricing section
         try:
             from apps.subscriptions.models import Plan
 
-            context["summary_plans"] = (
+            context["plans"] = (
                 Plan.objects.filter(
                     is_active=True,
                     is_public=True,
+                    deleted_at__isnull=True,
                 )
                 .prefetch_related("display_features")
-                .order_by("sort_order")[:3]
+                .order_by("sort_order")
             )
         except Exception:
-            context["summary_plans"] = []
+            context["plans"] = []
 
         return context
