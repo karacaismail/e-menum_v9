@@ -90,6 +90,12 @@ class Command(BaseCommand):
         self._seed_help_articles()
         self._seed_storefront_nav_links()
 
+        # Invalidate marketing context cache so footer/nav changes appear immediately
+        from apps.website.context_processors import invalidate_marketing_cache
+
+        invalidate_marketing_cache()
+        self.stdout.write("  ✓ Marketing cache invalidated")
+
         self.stdout.write(self.style.SUCCESS("\nAll CMS content seeded successfully!"))
 
     # =========================================================================
@@ -2297,7 +2303,7 @@ class Command(BaseCommand):
                 "is_active": True,
             },
             # ─────────────────────────────────────────────────────
-            # FOOTER — Kaynaklar (3 links, no duplicate URLs)
+            # FOOTER — Kaynaklar (3 links)
             # ─────────────────────────────────────────────────────
             {
                 "location": "footer_resources",
@@ -2367,7 +2373,7 @@ class Command(BaseCommand):
                 "is_active": True,
             },
             # ─────────────────────────────────────────────────────
-            # FOOTER — Destek (1 link, no duplicate)
+            # FOOTER — Destek (1 link)
             # ─────────────────────────────────────────────────────
             {
                 "location": "footer_support",
@@ -2445,34 +2451,20 @@ class Command(BaseCommand):
                 "is_active": True,
             },
         ]
-        for link in links:
-            NavigationLink.objects.update_or_create(
-                location=link["location"], sort_order=link["sort_order"], defaults=link
-            )
 
-        # Clean up orphaned links from previous seed runs
-        # (e.g. removed Sistem Durumu, duplicate blog, investors column)
-        all_footer_locations = {lnk["location"] for lnk in links}
-        orphaned = NavigationLink.objects.filter(
+        # Nuclear approach: wipe ALL footer links and recreate from scratch.
+        # This avoids MultipleObjectsReturned from duplicate sort_orders
+        # and ensures stale data from older seeds / manual edits is removed.
+        deleted_count, _ = NavigationLink.objects.filter(
             location__startswith="footer_"
-        ).exclude(location__in=all_footer_locations)
-        orphaned_count = orphaned.count()
-        orphaned.delete()
+        ).delete()
 
-        # Also delete stale sort_order entries within active locations
-        for loc in all_footer_locations:
-            max_order = max(
-                lnk["sort_order"] for lnk in links if lnk["location"] == loc
-            )
-            stale = NavigationLink.objects.filter(
-                location=loc, sort_order__gt=max_order
-            )
-            orphaned_count += stale.count()
-            stale.delete()
+        for link in links:
+            NavigationLink.objects.create(**link)
 
         self.stdout.write(f"  ✓ NavigationLink ({len(links)})")
-        if orphaned_count:
-            self.stdout.write(f"    ↳ Cleaned {orphaned_count} orphaned link(s)")
+        if deleted_count:
+            self.stdout.write(f"    ↳ Replaced {deleted_count} old footer link(s)")
 
     # =========================================================================
     # 16. SECTORS (8)
