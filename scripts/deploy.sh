@@ -231,10 +231,20 @@ run_docker_deploy() {
   fi
   docker compose -f docker-compose.prod.yml exec -T web python manage.py collectstatic --noinput 2>/dev/null || true
 
-  # Seed data: plans, roles, allergens --force (kod degisikliklerini DB'ye yansitir)
+  # Seed data: core seeds with --force (kod degisikliklerini DB'ye yansitir)
   log_info "Seed data (roles, plans, allergens --force)..."
   for cmd in seed_roles seed_plans seed_allergens; do
     if docker compose -f docker-compose.prod.yml exec -T web python manage.py "$cmd" --force; then
+      log_ok "  $cmd tamamlandi."
+    else
+      log_warn "  $cmd atlandi veya hata (devam ediliyor)."
+    fi
+  done
+
+  # CMS & SEO seeds: footer links, navigation, sitemap data (update_or_create, no --force needed)
+  log_info "Seed data (cms_content, seo_data)..."
+  for cmd in seed_cms_content seed_seo_data; do
+    if docker compose -f docker-compose.prod.yml exec -T web python manage.py "$cmd"; then
       log_ok "  $cmd tamamlandi."
     else
       log_warn "  $cmd atlandi veya hata (devam ediliyor)."
