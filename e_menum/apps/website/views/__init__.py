@@ -7,7 +7,17 @@ from .pricing import PricingView
 from .about import AboutView
 from .blog import BlogView, BlogDetailView
 from .contact import ContactView, DemoRequestView
-from .legal import LegalPageView, PrivacyView, TermsView, KvkkView, CookiePolicyView
+from .legal import (
+    LegalPageView,
+    PrivacyView,
+    TermsView,
+    KvkkView,
+    CookiePolicyView,
+    SlaView,
+    DpaView,
+    SecurityPolicyView,
+    DisclaimerView,
+)
 from .newsletter import NewsletterView
 from .solutions import SolutionsIndexView, SolutionDetailView
 from .customers import CustomersView, CaseStudyDetailView, ROICalculatorView
@@ -44,6 +54,10 @@ __all__ = [
     "TermsView",
     "KvkkView",
     "CookiePolicyView",
+    "SlaView",
+    "DpaView",
+    "SecurityPolicyView",
+    "DisclaimerView",
     "NewsletterView",
     "SolutionsIndexView",
     "SolutionDetailView",

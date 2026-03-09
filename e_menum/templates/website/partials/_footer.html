@@ -70,49 +70,56 @@
         </div>
     </div>
 
-    {# ═══════ Layer 2: 8-Column Grid ═══════ #}
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-10">
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-8 gap-8 lg:gap-5">
-
-            {# Column 1 — Brand #}
-            <div class="col-span-2 md:col-span-3 lg:col-span-2">
-                <a href="{% url 'website:home' %}" class="flex items-center gap-2 mb-4">
-                    <img src="{{ marketing.logo_dark_url|default:marketing.logo_url }}" alt="{{ marketing.company_name|default:'E-Menum' }}"
-                         class="h-8 w-auto brightness-0 invert"
-                         onerror="this.src='{% static 'images/logo.svg' %}';this.onerror=null"
-                         {% if not marketing.logo_dark_url and not marketing.logo_url %}style="display:none"{% endif %}>
-                    {% if not marketing.logo_dark_url and not marketing.logo_url %}
-                    <img src="{% static 'images/logo.svg' %}" alt="{{ marketing.company_name|default:'E-Menum' }}"
-                         class="h-8 w-auto brightness-0 invert">
-                    {% endif %}
-                </a>
-                <p class="text-sm text-gray-300 mb-5 leading-relaxed">
-                    {{ marketing.description }}
-                </p>
+    {# ═══════ Layer 2: Brand Row (dedicated) ═══════ #}
+    <div class="border-b border-gray-800/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <div class="flex items-center gap-4">
+                    <a href="{% url 'website:home' %}" class="shrink-0">
+                        <img src="{{ marketing.logo_dark_url|default:marketing.logo_url }}" alt="{{ marketing.company_name|default:'E-Menum' }}"
+                             class="h-9 w-auto brightness-0 invert"
+                             onerror="this.src='{% static 'images/logo.svg' %}';this.onerror=null"
+                             {% if not marketing.logo_dark_url and not marketing.logo_url %}style="display:none"{% endif %}>
+                        {% if not marketing.logo_dark_url and not marketing.logo_url %}
+                        <img src="{% static 'images/logo.svg' %}" alt="{{ marketing.company_name|default:'E-Menum' }}"
+                             class="h-9 w-auto brightness-0 invert">
+                        {% endif %}
+                    </a>
+                    <p class="text-sm text-gray-400 max-w-md leading-relaxed hidden lg:block">
+                        {{ marketing.tagline }}
+                    </p>
+                </div>
                 {# Social Links #}
-                <div class="flex gap-3">
-                    <a href="{{ marketing.social.instagram }}" target="_blank" rel="noopener" aria-label="Instagram" class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
+                <div class="flex items-center gap-3">
+                    <span class="text-xs text-gray-500 mr-1 hidden sm:inline">{% trans "Bizi Takip Edin" %}</span>
+                    <a href="{{ marketing.social.instagram }}" target="_blank" rel="noopener" aria-label="Instagram" class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 transition-colors">
                         <i class="ph ph-instagram-logo text-lg"></i>
                     </a>
-                    <a href="{{ marketing.social.twitter }}" target="_blank" rel="noopener" aria-label="Twitter" class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
+                    <a href="{{ marketing.social.twitter }}" target="_blank" rel="noopener" aria-label="Twitter" class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 transition-colors">
                         <i class="ph ph-twitter-logo text-lg"></i>
                     </a>
-                    <a href="{{ marketing.social.linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn" class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
+                    <a href="{{ marketing.social.linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn" class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 transition-colors">
                         <i class="ph ph-linkedin-logo text-lg"></i>
                     </a>
-                    <a href="{{ marketing.social.youtube }}" target="_blank" rel="noopener" aria-label="YouTube" class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
+                    <a href="{{ marketing.social.youtube }}" target="_blank" rel="noopener" aria-label="YouTube" class="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 transition-colors">
                         <i class="ph ph-youtube-logo text-lg"></i>
                     </a>
                 </div>
             </div>
+        </div>
+    </div>
 
-            {# Column 2 — Ürün #}
+    {# ═══════ Layer 3: Mega Footer Links Grid ═══════ #}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-8">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-6">
+
+            {# Column 1 — Ürün #}
             <div>
                 <h3 class="text-xs font-semibold text-white uppercase tracking-wider mb-4">{% trans "Ürün" %}</h3>
                 <ul class="space-y-2.5">
                     {% for link in marketing.footer_product_links %}
                     <li>
-                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-300 hover:text-white transition-colors">
+                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-400 hover:text-white transition-colors">
                             {{ link.label }}
                         </a>
                     </li>
@@ -120,13 +127,13 @@
                 </ul>
             </div>
 
-            {# Column 3 — Çözümler #}
+            {# Column 2 — Çözümler #}
             <div>
                 <h3 class="text-xs font-semibold text-white uppercase tracking-wider mb-4">{% trans "Çözümler" %}</h3>
                 <ul class="space-y-2.5">
                     {% for link in marketing.footer_solutions_links %}
                     <li>
-                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-300 hover:text-white transition-colors">
+                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-400 hover:text-white transition-colors">
                             {{ link.label }}
                         </a>
                     </li>
@@ -134,13 +141,13 @@
                 </ul>
             </div>
 
-            {# Column 4 — Kaynaklar #}
+            {# Column 3 — Kaynaklar #}
             <div>
                 <h3 class="text-xs font-semibold text-white uppercase tracking-wider mb-4">{% trans "Kaynaklar" %}</h3>
                 <ul class="space-y-2.5">
                     {% for link in marketing.footer_resources_links %}
                     <li>
-                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-300 hover:text-white transition-colors">
+                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-400 hover:text-white transition-colors">
                             {{ link.label }}
                         </a>
                     </li>
@@ -148,13 +155,13 @@
                 </ul>
             </div>
 
-            {# Column 5 — Şirket #}
+            {# Column 4 — Şirket #}
             <div>
                 <h3 class="text-xs font-semibold text-white uppercase tracking-wider mb-4">{% trans "Şirket" %}</h3>
                 <ul class="space-y-2.5">
                     {% for link in marketing.footer_company_links %}
                     <li>
-                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-300 hover:text-white transition-colors">
+                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-400 hover:text-white transition-colors">
                             {{ link.label }}
                         </a>
                     </li>
@@ -162,13 +169,13 @@
                 </ul>
             </div>
 
-            {# Column 6 — Destek #}
+            {# Column 5 — Destek #}
             <div>
                 <h3 class="text-xs font-semibold text-white uppercase tracking-wider mb-4">{% trans "Destek" %}</h3>
                 <ul class="space-y-2.5">
                     {% for link in marketing.footer_support_links %}
                     <li>
-                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-300 hover:text-white transition-colors">
+                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-400 hover:text-white transition-colors">
                             {{ link.label }}
                         </a>
                     </li>
@@ -176,19 +183,19 @@
                 </ul>
             </div>
 
-            {# Column 7 — Yasal #}
+            {# Column 6 — Yasal #}
             <div>
                 <h3 class="text-xs font-semibold text-white uppercase tracking-wider mb-4">{% trans "Yasal" %}</h3>
                 <ul class="space-y-2.5">
                     {% for link in marketing.footer_legal_links %}
                     <li>
-                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-300 hover:text-white transition-colors">
+                        <a href="{{ link.url|resolve_nav_url }}" class="text-sm text-gray-400 hover:text-white transition-colors">
                             {{ link.label }}
                         </a>
                     </li>
                     {% endfor %}
                     <li>
-                        <a href="{% url 'website:sitemap_html' %}" class="text-sm text-gray-300 hover:text-white transition-colors">
+                        <a href="{% url 'website:sitemap_html' %}" class="text-sm text-gray-400 hover:text-white transition-colors">
                             {% trans "Site Haritası" %}
                         </a>
                     </li>
@@ -197,50 +204,50 @@
         </div>
     </div>
 
-    {# ═══════ Layer 3: Trust Badge Band ═══════ #}
+    {# ═══════ Layer 4: Trust Badge Band ═══════ #}
     <div class="border-t border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
             <div class="flex flex-wrap items-center justify-center gap-6 lg:gap-10">
-                <div class="flex items-center gap-2 text-sm text-gray-300">
-                    <i class="ph ph-shield-check text-lg text-green-500"></i>
+                <div class="flex items-center gap-2 text-xs text-gray-400">
+                    <i class="ph ph-shield-check text-base text-green-500"></i>
                     <span>{% trans "256-bit SSL" %}</span>
                 </div>
-                <div class="flex items-center gap-2 text-sm text-gray-300">
-                    <i class="ph ph-lock text-lg text-blue-500"></i>
+                <div class="flex items-center gap-2 text-xs text-gray-400">
+                    <i class="ph ph-lock text-base text-blue-500"></i>
                     <span>{% trans "KVKK Uyumlu" %}</span>
                 </div>
-                <div class="flex items-center gap-2 text-sm text-gray-300">
-                    <i class="ph ph-chart-line-up text-lg text-primary-500"></i>
+                <div class="flex items-center gap-2 text-xs text-gray-400">
+                    <i class="ph ph-chart-line-up text-base text-primary-500"></i>
                     <span>{% trans "%99.9 Uptime" %}</span>
                 </div>
-                <div class="flex items-center gap-2 text-sm text-gray-300">
-                    <i class="ph ph-globe text-lg text-purple-500"></i>
+                <div class="flex items-center gap-2 text-xs text-gray-400">
+                    <i class="ph ph-globe text-base text-purple-500"></i>
                     <span>{% trans "GDPR Uyumlu" %}</span>
                 </div>
-                <div class="flex items-center gap-2 text-sm text-gray-300">
-                    <i class="ph ph-headset text-lg text-amber-500"></i>
+                <div class="flex items-center gap-2 text-xs text-gray-400">
+                    <i class="ph ph-headset text-base text-amber-500"></i>
                     <span>{% trans "7/24 Destek" %}</span>
                 </div>
             </div>
         </div>
     </div>
 
-    {# ═══════ Layer 4: Copyright + Legal ═══════ #}
+    {# ═══════ Layer 5: Copyright + Legal ═══════ #}
     <div class="border-t border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-xs text-gray-300">
+                <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-xs text-gray-500">
                     <span>&copy; {{ marketing.year }} E-Menum. {% trans "Tüm hakları saklıdır." %}</span>
                     {% if deploy_info %}
-                    <span class="hidden sm:inline text-gray-500">|</span>
-                    <span class="text-green-400/90" title="Deploy: {{ deploy_info.at }}{% if deploy_info.commit %} ({{ deploy_info.commit }}){% endif %}">build ✓ {{ deploy_info.at|slice:":16" }}{% if deploy_info.commit %} <span class="text-gray-400">{{ deploy_info.commit }}</span>{% endif %}{% if deploy_info.build %} · #{{ deploy_info.build }}{% endif %}</span>
+                    <span class="hidden sm:inline text-gray-600">|</span>
+                    <span class="text-green-400/90" title="Deploy: {{ deploy_info.at }}{% if deploy_info.commit %} ({{ deploy_info.commit }}){% endif %}">build ✓ {{ deploy_info.at|slice:":16" }}{% if deploy_info.commit %} <span class="text-gray-600">{{ deploy_info.commit }}</span>{% endif %}{% if deploy_info.build %} · #{{ deploy_info.build }}{% endif %}</span>
                     {% endif %}
                     {% if marketing.vat_no %}
-                    <span class="hidden sm:inline text-gray-500">|</span>
+                    <span class="hidden sm:inline text-gray-600">|</span>
                     <span>{% trans "VKN" %}: {{ marketing.vat_no }}</span>
                     {% endif %}
                     {% if marketing.mersis_no %}
-                    <span class="hidden sm:inline text-gray-500">|</span>
+                    <span class="hidden sm:inline text-gray-600">|</span>
                     <span>{% trans "MERSİS" %}: {{ marketing.mersis_no }}</span>
                     {% endif %}
                 </div>
@@ -255,12 +262,12 @@
                             <input type="hidden" name="language" value="{{ lang_code }}">
                             <input type="hidden" name="next" value="{{ request.get_full_path }}">
                             <button type="submit"
-                                class="px-2 py-1 rounded {% if lang_code == LANGUAGE_CODE %}text-white font-semibold bg-gray-800{% else %}text-gray-300 hover:text-white{% endif %} transition-colors"
+                                class="px-2 py-1 rounded {% if lang_code == LANGUAGE_CODE %}text-white font-semibold bg-gray-800{% else %}text-gray-500 hover:text-white{% endif %} transition-colors"
                             >
                                 {{ lang_code|upper }}
                             </button>
                         </form>
-                        {% if not forloop.last %}<span class="text-gray-500">|</span>{% endif %}
+                        {% if not forloop.last %}<span class="text-gray-600">|</span>{% endif %}
                         {% endfor %}
                     </div>
                 </div>

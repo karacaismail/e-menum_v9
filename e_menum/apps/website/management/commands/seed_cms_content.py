@@ -2235,7 +2235,7 @@ class Command(BaseCommand):
     def _seed_navigation_links(self):
         links = [
             # ─────────────────────────────────────────────────────
-            # FOOTER — Urun (3 links — no duplicates)
+            # FOOTER — Urun (4 links)
             # ─────────────────────────────────────────────────────
             {
                 "location": "footer_product",
@@ -2255,38 +2255,62 @@ class Command(BaseCommand):
             },
             {
                 "location": "footer_product",
-                "label_tr": "Demo",
+                "label_tr": "Demo Talep Et",
                 "label_en": "Request Demo",
                 "url": "website:demo",
                 "sort_order": 3,
                 "is_active": True,
             },
+            {
+                "location": "footer_product",
+                "label_tr": "Neler Yeni",
+                "label_en": "What's New",
+                "url": "website:blog",
+                "sort_order": 4,
+                "is_active": True,
+            },
             # ─────────────────────────────────────────────────────
-            # FOOTER — Cozumler (1 link — all sub-sectors on same page)
+            # FOOTER — Cozumler (3 links)
             # ─────────────────────────────────────────────────────
             {
                 "location": "footer_solutions",
-                "label_tr": "Cozumler",
-                "label_en": "Solutions",
+                "label_tr": "Tum Cozumler",
+                "label_en": "All Solutions",
                 "url": "website:solutions",
                 "sort_order": 1,
                 "is_active": True,
             },
+            {
+                "location": "footer_solutions",
+                "label_tr": "Musteriler",
+                "label_en": "Customers",
+                "url": "website:customers",
+                "sort_order": 2,
+                "is_active": True,
+            },
+            {
+                "location": "footer_solutions",
+                "label_tr": "ROI Hesaplayici",
+                "label_en": "ROI Calculator",
+                "url": "website:roi_calculator",
+                "sort_order": 3,
+                "is_active": True,
+            },
             # ─────────────────────────────────────────────────────
-            # FOOTER — Kaynaklar (3 links — blog only here, no duplicate)
+            # FOOTER — Kaynaklar (4 links)
             # ─────────────────────────────────────────────────────
             {
                 "location": "footer_resources",
-                "label_tr": "Blog",
-                "label_en": "Blog",
-                "url": "website:blog",
+                "label_tr": "Kaynaklar Merkezi",
+                "label_en": "Resource Center",
+                "url": "website:resources",
                 "sort_order": 1,
                 "is_active": True,
             },
             {
                 "location": "footer_resources",
-                "label_tr": "Kaynaklar",
-                "label_en": "Resources",
+                "label_tr": "Ucretsiz Araclar",
+                "label_en": "Free Tools",
                 "url": "website:resources",
                 "sort_order": 2,
                 "is_active": True,
@@ -2299,8 +2323,16 @@ class Command(BaseCommand):
                 "sort_order": 3,
                 "is_active": True,
             },
+            {
+                "location": "footer_resources",
+                "label_tr": "Partnerler",
+                "label_en": "Partners",
+                "url": "website:partners",
+                "sort_order": 4,
+                "is_active": True,
+            },
             # ─────────────────────────────────────────────────────
-            # FOOTER — Sirket (5 links — iletisim only here)
+            # FOOTER — Sirket (5 links)
             # ─────────────────────────────────────────────────────
             {
                 "location": "footer_company",
@@ -2328,7 +2360,7 @@ class Command(BaseCommand):
             },
             {
                 "location": "footer_company",
-                "label_tr": "Yatirimci",
+                "label_tr": "Yatirimci Iliskileri",
                 "label_en": "Investor Relations",
                 "url": "website:investor",
                 "sort_order": 4,
@@ -2343,7 +2375,7 @@ class Command(BaseCommand):
                 "is_active": True,
             },
             # ─────────────────────────────────────────────────────
-            # FOOTER — Destek (2 links — no broken status.e-menum)
+            # FOOTER — Destek (2 links)
             # ─────────────────────────────────────────────────────
             {
                 "location": "footer_support",
@@ -2355,14 +2387,14 @@ class Command(BaseCommand):
             },
             {
                 "location": "footer_support",
-                "label_tr": "Partnerler",
-                "label_en": "Partners",
-                "url": "website:partners",
+                "label_tr": "SSS",
+                "label_en": "FAQ",
+                "url": "website:support",
                 "sort_order": 2,
                 "is_active": True,
             },
             # ─────────────────────────────────────────────────────
-            # FOOTER — Yasal (4 links)
+            # FOOTER — Yasal (8 links — all legal pages)
             # ─────────────────────────────────────────────────────
             {
                 "location": "footer_legal",
@@ -2394,6 +2426,38 @@ class Command(BaseCommand):
                 "label_en": "Cookie Policy",
                 "url": "website:cookie_policy",
                 "sort_order": 4,
+                "is_active": True,
+            },
+            {
+                "location": "footer_legal",
+                "label_tr": "SLA",
+                "label_en": "SLA",
+                "url": "website:sla",
+                "sort_order": 5,
+                "is_active": True,
+            },
+            {
+                "location": "footer_legal",
+                "label_tr": "Veri Isleme Sozlesmesi",
+                "label_en": "Data Processing Agreement",
+                "url": "website:dpa",
+                "sort_order": 6,
+                "is_active": True,
+            },
+            {
+                "location": "footer_legal",
+                "label_tr": "Guvenlik Politikasi",
+                "label_en": "Security Policy",
+                "url": "website:security",
+                "sort_order": 7,
+                "is_active": True,
+            },
+            {
+                "location": "footer_legal",
+                "label_tr": "Sorumluluk Reddi",
+                "label_en": "Disclaimer",
+                "url": "website:disclaimer",
+                "sort_order": 8,
                 "is_active": True,
             },
         ]

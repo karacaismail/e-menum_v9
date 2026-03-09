@@ -120,6 +120,11 @@ class LegalPageSitemap(Sitemap):
         "privacy": "website:privacy",
         "terms": "website:terms",
         "kvkk": "website:kvkk",
+        "cookie": "website:cookie_policy",
+        "sla": "website:sla",
+        "dpa": "website:dpa",
+        "security": "website:security",
+        "disclaimer": "website:disclaimer",
     }
 
     def items(self):

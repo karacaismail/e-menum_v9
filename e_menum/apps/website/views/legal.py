@@ -46,3 +46,19 @@ class KvkkView(LegalPageView):
 
 class CookiePolicyView(LegalPageView):
     legal_slug = "cookie"
+
+
+class SlaView(LegalPageView):
+    legal_slug = "sla"
+
+
+class DpaView(LegalPageView):
+    legal_slug = "dpa"
+
+
+class SecurityPolicyView(LegalPageView):
+    legal_slug = "security"
+
+
+class DisclaimerView(LegalPageView):
+    legal_slug = "disclaimer"

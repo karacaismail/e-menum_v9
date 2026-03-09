@@ -42,6 +42,12 @@ urlpatterns = [
     path(
         _("cerez-politikasi/"), views.CookiePolicyView.as_view(), name="cookie_policy"
     ),
+    path(_("sla/"), views.SlaView.as_view(), name="sla"),
+    path(_("veri-isleme-sozlesmesi/"), views.DpaView.as_view(), name="dpa"),
+    path(
+        _("guvenlik-politikasi/"), views.SecurityPolicyView.as_view(), name="security"
+    ),
+    path(_("sorumluluk-reddi/"), views.DisclaimerView.as_view(), name="disclaimer"),
     # =========================================================================
     # Solutions
     # =========================================================================
