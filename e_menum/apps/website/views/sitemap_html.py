@@ -90,6 +90,10 @@ class SitemapHTMLView(CmsContextMixin, TemplateView):
                     (_("Kullanım Şartları"), "website:terms"),
                     (_("KVKK Aydınlatma Metni"), "website:kvkk"),
                     (_("Çerez Politikası"), "website:cookie_policy"),
+                    (_("SLA"), "website:sla"),
+                    (_("Veri İşleme Sözleşmesi"), "website:dpa"),
+                    (_("Güvenlik Politikası"), "website:security"),
+                    (_("Sorumluluk Reddi"), "website:disclaimer"),
                 ],
             },
         ]
@@ -154,7 +158,7 @@ class SitemapHTMLView(CmsContextMixin, TemplateView):
             from apps.website.models import CaseStudy
 
             context["case_studies"] = CaseStudy.objects.filter(
-                is_published=True,
+                is_active=True,
                 deleted_at__isnull=True,
             ).order_by("-published_at")[:10]
         except Exception:
@@ -165,7 +169,7 @@ class SitemapHTMLView(CmsContextMixin, TemplateView):
             from apps.website.models import IndustryReport
 
             context["industry_reports"] = IndustryReport.objects.filter(
-                is_published=True,
+                is_active=True,
                 deleted_at__isnull=True,
             ).order_by("-published_at")[:10]
         except Exception:
@@ -176,7 +180,7 @@ class SitemapHTMLView(CmsContextMixin, TemplateView):
             from apps.website.models import Webinar
 
             context["webinars"] = Webinar.objects.filter(
-                is_published=True,
+                is_active=True,
                 deleted_at__isnull=True,
             ).order_by("-event_date")[:10]
         except Exception:
@@ -192,5 +196,53 @@ class SitemapHTMLView(CmsContextMixin, TemplateView):
             ).order_by("sort_order")
         except Exception:
             context["help_categories"] = []
+
+        # Career positions
+        try:
+            from apps.website.models import CareerPosition
+
+            context["career_positions"] = CareerPosition.objects.filter(
+                is_active=True,
+                deleted_at__isnull=True,
+            ).order_by("-created_at")[:20]
+        except Exception:
+            context["career_positions"] = []
+
+        # Press releases
+        try:
+            from apps.website.models import PressRelease
+
+            context["press_releases"] = PressRelease.objects.filter(
+                is_active=True,
+                deleted_at__isnull=True,
+            ).order_by("-published_at")[:20]
+        except Exception:
+            context["press_releases"] = []
+
+        # Partner programs
+        try:
+            from apps.website.models import PartnerProgram
+
+            context["partner_programs"] = PartnerProgram.objects.filter(
+                is_active=True,
+                deleted_at__isnull=True,
+            ).order_by("sort_order")
+        except Exception:
+            context["partner_programs"] = []
+
+        # Help articles (for total count display)
+        try:
+            from apps.website.models import HelpArticle
+
+            context["help_articles"] = (
+                HelpArticle.objects.filter(
+                    is_active=True,
+                    deleted_at__isnull=True,
+                )
+                .select_related("category")
+                .order_by("category__sort_order", "sort_order")
+            )
+        except Exception:
+            context["help_articles"] = []
 
         return context

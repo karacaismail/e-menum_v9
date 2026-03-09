@@ -156,7 +156,70 @@
         </div>
         {% endif %}
 
-        {# Help Center Categories #}
+        {# Career Positions #}
+        {% if career_positions %}
+        <div class="mb-10">
+            <div class="flex items-center gap-2.5 mb-5">
+                <div class="w-8 h-8 rounded-xl bg-indigo-500/15 border border-indigo-500/25 flex items-center justify-center">
+                    <i class="ph ph-briefcase text-indigo-400 text-sm"></i>
+                </div>
+                <h2 class="text-base font-bold text-white">{% trans "Açık Pozisyonlar" %}</h2>
+                <a href="{% url 'website:careers' %}" class="ml-auto text-xs text-primary-400 hover:text-primary-300 transition-colors">{% trans "Tümünü Gör" %} →</a>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {% for pos in career_positions %}
+                <a href="{% url 'website:career_detail' slug=pos.slug %}" class="flex items-center gap-2 px-4 py-3 rounded-xl bg-gray-900/60 border border-gray-800/60 text-sm text-gray-400 hover:text-indigo-400 hover:border-indigo-900/40 transition-all group">
+                    <i class="ph ph-caret-right text-[10px] text-gray-600 group-hover:text-indigo-500 transition-colors shrink-0"></i>
+                    <span class="truncate">{{ pos.title }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {# Press Releases #}
+        {% if press_releases %}
+        <div class="mb-10">
+            <div class="flex items-center gap-2.5 mb-5">
+                <div class="w-8 h-8 rounded-xl bg-orange-500/15 border border-orange-500/25 flex items-center justify-center">
+                    <i class="ph ph-newspaper text-orange-400 text-sm"></i>
+                </div>
+                <h2 class="text-base font-bold text-white">{% trans "Basın Bültenleri" %}</h2>
+                <a href="{% url 'website:press' %}" class="ml-auto text-xs text-primary-400 hover:text-primary-300 transition-colors">{% trans "Tümünü Gör" %} →</a>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {% for pr in press_releases %}
+                <a href="{% url 'website:press_detail' slug=pr.slug %}" class="flex items-center gap-2 px-4 py-3 rounded-xl bg-gray-900/60 border border-gray-800/60 text-sm text-gray-400 hover:text-orange-400 hover:border-orange-900/40 transition-all group">
+                    <i class="ph ph-caret-right text-[10px] text-gray-600 group-hover:text-orange-500 transition-colors shrink-0"></i>
+                    <span class="truncate">{{ pr.title }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {# Partner Programs #}
+        {% if partner_programs %}
+        <div class="mb-10">
+            <div class="flex items-center gap-2.5 mb-5">
+                <div class="w-8 h-8 rounded-xl bg-pink-500/15 border border-pink-500/25 flex items-center justify-center">
+                    <i class="ph ph-handshake text-pink-400 text-sm"></i>
+                </div>
+                <h2 class="text-base font-bold text-white">{% trans "Partner Programları" %}</h2>
+                <a href="{% url 'website:partners' %}" class="ml-auto text-xs text-primary-400 hover:text-primary-300 transition-colors">{% trans "Tümünü Gör" %} →</a>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                {% for prog in partner_programs %}
+                <a href="{% url 'website:partner_detail' slug=prog.slug %}" class="flex items-center gap-2 px-4 py-3 rounded-xl bg-gray-900/60 border border-gray-800/60 text-sm text-gray-400 hover:text-pink-400 hover:border-pink-900/40 transition-all group">
+                    <i class="ph ph-caret-right text-[10px] text-gray-600 group-hover:text-pink-500 transition-colors shrink-0"></i>
+                    <span class="truncate">{{ prog.title }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {# Help Center Categories + Articles #}
         {% if help_categories %}
         <div class="mb-10">
             <div class="flex items-center gap-2.5 mb-5">
@@ -164,8 +227,9 @@
                     <i class="ph ph-question text-teal-400 text-sm"></i>
                 </div>
                 <h2 class="text-base font-bold text-white">{% trans "Yardım Merkezi" %}</h2>
+                <a href="{% url 'website:support' %}" class="ml-auto text-xs text-primary-400 hover:text-primary-300 transition-colors">{% trans "Tümünü Gör" %} →</a>
             </div>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-4">
                 {% for cat in help_categories %}
                 <a href="{% url 'website:help_category' slug=cat.slug %}" class="flex items-center gap-2 px-4 py-3 rounded-xl bg-gray-900/60 border border-gray-800/60 text-sm text-gray-400 hover:text-teal-400 hover:border-teal-900/40 transition-all group">
                     <i class="ph ph-folder-open text-[10px] text-gray-600 group-hover:text-teal-500 transition-colors shrink-0"></i>
@@ -173,6 +237,22 @@
                 </a>
                 {% endfor %}
             </div>
+            {% if help_articles %}
+            <details class="group">
+                <summary class="cursor-pointer text-xs text-gray-500 hover:text-gray-300 transition-colors inline-flex items-center gap-1">
+                    <i class="ph ph-caret-right text-[10px] group-open:rotate-90 transition-transform"></i>
+                    {% trans "Tüm Yardım Makaleleri" %} ({{ help_articles|length }})
+                </summary>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-3">
+                    {% for article in help_articles %}
+                    <a href="{% url 'website:help_article' category_slug=article.category.slug article_slug=article.slug %}" class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-gray-500 hover:text-teal-400 transition-colors group">
+                        <i class="ph ph-article text-[10px] text-gray-700 group-hover:text-teal-500 transition-colors shrink-0"></i>
+                        <span class="truncate">{{ article.title }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </details>
+            {% endif %}
         </div>
         {% endif %}
 

@@ -2263,8 +2263,8 @@ class Command(BaseCommand):
             },
             {
                 "location": "footer_product",
-                "label_tr": "Neler Yeni",
-                "label_en": "What's New",
+                "label_tr": "Blog",
+                "label_en": "Blog",
                 "url": "website:blog",
                 "sort_order": 4,
                 "is_active": True,
@@ -2297,7 +2297,7 @@ class Command(BaseCommand):
                 "is_active": True,
             },
             # ─────────────────────────────────────────────────────
-            # FOOTER — Kaynaklar (4 links)
+            # FOOTER — Kaynaklar (3 links, no duplicate URLs)
             # ─────────────────────────────────────────────────────
             {
                 "location": "footer_resources",
@@ -2309,18 +2309,10 @@ class Command(BaseCommand):
             },
             {
                 "location": "footer_resources",
-                "label_tr": "Ucretsiz Araclar",
-                "label_en": "Free Tools",
-                "url": "website:resources",
-                "sort_order": 2,
-                "is_active": True,
-            },
-            {
-                "location": "footer_resources",
                 "label_tr": "Marka Kaynaklari",
                 "label_en": "Brand Assets",
                 "url": "website:brand_assets",
-                "sort_order": 3,
+                "sort_order": 2,
                 "is_active": True,
             },
             {
@@ -2328,7 +2320,7 @@ class Command(BaseCommand):
                 "label_tr": "Partnerler",
                 "label_en": "Partners",
                 "url": "website:partners",
-                "sort_order": 4,
+                "sort_order": 3,
                 "is_active": True,
             },
             # ─────────────────────────────────────────────────────
@@ -2375,7 +2367,7 @@ class Command(BaseCommand):
                 "is_active": True,
             },
             # ─────────────────────────────────────────────────────
-            # FOOTER — Destek (2 links)
+            # FOOTER — Destek (1 link, no duplicate)
             # ─────────────────────────────────────────────────────
             {
                 "location": "footer_support",
@@ -2383,14 +2375,6 @@ class Command(BaseCommand):
                 "label_en": "Help Center",
                 "url": "website:support",
                 "sort_order": 1,
-                "is_active": True,
-            },
-            {
-                "location": "footer_support",
-                "label_tr": "SSS",
-                "label_en": "FAQ",
-                "url": "website:support",
-                "sort_order": 2,
                 "is_active": True,
             },
             # ─────────────────────────────────────────────────────
