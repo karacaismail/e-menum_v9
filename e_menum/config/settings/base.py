@@ -719,9 +719,7 @@ WEBSITE_ADMIN_EMAIL = os.environ.get("WEBSITE_ADMIN_EMAIL", DEFAULT_FROM_EMAIL)
 # https://anymail.dev/en/stable/esps/mailgun/
 ANYMAIL = {
     "MAILGUN_API_KEY": os.environ.get("MAILGUN_API_KEY", ""),
-    "MAILGUN_SENDER_DOMAIN": os.environ.get(
-        "MAILGUN_SENDER_DOMAIN", SITE_DOMAIN
-    ),
+    "MAILGUN_SENDER_DOMAIN": os.environ.get("MAILGUN_SENDER_DOMAIN", SITE_DOMAIN),
     "MAILGUN_API_URL": "https://api.eu.mailgun.net/v3",  # EU region
 }
 

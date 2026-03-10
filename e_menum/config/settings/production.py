@@ -156,9 +156,7 @@ else:
 # =============================================================================
 
 # Production email configuration — Mailgun via Anymail
-EMAIL_BACKEND = os.environ.get(
-    "EMAIL_BACKEND", "anymail.backends.mailgun.EmailBackend"
-)
+EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", "anymail.backends.mailgun.EmailBackend")
 
 # Validate Mailgun configuration in production
 if EMAIL_BACKEND == "anymail.backends.mailgun.EmailBackend":
