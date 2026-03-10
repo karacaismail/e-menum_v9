@@ -70,6 +70,18 @@ _FEMALE_PHOTOS = [
 
 
 @register.filter
+def split(value, delimiter=","):
+    """Split a string by a delimiter.
+
+    Usage in template:
+        {% for item in "a,b,c"|split:"," %}
+    """
+    if not value:
+        return []
+    return value.split(delimiter)
+
+
+@register.filter
 def gender_avatar(name, counter=0):
     """Return a gender-appropriate Unsplash headshot URL for a Turkish name.
 
