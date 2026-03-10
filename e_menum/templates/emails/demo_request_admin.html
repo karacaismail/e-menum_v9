@@ -1,0 +1,30 @@
+{% extends "emails/_base_email.html" %}
+{% block title %}Yeni Demo Talebi — {{ demo_request.business_name }}{% endblock %}
+
+{% block content %}
+<h2>Yeni Demo Talebi</h2>
+<p><strong>{{ demo_request.business_name }}</strong> isletmesinden yeni bir demo talebi alindi.</p>
+
+<table class="info-table">
+  <tr><td class="label">Ad Soyad</td><td class="value">{{ demo_request.name }}</td></tr>
+  <tr><td class="label">Isletme</td><td class="value">{{ demo_request.business_name }}</td></tr>
+  <tr><td class="label">E-posta</td><td class="value"><a href="mailto:{{ demo_request.email }}">{{ demo_request.email }}</a></td></tr>
+  <tr><td class="label">Telefon</td><td class="value"><a href="tel:{{ demo_request.phone }}">{{ demo_request.phone }}</a></td></tr>
+  <tr><td class="label">Isletme Tipi</td><td class="value">{{ demo_request.get_business_type_display }}</td></tr>
+  <tr><td class="label">Sube Sayisi</td><td class="value">{{ demo_request.branch_count }}</td></tr>
+  {% if demo_request.message %}
+  <tr><td class="label">Mesaj</td><td class="value">{{ demo_request.message }}</td></tr>
+  {% endif %}
+  <tr><td class="label">Tarih</td><td class="value">{{ demo_request.created_at|date:"d.m.Y H:i" }}</td></tr>
+  <tr><td class="label">Durum</td><td class="value"><span class="badge badge-pending">Beklemede</span></td></tr>
+</table>
+
+<div style="text-align:center;margin:24px 0;">
+  <a href="{{ site_url }}/admin/website/demorequest/{{ demo_request.id }}/change/" class="btn">
+    Admin Panelde Gor
+  </a>
+</div>
+
+<div class="divider"></div>
+<p style="font-size:13px;color:#6b7280;">Bu e-posta, e-menum.net uzerinden yeni bir demo talebi geldiginde otomatik gonderilmektedir.</p>
+{% endblock %}

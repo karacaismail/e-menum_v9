@@ -76,6 +76,14 @@ class DemoRequestView(CmsContextMixin, FormView):
     success_url = "/demo/"
     page_slug = "demo"
 
+    def get_initial(self):
+        """Pre-fill email field from CTA banner GET parameter."""
+        initial = super().get_initial()
+        email = self.request.GET.get("email", "").strip()
+        if email:
+            initial["email"] = email
+        return initial
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["testimonials"] = Testimonial.objects.filter(

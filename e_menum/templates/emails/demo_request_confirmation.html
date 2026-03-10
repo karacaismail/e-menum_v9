@@ -1,0 +1,38 @@
+{% extends "emails/_base_email.html" %}
+{% block title %}Demo Talebiniz Alindi — E-Menum{% endblock %}
+
+{% block content %}
+<h2>Demo Talebiniz Alindi!</h2>
+<p>Sayin <strong>{{ demo_request.name }}</strong>,</p>
+<p>
+  <strong>{{ demo_request.business_name }}</strong> icin demo talebinizi aldik.
+  Ekibimiz en kisa surede sizinle iletisime gececektir.
+</p>
+
+<table class="info-table">
+  <tr><td class="label">Isletme</td><td class="value">{{ demo_request.business_name }}</td></tr>
+  <tr><td class="label">Isletme Tipi</td><td class="value">{{ demo_request.get_business_type_display }}</td></tr>
+  <tr><td class="label">Sube Sayisi</td><td class="value">{{ demo_request.branch_count }}</td></tr>
+  <tr><td class="label">Durum</td><td class="value"><span class="badge badge-success">Talep Alindi</span></td></tr>
+</table>
+
+<p>Demo surecinde neler goreceksiniz:</p>
+<ul style="padding-left:20px;color:#374151;">
+  <li style="margin-bottom:8px;">Canli platform turu ve menu olusturma</li>
+  <li style="margin-bottom:8px;">Sektorunuze ozel cozum onerileri</li>
+  <li style="margin-bottom:8px;">ROI hesaplama ve maliyet analizi</li>
+  <li style="margin-bottom:8px;">Ihtiyaciniza uygun plan danismanligi</li>
+</ul>
+
+<div style="text-align:center;margin:24px 0;">
+  <a href="{{ site_url }}" class="btn">
+    E-Menum'u Kesfet
+  </a>
+</div>
+
+<div class="divider"></div>
+<p style="font-size:13px;color:#6b7280;">
+  Sorulariniz icin <a href="mailto:info@e-menum.net">info@e-menum.net</a> adresine yazabilir
+  veya <a href="tel:+908501234567">0850 123 45 67</a> numarasini arayabilirsiniz.
+</p>
+{% endblock %}

@@ -145,6 +145,7 @@ THIRD_PARTY_APPS = [
     "guardian",
     "django_celery_beat",
     "impersonate",  # User impersonation for superadmin
+    "anymail",  # Mailgun email backend
 ]
 
 # E-Menum Local apps (ordered by dependency)
@@ -710,6 +711,19 @@ SITE_DOMAIN = os.environ.get("SITE_DOMAIN", "e-menum.net")
 SITE_URL = os.environ.get("SITE_URL", f"https://{SITE_DOMAIN}")
 
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", f"noreply@{SITE_DOMAIN}")
+
+# Admin notification recipient for website forms (contact, demo requests)
+WEBSITE_ADMIN_EMAIL = os.environ.get("WEBSITE_ADMIN_EMAIL", DEFAULT_FROM_EMAIL)
+
+# Anymail — Mailgun transactional email
+# https://anymail.dev/en/stable/esps/mailgun/
+ANYMAIL = {
+    "MAILGUN_API_KEY": os.environ.get("MAILGUN_API_KEY", ""),
+    "MAILGUN_SENDER_DOMAIN": os.environ.get(
+        "MAILGUN_SENDER_DOMAIN", SITE_DOMAIN
+    ),
+    "MAILGUN_API_URL": "https://api.eu.mailgun.net/v3",  # EU region
+}
 
 
 # =============================================================================

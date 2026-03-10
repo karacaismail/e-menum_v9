@@ -56,5 +56,8 @@ reportlab>=4.0
 # HTTP Client (logo download for QR codes)
 requests>=2.31
 
+# Email (Mailgun via Anymail)
+django-anymail[mailgun]>=12.0
+
 # Production Server
 gunicorn>=21.0

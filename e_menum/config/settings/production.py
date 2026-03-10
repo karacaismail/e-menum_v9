@@ -155,18 +155,18 @@ else:
 # EMAIL
 # =============================================================================
 
-# Production email configuration
+# Production email configuration — Mailgun via Anymail
 EMAIL_BACKEND = os.environ.get(
-    "EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend"
+    "EMAIL_BACKEND", "anymail.backends.mailgun.EmailBackend"
 )
 
-# Validate email configuration in production
-if EMAIL_BACKEND == "django.core.mail.backends.smtp.EmailBackend":
-    if not os.environ.get("EMAIL_HOST"):
+# Validate Mailgun configuration in production
+if EMAIL_BACKEND == "anymail.backends.mailgun.EmailBackend":
+    if not os.environ.get("MAILGUN_API_KEY"):
         import logging
 
         logger = logging.getLogger(__name__)
-        logger.warning("EMAIL_HOST not set. Email sending may fail.")
+        logger.warning("MAILGUN_API_KEY not set. Email sending may fail.")
 
 
 # =============================================================================

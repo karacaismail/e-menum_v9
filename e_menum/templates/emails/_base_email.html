@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}E-Menum{% endblock %}</title>
+<!--[if mso]>
+<noscript>
+<xml>
+<o:OfficeDocumentSettings>
+<o:PixelsPerInch>96</o:PixelsPerInch>
+</o:OfficeDocumentSettings>
+</xml>
+</noscript>
+<![endif]-->
+<style>
+  body { margin:0; padding:0; -webkit-text-size-adjust:100%; background:#f4f5f7; font-family:'Segoe UI',Roboto,Arial,sans-serif; }
+  table { border-spacing:0; }
+  td { padding:0; }
+  img { border:0; display:block; }
+  .wrapper { width:100%; background:#f4f5f7; padding:32px 0; }
+  .container { max-width:600px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+  .header { background:linear-gradient(135deg,#0a1f14 0%,#1a6b5a 100%); padding:32px 40px; text-align:center; }
+  .header img { margin:0 auto; }
+  .header h1 { color:#ffffff; font-size:20px; font-weight:700; margin:12px 0 0; letter-spacing:-0.3px; }
+  .body { padding:32px 40px; color:#374151; font-size:15px; line-height:1.7; }
+  .body h2 { color:#111827; font-size:20px; font-weight:700; margin:0 0 16px; }
+  .body p { margin:0 0 14px; }
+  .info-table { width:100%; border-collapse:collapse; margin:20px 0; }
+  .info-table td { padding:10px 14px; font-size:14px; border-bottom:1px solid #f3f4f6; }
+  .info-table .label { color:#6b7280; font-weight:600; width:140px; white-space:nowrap; }
+  .info-table .value { color:#111827; }
+  .btn { display:inline-block; padding:12px 28px; background:#1a6b5a; color:#ffffff !important; font-size:15px; font-weight:600; text-decoration:none; border-radius:8px; margin:8px 0; }
+  .btn:hover { background:#155c4d; }
+  .badge { display:inline-block; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; }
+  .badge-pending { background:#fef3c7; color:#92400e; }
+  .badge-success { background:#d1fae5; color:#065f46; }
+  .footer { padding:24px 40px; background:#f9fafb; text-align:center; border-top:1px solid #e5e7eb; }
+  .footer p { color:#9ca3af; font-size:12px; line-height:1.6; margin:0 0 6px; }
+  .footer a { color:#1a6b5a; text-decoration:none; }
+  .divider { height:1px; background:#e5e7eb; margin:20px 0; }
+  @media only screen and (max-width:640px) {
+    .body, .header, .footer { padding-left:20px !important; padding-right:20px !important; }
+    .container { border-radius:0 !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+<tr><td align="center">
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>E-Menum</h1>
+  </div>
+
+  <!-- Body -->
+  <div class="body">
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p><a href="https://e-menum.net">e-menum.net</a> &mdash; Akilli menuler, veri odakli kararlar.</p>
+    <p>&copy; 2026 E-Menum. Tum haklari saklidir.</p>
+  </div>
+
+</div>
+</td></tr>
+</table>
+</div>
+</body>
+</html>

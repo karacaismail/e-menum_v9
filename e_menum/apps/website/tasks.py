@@ -2,18 +2,48 @@
 Celery tasks for website form email notifications.
 
 Tasks:
-    send_contact_notification      — Sends email to admin when contact form submitted
-    send_demo_request_notification — Sends email to admin when demo requested
+    send_contact_notification      — Sends email to admin + confirmation to user
+    send_demo_request_notification — Sends email to admin + confirmation to user
 """
 
 import logging
+import re
 
 from celery import shared_task
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 
 logger = logging.getLogger(__name__)
+
+
+def _send_html_email(subject, template_name, context, recipient_list, from_email=None):
+    """
+    Send an HTML email with plain-text fallback.
+
+    Uses Django template rendering for HTML body and strips tags for plain text.
+    Works with any EMAIL_BACKEND (console, SMTP, Anymail/Mailgun).
+    """
+    from_email = from_email or settings.DEFAULT_FROM_EMAIL
+
+    # Add site_url to context for links in templates
+    context.setdefault("site_url", getattr(settings, "SITE_URL", "https://e-menum.net"))
+
+    html_body = render_to_string(template_name, context)
+
+    # Simple plain-text fallback: strip HTML tags
+    plain_body = re.sub(r"<[^>]+>", "", html_body)
+    plain_body = re.sub(r"\n{3,}", "\n\n", plain_body).strip()
+
+    msg = EmailMultiAlternatives(
+        subject=subject,
+        body=plain_body,
+        from_email=from_email,
+        to=recipient_list,
+    )
+    msg.attach_alternative(html_body, "text/html")
+    msg.send(fail_silently=False)
 
 
 @shared_task(
@@ -24,7 +54,8 @@ logger = logging.getLogger(__name__)
 )
 def send_contact_notification(self, submission_id: str):
     """
-    Send email notification to admin when a new contact form is submitted.
+    Send email notification to admin + confirmation to user
+    when a new contact form is submitted.
 
     Args:
         submission_id: UUID of the ContactSubmission record.
@@ -37,42 +68,35 @@ def send_contact_notification(self, submission_id: str):
         logger.error("ContactSubmission %s not found — skipping email", submission_id)
         return
 
-    subject = _("[E-Menum] Yeni Iletisim Formu: %(name)s — %(topic)s") % {
-        "name": submission.name,
-        "topic": submission.get_subject_display(),
-    }
-
-    message = _(
-        "Yeni iletisim formu gonderildi.\n\n"
-        "Ad Soyad: %(name)s\n"
-        "E-posta: %(email)s\n"
-        "Telefon: %(phone)s\n"
-        "Konu: %(subject)s\n"
-        "Mesaj:\n%(message)s\n\n"
-        "Tarih: %(date)s\n"
-        "Admin panelden goruntuleyebilirsiniz."
-    ) % {
-        "name": submission.name,
-        "email": submission.email,
-        "phone": submission.phone or "-",
-        "subject": submission.get_subject_display(),
-        "message": submission.message,
-        "date": submission.created_at.strftime("%d.%m.%Y %H:%M"),
-    }
-
     admin_email = getattr(settings, "WEBSITE_ADMIN_EMAIL", settings.DEFAULT_FROM_EMAIL)
+    context = {"submission": submission}
 
     try:
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
+        # 1) Admin notification
+        admin_subject = _("[E-Menum] Yeni Iletisim Formu: %(name)s — %(topic)s") % {
+            "name": submission.name,
+            "topic": submission.get_subject_display(),
+        }
+        _send_html_email(
+            subject=admin_subject,
+            template_name="emails/contact_admin.html",
+            context=context,
             recipient_list=[admin_email],
-            fail_silently=False,
         )
-        logger.info("Contact notification sent for submission %s", submission_id)
+        logger.info("Contact admin notification sent for %s", submission_id)
+
+        # 2) User confirmation
+        user_subject = _("Mesajiniz Alindi — E-Menum")
+        _send_html_email(
+            subject=user_subject,
+            template_name="emails/contact_confirmation.html",
+            context=context,
+            recipient_list=[submission.email],
+        )
+        logger.info("Contact confirmation sent to %s", submission.email)
+
     except Exception as exc:
-        logger.exception("Failed to send contact notification for %s", submission_id)
+        logger.exception("Failed to send contact emails for %s", submission_id)
         raise self.retry(exc=exc)
 
 
@@ -84,7 +108,8 @@ def send_contact_notification(self, submission_id: str):
 )
 def send_demo_request_notification(self, demo_request_id: str):
     """
-    Send email notification to admin when a new demo is requested.
+    Send email notification to admin + confirmation to user
+    when a new demo is requested.
 
     Args:
         demo_request_id: UUID of the DemoRequest record.
@@ -97,44 +122,33 @@ def send_demo_request_notification(self, demo_request_id: str):
         logger.error("DemoRequest %s not found — skipping email", demo_request_id)
         return
 
-    subject = _("[E-Menum] Yeni Demo Talebi: %(business)s (%(type)s)") % {
-        "business": demo_request.business_name,
-        "type": demo_request.get_business_type_display(),
-    }
-
-    message = _(
-        "Yeni demo talebi alindi.\n\n"
-        "Ad Soyad: %(name)s\n"
-        "Isletme: %(business)s\n"
-        "E-posta: %(email)s\n"
-        "Telefon: %(phone)s\n"
-        "Isletme Tipi: %(type)s\n"
-        "Sube Sayisi: %(branches)d\n"
-        "Mesaj: %(message)s\n\n"
-        "Tarih: %(date)s\n"
-        "Admin panelden durum takibini yapabilirsiniz."
-    ) % {
-        "name": demo_request.name,
-        "business": demo_request.business_name,
-        "email": demo_request.email,
-        "phone": demo_request.phone,
-        "type": demo_request.get_business_type_display(),
-        "branches": demo_request.branch_count,
-        "message": demo_request.message or "-",
-        "date": demo_request.created_at.strftime("%d.%m.%Y %H:%M"),
-    }
-
     admin_email = getattr(settings, "WEBSITE_ADMIN_EMAIL", settings.DEFAULT_FROM_EMAIL)
+    context = {"demo_request": demo_request}
 
     try:
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
+        # 1) Admin notification
+        admin_subject = _("[E-Menum] Yeni Demo Talebi: %(business)s (%(type)s)") % {
+            "business": demo_request.business_name,
+            "type": demo_request.get_business_type_display(),
+        }
+        _send_html_email(
+            subject=admin_subject,
+            template_name="emails/demo_request_admin.html",
+            context=context,
             recipient_list=[admin_email],
-            fail_silently=False,
         )
-        logger.info("Demo request notification sent for %s", demo_request_id)
+        logger.info("Demo admin notification sent for %s", demo_request_id)
+
+        # 2) User confirmation
+        user_subject = _("Demo Talebiniz Alindi — E-Menum")
+        _send_html_email(
+            subject=user_subject,
+            template_name="emails/demo_request_confirmation.html",
+            context=context,
+            recipient_list=[demo_request.email],
+        )
+        logger.info("Demo confirmation sent to %s", demo_request.email)
+
     except Exception as exc:
-        logger.exception("Failed to send demo notification for %s", demo_request_id)
+        logger.exception("Failed to send demo emails for %s", demo_request_id)
         raise self.retry(exc=exc)
