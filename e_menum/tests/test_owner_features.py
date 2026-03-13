@@ -311,7 +311,7 @@ class RegistrationTests(BaseTestCase):
             "first_name": "Auto",
             "last_name": "Login",
         }
-        self.client.post(REGISTER_URL, data, follow=True)
+        self.client.post(REGISTER_URL, data)
         user = User.objects.get(email="autologin@example.com")
         # After login, session should contain the user's pk (UUID as string)
         self.assertEqual(self.client.session.get("_auth_user_id"), str(user.pk))
