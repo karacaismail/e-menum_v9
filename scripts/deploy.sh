@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# E-Menum CI/CD Deploy Script
+# E-Menum CI/CD Deploy Script #1
 # =============================================================================
 # Sunucuda çalıştırılır: GitHub'a commit atıldıktan sonra bu script tetiklenir.
 # - Git pull ile güncel kodu çeker
