@@ -102,11 +102,11 @@
                         </label>
                         <div class="flex items-center gap-3">
                             <input type="color"
-                                   id="id_color_primary"
-                                   name="color_primary"
+                                   id="id_primary_color"
                                    x-model="colors.primary"
                                    class="w-12 h-12 rounded-xl border border-gray-300 dark:border-gray-600 cursor-pointer p-1">
                             <input type="text"
+                                   name="primary_color"
                                    x-model="colors.primary"
                                    @input="colors.primary = $event.target.value"
                                    placeholder="#6366f1"
@@ -121,11 +121,11 @@
                         </label>
                         <div class="flex items-center gap-3">
                             <input type="color"
-                                   id="id_color_secondary"
-                                   name="color_secondary"
+                                   id="id_secondary_color"
                                    x-model="colors.secondary"
                                    class="w-12 h-12 rounded-xl border border-gray-300 dark:border-gray-600 cursor-pointer p-1">
                             <input type="text"
+                                   name="secondary_color"
                                    x-model="colors.secondary"
                                    @input="colors.secondary = $event.target.value"
                                    placeholder="#8b5cf6"
@@ -140,11 +140,11 @@
                         </label>
                         <div class="flex items-center gap-3">
                             <input type="color"
-                                   id="id_color_background"
-                                   name="color_background"
+                                   id="id_background_color"
                                    x-model="colors.background"
                                    class="w-12 h-12 rounded-xl border border-gray-300 dark:border-gray-600 cursor-pointer p-1">
                             <input type="text"
+                                   name="background_color"
                                    x-model="colors.background"
                                    @input="colors.background = $event.target.value"
                                    placeholder="#ffffff"
@@ -159,11 +159,11 @@
                         </label>
                         <div class="flex items-center gap-3">
                             <input type="color"
-                                   id="id_color_text"
-                                   name="color_text"
+                                   id="id_text_color"
                                    x-model="colors.text"
                                    class="w-12 h-12 rounded-xl border border-gray-300 dark:border-gray-600 cursor-pointer p-1">
                             <input type="text"
+                                   name="text_color"
                                    x-model="colors.text"
                                    @input="colors.text = $event.target.value"
                                    placeholder="#1f2937"
@@ -178,11 +178,11 @@
                         </label>
                         <div class="flex items-center gap-3">
                             <input type="color"
-                                   id="id_color_accent"
-                                   name="color_accent"
+                                   id="id_accent_color"
                                    x-model="colors.accent"
                                    class="w-12 h-12 rounded-xl border border-gray-300 dark:border-gray-600 cursor-pointer p-1">
                             <input type="text"
+                                   name="accent_color"
                                    x-model="colors.accent"
                                    @input="colors.accent = $event.target.value"
                                    placeholder="#f59e0b"
@@ -396,11 +396,11 @@
 function themeForm() {
     return {
         colors: {
-            primary:    '{{ form.color_primary.value|default:"#6366f1" }}',
-            secondary:  '{{ form.color_secondary.value|default:"#8b5cf6" }}',
-            background: '{{ form.color_background.value|default:"#ffffff" }}',
-            text:       '{{ form.color_text.value|default:"#1f2937" }}',
-            accent:     '{{ form.color_accent.value|default:"#f59e0b" }}',
+            primary:    '{{ form.primary_color.value|default:"#6366f1" }}',
+            secondary:  '{{ form.secondary_color.value|default:"#8b5cf6" }}',
+            background: '{{ form.background_color.value|default:"#ffffff" }}',
+            text:       '{{ form.text_color.value|default:"#1f2937" }}',
+            accent:     '{{ form.accent_color.value|default:"#f59e0b" }}',
         },
         fontFamily: '{{ form.font_family.value|default:"Inter" }}',
         logoPosition: '{{ form.logo_position.value|default:"center" }}',

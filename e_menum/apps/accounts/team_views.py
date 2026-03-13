@@ -5,6 +5,8 @@ import uuid
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext_lazy as _
@@ -79,50 +81,120 @@ def team_invite(request):
     role_id = (request.POST.get("role_id") or request.POST.get("role") or "").strip()
 
     if not email or not first_name or not last_name:
-        return JsonResponse({"error": "E-posta, ad ve soyad zorunludur."}, status=400)
-
-    # Check if user already exists in org
-    if User.objects.filter(
-        email=email, organization=org, deleted_at__isnull=True
-    ).exists():
-        messages.error(request, _("Bu e-posta adresi zaten ekipte."))
+        messages.error(request, _("E-posta, ad ve soyad zorunludur."))
         return redirect("accounts:team-list")
 
-    # Create invited user
-    temp_password = str(uuid.uuid4())[:16]
-    user = User.objects.create_user(
-        email=email,
-        password=temp_password,
-        first_name=first_name,
-        last_name=last_name,
-        status=UserStatus.INVITED,
-        organization=org,
-    )
+    # ── Check if e-mail already exists globally ──────────────────────
+    # User.email has a DB-level UNIQUE constraint (global, not per-org).
+    # We must handle every case: active in this org, active in another
+    # org, soft-deleted, etc.
+    existing_user = User.objects.filter(email=email).first()
+
+    if existing_user is not None:
+        # Case 1: Active user already in THIS org
+        if existing_user.organization_id == org.pk and existing_user.deleted_at is None:
+            messages.error(request, _("Bu e-posta adresi zaten ekipte."))
+            return redirect("accounts:team-list")
+
+        # Case 2: Soft-deleted user in THIS org → restore / re-invite
+        if (
+            existing_user.organization_id == org.pk
+            and existing_user.deleted_at is not None
+        ):
+            existing_user.deleted_at = None
+            existing_user.status = UserStatus.INVITED
+            existing_user.first_name = first_name
+            existing_user.last_name = last_name
+            existing_user.is_active = True
+            existing_user.save(
+                update_fields=[
+                    "deleted_at",
+                    "status",
+                    "first_name",
+                    "last_name",
+                    "is_active",
+                    "updated_at",
+                ]
+            )
+            user = existing_user
+
+        # Case 3: Active user in ANOTHER org
+        elif existing_user.deleted_at is None:
+            messages.error(
+                request,
+                _("Bu e-posta adresi baska bir isletmede kayitli."),
+            )
+            return redirect("accounts:team-list")
+
+        # Case 4: Soft-deleted user in ANOTHER org → reassign to this org
+        else:
+            existing_user.deleted_at = None
+            existing_user.status = UserStatus.INVITED
+            existing_user.first_name = first_name
+            existing_user.last_name = last_name
+            existing_user.organization = org
+            existing_user.is_active = True
+            existing_user.save(
+                update_fields=[
+                    "deleted_at",
+                    "status",
+                    "first_name",
+                    "last_name",
+                    "organization",
+                    "is_active",
+                    "updated_at",
+                ]
+            )
+            user = existing_user
+    else:
+        # No existing user — create a fresh invited user
+        temp_password = str(uuid.uuid4())[:16]
+        try:
+            user = User.objects.create_user(
+                email=email,
+                password=temp_password,
+                first_name=first_name,
+                last_name=last_name,
+                status=UserStatus.INVITED,
+                organization=org,
+            )
+        except IntegrityError:
+            logger.exception("IntegrityError creating invited user %s", email)
+            messages.error(
+                request,
+                _("Bu e-posta adresi ile kullanici olusturulamadi."),
+            )
+            return redirect("accounts:team-list")
 
     # Assign role if provided
     if role_id:
         try:
             role = Role.objects.get(id=role_id, scope=RoleScope.ORGANIZATION)
+            # Remove existing org roles before assigning new one
+            UserRole.objects.filter(user=user, organization=org).delete()
             UserRole.objects.create(
                 user=user,
                 role=role,
                 organization=org,
                 granted_by=request.user,
             )
-        except Role.DoesNotExist:
+        except (Role.DoesNotExist, ValidationError):
             pass
 
     # Audit log
-    AuditLog.log_action(
-        action=AuditAction.INVITE_SENT,
-        resource="user",
-        resource_id=str(user.id),
-        user=request.user,
-        organization=org,
-        description=f"{request.user.email} invited {email} to {org.name}",
-        ip_address=get_client_ip(request),
-        user_agent=request.META.get("HTTP_USER_AGENT", "")[:500],
-    )
+    try:
+        AuditLog.log_action(
+            action=AuditAction.INVITE_SENT,
+            resource="user",
+            resource_id=str(user.id),
+            user=request.user,
+            organization=org,
+            description=f"{request.user.email} invited {email} to {org.name}",
+            ip_address=get_client_ip(request),
+            user_agent=request.META.get("HTTP_USER_AGENT", "")[:500],
+        )
+    except Exception:
+        logger.exception("Failed to write audit log for invite %s", email)
 
     messages.success(request, _("Davet gonderildi: %(email)s") % {"email": email})
     return redirect("accounts:team-list")

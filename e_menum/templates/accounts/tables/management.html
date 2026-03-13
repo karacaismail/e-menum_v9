@@ -87,14 +87,14 @@
             </div>
             <div class="flex items-center gap-2">
                 <button
-                    @click="openZoneModal({{ zone.pk }}, '{{ zone.name|escapejs }}', '{{ zone.color|default:'#6366f1' }}')"
+                    @click="openZoneModal('{{ zone.pk }}', '{{ zone.name|escapejs }}', '{{ zone.color|default:'#6366f1' }}')"
                     class="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                     title="{% trans 'Bolgeyi Duzenle' %}"
                 >
                     <i class="ph ph-pencil-simple text-sm"></i>
                 </button>
                 <button
-                    @click="deleteZone({{ zone.pk }}, '{{ zone.name|escapejs }}')"
+                    @click="deleteZone('{{ zone.pk }}', '{{ zone.name|escapejs }}')"
                     class="p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                     title="{% trans 'Bolgeyi Sil' %}"
                 >
@@ -143,14 +143,14 @@
                     {# Actions (visible on hover) #}
                     <div class="absolute inset-x-0 bottom-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-b-xl px-2 py-2 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
-                            @click="openTableModal({{ zone.pk }}, {{ table.pk }}, '{{ table.name|escapejs }}', {{ table.capacity }}, '{{ table.status }}')"
+                            @click="openTableModal('{{ zone.pk }}', '{{ table.pk }}', '{{ table.name|escapejs }}', {{ table.capacity }}, '{{ table.status }}')"
                             class="p-1.5 text-gray-500 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors"
                             title="{% trans 'Duzenle' %}"
                         >
                             <i class="ph ph-pencil-simple text-sm"></i>
                         </button>
                         <button
-                            @click="deleteTable({{ table.pk }}, '{{ table.name|escapejs }}')"
+                            @click="deleteTable('{{ table.pk }}', '{{ table.name|escapejs }}')"
                             class="p-1.5 text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                             title="{% trans 'Sil' %}"
                         >
@@ -162,7 +162,7 @@
 
                 {# Add Table Button #}
                 <button
-                    @click="openTableModal({{ zone.pk }})"
+                    @click="openTableModal('{{ zone.pk }}')"
                     class="flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-700/30 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 text-gray-400 dark:text-gray-500 hover:text-primary-500 dark:hover:text-primary-400 hover:border-primary-300 dark:hover:border-primary-600 transition-colors min-h-[120px]"
                 >
                     <i class="ph ph-plus-circle text-2xl mb-1"></i>

@@ -4,6 +4,7 @@ import json
 import logging
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Prefetch
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
@@ -22,14 +23,21 @@ def table_management(request):
     org = _get_org(request)
     if not org:
         return redirect("accounts:profile")
-    from apps.orders.models import Zone, Table
+    from apps.orders.models import Table, Zone
 
     zones = (
         Zone.objects.filter(
             organization=org,
             deleted_at__isnull=True,
         )
-        .prefetch_related("tables")
+        .prefetch_related(
+            Prefetch(
+                "tables",
+                queryset=Table.objects.filter(deleted_at__isnull=True).order_by(
+                    "sort_order", "name"
+                ),
+            )
+        )
         .order_by("sort_order", "name")
     )
 

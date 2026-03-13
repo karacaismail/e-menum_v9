@@ -22,9 +22,13 @@ Usage:
 
 import logging
 
+from django.core.cache import cache
 from django.db.models import F
 
 logger = logging.getLogger("apps.seo_shield")
+
+_IP_WHITELIST_CACHE_TTL = 300  # 5 minutes
+_IP_WHITELIST_CACHE_PREFIX = "shield:wl:"
 
 
 class IPReputationManager:
@@ -238,7 +242,7 @@ class IPReputationManager:
 
     def is_whitelisted(self, ip_address: str) -> bool:
         """
-        Check if an IP address is explicitly whitelisted.
+        Check if an IP address is explicitly whitelisted (cached).
 
         Whitelisted IPs bypass all Shield checks.
 
@@ -248,10 +252,18 @@ class IPReputationManager:
         Returns:
             True if the IP is whitelisted.
         """
+        cache_key = f"{_IP_WHITELIST_CACHE_PREFIX}{ip_address}"
+        cached = cache.get(cache_key)
+        if cached is not None:
+            return cached
+
         from apps.seo_shield.models import IPRiskScore
 
         try:
             record = IPRiskScore.objects.get(ip_address=ip_address)
-            return record.is_whitelisted
+            result = record.is_whitelisted
         except IPRiskScore.DoesNotExist:
-            return False
+            result = False
+
+        cache.set(cache_key, result, _IP_WHITELIST_CACHE_TTL)
+        return result

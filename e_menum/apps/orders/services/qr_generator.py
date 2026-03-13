@@ -526,7 +526,13 @@ class QRGeneratorService:
 
     @classmethod
     def get_target_url(cls, qr_code):
-        """Build the target URL for a QR code based on its type."""
+        """Build the target URL for a QR code based on its type.
+
+        For MENU type QR codes, generates a direct public menu URL
+        (/m/<slug>/) so customers land on the menu page immediately.
+        For TABLE type, appends a table query parameter.
+        Falls back to /q/<code>/ short-URL redirect for other types.
+        """
         from django.conf import settings
 
         site_url = getattr(settings, "SITE_URL", "")
@@ -534,9 +540,30 @@ class QRGeneratorService:
             site_domain = getattr(settings, "SITE_DOMAIN", "e-menum.net")
             site_url = f"https://{site_domain}"
 
+        # Custom redirect URL always takes priority
         if qr_code.redirect_url:
             return qr_code.redirect_url
 
+        # MENU type → direct public menu link
+        qr_type = getattr(qr_code, "type", "")
+        if qr_type == "MENU" and getattr(qr_code, "menu", None):
+            menu = qr_code.menu
+            slug = getattr(menu, "slug", None)
+            if slug:
+                return f"{site_url}/m/{slug}/"
+
+        # TABLE type → menu link with table param (if menu is set)
+        if qr_type == "TABLE" and getattr(qr_code, "menu", None):
+            menu = qr_code.menu
+            slug = getattr(menu, "slug", None)
+            if slug:
+                table_id = getattr(qr_code, "table_id", None)
+                url = f"{site_url}/m/{slug}/"
+                if table_id:
+                    url += f"?table={table_id}"
+                return url
+
+        # Fallback → short-URL redirect
         return f"{site_url}/q/{qr_code.code}/"
 
     @classmethod

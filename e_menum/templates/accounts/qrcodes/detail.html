@@ -613,7 +613,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (el) {
         var targetUrl = "{{ qr.short_url|default:'' }}";
         if (!targetUrl) {
+            {% if qr.menu and qr.menu.slug %}
+            targetUrl = window.location.origin + '/m/{{ qr.menu.slug }}/';
+            {% else %}
             targetUrl = window.location.origin + '/q/{{ qr.code }}/';
+            {% endif %}
         }
         new QRCode(el, {
             text: targetUrl,

@@ -84,7 +84,12 @@ def qrcode_detail(request, qr_id):
         return redirect("accounts:profile")
     from apps.orders.models import QRCode, QRScan
 
-    qr = get_object_or_404(QRCode, id=qr_id, organization=org, deleted_at__isnull=True)
+    qr = get_object_or_404(
+        QRCode.objects.select_related("menu", "table"),
+        id=qr_id,
+        organization=org,
+        deleted_at__isnull=True,
+    )
     scans = QRScan.objects.filter(qr_code=qr).order_by("-scanned_at")[:50]
     total_scans = QRScan.objects.filter(qr_code=qr).count()
     unique_scans = QRScan.objects.filter(qr_code=qr, is_unique=True).count()
@@ -149,6 +154,16 @@ def qrcode_create(request):
     if table_id:
         qr.table_id = table_id
     qr.save()
+
+    # Generate QR code image
+    if not qr.qr_image_url:
+        try:
+            from apps.orders.services.qr_generator import QRGeneratorService
+
+            QRGeneratorService.generate_and_save(qr, force=False)
+        except Exception:
+            logger.warning("Failed to generate QR image for %s", qr.code)
+
     messages.success(request, _("QR kod olusturuldu."))
     return redirect("accounts:qrcode-detail", qr_id=qr.id)
 

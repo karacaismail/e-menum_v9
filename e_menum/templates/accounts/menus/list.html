@@ -122,7 +122,7 @@
 
             {# Publish / Unpublish Toggle #}
             <button type="button"
-                    @click="togglePublish({{ menu.id }}, {{ menu.is_published|yesno:'true,false' }})"
+                    @click="togglePublish('{{ menu.id }}', {{ menu.is_published|yesno:'true,false' }})"
                     class="px-3 py-2 text-sm font-medium rounded-lg border transition-all inline-flex items-center gap-1.5
                            {% if menu.is_published %}text-yellow-700 dark:text-yellow-300 border-yellow-300 dark:border-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20{% else %}text-green-700 dark:text-green-300 border-green-300 dark:border-green-600 hover:bg-green-50 dark:hover:bg-green-900/20{% endif %}"
                     id="btn-publish-{{ menu.id }}"
@@ -137,7 +137,7 @@
             {# Set Default #}
             {% if not menu.is_default %}
             <button type="button"
-                    @click="setDefault({{ menu.id }})"
+                    @click="setDefault('{{ menu.id }}')"
                     class="px-3 py-2 text-sm font-medium text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all inline-flex items-center gap-1.5"
                     id="btn-default-{{ menu.id }}"
                     title="{% trans 'Varsayilan Yap' %}">
@@ -148,7 +148,7 @@
 
             {# Delete #}
             <button type="button"
-                    @click="confirmDelete({{ menu.id }}, '{{ menu.name|escapejs }}')"
+                    @click="confirmDelete('{{ menu.id }}', '{{ menu.name|escapejs }}')"
                     class="px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 border border-red-300 dark:border-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-all inline-flex items-center gap-1.5 ml-auto"
                     title="{% trans 'Sil' %}">
                 <i class="ph ph-trash text-sm"></i>
@@ -202,7 +202,7 @@ document.addEventListener('alpine:init', function() {
             togglePublish: function(menuId, currentlyPublished) {
                 var self = this;
                 var newState = !currentlyPublished;
-                fetchWithCsrf('/account/menus/' + menuId + '/toggle-publish/', {
+                fetchWithCsrf('/account/menus/' + menuId + '/publish/', {
                     method: 'POST',
                     body: JSON.stringify({ is_published: newState })
                 })
@@ -229,7 +229,7 @@ document.addEventListener('alpine:init', function() {
                             ? 'px-3 py-2 text-sm font-medium rounded-lg border transition-all inline-flex items-center gap-1.5 text-yellow-700 dark:text-yellow-300 border-yellow-300 dark:border-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
                             : 'px-3 py-2 text-sm font-medium rounded-lg border transition-all inline-flex items-center gap-1.5 text-green-700 dark:text-green-300 border-green-300 dark:border-green-600 hover:bg-green-50 dark:hover:bg-green-900/20';
                         // Update Alpine x-on:click binding by setting attribute
-                        btn.setAttribute('x-on:click', 'togglePublish(' + menuId + ', ' + newState + ')');
+                        btn.setAttribute('x-on:click', "togglePublish('" + menuId + "', " + newState + ")");
                         btn.title = newState
                             ? '{% filter escapejs %}{% trans "Yayindan Kaldir" %}{% endfilter %}'
                             : '{% filter escapejs %}{% trans "Yayinla" %}{% endfilter %}';
@@ -254,7 +254,7 @@ document.addEventListener('alpine:init', function() {
             },
 
             setDefault: function(menuId) {
-                fetchWithCsrf('/account/menus/' + menuId + '/set-default/', {
+                fetchWithCsrf('/account/menus/' + menuId + '/default/', {
                     method: 'POST'
                 })
                 .then(function(resp) {

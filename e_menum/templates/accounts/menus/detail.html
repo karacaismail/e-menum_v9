@@ -148,7 +148,7 @@
             {# Category Actions #}
             <div class="mt-auto pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center gap-2">
                 {# View Products #}
-                <a href="{% url 'accounts:category-products' menu.id category.id %}"
+                <a href="{% url 'accounts:product-list' %}?menu={{ menu.id }}&category={{ category.id }}"
                    class="px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 inline-flex items-center gap-1 transition-all">
                     <i class="ph ph-fork-knife text-sm"></i>
                     {% trans "Urunler" %}
@@ -481,11 +481,11 @@ document.addEventListener('alpine:init', function() {
                 self.submitting = true;
                 self.formError = '';
 
-                var menuId = {{ menu.id }};
+                var menuId = '{{ menu.id }}';
                 var url, method;
 
                 if (self.isEditing) {
-                    url = '/account/menus/' + menuId + '/categories/' + self.editingId + '/edit/';
+                    url = '/account/categories/' + self.editingId + '/edit/';
                     method = 'POST';
                 } else {
                     url = '/account/menus/' + menuId + '/categories/create/';
@@ -526,9 +526,8 @@ document.addEventListener('alpine:init', function() {
             // Execute delete
             executeDeleteCategory: function() {
                 var self = this;
-                var menuId = {{ menu.id }};
 
-                fetchWithCsrf('/account/menus/' + menuId + '/categories/' + self.deleteCategoryId + '/delete/', {
+                fetchWithCsrf('/account/categories/' + self.deleteCategoryId + '/delete/', {
                     method: 'POST'
                 })
                 .then(function(resp) {

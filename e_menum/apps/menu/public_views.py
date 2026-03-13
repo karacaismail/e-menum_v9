@@ -27,6 +27,7 @@ import logging
 from datetime import timedelta
 from decimal import Decimal
 
+from django.db.models import Prefetch
 from django.http import Http404
 from django.shortcuts import render
 from django.utils import timezone
@@ -38,6 +39,8 @@ from apps.menu.models import (
     Category,
     Menu,
     Product,
+    ProductModifier,
+    ProductVariant,
 )
 
 logger = logging.getLogger(__name__)
@@ -107,7 +110,10 @@ class PublicMenuView(View):
             deleted_at__isnull=True,
         ).order_by("sort_order", "name")
 
-        # Fetch all active products for this menu in one query
+        # Fetch all active products for this menu in one query.
+        # Use Prefetch with filtered querysets so that iterating
+        # .all() in the serializer loop uses the prefetch cache
+        # instead of issuing a new query per product.
         products = (
             Product.objects.filter(
                 category__menu=menu,
@@ -118,8 +124,19 @@ class PublicMenuView(View):
                 "category",
             )
             .prefetch_related(
-                "variants",
-                "modifiers",
+                Prefetch(
+                    "variants",
+                    queryset=ProductVariant.objects.filter(
+                        deleted_at__isnull=True,
+                        is_available=True,
+                    ).order_by("sort_order", "name"),
+                ),
+                Prefetch(
+                    "modifiers",
+                    queryset=ProductModifier.objects.filter(
+                        deleted_at__isnull=True,
+                    ).order_by("sort_order", "name"),
+                ),
                 "product_allergens__allergen",
             )
             .order_by("sort_order", "name")
@@ -196,11 +213,9 @@ class PublicMenuView(View):
         # Serialize products
         products_data = []
         for product in products:
-            # Sizes (from variants)
+            # Sizes (from variants) — already filtered via Prefetch
             sizes = []
-            for variant in product.variants.filter(
-                deleted_at__isnull=True, is_available=True
-            ).order_by("sort_order", "name"):
+            for variant in product.variants.all():
                 sizes.append(
                     {
                         "name": variant.name,
@@ -212,9 +227,7 @@ class PublicMenuView(View):
             extras = []
             # Sauces (modifiers with price == 0)
             sauces = []
-            for modifier in product.modifiers.filter(
-                deleted_at__isnull=True,
-            ).order_by("sort_order", "name"):
+            for modifier in product.modifiers.all():
                 if modifier.price > 0:
                     extras.append(
                         {
@@ -225,10 +238,11 @@ class PublicMenuView(View):
                 else:
                     sauces.append(modifier.name)
 
-            # Allergen IDs for this product
+            # Allergen IDs for this product — use prefetch cache
             product_allergen_ids = [
                 str(pa.allergen_id)
-                for pa in product.product_allergens.filter(deleted_at__isnull=True)
+                for pa in product.product_allergens.all()
+                if pa.deleted_at is None
             ]
 
             # Tags-based dietary flags

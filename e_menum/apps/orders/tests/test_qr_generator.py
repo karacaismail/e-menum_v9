@@ -537,16 +537,16 @@ class TestDownloadPrintDesign:
 class TestGetTargetURL:
     """Test URL generation for different QR code types."""
 
-    def test_get_target_url_menu_type(self, menu_qr, settings):
-        """MENU type QR code should generate a /q/<code>/ URL."""
+    def test_get_target_url_menu_type_no_menu_linked(self, menu_qr, settings):
+        """MENU type QR without a linked menu should fall back to /q/<code>/."""
         settings.SITE_URL = "https://e-menum.net"
 
         url = QRGeneratorService.get_target_url(menu_qr)
 
         assert url == f"https://e-menum.net/q/{menu_qr.code}/"
 
-    def test_get_target_url_table_type(self, table_qr, settings):
-        """TABLE type QR code should generate a /q/<code>/ URL."""
+    def test_get_target_url_table_type_no_menu_linked(self, table_qr, settings):
+        """TABLE type QR without a linked menu should fall back to /q/<code>/."""
         settings.SITE_URL = "https://e-menum.net"
 
         url = QRGeneratorService.get_target_url(table_qr)

@@ -51,6 +51,9 @@ from apps.core.urls import router as core_router
 # Import public menu SSR views
 from apps.menu.public_views import PublicMenuView, PublicMenuDetailView
 
+# Import QR code short-URL redirect view
+from apps.orders.qr_redirect_view import qr_short_url_redirect
+
 # Import admin upload view
 from shared.views.admin_upload import admin_upload_view
 
@@ -536,6 +539,11 @@ urlpatterns = [
     # -------------------------------------------------------------------------
     # Will be configured with drf-spectacular or similar
     # path('api/docs/', include('drf_spectacular.urls')),
+    # -------------------------------------------------------------------------
+    # QR Short URL Redirect
+    # -------------------------------------------------------------------------
+    # Handles /q/<code>/ → redirects to actual menu or target URL
+    path("q/<str:code>/", qr_short_url_redirect, name="qr-short-url"),
     # -------------------------------------------------------------------------
     # Public Menu Views (Server-Side Rendered)
     # -------------------------------------------------------------------------

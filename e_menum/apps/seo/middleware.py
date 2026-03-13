@@ -13,6 +13,7 @@ import os
 from datetime import date
 
 from django.conf import settings
+from django.core.cache import cache
 from django.db.models import F
 from django.http import (
     HttpRequest,
@@ -23,6 +24,11 @@ from django.http import (
 from django.utils import timezone
 
 logger = logging.getLogger("apps.seo")
+
+# Cache TTL for redirect rules (seconds)
+_REDIRECT_CACHE_TTL = 60 * 60  # 1 hour
+_REDIRECT_CACHE_PREFIX = "seo:redirect:"
+_REDIRECT_MISS_SENTINEL = "__NONE__"
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -37,6 +43,8 @@ class RedirectMiddleware:
     If an active redirect rule matches ``request.path``, the middleware
     returns the appropriate redirect response (301/302/307/308) and
     increments the hit counter on the rule.
+
+    Redirect lookups are cached to avoid a DB query on every request.
     """
 
     def __init__(self, get_response):
@@ -51,50 +59,70 @@ class RedirectMiddleware:
     @staticmethod
     def _check_redirect(request: HttpRequest):
         """
-        Look up an active Redirect for the current path.
+        Look up an active Redirect for the current path (cached).
 
         Returns an HTTP redirect response or ``None``.
         """
+        path = request.path
+        cache_key = f"{_REDIRECT_CACHE_PREFIX}{path}"
+
+        # Try cache first
+        cached = cache.get(cache_key)
+
+        if cached == _REDIRECT_MISS_SENTINEL:
+            return None
+
+        if cached is not None:
+            # cached = (target_path, redirect_type, pk_str)
+            target, redirect_type, pk_str = cached
+            # Fire-and-forget hit counter update (non-blocking)
+            RedirectMiddleware._increment_hit_async(pk_str)
+            if redirect_type in (301, 308):
+                return HttpResponsePermanentRedirect(target)
+            return HttpResponseRedirect(target)
+
+        # Cache miss — query DB
         from apps.seo.models import Redirect
 
         try:
             rule = Redirect.objects.filter(
-                source_path=request.path,
+                source_path=path,
                 is_active=True,
                 deleted_at__isnull=True,
             ).first()
         except Exception:
-            # DB not ready or table missing -- silently pass through
             return None
 
         if rule is None:
+            # Cache the miss so we don't hit DB again for this path
+            cache.set(cache_key, _REDIRECT_MISS_SENTINEL, _REDIRECT_CACHE_TTL)
             return None
 
-        # Increment hit counter
+        # Cache the hit
+        cache.set(
+            cache_key,
+            (rule.target_path, rule.redirect_type, str(rule.pk)),
+            _REDIRECT_CACHE_TTL,
+        )
+
+        RedirectMiddleware._increment_hit_async(str(rule.pk))
+
+        if rule.redirect_type in (301, 308):
+            return HttpResponsePermanentRedirect(rule.target_path)
+        return HttpResponseRedirect(rule.target_path)
+
+    @staticmethod
+    def _increment_hit_async(pk_str: str):
+        """Increment redirect hit counter without blocking the request."""
         try:
-            Redirect.objects.filter(pk=rule.pk).update(
-                hit_count=models_F("hit_count") + 1,
+            from apps.seo.models import Redirect
+
+            Redirect.objects.filter(pk=pk_str).update(
+                hit_count=F("hit_count") + 1,
                 last_hit=timezone.now(),
             )
         except Exception:
-            logger.debug(
-                "Failed to update redirect hit counter for %s", rule.source_path
-            )
-
-        target = rule.target_path
-
-        # Choose redirect class by status code
-        if rule.redirect_type in (301, 308):
-            return HttpResponsePermanentRedirect(target)
-        else:
-            return HttpResponseRedirect(target)
-
-
-def models_F(field_name):
-    """Lazy import helper for ``django.db.models.F``."""
-    from django.db.models import F
-
-    return F(field_name)
+            pass
 
 
 # ──────────────────────────────────────────────────────────────────────────────

@@ -431,13 +431,18 @@ REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = {  # noqa: F405
 # PERFORMANCE OPTIMIZATIONS
 # =============================================================================
 
-# Template caching (enabled by default when DEBUG=False)
-# TEMPLATES[0]['OPTIONS']['loaders'] = [
-#     ('django.template.loaders.cached.Loader', [
-#         'django.template.loaders.filesystem.Loader',
-#         'django.template.loaders.app_directories.Loader',
-#     ]),
-# ]
+# Template caching — avoid re-reading templates from disk on every render.
+# APP_DIRS and loaders are mutually exclusive; remove APP_DIRS first.
+TEMPLATES[0]["APP_DIRS"] = False  # noqa: F405
+TEMPLATES[0]["OPTIONS"]["loaders"] = [  # noqa: F405
+    (
+        "django.template.loaders.cached.Loader",
+        [
+            "django.template.loaders.filesystem.Loader",
+            "django.template.loaders.app_directories.Loader",
+        ],
+    ),
+]
 
 
 # =============================================================================

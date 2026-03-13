@@ -2,10 +2,15 @@ import logging
 from datetime import timedelta
 from decimal import Decimal
 
+from django.core.cache import cache
 from django.db.models import Count, Sum
+from django.db.models.functions import TruncDate
 from django.utils import timezone
 
 logger = logging.getLogger(__name__)
+
+_KPI_CACHE_TTL = 300  # 5 minutes
+_KPI_CACHE_PREFIX = "dashboard:kpi:"
 
 
 class OwnerKPIService:
@@ -17,7 +22,18 @@ class OwnerKPIService:
     # ── Public API ──────────────────────────────────────────────
 
     def get_all_kpis(self):
-        """Return all 6 KPI cards with values, trends, and changes."""
+        """Return all 6 KPI cards with values, trends, and changes (cached)."""
+        cache_key = f"{_KPI_CACHE_PREFIX}{self.organization.pk}:all"
+        cached = cache.get(cache_key)
+        if cached is not None:
+            return cached
+
+        result = self._compute_all_kpis()
+        cache.set(cache_key, result, _KPI_CACHE_TTL)
+        return result
+
+    def _compute_all_kpis(self):
+        """Compute all 6 KPI cards with values, trends, and changes."""
         return {
             "qr_scans": self._build_kpi(
                 label="QR Tarama",
@@ -149,57 +165,83 @@ class OwnerKPIService:
     # ── Trend data (7-day sparkline) ───────────────────────────
 
     def get_trend(self, metric_key, days=7):
-        """Return daily values for the last *days* days (for sparkline charts)."""
+        """Return daily values for the last *days* days (single aggregation query)."""
         today = timezone.now().date()
+        start_date = today - timedelta(days=days - 1)
+
+        # Build a date->value map from a single aggregation query
+        daily_map = self._get_trend_aggregated(metric_key, start_date, today)
+
+        # Fill the result list (0 for missing days)
         values = []
         for i in range(days - 1, -1, -1):
             day = today - timedelta(days=i)
-            values.append(self._get_daily_value(metric_key, day))
+            values.append(daily_map.get(day, 0))
         return values
 
-    def _get_daily_value(self, metric_key, day):
-        """Get a single day's value for the given metric."""
+    def _get_trend_aggregated(self, metric_key, start_date, end_date):
+        """Get daily values as {date: value} using a single aggregation query."""
         try:
             if metric_key == "qr_scans":
                 from apps.orders.models import QRScan
 
-                return QRScan.objects.filter(
-                    organization=self.organization,
-                    scanned_at__date=day,
-                ).count()
+                qs = (
+                    QRScan.objects.filter(
+                        organization=self.organization,
+                        scanned_at__date__gte=start_date,
+                        scanned_at__date__lte=end_date,
+                    )
+                    .annotate(day=TruncDate("scanned_at"))
+                    .values("day")
+                    .annotate(count=Count("id"))
+                )
+                return {row["day"]: row["count"] for row in qs}
 
             elif metric_key == "revenue":
                 from apps.orders.models import Order
 
-                result = Order.objects.filter(
-                    organization=self.organization,
-                    status="COMPLETED",
-                    completed_at__date=day,
-                    deleted_at__isnull=True,
-                ).aggregate(total=Sum("total_amount"))
-                return float(result["total"] or 0)
+                qs = (
+                    Order.objects.filter(
+                        organization=self.organization,
+                        status="COMPLETED",
+                        completed_at__date__gte=start_date,
+                        completed_at__date__lte=end_date,
+                        deleted_at__isnull=True,
+                    )
+                    .annotate(day=TruncDate("completed_at"))
+                    .values("day")
+                    .annotate(total=Sum("total_amount"))
+                )
+                return {row["day"]: float(row["total"] or 0) for row in qs}
 
             elif metric_key == "pending_orders":
                 from apps.orders.models import Order
 
-                return Order.objects.filter(
-                    organization=self.organization,
-                    status="PENDING",
-                    created_at__date=day,
-                    deleted_at__isnull=True,
-                ).count()
+                qs = (
+                    Order.objects.filter(
+                        organization=self.organization,
+                        status="PENDING",
+                        created_at__date__gte=start_date,
+                        created_at__date__lte=end_date,
+                        deleted_at__isnull=True,
+                    )
+                    .annotate(day=TruncDate("created_at"))
+                    .values("day")
+                    .annotate(count=Count("id"))
+                )
+                return {row["day"]: row["count"] for row in qs}
 
-            elif metric_key in ("active_menus", "total_products", "total_customers"):
-                # Cumulative metrics -- no meaningful daily delta available.
-                return 0
+            # Cumulative metrics have no meaningful daily delta
+            return {}
         except Exception:
             logger.debug(
-                "Could not fetch daily value for %s on %s",
+                "Could not fetch trend for %s (%s - %s)",
                 metric_key,
-                day,
+                start_date,
+                end_date,
                 exc_info=True,
             )
-        return 0
+            return {}
 
     # ── Period comparison (week-over-week change) ──────────────
 
@@ -263,45 +305,33 @@ class OwnerKPIService:
     # ── Chart data methods ─────────────────────────────────────
 
     def get_qr_scan_trend(self, days=30):
-        """Daily QR scan counts for line chart."""
+        """Daily QR scan counts for line chart (single query)."""
         today = timezone.now().date()
+        start_date = today - timedelta(days=days - 1)
+
+        daily_map = self._get_trend_aggregated("qr_scans", start_date, today)
+
         dates = []
         values = []
         for i in range(days - 1, -1, -1):
             day = today - timedelta(days=i)
             dates.append(day.isoformat())
-            try:
-                from apps.orders.models import QRScan
-
-                count = QRScan.objects.filter(
-                    organization=self.organization,
-                    scanned_at__date=day,
-                ).count()
-                values.append(count)
-            except Exception:
-                values.append(0)
+            values.append(daily_map.get(day, 0))
         return {"dates": dates, "values": values}
 
     def get_revenue_trend(self, days=30):
-        """Daily revenue for bar chart."""
+        """Daily revenue for bar chart (single query)."""
         today = timezone.now().date()
+        start_date = today - timedelta(days=days - 1)
+
+        daily_map = self._get_trend_aggregated("revenue", start_date, today)
+
         dates = []
         values = []
         for i in range(days - 1, -1, -1):
             day = today - timedelta(days=i)
             dates.append(day.isoformat())
-            try:
-                from apps.orders.models import Order
-
-                result = Order.objects.filter(
-                    organization=self.organization,
-                    status="COMPLETED",
-                    completed_at__date=day,
-                    deleted_at__isnull=True,
-                ).aggregate(total=Sum("total_amount"))
-                values.append(float(result["total"] or 0))
-            except Exception:
-                values.append(0)
+            values.append(daily_map.get(day, 0))
         return {"dates": dates, "values": values}
 
     def get_order_status_distribution(self):
