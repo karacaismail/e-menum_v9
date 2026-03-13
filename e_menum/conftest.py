@@ -39,8 +39,10 @@ _original_store = None
 def _safe_store_rendered_templates(store, signal, sender, template, context, **kwargs):
     """Replacement for django.test.client.store_rendered_templates that
     tolerates RecursionError when copying deeply nested contexts."""
+    from django.test.utils import ContextList
+
     store.setdefault("templates", [])
-    store.setdefault("context", [])
+    store.setdefault("context", ContextList())
     store["templates"].append(template)
     try:
         store["context"].append(copy(context))
