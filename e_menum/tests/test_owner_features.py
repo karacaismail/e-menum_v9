@@ -1000,7 +1000,7 @@ class TeamManagementTests(BaseTestCase):
         self.assertEqual(count, 1)
 
     def test_team_invite_requires_email(self):
-        """Invitation without email should fail."""
+        """Invitation without email should fail (redirect with error msg)."""
         self._login_owner()
         invite_url = "/account/team/invite/"
         data = {
@@ -1009,7 +1009,14 @@ class TeamManagementTests(BaseTestCase):
             "role": str(self.manager_role.pk),
         }
         resp = self.client.post(invite_url, data)
-        self.assertNotEqual(resp.status_code, 302)
+        # Validation failure returns 302 redirect with error message
+        self.assertEqual(resp.status_code, 302)
+        # No user should have been created
+        from apps.core.models import User
+
+        self.assertFalse(
+            User.objects.filter(first_name="No", last_name="Email").exists()
+        )
 
     def test_team_invite_requires_login(self):
         """POST to invite without login should redirect."""
