@@ -531,3 +531,316 @@ class ProductSchema(SchemaBuilder):
             data["offers"] = offer
 
         return data
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# WebSiteSchema — with SiteLinksSearchBox
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+class WebSiteSchema(SchemaBuilder):
+    """
+    Build a ``WebSite`` JSON-LD with optional sitelinks search box.
+
+    Used on the homepage to enable Google's sitelinks search box feature.
+    """
+
+    schema_type = "WebSite"
+
+    def __init__(
+        self,
+        name: str,
+        url: str,
+        *,
+        search_url_template: Optional[str] = None,
+        description: Optional[str] = None,
+        alternate_name: Optional[str] = None,
+    ) -> None:
+        self.name = name
+        self.url = url
+        self.search_url_template = search_url_template
+        self.description = description
+        self.alternate_name = alternate_name
+
+    def to_dict(self) -> Dict[str, Any]:
+        data = self._base_context()
+        data["name"] = self.name
+        data["url"] = self.url
+        if self._clean(self.description):
+            data["description"] = self._clean(self.description)
+        if self._clean(self.alternate_name):
+            data["alternateName"] = self._clean(self.alternate_name)
+        if self.search_url_template:
+            data["potentialAction"] = {
+                "@type": "SearchAction",
+                "target": {
+                    "@type": "EntryPoint",
+                    "urlTemplate": self.search_url_template,
+                },
+                "query-input": "required name=search_term_string",
+            }
+        return data
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# HowToSchema
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+class HowToSchema(SchemaBuilder):
+    """
+    Build a ``HowTo`` JSON-LD from a list of steps.
+
+    Used for tutorial or how-to content pages.
+    """
+
+    schema_type = "HowTo"
+
+    def __init__(
+        self,
+        name: str,
+        *,
+        description: Optional[str] = None,
+        steps: Optional[List[Dict[str, str]]] = None,
+        total_time: Optional[str] = None,
+        image: Optional[str] = None,
+    ) -> None:
+        self.name = name
+        self.description = description
+        self.steps = steps or []
+        self.total_time = total_time
+        self.image = image
+
+    def to_dict(self) -> Dict[str, Any]:
+        data = self._base_context()
+        data["name"] = self.name
+        if self._clean(self.description):
+            data["description"] = self._clean(self.description)
+        if self._clean(self.total_time):
+            data["totalTime"] = self._clean(self.total_time)
+        if self._clean(self.image):
+            data["image"] = self._clean(self.image)
+        if self.steps:
+            data["step"] = [
+                {
+                    "@type": "HowToStep",
+                    "position": i + 1,
+                    "name": step.get("name", ""),
+                    "text": step.get("text", ""),
+                    **({"image": step["image"]} if step.get("image") else {}),
+                }
+                for i, step in enumerate(self.steps)
+            ]
+        return data
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# ReviewSchema
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+class ReviewSchema(SchemaBuilder):
+    """Build a ``Review`` JSON-LD for customer reviews."""
+
+    schema_type = "Review"
+
+    def __init__(
+        self,
+        item_name: str,
+        *,
+        author_name: str = "",
+        rating_value: Optional[float] = None,
+        best_rating: float = 5,
+        review_body: Optional[str] = None,
+        date_published: Optional[str] = None,
+    ) -> None:
+        self.item_name = item_name
+        self.author_name = author_name
+        self.rating_value = rating_value
+        self.best_rating = best_rating
+        self.review_body = review_body
+        self.date_published = date_published
+
+    def to_dict(self) -> Dict[str, Any]:
+        data = self._base_context()
+        data["itemReviewed"] = {"@type": "Thing", "name": self.item_name}
+        if self._clean(self.author_name):
+            data["author"] = {"@type": "Person", "name": self._clean(self.author_name)}
+        if self.rating_value is not None:
+            data["reviewRating"] = {
+                "@type": "Rating",
+                "ratingValue": self.rating_value,
+                "bestRating": self.best_rating,
+            }
+        if self._clean(self.review_body):
+            data["reviewBody"] = self._clean(self.review_body)
+        if self._clean(self.date_published):
+            data["datePublished"] = self._clean(self.date_published)
+        return data
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# EventSchema
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+class EventSchema(SchemaBuilder):
+    """Build an ``Event`` JSON-LD for webinars and events."""
+
+    schema_type = "Event"
+
+    def __init__(
+        self,
+        name: str,
+        *,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None,
+        location_name: Optional[str] = None,
+        location_url: Optional[str] = None,
+        description: Optional[str] = None,
+        image: Optional[str] = None,
+        organizer_name: Optional[str] = None,
+        event_attendance_mode: str = "https://schema.org/OnlineEventAttendanceMode",
+        event_status: str = "https://schema.org/EventScheduled",
+    ) -> None:
+        self.name = name
+        self.start_date = start_date
+        self.end_date = end_date
+        self.location_name = location_name
+        self.location_url = location_url
+        self.description = description
+        self.image = image
+        self.organizer_name = organizer_name
+        self.event_attendance_mode = event_attendance_mode
+        self.event_status = event_status
+
+    def to_dict(self) -> Dict[str, Any]:
+        data = self._base_context()
+        data["name"] = self.name
+        data["eventAttendanceMode"] = self.event_attendance_mode
+        data["eventStatus"] = self.event_status
+        if self._clean(self.start_date):
+            data["startDate"] = self._clean(self.start_date)
+        if self._clean(self.end_date):
+            data["endDate"] = self._clean(self.end_date)
+        if self._clean(self.description):
+            data["description"] = self._clean(self.description)
+        if self._clean(self.image):
+            data["image"] = self._clean(self.image)
+        if self._clean(self.organizer_name):
+            data["organizer"] = {
+                "@type": "Organization",
+                "name": self._clean(self.organizer_name),
+            }
+        if self._clean(self.location_name) or self._clean(self.location_url):
+            location: Dict[str, Any] = {"@type": "VirtualLocation"}
+            if self._clean(self.location_url):
+                location["url"] = self._clean(self.location_url)
+            if self._clean(self.location_name):
+                location["name"] = self._clean(self.location_name)
+            data["location"] = location
+        return data
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# VideoObjectSchema
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+class VideoObjectSchema(SchemaBuilder):
+    """Build a ``VideoObject`` JSON-LD for video content."""
+
+    schema_type = "VideoObject"
+
+    def __init__(
+        self,
+        name: str,
+        *,
+        description: Optional[str] = None,
+        thumbnail_url: Optional[str] = None,
+        upload_date: Optional[str] = None,
+        duration: Optional[str] = None,
+        content_url: Optional[str] = None,
+        embed_url: Optional[str] = None,
+    ) -> None:
+        self.name = name
+        self.description = description
+        self.thumbnail_url = thumbnail_url
+        self.upload_date = upload_date
+        self.duration = duration
+        self.content_url = content_url
+        self.embed_url = embed_url
+
+    def to_dict(self) -> Dict[str, Any]:
+        data = self._base_context()
+        data["name"] = self.name
+        if self._clean(self.description):
+            data["description"] = self._clean(self.description)
+        if self._clean(self.thumbnail_url):
+            data["thumbnailUrl"] = self._clean(self.thumbnail_url)
+        if self._clean(self.upload_date):
+            data["uploadDate"] = self._clean(self.upload_date)
+        if self._clean(self.duration):
+            data["duration"] = self._clean(self.duration)
+        if self._clean(self.content_url):
+            data["contentUrl"] = self._clean(self.content_url)
+        if self._clean(self.embed_url):
+            data["embedUrl"] = self._clean(self.embed_url)
+        return data
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# JobPostingSchema
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+class JobPostingSchema(SchemaBuilder):
+    """Build a ``JobPosting`` JSON-LD for career pages."""
+
+    schema_type = "JobPosting"
+
+    def __init__(
+        self,
+        title: str,
+        *,
+        description: Optional[str] = None,
+        date_posted: Optional[str] = None,
+        valid_through: Optional[str] = None,
+        employment_type: Optional[str] = None,
+        hiring_organization_name: Optional[str] = None,
+        job_location_name: Optional[str] = None,
+        remote: bool = False,
+    ) -> None:
+        self.title = title
+        self.description = description
+        self.date_posted = date_posted
+        self.valid_through = valid_through
+        self.employment_type = employment_type
+        self.hiring_organization_name = hiring_organization_name
+        self.job_location_name = job_location_name
+        self.remote = remote
+
+    def to_dict(self) -> Dict[str, Any]:
+        data = self._base_context()
+        data["title"] = self.title
+        if self._clean(self.description):
+            data["description"] = self._clean(self.description)
+        if self._clean(self.date_posted):
+            data["datePosted"] = self._clean(self.date_posted)
+        if self._clean(self.valid_through):
+            data["validThrough"] = self._clean(self.valid_through)
+        if self._clean(self.employment_type):
+            data["employmentType"] = self._clean(self.employment_type)
+        if self._clean(self.hiring_organization_name):
+            data["hiringOrganization"] = {
+                "@type": "Organization",
+                "name": self._clean(self.hiring_organization_name),
+            }
+        if self.remote:
+            data["jobLocationType"] = "TELECOMMUTE"
+        elif self._clean(self.job_location_name):
+            data["jobLocation"] = {
+                "@type": "Place",
+                "address": self._clean(self.job_location_name),
+            }
+        return data

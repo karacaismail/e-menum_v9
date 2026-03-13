@@ -603,3 +603,157 @@ def detect_redirect_chains(self):
         summary["loops_found"],
     )
     return summary
+
+
+# =============================================================================
+# CORE WEB VITALS MEASUREMENT
+# =============================================================================
+
+
+@shared_task(
+    bind=True,
+    name="seo.measure_core_web_vitals",
+    max_retries=1,
+    default_retry_delay=600,
+    soft_time_limit=300,
+    time_limit=600,
+)
+def measure_core_web_vitals(self, urls=None):
+    """
+    Measure Core Web Vitals for key pages using Google PageSpeed Insights API.
+
+    If no URLs are provided, measures the homepage and a set of
+    representative pages.
+
+    Args:
+        urls: Optional list of URLs to measure. Defaults to key site pages.
+
+    Returns:
+        dict: Summary of measurements taken.
+    """
+    import requests as http_requests
+
+    from apps.seo.models import CoreWebVitalsSnapshot
+
+    api_key = getattr(settings, "PAGESPEED_API_KEY", "")
+    site_url = getattr(settings, "SITE_URL", "https://e-menum.net")
+
+    if not urls:
+        urls = [
+            site_url,
+            f"{site_url}/blog/",
+            f"{site_url}/fiyatlandirma/",
+        ]
+
+    results = []
+    for url in urls:
+        try:
+            params = {
+                "url": url,
+                "strategy": "mobile",
+                "category": "PERFORMANCE",
+            }
+            if api_key:
+                params["key"] = api_key
+
+            resp = http_requests.get(
+                "https://www.googleapis.com/pagespeedonline/v5/runPagespeed",
+                params=params,
+                timeout=60,
+            )
+
+            if resp.status_code != 200:
+                logger.warning(
+                    "PageSpeed API returned %d for %s: %s",
+                    resp.status_code,
+                    url,
+                    resp.text[:200],
+                )
+                continue
+
+            data = resp.json()
+            lighthouse = data.get("lighthouseResult", {})
+            audits = lighthouse.get("audits", {})
+
+            # Extract CWV metrics
+            lcp_val = audits.get("largest-contentful-paint", {}).get("numericValue")
+            fid_val = audits.get("max-potential-fid", {}).get("numericValue")
+            cls_val = audits.get("cumulative-layout-shift", {}).get("numericValue")
+            ttfb_val = audits.get("server-response-time", {}).get("numericValue")
+            inp_val = audits.get("interaction-to-next-paint", {}).get("numericValue")
+
+            perf_score = None
+            categories = lighthouse.get("categories", {})
+            perf = categories.get("performance", {})
+            if perf.get("score") is not None:
+                perf_score = int(perf["score"] * 100)
+
+            CoreWebVitalsSnapshot.objects.create(
+                url=url,
+                lcp=lcp_val,
+                fid=fid_val,
+                cls=cls_val,
+                ttfb=ttfb_val,
+                inp=inp_val,
+                performance_score=perf_score,
+                source="lighthouse",
+            )
+            results.append(
+                {
+                    "url": url,
+                    "score": perf_score,
+                    "lcp": lcp_val,
+                    "cls": cls_val,
+                }
+            )
+            logger.info(
+                "CWV measured: url=%s score=%s lcp=%s cls=%s",
+                url,
+                perf_score,
+                lcp_val,
+                cls_val,
+            )
+
+        except http_requests.RequestException as exc:
+            logger.error("CWV measurement failed for %s: %s", url, exc)
+        except Exception as exc:
+            logger.exception("Unexpected error measuring CWV for %s: %s", url, exc)
+
+    summary = {
+        "urls_measured": len(results),
+        "urls_attempted": len(urls),
+        "results": results,
+    }
+    logger.info(
+        "Core Web Vitals measurement complete: %d/%d URLs measured",
+        summary["urls_measured"],
+        summary["urls_attempted"],
+    )
+    return summary
+
+
+# =============================================================================
+# INDEXNOW URL SUBMISSION
+# =============================================================================
+
+
+@shared_task(
+    name="seo.submit_urls_to_indexnow",
+    soft_time_limit=60,
+    time_limit=120,
+)
+def submit_urls_to_indexnow(urls):
+    """
+    Submit a batch of URLs to IndexNow for instant indexing.
+
+    Args:
+        urls: List of full URLs to submit.
+
+    Returns:
+        dict: Submission result with success status.
+    """
+    from apps.seo.indexnow import IndexNowClient
+
+    client = IndexNowClient()
+    success = client.submit_urls(urls)
+    return {"urls_submitted": len(urls), "success": success}

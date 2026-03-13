@@ -907,8 +907,14 @@ SEO_GTM_CONTAINER_ID = os.environ.get("SEO_GTM_CONTAINER_ID", "")  # e.g. 'GTM-X
 
 SHIELD_ENABLED = env.bool("SHIELD_ENABLED", default=True)
 SHIELD_RATE_LIMIT_WINDOW = env.int("SHIELD_RATE_LIMIT_WINDOW", default=60)  # seconds
-SHIELD_RATE_LIMIT_MAX_REQUESTS = env.int("SHIELD_RATE_LIMIT_MAX_REQUESTS", default=60)
-SHIELD_THRESHOLD_LOG = env.int("SHIELD_THRESHOLD_LOG", default=30)
-SHIELD_THRESHOLD_CHALLENGE = env.int("SHIELD_THRESHOLD_CHALLENGE", default=60)
-SHIELD_THRESHOLD_BLOCK = env.int("SHIELD_THRESHOLD_BLOCK", default=80)
+SHIELD_RATE_LIMIT_MAX = env.int(
+    "SHIELD_RATE_LIMIT_MAX", default=120
+)  # requests per window (doubled from 60)
+SHIELD_THRESHOLD_LOG = env.int("SHIELD_THRESHOLD_LOG", default=60)  # doubled from 30
+SHIELD_THRESHOLD_CHALLENGE = env.int(
+    "SHIELD_THRESHOLD_CHALLENGE", default=120
+)  # doubled from 60
+SHIELD_THRESHOLD_BLOCK = env.int(
+    "SHIELD_THRESHOLD_BLOCK", default=160
+)  # doubled from 80
 SHIELD_WHITELIST_IPS = env.list("SHIELD_WHITELIST_IPS", default=["127.0.0.1", "::1"])

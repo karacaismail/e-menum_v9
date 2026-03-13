@@ -82,6 +82,17 @@ class SEOShieldMiddleware:
         ip_address = self.rate_limiter.get_client_ip(request)
         user_agent = request.META.get("HTTP_USER_AGENT", "")
 
+        # Step 2.5: Skip rate limiting for admin paths (authenticated staff)
+        # Admin users should never be rate-limited while using the panel.
+        if request.path.startswith("/admin/"):
+            user = getattr(request, "user", None)
+            if (
+                user is not None
+                and getattr(user, "is_authenticated", False)
+                and getattr(user, "is_staff", False)
+            ):
+                return self.get_response(request)
+
         # Step 3: Check whitelist (settings-based and DB-based)
         whitelist_ips = getattr(settings, "SHIELD_WHITELIST_IPS", [])
         if ip_address in whitelist_ips:

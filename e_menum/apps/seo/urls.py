@@ -2,7 +2,8 @@
 SEO URL configuration for E-Menum.
 
 Maps TXT file endpoints (robots.txt, humans.txt, security.txt, ads.txt,
-llms.txt) and the XML sitemap to their respective views.
+llms.txt), XML sitemaps, RSS/Atom feeds, and IndexNow key verification
+to their respective views.
 """
 
 from django.contrib.sitemaps.views import index as sitemap_index
@@ -10,6 +11,7 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import path
 
 from apps.seo import txt_files
+from apps.seo.feeds import LatestBlogPostsAtomFeed, LatestBlogPostsFeed
 from apps.seo.sitemaps import sitemaps
 
 app_name = "seo"
@@ -39,4 +41,7 @@ urlpatterns = [
         {"sitemaps": sitemaps},
         name="sitemap-section",
     ),
+    # RSS / Atom feeds
+    path("feed/rss/", LatestBlogPostsFeed(), name="feed-rss"),
+    path("feed/atom/", LatestBlogPostsAtomFeed(), name="feed-atom"),
 ]

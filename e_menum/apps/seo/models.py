@@ -899,3 +899,322 @@ class CrawlReport(TimeStampedMixin, models.Model):
 
     def __str__(self) -> str:
         return f"Crawl {self.started_at:%Y-%m-%d %H:%M} — {self.get_status_display()}"
+
+
+# =============================================================================
+# TRACKING INTEGRATIONS
+# =============================================================================
+
+
+class TrackingPlatform(models.TextChoices):
+    GTM = "gtm", _("Google Tag Manager")
+    GA4 = "ga4", _("Google Analytics 4")
+    META_PIXEL = "meta_pixel", _("Meta Pixel")
+    TIKTOK_PIXEL = "tiktok_pixel", _("TikTok Pixel")
+    LINKEDIN_INSIGHT = "linkedin_insight", _("LinkedIn Insight Tag")
+    TWITTER_PIXEL = "twitter_pixel", _("Twitter/X Pixel")
+    HOTJAR = "hotjar", _("Hotjar")
+    CLARITY = "clarity", _("Microsoft Clarity")
+    CUSTOM_HEAD = "custom_head", _("Custom Head Script")
+    CUSTOM_BODY = "custom_body", _("Custom Body Script")
+
+
+class ScriptPosition(models.TextChoices):
+    HEAD = "head", _("Head (<head>)")
+    BODY_START = "body_start", _("Body Start (after <body>)")
+    BODY_END = "body_end", _("Body End (before </body>)")
+
+
+class TrackingIntegration(models.Model):
+    """
+    Manages third-party tracking and analytics integrations.
+
+    Each integration represents a tracking pixel, analytics script, or
+    custom snippet that gets injected into public-facing pages.
+    Supports platform-specific templates (GTM, GA4, Meta Pixel, etc.)
+    as well as custom arbitrary scripts.
+    """
+
+    name = models.CharField(
+        max_length=100,
+        verbose_name=_("Name"),
+        help_text=_("Human-readable name for this integration"),
+    )
+    platform = models.CharField(
+        max_length=30,
+        choices=TrackingPlatform.choices,
+        verbose_name=_("Platform"),
+        help_text=_("Tracking platform type"),
+    )
+    tracking_id = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name=_("Tracking ID"),
+        help_text=_("Platform-specific ID (e.g., GTM-XXXXX, G-XXXXX, pixel ID)"),
+    )
+    custom_script = models.TextField(
+        blank=True,
+        verbose_name=_("Custom Script"),
+        help_text=_("Custom JavaScript code (for custom_head/custom_body platforms)"),
+    )
+    position = models.CharField(
+        max_length=20,
+        choices=ScriptPosition.choices,
+        default=ScriptPosition.HEAD,
+        verbose_name=_("Injection Position"),
+        help_text=_("Where in the HTML the script should be injected"),
+    )
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name=_("Active"),
+        help_text=_("Only active integrations are injected into pages"),
+    )
+    environments = models.JSONField(
+        default=list,
+        blank=True,
+        verbose_name=_("Environments"),
+        help_text=_(
+            'Limit to specific environments, e.g. ["production"]. Empty = all.'
+        ),
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated"))
+
+    class Meta:
+        db_table = "seo_tracking_integrations"
+        verbose_name = _("Tracking Integration")
+        verbose_name_plural = _("Tracking Integrations")
+        ordering = ["platform", "name"]
+
+    def __str__(self) -> str:
+        status = "Active" if self.is_active else "Inactive"
+        return f"{self.name} ({self.get_platform_display()}) — {status}"
+
+    def get_script_tag(self) -> str:
+        """Generate the HTML script tag for this integration."""
+        tid = self.tracking_id.strip()
+        platform = self.platform
+
+        if platform == TrackingPlatform.GTM and tid:
+            return (
+                f"<!-- Google Tag Manager -->\n"
+                f"<script>(function(w,d,s,l,i){{w[l]=w[l]||[];w[l].push({{'gtm.start':"
+                f"new Date().getTime(),event:'gtm.js'}});var f=d.getElementsByTagName(s)[0],"
+                f"j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src="
+                f"'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);"
+                f"}})(window,document,'script','dataLayer','{tid}');</script>\n"
+                f"<!-- End Google Tag Manager -->"
+            )
+
+        if platform == TrackingPlatform.GA4 and tid:
+            return (
+                f"<!-- Google Analytics 4 -->\n"
+                f'<script async src="https://www.googletagmanager.com/gtag/js?id={tid}"></script>\n'
+                f"<script>window.dataLayer=window.dataLayer||[];"
+                f"function gtag(){{dataLayer.push(arguments);}}"
+                f"gtag('js',new Date());gtag('config','{tid}');</script>"
+            )
+
+        if platform == TrackingPlatform.META_PIXEL and tid:
+            return (
+                f"<!-- Meta Pixel -->\n"
+                f"<script>!function(f,b,e,v,n,t,s){{if(f.fbq)return;n=f.fbq=function()"
+                f"{{n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)}};"
+                f"if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';"
+                f"n.queue=[];t=b.createElement(e);t.async=!0;"
+                f"t.src=v;s=b.getElementsByTagName(e)[0];"
+                f"s.parentNode.insertBefore(t,s)}}(window,document,'script',"
+                f"'https://connect.facebook.net/en_US/fbevents.js');"
+                f"fbq('init','{tid}');fbq('track','PageView');</script>\n"
+                f'<noscript><img height="1" width="1" style="display:none" '
+                f'src="https://www.facebook.com/tr?id={tid}&ev=PageView&noscript=1"/></noscript>'
+            )
+
+        if platform == TrackingPlatform.TIKTOK_PIXEL and tid:
+            return (
+                f"<!-- TikTok Pixel -->\n"
+                f"<script>!function(w,d,t){{w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];"
+                f"ttq.methods=['page','track','identify','instances','debug','on','off','once','ready','alias','group',"
+                f"'enableCookie','disableCookie'];ttq.setAndDefer=function(t,e){{t[e]=function()"
+                f"{{t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}}};"
+                f"for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);"
+                f"ttq.instance=function(t){{for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)"
+                f"ttq.setAndDefer(e,ttq.methods[n]);return e}};ttq.load=function(e,n){{var i='https://analytics.tiktok.com/i18n/pixel/events.js';"
+                f"ttq._i=ttq._i||{{}};ttq._i[e]=[];ttq._i[e]._u=i;ttq._t=ttq._t||{{}};ttq._t[e]=+new Date;"
+                f"ttq._o=ttq._o||{{}};ttq._o[e]=n||{{}};var o=document.createElement('script');o.type='text/javascript';"
+                f"o.async=!0;o.src=i+'?sdkid='+e+'&lib='+t;d.getElementsByTagName('head')[0].appendChild(o)}};"
+                f"ttq.load('{tid}');ttq.page();}}(window,document,'ttq');</script>"
+            )
+
+        if platform == TrackingPlatform.LINKEDIN_INSIGHT and tid:
+            return (
+                f"<!-- LinkedIn Insight Tag -->\n"
+                f'<script type="text/javascript">'
+                f'_linkedin_partner_id="{tid}";'
+                f"window._linkedin_data_partner_ids=window._linkedin_data_partner_ids||[];"
+                f"window._linkedin_data_partner_ids.push(_linkedin_partner_id);"
+                f"(function(l){{if(!l){{window.lintrk=function(a,b){{window.lintrk.q.push([a,b])}};"
+                f"window.lintrk.q=[]}}var s=document.getElementsByTagName('script')[0];"
+                f"var b=document.createElement('script');b.type='text/javascript';b.async=true;"
+                f"b.src='https://snap.licdn.com/li.lms-analytics/insight.min.js';"
+                f"s.parentNode.insertBefore(b,s);}})(window.lintrk);</script>"
+            )
+
+        if platform == TrackingPlatform.HOTJAR and tid:
+            return (
+                f"<!-- Hotjar -->\n"
+                f"<script>(function(h,o,t,j,a,r){{h.hj=h.hj||function()"
+                f"{{(h.hj.q=h.hj.q||[]).push(arguments)}};h._hjSettings={{hjid:{tid},hjsv:6}};"
+                f"a=o.getElementsByTagName('head')[0];"
+                f"r=o.createElement('script');r.async=1;"
+                f"r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;"
+                f"a.appendChild(r);}})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');</script>"
+            )
+
+        if platform == TrackingPlatform.CLARITY and tid:
+            return (
+                f"<!-- Microsoft Clarity -->\n"
+                f'<script type="text/javascript">(function(c,l,a,r,i,t,y){{'
+                f"c[a]=c[a]||function(){{(c[a].q=c[a].q||[]).push(arguments)}};"
+                f"t=l.createElement(r);t.async=1;t.src='https://www.clarity.ms/tag/'+i;"
+                f"y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);"
+                f"}})(window,document,'clarity','script','{tid}');</script>"
+            )
+
+        if platform in (TrackingPlatform.CUSTOM_HEAD, TrackingPlatform.CUSTOM_BODY):
+            return self.custom_script
+
+        if platform == TrackingPlatform.TWITTER_PIXEL and tid:
+            return (
+                f"<!-- Twitter/X Pixel -->\n"
+                f"<script>!function(e,t,n,s,u,a){{e.twq||(s=e.twq=function(){{s.exe?"
+                f"s.exe.apply(s,arguments):s.queue.push(arguments);}},"
+                f"s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,"
+                f"u.src='https://static.ads-twitter.com/uwt.js',"
+                f"a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))"
+                f"}}(window,document,'script');twq('config','{tid}');</script>"
+            )
+
+        return ""
+
+    def get_noscript_tag(self) -> str:
+        """Generate noscript fallback for GTM."""
+        tid = self.tracking_id.strip()
+        if self.platform == TrackingPlatform.GTM and tid:
+            return (
+                f"<!-- Google Tag Manager (noscript) -->\n"
+                f'<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={tid}" '
+                f'height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>'
+            )
+        return ""
+
+
+# =============================================================================
+# CORE WEB VITALS
+# =============================================================================
+
+
+class CoreWebVitalsSnapshot(models.Model):
+    """
+    Point-in-time snapshot of Core Web Vitals metrics for a URL.
+
+    Captured via CrUX API or Lighthouse on a scheduled basis.
+    Used to track performance trends on the SEO dashboard.
+    """
+
+    url = models.URLField(
+        verbose_name=_("URL"),
+        help_text=_("Page URL measured"),
+    )
+    lcp = models.FloatField(
+        null=True,
+        blank=True,
+        verbose_name=_("LCP (ms)"),
+        help_text=_("Largest Contentful Paint in milliseconds"),
+    )
+    fid = models.FloatField(
+        null=True,
+        blank=True,
+        verbose_name=_("FID (ms)"),
+        help_text=_("First Input Delay in milliseconds"),
+    )
+    cls = models.FloatField(
+        null=True,
+        blank=True,
+        verbose_name=_("CLS"),
+        help_text=_("Cumulative Layout Shift score"),
+    )
+    ttfb = models.FloatField(
+        null=True,
+        blank=True,
+        verbose_name=_("TTFB (ms)"),
+        help_text=_("Time to First Byte in milliseconds"),
+    )
+    inp = models.FloatField(
+        null=True,
+        blank=True,
+        verbose_name=_("INP (ms)"),
+        help_text=_("Interaction to Next Paint in milliseconds"),
+    )
+    performance_score = models.IntegerField(
+        null=True,
+        blank=True,
+        verbose_name=_("Performance Score"),
+        help_text=_("Lighthouse performance score (0-100)"),
+    )
+    source = models.CharField(
+        max_length=20,
+        default="lighthouse",
+        verbose_name=_("Source"),
+        help_text=_("Measurement source: 'crux' or 'lighthouse'"),
+    )
+    measured_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("Measured at"),
+    )
+
+    class Meta:
+        db_table = "seo_cwv_snapshots"
+        verbose_name = _("Core Web Vitals Snapshot")
+        verbose_name_plural = _("Core Web Vitals Snapshots")
+        ordering = ["-measured_at"]
+        indexes = [
+            models.Index(fields=["url", "-measured_at"]),
+        ]
+
+    def __str__(self) -> str:
+        score = self.performance_score or "N/A"
+        return f"{self.url} — Score: {score} ({self.measured_at:%Y-%m-%d})"
+
+    @property
+    def lcp_rating(self) -> str:
+        """LCP rating: good (<2500ms), needs improvement, poor (>4000ms)."""
+        if self.lcp is None:
+            return "unknown"
+        if self.lcp <= 2500:
+            return "good"
+        if self.lcp <= 4000:
+            return "needs-improvement"
+        return "poor"
+
+    @property
+    def cls_rating(self) -> str:
+        """CLS rating: good (<0.1), needs improvement, poor (>0.25)."""
+        if self.cls is None:
+            return "unknown"
+        if self.cls <= 0.1:
+            return "good"
+        if self.cls <= 0.25:
+            return "needs-improvement"
+        return "poor"
+
+    @property
+    def inp_rating(self) -> str:
+        """INP rating: good (<200ms), needs improvement, poor (>500ms)."""
+        if self.inp is None:
+            return "unknown"
+        if self.inp <= 200:
+            return "good"
+        if self.inp <= 500:
+            return "needs-improvement"
+        return "poor"

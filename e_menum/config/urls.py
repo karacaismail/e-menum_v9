@@ -113,17 +113,29 @@ def admin_reports(request):
 @staff_member_required
 def admin_seo_dashboard(request):
     """
-    SEO Dashboard — overview of 404s, broken links, redirects, and crawl reports.
+    SEO Dashboard — enterprise-grade overview of SEO health, tracking,
+    404s, broken links, Core Web Vitals, and crawl reports.
     """
     from datetime import timedelta
-    from django.db.models import Sum, Max, Avg
-    from apps.seo.models import BrokenLink, CrawlReport, NotFound404Log, Redirect
+
+    from django.db.models import Avg, Max, Sum
+
+    from apps.seo.models import (
+        BrokenLink,
+        CoreWebVitalsSnapshot,
+        CrawlReport,
+        NotFound404Log,
+        PSEOPage,
+        Redirect,
+        TrackingIntegration,
+    )
 
     now = timezone.now()
     today = now.date()
     thirty_days_ago = today - timedelta(days=30)
+    seven_days_ago = today - timedelta(days=7)
 
-    # Stats
+    # ── KPI Stats ──
     total_redirects = Redirect.objects.filter(
         is_active=True, deleted_at__isnull=True
     ).count()
@@ -148,7 +160,26 @@ def admin_seo_dashboard(request):
     except (ImportError, Exception):
         pass
 
-    # Top 404 paths (last 30 days, aggregated by path)
+    # Published pSEO pages count
+    pseo_published = PSEOPage.objects.filter(
+        is_published=True, deleted_at__isnull=True
+    ).count()
+
+    # ── Core Web Vitals (latest snapshot) ──
+    latest_cwv = CoreWebVitalsSnapshot.objects.first()
+
+    # ── Tracking integrations ──
+    active_tracking = TrackingIntegration.objects.filter(is_active=True)
+
+    # ── 404 trend (last 7 days) ──
+    daily_404s = list(
+        NotFound404Log.objects.filter(date__gte=seven_days_ago)
+        .values("date")
+        .annotate(total=Sum("hit_count"))
+        .order_by("date")
+    )
+
+    # ── Top 404 paths (last 30 days, aggregated by path) ──
     top_404s = (
         NotFound404Log.objects.filter(date__gte=thirty_days_ago)
         .values("path")
@@ -156,23 +187,35 @@ def admin_seo_dashboard(request):
         .order_by("-total_hits")[:10]
     )
 
-    # Recent unresolved broken links
+    # ── Recent unresolved broken links ──
     recent_broken_links = BrokenLink.objects.filter(is_resolved=False).order_by(
         "-first_detected"
     )[:10]
 
-    # Last crawl report
+    # ── Last crawl report ──
     last_crawl = CrawlReport.objects.first()
 
     context = {
         "title": "SEO Dashboard",
+        # KPI cards
         "total_redirects": total_redirects,
         "total_broken_links": total_broken_links,
         "today_404s": today_404s,
         "avg_seo_score": avg_seo_score,
+        "pseo_published": pseo_published,
+        # CWV
+        "latest_cwv": latest_cwv,
+        # Tracking
+        "active_tracking": active_tracking,
+        # 404 trend
+        "daily_404s": daily_404s,
+        "daily_404s_labels": [d["date"].strftime("%b %d") for d in daily_404s],
+        "daily_404s_values": [d["total"] for d in daily_404s],
+        # Tables
         "top_404s": top_404s,
         "recent_broken_links": recent_broken_links,
         "last_crawl": last_crawl,
+        # Layout
         "is_nav_sidebar_enabled": False,
         "has_permission": True,
     }

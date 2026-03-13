@@ -5,11 +5,19 @@ This module contains shared fixtures used across all test modules.
 Fixtures follow pytest-django best practices for Django project testing.
 """
 
+import sys
 import uuid
 
 import pytest
 from django.test import Client
 from rest_framework.test import APIClient
+
+# Increase recursion limit for deeply nested Django template rendering.
+# The test client's store_rendered_templates signal handler calls copy(context)
+# on every template render. Our admin templates (base_site.html → sidebar →
+# multiple includes) create a deeply nested context that exceeds the default
+# limit of 1000 during copy().
+sys.setrecursionlimit(3000)
 
 
 @pytest.fixture(scope="session")

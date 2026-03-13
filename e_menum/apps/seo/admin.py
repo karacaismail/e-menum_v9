@@ -24,6 +24,7 @@ from django.utils.translation import gettext_lazy as _
 from apps.seo.models import (
     AuthorProfile,
     BrokenLink,
+    CoreWebVitalsSnapshot,
     CrawlReport,
     CrawlReportStatus,
     NotFound404Log,
@@ -32,6 +33,7 @@ from apps.seo.models import (
     Redirect,
     RedirectType,
     SchemaOrgType,
+    TrackingIntegration,
     TXTFileConfig,
 )
 from shared.permissions.admin_permission_mixin import EMenumPermissionMixin
@@ -1201,3 +1203,196 @@ class CrawlReportAdmin(EMenumPermissionMixin, admin.ModelAdmin):
 
     broken_count_display.short_description = _("Broken")
     broken_count_display.admin_order_field = "broken_count"
+
+
+# =============================================================================
+# TRACKING INTEGRATION ADMIN
+# =============================================================================
+
+
+PLATFORM_COLORS = {
+    "gtm": "#4285F4",
+    "ga4": "#E37400",
+    "meta_pixel": "#1877F2",
+    "tiktok_pixel": "#000000",
+    "linkedin_insight": "#0A66C2",
+    "twitter_pixel": "#1DA1F2",
+    "hotjar": "#FF3C00",
+    "clarity": "#5C2D91",
+    "custom_head": "#6B7280",
+    "custom_body": "#6B7280",
+}
+
+
+@admin.register(TrackingIntegration)
+class TrackingIntegrationAdmin(EMenumPermissionMixin, admin.ModelAdmin):
+    """Admin interface for managing tracking pixel integrations."""
+
+    list_display = [
+        "name",
+        "platform_badge",
+        "tracking_id",
+        "position",
+        "status_badge",
+        "updated_at",
+    ]
+    list_filter = ["platform", "is_active", "position"]
+    search_fields = ["name", "tracking_id"]
+    list_editable = ["is_active"] if False else []  # Read-only list
+
+    fieldsets = [
+        (
+            _("Integration Details"),
+            {
+                "fields": ("name", "platform", "tracking_id", "is_active"),
+            },
+        ),
+        (
+            _("Script Configuration"),
+            {
+                "fields": ("position", "custom_script"),
+                "classes": ("collapse",),
+                "description": _(
+                    "Custom script is only used for 'Custom Head/Body' platforms."
+                ),
+            },
+        ),
+        (
+            _("Environment"),
+            {
+                "fields": ("environments",),
+                "classes": ("collapse",),
+                "description": _(
+                    "Restrict to specific environments. "
+                    'Leave empty for all. Example: ["production"]'
+                ),
+            },
+        ),
+    ]
+
+    def platform_badge(self, obj):
+        """Colored badge showing the platform name."""
+        color = PLATFORM_COLORS.get(obj.platform, "#6B7280")
+        return format_html(
+            '<span style="display:inline-flex;align-items:center;gap:3px;'
+            "padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;"
+            'background:rgba({},0.12);color:{};">{}</span>',
+            _hex_to_rgb(color),
+            color,
+            obj.get_platform_display(),
+        )
+
+    platform_badge.short_description = _("Platform")
+    platform_badge.admin_order_field = "platform"
+
+    def status_badge(self, obj):
+        """Active/Inactive status badge."""
+        if obj.is_active:
+            return format_html(
+                '<span style="display:inline-flex;align-items:center;gap:3px;'
+                "padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;"
+                'background:rgba(34,197,94,0.12);color:#22c55e;">'
+                '<i class="ph ph-check-circle"></i> Active</span>'
+            )
+        return format_html(
+            '<span style="display:inline-flex;align-items:center;gap:3px;'
+            "padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;"
+            'background:rgba(107,114,128,0.12);color:#6B7280;">'
+            '<i class="ph ph-minus-circle"></i> Inactive</span>'
+        )
+
+    status_badge.short_description = _("Status")
+    status_badge.admin_order_field = "is_active"
+
+
+# =============================================================================
+# CORE WEB VITALS ADMIN
+# =============================================================================
+
+
+@admin.register(CoreWebVitalsSnapshot)
+class CoreWebVitalsSnapshotAdmin(EMenumPermissionMixin, admin.ModelAdmin):
+    """Read-only admin for Core Web Vitals measurement history."""
+
+    list_display = [
+        "url_short",
+        "performance_score_badge",
+        "lcp_display",
+        "cls_display",
+        "inp_display",
+        "source",
+        "measured_at",
+    ]
+    list_filter = ["source", "measured_at"]
+    search_fields = ["url"]
+    ordering = ["-measured_at"]
+    date_hierarchy = "measured_at"
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def url_short(self, obj):
+        """Truncated URL for list display."""
+        url = obj.url
+        if len(url) > 60:
+            url = url[:57] + "..."
+        return url
+
+    url_short.short_description = _("URL")
+    url_short.admin_order_field = "url"
+
+    def performance_score_badge(self, obj):
+        """Color-coded performance score."""
+        score = obj.performance_score
+        if score is None:
+            return format_html('<span style="color:#6B7280;">N/A</span>')
+        if score >= 90:
+            color = "#22c55e"
+        elif score >= 50:
+            color = "#f59e0b"
+        else:
+            color = "#ef4444"
+        return format_html(
+            '<span style="font-weight:700;font-size:14px;color:{};">{}</span>',
+            color,
+            score,
+        )
+
+    performance_score_badge.short_description = _("Score")
+    performance_score_badge.admin_order_field = "performance_score"
+
+    def lcp_display(self, obj):
+        """LCP with color rating."""
+        if obj.lcp is None:
+            return "—"
+        colors = {"good": "#22c55e", "needs-improvement": "#f59e0b", "poor": "#ef4444"}
+        color = colors.get(obj.lcp_rating, "#6B7280")
+        return format_html('<span style="color:{};">{:.0f}ms</span>', color, obj.lcp)
+
+    lcp_display.short_description = _("LCP")
+    lcp_display.admin_order_field = "lcp"
+
+    def cls_display(self, obj):
+        """CLS with color rating."""
+        if obj.cls is None:
+            return "—"
+        colors = {"good": "#22c55e", "needs-improvement": "#f59e0b", "poor": "#ef4444"}
+        color = colors.get(obj.cls_rating, "#6B7280")
+        return format_html('<span style="color:{};">{:.3f}</span>', color, obj.cls)
+
+    cls_display.short_description = _("CLS")
+    cls_display.admin_order_field = "cls"
+
+    def inp_display(self, obj):
+        """INP with color rating."""
+        if obj.inp is None:
+            return "—"
+        colors = {"good": "#22c55e", "needs-improvement": "#f59e0b", "poor": "#ef4444"}
+        color = colors.get(obj.inp_rating, "#6B7280")
+        return format_html('<span style="color:{};">{:.0f}ms</span>', color, obj.inp)
+
+    inp_display.short_description = _("INP")
+    inp_display.admin_order_field = "inp"

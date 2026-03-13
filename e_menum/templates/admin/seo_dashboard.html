@@ -17,88 +17,207 @@
 {% block content_title %}{% endblock %}
 
 {% block content %}
-<div class="dashboard">
-    {# Page Header #}
-    <div class="dashboard-welcome">
-        <div class="welcome-text">
-            <h1><i class="ph ph-chart-line-up"></i> {% trans 'SEO Dashboard' %}</h1>
-            <p>{% trans 'Monitor SEO health, 404 errors, broken links, and crawl reports.' %}</p>
+<div class="ed" style="max-width:1440px;">
+
+    {# ── Header ── #}
+    <div class="ed-header">
+        <div>
+            <h1 class="ed-greeting"><i class="ph ph-chart-line-up" style="color:var(--accent-light);"></i> {% trans 'SEO Command Center' %}</h1>
+            <p class="ed-subtitle">{% trans 'Monitor SEO health, tracking integrations, Core Web Vitals, and content performance.' %}</p>
         </div>
     </div>
 
-    {# Quick Stats #}
-    <div class="dashboard-stats">
-        <div class="stat-card">
-            <div class="stat-icon">
+    {# ── KPI Strip (6 cards) ── #}
+    <div class="ed-kpi-strip">
+        {# Active Redirects #}
+        <div class="ed-kpi-card">
+            <div class="ed-kpi-icon" style="background:rgba(34,197,94,0.1);color:#4ade80;">
                 <i class="ph ph-arrows-split"></i>
             </div>
-            <div class="stat-info">
-                <span class="stat-label">{% trans 'Active Redirects' %}</span>
-                <span class="stat-value">{{ total_redirects|default:"0" }}</span>
+            <div class="ed-kpi-body">
+                <span class="ed-kpi-label">{% trans 'Active Redirects' %}</span>
+                <span class="ed-kpi-value">{{ total_redirects|default:"0" }}</span>
             </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon">
+
+        {# Broken Links #}
+        <div class="ed-kpi-card">
+            <div class="ed-kpi-icon" style="background:rgba(239,68,68,0.1);color:#f87171;">
                 <i class="ph ph-link-break"></i>
             </div>
-            <div class="stat-info">
-                <span class="stat-label">{% trans 'Broken Links' %}</span>
-                <span class="stat-value">{{ total_broken_links|default:"0" }}</span>
+            <div class="ed-kpi-body">
+                <span class="ed-kpi-label">{% trans 'Broken Links' %}</span>
+                <span class="ed-kpi-value" style="{% if total_broken_links > 0 %}color:#ef4444;{% endif %}">{{ total_broken_links|default:"0" }}</span>
             </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon">
+
+        {# Today's 404s #}
+        <div class="ed-kpi-card">
+            <div class="ed-kpi-icon" style="background:rgba(245,158,11,0.1);color:#fbbf24;">
                 <i class="ph ph-warning"></i>
             </div>
-            <div class="stat-info">
-                <span class="stat-label">{% trans "Today's 404s" %}</span>
-                <span class="stat-value">{{ today_404s|default:"0" }}</span>
+            <div class="ed-kpi-body">
+                <span class="ed-kpi-label">{% trans "Today's 404s" %}</span>
+                <span class="ed-kpi-value">{{ today_404s|default:"0" }}</span>
             </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon">
+
+        {# Avg SEO Score #}
+        <div class="ed-kpi-card">
+            <div class="ed-kpi-icon" style="background:rgba(59,130,246,0.1);color:#60a5fa;">
                 <i class="ph ph-gauge"></i>
             </div>
-            <div class="stat-info">
-                <span class="stat-label">{% trans 'Avg SEO Score' %}</span>
-                <span class="stat-value">{{ avg_seo_score|default:"—" }}</span>
+            <div class="ed-kpi-body">
+                <span class="ed-kpi-label">{% trans 'Avg SEO Score' %}</span>
+                <span class="ed-kpi-value">{{ avg_seo_score|default:"\u2014" }}</span>
+            </div>
+        </div>
+
+        {# pSEO Pages #}
+        <div class="ed-kpi-card">
+            <div class="ed-kpi-icon" style="background:rgba(139,92,246,0.1);color:#a78bfa;">
+                <i class="ph ph-files"></i>
+            </div>
+            <div class="ed-kpi-body">
+                <span class="ed-kpi-label">{% trans 'pSEO Pages' %}</span>
+                <span class="ed-kpi-value">{{ pseo_published|default:"0" }}</span>
+            </div>
+        </div>
+
+        {# CWV Score #}
+        <div class="ed-kpi-card">
+            <div class="ed-kpi-icon" style="background:rgba(14,165,233,0.1);color:#38bdf8;">
+                <i class="ph ph-speedometer"></i>
+            </div>
+            <div class="ed-kpi-body">
+                <span class="ed-kpi-label">{% trans 'Performance' %}</span>
+                {% if latest_cwv and latest_cwv.performance_score is not None %}
+                <span class="ed-kpi-value" style="color:{% if latest_cwv.performance_score >= 90 %}#22c55e{% elif latest_cwv.performance_score >= 50 %}#f59e0b{% else %}#ef4444{% endif %};">{{ latest_cwv.performance_score }}</span>
+                {% else %}
+                <span class="ed-kpi-value">&mdash;</span>
+                {% endif %}
             </div>
         </div>
     </div>
 
-    {# Dashboard Grid #}
-    <div class="dashboard-grid">
+    {# ── Main Grid: 404 Trend Chart + Core Web Vitals ── #}
+    <div class="ed-main-grid">
 
-        {# ── Top 404 Paths ── #}
-        <div class="dashboard-card dashboard-card--wide">
-            <div class="card-header">
-                <h2><i class="ph ph-warning-circle"></i> {% trans 'Top 404 Paths' %} <span style="font-size:12px;color:#6b7280;font-weight:400;">({% trans 'Last 30 days' %})</span></h2>
+        {# 404 Trend Chart #}
+        <div class="ed-card">
+            <div class="ed-card-header">
+                <h2><i class="ph ph-chart-bar"></i> {% trans '404 Errors Trend' %}</h2>
+                <span class="ed-header-badge">{% trans 'Last 7 days' %}</span>
             </div>
-            <div class="card-body">
+            <div class="ed-card-body" style="padding:16px;">
+                <div id="seo-404-chart" style="height:220px;"></div>
+            </div>
+        </div>
+
+        {# Core Web Vitals #}
+        <div class="ed-card">
+            <div class="ed-card-header">
+                <h2><i class="ph ph-speedometer"></i> {% trans 'Core Web Vitals' %}</h2>
+                {% if latest_cwv %}
+                <span class="ed-header-badge">{{ latest_cwv.measured_at|date:"M d" }}</span>
+                {% endif %}
+            </div>
+            <div class="ed-card-body" style="padding:16px;">
+                {% if latest_cwv %}
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+                    {# LCP #}
+                    <div style="text-align:center;">
+                        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;font-weight:600;margin-bottom:8px;">LCP</div>
+                        <div style="font-size:28px;font-weight:700;color:{% if latest_cwv.lcp_rating == 'good' %}#22c55e{% elif latest_cwv.lcp_rating == 'needs-improvement' %}#f59e0b{% else %}#ef4444{% endif %};">
+                            {% if latest_cwv.lcp is not None %}{{ latest_cwv.lcp|floatformat:0 }}<span style="font-size:12px;font-weight:400;">ms</span>{% else %}&mdash;{% endif %}
+                        </div>
+                        <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">{% trans 'Largest Contentful Paint' %}</div>
+                    </div>
+                    {# CLS #}
+                    <div style="text-align:center;">
+                        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;font-weight:600;margin-bottom:8px;">CLS</div>
+                        <div style="font-size:28px;font-weight:700;color:{% if latest_cwv.cls_rating == 'good' %}#22c55e{% elif latest_cwv.cls_rating == 'needs-improvement' %}#f59e0b{% else %}#ef4444{% endif %};">
+                            {% if latest_cwv.cls is not None %}{{ latest_cwv.cls|floatformat:3 }}{% else %}&mdash;{% endif %}
+                        </div>
+                        <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">{% trans 'Cumulative Layout Shift' %}</div>
+                    </div>
+                    {# INP #}
+                    <div style="text-align:center;">
+                        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;font-weight:600;margin-bottom:8px;">INP</div>
+                        <div style="font-size:28px;font-weight:700;color:{% if latest_cwv.inp_rating == 'good' %}#22c55e{% elif latest_cwv.inp_rating == 'needs-improvement' %}#f59e0b{% else %}#ef4444{% endif %};">
+                            {% if latest_cwv.inp is not None %}{{ latest_cwv.inp|floatformat:0 }}<span style="font-size:12px;font-weight:400;">ms</span>{% else %}&mdash;{% endif %}
+                        </div>
+                        <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">{% trans 'Interaction to Next Paint' %}</div>
+                    </div>
+                </div>
+                {% if latest_cwv.ttfb is not None %}
+                <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12px;">
+                    <span style="color:var(--text-dim);">TTFB</span>
+                    <span style="color:var(--text-muted);font-weight:600;">{{ latest_cwv.ttfb|floatformat:0 }}ms</span>
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="ed-empty">
+                    <i class="ph ph-speedometer"></i>
+                    <p>{% trans 'No Core Web Vitals data yet. Run measurement from admin.' %}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# ── Tracking Integrations Strip ── #}
+    {% if active_tracking %}
+    <div class="ed-health-strip">
+        {% for t in active_tracking %}
+        <div class="ed-health-card">
+            <div class="ed-health-dot dot-green"></div>
+            <div class="ed-health-info">
+                <span class="ed-health-label">{{ t.get_platform_display }}</span>
+                <span class="ed-health-value">{{ t.tracking_id|default:t.name|truncatechars:20 }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {# ── Secondary Grid: Top 404s + Broken Links + Crawl Report ── #}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+        {# Top 404 Paths #}
+        <div class="ed-card" style="grid-column:1/-1;">
+            <div class="ed-card-header">
+                <h2><i class="ph ph-warning-circle"></i> {% trans 'Top 404 Paths' %}</h2>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span class="ed-header-badge">{% trans 'Last 30 days' %}</span>
+                    <a href="{% url 'admin:seo_notfound404log_changelist' %}" class="ed-header-link">{% trans 'View all' %} &rarr;</a>
+                </div>
+            </div>
+            <div class="ed-card-body">
                 {% if top_404s %}
                 <div style="overflow-x:auto;">
                     <table style="width:100%;border-collapse:collapse;font-size:13px;">
                         <thead>
-                            <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                                <th style="text-align:left;padding:8px 12px;color:#6b7280;font-weight:600;font-size:11px;">{% trans 'Path' %}</th>
-                                <th style="text-align:right;padding:8px 12px;color:#6b7280;font-weight:600;font-size:11px;">{% trans 'Total Hits' %}</th>
-                                <th style="text-align:left;padding:8px 12px;color:#6b7280;font-weight:600;font-size:11px;">{% trans 'Last Date' %}</th>
-                                <th style="text-align:center;padding:8px 12px;color:#6b7280;font-weight:600;font-size:11px;">{% trans 'Action' %}</th>
+                            <tr style="border-bottom:1px solid var(--border);">
+                                <th style="text-align:left;padding:10px 14px;color:var(--text-dim);font-weight:600;font-size:11px;text-transform:uppercase;">{% trans 'Path' %}</th>
+                                <th style="text-align:right;padding:10px 14px;color:var(--text-dim);font-weight:600;font-size:11px;text-transform:uppercase;">{% trans 'Hits' %}</th>
+                                <th style="text-align:left;padding:10px 14px;color:var(--text-dim);font-weight:600;font-size:11px;text-transform:uppercase;">{% trans 'Last Seen' %}</th>
+                                <th style="text-align:center;padding:10px 14px;color:var(--text-dim);font-weight:600;font-size:11px;text-transform:uppercase;">{% trans 'Action' %}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for item in top_404s %}
                             <tr style="border-bottom:1px solid rgba(255,255,255,0.03);">
-                                <td style="padding:8px 12px;">
-                                    <code style="background:rgba(239,68,68,0.08);color:#fca5a5;padding:2px 8px;border-radius:4px;font-size:11px;">{{ item.path }}</code>
+                                <td style="padding:8px 14px;">
+                                    <code style="background:rgba(239,68,68,0.08);color:#fca5a5;padding:2px 8px;border-radius:4px;font-size:11px;">{{ item.path|truncatechars:60 }}</code>
                                 </td>
-                                <td style="text-align:right;padding:8px 12px;">
-                                    <span style="color:{% if item.total_hits >= 100 %}#ef4444{% elif item.total_hits >= 10 %}#f59e0b{% else %}#94a3b8{% endif %};font-weight:700;">{{ item.total_hits }}</span>
+                                <td style="text-align:right;padding:8px 14px;">
+                                    <span style="color:{% if item.total_hits >= 100 %}#ef4444{% elif item.total_hits >= 10 %}#f59e0b{% else %}var(--text-muted){% endif %};font-weight:700;">{{ item.total_hits }}</span>
                                 </td>
-                                <td style="padding:8px 12px;color:#94a3b8;font-size:12px;">{{ item.last_date|date:"M d, Y" }}</td>
-                                <td style="text-align:center;padding:8px 12px;">
+                                <td style="padding:8px 14px;color:var(--text-dim);font-size:12px;">{{ item.last_date|date:"M d, Y" }}</td>
+                                <td style="text-align:center;padding:8px 14px;">
                                     <a href="{% url 'admin:seo_redirect_add' %}?source_path={{ item.path|urlencode }}"
-                                       style="color:#3b82f6;font-size:11px;text-decoration:none;"
+                                       style="color:var(--accent-light);font-size:11px;text-decoration:none;font-weight:500;"
                                        title="{% trans 'Create redirect' %}">
                                         <i class="ph ph-arrows-split"></i> {% trans 'Redirect' %}
                                     </a>
@@ -109,169 +228,190 @@
                     </table>
                 </div>
                 {% else %}
-                <div class="empty-state" style="padding:24px;">
-                    <i class="ph ph-check-circle" style="font-size:32px;color:#22c55e;opacity:0.5;"></i>
-                    <p style="margin:8px 0 0;color:#6b7280;">{% trans 'No 404 errors in the last 30 days.' %}</p>
+                <div class="ed-empty">
+                    <i class="ph ph-check-circle" style="color:#22c55e;"></i>
+                    <p>{% trans 'No 404 errors in the last 30 days.' %}</p>
                 </div>
                 {% endif %}
             </div>
         </div>
 
-        {# ── Recent Broken Links ── #}
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h2><i class="ph ph-link-break"></i> {% trans 'Recent Broken Links' %}</h2>
+        {# Recent Broken Links #}
+        <div class="ed-card">
+            <div class="ed-card-header">
+                <h2><i class="ph ph-link-break"></i> {% trans 'Broken Links' %}</h2>
+                <a href="{% url 'admin:seo_brokenlink_changelist' %}" class="ed-header-link">{% trans 'View all' %} &rarr;</a>
             </div>
-            <div class="card-body">
+            <div class="ed-card-body">
                 {% if recent_broken_links %}
-                <div style="overflow-x:auto;">
-                    <table style="width:100%;border-collapse:collapse;font-size:12px;">
-                        <thead>
-                            <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                                <th style="text-align:left;padding:6px 8px;color:#6b7280;font-weight:600;font-size:10px;">{% trans 'Target' %}</th>
-                                <th style="text-align:center;padding:6px 8px;color:#6b7280;font-weight:600;font-size:10px;">{% trans 'Code' %}</th>
-                                <th style="text-align:left;padding:6px 8px;color:#6b7280;font-weight:600;font-size:10px;">{% trans 'Detected' %}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for link in recent_broken_links %}
-                            <tr style="border-bottom:1px solid rgba(255,255,255,0.03);">
-                                <td style="padding:6px 8px;color:#e2e8f0;font-size:11px;" title="{{ link.target_url }}">
-                                    {{ link.target_url|truncatechars:45 }}
-                                </td>
-                                <td style="text-align:center;padding:6px 8px;">
-                                    <span style="padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600;background:rgba(245,158,11,0.12);color:#f59e0b;">{{ link.status_code }}</span>
-                                </td>
-                                <td style="padding:6px 8px;color:#94a3b8;font-size:11px;">{{ link.first_detected|date:"M d" }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <div style="padding:8px;text-align:right;">
-                    <a href="{% url 'admin:seo_brokenlink_changelist' %}" style="color:#3b82f6;font-size:11px;text-decoration:none;">
-                        {% trans 'View all' %} <i class="ph ph-arrow-right"></i>
-                    </a>
+                <div class="ed-activity-list">
+                    {% for link in recent_broken_links %}
+                    <div class="ed-activity-item">
+                        <div class="ed-activity-icon icon-delete">
+                            <i class="ph ph-link-break"></i>
+                        </div>
+                        <div class="ed-activity-content">
+                            <span class="ed-activity-object" title="{{ link.target_url }}">{{ link.target_url|truncatechars:50 }}</span>
+                            <span class="ed-activity-meta">
+                                <span style="padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600;background:rgba(245,158,11,0.12);color:#f59e0b;">{{ link.status_code }}</span>
+                                &middot; {{ link.first_detected|date:"M d" }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
                 {% else %}
-                <div class="empty-state" style="padding:24px;">
-                    <i class="ph ph-check-circle" style="font-size:32px;color:#22c55e;opacity:0.5;"></i>
-                    <p style="margin:8px 0 0;color:#6b7280;">{% trans 'No broken links detected.' %}</p>
+                <div class="ed-empty">
+                    <i class="ph ph-check-circle" style="color:#22c55e;"></i>
+                    <p>{% trans 'No broken links detected.' %}</p>
                 </div>
                 {% endif %}
             </div>
         </div>
 
-        {# ── Last Crawl Report ── #}
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h2><i class="ph ph-magnifying-glass"></i> {% trans 'Last Crawl Report' %}</h2>
+        {# Last Crawl Report #}
+        <div class="ed-card">
+            <div class="ed-card-header">
+                <h2><i class="ph ph-magnifying-glass"></i> {% trans 'Last Crawl' %}</h2>
+                <a href="{% url 'admin:seo_crawlreport_changelist' %}" class="ed-header-link">{% trans 'All reports' %} &rarr;</a>
             </div>
-            <div class="card-body">
+            <div class="ed-card-body" style="padding:16px;">
                 {% if last_crawl %}
-                <div style="padding:4px 0;">
-                    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
-                        <span style="color:#6b7280;font-size:12px;">{% trans 'Status' %}</span>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                        <span style="color:var(--text-dim);font-size:12px;">{% trans 'Status' %}</span>
                         <span style="font-size:12px;font-weight:600;color:{% if last_crawl.status == 'completed' %}#22c55e{% elif last_crawl.status == 'failed' %}#ef4444{% else %}#3b82f6{% endif %};">
                             {{ last_crawl.get_status_display }}
                         </span>
                     </div>
-                    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
-                        <span style="color:#6b7280;font-size:12px;">{% trans 'Date' %}</span>
-                        <span style="color:#e2e8f0;font-size:12px;">{{ last_crawl.started_at|date:"M d, Y H:i" }}</span>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                        <span style="color:var(--text-dim);font-size:12px;">{% trans 'Date' %}</span>
+                        <span style="color:var(--text-secondary);font-size:12px;">{{ last_crawl.started_at|date:"M d, Y H:i" }}</span>
                     </div>
-                    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
-                        <span style="color:#6b7280;font-size:12px;">{% trans 'Pages Crawled' %}</span>
-                        <span style="color:#e2e8f0;font-size:12px;font-weight:600;">{{ last_crawl.total_pages }}</span>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                        <span style="color:var(--text-dim);font-size:12px;">{% trans 'Pages' %}</span>
+                        <span style="color:var(--text-secondary);font-size:12px;font-weight:600;">{{ last_crawl.total_pages }}</span>
                     </div>
-                    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
-                        <span style="color:#6b7280;font-size:12px;">{% trans 'Broken' %}</span>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                        <span style="color:var(--text-dim);font-size:12px;">{% trans 'Broken' %}</span>
                         <span style="color:{% if last_crawl.broken_count > 0 %}#ef4444{% else %}#22c55e{% endif %};font-size:12px;font-weight:600;">{{ last_crawl.broken_count }}</span>
                     </div>
-                    <div style="display:flex;justify-content:space-between;padding:8px 0;">
-                        <span style="color:#6b7280;font-size:12px;">{% trans 'Healthy' %}</span>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;">
+                        <span style="color:var(--text-dim);font-size:12px;">{% trans 'Healthy' %}</span>
                         <span style="color:#22c55e;font-size:12px;font-weight:600;">{{ last_crawl.healthy_count }}</span>
                     </div>
                 </div>
-                <div style="padding:8px;text-align:right;">
-                    <a href="{% url 'admin:seo_crawlreport_changelist' %}" style="color:#3b82f6;font-size:11px;text-decoration:none;">
-                        {% trans 'All reports' %} <i class="ph ph-arrow-right"></i>
-                    </a>
-                </div>
                 {% else %}
-                <div class="empty-state" style="padding:24px;">
-                    <i class="ph ph-magnifying-glass" style="font-size:32px;opacity:0.3;"></i>
-                    <p style="margin:8px 0 0;color:#6b7280;">{% trans 'No crawl reports yet.' %}</p>
+                <div class="ed-empty">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <p>{% trans 'No crawl reports yet.' %}</p>
                 </div>
                 {% endif %}
             </div>
         </div>
+    </div>
 
-        {# ── Quick Access ── #}
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h2><i class="ph ph-lightning"></i> {% trans 'Quick Access' %}</h2>
-            </div>
-            <div class="card-body">
-                <div class="quick-access-grid">
-                    <a href="{% url 'admin:seo_redirect_changelist' %}" class="quick-access-item">
-                        <div class="qa-icon" style="background:rgba(34,197,94,0.1);color:#4ade80;">
-                            <i class="ph ph-arrows-split"></i>
-                        </div>
-                        <div class="qa-info">
-                            <span class="qa-name">{% trans 'Redirects' %}</span>
-                            <span class="qa-app">{% trans 'Manage URL redirects' %}</span>
-                        </div>
-                    </a>
-                    <a href="{% url 'admin:seo_notfound404log_changelist' %}" class="quick-access-item">
-                        <div class="qa-icon" style="background:rgba(239,68,68,0.1);color:#f87171;">
-                            <i class="ph ph-warning"></i>
-                        </div>
-                        <div class="qa-info">
-                            <span class="qa-name">{% trans '404 Logs' %}</span>
-                            <span class="qa-app">{% trans 'View 404 error history' %}</span>
-                        </div>
-                    </a>
-                    <a href="{% url 'admin:seo_brokenlink_changelist' %}" class="quick-access-item">
-                        <div class="qa-icon" style="background:rgba(245,158,11,0.1);color:#fbbf24;">
-                            <i class="ph ph-link-break"></i>
-                        </div>
-                        <div class="qa-info">
-                            <span class="qa-name">{% trans 'Broken Links' %}</span>
-                            <span class="qa-app">{% trans 'Monitor broken links' %}</span>
-                        </div>
-                    </a>
-                    <a href="{% url 'admin:seo_txtfileconfig_changelist' %}" class="quick-access-item">
-                        <div class="qa-icon" style="background:rgba(59,130,246,0.1);color:#60a5fa;">
-                            <i class="ph ph-file-text"></i>
-                        </div>
-                        <div class="qa-info">
-                            <span class="qa-name">{% trans 'TXT Files' %}</span>
-                            <span class="qa-app">{% trans 'robots.txt, humans.txt, etc.' %}</span>
-                        </div>
-                    </a>
-                    <a href="{% url 'admin:seo_pseopage_changelist' %}" class="quick-access-item">
-                        <div class="qa-icon" style="background:rgba(139,92,246,0.1);color:#a78bfa;">
-                            <i class="ph ph-files"></i>
-                        </div>
-                        <div class="qa-info">
-                            <span class="qa-name">{% trans 'pSEO Pages' %}</span>
-                            <span class="qa-app">{% trans 'Programmatic SEO pages' %}</span>
-                        </div>
-                    </a>
-                    <a href="{% url 'admin:seo_crawlreport_changelist' %}" class="quick-access-item">
-                        <div class="qa-icon" style="background:rgba(14,165,233,0.1);color:#38bdf8;">
-                            <i class="ph ph-magnifying-glass"></i>
-                        </div>
-                        <div class="qa-info">
-                            <span class="qa-name">{% trans 'Crawl Reports' %}</span>
-                            <span class="qa-app">{% trans 'Broken link crawl history' %}</span>
-                        </div>
-                    </a>
-                </div>
+    {# ── Quick Access Grid ── #}
+    <div class="ed-card">
+        <div class="ed-card-header">
+            <h2><i class="ph ph-lightning"></i> {% trans 'Quick Access' %}</h2>
+        </div>
+        <div class="ed-card-body">
+            <div class="ed-qa-grid">
+                <a href="{% url 'admin:seo_redirect_changelist' %}" class="ed-qa-item">
+                    <i class="ph ph-arrows-split" style="color:#4ade80;"></i>
+                    <span class="ed-qa-name">{% trans 'Redirects' %}</span>
+                    <span class="ed-qa-app">{{ total_redirects }}</span>
+                </a>
+                <a href="{% url 'admin:seo_notfound404log_changelist' %}" class="ed-qa-item">
+                    <i class="ph ph-warning" style="color:#f87171;"></i>
+                    <span class="ed-qa-name">{% trans '404 Logs' %}</span>
+                    <span class="ed-qa-app">{% trans 'Error history' %}</span>
+                </a>
+                <a href="{% url 'admin:seo_brokenlink_changelist' %}" class="ed-qa-item">
+                    <i class="ph ph-link-break" style="color:#fbbf24;"></i>
+                    <span class="ed-qa-name">{% trans 'Broken Links' %}</span>
+                    <span class="ed-qa-app">{{ total_broken_links }}</span>
+                </a>
+                <a href="{% url 'admin:seo_txtfileconfig_changelist' %}" class="ed-qa-item">
+                    <i class="ph ph-file-text" style="color:#60a5fa;"></i>
+                    <span class="ed-qa-name">{% trans 'TXT Files' %}</span>
+                    <span class="ed-qa-app">robots, humans</span>
+                </a>
+                <a href="{% url 'admin:seo_pseopage_changelist' %}" class="ed-qa-item">
+                    <i class="ph ph-files" style="color:#a78bfa;"></i>
+                    <span class="ed-qa-name">{% trans 'pSEO Pages' %}</span>
+                    <span class="ed-qa-app">{{ pseo_published }} {% trans 'published' %}</span>
+                </a>
+                <a href="{% url 'admin:seo_crawlreport_changelist' %}" class="ed-qa-item">
+                    <i class="ph ph-magnifying-glass" style="color:#38bdf8;"></i>
+                    <span class="ed-qa-name">{% trans 'Crawl Reports' %}</span>
+                    <span class="ed-qa-app">{% trans 'Link health' %}</span>
+                </a>
+                <a href="{% url 'admin:seo_trackingintegration_changelist' %}" class="ed-qa-item">
+                    <i class="ph ph-code" style="color:#f472b6;"></i>
+                    <span class="ed-qa-name">{% trans 'Tracking' %}</span>
+                    <span class="ed-qa-app">{% trans 'Pixels & analytics' %}</span>
+                </a>
+                <a href="{% url 'admin:seo_corewebvitalssnapshot_changelist' %}" class="ed-qa-item">
+                    <i class="ph ph-speedometer" style="color:#34d399;"></i>
+                    <span class="ed-qa-name">{% trans 'Web Vitals' %}</span>
+                    <span class="ed-qa-app">{% trans 'Performance history' %}</span>
+                </a>
             </div>
         </div>
-
     </div>
+
 </div>
+
+{# ── 404 Trend Chart (Apache ECharts) ── #}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var chartDom = document.getElementById('seo-404-chart');
+    if (!chartDom || typeof echarts === 'undefined') return;
+
+    var chart = echarts.init(chartDom);
+    var labels = {{ daily_404s_labels|safe }};
+    var values = {{ daily_404s_values|safe }};
+
+    chart.setOption({
+        tooltip: {
+            trigger: 'axis',
+            backgroundColor: '#1e293b',
+            borderColor: 'rgba(255,255,255,0.08)',
+            textStyle: { color: '#e2e8f0', fontSize: 12 }
+        },
+        grid: { left: 40, right: 16, top: 16, bottom: 30 },
+        xAxis: {
+            type: 'category',
+            data: labels,
+            axisLine: { lineStyle: { color: 'rgba(255,255,255,0.06)' } },
+            axisLabel: { color: '#6b7280', fontSize: 11 },
+            axisTick: { show: false }
+        },
+        yAxis: {
+            type: 'value',
+            splitLine: { lineStyle: { color: 'rgba(255,255,255,0.04)' } },
+            axisLabel: { color: '#6b7280', fontSize: 11 }
+        },
+        series: [{
+            data: values,
+            type: 'bar',
+            barWidth: '60%',
+            itemStyle: {
+                borderRadius: [4, 4, 0, 0],
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    { offset: 0, color: '#f59e0b' },
+                    { offset: 1, color: 'rgba(245,158,11,0.2)' }
+                ])
+            },
+            emphasis: {
+                itemStyle: { color: '#fbbf24' }
+            }
+        }]
+    });
+
+    window.addEventListener('resize', function() { chart.resize(); });
+});
+</script>
 {% endblock %}
