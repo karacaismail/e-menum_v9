@@ -20,6 +20,7 @@ from . import support_views
 from . import team_views
 from . import notification_views
 from . import restaurant_views
+from . import upload_views
 
 app_name = "accounts"
 
@@ -28,6 +29,16 @@ urlpatterns = [
     path("login/", views.AccountLoginView.as_view(), name="login"),
     path("register/", views.RegisterView.as_view(), name="register"),
     path("logout/", views.AccountLogoutView.as_view(), name="logout"),
+    path(
+        "forgot-password/",
+        views.AccountPasswordResetView.as_view(),
+        name="forgot-password",
+    ),
+    path(
+        "reset-password/<uidb64>/<token>/",
+        views.AccountPasswordResetConfirmView.as_view(),
+        name="password-reset-confirm",
+    ),
     # ── Dashboard ─────────────────────────────────────────────────────────
     path("dashboard/", dashboard_views.DashboardView.as_view(), name="dashboard"),
     # ── Dashboard API ─────────────────────────────────────────────────────
@@ -299,4 +310,6 @@ urlpatterns = [
         notification_views.notification_mark_all_read,
         name="notification-mark-all-read-api",
     ),
+    # ── Image Upload (AJAX) ───────────────────────────────────────────
+    path("upload/image/", upload_views.image_upload, name="image-upload"),
 ]

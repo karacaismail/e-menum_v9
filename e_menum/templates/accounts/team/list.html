@@ -308,7 +308,7 @@
                     </button>
                 </div>
 
-                <form :action="'/account/team/' + roleModal + '/assign-role/'" method="post">
+                <form :action="'/account/team/' + roleModal + '/role/'" method="post">
                     {% csrf_token %}
                     <div class="mb-5">
                         <label for="modal_role_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">

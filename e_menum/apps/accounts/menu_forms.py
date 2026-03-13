@@ -94,8 +94,27 @@ class ThemeForm(forms.Form):
     accent_color = forms.CharField(
         max_length=7, initial="#F5A623", label=_("Vurgu Rengi")
     )
-    font_family = forms.CharField(
-        max_length=100, initial="Inter", required=False, label=_("Font")
+    FONT_CHOICES = [
+        ("Inter", "Inter"),
+        ("Poppins", "Poppins"),
+        ("Open Sans", "Open Sans"),
+        ("Playfair Display", "Playfair Display"),
+        ("Roboto", "Roboto"),
+        ("Lato", "Lato"),
+        ("Montserrat", "Montserrat"),
+        ("Nunito", "Nunito"),
+        ("Raleway", "Raleway"),
+        ("Source Sans 3", "Source Sans 3"),
+        ("Merriweather", "Merriweather"),
+        ("DM Sans", "DM Sans"),
+        ("Work Sans", "Work Sans"),
+        ("Josefin Sans", "Josefin Sans"),
+    ]
+    font_family = forms.ChoiceField(
+        choices=FONT_CHOICES,
+        initial="Inter",
+        required=False,
+        label=_("Font Ailesi"),
     )
     logo_position = forms.ChoiceField(
         choices=[("left", _("Sol")), ("center", _("Orta")), ("right", _("Sag"))],

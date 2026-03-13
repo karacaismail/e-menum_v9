@@ -142,6 +142,28 @@ def qrcode_create(request):
 
     code = str(uuid.uuid4())[:8].upper()
 
+    # Auto-link org's default/published menu if not provided
+    if not menu_id:
+        from apps.menu.models import Menu
+
+        default_menu = (
+            Menu.objects.filter(
+                organization=org,
+                is_published=True,
+                deleted_at__isnull=True,
+            )
+            .order_by("-is_default", "-created_at")
+            .first()
+        )
+        if default_menu:
+            menu_id = str(default_menu.id)
+        else:
+            messages.warning(
+                request,
+                _("Once bir menu olusturup yayinlayin, ardindan QR kod olusturun."),
+            )
+            return redirect("accounts:qrcode-list")
+
     qr = QRCode(
         organization=org,
         type=qr_type,
@@ -192,6 +214,27 @@ def qrcode_create_api(request):
     if not name:
         return JsonResponse({"error": "Name is required"}, status=400)
 
+    # Auto-link org's default/published menu if not provided
+    if not menu_id:
+        from apps.menu.models import Menu
+
+        default_menu = (
+            Menu.objects.filter(
+                organization=org,
+                is_published=True,
+                deleted_at__isnull=True,
+            )
+            .order_by("-is_default", "-created_at")
+            .first()
+        )
+        if default_menu:
+            menu_id = str(default_menu.id)
+        else:
+            return JsonResponse(
+                {"error": "Once bir menu olusturup yayinlayin."},
+                status=400,
+            )
+
     code = str(uuid.uuid4())[:8].upper()
 
     qr = QRCode(
@@ -207,8 +250,7 @@ def qrcode_create_api(request):
         qr.table_id = table_id
     qr.save()
 
-    # Ensure QR image is generated (signal should handle this,
-    # but call explicitly as safety net)
+    # Ensure QR image is generated
     if not qr.qr_image_url:
         try:
             from apps.orders.services.qr_generator import QRGeneratorService

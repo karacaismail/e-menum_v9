@@ -102,6 +102,127 @@ class AccountLoginView(FormView):
 
 
 # =============================================================================
+# PASSWORD RESET (Forgot Password)
+# =============================================================================
+
+
+class AccountPasswordResetView(FormView):
+    """
+    Forgot password — user enters email, receives reset link.
+
+    GET  /account/forgot-password/
+    POST /account/forgot-password/
+    """
+
+    template_name = "accounts/forgot_password.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect("accounts:dashboard")
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form_class(self):
+        from django.contrib.auth.forms import PasswordResetForm
+
+        return PasswordResetForm
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        css = (
+            "w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 "
+            "bg-white dark:bg-gray-800 text-gray-900 dark:text-white "
+            "focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+        )
+        form.fields["email"].widget.attrs.update(
+            {"class": css, "placeholder": _("ornek@email.com")}
+        )
+        return form
+
+    def form_valid(self, form):
+        form.save(
+            request=self.request,
+            use_https=self.request.is_secure(),
+            email_template_name="emails/password_reset_email.txt",
+            html_email_template_name="emails/password_reset_email.html",
+            subject_template_name="emails/password_reset_subject.txt",
+        )
+        messages.success(
+            self.request,
+            _("Sifre sifirlama baglantisi e-posta adresinize gonderildi."),
+        )
+        return redirect("accounts:login")
+
+
+class AccountPasswordResetConfirmView(FormView):
+    """
+    Reset password confirmation — user clicks link, sets new password.
+
+    GET  /account/reset-password/<uidb64>/<token>/
+    POST /account/reset-password/<uidb64>/<token>/
+    """
+
+    template_name = "accounts/reset_password.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        from django.contrib.auth.tokens import default_token_generator
+        from django.utils.http import urlsafe_base64_decode
+        from apps.core.models import User
+
+        self.uidb64 = kwargs.get("uidb64")
+        self.token = kwargs.get("token")
+        self.validlink = False
+        self.reset_user = None
+
+        try:
+            uid = urlsafe_base64_decode(self.uidb64).decode()
+            self.reset_user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            self.reset_user = None
+
+        if self.reset_user and default_token_generator.check_token(
+            self.reset_user, self.token
+        ):
+            self.validlink = True
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form_class(self):
+        from django.contrib.auth.forms import SetPasswordForm
+
+        return SetPasswordForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.reset_user
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["validlink"] = self.validlink
+        return ctx
+
+    def get(self, request, *args, **kwargs):
+        if not self.validlink:
+            return render(request, self.template_name, {"validlink": False})
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if not self.validlink:
+            return render(request, self.template_name, {"validlink": False})
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(
+            self.request, _("Sifreniz basariyla degistirildi. Giris yapabilirsiniz.")
+        )
+        return redirect("accounts:login")
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form, validlink=True))
+
+
+# =============================================================================
 # LOGOUT
 # =============================================================================
 

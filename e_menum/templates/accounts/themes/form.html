@@ -205,15 +205,20 @@
                         <label for="id_font_family" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                             {% trans "Font Family" %}
                         </label>
-                        <input type="text"
-                               id="id_font_family"
-                               name="font_family"
-                               x-model="fontFamily"
-                               value="{{ form.font_family.value|default:'Inter' }}"
-                               placeholder="{% trans 'e.g. Inter, Poppins, Playfair Display' %}"
-                               class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                        <select id="id_font_family"
+                                name="font_family"
+                                x-model="fontFamily"
+                                class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
+                            {% for value, label in form.font_family.field.choices %}
+                            <option value="{{ value }}"
+                                    {% if form.font_family.value == value or form.font_family.value == None and value == "Inter" %}selected{% endif %}
+                                    style="font-family: '{{ label }}', sans-serif">
+                                {{ label }}
+                            </option>
+                            {% endfor %}
+                        </select>
                         <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
-                            {% trans "Use any Google Fonts name. Multiple fonts can be separated by commas." %}
+                            {% trans "Choose a Google Fonts family for your menu." %}
                         </p>
                     </div>
 

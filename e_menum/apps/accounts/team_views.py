@@ -192,6 +192,30 @@ def team_invite(request):
     except Exception:
         logger.exception("Failed to write audit log for invite %s", email)
 
+    # Send invitation email
+    try:
+        from django.conf import settings as django_settings
+        from django.core.mail import send_mail
+
+        invite_url = f"{django_settings.SITE_URL}/account/login/"
+        org_name = org.name
+        inviter_name = request.user.get_full_name() or request.user.email
+        send_mail(
+            subject=f"{org_name} ekibine davet edildiniz",
+            message=(
+                f"Merhaba {first_name},\n\n"
+                f"{inviter_name} sizi {org_name} ekibine davet etti.\n\n"
+                f"Giris yapmak icin: {invite_url}\n"
+                f"E-posta: {email}\n\n"
+                f"Iyi calismalar,\n{org_name}"
+            ),
+            from_email=django_settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[email],
+            fail_silently=True,
+        )
+    except Exception:
+        logger.exception("Failed to send invite email to %s", email)
+
     messages.success(request, _("Davet gonderildi: %(email)s") % {"email": email})
     return redirect("accounts:team-list")
 

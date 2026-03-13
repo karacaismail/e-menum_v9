@@ -58,6 +58,13 @@
                 </div>
                 {% endif %}
 
+                {# Forgot Password Link #}
+                <div class="text-right">
+                    <a href="{% url 'accounts:forgot-password' %}" class="text-sm text-primary-600 dark:text-primary-400 hover:underline">
+                        {% trans "Şifremi Unuttum" %}
+                    </a>
+                </div>
+
                 {# Submit Button #}
                 <button type="submit"
                         class="w-full flex items-center justify-center gap-2 px-6 py-3.5 text-base font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-xl shadow-md hover:shadow-lg transition-all focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-800">

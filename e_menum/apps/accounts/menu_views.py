@@ -2,9 +2,11 @@
 
 import json
 import logging
+import uuid as uuid_mod
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
@@ -65,14 +67,20 @@ def menu_create(request):
                     )
                 except Theme.DoesNotExist:
                     pass
+            base_slug = slugify(form.cleaned_data["name"]) or "menu"
             menu = Menu(
                 organization=org,
                 name=form.cleaned_data["name"],
-                slug=slugify(form.cleaned_data["name"]),
+                slug=base_slug,
                 description=form.cleaned_data.get("description", ""),
                 theme=theme,
+                is_published=True,
             )
-            menu.save()
+            try:
+                menu.save()
+            except IntegrityError:
+                menu.slug = f"{base_slug}-{uuid_mod.uuid4().hex[:6]}"
+                menu.save()
             messages.success(request, _("Menu basariyla olusturuldu."))
             return redirect("accounts:menu-detail", menu_id=menu.id)
     else:
@@ -387,10 +395,11 @@ def theme_create(request):
     if request.method == "POST":
         form = ThemeForm(request.POST)
         if form.is_valid():
+            base_slug = slugify(form.cleaned_data["name"]) or "theme"
             theme = Theme(
                 organization=org,
                 name=form.cleaned_data["name"],
-                slug=slugify(form.cleaned_data["name"]),
+                slug=base_slug,
                 description=form.cleaned_data.get("description", ""),
                 primary_color=form.cleaned_data["primary_color"],
                 secondary_color=form.cleaned_data["secondary_color"],
@@ -400,7 +409,11 @@ def theme_create(request):
                 font_family=form.cleaned_data.get("font_family", "Inter"),
                 logo_position=form.cleaned_data.get("logo_position", "left"),
             )
-            theme.save()
+            try:
+                theme.save()
+            except IntegrityError:
+                theme.slug = f"{base_slug}-{uuid_mod.uuid4().hex[:6]}"
+                theme.save()
             messages.success(request, _("Tema olusturuldu."))
             return redirect("accounts:theme-list")
     else:

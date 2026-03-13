@@ -107,10 +107,18 @@ def product_create(request):
                 )
             except Category.DoesNotExist:
                 messages.error(request, _("Gecersiz kategori."))
+                categories = Category.objects.filter(
+                    organization=org, deleted_at__isnull=True
+                ).order_by("position", "name")
                 return render(
                     request,
                     "accounts/products/form.html",
-                    {"form": form, "is_edit": False},
+                    {
+                        "form": form,
+                        "is_edit": False,
+                        "allergens": _get_allergens(),
+                        "categories": categories,
+                    },
                 )
 
             tags = (
@@ -152,6 +160,9 @@ def product_create(request):
         form = ProductForm(organization=org)
 
     allergens = _get_allergens()
+    categories = Category.objects.filter(
+        organization=org, deleted_at__isnull=True
+    ).order_by("position", "name")
     return render(
         request,
         "accounts/products/form.html",
@@ -159,6 +170,7 @@ def product_create(request):
             "form": form,
             "is_edit": False,
             "allergens": allergens,
+            "categories": categories,
         },
     )
 
@@ -285,6 +297,9 @@ def product_edit(request, product_id):
     except Exception:
         pass
 
+    categories = Category.objects.filter(
+        organization=org, deleted_at__isnull=True
+    ).order_by("position", "name")
     return render(
         request,
         "accounts/products/form.html",
@@ -294,6 +309,7 @@ def product_edit(request, product_id):
             "is_edit": True,
             "allergens": allergens,
             "existing_allergens": [str(a) for a in existing_allergens],
+            "categories": categories,
         },
     )
 

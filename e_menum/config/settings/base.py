@@ -677,7 +677,7 @@ IMPERSONATE = {
     # Custom function to check who can be impersonated
     "CUSTOM_USER_QUERYSET": "shared.utils.impersonate.get_impersonatable_users",
     # Redirect after impersonation starts/stops
-    "REDIRECT_URL": "/admin/",
+    "REDIRECT_URL": "/account/dashboard/",
     # Disable impersonation of superusers (security)
     "ALLOW_SUPERUSER": False,
     # Max session duration in seconds (1 hour)
