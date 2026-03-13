@@ -15,9 +15,9 @@ from rest_framework.test import APIClient
 # Increase recursion limit for deeply nested Django template rendering.
 # The test client's store_rendered_templates signal handler calls copy(context)
 # on every template render. Our admin templates (base_site.html → sidebar →
-# multiple includes) create a deeply nested context that exceeds the default
-# limit of 1000 during copy().
-sys.setrecursionlimit(3000)
+# multiple includes → enterprise dashboard with ECharts/CWV/tracking blocks)
+# create a deeply nested context that exceeds lower limits during copy().
+sys.setrecursionlimit(5000)
 
 
 @pytest.fixture(scope="session")
