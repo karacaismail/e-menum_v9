@@ -4,7 +4,7 @@ Public media serve endpoint.
 Provides a unified URL for accessing media files with proper authorization:
 
 - ``is_public=True`` media → accessible by anyone (anonymous QR menu viewers, etc.)
-- ``is_public=False`` media → requires authentication + org membership + ``media.view``
+- ``is_public=False`` media → requires authentication + org membership
 - Platform superusers → can access any media regardless of visibility
 
 Usage in config/urls.py::
@@ -37,8 +37,10 @@ def media_serve(request, pk):
 
     Public media (``is_public=True``) is served to everyone including
     anonymous users.  Private media requires the requesting user to be
-    authenticated and to belong to the media's organization with at least
-    ``media.view`` permission.  Superusers bypass all checks.
+    authenticated and to belong to the media's organization.
+    Superusers bypass all checks.  Fine-grained RBAC (``media.view``,
+    ``media.create``, etc.) is enforced on the management API views,
+    not on this file-serving endpoint.
 
     On success the view returns a **302 redirect** to the underlying file URL
     and bumps ``usage_count`` / ``last_used_at`` on the Media record.
@@ -77,13 +79,6 @@ def media_serve(request, pk):
         org_match = True
 
     if not org_match:
-        raise Http404("Media not found")
-
-    # RBAC check: media.view permission
-    from shared.permissions.abilities import check_permission
-
-    org_for_check = request_org or user_org
-    if not check_permission(request.user, "media.view", org_for_check):
         raise Http404("Media not found")
 
     return _redirect_to_media(media)
