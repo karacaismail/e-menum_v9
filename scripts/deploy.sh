@@ -114,6 +114,23 @@ else
 fi
 
 # -----------------------------------------------------------------------------
+# Mod tespiti: Docker mı bare metal mi? (NEED_FULL_BUILD karari icin once yapilmali)
+# -----------------------------------------------------------------------------
+detect_deploy_mode() {
+  if [[ -n "$DEPLOY_MODE" ]]; then
+    echo "$DEPLOY_MODE"
+    return
+  fi
+  if command -v docker &>/dev/null && [[ -f "$APP_ROOT/docker-compose.prod.yml" ]]; then
+    echo "docker"
+  else
+    echo "bare"
+  fi
+}
+DEPLOY_MODE="$(detect_deploy_mode)"
+log_info "Deploy mode: $DEPLOY_MODE"
+
+# -----------------------------------------------------------------------------
 # 1b. Commit'e gore akilli karar: full build gerekli mi? (sadece Docker modunda)
 #     Dockerfile, requirements*.txt, package.json, docker/ degisti mi?
 # -----------------------------------------------------------------------------
@@ -133,24 +150,6 @@ if [[ "$DEPLOY_MODE" == "docker" && ("$NEED_RESTART" == "1" || "$FORCE_DEPLOY" =
     log_info "Sadece kod degisti: build atlanacak, minimal kesinti ile guncellenecek."
   fi
 fi
-
-# -----------------------------------------------------------------------------
-# Mod tespiti: Docker mı bare metal mi?
-# -----------------------------------------------------------------------------
-detect_deploy_mode() {
-  if [[ -n "$DEPLOY_MODE" ]]; then
-    echo "$DEPLOY_MODE"
-    return
-  fi
-  if command -v docker &>/dev/null && [[ -f "$APP_ROOT/docker-compose.prod.yml" ]]; then
-    echo "docker"
-  else
-    echo "bare"
-  fi
-}
-
-DEPLOY_MODE="$(detect_deploy_mode)"
-log_info "Deploy mode: $DEPLOY_MODE"
 
 # Degisiklik yoksa hicbir islem yapma (Tailwind, migrate, collectstatic, restart yok)
 # Sadece NEED_RESTART veya FORCE_DEPLOY varsa deploy calisir. DEPLOY_DEBUG sadece health check ekler.
