@@ -444,7 +444,7 @@ api_v1_patterns = [
     # Media Module
     # -------------------------------------------------------------------------
     # media/folders/, media/files/ (upload, CRUD, move)
-    path("", include(("apps.media.urls", "media"), namespace="media")),
+    path("media/", include(("apps.media.urls", "media"), namespace="media")),
     # -------------------------------------------------------------------------
     # Customers Module
     # -------------------------------------------------------------------------
