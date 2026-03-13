@@ -150,11 +150,60 @@ def admin_upload_view(request):
     # Build URL
     file_url = f"{settings.MEDIA_URL}{relative_path}"
 
+    # Create a centralized Media record (best-effort)
+    media_id = None
+    media_serve_url = None
+    try:
+        from apps.media.models import Media
+
+        org = getattr(request.user, "organization", None)
+        if org:
+            # Detect image dimensions
+            width, height = None, None
+            try:
+                from PIL import Image
+
+                uploaded_file.seek(0)
+                img = Image.open(uploaded_file)
+                width, height = img.size
+                uploaded_file.seek(0)
+            except Exception:
+                pass
+
+            media = Media.objects.create(
+                organization=org,
+                uploaded_by=request.user,
+                name=original_filename,
+                original_filename=original_filename,
+                file_path=relative_path,
+                url=file_url,
+                storage="LOCAL",
+                media_type="IMAGE",
+                status="READY",
+                mime_type=content_type,
+                file_size=uploaded_file.size,
+                width=width,
+                height=height,
+                is_public=True,
+            )
+            media_id = str(media.pk)
+            from django.urls import reverse
+
+            media_serve_url = reverse("media-serve", kwargs={"pk": media.pk})
+    except Exception:
+        import logging
+
+        logging.getLogger(__name__).debug(
+            "Could not create Media record for upload", exc_info=True
+        )
+
     return JsonResponse(
         {
             "success": True,
             "url": file_url,
             "filename": original_filename,
             "size": uploaded_file.size,
+            "media_id": media_id,
+            "media_serve_url": media_serve_url,
         }
     )

@@ -262,7 +262,7 @@ class PublicMenuView(View):
                     or product.short_description
                     or "",
                     "price": float(product.base_price),
-                    "image": product.image or "",
+                    "image": product.image_url or product.image or "",
                     "category": str(product.category_id),
                     "rating": float(product.rating),
                     "reviews": product.review_count,

@@ -598,7 +598,34 @@ class QRGeneratorService:
             if not qr_code.short_url:
                 qr_code.short_url = target_url
 
-            qr_code.save(update_fields=["qr_image_url", "short_url", "updated_at"])
+            # Create a centralized Media record (best-effort)
+            update_fields = ["qr_image_url", "short_url", "updated_at"]
+            try:
+                from apps.media.models import Media
+
+                media_record = Media.objects.create(
+                    organization=qr_code.organization,
+                    name=f"QR Code - {qr_code.name or qr_code.code}",
+                    original_filename=filename,
+                    file_path=relative_path,
+                    url=media_url,
+                    storage="LOCAL",
+                    media_type="IMAGE",
+                    status="READY",
+                    mime_type="image/png",
+                    file_size=os.path.getsize(absolute_path),
+                    is_public=True,
+                )
+                qr_code.qr_image_media = media_record
+                update_fields.append("qr_image_media")
+            except Exception:
+                logger.debug(
+                    "Could not create Media record for QR %s",
+                    qr_code.code,
+                    exc_info=True,
+                )
+
+            qr_code.save(update_fields=update_fields)
 
             logger.info(
                 "QR code image generated: code=%s, path=%s", qr_code.code, relative_path

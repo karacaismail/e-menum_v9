@@ -632,6 +632,7 @@ class Command(BaseCommand):
                 "service_request": ["view", "list", "create", "update"],
                 "customer": ["view", "list", "create"],
                 "notification": ["view", "list"],
+                "media": ["view", "list", "create"],  # Can view and upload media
             },
             "viewer": {
                 # Read-only dashboard
@@ -651,6 +652,7 @@ class Command(BaseCommand):
                 "analytics": ["view"],
                 "report": ["view", "list"],
                 "notification": ["view", "list"],
+                "media": ["view", "list"],  # Can view media (read-only)
             },
         }
 

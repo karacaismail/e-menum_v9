@@ -207,6 +207,15 @@ class Organization(TimeStampedMixin, SoftDeleteMixin, models.Model):
         verbose_name=_("Logo URL"),
         help_text=_("URL to organization logo image"),
     )
+    logo_media = models.ForeignKey(
+        "media.Media",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="organization_logos",
+        verbose_name=_("Logo (Media)"),
+        help_text=_("Linked Media record for organization logo"),
+    )
 
     settings = models.JSONField(
         default=dict,
@@ -284,6 +293,18 @@ class Organization(TimeStampedMixin, SoftDeleteMixin, models.Model):
         if self.trial_ends_at is None:
             return False
         return timezone.now() < self.trial_ends_at
+
+    @property
+    def logo_url(self) -> str:
+        """Return the best available logo URL.
+
+        Prefers the linked Media serve URL, falls back to the legacy URL field.
+        """
+        if self.logo_media_id:
+            from django.urls import reverse
+
+            return reverse("media-serve", kwargs={"pk": self.logo_media_id})
+        return self.logo or ""
 
     def get_setting(self, key: str, default=None):
         """
@@ -495,6 +516,15 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin, SoftDeleteMixin
         verbose_name=_("Avatar URL"),
         help_text=_("URL to user's avatar image"),
     )
+    avatar_media = models.ForeignKey(
+        "media.Media",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="user_avatars",
+        verbose_name=_("Avatar (Media)"),
+        help_text=_("Linked Media record for user avatar"),
+    )
 
     phone = models.CharField(
         max_length=20,
@@ -575,6 +605,18 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin, SoftDeleteMixin
     def full_name(self) -> str:
         """Return the user's full name."""
         return f"{self.first_name} {self.last_name}".strip()
+
+    @property
+    def avatar_url(self) -> str:
+        """Return the best available avatar URL.
+
+        Prefers the linked Media serve URL, falls back to the legacy URL field.
+        """
+        if self.avatar_media_id:
+            from django.urls import reverse
+
+            return reverse("media-serve", kwargs={"pk": self.avatar_media_id})
+        return self.avatar or ""
 
     @property
     def is_active_user(self) -> bool:

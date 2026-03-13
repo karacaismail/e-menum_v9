@@ -60,6 +60,9 @@ from shared.views.admin_upload import admin_upload_view
 # Import enterprise media library view
 from apps.media.library_view import media_library
 
+# Import public media serve endpoint
+from apps.media.serve_view import media_serve
+
 # Import temporary diagnostics view (remove after debugging)
 from apps.core.diagnostics_view import diagnostics_view
 
@@ -539,6 +542,11 @@ urlpatterns = [
     # -------------------------------------------------------------------------
     # Will be configured with drf-spectacular or similar
     # path('api/docs/', include('drf_spectacular.urls')),
+    # -------------------------------------------------------------------------
+    # Public Media Serve (redirect to file URL with RBAC)
+    # -------------------------------------------------------------------------
+    # Serves public media to anyone, private media requires auth + org membership
+    path("media/serve/<uuid:pk>/", media_serve, name="media-serve"),
     # -------------------------------------------------------------------------
     # QR Short URL Redirect
     # -------------------------------------------------------------------------

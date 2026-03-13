@@ -700,6 +700,15 @@ class Category(TimeStampedMixin, SoftDeleteMixin, models.Model):
         verbose_name=_("Image URL"),
         help_text=_("URL to category image"),
     )
+    image_media = models.ForeignKey(
+        "media.Media",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="category_images",
+        verbose_name=_("Image (Media)"),
+        help_text=_("Linked Media record for category image"),
+    )
 
     icon = models.CharField(
         max_length=100,
@@ -785,6 +794,18 @@ class Category(TimeStampedMixin, SoftDeleteMixin, models.Model):
         if hasattr(self, "products"):
             return self.products.filter(deleted_at__isnull=True).count()
         return 0
+
+    @property
+    def image_url(self) -> str:
+        """Return the best available image URL.
+
+        Prefers the linked Media serve URL, falls back to the legacy URL field.
+        """
+        if self.image_media_id:
+            from django.urls import reverse
+
+            return reverse("media-serve", kwargs={"pk": self.image_media_id})
+        return self.image or ""
 
     def get_ancestors(self) -> list:
         """
@@ -1000,6 +1021,15 @@ class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
         verbose_name=_("Image URL"),
         help_text=_("Main product image URL"),
     )
+    image_media = models.ForeignKey(
+        "media.Media",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="product_images",
+        verbose_name=_("Image (Media)"),
+        help_text=_("Linked Media record for product image"),
+    )
 
     gallery = models.JSONField(
         default=list,
@@ -1146,6 +1176,18 @@ class Product(TimeStampedMixin, SoftDeleteMixin, models.Model):
         }
         symbol = currency_symbols.get(self.currency, self.currency)
         return f"{symbol}{self.base_price:,.2f}"
+
+    @property
+    def image_url(self) -> str:
+        """Return the best available image URL.
+
+        Prefers the linked Media serve URL, falls back to the legacy URL field.
+        """
+        if self.image_media_id:
+            from django.urls import reverse
+
+            return reverse("media-serve", kwargs={"pk": self.image_media_id})
+        return self.image or ""
 
     @property
     def gallery_count(self) -> int:

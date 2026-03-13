@@ -924,6 +924,7 @@ def get_manager_abilities() -> List[Rule]:
         Rule(action="manage", resource="table"),
         Rule(action="manage", resource="qrcode"),
         Rule(action="manage", resource="theme"),
+        Rule(action="manage", resource="media"),
         Rule(action="view", resource="analytics"),
         Rule(action="view", resource="customer"),
         Rule(action="update", resource="customer"),
@@ -935,7 +936,7 @@ def get_staff_abilities() -> List[Rule]:
     """
     Get the default abilities for the 'staff' role.
 
-    Staff can take orders and manage tables.
+    Staff can take orders, manage tables, and view/upload media.
 
     Returns:
         List of permission rules
@@ -949,6 +950,8 @@ def get_staff_abilities() -> List[Rule]:
         Rule(action="update", resource="order"),
         Rule(action="view", resource="table"),
         Rule(action="update", resource="table"),
+        Rule(action="view", resource="media"),
+        Rule(action="create", resource="media"),
     ]
 
 
@@ -956,7 +959,7 @@ def get_viewer_abilities() -> List[Rule]:
     """
     Get the default abilities for the 'viewer' role.
 
-    Viewer has read-only access to dashboard data.
+    Viewer has read-only access to dashboard data and media.
 
     Returns:
         List of permission rules
@@ -968,6 +971,7 @@ def get_viewer_abilities() -> List[Rule]:
         Rule(action="view", resource="order"),
         Rule(action="view", resource="table"),
         Rule(action="view", resource="analytics"),
+        Rule(action="view", resource="media"),
     ]
 
 

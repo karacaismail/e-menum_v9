@@ -855,6 +855,15 @@ class QRCode(TimeStampedMixin, SoftDeleteMixin, models.Model):
         verbose_name=_("QR image URL"),
         help_text=_("URL to the generated QR code image"),
     )
+    qr_image_media = models.ForeignKey(
+        "media.Media",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="qrcode_images",
+        verbose_name=_("QR Image (Media)"),
+        help_text=_("Linked Media record for QR code image"),
+    )
 
     redirect_url = models.URLField(
         blank=True,
@@ -948,6 +957,18 @@ class QRCode(TimeStampedMixin, SoftDeleteMixin, models.Model):
 
     def __repr__(self) -> str:
         return f"<QRCode(id={self.id}, code='{self.code}', type={self.type})>"
+
+    @property
+    def qr_image_serve_url(self) -> str:
+        """Return the best available QR image URL.
+
+        Prefers the linked Media serve URL, falls back to the legacy URL field.
+        """
+        if self.qr_image_media_id:
+            from django.urls import reverse
+
+            return reverse("media-serve", kwargs={"pk": self.qr_image_media_id})
+        return self.qr_image_url or ""
 
     @property
     def is_scannable(self) -> bool:
