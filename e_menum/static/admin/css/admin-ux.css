@@ -4,6 +4,11 @@
    floating save bar, sticky headers, page transitions
    ═══════════════════════════════════════════════════════════ */
 
+/* ── Alpine x-cloak — hide until Alpine initializes ── */
+[x-cloak] {
+    display: none !important;
+}
+
 /* ── Toast Notification Stack ── */
 .ux-toast-stack {
     position: fixed;

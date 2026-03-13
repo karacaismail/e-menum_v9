@@ -471,8 +471,7 @@
          x-transition.opacity.duration.150ms
          @click.self="$store.cmdPalette.close()"
          @keydown.escape.window="$store.cmdPalette.close()"
-         x-cloak
-         style="display:none">
+         x-cloak>
         <div class="ux-cmd-dialog" @click.stop>
             <div class="ux-cmd-input-wrapper">
                 <i class="ph ph-magnifying-glass"></i>
@@ -537,8 +536,7 @@
          x-show="$store.confirm.open"
          x-transition.opacity.duration.150ms
          @keydown.escape.window="$store.confirm.cancel()"
-         x-cloak
-         style="display:none">
+         x-cloak>
         <div class="ux-confirm-dialog" @click.stop>
             <h3 class="ux-confirm-title" x-text="$store.confirm.title"></h3>
             <p class="ux-confirm-message" x-text="$store.confirm.message"></p>

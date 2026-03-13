@@ -485,35 +485,41 @@ a.ed-activity-object:hover {
     font-size: 13px;
 }
 
-/* ── Quick Access Grid ── */
+/* ── Quick Access Grid — 4 columns ── */
 .ed-qa-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
 }
 
 .ed-qa-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 16px;
+    gap: 12px;
+    padding: 14px 20px;
     color: var(--text-secondary) !important;
     text-decoration: none !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-    border-right: 1px solid rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    border-right: 1px solid rgba(255, 255, 255, 0.04);
     transition: all 0.12s;
-    font-size: 13px;
+    font-size: 14px;
+}
+
+/* Remove right border on last column */
+.ed-qa-item:nth-child(4n) {
+    border-right: none;
 }
 
 .ed-qa-item:hover {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.04);
     color: var(--text-primary) !important;
 }
 
 .ed-qa-item i {
-    font-size: 16px;
+    font-size: 20px;
     color: var(--accent-light);
     opacity: 0.7;
-    width: 20px;
+    width: 24px;
     text-align: center;
     flex-shrink: 0;
 }
@@ -524,10 +530,11 @@ a.ed-activity-object:hover {
     overflow: hidden;
     text-overflow: ellipsis;
     font-weight: 500;
+    font-size: 14px;
 }
 
 .ed-qa-app {
-    font-size: 10px;
+    font-size: 11px;
     color: var(--text-dim);
     white-space: nowrap;
 }
@@ -587,7 +594,13 @@ a.ed-activity-object:hover {
         grid-template-columns: 1fr;
     }
     .ed-qa-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .ed-qa-item:nth-child(4n) {
+        border-right: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .ed-qa-item:nth-child(2n) {
+        border-right: none;
     }
 }
 
@@ -597,6 +610,12 @@ a.ed-activity-object:hover {
     }
     .ed-qa-grid {
         grid-template-columns: 1fr;
+    }
+    .ed-qa-item:nth-child(2n) {
+        border-right: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .ed-qa-item {
+        border-right: none;
     }
     .ed {
         gap: 14px;
