@@ -5,19 +5,52 @@ This module contains shared fixtures used across all test modules.
 Fixtures follow pytest-django best practices for Django project testing.
 """
 
-import sys
 import uuid
+from copy import copy
 
 import pytest
 from django.test import Client
 from rest_framework.test import APIClient
 
-# Increase recursion limit for deeply nested Django template rendering.
-# The test client's store_rendered_templates signal handler calls copy(context)
-# on every template render. Our admin templates (base_site.html → sidebar →
-# multiple includes → enterprise dashboard with ECharts/CWV/tracking blocks)
-# create a deeply nested context that exceeds lower limits during copy().
-sys.setrecursionlimit(5000)
+# ---------------------------------------------------------------------------
+# Fix RecursionError in Django test client's store_rendered_templates.
+#
+# Django's test client hooks into every template render via the
+# template_rendered signal and calls copy(context) to snapshot the context.
+# Our admin templates (base_site.html → sidebar → 30+ includes → enterprise
+# dashboard with ECharts/CWV/tracking blocks) create a deeply nested render
+# chain.  When copy(context) is called at the deepest level, the combined
+# call-stack depth of render + copy exceeds Python's recursion limit.
+#
+# Instead of endlessly bumping sys.setrecursionlimit, we monkeypatch the
+# store_rendered_templates handler to catch RecursionError from copy() and
+# fall back to storing the context directly (without copy).  This is safe
+# because the context is only used for test assertions on templates/context
+# and the snapshot doesn't need to be an exact copy for our tests.
+# ---------------------------------------------------------------------------
+_original_store = None
+
+
+def _safe_store_rendered_templates(store, signal, sender, template, context, **kwargs):
+    """Replacement for django.test.client.store_rendered_templates that
+    tolerates RecursionError when copying deeply nested contexts."""
+    store.setdefault("templates", [])
+    store.setdefault("context", [])
+    store["templates"].append(template)
+    try:
+        store["context"].append(copy(context))
+    except RecursionError:
+        # Fall back: store context as-is instead of crashing the test suite.
+        store["context"].append(context)
+
+
+def pytest_configure(config):
+    """Patch store_rendered_templates once at session start."""
+    import django.test.client as _client
+
+    global _original_store  # noqa: PLW0603
+    _original_store = _client.store_rendered_templates
+    _client.store_rendered_templates = _safe_store_rendered_templates
 
 
 @pytest.fixture(scope="session")
