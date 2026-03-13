@@ -5,6 +5,7 @@ This module contains shared fixtures used across all test modules.
 Fixtures follow pytest-django best practices for Django project testing.
 """
 
+import sys
 import uuid
 from copy import copy
 
@@ -12,8 +13,13 @@ import pytest
 from django.test import Client
 from rest_framework.test import APIClient
 
+# Raise the recursion limit so that most admin templates can copy(context)
+# without issues.  The enterprise SEO dashboard still exceeds even this
+# limit, so we also install a safety-net monkeypatch below.
+sys.setrecursionlimit(5000)
+
 # ---------------------------------------------------------------------------
-# Fix RecursionError in Django test client's store_rendered_templates.
+# Safety-net for store_rendered_templates RecursionError.
 #
 # Django's test client hooks into every template render via the
 # template_rendered signal and calls copy(context) to snapshot the context.
@@ -22,11 +28,10 @@ from rest_framework.test import APIClient
 # chain.  When copy(context) is called at the deepest level, the combined
 # call-stack depth of render + copy exceeds Python's recursion limit.
 #
-# Instead of endlessly bumping sys.setrecursionlimit, we monkeypatch the
-# store_rendered_templates handler to catch RecursionError from copy() and
-# fall back to storing the context directly (without copy).  This is safe
-# because the context is only used for test assertions on templates/context
-# and the snapshot doesn't need to be an exact copy for our tests.
+# The monkeypatch catches RecursionError from copy() and falls back to
+# storing the context directly (without copy).  This is safe because the
+# context is only used for test assertions on templates/context and the
+# snapshot doesn't need to be an exact copy for our tests.
 # ---------------------------------------------------------------------------
 _original_store = None
 
