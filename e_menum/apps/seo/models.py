@@ -1179,7 +1179,10 @@ class CoreWebVitalsSnapshot(models.Model):
         verbose_name_plural = _("Core Web Vitals Snapshots")
         ordering = ["-measured_at"]
         indexes = [
-            models.Index(fields=["url", "-measured_at"]),
+            models.Index(
+                fields=["url", "-measured_at"],
+                name="seo_cwv_sna_url_d160c8_idx",
+            ),
         ]
 
     def __str__(self) -> str:

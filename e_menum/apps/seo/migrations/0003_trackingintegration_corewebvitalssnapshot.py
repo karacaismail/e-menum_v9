@@ -222,7 +222,7 @@ class Migration(migrations.Migration):
                 "indexes": [
                     models.Index(
                         fields=["url", "-measured_at"],
-                        name="seo_cwv_snap_url_measured_idx",
+                        name="seo_cwv_sna_url_d160c8_idx",
                     ),
                 ],
             },
