@@ -109,7 +109,7 @@ def product_create(request):
                 messages.error(request, _("Gecersiz kategori."))
                 categories = Category.objects.filter(
                     organization=org, deleted_at__isnull=True
-                ).order_by("position", "name")
+                ).order_by("sort_order", "name")
                 return render(
                     request,
                     "accounts/products/form.html",
@@ -162,7 +162,7 @@ def product_create(request):
     allergens = _get_allergens()
     categories = Category.objects.filter(
         organization=org, deleted_at__isnull=True
-    ).order_by("position", "name")
+    ).order_by("sort_order", "name")
     return render(
         request,
         "accounts/products/form.html",
@@ -299,7 +299,7 @@ def product_edit(request, product_id):
 
     categories = Category.objects.filter(
         organization=org, deleted_at__isnull=True
-    ).order_by("position", "name")
+    ).order_by("sort_order", "name")
     return render(
         request,
         "accounts/products/form.html",
