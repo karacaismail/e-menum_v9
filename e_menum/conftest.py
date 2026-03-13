@@ -13,10 +13,12 @@ import pytest
 from django.test import Client
 from rest_framework.test import APIClient
 
-# Raise the recursion limit so that most admin templates can copy(context)
-# without issues.  The enterprise SEO dashboard still exceeds even this
-# limit, so we also install a safety-net monkeypatch below.
-sys.setrecursionlimit(5000)
+# Raise the recursion limit so deeply nested admin template chains
+# (base_site.html → sidebar → 30+ includes) can render without hitting
+# the default 1000 limit.  10000 is safe for CI (GitHub Actions has 8MB
+# stack ≈ 16000 frames).  The safety-net monkeypatch below handles the
+# separate copy(context) recursion issue.
+sys.setrecursionlimit(10000)
 
 # ---------------------------------------------------------------------------
 # Safety-net for store_rendered_templates RecursionError.
