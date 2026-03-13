@@ -105,14 +105,12 @@ def team_invite(request):
             existing_user.status = UserStatus.INVITED
             existing_user.first_name = first_name
             existing_user.last_name = last_name
-            existing_user.is_active = True
             existing_user.save(
                 update_fields=[
                     "deleted_at",
                     "status",
                     "first_name",
                     "last_name",
-                    "is_active",
                     "updated_at",
                 ]
             )
@@ -133,7 +131,6 @@ def team_invite(request):
             existing_user.first_name = first_name
             existing_user.last_name = last_name
             existing_user.organization = org
-            existing_user.is_active = True
             existing_user.save(
                 update_fields=[
                     "deleted_at",
@@ -141,7 +138,6 @@ def team_invite(request):
                     "first_name",
                     "last_name",
                     "organization",
-                    "is_active",
                     "updated_at",
                 ]
             )

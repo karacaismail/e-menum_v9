@@ -186,7 +186,6 @@ class TestTeamInviteSoftDeletedSameOrg:
         assert old_user.deleted_at is None
         assert old_user.status == UserStatus.INVITED
         assert old_user.first_name == "Restored"
-        assert old_user.is_active is True
 
 
 class TestTeamInviteActiveInDifferentOrg:
