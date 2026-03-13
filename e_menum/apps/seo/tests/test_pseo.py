@@ -20,9 +20,9 @@ from apps.seo.pseo import (
     DEFAULT_SECTORS,
     PSEOEngine,
     _SafeFormatMap,
-    _slugify_turkish,
     generate_city_sector_combinations,
 )
+from shared.utils.text import slugify_tr as _slugify_turkish
 
 
 class TestPSEOEngineRenderPage(TestCase):

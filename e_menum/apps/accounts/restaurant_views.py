@@ -4,7 +4,7 @@ import logging
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from django.utils.text import slugify
+from shared.utils.text import slugify_tr as slugify
 from django.utils.translation import gettext_lazy as _
 
 from apps.core.choices import AuditAction

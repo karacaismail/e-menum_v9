@@ -259,7 +259,7 @@ class OrganizationCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """Create organization with auto-generated slug if not provided."""
-        from django.utils.text import slugify
+        from shared.utils.text import slugify_tr as slugify
 
         if "slug" not in validated_data or not validated_data["slug"]:
             base_slug = slugify(validated_data["name"])

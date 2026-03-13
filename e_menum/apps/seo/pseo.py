@@ -15,10 +15,11 @@ Helpers:
 """
 
 import logging
-import re
 from typing import Dict, List
 
 from django.utils import timezone
+
+from shared.utils.text import slugify_tr as _slugify_turkish  # noqa: N812
 
 logger = logging.getLogger("apps.seo")
 
@@ -337,33 +338,4 @@ class _SafeFormatMap(dict):
         return f"{{{key}}}"
 
 
-def _slugify_turkish(value: str) -> str:
-    """
-    Convert a string to a URL-safe slug, handling Turkish characters.
-
-    Transliterates Turkish-specific characters (ç->c, ş->s, etc.),
-    lowercases, replaces whitespace/special chars with hyphens, and
-    strips leading/trailing hyphens.
-    """
-    tr_map = str.maketrans(
-        {
-            "ç": "c",
-            "Ç": "c",
-            "ğ": "g",
-            "Ğ": "g",
-            "ı": "i",
-            "I": "i",
-            "İ": "i",
-            "ö": "o",
-            "Ö": "o",
-            "ş": "s",
-            "Ş": "s",
-            "ü": "u",
-            "Ü": "u",
-        }
-    )
-    value = value.translate(tr_map)
-    value = value.lower()
-    value = re.sub(r"[^a-z0-9\-]", "-", value)
-    value = re.sub(r"-+", "-", value)
-    return value.strip("-")
+# _slugify_turkish is now imported from shared.utils.text (see top of file)

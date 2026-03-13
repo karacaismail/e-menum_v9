@@ -41,6 +41,7 @@ from shared.utils.exceptions import (
     BusinessLogicException,
     custom_exception_handler,
 )
+from shared.utils.text import slugify_tr
 
 __all__ = [
     "ErrorCodes",
@@ -50,4 +51,5 @@ __all__ = [
     "ResourceNotFoundException",
     "BusinessLogicException",
     "custom_exception_handler",
+    "slugify_tr",
 ]

@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Prefetch
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils.text import slugify
+from shared.utils.text import slugify_tr as slugify
 from django.views.decorators.http import require_GET, require_POST
 
 logger = logging.getLogger(__name__)

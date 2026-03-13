@@ -545,7 +545,7 @@ class RegisterView(FormView):
 
     def form_valid(self, form):
         from django.db import transaction
-        from django.utils.text import slugify
+        from shared.utils.text import slugify_tr as slugify
         from datetime import timedelta
         from apps.core.models import Organization, User
         from apps.core.choices import UserStatus
