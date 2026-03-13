@@ -172,6 +172,9 @@
     <link rel="stylesheet" href="{% static 'css/tailwind.min.css' %}">
     {% endif %}
 
+    {# Flowbite CSS (Tailwind component library) #}
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet">
+
     {# Alpine.js + Collapse plugin #}
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -498,6 +501,9 @@
             return fetch(url, options);
         }
     </script>
+
+    {# Flowbite JS (data-attribute component initializer) #}
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
 
     {# Additional Scripts #}
     {% block extra_js %}{% endblock %}

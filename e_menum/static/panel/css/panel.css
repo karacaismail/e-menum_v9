@@ -82,11 +82,342 @@
     content: '';
     position: absolute;
     left: 0;
-    top: 8px;
-    bottom: 8px;
+    top: 6px;
+    bottom: 6px;
     width: 3px;
-    border-radius: 0 3px 3px 0;
-    background-color: #6366f1;
+    border-radius: 0 4px 4px 0;
+    background: linear-gradient(180deg, #1A6B5A, #2adea9);
+}
+
+/* === Flowbite-compatible table enhancements === */
+.fl-table {
+    width: 100%;
+    text-align: left;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.dark .fl-table {
+    color: #9ca3af;
+}
+
+.fl-table thead {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #374151;
+    background-color: #f9fafb;
+}
+
+.dark .fl-table thead {
+    color: #9ca3af;
+    background-color: rgba(55, 65, 81, 0.5);
+}
+
+.fl-table thead th {
+    padding: 0.75rem 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+}
+
+.fl-table tbody tr {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    transition: background-color 150ms ease;
+}
+
+.dark .fl-table tbody tr {
+    background-color: rgb(31, 41, 55);
+    border-bottom-color: rgb(55, 65, 81);
+}
+
+.fl-table tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+.dark .fl-table tbody tr:hover {
+    background-color: rgba(55, 65, 81, 0.5);
+}
+
+.fl-table tbody td {
+    padding: 1rem 1.25rem;
+}
+
+.fl-table tbody th {
+    padding: 1rem 1.25rem;
+    font-weight: 500;
+    color: #111827;
+    white-space: nowrap;
+}
+
+.dark .fl-table tbody th {
+    color: #ffffff;
+}
+
+/* === Flowbite-compatible card === */
+.fl-card {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    padding: 1.25rem;
+}
+
+.dark .fl-card {
+    background-color: rgb(31, 41, 55);
+    border-color: rgb(55, 65, 81);
+}
+
+/* === Flowbite-compatible form inputs === */
+.fl-input {
+    display: block;
+    width: 100%;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+    color: #111827;
+    background-color: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.fl-input:focus {
+    border-color: #1A6B5A;
+    box-shadow: 0 0 0 3px rgba(26, 107, 90, 0.15);
+    outline: none;
+}
+
+.dark .fl-input {
+    color: #ffffff;
+    background-color: rgb(55, 65, 81);
+    border-color: rgb(75, 85, 99);
+}
+
+.dark .fl-input:focus {
+    border-color: #2adea9;
+    box-shadow: 0 0 0 3px rgba(42, 222, 169, 0.15);
+}
+
+.fl-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #111827;
+}
+
+.dark .fl-label {
+    color: #ffffff;
+}
+
+/* === Flowbite-compatible button variants === */
+.fl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: all 150ms ease;
+    cursor: pointer;
+    text-decoration: none;
+    line-height: 1.25;
+}
+
+.fl-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(26, 107, 90, 0.3);
+}
+
+.fl-btn-primary {
+    color: #ffffff;
+    background-color: #1A6B5A;
+    border: 1px solid transparent;
+}
+
+.fl-btn-primary:hover {
+    background-color: #0f5c4b;
+}
+
+.fl-btn-secondary {
+    color: #374151;
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+}
+
+.fl-btn-secondary:hover {
+    background-color: #f9fafb;
+}
+
+.dark .fl-btn-secondary {
+    color: #d1d5db;
+    background-color: rgb(55, 65, 81);
+    border-color: rgb(75, 85, 99);
+}
+
+.dark .fl-btn-secondary:hover {
+    background-color: rgb(75, 85, 99);
+    color: #ffffff;
+}
+
+.fl-btn-danger {
+    color: #ffffff;
+    background-color: #dc2626;
+    border: 1px solid transparent;
+}
+
+.fl-btn-danger:hover {
+    background-color: #b91c1c;
+}
+
+.fl-btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8125rem;
+}
+
+.fl-btn-xs {
+    padding: 0.25rem 0.625rem;
+    font-size: 0.75rem;
+}
+
+/* === Flowbite-compatible toggle switch === */
+.fl-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.fl-toggle input {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+}
+
+.fl-toggle .fl-toggle-track {
+    position: relative;
+    width: 2.75rem;
+    height: 1.5rem;
+    background-color: #d1d5db;
+    border-radius: 9999px;
+    transition: background-color 200ms ease;
+}
+
+.fl-toggle input:checked + .fl-toggle-track {
+    background-color: #1A6B5A;
+}
+
+.fl-toggle .fl-toggle-track::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 9999px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: transform 200ms ease;
+}
+
+.fl-toggle input:checked + .fl-toggle-track::after {
+    transform: translateX(100%);
+}
+
+.dark .fl-toggle .fl-toggle-track {
+    background-color: rgb(75, 85, 99);
+}
+
+/* === Flowbite-compatible alert === */
+.fl-alert {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+}
+
+.fl-alert-info {
+    color: #1e40af;
+    background-color: #dbeafe;
+}
+
+.dark .fl-alert-info {
+    color: #93c5fd;
+    background-color: rgba(30, 58, 138, 0.3);
+}
+
+.fl-alert-success {
+    color: #166534;
+    background-color: #dcfce7;
+}
+
+.dark .fl-alert-success {
+    color: #86efac;
+    background-color: rgba(22, 101, 52, 0.3);
+}
+
+.fl-alert-warning {
+    color: #92400e;
+    background-color: #fef3c7;
+}
+
+.dark .fl-alert-warning {
+    color: #fcd34d;
+    background-color: rgba(146, 64, 14, 0.3);
+}
+
+.fl-alert-error {
+    color: #991b1b;
+    background-color: #fee2e2;
+}
+
+.dark .fl-alert-error {
+    color: #fca5a5;
+    background-color: rgba(153, 27, 27, 0.3);
+}
+
+/* === Flowbite-compatible dropdown === */
+.fl-dropdown {
+    position: absolute;
+    z-index: 50;
+    min-width: 11rem;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    padding: 0.25rem 0;
+}
+
+.dark .fl-dropdown {
+    background-color: rgb(55, 65, 81);
+    border-color: rgb(75, 85, 99);
+}
+
+.fl-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: #374151;
+    transition: background-color 100ms ease;
+}
+
+.fl-dropdown-item:hover {
+    background-color: #f3f4f6;
+}
+
+.dark .fl-dropdown-item {
+    color: #d1d5db;
+}
+
+.dark .fl-dropdown-item:hover {
+    background-color: rgba(75, 85, 99, 0.5);
+    color: #ffffff;
 }
 
 

@@ -1,0 +1,71 @@
+{# Reusable pagination — Flowbite style
+   Usage: {% include "partials/_pagination.html" with page_obj=products %}
+   Requires: page_obj (Django Paginator page), preserves query params
+#}
+{% load i18n %}
+
+{% if page_obj.has_other_pages %}
+<nav class="flex items-center justify-between pt-4" aria-label="{% trans 'Pagination' %}">
+    <span class="text-sm text-gray-700 dark:text-gray-400">
+        {% blocktrans with start=page_obj.start_index end=page_obj.end_index total=page_obj.paginator.count %}
+        <span class="font-semibold text-gray-900 dark:text-white">{{ start }}-{{ end }}</span> / <span class="font-semibold text-gray-900 dark:text-white">{{ total }}</span>
+        {% endblocktrans %}
+    </span>
+    <ul class="inline-flex -space-x-px text-sm">
+        {# Previous #}
+        {% if page_obj.has_previous %}
+        <li>
+            <a href="?{% for key, val in request.GET.items %}{% if key != 'page' %}{{ key }}={{ val }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}"
+               class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                <i class="ph ph-caret-left text-xs"></i>
+            </a>
+        </li>
+        {% else %}
+        <li>
+            <span class="flex items-center justify-center px-3 h-8 leading-tight text-gray-300 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-600 cursor-not-allowed">
+                <i class="ph ph-caret-left text-xs"></i>
+            </span>
+        </li>
+        {% endif %}
+
+        {# Page Numbers #}
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <li>
+                <a href="#" aria-current="page"
+                   class="flex items-center justify-center px-3 h-8 text-primary-600 border border-gray-300 bg-primary-50 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white font-medium">
+                    {{ num }}
+                </a>
+            </li>
+            {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+            <li>
+                <a href="?{% for key, val in request.GET.items %}{% if key != 'page' %}{{ key }}={{ val }}&{% endif %}{% endfor %}page={{ num }}"
+                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    {{ num }}
+                </a>
+            </li>
+            {% elif num == page_obj.number|add:"-3" or num == page_obj.number|add:"3" %}
+            <li>
+                <span class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">&hellip;</span>
+            </li>
+            {% endif %}
+        {% endfor %}
+
+        {# Next #}
+        {% if page_obj.has_next %}
+        <li>
+            <a href="?{% for key, val in request.GET.items %}{% if key != 'page' %}{{ key }}={{ val }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}"
+               class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                <i class="ph ph-caret-right text-xs"></i>
+            </a>
+        </li>
+        {% else %}
+        <li>
+            <span class="flex items-center justify-center px-3 h-8 leading-tight text-gray-300 bg-white border border-gray-300 rounded-e-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-600 cursor-not-allowed">
+                <i class="ph ph-caret-right text-xs"></i>
+            </span>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}

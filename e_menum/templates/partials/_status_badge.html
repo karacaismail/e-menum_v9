@@ -1,0 +1,48 @@
+{# Reusable status badge — Flowbite badge style
+   Usage: {% include "partials/_status_badge.html" with status="COMPLETED" %}
+   Supported statuses: COMPLETED, PENDING, CONFIRMED, PREPARING, READY,
+                       DELIVERED, CANCELLED, ACTIVE, INACTIVE, DRAFT, PUBLISHED, INVITED
+#}
+{% load i18n %}
+
+{% if status == "COMPLETED" or status == "ACTIVE" or status == "PUBLISHED" %}
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+    {{ label|default:status }}
+</span>
+
+{% elif status == "PENDING" or status == "INVITED" %}
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
+    <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+    {{ label|default:status }}
+</span>
+
+{% elif status == "CONFIRMED" or status == "PREPARING" %}
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+    <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+    {{ label|default:status }}
+</span>
+
+{% elif status == "READY" or status == "DELIVERED" %}
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300">
+    <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+    {{ label|default:status }}
+</span>
+
+{% elif status == "CANCELLED" or status == "INACTIVE" or status == "REJECTED" %}
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">
+    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+    {{ label|default:status }}
+</span>
+
+{% elif status == "DRAFT" %}
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+    <span class="w-1.5 h-1.5 rounded-full bg-gray-500"></span>
+    {{ label|default:status }}
+</span>
+
+{% else %}
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+    {{ label|default:status }}
+</span>
+{% endif %}
