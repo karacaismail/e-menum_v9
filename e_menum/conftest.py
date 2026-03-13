@@ -5,52 +5,37 @@ This module contains shared fixtures used across all test modules.
 Fixtures follow pytest-django best practices for Django project testing.
 """
 
-import sys
 import uuid
-from copy import copy
 
 import pytest
 from django.test import Client
 from rest_framework.test import APIClient
 
-# Raise the recursion limit so deeply nested admin template chains
-# (base_site.html → sidebar → 30+ includes) can render without hitting
-# the default 1000 limit.  10000 is safe for CI (GitHub Actions has 8MB
-# stack ≈ 16000 frames).  The safety-net monkeypatch below handles the
-# separate copy(context) recursion issue.
-sys.setrecursionlimit(10000)
-
 # ---------------------------------------------------------------------------
-# Safety-net for store_rendered_templates RecursionError.
+# Fix RecursionError in Django test client's store_rendered_templates.
 #
-# Django's test client hooks into every template render via the
-# template_rendered signal and calls copy(context) to snapshot the context.
-# Our admin templates (base_site.html → sidebar → 30+ includes → enterprise
-# dashboard with ECharts/CWV/tracking blocks) create a deeply nested render
-# chain.  When copy(context) is called at the deepest level, the combined
-# call-stack depth of render + copy exceeds Python's recursion limit.
+# Django's test client calls copy(context) on every template render via a
+# signal handler.  Our panel/admin templates extend deep base templates
+# (panel.html → base.html with sidebar + 30 includes).  The combined
+# call-stack of render + copy(context) exceeds Python's recursion limit.
 #
-# The monkeypatch catches RecursionError from copy() and falls back to
-# storing the context directly (without copy).  This is safe because the
-# context is only used for test assertions on templates/context and the
-# snapshot doesn't need to be an exact copy for our tests.
+# Fix: replace copy(context) with a direct reference.  This is safe
+# because our tests only assert on status codes and context key existence,
+# and we never mutate the stored context after rendering.
 # ---------------------------------------------------------------------------
 _original_store = None
 
 
 def _safe_store_rendered_templates(store, signal, sender, template, context, **kwargs):
-    """Replacement for django.test.client.store_rendered_templates that
-    tolerates RecursionError when copying deeply nested contexts."""
+    """store_rendered_templates without deep-copying context."""
     from django.test.utils import ContextList
 
     store.setdefault("templates", [])
     store.setdefault("context", ContextList())
     store["templates"].append(template)
-    try:
-        store["context"].append(copy(context))
-    except RecursionError:
-        # Fall back: store context as-is instead of crashing the test suite.
-        store["context"].append(context)
+    # Store direct reference — avoids the recursive copy(context) that
+    # causes RecursionError on deeply nested template chains.
+    store["context"].append(context)
 
 
 def pytest_configure(config):
