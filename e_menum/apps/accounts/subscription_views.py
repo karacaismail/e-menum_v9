@@ -10,6 +10,7 @@ All views require login and use the restaurant owner portal layout.
 """
 
 import logging
+import os
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -25,14 +26,15 @@ from apps.core.views import get_client_ip
 
 logger = logging.getLogger(__name__)
 
-# EFT bank transfer info
+# EFT bank transfer info — sourced from env vars (set in Coolify).
+# Override via EFT_BANK_* environment variables.
 EFT_BANK_INFO = {
-    "bank_name": "Ziraat Bankası",
-    "account_holder": "E-Menum Teknoloji A.Ş.",
-    "iban": "TR00 0001 0012 3456 7890 1234 56",
-    "branch_code": "1234",
-    "account_number": "12345678-90",
-    "currency": "TRY",
+    "bank_name": os.environ.get("EFT_BANK_NAME", "Ziraat Bankası"),
+    "account_holder": os.environ.get("EFT_ACCOUNT_HOLDER", "E-Menum Teknoloji A.Ş."),
+    "iban": os.environ.get("EFT_IBAN", "TR00 0000 0000 0000 0000 0000 00"),
+    "branch_code": os.environ.get("EFT_BRANCH_CODE", ""),
+    "account_number": os.environ.get("EFT_ACCOUNT_NUMBER", ""),
+    "currency": os.environ.get("EFT_CURRENCY", "TRY"),
     "reference_note": _("Lütfen açıklama kısmına organizasyon ID'nizi yazınız."),
 }
 
@@ -208,6 +210,16 @@ def subscription_cancel(request):
             "updated_at",
         ]
     )
+
+    # Also cancel any pending upgrade requests so the user can
+    # submit a new one later without getting the "pending request" error.
+    from apps.subscriptions.models import UpgradeRequest
+
+    UpgradeRequest.objects.filter(
+        organization=org,
+        status="PENDING",
+        deleted_at__isnull=True,
+    ).update(status="REJECTED")
 
     AuditLog.log_action(
         action=AuditAction.SUBSCRIPTION_CANCELLED,
