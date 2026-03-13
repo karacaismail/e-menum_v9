@@ -1,0 +1,40 @@
+{% extends "emails/_base_email.html" %}
+
+{% block title %}Ekip Daveti - E-Menum{% endblock %}
+
+{% block content %}
+<h2>Ekibimize Hosgeldiniz!</h2>
+
+<p>Merhaba {{ first_name }},</p>
+
+<p>
+  <strong>{{ inviter_name }}</strong> sizi <strong>{{ org_name }}</strong> ekibine davet etti.
+  Asagidaki bilgilerle giris yaparak hemen baslayabilirsiniz.
+</p>
+
+<table class="info-table">
+  <tr>
+    <td class="label">Organizasyon</td>
+    <td class="value">{{ org_name }}</td>
+  </tr>
+  <tr>
+    <td class="label">Rol</td>
+    <td class="value">{{ role_name }}</td>
+  </tr>
+  <tr>
+    <td class="label">E-posta</td>
+    <td class="value">{{ email }}</td>
+  </tr>
+</table>
+
+<div style="text-align:center; margin:28px 0;">
+  <a href="{{ invite_url }}" class="btn">Giris Yap</a>
+</div>
+
+<div class="divider"></div>
+
+<p style="font-size:13px; color:#6b7280;">
+  Bu e-posta <strong>{{ inviter_name }}</strong> tarafindan gonderilmistir.
+  Eger bu daveti beklemiyorsaniz, bu e-postayi dikkate almayabilirsiniz.
+</p>
+{% endblock %}

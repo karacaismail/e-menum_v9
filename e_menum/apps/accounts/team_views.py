@@ -192,14 +192,33 @@ def team_invite(request):
     except Exception:
         logger.exception("Failed to write audit log for invite %s", email)
 
-    # Send invitation email
+    # Send invitation email (plain-text + HTML)
     try:
         from django.conf import settings as django_settings
         from django.core.mail import send_mail
+        from django.template.loader import render_to_string
 
         invite_url = f"{django_settings.SITE_URL}/account/login/"
         org_name = org.name
         inviter_name = request.user.get_full_name() or request.user.email
+
+        # Resolve role display name
+        role_name = _("Ekip Uyesi")
+        if role_id:
+            try:
+                role_name = Role.objects.get(id=role_id).name
+            except Role.DoesNotExist:
+                pass
+
+        email_context = {
+            "first_name": first_name,
+            "inviter_name": inviter_name,
+            "org_name": org_name,
+            "role_name": role_name,
+            "email": email,
+            "invite_url": invite_url,
+        }
+        html_message = render_to_string("emails/team_invite.html", email_context)
         send_mail(
             subject=f"{org_name} ekibine davet edildiniz",
             message=(
@@ -211,6 +230,7 @@ def team_invite(request):
             ),
             from_email=django_settings.DEFAULT_FROM_EMAIL,
             recipient_list=[email],
+            html_message=html_message,
             fail_silently=True,
         )
     except Exception:

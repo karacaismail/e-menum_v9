@@ -381,7 +381,7 @@ class TestOwnerJourney:
         resp = owner_client.get(reverse("accounts:qrcode-list"))
         assert resp.status_code == 200
 
-    def test_qrcode_create_post(self, owner_client, org):
+    def test_qrcode_create_post(self, owner_client, org, menu):
         """Owner creates a new QR code via POST."""
         resp = owner_client.post(
             reverse("accounts:qrcode-create"),
