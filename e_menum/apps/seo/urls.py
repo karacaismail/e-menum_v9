@@ -5,8 +5,9 @@ Maps TXT file endpoints (robots.txt, humans.txt, security.txt, ads.txt,
 llms.txt) and the XML sitemap to their respective views.
 """
 
-from django.urls import path
+from django.contrib.sitemaps.views import index as sitemap_index
 from django.contrib.sitemaps.views import sitemap
+from django.urls import path
 
 from apps.seo import txt_files
 from apps.seo.sitemaps import sitemaps
@@ -25,11 +26,17 @@ urlpatterns = [
     ),
     path("ads.txt", txt_files.ads_txt_view, name="ads-txt"),
     path("llms.txt", txt_files.llms_txt_view, name="llms-txt"),
-    # Sitemaps
+    # Sitemaps — index + per-section pattern
     path(
         "sitemap.xml",
+        sitemap_index,
+        {"sitemaps": sitemaps, "sitemap_url_name": "seo:sitemap-section"},
+        name="sitemap-index",
+    ),
+    path(
+        "sitemap-<section>.xml",
         sitemap,
         {"sitemaps": sitemaps},
-        name="django.contrib.sitemaps.views.sitemap",
+        name="sitemap-section",
     ),
 ]
