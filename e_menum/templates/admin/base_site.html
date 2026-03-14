@@ -9,7 +9,9 @@
 <link rel="stylesheet" href="{% static 'admin/css/content.css' %}">
 <link rel="stylesheet" href="{% static 'admin/css/image-upload-widget.css' %}">
 <link rel="stylesheet" href="{% static 'admin/css/admin-ux.css' %}">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap">
 <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
 <script src="{% static 'admin/js/admin-ux.js' %}" defer></script>
@@ -40,7 +42,7 @@
         gap: 12px;
         font-size: 13px;
         font-weight: 600;
-        font-family: 'Inter', -apple-system, sans-serif;
+        font-family: 'Geist', -apple-system, sans-serif;
         box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     ">
         <i class="ph ph-warning-circle" style="font-size: 18px;"></i>
@@ -79,18 +81,14 @@
     {# ═══════════════════════════════════════════ #}
     {# RAIL SIDEBAR (64px - leftmost icon bar)     #}
     {# ═══════════════════════════════════════════ #}
-    <aside class="rail-sidebar">
-        <div class="rail-logo">
-            <img src="{% if marketing.logo_icon_url %}{{ marketing.logo_icon_url }}{% else %}{% static 'images/favicon.svg' %}{% endif %}" alt="{{ marketing.company_name|default:'E-Menum' }}" class="logo-mark" style="width:32px;height:32px;border-radius:8px;object-fit:contain"
-             onerror="this.src='{% static 'images/favicon.svg' %}';this.onerror=null">
-        </div>
-
-        <nav class="rail-nav">
+    <aside class="rail-sidebar" role="navigation" aria-label="{% trans 'Main navigation' %}">
+        <nav class="rail-nav" aria-label="{% trans 'Modules' %}">
             <button class="rail-item" :class="{ 'active': activeGroup === 'dashboard' }"
-                @click="setGroup('dashboard')" title="Panel">
+                @click="setGroup('dashboard')" title="Panel"
+                :aria-current="activeGroup === 'dashboard' ? 'page' : false" type="button">
                 <span class="rail-item-icon"><i class="ph-bold ph-squares-four"></i></span>
                 <span class="rail-item-label">Panel</span>
-                <span class="rail-tooltip">Panel</span>
+                <span class="rail-tooltip" role="tooltip">Panel</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'core' }"
                 @click="setGroup('core')" title="Core" x-show="hasGroupItems('core')">
@@ -174,77 +172,110 @@
         </nav>
 
         <div class="rail-footer">
-            <div class="rail-divider"></div>
-            <button class="rail-item" @click="collapsed = !collapsed" title="Toggle Sidebar">
-                <i class="ph" :class="collapsed ? 'ph-caret-right' : 'ph-caret-left'"></i>
-                <span class="rail-tooltip" x-text="collapsed ? 'Expand' : 'Collapse'"></span>
+            <button class="rail-item" @click="collapsed = !collapsed"
+                    :aria-label="collapsed ? '{% trans 'Expand menu' %}' : '{% trans 'Collapse menu' %}'"
+                    :title="collapsed ? '{% trans 'Expand' %}' : '{% trans 'Collapse' %}'" type="button">
+                <i class="ph" :class="collapsed ? 'ph-caret-right' : 'ph-caret-left'" aria-hidden="true"></i>
+                <span class="rail-tooltip" role="tooltip" x-text="collapsed ? '{% trans 'Expand' %}' : '{% trans 'Collapse' %}'"></span>
             </button>
-            <button class="rail-item" @click="toggleLayout()" :title="layoutMode === 'wide' ? 'Switch to Boxed' : 'Switch to Wide'">
-                <i class="ph" :class="layoutMode === 'wide' ? 'ph-arrows-in-simple' : 'ph-arrows-out-simple'"></i>
-                <span class="rail-tooltip" x-text="layoutMode === 'wide' ? 'Boxed Layout' : 'Wide Layout'"></span>
+            <button class="rail-item" @click="toggleLayout()"
+                    :aria-label="layoutMode === 'wide' ? '{% trans 'Boxed layout' %}' : '{% trans 'Wide layout' %}'"
+                    :title="layoutMode === 'wide' ? '{% trans 'Boxed' %}' : '{% trans 'Wide' %}'" type="button">
+                <i class="ph" :class="layoutMode === 'wide' ? 'ph-arrows-in-simple' : 'ph-arrows-out-simple'" aria-hidden="true"></i>
+                <span class="rail-tooltip" role="tooltip" x-text="layoutMode === 'wide' ? '{% trans 'Boxed' %}' : '{% trans 'Wide' %}'"></span>
             </button>
-            <a href="{% url 'admin-settings' %}" class="rail-item" title="{% trans 'Settings' %}">
-                <i class="ph ph-gear"></i>
-                <span class="rail-tooltip">{% trans 'Settings' %}</span>
-            </a>
-            <div class="rail-user-avatar" title="{{ user.get_username }}">
-                <span>{{ user.get_username|truncatechars:1 }}</span>
-            </div>
-            <form method="post" action="{% url 'admin:logout' %}" style="margin:0;padding:0;">
-                {% csrf_token %}
-                <button type="submit" class="rail-item rail-item--danger" title="{% trans 'Log out' %}">
-                    <i class="ph ph-sign-out"></i>
-                    <span class="rail-tooltip">{% trans 'Log out' %}</span>
-                </button>
-            </form>
         </div>
     </aside>
 
     {# ═══════════════════════════════════════════ #}
     {# ACCORDION SIDEBAR (240px - menu items)      #}
     {# ═══════════════════════════════════════════ #}
-    <aside class="accordion-sidebar" x-show="!collapsed" x-transition.opacity.duration.150ms>
+    <aside class="accordion-sidebar" x-show="!collapsed"
+           x-transition:enter="accordion-enter" x-transition:leave="accordion-leave"
+           role="navigation" aria-label="{% trans 'Section navigation' %}">
         <div class="sidebar-header">
             <div class="sidebar-brand">
+                <div class="brand-mark" aria-hidden="true">
+                    <img src="{% if marketing.logo_icon_url %}{{ marketing.logo_icon_url }}{% else %}{% static 'images/favicon.svg' %}{% endif %}"
+                         alt="" style="width:22px;height:22px;object-fit:contain"
+                         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=brand-mark-text>E</span>'">
+                </div>
                 <span class="brand-name">{{ marketing.company_name|default:"E-Menum" }}</span>
                 <span class="brand-badge">Admin</span>
             </div>
-            <h3 class="sidebar-group-title" x-text="groups[activeGroup]?.label || 'Menu'"></h3>
+            <p class="sidebar-group-title" x-text="groups[activeGroup]?.label || 'Menu'" aria-live="polite"></p>
             <div class="sidebar-search-wrapper">
                 <i class="ph ph-magnifying-glass sidebar-search-icon"></i>
-                <input type="text"
+                <input type="search"
                        placeholder="{% trans 'Search menu...' %}"
                        x-model="filterText"
                        class="sidebar-search"
-                       @keyup.escape="filterText = ''">
+                       @keyup.escape="filterText = ''"
+                       aria-label="{% trans 'Search menu items' %}"
+                       autocomplete="off">
             </div>
         </div>
 
-        <nav class="sidebar-nav">
+        <nav class="sidebar-nav" aria-label="{% trans 'Section items' %}">
             <template x-for="item in filteredItems" :key="item.url">
                 <a :href="item.url"
                    :class="{ 'active': isActive(item.url) }"
+                   :aria-current="isActive(item.url) ? 'page' : false"
                    x-show="matchesFilter(item.label)">
-                    <i class="ph" :class="'ph-' + (item.icon || 'dot')"></i>
+                    <i class="ph" :class="'ph-' + (item.icon || 'dot')" aria-hidden="true"></i>
                     <span x-text="item.label"></span>
                 </a>
             </template>
-            <div class="sidebar-empty" x-show="filterText && noVisibleItems()">
-                <i class="ph ph-magnifying-glass"></i>
+            <div class="sidebar-empty" x-show="filterText && noVisibleItems()" role="status">
+                <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
                 <span>{% trans 'No results' %}</span>
             </div>
         </nav>
 
-        <div class="sidebar-footer">
-            <div class="sidebar-user">
-                <div class="sidebar-user-avatar">
+        <div class="sidebar-footer" x-data="{ userMenuOpen: false }">
+            {# Upward dropdown menu #}
+            <div class="user-dropdown"
+                 x-show="userMenuOpen"
+                 x-transition:enter="dropdown-enter"
+                 x-transition:leave="dropdown-leave"
+                 @click.outside="userMenuOpen = false"
+                 @keydown.escape.window="userMenuOpen = false"
+                 role="menu"
+                 aria-label="{% trans 'User menu' %}"
+                 x-cloak>
+                <div class="dropdown-email-row">
+                    <div class="dropdown-email">{{ user.email|default:user.get_username }}</div>
+                </div>
+                <div class="dropdown-items">
+                    <a href="{% url 'admin-settings' %}" class="dropdown-item" role="menuitem">
+                        <i class="ph ph-gear" aria-hidden="true"></i>
+                        <span>{% trans 'Settings' %}</span>
+                    </a>
+                    <div class="dropdown-divider" role="separator"></div>
+                    <form method="post" action="{% url 'admin:logout' %}" style="margin:0;padding:0;" role="none">
+                        {% csrf_token %}
+                        <button type="submit" class="dropdown-item danger" role="menuitem">
+                            <i class="ph ph-sign-out" aria-hidden="true"></i>
+                            <span>{% trans 'Log out' %}</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {# User trigger #}
+            <button class="sidebar-user"
+                    @click="userMenuOpen = !userMenuOpen"
+                    :aria-expanded="userMenuOpen.toString()"
+                    aria-haspopup="menu"
+                    type="button">
+                <div class="sidebar-user-avatar" aria-hidden="true">
                     <span>{{ user.get_username|truncatechars:1 }}</span>
                 </div>
                 <div class="sidebar-user-info">
-                    <span class="sidebar-user-name">{{ user.get_username }}</span>
+                    <span class="sidebar-user-name">{{ user.email|default:user.get_username }}</span>
                     <span class="sidebar-user-role">{% trans 'Administrator' %}</span>
                 </div>
-            </div>
+                <i class="ph ph-caret-up user-chevron" aria-hidden="true"></i>
+            </button>
         </div>
     </aside>
     {% endif %}
