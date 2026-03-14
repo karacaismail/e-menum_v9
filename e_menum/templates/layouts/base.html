@@ -341,7 +341,7 @@
     class="{% block body_class %}min-h-screen bg-gray-50 dark:bg-gray-900{% endblock %}"
     x-data="{
         darkMode: localStorage.getItem('darkMode') === 'true',
-        sidebarOpen: false,
+        sidebarOpen: window.innerWidth >= 1024,
         sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true',
         mobileMenuOpen: false
     }"
