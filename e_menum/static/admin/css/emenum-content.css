@@ -2152,13 +2152,7 @@ a.ed-activity-object:hover { color: var(--c-accent-b); }
   overflow-x: hidden;
 }
 #content.colM { flex: 1; }
-/* Boxed layout — constraint on inner content, not .content-area */
-.layout-boxed #content,
-.layout-boxed .changelist-view {
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-}
+/* Boxed layout — defined in sidebar.css (single source of truth) */
 /* ═══════════════════════════════════════════════════════════
    FOCUS-VISIBLE GLOBAL (WCAG 2.2)
 ═══════════════════════════════════════════════════════════ */

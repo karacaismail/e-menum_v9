@@ -315,6 +315,7 @@ function enterpriseDashboard() {
             this.kpiLoading = true;
             try {
                 const resp = await fetch('/admin/api/kpis/');
+                if (!resp.ok) { console.error('KPI API HTTP error:', resp.status); this.kpiLoading = false; return; }
                 const json = await resp.json();
                 if (json.success) {
                     const d = json.data;
@@ -330,6 +331,8 @@ function enterpriseDashboard() {
                         }
                     });
                     this.$nextTick(() => this.renderSparklines());
+                } else {
+                    console.error('KPI API error:', json.error);
                 }
             } catch (e) { console.error('KPI fetch error:', e); }
             this.kpiLoading = false;
@@ -360,11 +363,15 @@ function enterpriseDashboard() {
         async fetchQrTrend() {
             try {
                 const resp = await fetch('/admin/api/qr-scan-trend/?range=' + this.dateRange);
+                if (!resp.ok) { console.error('QR trend API HTTP error:', resp.status); this._showChartError('qrTrendChart'); return; }
                 const json = await resp.json();
                 if (json.success && json.data) {
                     this.renderQrChart(json.data);
+                } else {
+                    console.error('QR trend API error:', json.error);
+                    this._showChartError('qrTrendChart');
                 }
-            } catch (e) { console.error('QR trend error:', e); }
+            } catch (e) { console.error('QR trend error:', e); this._showChartError('qrTrendChart'); }
         },
 
         renderQrChart(data) {
@@ -395,11 +402,15 @@ function enterpriseDashboard() {
         async fetchPlanDistribution() {
             try {
                 const resp = await fetch('/admin/api/plan-distribution/');
+                if (!resp.ok) { console.error('Plan distribution API HTTP error:', resp.status); this._showChartError('planDonutChart'); return; }
                 const json = await resp.json();
                 if (json.success && json.data) {
                     this.renderDonutChart(json.data);
+                } else {
+                    console.error('Plan distribution API error:', json.error);
+                    this._showChartError('planDonutChart');
                 }
-            } catch (e) { console.error('Plan distribution error:', e); }
+            } catch (e) { console.error('Plan distribution error:', e); this._showChartError('planDonutChart'); }
         },
 
         renderDonutChart(data) {
@@ -422,6 +433,11 @@ function enterpriseDashboard() {
                 }],
                 animation: true
             });
+        },
+
+        _showChartError(elementId) {
+            const el = document.getElementById(elementId);
+            if (el) el.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-dim,#6b7280);font-size:13px;gap:6px"><i class="ph ph-warning-circle"></i> {% trans "Data could not be loaded" %}</div>';
         },
 
         async refreshAll() {

@@ -999,7 +999,8 @@
    ═══════════════════════════════════════════════════════════ */
 
 .admin-layout.layout-boxed #content,
-.admin-layout.layout-boxed .changelist-view {
+.admin-layout.layout-boxed .changelist-view,
+.admin-layout.layout-boxed .ed {
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;

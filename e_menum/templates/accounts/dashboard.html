@@ -299,13 +299,28 @@ document.addEventListener('DOMContentLoaded', function() {
     var textColor = isDark ? '#9CA3AF' : '#6B7280';
     var splitLineColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
 
+    function showChartError(elementId) {
+        var el = document.getElementById(elementId);
+        if (el) el.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#9CA3AF;font-size:13px;gap:6px"><i class="ph ph-warning-circle"></i> {% trans "Data could not be loaded" %}</div>';
+    }
+
+    function checkResponse(resp, chartId) {
+        if (!resp.ok) {
+            console.error('API error for ' + chartId + ':', resp.status, resp.statusText);
+            showChartError(chartId);
+            throw new Error('HTTP ' + resp.status);
+        }
+        return resp.json();
+    }
+
     // ── QR Trend Line Chart ──
     function loadQrTrend(days) {
         fetch('/account/api/dashboard/qr-trend/?days=' + (days || 30))
-            .then(function(resp) { return resp.json(); })
+            .then(function(resp) { return checkResponse(resp, 'qr-trend-chart'); })
             .then(function(data) {
                 var chartDom = document.getElementById('qr-trend-chart');
                 if (!chartDom) return;
+                if (!data.dates || !data.values) { showChartError('qr-trend-chart'); return; }
                 chartDom.innerHTML = '';
                 var chart = echarts.init(chartDom);
                 chart.setOption({
@@ -344,10 +359,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // ── Revenue Bar Chart ──
     (function() {
         fetch('/account/api/dashboard/revenue/')
-            .then(function(resp) { return resp.json(); })
+            .then(function(resp) { return checkResponse(resp, 'revenue-chart'); })
             .then(function(data) {
                 var chartDom = document.getElementById('revenue-chart');
                 if (!chartDom) return;
+                if (!data.dates || !data.values) { showChartError('revenue-chart'); return; }
                 chartDom.innerHTML = '';
                 var chart = echarts.init(chartDom);
                 chart.setOption({
@@ -390,7 +406,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ── Order Status Donut ──
     (function() {
         fetch('/account/api/dashboard/orders-chart/')
-            .then(function(resp) { return resp.json(); })
+            .then(function(resp) { return checkResponse(resp, 'order-status-chart'); })
             .then(function(data) {
                 var chartDom = document.getElementById('order-status-chart');
                 if (!chartDom) return;
@@ -437,7 +453,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ── Top Products Horizontal Bar ──
     (function() {
         fetch('/account/api/dashboard/top-products/')
-            .then(function(resp) { return resp.json(); })
+            .then(function(resp) { return checkResponse(resp, 'top-products-chart'); })
             .then(function(data) {
                 var chartDom = document.getElementById('top-products-chart');
                 if (!chartDom) return;
