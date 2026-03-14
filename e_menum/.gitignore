@@ -143,8 +143,8 @@ db.sqlite3
 staticfiles/
 static/collected/
 
-# Media files (user uploads)
-media/
+# Media files (user uploads — root-level directory only, not apps/media/)
+/media/
 
 # Django migration backup files
 *.pyc

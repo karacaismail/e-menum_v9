@@ -9,6 +9,16 @@
 /* === Alpine.js x-cloak: hide until Alpine initialises === */
 [x-cloak] { display: none !important; }
 
+/* Ensure sidebar is visible on desktop even before Alpine initialises.
+   Without this, a slow CDN or JS error would leave the sidebar permanently
+   hidden because x-cloak sets display:none !important.  At the lg breakpoint
+   the sidebar should always be visible (it's only hidden on mobile). */
+@media (min-width: 1024px) {
+    aside[x-cloak] {
+        display: flex !important;
+    }
+}
+
 /* === Skeleton Loading Shimmer === */
 .panel-skeleton {
     background: linear-gradient(90deg,
