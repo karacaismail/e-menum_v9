@@ -4,6 +4,9 @@ Management command to seed realistic mock data for ALL admin models.
 Creates 3-12 records per model with realistic, relational Turkish restaurant data.
 Depends on seed_menu_data having been run first (for Organization, Menu, Products).
 
+Idempotent: uses get_or_create throughout so it can be safely re-run on every
+deploy without creating duplicates. Existing records are preserved.
+
 Models seeded:
   Core: Branch, UserRole, Session, AuditLog, extra Users
   Orders: Zone, Table, QRCode, QRScan, Order, OrderItem, ServiceRequest
@@ -663,16 +666,18 @@ class Command(BaseCommand):
         ]
 
         for i, log in enumerate(logs):
-            AuditLog.objects.create(
+            AuditLog.objects.get_or_create(
                 organization=org,
-                user=log["user"],
                 action=log["action"],
                 resource=log["resource"],
-                resource_id=str(uuid.uuid4()),
                 description=log["description"],
-                ip_address=f"85.101.{random.randint(1, 254)}.{random.randint(1, 254)}",
-                user_agent="Mozilla/5.0",
-                created_at=rand_past(60),
+                defaults={
+                    "user": log["user"],
+                    "resource_id": str(uuid.uuid4()),
+                    "ip_address": f"85.101.{random.randint(1, 254)}.{random.randint(1, 254)}",
+                    "user_agent": "Mozilla/5.0",
+                    "created_at": rand_past(60),
+                },
             )
 
         self.stdout.write(self.style.SUCCESS(f"  ✓ {len(logs)} audit logs"))
@@ -1007,58 +1012,67 @@ class Command(BaseCommand):
             total = subtotal + tax
 
             placed_at = rand_past(30)
-            o = Order.objects.create(
+            o, created = Order.objects.get_or_create(
                 organization=org,
-                branch=table.branch if table else None,
-                table=table,
-                customer=customer,
                 order_number=f"ORD-{1000 + i}",
-                status=status,
-                type=random.choice(["DINE_IN", "DINE_IN", "TAKEAWAY"]),
-                payment_status=pay_status,
-                payment_method=random.choice(
-                    [
-                        "CASH",
-                        "CREDIT_CARD",
-                        "CREDIT_CARD",
-                        "ONLINE",
-                    ]
-                )
-                if pay_status == "PAID"
-                else None,
-                subtotal=subtotal,
-                tax_amount=tax,
-                total_amount=total,
-                guest_count=random.randint(1, 4),
-                placed_at=placed_at,
-                placed_by=staff,
-                assigned_to=staff,
-                notes=random.choice(
-                    [
-                        "",
-                        "",
-                        "Acele",
-                        "Dogumlari kutluyorlar",
-                        "Alerjisi var",
-                        "",
-                    ]
-                ),
+                defaults={
+                    "branch": table.branch if table else None,
+                    "table": table,
+                    "customer": customer,
+                    "status": status,
+                    "type": random.choice(["DINE_IN", "DINE_IN", "TAKEAWAY"]),
+                    "payment_status": pay_status,
+                    "payment_method": random.choice(
+                        [
+                            "CASH",
+                            "CREDIT_CARD",
+                            "CREDIT_CARD",
+                            "ONLINE",
+                        ]
+                    )
+                    if pay_status == "PAID"
+                    else None,
+                    "subtotal": subtotal,
+                    "tax_amount": tax,
+                    "total_amount": total,
+                    "guest_count": random.randint(1, 4),
+                    "placed_at": placed_at,
+                    "placed_by": staff,
+                    "assigned_to": staff,
+                    "notes": random.choice(
+                        [
+                            "",
+                            "",
+                            "Acele",
+                            "Dogumlari kutluyorlar",
+                            "Alerjisi var",
+                            "",
+                        ]
+                    ),
+                },
             )
-            # Set timestamps based on status
-            if status in ("CONFIRMED", "PREPARING", "READY", "DELIVERED", "COMPLETED"):
-                o.confirmed_at = placed_at + timedelta(minutes=2)
-            if status in ("PREPARING", "READY", "DELIVERED", "COMPLETED"):
-                o.preparing_at = placed_at + timedelta(minutes=5)
-            if status in ("READY", "DELIVERED", "COMPLETED"):
-                o.ready_at = placed_at + timedelta(minutes=20)
-            if status in ("DELIVERED", "COMPLETED"):
-                o.delivered_at = placed_at + timedelta(minutes=25)
-            if status == "COMPLETED":
-                o.completed_at = placed_at + timedelta(minutes=60)
-            if status == "CANCELLED":
-                o.cancelled_at = placed_at + timedelta(minutes=10)
-                o.cancel_reason = "Musteri iptal etti"
-            o.save()
+            if created:
+                # Set timestamps based on status
+                if status in (
+                    "CONFIRMED",
+                    "PREPARING",
+                    "READY",
+                    "DELIVERED",
+                    "COMPLETED",
+                ):
+                    o.confirmed_at = placed_at + timedelta(minutes=2)
+                if status in ("PREPARING", "READY", "DELIVERED", "COMPLETED"):
+                    o.preparing_at = placed_at + timedelta(minutes=5)
+                if status in ("READY", "DELIVERED", "COMPLETED"):
+                    o.ready_at = placed_at + timedelta(minutes=20)
+                if status in ("DELIVERED", "COMPLETED"):
+                    o.delivered_at = placed_at + timedelta(minutes=25)
+                if status == "COMPLETED":
+                    o.completed_at = placed_at + timedelta(minutes=60)
+                if status == "CANCELLED":
+                    o.cancelled_at = placed_at + timedelta(minutes=10)
+                    o.cancel_reason = "Musteri iptal etti"
+                o.save()
             orders.append(o)
 
         self.stdout.write(self.style.SUCCESS(f"  ✓ {len(orders)} orders"))
@@ -1097,14 +1111,16 @@ class Command(BaseCommand):
                         "DELIVERED" if order.status == "COMPLETED" else "CANCELLED"
                     )
 
-                OrderItem.objects.create(
+                OrderItem.objects.get_or_create(
                     order=order,
                     product=product,
-                    quantity=qty,
-                    unit_price=unit_price,
-                    total_price=total,
-                    status=item_status,
-                    modifiers=[],
+                    defaults={
+                        "quantity": qty,
+                        "unit_price": unit_price,
+                        "total_price": total,
+                        "status": item_status,
+                        "modifiers": [],
+                    },
                 )
                 count += 1
 
@@ -1127,24 +1143,28 @@ class Command(BaseCommand):
         count = 0
         for qr in qr_codes[:8]:
             n_scans = random.randint(3, 8)
-            for _ in range(n_scans):
-                QRScan.objects.create(
+            for scan_idx in range(n_scans):
+                _, created = QRScan.objects.get_or_create(
                     qr_code=qr,
                     organization=org,
-                    ip_address=f"{random.randint(1, 254)}.{random.randint(1, 254)}.{random.randint(1, 254)}.{random.randint(1, 254)}",
-                    user_agent="Mozilla/5.0",
-                    device_type=random.choice(devices),
-                    browser=random.choice(browsers),
-                    os=random.choice(oses),
-                    country="TR",
-                    city=random.choice(["Istanbul", "Ankara", "Izmir"]),
-                    is_unique=random.choice([True, True, False]),
-                    customer=random.choice(customers)
-                    if customers and random.random() > 0.5
-                    else None,
-                    scanned_at=rand_past(30),
+                    # Use a stable identifier per qr+scan index
+                    ip_address=f"85.{qr.id % 254 + 1}.{scan_idx + 1}.{random.randint(1, 254)}",
+                    defaults={
+                        "user_agent": "Mozilla/5.0",
+                        "device_type": random.choice(devices),
+                        "browser": random.choice(browsers),
+                        "os": random.choice(oses),
+                        "country": "TR",
+                        "city": random.choice(["Istanbul", "Ankara", "Izmir"]),
+                        "is_unique": random.choice([True, True, False]),
+                        "customer": random.choice(customers)
+                        if customers and random.random() > 0.5
+                        else None,
+                        "scanned_at": rand_past(30),
+                    },
                 )
-                count += 1
+                if created:
+                    count += 1
 
         self.stdout.write(self.style.SUCCESS(f"  ✓ {count} QR scans"))
 
@@ -1186,31 +1206,36 @@ class Command(BaseCommand):
                 break
             status, resp_time = statuses_data[i]
             created_at = rand_recent(24)
-            ServiceRequest.objects.create(
+            _, created = ServiceRequest.objects.get_or_create(
                 organization=org,
-                branch=tables[i].branch,
                 table=tables[i],
-                customer=random.choice(customers) if customers else None,
                 type=req_type,
-                status=status,
                 message=msg,
-                priority=random.randint(1, 5),
-                assigned_to=random.choice(staff_users)
-                if staff_users and status != "PENDING"
-                else None,
-                response_time_seconds=resp_time,
-                acknowledged_at=created_at + timedelta(seconds=30)
-                if status != "PENDING"
-                else None,
-                completed_at=created_at + timedelta(seconds=resp_time)
-                if status == "COMPLETED" and resp_time
-                else None,
-                cancelled_at=created_at + timedelta(minutes=5)
-                if status == "CANCELLED"
-                else None,
-                cancel_reason="Musteri ayrildi" if status == "CANCELLED" else None,
+                defaults={
+                    "branch": tables[i].branch,
+                    "customer": random.choice(customers) if customers else None,
+                    "status": status,
+                    "priority": random.randint(1, 5),
+                    "assigned_to": random.choice(staff_users)
+                    if staff_users and status != "PENDING"
+                    else None,
+                    "response_time_seconds": resp_time,
+                    "acknowledged_at": created_at + timedelta(seconds=30)
+                    if status != "PENDING"
+                    else None,
+                    "completed_at": created_at + timedelta(seconds=resp_time)
+                    if status == "COMPLETED" and resp_time
+                    else None,
+                    "cancelled_at": created_at + timedelta(minutes=5)
+                    if status == "CANCELLED"
+                    else None,
+                    "cancel_reason": "Musteri ayrildi"
+                    if status == "CANCELLED"
+                    else None,
+                },
             )
-            count += 1
+            if created:
+                count += 1
 
         self.stdout.write(self.style.SUCCESS(f"  ✓ {count} service requests"))
 
@@ -1226,20 +1251,24 @@ class Command(BaseCommand):
 
         sources = ["QR_SCAN", "QR_SCAN", "ORDER", "CHECK_IN"]
         count = 0
-        for customer in customers[:8]:
+        for c_idx, customer in enumerate(customers[:8]):
             n_visits = random.randint(2, 6)
-            for _ in range(n_visits):
-                CustomerVisit.objects.create(
+            for v_idx in range(n_visits):
+                _, created = CustomerVisit.objects.get_or_create(
                     organization=org,
                     customer=customer,
-                    branch=random.choice(branches) if branches else None,
-                    visited_at=rand_past(60),
-                    source=random.choice(sources),
-                    table_id=random.choice(tables).id if tables else None,
-                    duration_minutes=random.randint(20, 120),
-                    ip_address=f"85.{random.randint(1, 254)}.{random.randint(1, 254)}.{random.randint(1, 254)}",
+                    # Stable IP as unique identifier per customer+visit
+                    ip_address=f"85.{c_idx + 1}.{v_idx + 1}.1",
+                    defaults={
+                        "branch": random.choice(branches) if branches else None,
+                        "visited_at": rand_past(60),
+                        "source": random.choice(sources),
+                        "table_id": random.choice(tables).id if tables else None,
+                        "duration_minutes": random.randint(20, 120),
+                    },
                 )
-                count += 1
+                if created:
+                    count += 1
 
         self.stdout.write(self.style.SUCCESS(f"  ✓ {count} customer visits"))
 
@@ -1306,20 +1335,23 @@ class Command(BaseCommand):
         for i, (rating, f_type, comment, status, response) in enumerate(feedback_data):
             customer = customers[i] if i < len(customers) else None
             order = orders[i] if i < len(orders) else None
-            Feedback.objects.create(
+            _, created = Feedback.objects.get_or_create(
                 organization=org,
-                customer=customer,
-                order_id=order.id if order else None,
                 feedback_type=f_type,
-                rating=rating,
                 comment=comment,
-                status=status,
-                staff_response=response,
-                responded_at=rand_recent(48) if response else None,
-                is_public=rating >= 4,
-                created_at=rand_past(45),
+                defaults={
+                    "customer": customer,
+                    "order_id": order.id if order else None,
+                    "rating": rating,
+                    "status": status,
+                    "staff_response": response,
+                    "responded_at": rand_recent(48) if response else None,
+                    "is_public": rating >= 4,
+                    "created_at": rand_past(45),
+                },
             )
-            count += 1
+            if created:
+                count += 1
 
         self.stdout.write(self.style.SUCCESS(f"  ✓ {count} feedback entries"))
 
@@ -1338,47 +1370,56 @@ class Command(BaseCommand):
             balance = 0
             # Initial welcome bonus
             balance += 100
-            LoyaltyPoint.objects.create(
+            _, created = LoyaltyPoint.objects.get_or_create(
                 organization=org,
                 customer=customer,
                 transaction_type="BONUS",
-                points=100,
-                balance_after=balance,
                 description="Hosgeldin bonusu",
-                created_at=customer.first_visit_at or rand_past(90),
+                defaults={
+                    "points": 100,
+                    "balance_after": balance,
+                    "created_at": customer.first_visit_at or rand_past(90),
+                },
             )
-            count += 1
+            if created:
+                count += 1
 
             # Earned from orders
-            for _ in range(random.randint(2, 5)):
+            for earn_idx in range(random.randint(2, 5)):
                 pts = random.randint(10, 80)
                 balance += pts
-                LoyaltyPoint.objects.create(
+                _, created = LoyaltyPoint.objects.get_or_create(
                     organization=org,
                     customer=customer,
                     transaction_type="EARNED",
-                    points=pts,
-                    balance_after=balance,
-                    order_id=random.choice(orders).id if orders else None,
                     description=f"Siparis puani ({pts} puan)",
-                    created_at=rand_past(60),
+                    defaults={
+                        "points": pts,
+                        "balance_after": balance,
+                        "order_id": random.choice(orders).id if orders else None,
+                        "created_at": rand_past(60),
+                    },
                 )
-                count += 1
+                if created:
+                    count += 1
 
             # One redemption
             if balance > 50:
                 spent = random.randint(20, min(balance, 150))
                 balance -= spent
-                LoyaltyPoint.objects.create(
+                _, created = LoyaltyPoint.objects.get_or_create(
                     organization=org,
                     customer=customer,
                     transaction_type="REDEEMED",
-                    points=-spent,
-                    balance_after=balance,
-                    description=f"{spent} puan harcandi",
-                    created_at=rand_past(15),
+                    defaults={
+                        "points": -spent,
+                        "balance_after": balance,
+                        "description": f"{spent} puan harcandi",
+                        "created_at": rand_past(15),
+                    },
                 )
-                count += 1
+                if created:
+                    count += 1
 
             # Update customer balance
             customer.loyalty_points_balance = balance
@@ -1428,31 +1469,35 @@ class Command(BaseCommand):
             org.save(update_fields=updated_fields)
 
         # Invoices
-        if not Invoice.objects.filter(subscription=sub).exists():
-            for i in range(3):
-                period_start = now() - timedelta(days=30 * (3 - i))
-                period_end = period_start + timedelta(days=30)
-                tax = (plan.price_monthly * Decimal("0.20")).quantize(Decimal("0.01"))
-                total = plan.price_monthly + tax
-                Invoice.objects.create(
-                    organization=org,
-                    subscription=sub,
-                    invoice_number=f"INV-2026-{1000 + i}",
-                    status="PAID" if i < 2 else "PENDING",
-                    period_start=period_start,
-                    period_end=period_end,
-                    amount_subtotal=plan.price_monthly,
-                    amount_tax=tax,
-                    amount_total=total,
-                    amount_paid=total if i < 2 else Decimal("0"),
-                    amount_refunded=Decimal("0"),
-                    currency="TRY",
-                    due_date=period_end,
-                    paid_at=period_end - timedelta(days=2) if i < 2 else None,
-                )
-            self.stdout.write(self.style.SUCCESS("  ✓ 1 subscription + 3 invoices"))
-        else:
-            self.stdout.write("  Subscription/invoices exist, skipping")
+        inv_count = 0
+        for i in range(3):
+            period_start = now() - timedelta(days=30 * (3 - i))
+            period_end = period_start + timedelta(days=30)
+            tax = (plan.price_monthly * Decimal("0.20")).quantize(Decimal("0.01"))
+            total = plan.price_monthly + tax
+            _, created = Invoice.objects.get_or_create(
+                organization=org,
+                invoice_number=f"INV-2026-{1000 + i}",
+                defaults={
+                    "subscription": sub,
+                    "status": "PAID" if i < 2 else "PENDING",
+                    "period_start": period_start,
+                    "period_end": period_end,
+                    "amount_subtotal": plan.price_monthly,
+                    "amount_tax": tax,
+                    "amount_total": total,
+                    "amount_paid": total if i < 2 else Decimal("0"),
+                    "amount_refunded": Decimal("0"),
+                    "currency": "TRY",
+                    "due_date": period_end,
+                    "paid_at": period_end - timedelta(days=2) if i < 2 else None,
+                },
+            )
+            if created:
+                inv_count += 1
+        self.stdout.write(
+            self.style.SUCCESS(f"  ✓ 1 subscription + {inv_count} new invoices")
+        )
 
     # ===================================================================
     # MEDIA
@@ -1486,15 +1531,11 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(f"  ✓ {len(folders)} media folders"))
 
         # Media files
-        if Media.objects.filter(organization=org).exists():
-            self.stdout.write("  Media files exist, skipping")
-            return
-
         media_data = [
             {
                 "name": "Adana Kebap",
                 "original_filename": "adana-kebap.jpg",
-                "folder": folders.get("menu-gorselleri"),
+                "folder_slug": "menu-gorselleri",
                 "media_type": "IMAGE",
                 "mime_type": "image/jpeg",
                 "file_size": 245000,
@@ -1505,7 +1546,7 @@ class Command(BaseCommand):
             {
                 "name": "Burger Klasik",
                 "original_filename": "burger-classic.jpg",
-                "folder": folders.get("menu-gorselleri"),
+                "folder_slug": "menu-gorselleri",
                 "media_type": "IMAGE",
                 "mime_type": "image/jpeg",
                 "file_size": 312000,
@@ -1516,7 +1557,7 @@ class Command(BaseCommand):
             {
                 "name": "Restoran Logo",
                 "original_filename": "lezzet-sarayi-logo.png",
-                "folder": folders.get("logolar"),
+                "folder_slug": "logolar",
                 "media_type": "IMAGE",
                 "mime_type": "image/png",
                 "file_size": 85000,
@@ -1527,7 +1568,7 @@ class Command(BaseCommand):
             {
                 "name": "Bahce Gorunumu",
                 "original_filename": "bahce-gorunumu.jpg",
-                "folder": folders.get("galeri"),
+                "folder_slug": "galeri",
                 "media_type": "IMAGE",
                 "mime_type": "image/jpeg",
                 "file_size": 520000,
@@ -1539,7 +1580,7 @@ class Command(BaseCommand):
             {
                 "name": "Ic Mekan",
                 "original_filename": "ic-mekan.jpg",
-                "folder": folders.get("galeri"),
+                "folder_slug": "galeri",
                 "media_type": "IMAGE",
                 "mime_type": "image/jpeg",
                 "file_size": 480000,
@@ -1551,7 +1592,7 @@ class Command(BaseCommand):
             {
                 "name": "Sosyal Medya Banner",
                 "original_filename": "sm-banner.png",
-                "folder": folders.get("sosyal-medya"),
+                "folder_slug": "sosyal-medya",
                 "media_type": "IMAGE",
                 "mime_type": "image/png",
                 "file_size": 150000,
@@ -1564,17 +1605,23 @@ class Command(BaseCommand):
 
         count = 0
         for d in media_data:
-            folder = d.pop("folder", None)
-            Media.objects.create(
+            folder_slug = d.pop("folder_slug", None)
+            folder = folders.get(folder_slug)
+            name = d["name"]
+            Media.objects.get_or_create(
                 organization=org,
-                folder=folder,
-                uploaded_by=owner,
-                file_path=f"{org.id}/menu_items/{uuid.uuid4().hex[:12]}.jpg",
-                storage="LOCAL",
-                status="READY",
-                alt_text=d["name"],
-                title=d["name"],
-                **d,
+                name=name,
+                original_filename=d["original_filename"],
+                defaults={
+                    "folder": folder,
+                    "uploaded_by": owner,
+                    "file_path": f"{org.id}/menu_items/{uuid.uuid4().hex[:12]}.jpg",
+                    "storage": "LOCAL",
+                    "status": "READY",
+                    "alt_text": name,
+                    "title": name,
+                    **d,
+                },
             )
             count += 1
 
@@ -1682,15 +1729,28 @@ class Command(BaseCommand):
         count = 0
         for d in notif_data:
             sent_at = rand_recent(48)
-            Notification.objects.create(
+            title = d["title"]
+            user = d["user"]
+            ntype = d["notification_type"]
+            _, created = Notification.objects.get_or_create(
                 organization=org,
-                channel="IN_APP",
-                sent_at=sent_at if d["status"] != "PENDING" else None,
-                delivered_at=sent_at + timedelta(seconds=5)
-                if d["status"] in ("DELIVERED", "READ")
-                else None,
-                **d,
+                title=title,
+                user=user,
+                notification_type=ntype,
+                defaults={
+                    "channel": "IN_APP",
+                    "sent_at": sent_at if d["status"] != "PENDING" else None,
+                    "delivered_at": sent_at + timedelta(seconds=5)
+                    if d["status"] in ("DELIVERED", "READ")
+                    else None,
+                    **{
+                        k: v
+                        for k, v in d.items()
+                        if k not in ("title", "user", "notification_type")
+                    },
+                },
             )
-            count += 1
+            if created:
+                count += 1
 
         self.stdout.write(self.style.SUCCESS(f"  ✓ {count} notifications"))

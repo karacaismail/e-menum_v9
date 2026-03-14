@@ -249,30 +249,22 @@ class Command(BaseCommand):
         created_allergens = {}
         for data in allergens_data:
             code = data["code"]
-            slug = data["slug"]
 
-            # Check by both code and slug for uniqueness
-            existing_by_code = Allergen.objects.filter(code=code).first()
-            existing_by_slug = Allergen.objects.filter(slug=slug).first()
-
-            if existing_by_code or existing_by_slug:
-                existing = existing_by_code or existing_by_slug
-                if force:
-                    # Update existing record
-                    for key, value in data.items():
-                        setattr(existing, key, value)
-                    existing.save()
-                    self.stdout.write(f"  ~ Updated allergen: {data['name']} ({code})")
-                else:
-                    self.stdout.write(
-                        f"  - Skipped allergen: {data['name']} ({code}) (already exists)"
-                    )
-                created_allergens[code] = existing
+            if force:
+                allergen, created = Allergen.objects.update_or_create(
+                    code=code,
+                    defaults=data,
+                )
+                action = "+" if created else "~"
             else:
-                # Create new record
-                allergen = Allergen.objects.create(**data)
-                self.stdout.write(f"  + Created allergen: {data['name']} ({code})")
-                created_allergens[code] = allergen
+                allergen, created = Allergen.objects.get_or_create(
+                    code=code,
+                    defaults=data,
+                )
+                action = "+" if created else "-"
+
+            self.stdout.write(f"  {action} Allergen: {data['name']} ({code})")
+            created_allergens[code] = allergen
 
         return created_allergens
 

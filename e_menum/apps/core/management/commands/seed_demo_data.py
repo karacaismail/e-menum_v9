@@ -5,6 +5,9 @@ Orchestrates every seed command, then creates 12 additional restaurants
 with full operational data (users, roles, menus, orders, customers,
 subscriptions, etc.).
 
+Idempotent: uses get_or_create / update_or_create throughout so it can be
+safely re-run on every deploy without creating duplicates.
+
 Usage:
     python manage.py seed_demo_data
     python manage.py seed_demo_data --skip-deps   # only new orgs
@@ -1139,18 +1142,17 @@ class Command(BaseCommand):
                 self.stdout.write(f"  Plan not found: {slug}")
                 continue
 
-            # Clear existing and recreate for accuracy
-            PlanDisplayFeature.objects.filter(plan=plan).delete()
-
             for idx, feat in enumerate(features, start=1):
                 text_tr, text_en, highlighted = feat
-                PlanDisplayFeature.objects.create(
+                PlanDisplayFeature.objects.update_or_create(
                     plan=plan,
                     text_tr=text_tr,
-                    text_en=text_en,
-                    is_highlighted=highlighted,
-                    sort_order=idx,
-                    is_active=True,
+                    defaults={
+                        "text_en": text_en,
+                        "is_highlighted": highlighted,
+                        "sort_order": idx,
+                        "is_active": True,
+                    },
                 )
             self.stdout.write(
                 self.style.SUCCESS(f"  ✓ {plan.name}: {len(features)} display features")
@@ -1634,13 +1636,17 @@ class Command(BaseCommand):
                     unit_price = prod.base_price
                     line_total = unit_price * qty
                     subtotal += line_total
-                    OrderItem.objects.create(
+                    OrderItem.objects.get_or_create(
                         order=order,
                         product=prod,
-                        quantity=qty,
-                        unit_price=unit_price,
-                        total_price=line_total,
-                        status="DELIVERED" if status == "COMPLETED" else "PENDING",
+                        defaults={
+                            "quantity": qty,
+                            "unit_price": unit_price,
+                            "total_price": line_total,
+                            "status": "DELIVERED"
+                            if status == "COMPLETED"
+                            else "PENDING",
+                        },
                     )
 
                 tax = (subtotal * Decimal("0.10")).quantize(Decimal("0.01"))
@@ -1661,15 +1667,20 @@ class Command(BaseCommand):
         if Feedback.objects.filter(organization=org).exists():
             return
 
-        for _ in range(random.randint(3, 8)):
+        for fb_idx in range(random.randint(3, 8)):
             customer = random.choice(customers) if customers else None
-            Feedback.objects.create(
+            comment = FEEDBACK_TR[fb_idx % len(FEEDBACK_TR)]
+            Feedback.objects.get_or_create(
                 organization=org,
-                customer=customer,
-                feedback_type=random.choice(["FOOD", "SERVICE", "AMBIANCE", "GENERAL"]),
-                rating=random.randint(3, 5),
-                comment=random.choice(FEEDBACK_TR),
-                status=random.choice(["PENDING", "REVIEWED", "RESPONDED"]),
+                comment=comment,
+                defaults={
+                    "customer": customer,
+                    "feedback_type": random.choice(
+                        ["FOOD", "SERVICE", "AMBIANCE", "GENERAL"]
+                    ),
+                    "rating": random.randint(3, 5),
+                    "status": random.choice(["PENDING", "REVIEWED", "RESPONDED"]),
+                },
             )
 
     # ───────────────────────────────────────────────────────────────
