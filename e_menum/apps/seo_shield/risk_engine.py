@@ -146,10 +146,10 @@ class RiskEngine:
     a composite score with a recommended action.
     """
 
-    # Default score thresholds for actions
-    THRESHOLD_LOG = 30
-    THRESHOLD_CHALLENGE = 60
-    THRESHOLD_BLOCK = 80
+    # Default score thresholds for actions (doubled for lower false-positive rate)
+    THRESHOLD_LOG = 60
+    THRESHOLD_CHALLENGE = 120
+    THRESHOLD_BLOCK = 160
 
     # Signal weights (must match IPReputationManager.SIGNAL_WEIGHTS)
     SIGNAL_WEIGHTS = {

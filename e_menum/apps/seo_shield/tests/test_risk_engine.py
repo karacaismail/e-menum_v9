@@ -43,37 +43,37 @@ class RiskEngineDetermineActionTests(TestCase):
         self.engine = RiskEngine()
 
     def test_pass_below_log_threshold(self):
-        """Score below 30 yields 'pass'."""
+        """Score below 60 yields 'pass'."""
         self.assertEqual(self.engine._determine_action(0), "pass")
-        self.assertEqual(self.engine._determine_action(10), "pass")
-        self.assertEqual(self.engine._determine_action(29), "pass")
+        self.assertEqual(self.engine._determine_action(30), "pass")
+        self.assertEqual(self.engine._determine_action(59), "pass")
 
     def test_log_at_threshold(self):
-        """Score at log threshold (30) yields 'log'."""
-        self.assertEqual(self.engine._determine_action(30), "log")
+        """Score at log threshold (60) yields 'log'."""
+        self.assertEqual(self.engine._determine_action(60), "log")
 
     def test_log_between_thresholds(self):
         """Score between log and challenge thresholds yields 'log'."""
-        self.assertEqual(self.engine._determine_action(45), "log")
-        self.assertEqual(self.engine._determine_action(59), "log")
+        self.assertEqual(self.engine._determine_action(80), "log")
+        self.assertEqual(self.engine._determine_action(119), "log")
 
     def test_challenge_at_threshold(self):
-        """Score at challenge threshold (60) yields 'challenge'."""
-        self.assertEqual(self.engine._determine_action(60), "challenge")
+        """Score at challenge threshold (120) yields 'challenge'."""
+        self.assertEqual(self.engine._determine_action(120), "challenge")
 
     def test_challenge_between_thresholds(self):
         """Score between challenge and block thresholds yields 'challenge'."""
-        self.assertEqual(self.engine._determine_action(70), "challenge")
-        self.assertEqual(self.engine._determine_action(79), "challenge")
+        self.assertEqual(self.engine._determine_action(140), "challenge")
+        self.assertEqual(self.engine._determine_action(159), "challenge")
 
     def test_block_at_threshold(self):
-        """Score at block threshold (80) yields 'block'."""
-        self.assertEqual(self.engine._determine_action(80), "block")
+        """Score at block threshold (160) yields 'block'."""
+        self.assertEqual(self.engine._determine_action(160), "block")
 
     def test_block_above_threshold(self):
         """Score above block threshold yields 'block'."""
-        self.assertEqual(self.engine._determine_action(95), "block")
-        self.assertEqual(self.engine._determine_action(100), "block")
+        self.assertEqual(self.engine._determine_action(180), "block")
+        self.assertEqual(self.engine._determine_action(200), "block")
 
     @override_settings(
         SHIELD_THRESHOLD_LOG=20,
