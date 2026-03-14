@@ -994,12 +994,19 @@
 
 /* ═══════════════════════════════════════════════════════════
    BOXED LAYOUT MODE
-   Constraint is on .content-area — all children (topbar,
-   messages, #content, footer) inherit the max-width naturally.
+   Constraint is on #content — NOT .content-area.
+   .content-area keeps its margin-left offset from the sidebar.
    ═══════════════════════════════════════════════════════════ */
 
-.admin-layout.layout-boxed .content-area {
-    max-width: 1440px;
+.admin-layout.layout-boxed #content,
+.admin-layout.layout-boxed .changelist-view {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.admin-layout.layout-boxed .content-title-bar {
+    max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
 }

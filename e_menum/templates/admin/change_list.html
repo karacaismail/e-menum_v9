@@ -58,7 +58,7 @@
     </div>
     {% endif %}
 
-    <div id="changelist" class="{% if cl.has_filters %}filtered{% endif %}">
+    <div id="changelist">
 
         {# Search bar #}
         {% block search %}
@@ -72,72 +72,73 @@
             {% endif %}
         {% endblock %}
 
-        {# Main content + filter side-by-side #}
-        <div class="changelist-content">
-            {# Results #}
-            <div class="changelist-results">
-                <form id="changelist-form" method="post"{% if cl.formset and cl.formset.is_multipart %} enctype="multipart/form-data"{% endif %} novalidate>
-                    {% csrf_token %}
-                    {% if cl.formset %}
-                        <div>{{ cl.formset.management_form }}</div>
+        {# Hidden filter source — Django renders filters here, JS reads and transforms them #}
+        {% block filters %}
+            {% if cl.has_filters %}
+            <div id="changelist-filter" class="filter-source" style="display:none" aria-hidden="true">
+                {% if cl.is_facets_optional %}
+                <div id="changelist-filter-extra-actions">
+                    {% if cl.has_active_filters %}
+                        <a href="{{ cl.clear_all_filters_qs }}" data-clear-url="{{ cl.clear_all_filters_qs }}">&#10006; {% translate "Clear all filters" %}</a>
                     {% endif %}
-
-                    {% block result_list %}
-                        {% if action_form and actions_on_top and cl.show_admin_actions %}
-                            {% admin_actions %}
-                        {% endif %}
-                        {% if cl.result_count %}
-                            {% result_list cl %}
-                        {% else %}
-                            <div class="ux-empty-state">
-                                <i class="ph ph-database ux-empty-state-icon"></i>
-                                <h3 class="ux-empty-state-title">{% translate "No records found" %}</h3>
-                                <p class="ux-empty-state-message">
-                                    {% if cl.has_active_filters or cl.query %}
-                                        {% translate "Try adjusting your search or filter criteria." %}
-                                    {% else %}
-                                        {% blocktranslate with name=cl.opts.verbose_name_plural|capfirst %}No {{ name }} have been created yet.{% endblocktranslate %}
-                                    {% endif %}
-                                </p>
-                                {% if cl.has_add_permission %}
-                                    {% if not cl.has_active_filters and not cl.query %}
-                                        <a href="{% url cl.opts|admin_urlname:'add' %}" class="ux-empty-state-action">
-                                            <i class="ph ph-plus"></i>
-                                            {% blocktranslate with name=cl.opts.verbose_name %}Add {{ name }}{% endblocktranslate %}
-                                        </a>
-                                    {% endif %}
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                        {% if action_form and actions_on_bottom and cl.show_admin_actions %}
-                            {% admin_actions %}
-                        {% endif %}
-                    {% endblock %}
-
-                    {% block pagination %}
-                        {% pagination cl %}
-                    {% endblock %}
-                </form>
-            </div>
-
-            {# Filters panel #}
-            {% block filters %}
-                {% if cl.has_filters %}
-                <div id="changelist-filter">
-                    <h2>{% translate 'Filter' %}</h2>
-                    {% if cl.is_facets_optional %}
-                    <div id="changelist-filter-extra-actions">
-                        {% if cl.has_active_filters %}
-                            <a href="{{ cl.clear_all_filters_qs }}">&#10006; {% translate "Clear all filters" %}</a>
-                        {% endif %}
-                    </div>
-                    {% endif %}
-                    {% for spec in cl.filter_specs %}
-                        {% admin_list_filter cl spec %}
-                    {% endfor %}
                 </div>
                 {% endif %}
-            {% endblock %}
+                {% for spec in cl.filter_specs %}
+                    {% admin_list_filter cl spec %}
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endblock %}
+
+        {# Horizontal filter toolbar — built by filters.js from hidden source above #}
+        {% if cl.has_filters %}
+        <div id="filter-toolbar" class="filter-toolbar"></div>
+        {% endif %}
+
+        {# Results — now full width, no side-by-side layout #}
+        <div class="changelist-results">
+            <form id="changelist-form" method="post"{% if cl.formset and cl.formset.is_multipart %} enctype="multipart/form-data"{% endif %} novalidate>
+                {% csrf_token %}
+                {% if cl.formset %}
+                    <div>{{ cl.formset.management_form }}</div>
+                {% endif %}
+
+                {% block result_list %}
+                    {% if action_form and actions_on_top and cl.show_admin_actions %}
+                        {% admin_actions %}
+                    {% endif %}
+                    {% if cl.result_count %}
+                        {% result_list cl %}
+                    {% else %}
+                        <div class="ux-empty-state">
+                            <i class="ph ph-database ux-empty-state-icon"></i>
+                            <h3 class="ux-empty-state-title">{% translate "No records found" %}</h3>
+                            <p class="ux-empty-state-message">
+                                {% if cl.has_active_filters or cl.query %}
+                                    {% translate "Try adjusting your search or filter criteria." %}
+                                {% else %}
+                                    {% blocktranslate with name=cl.opts.verbose_name_plural|capfirst %}No {{ name }} have been created yet.{% endblocktranslate %}
+                                {% endif %}
+                            </p>
+                            {% if cl.has_add_permission %}
+                                {% if not cl.has_active_filters and not cl.query %}
+                                    <a href="{% url cl.opts|admin_urlname:'add' %}" class="ux-empty-state-action">
+                                        <i class="ph ph-plus"></i>
+                                        {% blocktranslate with name=cl.opts.verbose_name %}Add {{ name }}{% endblocktranslate %}
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    {% if action_form and actions_on_bottom and cl.show_admin_actions %}
+                        {% admin_actions %}
+                    {% endif %}
+                {% endblock %}
+
+                {% block pagination %}
+                    {% pagination cl %}
+                {% endblock %}
+            </form>
         </div>
 
     </div>
