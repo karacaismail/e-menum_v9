@@ -48,13 +48,19 @@ def _safe_store_rendered_templates(store, signal, sender, template, context, **k
 
 
 def _depth_limited_render(self, context):
-    """instrumented_test_render replacement with depth-limited signaling.
+    """instrumented_test_render replacement with depth guard.
 
-    Only dispatches the template_rendered signal for the first 10 render
-    levels.  Beyond that, renders the nodelist directly — identical to
-    Django's original (non-instrumented) Template._render.
+    Two protections:
+    1. Hard depth guard: returns "" if render depth exceeds 200 to prevent
+       RecursionError from deeply nested or accidentally circular template
+       chains.  200 levels is far beyond any legitimate chain (typically 5-6).
+    2. Signal limiting: only dispatches template_rendered for the first 10
+       render levels, eliminating the ~3 extra frames per level from signal
+       dispatch overhead.
     """
     depth = getattr(_render_depth, "depth", 0)
+    if depth > 200:
+        return ""
     _render_depth.depth = depth + 1
     try:
         if depth < 10:
