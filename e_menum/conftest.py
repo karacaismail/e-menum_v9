@@ -5,6 +5,8 @@ This module contains shared fixtures used across all test modules.
 Fixtures follow pytest-django best practices for Django project testing.
 """
 
+import sys
+import threading
 import uuid
 
 import pytest
@@ -12,18 +14,27 @@ from django.test import Client
 from rest_framework.test import APIClient
 
 # ---------------------------------------------------------------------------
-# Fix RecursionError in Django test client's store_rendered_templates.
+# Fix RecursionError in Django test client rendering.
 #
-# Django's test client calls copy(context) on every template render via a
-# signal handler.  Our panel/admin templates extend deep base templates
-# (panel.html → base.html with sidebar + 30 includes).  The combined
-# call-stack of render + copy(context) exceeds Python's recursion limit.
+# Django's test client replaces Template._render with instrumented_test_render
+# which sends template_rendered signal on EVERY template render.  Our
+# panel/admin templates have very deep template chains (extends → blocks →
+# nested blocks → includes → nested tags) that overflow the default
+# 1000-frame recursion limit.
 #
-# Fix: replace copy(context) with a direct reference.  This is safe
-# because our tests only assert on status codes and context key existence,
-# and we never mutate the stored context after rendering.
+# Three-pronged fix:
+# 1. Raise recursion limit to 15000 (safe for CI: 8MB stack ≈ 16000 frames)
+# 2. Monkeypatch store_rendered_templates to skip copy(context)
+# 3. Replace instrumented_test_render with depth-limited version that
+#    only fires the template_rendered signal for the top 10 render levels.
+#    This preserves response.context / response.templates for shallow
+#    templates while eliminating the signal-dispatch overhead (~3 extra
+#    frames per level) for deeply nested rendering.
 # ---------------------------------------------------------------------------
+sys.setrecursionlimit(15000)
+
 _original_store = None
+_render_depth = threading.local()
 
 
 def _safe_store_rendered_templates(store, signal, sender, template, context, **kwargs):
@@ -33,18 +44,63 @@ def _safe_store_rendered_templates(store, signal, sender, template, context, **k
     store.setdefault("templates", [])
     store.setdefault("context", ContextList())
     store["templates"].append(template)
-    # Store direct reference — avoids the recursive copy(context) that
-    # causes RecursionError on deeply nested template chains.
     store["context"].append(context)
 
 
+def _depth_limited_render(self, context):
+    """instrumented_test_render replacement with depth-limited signaling.
+
+    Only dispatches the template_rendered signal for the first 10 render
+    levels.  Beyond that, renders the nodelist directly — identical to
+    Django's original (non-instrumented) Template._render.
+    """
+    depth = getattr(_render_depth, "depth", 0)
+    _render_depth.depth = depth + 1
+    try:
+        if depth < 10:
+            from django.test.signals import template_rendered
+
+            template_rendered.send(sender=self, template=self, context=context)
+        return self.nodelist.render(context)
+    finally:
+        _render_depth.depth = depth
+
+
 def pytest_configure(config):
-    """Patch store_rendered_templates once at session start."""
+    """Patch store_rendered_templates at session start.
+
+    NOTE: This runs before Django is fully set up, so we use a
+    session-scoped autouse fixture as backup to ensure all patches
+    are applied after Django setup.
+    """
+    try:
+        import django.test.client as _client
+
+        global _original_store  # noqa: PLW0603
+        _original_store = _client.store_rendered_templates
+        _client.store_rendered_templates = _safe_store_rendered_templates
+    except Exception:
+        pass  # Django not yet set up; session fixture will handle it
+
+
+@pytest.fixture(autouse=True, scope="session")
+def _patch_template_rendering():
+    """Apply template rendering patches after Django setup.
+
+    1. Ensure store_rendered_templates is our safe version (no copy).
+    2. Replace instrumented_test_render with depth-limited version.
+    """
     import django.test.client as _client
+    from django.template.base import Template
 
     global _original_store  # noqa: PLW0603
-    _original_store = _client.store_rendered_templates
-    _client.store_rendered_templates = _safe_store_rendered_templates
+    if _client.store_rendered_templates is not _safe_store_rendered_templates:
+        _original_store = _client.store_rendered_templates
+        _client.store_rendered_templates = _safe_store_rendered_templates
+
+    # Replace instrumented_test_render with depth-limited version
+    Template._render = _depth_limited_render
+    yield
 
 
 @pytest.fixture(scope="session")
