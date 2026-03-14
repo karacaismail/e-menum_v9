@@ -74,6 +74,12 @@ module.exports = {
     { pattern: /dark:border-(red|orange|green|blue|purple|rose|cyan|teal|amber)-900/ },
     // Grid columns used dynamically
     { pattern: /lg:grid-cols-(1|2|3|4|5|6)/ },
+    // Sidebar responsive utilities (Alpine.js dynamic classes need explicit safelist)
+    'lg:translate-x-0',
+    'lg:static',
+    'lg:inset-auto',
+    '-translate-x-full',
+    'translate-x-0',
   ],
   plugins: [
     require('@tailwindcss/forms'),

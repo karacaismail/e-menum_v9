@@ -9,3 +9,15 @@
 @layer base {
   [x-cloak] { display: none !important; }
 }
+
+/* Sidebar desktop safety net — ensures sidebar is visible on lg+ screens
+   even if Tailwind JIT misses responsive utilities or Alpine state is wrong */
+@layer components {
+  @media (min-width: 1024px) {
+    .sidebar-desktop-visible {
+      transform: translateX(0) !important;
+      position: static !important;
+      inset: auto !important;
+    }
+  }
+}
