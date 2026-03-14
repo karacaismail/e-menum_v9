@@ -13,15 +13,15 @@ from apps.media.views import (
     MediaUploadView,
 )
 
-app_name = 'media'
+app_name = "media"
 
 urlpatterns = [
     # Folders
-    path('folders/', MediaFolderListCreateView.as_view(), name='folder-list-create'),
-    path('folders/<uuid:pk>/', MediaFolderDetailView.as_view(), name='folder-detail'),
+    path("folders/", MediaFolderListCreateView.as_view(), name="folder-list-create"),
+    path("folders/<uuid:pk>/", MediaFolderDetailView.as_view(), name="folder-detail"),
     # Media files
-    path('', MediaListView.as_view(), name='media-list'),
-    path('upload/', MediaUploadView.as_view(), name='media-upload'),
-    path('<uuid:pk>/', MediaDetailView.as_view(), name='media-detail'),
-    path('<uuid:pk>/delete/', MediaDeleteView.as_view(), name='media-delete'),
+    path("", MediaListView.as_view(), name="media-list"),
+    path("upload/", MediaUploadView.as_view(), name="media-upload"),
+    path("<uuid:pk>/", MediaDetailView.as_view(), name="media-detail"),
+    path("<uuid:pk>/delete/", MediaDeleteView.as_view(), name="media-delete"),
 ]

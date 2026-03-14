@@ -89,68 +89,68 @@ class MediaFolder(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='media_folders',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this folder belongs to')
+        related_name="media_folders",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this folder belongs to"),
     )
 
     parent = models.ForeignKey(
-        'self',
+        "self",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name='children',
-        verbose_name=_('Parent folder'),
-        help_text=_('Parent folder for nesting (null = root folder)')
+        related_name="children",
+        verbose_name=_("Parent folder"),
+        help_text=_("Parent folder for nesting (null = root folder)"),
     )
 
     # Identity
     name = models.CharField(
         max_length=255,
-        verbose_name=_('Name'),
-        help_text=_('Display name of the folder')
+        verbose_name=_("Name"),
+        help_text=_("Display name of the folder"),
     )
 
     slug = models.SlugField(
         max_length=100,
-        verbose_name=_('Slug'),
-        help_text=_('URL-friendly identifier (unique within parent)')
+        verbose_name=_("Slug"),
+        help_text=_("URL-friendly identifier (unique within parent)"),
     )
 
     description = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Description'),
-        help_text=_('Optional folder description')
+        verbose_name=_("Description"),
+        help_text=_("Optional folder description"),
     )
 
     # Access control
     is_public = models.BooleanField(
         default=False,
-        verbose_name=_('Is public'),
-        help_text=_('Whether folder contents are publicly accessible')
+        verbose_name=_("Is public"),
+        help_text=_("Whether folder contents are publicly accessible"),
     )
 
     # Ordering
     sort_order = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Sort order'),
-        help_text=_('Display order within parent folder')
+        verbose_name=_("Sort order"),
+        help_text=_("Display order within parent folder"),
     )
 
     # Additional data
     metadata = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Metadata'),
-        help_text=_('Custom folder attributes (JSON)')
+        verbose_name=_("Metadata"),
+        help_text=_("Custom folder attributes (JSON)"),
     )
 
     # Managers
@@ -158,15 +158,22 @@ class MediaFolder(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'media_folders'
-        verbose_name = _('Media Folder')
-        verbose_name_plural = _('Media Folders')
-        ordering = ['sort_order', 'name']
-        unique_together = [['organization', 'parent', 'slug']]
+        db_table = "media_folders"
+        verbose_name = _("Media Folder")
+        verbose_name_plural = _("Media Folders")
+        ordering = ["sort_order", "name"]
+        unique_together = [["organization", "parent", "slug"]]
         indexes = [
-            models.Index(fields=['organization', 'deleted_at'], name='mediafolder_org_deleted_idx'),
-            models.Index(fields=['organization', 'parent'], name='mediafolder_org_parent_idx'),
-            models.Index(fields=['parent', 'sort_order'], name='mediafolder_parent_sort_idx'),
+            models.Index(
+                fields=["organization", "deleted_at"],
+                name="mediafolder_org_deleted_idx",
+            ),
+            models.Index(
+                fields=["organization", "parent"], name="mediafolder_org_parent_idx"
+            ),
+            models.Index(
+                fields=["parent", "sort_order"], name="mediafolder_parent_sort_idx"
+            ),
         ]
 
     def __str__(self) -> str:
@@ -225,7 +232,7 @@ class MediaFolder(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         ancestors = self.get_ancestors()
         path_parts = [a.slug for a in ancestors] + [self.slug]
-        return '/'.join(path_parts)
+        return "/".join(path_parts)
 
     def get_breadcrumb(self) -> list:
         """
@@ -236,16 +243,20 @@ class MediaFolder(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         breadcrumb = []
         for ancestor in self.get_ancestors():
-            breadcrumb.append({
-                'id': str(ancestor.id),
-                'name': ancestor.name,
-                'slug': ancestor.slug,
-            })
-        breadcrumb.append({
-            'id': str(self.id),
-            'name': self.name,
-            'slug': self.slug,
-        })
+            breadcrumb.append(
+                {
+                    "id": str(ancestor.id),
+                    "name": ancestor.name,
+                    "slug": ancestor.slug,
+                }
+            )
+        breadcrumb.append(
+            {
+                "id": str(self.id),
+                "name": self.name,
+                "slug": self.slug,
+            }
+        )
         return breadcrumb
 
 
@@ -321,16 +332,16 @@ class Media(TimeStampedMixin, SoftDeleteMixin, models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('ID'),
-        help_text=_('Unique identifier (UUID)')
+        verbose_name=_("ID"),
+        help_text=_("Unique identifier (UUID)"),
     )
 
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
-        related_name='media_files',
-        verbose_name=_('Organization'),
-        help_text=_('Organization this media belongs to')
+        related_name="media_files",
+        verbose_name=_("Organization"),
+        help_text=_("Organization this media belongs to"),
     )
 
     folder = models.ForeignKey(
@@ -338,9 +349,9 @@ class Media(TimeStampedMixin, SoftDeleteMixin, models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='media_files',
-        verbose_name=_('Folder'),
-        help_text=_('Folder containing this media (null = root/unfiled)')
+        related_name="media_files",
+        verbose_name=_("Folder"),
+        help_text=_("Folder containing this media (null = root/unfiled)"),
     )
 
     uploaded_by = models.ForeignKey(
@@ -348,45 +359,43 @@ class Media(TimeStampedMixin, SoftDeleteMixin, models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='uploaded_media',
-        verbose_name=_('Uploaded by'),
-        help_text=_('User who uploaded this media')
+        related_name="uploaded_media",
+        verbose_name=_("Uploaded by"),
+        help_text=_("User who uploaded this media"),
     )
 
     # Identity
     name = models.CharField(
-        max_length=255,
-        verbose_name=_('Name'),
-        help_text=_('Display name of the media')
+        max_length=255, verbose_name=_("Name"), help_text=_("Display name of the media")
     )
 
     original_filename = models.CharField(
         max_length=500,
-        verbose_name=_('Original filename'),
-        help_text=_('Original filename when uploaded')
+        verbose_name=_("Original filename"),
+        help_text=_("Original filename when uploaded"),
     )
 
     # Storage
     file_path = models.CharField(
         max_length=1000,
-        verbose_name=_('File path'),
-        help_text=_('Path or key to the stored file')
+        verbose_name=_("File path"),
+        help_text=_("Path or key to the stored file"),
     )
 
     url = models.URLField(
         max_length=2000,
         blank=True,
         null=True,
-        verbose_name=_('URL'),
-        help_text=_('Public URL to access the file')
+        verbose_name=_("URL"),
+        help_text=_("Public URL to access the file"),
     )
 
     storage = models.CharField(
         max_length=20,
         choices=MediaStorage.choices,
         default=MediaStorage.LOCAL,
-        verbose_name=_('Storage'),
-        help_text=_('Storage backend used')
+        verbose_name=_("Storage"),
+        help_text=_("Storage backend used"),
     )
 
     # Type and status
@@ -395,8 +404,8 @@ class Media(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=MediaType.choices,
         default=MediaType.IMAGE,
         db_index=True,
-        verbose_name=_('Media type'),
-        help_text=_('Type of media file')
+        verbose_name=_("Media type"),
+        help_text=_("Type of media file"),
     )
 
     status = models.CharField(
@@ -404,43 +413,42 @@ class Media(TimeStampedMixin, SoftDeleteMixin, models.Model):
         choices=MediaStatus.choices,
         default=MediaStatus.PENDING,
         db_index=True,
-        verbose_name=_('Status'),
-        help_text=_('Processing status')
+        verbose_name=_("Status"),
+        help_text=_("Processing status"),
     )
 
     # Technical metadata
     mime_type = models.CharField(
         max_length=100,
-        verbose_name=_('MIME type'),
-        help_text=_('MIME type of the file (e.g., image/jpeg)')
+        verbose_name=_("MIME type"),
+        help_text=_("MIME type of the file (e.g., image/jpeg)"),
     )
 
     file_size = models.PositiveBigIntegerField(
-        verbose_name=_('File size'),
-        help_text=_('File size in bytes')
+        verbose_name=_("File size"), help_text=_("File size in bytes")
     )
 
     # Dimensions (for images/videos)
     width = models.PositiveIntegerField(
         null=True,
         blank=True,
-        verbose_name=_('Width'),
-        help_text=_('Width in pixels (for images/videos)')
+        verbose_name=_("Width"),
+        help_text=_("Width in pixels (for images/videos)"),
     )
 
     height = models.PositiveIntegerField(
         null=True,
         blank=True,
-        verbose_name=_('Height'),
-        help_text=_('Height in pixels (for images/videos)')
+        verbose_name=_("Height"),
+        help_text=_("Height in pixels (for images/videos)"),
     )
 
     # Duration (for videos/audio)
     duration = models.PositiveIntegerField(
         null=True,
         blank=True,
-        verbose_name=_('Duration'),
-        help_text=_('Duration in seconds (for videos/audio)')
+        verbose_name=_("Duration"),
+        help_text=_("Duration in seconds (for videos/audio)"),
     )
 
     # Thumbnail
@@ -448,8 +456,8 @@ class Media(TimeStampedMixin, SoftDeleteMixin, models.Model):
         max_length=2000,
         blank=True,
         null=True,
-        verbose_name=_('Thumbnail URL'),
-        help_text=_('URL to thumbnail image')
+        verbose_name=_("Thumbnail URL"),
+        help_text=_("URL to thumbnail image"),
     )
 
     # SEO and accessibility
@@ -457,52 +465,52 @@ class Media(TimeStampedMixin, SoftDeleteMixin, models.Model):
         max_length=500,
         blank=True,
         null=True,
-        verbose_name=_('Alt text'),
-        help_text=_('Alt text for accessibility (required for images)')
+        verbose_name=_("Alt text"),
+        help_text=_("Alt text for accessibility (required for images)"),
     )
 
     title = models.CharField(
         max_length=255,
         blank=True,
         null=True,
-        verbose_name=_('Title'),
-        help_text=_('Title for SEO purposes')
+        verbose_name=_("Title"),
+        help_text=_("Title for SEO purposes"),
     )
 
     caption = models.TextField(
         blank=True,
         null=True,
-        verbose_name=_('Caption'),
-        help_text=_('Caption or description of the media')
+        verbose_name=_("Caption"),
+        help_text=_("Caption or description of the media"),
     )
 
     # Access control
     is_public = models.BooleanField(
         default=False,
-        verbose_name=_('Is public'),
-        help_text=_('Whether media is publicly accessible without authentication')
+        verbose_name=_("Is public"),
+        help_text=_("Whether media is publicly accessible without authentication"),
     )
 
     # Additional data
     metadata = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name=_('Metadata'),
-        help_text=_('Additional file metadata (EXIF, custom fields, etc.)')
+        verbose_name=_("Metadata"),
+        help_text=_("Additional file metadata (EXIF, custom fields, etc.)"),
     )
 
     # Usage tracking
     usage_count = models.PositiveIntegerField(
         default=0,
-        verbose_name=_('Usage count'),
-        help_text=_('Number of times this media is used in content')
+        verbose_name=_("Usage count"),
+        help_text=_("Number of times this media is used in content"),
     )
 
     last_used_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Last used at'),
-        help_text=_('When this media was last used in content')
+        verbose_name=_("Last used at"),
+        help_text=_("When this media was last used in content"),
     )
 
     # Managers
@@ -510,17 +518,27 @@ class Media(TimeStampedMixin, SoftDeleteMixin, models.Model):
     all_objects = models.Manager()  # Includes ALL records
 
     class Meta:
-        db_table = 'media'
-        verbose_name = _('Media')
-        verbose_name_plural = _('Media')
-        ordering = ['-created_at']
+        db_table = "media"
+        verbose_name = _("Media")
+        verbose_name_plural = _("Media")
+        ordering = ["-created_at"]
         indexes = [
-            models.Index(fields=['organization', 'deleted_at'], name='media_org_deleted_idx'),
-            models.Index(fields=['organization', 'folder'], name='media_org_folder_idx'),
-            models.Index(fields=['organization', 'media_type'], name='media_org_type_idx'),
-            models.Index(fields=['organization', 'status'], name='media_org_status_idx'),
-            models.Index(fields=['organization', 'is_public'], name='media_org_public_idx'),
-            models.Index(fields=['created_at'], name='media_created_idx'),
+            models.Index(
+                fields=["organization", "deleted_at"], name="media_org_deleted_idx"
+            ),
+            models.Index(
+                fields=["organization", "folder"], name="media_org_folder_idx"
+            ),
+            models.Index(
+                fields=["organization", "media_type"], name="media_org_type_idx"
+            ),
+            models.Index(
+                fields=["organization", "status"], name="media_org_status_idx"
+            ),
+            models.Index(
+                fields=["organization", "is_public"], name="media_org_public_idx"
+            ),
+            models.Index(fields=["created_at"], name="media_created_idx"),
         ]
 
     def __str__(self) -> str:
@@ -572,7 +590,7 @@ class Media(TimeStampedMixin, SoftDeleteMixin, models.Model):
         if self.file_size is None:
             return "0 B"
         size = float(self.file_size)
-        for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
+        for unit in ["B", "KB", "MB", "GB", "TB"]:
             if size < 1024.0:
                 return f"{size:.1f} {unit}"
             size /= 1024.0
@@ -592,7 +610,7 @@ class Media(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def mark_processing(self) -> None:
         """Mark media as currently being processed."""
         self.status = MediaStatus.PROCESSING
-        self.save(update_fields=['status', 'updated_at'])
+        self.save(update_fields=["status", "updated_at"])
 
     def mark_ready(self, url: str = None, thumbnail_url: str = None) -> None:
         """
@@ -603,14 +621,14 @@ class Media(TimeStampedMixin, SoftDeleteMixin, models.Model):
             thumbnail_url: Optional thumbnail URL to set
         """
         self.status = MediaStatus.READY
-        update_fields = ['status', 'updated_at']
+        update_fields = ["status", "updated_at"]
 
         if url:
             self.url = url
-            update_fields.append('url')
+            update_fields.append("url")
         if thumbnail_url:
             self.thumbnail_url = thumbnail_url
-            update_fields.append('thumbnail_url')
+            update_fields.append("thumbnail_url")
 
         self.save(update_fields=update_fields)
 
@@ -623,15 +641,15 @@ class Media(TimeStampedMixin, SoftDeleteMixin, models.Model):
         """
         self.status = MediaStatus.FAILED
         if error_message:
-            self.metadata['error'] = error_message
-            self.metadata['failed_at'] = timezone.now().isoformat()
-        self.save(update_fields=['status', 'metadata', 'updated_at'])
+            self.metadata["error"] = error_message
+            self.metadata["failed_at"] = timezone.now().isoformat()
+        self.save(update_fields=["status", "metadata", "updated_at"])
 
     def record_usage(self) -> None:
         """Record that this media was used in content."""
         self.usage_count += 1
         self.last_used_at = timezone.now()
-        self.save(update_fields=['usage_count', 'last_used_at', 'updated_at'])
+        self.save(update_fields=["usage_count", "last_used_at", "updated_at"])
 
     def move_to_folder(self, folder) -> None:
         """
@@ -641,7 +659,7 @@ class Media(TimeStampedMixin, SoftDeleteMixin, models.Model):
             folder: MediaFolder instance or None for root
         """
         self.folder = folder
-        self.save(update_fields=['folder', 'updated_at'])
+        self.save(update_fields=["folder", "updated_at"])
 
     def get_metadata(self, key: str, default=None):
         """Get a value from media metadata."""
@@ -650,4 +668,4 @@ class Media(TimeStampedMixin, SoftDeleteMixin, models.Model):
     def set_metadata(self, key: str, value) -> None:
         """Set a value in media metadata."""
         self.metadata[key] = value
-        self.save(update_fields=['metadata', 'updated_at'])
+        self.save(update_fields=["metadata", "updated_at"])

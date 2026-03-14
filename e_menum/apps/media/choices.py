@@ -27,10 +27,11 @@ class MediaType(models.TextChoices):
     - DOCUMENT: Document files (PDF, DOC, etc.)
     - AUDIO: Audio files (MP3, WAV, etc.)
     """
-    IMAGE = 'IMAGE', 'Image'
-    VIDEO = 'VIDEO', 'Video'
-    DOCUMENT = 'DOCUMENT', 'Document'
-    AUDIO = 'AUDIO', 'Audio'
+
+    IMAGE = "IMAGE", "Image"
+    VIDEO = "VIDEO", "Video"
+    DOCUMENT = "DOCUMENT", "Document"
+    AUDIO = "AUDIO", "Audio"
 
 
 class MediaStorage(models.TextChoices):
@@ -43,11 +44,12 @@ class MediaStorage(models.TextChoices):
     - GCS: Google Cloud Storage
     - AZURE: Azure Blob Storage
     """
-    LOCAL = 'LOCAL', 'Local Storage'
-    S3 = 'S3', 'Amazon S3'
-    CLOUDINARY = 'CLOUDINARY', 'Cloudinary'
-    GCS = 'GCS', 'Google Cloud Storage'
-    AZURE = 'AZURE', 'Azure Blob Storage'
+
+    LOCAL = "LOCAL", "Local Storage"
+    S3 = "S3", "Amazon S3"
+    CLOUDINARY = "CLOUDINARY", "Cloudinary"
+    GCS = "GCS", "Google Cloud Storage"
+    AZURE = "AZURE", "Azure Blob Storage"
 
 
 class MediaStatus(models.TextChoices):
@@ -59,7 +61,8 @@ class MediaStatus(models.TextChoices):
     - READY: File is ready for use
     - FAILED: Processing failed
     """
-    PENDING = 'PENDING', 'Pending'
-    PROCESSING = 'PROCESSING', 'Processing'
-    READY = 'READY', 'Ready'
-    FAILED = 'FAILED', 'Failed'
+
+    PENDING = "PENDING", "Pending"
+    PROCESSING = "PROCESSING", "Processing"
+    READY = "READY", "Ready"
+    FAILED = "FAILED", "Failed"

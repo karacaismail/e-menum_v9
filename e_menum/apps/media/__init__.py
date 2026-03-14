@@ -8,4 +8,4 @@ This app provides media management functionality for the E-Menum platform:
 - Image, video, document, and audio file types
 """
 
-default_app_config = 'apps.media.apps.MediaConfig'
+default_app_config = "apps.media.apps.MediaConfig"

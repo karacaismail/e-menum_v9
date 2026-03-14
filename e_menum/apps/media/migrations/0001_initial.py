@@ -8,117 +8,470 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('core', '0001_initial'),
+        ("core", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='MediaFolder',
+            name="MediaFolder",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier (UUID)', primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='Display name of the folder', max_length=255, verbose_name='Name')),
-                ('slug', models.SlugField(help_text='URL-friendly identifier (unique within parent)', max_length=100, verbose_name='Slug')),
-                ('description', models.TextField(blank=True, help_text='Optional folder description', null=True, verbose_name='Description')),
-                ('is_public', models.BooleanField(default=False, help_text='Whether folder contents are publicly accessible', verbose_name='Is public')),
-                ('sort_order', models.PositiveIntegerField(default=0, help_text='Display order within parent folder', verbose_name='Sort order')),
-                ('metadata', models.JSONField(blank=True, default=dict, help_text='Custom folder attributes (JSON)', verbose_name='Metadata')),
-                ('organization', models.ForeignKey(help_text='Organization this folder belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='media_folders', to='core.organization', verbose_name='Organization')),
-                ('parent', models.ForeignKey(blank=True, help_text='Parent folder for nesting (null = root folder)', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='media.mediafolder', verbose_name='Parent folder')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier (UUID)",
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="Display name of the folder",
+                        max_length=255,
+                        verbose_name="Name",
+                    ),
+                ),
+                (
+                    "slug",
+                    models.SlugField(
+                        help_text="URL-friendly identifier (unique within parent)",
+                        max_length=100,
+                        verbose_name="Slug",
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(
+                        blank=True,
+                        help_text="Optional folder description",
+                        null=True,
+                        verbose_name="Description",
+                    ),
+                ),
+                (
+                    "is_public",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Whether folder contents are publicly accessible",
+                        verbose_name="Is public",
+                    ),
+                ),
+                (
+                    "sort_order",
+                    models.PositiveIntegerField(
+                        default=0,
+                        help_text="Display order within parent folder",
+                        verbose_name="Sort order",
+                    ),
+                ),
+                (
+                    "metadata",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text="Custom folder attributes (JSON)",
+                        verbose_name="Metadata",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization this folder belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="media_folders",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
+                (
+                    "parent",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="Parent folder for nesting (null = root folder)",
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="children",
+                        to="media.mediafolder",
+                        verbose_name="Parent folder",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Media Folder',
-                'verbose_name_plural': 'Media Folders',
-                'db_table': 'media_folders',
-                'ordering': ['sort_order', 'name'],
+                "verbose_name": "Media Folder",
+                "verbose_name_plural": "Media Folders",
+                "db_table": "media_folders",
+                "ordering": ["sort_order", "name"],
             },
         ),
         migrations.CreateModel(
-            name='Media',
+            name="Media",
             fields=[
-                ('deleted_at', models.DateTimeField(blank=True, db_index=True, help_text='Timestamp when record was soft-deleted (null = active)', null=True, verbose_name='Deleted at')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when record was created', verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when record was last updated', verbose_name='Updated at')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier (UUID)', primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='Display name of the media', max_length=255, verbose_name='Name')),
-                ('original_filename', models.CharField(help_text='Original filename when uploaded', max_length=500, verbose_name='Original filename')),
-                ('file_path', models.CharField(help_text='Path or key to the stored file', max_length=1000, verbose_name='File path')),
-                ('url', models.URLField(blank=True, help_text='Public URL to access the file', max_length=2000, null=True, verbose_name='URL')),
-                ('storage', models.CharField(choices=[('LOCAL', 'Local Storage'), ('S3', 'Amazon S3'), ('CLOUDINARY', 'Cloudinary'), ('GCS', 'Google Cloud Storage'), ('AZURE', 'Azure Blob Storage')], default='LOCAL', help_text='Storage backend used', max_length=20, verbose_name='Storage')),
-                ('media_type', models.CharField(choices=[('IMAGE', 'Image'), ('VIDEO', 'Video'), ('DOCUMENT', 'Document'), ('AUDIO', 'Audio')], db_index=True, default='IMAGE', help_text='Type of media file', max_length=20, verbose_name='Media type')),
-                ('status', models.CharField(choices=[('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('READY', 'Ready'), ('FAILED', 'Failed')], db_index=True, default='PENDING', help_text='Processing status', max_length=20, verbose_name='Status')),
-                ('mime_type', models.CharField(help_text='MIME type of the file (e.g., image/jpeg)', max_length=100, verbose_name='MIME type')),
-                ('file_size', models.PositiveBigIntegerField(help_text='File size in bytes', verbose_name='File size')),
-                ('width', models.PositiveIntegerField(blank=True, help_text='Width in pixels (for images/videos)', null=True, verbose_name='Width')),
-                ('height', models.PositiveIntegerField(blank=True, help_text='Height in pixels (for images/videos)', null=True, verbose_name='Height')),
-                ('duration', models.PositiveIntegerField(blank=True, help_text='Duration in seconds (for videos/audio)', null=True, verbose_name='Duration')),
-                ('thumbnail_url', models.URLField(blank=True, help_text='URL to thumbnail image', max_length=2000, null=True, verbose_name='Thumbnail URL')),
-                ('alt_text', models.CharField(blank=True, help_text='Alt text for accessibility (required for images)', max_length=500, null=True, verbose_name='Alt text')),
-                ('title', models.CharField(blank=True, help_text='Title for SEO purposes', max_length=255, null=True, verbose_name='Title')),
-                ('caption', models.TextField(blank=True, help_text='Caption or description of the media', null=True, verbose_name='Caption')),
-                ('is_public', models.BooleanField(default=False, help_text='Whether media is publicly accessible without authentication', verbose_name='Is public')),
-                ('metadata', models.JSONField(blank=True, default=dict, help_text='Additional file metadata (EXIF, custom fields, etc.)', verbose_name='Metadata')),
-                ('usage_count', models.PositiveIntegerField(default=0, help_text='Number of times this media is used in content', verbose_name='Usage count')),
-                ('last_used_at', models.DateTimeField(blank=True, help_text='When this media was last used in content', null=True, verbose_name='Last used at')),
-                ('folder', models.ForeignKey(blank=True, help_text='Folder containing this media (null = root/unfiled)', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='media_files', to='media.mediafolder', verbose_name='Folder')),
-                ('organization', models.ForeignKey(help_text='Organization this media belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='media_files', to='core.organization', verbose_name='Organization')),
-                ('uploaded_by', models.ForeignKey(blank=True, help_text='User who uploaded this media', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='uploaded_media', to=settings.AUTH_USER_MODEL, verbose_name='Uploaded by')),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        help_text="Timestamp when record was soft-deleted (null = active)",
+                        null=True,
+                        verbose_name="Deleted at",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when record was created",
+                        verbose_name="Created at",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when record was last updated",
+                        verbose_name="Updated at",
+                    ),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier (UUID)",
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="Display name of the media",
+                        max_length=255,
+                        verbose_name="Name",
+                    ),
+                ),
+                (
+                    "original_filename",
+                    models.CharField(
+                        help_text="Original filename when uploaded",
+                        max_length=500,
+                        verbose_name="Original filename",
+                    ),
+                ),
+                (
+                    "file_path",
+                    models.CharField(
+                        help_text="Path or key to the stored file",
+                        max_length=1000,
+                        verbose_name="File path",
+                    ),
+                ),
+                (
+                    "url",
+                    models.URLField(
+                        blank=True,
+                        help_text="Public URL to access the file",
+                        max_length=2000,
+                        null=True,
+                        verbose_name="URL",
+                    ),
+                ),
+                (
+                    "storage",
+                    models.CharField(
+                        choices=[
+                            ("LOCAL", "Local Storage"),
+                            ("S3", "Amazon S3"),
+                            ("CLOUDINARY", "Cloudinary"),
+                            ("GCS", "Google Cloud Storage"),
+                            ("AZURE", "Azure Blob Storage"),
+                        ],
+                        default="LOCAL",
+                        help_text="Storage backend used",
+                        max_length=20,
+                        verbose_name="Storage",
+                    ),
+                ),
+                (
+                    "media_type",
+                    models.CharField(
+                        choices=[
+                            ("IMAGE", "Image"),
+                            ("VIDEO", "Video"),
+                            ("DOCUMENT", "Document"),
+                            ("AUDIO", "Audio"),
+                        ],
+                        db_index=True,
+                        default="IMAGE",
+                        help_text="Type of media file",
+                        max_length=20,
+                        verbose_name="Media type",
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("PENDING", "Pending"),
+                            ("PROCESSING", "Processing"),
+                            ("READY", "Ready"),
+                            ("FAILED", "Failed"),
+                        ],
+                        db_index=True,
+                        default="PENDING",
+                        help_text="Processing status",
+                        max_length=20,
+                        verbose_name="Status",
+                    ),
+                ),
+                (
+                    "mime_type",
+                    models.CharField(
+                        help_text="MIME type of the file (e.g., image/jpeg)",
+                        max_length=100,
+                        verbose_name="MIME type",
+                    ),
+                ),
+                (
+                    "file_size",
+                    models.PositiveBigIntegerField(
+                        help_text="File size in bytes", verbose_name="File size"
+                    ),
+                ),
+                (
+                    "width",
+                    models.PositiveIntegerField(
+                        blank=True,
+                        help_text="Width in pixels (for images/videos)",
+                        null=True,
+                        verbose_name="Width",
+                    ),
+                ),
+                (
+                    "height",
+                    models.PositiveIntegerField(
+                        blank=True,
+                        help_text="Height in pixels (for images/videos)",
+                        null=True,
+                        verbose_name="Height",
+                    ),
+                ),
+                (
+                    "duration",
+                    models.PositiveIntegerField(
+                        blank=True,
+                        help_text="Duration in seconds (for videos/audio)",
+                        null=True,
+                        verbose_name="Duration",
+                    ),
+                ),
+                (
+                    "thumbnail_url",
+                    models.URLField(
+                        blank=True,
+                        help_text="URL to thumbnail image",
+                        max_length=2000,
+                        null=True,
+                        verbose_name="Thumbnail URL",
+                    ),
+                ),
+                (
+                    "alt_text",
+                    models.CharField(
+                        blank=True,
+                        help_text="Alt text for accessibility (required for images)",
+                        max_length=500,
+                        null=True,
+                        verbose_name="Alt text",
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        blank=True,
+                        help_text="Title for SEO purposes",
+                        max_length=255,
+                        null=True,
+                        verbose_name="Title",
+                    ),
+                ),
+                (
+                    "caption",
+                    models.TextField(
+                        blank=True,
+                        help_text="Caption or description of the media",
+                        null=True,
+                        verbose_name="Caption",
+                    ),
+                ),
+                (
+                    "is_public",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Whether media is publicly accessible without authentication",
+                        verbose_name="Is public",
+                    ),
+                ),
+                (
+                    "metadata",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text="Additional file metadata (EXIF, custom fields, etc.)",
+                        verbose_name="Metadata",
+                    ),
+                ),
+                (
+                    "usage_count",
+                    models.PositiveIntegerField(
+                        default=0,
+                        help_text="Number of times this media is used in content",
+                        verbose_name="Usage count",
+                    ),
+                ),
+                (
+                    "last_used_at",
+                    models.DateTimeField(
+                        blank=True,
+                        help_text="When this media was last used in content",
+                        null=True,
+                        verbose_name="Last used at",
+                    ),
+                ),
+                (
+                    "folder",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="Folder containing this media (null = root/unfiled)",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="media_files",
+                        to="media.mediafolder",
+                        verbose_name="Folder",
+                    ),
+                ),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        help_text="Organization this media belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="media_files",
+                        to="core.organization",
+                        verbose_name="Organization",
+                    ),
+                ),
+                (
+                    "uploaded_by",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="User who uploaded this media",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="uploaded_media",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Uploaded by",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Media',
-                'verbose_name_plural': 'Media',
-                'db_table': 'media',
-                'ordering': ['-created_at'],
+                "verbose_name": "Media",
+                "verbose_name_plural": "Media",
+                "db_table": "media",
+                "ordering": ["-created_at"],
             },
         ),
         # Add unique_together constraint for MediaFolder
         migrations.AlterUniqueTogether(
-            name='mediafolder',
-            unique_together={('organization', 'parent', 'slug')},
+            name="mediafolder",
+            unique_together={("organization", "parent", "slug")},
         ),
         # Add indexes for MediaFolder
         migrations.AddIndex(
-            model_name='mediafolder',
-            index=models.Index(fields=['organization', 'deleted_at'], name='mediafolder_org_deleted_idx'),
+            model_name="mediafolder",
+            index=models.Index(
+                fields=["organization", "deleted_at"],
+                name="mediafolder_org_deleted_idx",
+            ),
         ),
         migrations.AddIndex(
-            model_name='mediafolder',
-            index=models.Index(fields=['organization', 'parent'], name='mediafolder_org_parent_idx'),
+            model_name="mediafolder",
+            index=models.Index(
+                fields=["organization", "parent"], name="mediafolder_org_parent_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='mediafolder',
-            index=models.Index(fields=['parent', 'sort_order'], name='mediafolder_parent_sort_idx'),
+            model_name="mediafolder",
+            index=models.Index(
+                fields=["parent", "sort_order"], name="mediafolder_parent_sort_idx"
+            ),
         ),
         # Add indexes for Media
         migrations.AddIndex(
-            model_name='media',
-            index=models.Index(fields=['organization', 'deleted_at'], name='media_org_deleted_idx'),
+            model_name="media",
+            index=models.Index(
+                fields=["organization", "deleted_at"], name="media_org_deleted_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='media',
-            index=models.Index(fields=['organization', 'folder'], name='media_org_folder_idx'),
+            model_name="media",
+            index=models.Index(
+                fields=["organization", "folder"], name="media_org_folder_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='media',
-            index=models.Index(fields=['organization', 'media_type'], name='media_org_type_idx'),
+            model_name="media",
+            index=models.Index(
+                fields=["organization", "media_type"], name="media_org_type_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='media',
-            index=models.Index(fields=['organization', 'status'], name='media_org_status_idx'),
+            model_name="media",
+            index=models.Index(
+                fields=["organization", "status"], name="media_org_status_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='media',
-            index=models.Index(fields=['organization', 'is_public'], name='media_org_public_idx'),
+            model_name="media",
+            index=models.Index(
+                fields=["organization", "is_public"], name="media_org_public_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='media',
-            index=models.Index(fields=['created_at'], name='media_created_idx'),
+            model_name="media",
+            index=models.Index(fields=["created_at"], name="media_created_idx"),
         ),
     ]

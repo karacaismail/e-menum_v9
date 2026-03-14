@@ -19,13 +19,13 @@ class MediaConfig(AppConfig):
     """
 
     # Application identifier - must match the import path
-    name = 'apps.media'
+    name = "apps.media"
 
     # Human-readable name for admin
-    verbose_name = 'Media'
+    verbose_name = "Media"
 
     # Use BigAutoField for auto-generated primary keys
-    default_auto_field = 'django.db.models.BigAutoField'
+    default_auto_field = "django.db.models.BigAutoField"
 
     def ready(self):
         """
