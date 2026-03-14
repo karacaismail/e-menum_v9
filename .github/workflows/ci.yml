@@ -41,12 +41,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: e_menum/package-lock.json
 
       - name: Build Tailwind CSS
         run: |
-          npm ci
+          npm install --no-audit --no-fund
           npm run css:build
 
       - name: Ruff (lint)
