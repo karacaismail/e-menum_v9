@@ -6,6 +6,9 @@
    micro-interactions, and page transitions.
    ========================================================================= */
 
+/* === Alpine.js x-cloak: hide until Alpine initialises === */
+[x-cloak] { display: none !important; }
+
 /* === Skeleton Loading Shimmer === */
 .panel-skeleton {
     background: linear-gradient(90deg,

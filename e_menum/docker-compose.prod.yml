@@ -88,10 +88,10 @@ services:
       # Seed data: set to "true" for first deploy, auto-skips if data exists
       DJANGO_SEED_DATA: ${DJANGO_SEED_DATA:-true}
     volumes:
-      # Host kodu container'da gosterilir: git pull + deploy_info.json footer icin gerekli (yedekteki gibi)
+      # Host code mounted for git-pull based deploys + deploy_info.json footer
       - .:/app
       - media_volume:/app/media
-      # staticfiles volume: collectstatic container icinde buraya yazar; image'daki static'ler maskelenir
+      # staticfiles volume: collectstatic writes here; image statics are masked
       - staticfiles_volume:/app/staticfiles
     ports:
       - "${WEB_PORT:-8000}:8000"

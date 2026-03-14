@@ -80,10 +80,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     GUNICORN_KEEPALIVE=5 \
     PORT=8000
 
-# Install runtime dependencies + debug tools (libcairo2 for pycairo/xhtml2pdf at runtime)
+# Install runtime dependencies + debug tools (libcairo2 for pycairo/xhtml2pdf, libmagic1 for python-magic)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
     libcairo2 \
+    libmagic1 \
     curl \
     tini \
     telnet \

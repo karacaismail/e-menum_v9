@@ -258,10 +258,17 @@ class Command(BaseCommand):
                 user.save()
                 self.stdout.write(f"  Platform user: {user.email}")
             else:
-                # Ensure superuser flag is correct
+                # Ensure superuser flag and password are correct
+                updated = []
                 if is_su and not user.is_superuser:
                     user.is_superuser = True
-                    user.save(update_fields=["is_superuser"])
+                    updated.append("is_superuser")
+                if not user.check_password(password):
+                    user.set_password(password)
+                    updated.append("password")
+                if updated:
+                    user.save(update_fields=updated)
+                    self.stdout.write(f"  Updated {', '.join(updated)}: {user.email}")
 
             # Assign platform role
             role = Role.objects.filter(name=role_name, scope="PLATFORM").first()
@@ -464,6 +471,10 @@ class Command(BaseCommand):
                 u.set_password("Staff1234!emenum")
                 u.save()
                 self.stdout.write(f"  User: {u.email}")
+            elif not u.check_password("Staff1234!emenum"):
+                u.set_password("Staff1234!emenum")
+                u.save(update_fields=["password"])
+                self.stdout.write(f"  Password reset: {u.email}")
             users.append(u)
         self.stdout.write(self.style.SUCCESS(f"  ✓ {len(users)} staff users"))
         return users
@@ -1404,6 +1415,17 @@ class Command(BaseCommand):
         )
         if created:
             self.stdout.write(f"  Subscription: {plan.name}")
+
+        # Link plan and subscription to organization FK fields
+        updated_fields = []
+        if org.plan != plan:
+            org.plan = plan
+            updated_fields.append("plan")
+        if org.subscription != sub:
+            org.subscription = sub
+            updated_fields.append("subscription")
+        if updated_fields:
+            org.save(update_fields=updated_fields)
 
         # Invoices
         if not Invoice.objects.filter(subscription=sub).exists():

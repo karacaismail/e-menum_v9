@@ -35,10 +35,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
-# Install build dependencies
+# Install build dependencies (pkg-config + libcairo2-dev required for pycairo → xhtml2pdf/svglib)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
+    pkg-config \
+    libcairo2-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Create virtual environment
@@ -77,9 +79,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     GUNICORN_KEEPALIVE=5 \
     PORT=8000
 
-# Install runtime dependencies + debug tools
+# Install runtime dependencies + debug tools (libcairo2 for pycairo/xhtml2pdf, libmagic1 for python-magic)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
+    libcairo2 \
+    libmagic1 \
     curl \
     tini \
     telnet \

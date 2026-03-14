@@ -1215,6 +1215,9 @@ class Command(BaseCommand):
         if created:
             owner.set_password("Owner1234!emenum")
             owner.save()
+        elif not owner.check_password("Owner1234!emenum"):
+            owner.set_password("Owner1234!emenum")
+            owner.save(update_fields=["password"])
         return owner
 
     # ───────────────────────────────────────────────────────────────
@@ -1239,6 +1242,9 @@ class Command(BaseCommand):
             if created:
                 user.set_password("Staff1234!emenum")
                 user.save()
+            elif not user.check_password("Staff1234!emenum"):
+                user.set_password("Staff1234!emenum")
+                user.save(update_fields=["password"])
             staff_users.append(user)
         return staff_users
 
@@ -1686,6 +1692,17 @@ class Command(BaseCommand):
                 "next_billing_date": now() + timedelta(days=5),
             },
         )
+
+        # Link plan and subscription to organization FK fields
+        updated_fields = []
+        if org.plan != plan:
+            org.plan = plan
+            updated_fields.append("plan")
+        if org.subscription != sub:
+            org.subscription = sub
+            updated_fields.append("subscription")
+        if updated_fields:
+            org.save(update_fields=updated_fields)
 
         # Create invoices for paid plans
         if created and od["plan"] != "free":

@@ -122,7 +122,13 @@ class Command(BaseCommand):
             user.save()
             self.stdout.write(f"  Created user: {user.email}")
         else:
-            self.stdout.write(f"  User exists: {user.email}")
+            # Always ensure password matches expected value
+            if not user.check_password("LezzetSarayi2024!"):
+                user.set_password("LezzetSarayi2024!")
+                user.save(update_fields=["password"])
+                self.stdout.write(f"  Password reset: {user.email}")
+            else:
+                self.stdout.write(f"  User exists: {user.email}")
         return user
 
     def _create_organization(self, user):

@@ -444,6 +444,10 @@ class Command(BaseCommand):
             if _:
                 owner.set_password("Owner1234!emenum")
                 owner.save()
+            elif not owner.check_password("Owner1234!emenum"):
+                owner.set_password("Owner1234!emenum")
+                owner.save(update_fields=["password"])
+                self.stdout.write(f"  Password reset: {owner.email}")
 
             # --- Theme ---
             td = org_data["theme"]
