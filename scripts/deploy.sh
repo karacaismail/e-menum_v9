@@ -240,9 +240,19 @@ run_docker_deploy() {
     fi
   done
 
-  # CMS & SEO seeds: footer links, navigation, sitemap data (update_or_create, no --force needed)
-  log_info "Seed data (cms_content, seo_data)..."
-  for cmd in seed_cms_content seed_seo_data; do
+  # Seed data: menu, all, demo (lezzetsarayi, plan FK, sifreleme guncellemeleri)
+  log_info "Seed data (menu, all, demo)..."
+  for cmd in seed_menu_data seed_all_data seed_demo_data; do
+    if docker compose -f docker-compose.prod.yml exec -T web python manage.py "$cmd"; then
+      log_ok "  $cmd tamamlandi."
+    else
+      log_warn "  $cmd atlandi veya hata (devam ediliyor)."
+    fi
+  done
+
+  # CMS, SEO, extra orgs, reports, shield
+  log_info "Seed data (cms_content, seo_data, extra_orgs, report_definitions, shield_data)..."
+  for cmd in seed_cms_content seed_seo_data seed_extra_orgs seed_report_definitions seed_shield_data; do
     if docker compose -f docker-compose.prod.yml exec -T web python manage.py "$cmd"; then
       log_ok "  $cmd tamamlandi."
     else
