@@ -1,0 +1,524 @@
+/*
+ * emenum-topbar.css  — content-topbar + notification widget
+ * emenum-content.css'e EK olarak yuklenir.
+ *
+ * Sorunu cozuyor:
+ *   1. Tailwind CDN olmadan notification dropdown calismiyordu
+ *   2. Topbar yuksekligi / renk token uyumsuzlugu
+ *   3. Breadcrumb overflow + truncation
+ *   4. Bell icon buton boyutu tutarsizligi
+ *
+ * Link (base_site.html'de, emenum-content.css'den SONRA):
+ *   <link rel="stylesheet" href="/static/admin/css/emenum-topbar.css">
+ */
+
+/* =================================================================
+   CONTENT TOPBAR  — tam override
+   (emenum-content.css'deki kurali guclendirir)
+================================================================= */
+.content-topbar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  height: 48px;
+  background: var(--c-bg-1, #0B0F1C);
+  border-bottom: 1px solid var(--c-border, rgba(255,255,255,0.065));
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  /* Iki uc: breadcrumb sol, actions sag */
+  justify-content: space-between;
+}
+
+/* Breadcrumb bolgesi */
+.content-topbar .breadcrumbs {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.content-topbar .breadcrumbs a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--c-txt-2, #8B96AD);
+  transition: color 150ms;
+  flex-shrink: 0;
+}
+.content-topbar .breadcrumbs a:hover {
+  color: var(--c-accent-b, #A59DF9);
+}
+.content-topbar .breadcrumbs a i {
+  font-size: 14px;
+}
+.content-topbar .breadcrumb-sep {
+  color: var(--c-txt-3, #4C5671);
+  font-size: 10px;
+  flex-shrink: 0;
+}
+.content-topbar .breadcrumb-current {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--c-txt-1, #E8ECF5);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Actions bolgesi */
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  flex-shrink: 0;
+  height: 100%;
+  border-left: 1px solid var(--c-border, rgba(255,255,255,0.065));
+}
+
+/* Cmd trigger */
+.ux-cmd-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--c-border, rgba(255,255,255,0.065));
+  border-radius: 7px;
+  color: var(--c-txt-3, #4C5671);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 150ms;
+  white-space: nowrap;
+}
+.ux-cmd-trigger:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.12);
+  color: var(--c-txt-2, #8B96AD);
+}
+.ux-cmd-trigger > span:first-of-type {
+  color: var(--c-txt-3, #4C5671);
+}
+.ux-cmd-trigger-kbd {
+  font-size: 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: var(--c-txt-3, #4C5671);
+  font-family: inherit;
+  line-height: 1.4;
+}
+
+.topbar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--c-border, rgba(255,255,255,0.065));
+  border-radius: 7px;
+  color: var(--c-txt-2, #8B96AD);
+  font-size: 12.5px;
+  font-weight: 400;
+  white-space: nowrap;
+  transition: all 150ms;
+  text-decoration: none;
+}
+.topbar-btn:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(123,110,246,0.30);
+  color: var(--c-accent-b, #A59DF9);
+}
+.topbar-btn i { font-size: 14px; }
+
+
+/* =================================================================
+   NOTIFICATION WIDGET  — Tailwind'den bagimsiz
+================================================================= */
+.notif-widget {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* -- Bell trigger -- */
+.notif-trigger {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--c-border, rgba(255,255,255,0.065));
+  border-radius: 7px;
+  color: var(--c-txt-2, #8B96AD);
+  cursor: pointer;
+  transition: all 150ms;
+  outline: none;
+  flex-shrink: 0;
+}
+.notif-trigger:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(123,110,246,0.30);
+  color: var(--c-accent-b, #A59DF9);
+}
+.notif-trigger:focus-visible {
+  outline: 2px solid var(--c-accent, #7B6EF6);
+  outline-offset: 1px;
+}
+.notif-trigger .ph-bell {
+  font-size: 16px;
+}
+
+/* Unread badge */
+.notif-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 17px;
+  height: 17px;
+  background: #EF4444;
+  border: 2px solid var(--c-bg-1, #0B0F1C);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  padding: 0 3px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* -- Dropdown panel -- */
+.notif-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 340px;
+  background: var(--c-bg-3, #1C2440);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow:
+    0 4px 6px -1px rgba(0,0,0,0.25),
+    0 16px 48px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(255,255,255,0.04) inset;
+  z-index: 100;
+}
+
+/* Transitions */
+.notif-enter {
+  animation: notifOpen 160ms cubic-bezier(.25,.8,.25,1) forwards;
+}
+.notif-leave {
+  animation: notifClose 130ms cubic-bezier(.25,.8,.25,1) forwards;
+}
+@keyframes notifOpen {
+  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes notifClose {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(-6px) scale(0.97); }
+}
+
+/* Header */
+.notif-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.065);
+}
+.notif-head-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-txt-1, #E8ECF5);
+}
+.notif-mark-all {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--c-accent-b, #A59DF9);
+  padding: 0;
+  transition: color 150ms;
+}
+.notif-mark-all:hover { color: var(--c-txt-1, #E8ECF5); }
+
+/* Tab bar */
+.notif-tabs {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.065);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.notif-tabs::-webkit-scrollbar { display: none; }
+.notif-tab {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--c-txt-3, #4C5671);
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 150ms;
+  flex-shrink: 0;
+}
+.notif-tab:hover {
+  background: rgba(255,255,255,0.06);
+  color: var(--c-txt-2, #8B96AD);
+}
+.notif-tab--active {
+  background: rgba(123,110,246,0.15);
+  color: var(--c-accent-b, #A59DF9);
+}
+.notif-tab:focus-visible {
+  outline: 2px solid var(--c-accent, #7B6EF6);
+  outline-offset: 1px;
+}
+
+/* Body */
+.notif-body {
+  max-height: 320px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+.notif-body::-webkit-scrollbar { width: 3px; }
+.notif-body::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+}
+
+/* Loading */
+.notif-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 32px 16px;
+  color: var(--c-txt-3, #4C5671);
+  font-size: 12.5px;
+}
+.notif-loading i {
+  font-size: 22px;
+}
+.notif-spin {
+  animation: spinAnim 0.7s linear infinite;
+}
+@keyframes spinAnim { to { transform: rotate(360deg); } }
+
+/* Empty */
+.notif-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 32px 16px;
+  color: var(--c-txt-3, #4C5671);
+}
+.notif-empty i { font-size: 28px; opacity: 0.5; }
+.notif-empty p {
+  font-size: 12.5px;
+  margin: 0;
+  text-align: center;
+}
+
+/* Notification item */
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.045);
+  cursor: pointer;
+  transition: background 150ms;
+  outline: none;
+}
+.notif-item:last-child { border-bottom: none; }
+.notif-item:hover { background: rgba(255,255,255,0.04); }
+.notif-item:focus-visible { outline: 2px solid var(--c-accent, #7B6EF6) inset; }
+.notif-item--unread {
+  background: rgba(123,110,246,0.05);
+}
+.notif-item--unread:hover {
+  background: rgba(123,110,246,0.08);
+}
+
+/* Type icon */
+.notif-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.06);
+  color: var(--c-txt-2, #8B96AD);
+}
+.notif-icon i { font-size: 14px; }
+.notif-icon--order   { background: rgba(59,130,246,0.12);  color: #60A5FA; }
+.notif-icon--system  { background: rgba(245,158,11,0.12);  color: #FBBF24; }
+.notif-icon--promo   { background: rgba(139,92,246,0.12);  color: #A78BFA; }
+.notif-icon--payment { background: rgba(52,211,153,0.12);  color: #34D399; }
+.notif-icon--security{ background: rgba(248,113,113,0.12); color: #F87171; }
+
+/* Item body */
+.notif-item-body {
+  flex: 1;
+  min-width: 0;
+}
+.notif-item-title {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--c-txt-1, #E8ECF5);
+  margin: 0 0 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.notif-item-msg {
+  font-size: 11.5px;
+  color: var(--c-txt-2, #8B96AD);
+  margin: 0 0 3px;
+  /* line-clamp 2 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.45;
+}
+.notif-item-time {
+  font-size: 10.5px;
+  color: var(--c-txt-3, #4C5671);
+  margin: 0;
+}
+
+/* Unread dot */
+.notif-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--c-accent-b, #A59DF9);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+/* Footer */
+.notif-foot {
+  padding: 10px 14px;
+  border-top: 1px solid rgba(255,255,255,0.065);
+  text-align: center;
+}
+.notif-foot a {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--c-accent-b, #A59DF9);
+  transition: color 150ms;
+  text-decoration: none;
+}
+.notif-foot a:hover { color: var(--c-txt-1, #E8ECF5); }
+
+
+/* =================================================================
+   TailwindCSS cakismalarini temizle
+   .relative gibi utility class'lar topbar icinde boyut
+   sorununa neden oluyordu.
+================================================================= */
+
+/* topbar-actions icindeki .relative div'i sifirla */
+.topbar-actions > .relative {
+  position: static !important;
+}
+/* notif-widget'i position relative yap (kendi namespace'i) */
+.notif-widget {
+  position: relative !important;
+}
+
+/* Tailwind'in p-2 gibi padding'lerini notif-trigger'dan temizle */
+.topbar-actions button.notif-trigger,
+.topbar-actions button[class*="p-2"],
+.topbar-actions button:has(.ph-bell) {
+  padding: 0 !important;
+  width: 32px !important;
+  height: 32px !important;
+  /* Tailwind ring class'larini etkisiz kil */
+  box-shadow: none !important;
+}
+/* Tailwind'in ekledigi focus ring'i kaldir (kendi focus-visible var) */
+.topbar-actions button:focus:not(:focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Dropdown panel – Tailwind bg-white / dark:bg-gray-800 override */
+.topbar-actions [x-show="open"],
+.topbar-actions .notif-dropdown {
+  background: var(--c-bg-3, #1C2440) !important;
+  border-color: rgba(255,255,255,0.10) !important;
+  color: var(--c-txt-1, #E8ECF5) !important;
+}
+
+/* Tailwind metin rengi override'lari */
+.notif-dropdown .text-gray-900,
+.notif-dropdown .dark\:text-white { color: var(--c-txt-1, #E8ECF5) !important; }
+.notif-dropdown .text-gray-500,
+.notif-dropdown .text-gray-400,
+.notif-dropdown .dark\:text-gray-400 { color: var(--c-txt-2, #8B96AD) !important; }
+.notif-dropdown .border-gray-100,
+.notif-dropdown .dark\:border-gray-700 { border-color: rgba(255,255,255,0.065) !important; }
+.notif-dropdown .bg-white,
+.notif-dropdown .dark\:bg-gray-800 { background: transparent !important; }
+.notif-dropdown .hover\:bg-gray-50:hover,
+.notif-dropdown .dark\:hover\:bg-gray-700\/50:hover {
+  background: rgba(255,255,255,0.04) !important;
+}
+
+/* Tailwind primary renk override (primary-600 vb tanimli degil) */
+.notif-dropdown .text-primary-600,
+.notif-dropdown .dark\:text-primary-400 { color: var(--c-accent-b, #A59DF9) !important; }
+.notif-dropdown .bg-primary-500 { background: var(--c-accent-b, #A59DF9) !important; }
+.notif-dropdown .bg-primary-100,
+.notif-dropdown .dark\:bg-primary-900 { background: rgba(123,110,246,0.15) !important; }
+.notif-dropdown .text-primary-700,
+.notif-dropdown .dark\:text-primary-300 { color: var(--c-accent-b, #A59DF9) !important; }
+
+/* Active tab Tailwind class */
+.notif-dropdown .bg-primary-100.text-primary-700 {
+  background: rgba(123,110,246,0.15) !important;
+  color: var(--c-accent-b, #A59DF9) !important;
+}
+
+/* bg-red-500 badge */
+.notif-badge,
+.notif-dropdown span.bg-red-500 {
+  background: #EF4444 !important;
+}
+
+/* Spinner */
+.notif-dropdown .animate-spin { animation: spinAnim 0.7s linear infinite !important; }

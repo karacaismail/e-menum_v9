@@ -202,7 +202,7 @@
                 <a href="/admin/core/auditlog/" class="ed-header-link">{% trans 'View All' %} →</a>
             </div>
             <div class="ed-card-body ed-activity-list">
-                {% get_admin_log 15 as admin_log for_user user %}
+                {% get_admin_log 15 as admin_log %}
                 {% if not admin_log %}
                 <div class="ed-empty">
                     <i class="ph ph-clock"></i>
@@ -371,20 +371,21 @@ function enterpriseDashboard() {
             const el = document.getElementById('qrTrendChart');
             if (!el) return;
             if (!this._qrChart) this._qrChart = echarts.init(el, null, { renderer: 'svg' });
-            const dates = data.map(d => d.date || d.label);
-            const values = data.map(d => d.count || d.value || 0);
+            /* API returns {dates:[...], values:[...]} OR [{date,count},...] */
+            const dates = Array.isArray(data) ? data.map(d => d.date || d.label) : (data.dates || []);
+            const values = Array.isArray(data) ? data.map(d => d.count || d.value || 0) : (data.values || []);
             this._qrChart.setOption({
-                tooltip: { trigger: 'axis', backgroundColor: '#1f2937', borderColor: '#374151', textStyle: { color: '#f9fafb', fontSize: 12 } },
+                tooltip: { trigger: 'axis', backgroundColor: '#1C2440', borderColor: 'rgba(255,255,255,0.1)', textStyle: { color: '#E8ECF5', fontSize: 12 } },
                 grid: { top: 20, right: 20, bottom: 30, left: 50 },
-                xAxis: { type: 'category', data: dates, axisLabel: { color: '#9ca3af', fontSize: 11 }, axisLine: { lineStyle: { color: '#374151' } } },
-                yAxis: { type: 'value', axisLabel: { color: '#9ca3af', fontSize: 11 }, splitLine: { lineStyle: { color: '#1f2937' } } },
+                xAxis: { type: 'category', data: dates, axisLabel: { color: '#4C5671', fontSize: 11 }, axisLine: { lineStyle: { color: 'rgba(255,255,255,0.065)' } } },
+                yAxis: { type: 'value', axisLabel: { color: '#4C5671', fontSize: 11 }, splitLine: { lineStyle: { color: 'rgba(255,255,255,0.04)' } } },
                 series: [{
                     type: 'line', data: values, smooth: true, symbol: 'circle', symbolSize: 6,
-                    lineStyle: { width: 2.5, color: '#3b82f6' },
-                    itemStyle: { color: '#3b82f6' },
+                    lineStyle: { width: 2.5, color: '#7B6EF6' },
+                    itemStyle: { color: '#7B6EF6' },
                     areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: 'rgba(59,130,246,0.25)' },
-                        { offset: 1, color: 'rgba(59,130,246,0)' }
+                        { offset: 0, color: 'rgba(123,110,246,0.25)' },
+                        { offset: 1, color: 'rgba(123,110,246,0)' }
                     ])}
                 }],
                 animation: true
@@ -412,8 +413,8 @@ function enterpriseDashboard() {
                 itemStyle: { color: colors[i % colors.length] }
             }));
             this._donutChart.setOption({
-                tooltip: { trigger: 'item', backgroundColor: '#1f2937', borderColor: '#374151', textStyle: { color: '#f9fafb', fontSize: 12 } },
-                legend: { bottom: 10, textStyle: { color: '#9ca3af', fontSize: 11 }, itemWidth: 10, itemHeight: 10 },
+                tooltip: { trigger: 'item', backgroundColor: '#1C2440', borderColor: 'rgba(255,255,255,0.1)', textStyle: { color: '#E8ECF5', fontSize: 12 } },
+                legend: { bottom: 10, textStyle: { color: '#8B96AD', fontSize: 11 }, itemWidth: 10, itemHeight: 10 },
                 series: [{
                     type: 'pie', radius: ['45%', '72%'], center: ['50%', '42%'],
                     data: chartData, label: { show: false },

@@ -581,4 +581,65 @@
     });
   });
 
+  /* ═══════════════════════════════════════════════════════════
+     8. HORIZONTAL SCROLL UX INDICATORS
+     Detects overflow on .changelist-results and tables,
+     adds fade shadow + "scroll" hint so users discover
+     horizontally-scrollable content.
+     ═══════════════════════════════════════════════════════════ */
+  document.addEventListener('DOMContentLoaded', function () {
+    /**
+     * For each scrollable container, check if content overflows.
+     * Toggle class for CSS shadow, optionally inject a scroll hint.
+     */
+    function initScrollIndicators() {
+      var containers = document.querySelectorAll('.changelist-results, .table-scroll-wrapper');
+      containers.forEach(function (el) {
+        function updateIndicator() {
+          var overflowRight = el.scrollWidth - el.clientWidth - el.scrollLeft > 2;
+          el.classList.toggle('has-scroll-right', overflowRight);
+        }
+
+        // Initial check
+        updateIndicator();
+
+        // Listen to scroll events
+        el.addEventListener('scroll', updateIndicator, { passive: true });
+
+        // Re-check on window resize
+        window.addEventListener('resize', updateIndicator, { passive: true });
+
+        // If content overflows and no hint exists, inject a one-time hint
+        if (el.scrollWidth > el.clientWidth + 2 && !el.querySelector('.scroll-hint')) {
+          var hint = document.createElement('div');
+          hint.className = 'scroll-hint';
+          hint.innerHTML = '<i class="ph ph-arrows-horizontal" aria-hidden="true"></i> <span>Kaydır</span>';
+          el.style.position = 'relative';
+          el.appendChild(hint);
+
+          // Dismiss hint on first scroll
+          var dismissed = false;
+          el.addEventListener('scroll', function () {
+            if (!dismissed && el.scrollLeft > 10) {
+              dismissed = true;
+              hint.classList.add('scroll-hint--hide');
+              setTimeout(function () { hint.remove(); }, 400);
+            }
+          }, { passive: true });
+
+          // Auto-hide after 4 seconds
+          setTimeout(function () {
+            if (!dismissed) {
+              dismissed = true;
+              hint.classList.add('scroll-hint--hide');
+              setTimeout(function () { hint.remove(); }, 400);
+            }
+          }, 4000);
+        }
+      });
+    }
+
+    initScrollIndicators();
+  });
+
 })();

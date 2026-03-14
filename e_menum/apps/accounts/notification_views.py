@@ -6,12 +6,15 @@ Provides lightweight JSON endpoints for:
 - Mark notification as read
 - Mark all notifications as read
 
-All views use session auth (login_required) and filter by organization.
+All views use session auth (login_required).
+- Regular users: filter by organization + user
+- Superadmin/staff (no org): filter by user only, or show all SYSTEM notifications
 """
 
 import logging
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET, require_POST
 
@@ -22,21 +25,30 @@ def _get_org(request):
     return getattr(request.user, "organization", None)
 
 
+def _base_filter(request):
+    """Build base queryset filter depending on user type.
+
+    - Users with an organization: org-scoped + user-scoped
+    - Superadmin/staff without org: user-scoped OR system-wide notifications
+    """
+    org = _get_org(request)
+    if org:
+        return Q(organization=org, user=request.user, deleted_at__isnull=True)
+    # Superadmin/staff: own notifications OR system-wide (user=None) notifications
+    return Q(user=request.user, deleted_at__isnull=True) | Q(
+        user__isnull=True, notification_type="SYSTEM", deleted_at__isnull=True
+    )
+
+
 @login_required(login_url="/account/login/")
 @require_GET
 def notification_unread_count(request):
     """Return unread notification count for the current user."""
-    org = _get_org(request)
-    if not org:
-        return JsonResponse({"count": 0})
-
     from apps.notifications.models import Notification
 
     count = Notification.objects.filter(
-        organization=org,
-        user=request.user,
+        _base_filter(request),
         status="UNREAD",
-        deleted_at__isnull=True,
     ).count()
 
     return JsonResponse({"count": count})
@@ -46,16 +58,10 @@ def notification_unread_count(request):
 @require_GET
 def notification_list(request):
     """Return recent notifications (max 12) with optional type filter."""
-    org = _get_org(request)
-    if not org:
-        return JsonResponse({"notifications": []})
-
     from apps.notifications.models import Notification
 
     qs = Notification.objects.filter(
-        organization=org,
-        user=request.user,
-        deleted_at__isnull=True,
+        _base_filter(request),
     ).order_by("-created_at")
 
     # Optional type filter (tab-based)
@@ -85,18 +91,12 @@ def notification_list(request):
 @require_POST
 def notification_mark_read(request, notification_id):
     """Mark a single notification as read."""
-    org = _get_org(request)
-    if not org:
-        return JsonResponse({"error": "Unauthorized"}, status=403)
-
     from apps.notifications.models import Notification
 
     try:
         notif = Notification.objects.get(
+            _base_filter(request),
             id=notification_id,
-            organization=org,
-            user=request.user,
-            deleted_at__isnull=True,
         )
         notif.status = "READ"
         notif.save(update_fields=["status", "updated_at"])
@@ -109,17 +109,11 @@ def notification_mark_read(request, notification_id):
 @require_POST
 def notification_mark_all_read(request):
     """Mark all unread notifications as read for the current user."""
-    org = _get_org(request)
-    if not org:
-        return JsonResponse({"error": "Unauthorized"}, status=403)
-
     from apps.notifications.models import Notification
 
     updated = Notification.objects.filter(
-        organization=org,
-        user=request.user,
+        _base_filter(request),
         status="UNREAD",
-        deleted_at__isnull=True,
     ).update(status="READ")
 
     return JsonResponse({"success": True, "updated": updated})

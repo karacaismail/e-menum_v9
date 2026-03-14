@@ -994,21 +994,14 @@
 
 /* ═══════════════════════════════════════════════════════════
    BOXED LAYOUT MODE
+   Constraint is on .content-area — all children (topbar,
+   messages, #content, footer) inherit the max-width naturally.
    ═══════════════════════════════════════════════════════════ */
 
-.admin-layout.layout-boxed #content,
-.admin-layout.layout-boxed .dashboard {
-    max-width: 1240px;
+.admin-layout.layout-boxed .content-area {
+    max-width: 1440px;
     margin-left: auto;
     margin-right: auto;
-}
-
-.admin-layout.layout-boxed .content-topbar {
-    max-width: calc(1240px + 56px);
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 28px;
-    padding-right: 28px;
 }
 
 
@@ -1199,13 +1192,7 @@
 
 /* Disable boxed layout on mobile */
 @media (max-width: 768px) {
-    .admin-layout.layout-boxed #content,
-    .admin-layout.layout-boxed .dashboard { max-width: none; }
-    .admin-layout.layout-boxed .content-topbar {
-        max-width: none;
-        padding-left: 16px;
-        padding-right: 16px;
-    }
+    .admin-layout.layout-boxed .content-area { max-width: none; }
 }
 
 /* ── Mobile: hide both sidebars, show bottom nav ── */
