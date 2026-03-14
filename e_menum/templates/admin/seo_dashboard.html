@@ -3,6 +3,12 @@
 
 {% block title %}{% trans 'SEO Dashboard' %} | E-Menum Admin{% endblock %}
 
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin/css/enterprise-dashboard.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+{% endblock %}
+
 {% block breadcrumbs %}
 <nav class="breadcrumbs" aria-label="{% trans 'Breadcrumb' %}">
     <a href="{% url 'admin:index' %}">
