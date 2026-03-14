@@ -30,10 +30,23 @@ Usage in urls.py::
 
 import logging
 
+from django.conf import settings
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
+from django.utils import translation
 
 logger = logging.getLogger("apps.seo")
+
+
+def _reverse_i18n(url_name, **kwargs):
+    """Reverse a URL name with the default language activated.
+
+    Website URLs live inside ``i18n_patterns`` so ``reverse()`` needs an
+    active language to produce the correct, language-prefixed path.
+    """
+    lang = getattr(settings, "LANGUAGE_CODE", "tr")
+    with translation.override(lang):
+        return reverse(url_name, **kwargs)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -78,7 +91,7 @@ class StaticPageSitemap(Sitemap):
         return self._page_names
 
     def location(self, item):
-        return reverse(item)
+        return _reverse_i18n(item)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -109,7 +122,7 @@ class BlogPostSitemap(Sitemap):
         return obj.published_at or getattr(obj, "updated_at", None)
 
     def location(self, obj):
-        return reverse("website:blog_detail", kwargs={"slug": obj.slug})
+        return _reverse_i18n("website:blog_detail", kwargs={"slug": obj.slug})
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -152,7 +165,7 @@ class LegalPageSitemap(Sitemap):
     def location(self, obj):
         url_name = self._slug_to_url.get(obj.slug)
         if url_name:
-            return reverse(url_name)
+            return _reverse_i18n(url_name)
         # Fallback: construct path from slug
         return f"/{obj.slug}/"
 
@@ -181,7 +194,7 @@ class SolutionPageSitemap(Sitemap):
         return getattr(obj, "updated_at", None)
 
     def location(self, obj):
-        return reverse("website:solution_detail", kwargs={"slug": obj.slug})
+        return _reverse_i18n("website:solution_detail", kwargs={"slug": obj.slug})
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -208,7 +221,7 @@ class CaseStudySitemap(Sitemap):
         return obj.published_at or getattr(obj, "updated_at", None)
 
     def location(self, obj):
-        return reverse("website:case_study_detail", kwargs={"slug": obj.slug})
+        return _reverse_i18n("website:case_study_detail", kwargs={"slug": obj.slug})
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -235,7 +248,7 @@ class FreeToolSitemap(Sitemap):
         return getattr(obj, "updated_at", None)
 
     def location(self, obj):
-        return reverse("website:tool_detail", kwargs={"slug": obj.slug})
+        return _reverse_i18n("website:tool_detail", kwargs={"slug": obj.slug})
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -262,7 +275,7 @@ class IndustryReportSitemap(Sitemap):
         return obj.published_at or getattr(obj, "updated_at", None)
 
     def location(self, obj):
-        return reverse("website:report_detail", kwargs={"slug": obj.slug})
+        return _reverse_i18n("website:report_detail", kwargs={"slug": obj.slug})
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -289,7 +302,7 @@ class WebinarSitemap(Sitemap):
         return getattr(obj, "updated_at", None)
 
     def location(self, obj):
-        return reverse("website:webinar_detail", kwargs={"slug": obj.slug})
+        return _reverse_i18n("website:webinar_detail", kwargs={"slug": obj.slug})
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -316,7 +329,7 @@ class CareerPositionSitemap(Sitemap):
         return getattr(obj, "updated_at", None)
 
     def location(self, obj):
-        return reverse("website:career_detail", kwargs={"slug": obj.slug})
+        return _reverse_i18n("website:career_detail", kwargs={"slug": obj.slug})
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -343,7 +356,7 @@ class PressReleaseSitemap(Sitemap):
         return obj.published_at or getattr(obj, "updated_at", None)
 
     def location(self, obj):
-        return reverse("website:press_detail", kwargs={"slug": obj.slug})
+        return _reverse_i18n("website:press_detail", kwargs={"slug": obj.slug})
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -370,7 +383,7 @@ class PartnerProgramSitemap(Sitemap):
         return getattr(obj, "updated_at", None)
 
     def location(self, obj):
-        return reverse("website:partner_detail", kwargs={"slug": obj.slug})
+        return _reverse_i18n("website:partner_detail", kwargs={"slug": obj.slug})
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -397,7 +410,7 @@ class HelpCategorySitemap(Sitemap):
         return getattr(obj, "updated_at", None)
 
     def location(self, obj):
-        return reverse("website:help_category", kwargs={"slug": obj.slug})
+        return _reverse_i18n("website:help_category", kwargs={"slug": obj.slug})
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -430,7 +443,7 @@ class HelpArticleSitemap(Sitemap):
         return getattr(obj, "updated_at", None)
 
     def location(self, obj):
-        return reverse(
+        return _reverse_i18n(
             "website:help_article",
             kwargs={
                 "category_slug": obj.category.slug,

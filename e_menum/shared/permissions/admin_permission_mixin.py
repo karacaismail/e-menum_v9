@@ -93,6 +93,8 @@ DJANGO_MODEL_TO_RESOURCE = {
     "authorprofile": "settings",
     "pseotemplate": "settings",
     "pseopage": "settings",
+    "trackingintegration": "settings",
+    "corewebvitalssnapshot": "settings",
     # ── SEO Shield ──
     "botwhitelist": "settings",
     "ipriskscore": "settings",

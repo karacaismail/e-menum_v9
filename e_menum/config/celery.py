@@ -131,6 +131,15 @@ app.conf.beat_schedule = {
         "schedule": crontab(hour=6, minute=30, day_of_week=0),
         "options": {"queue": "maintenance"},
     },
+    # =========================================================================
+    # SEO Tasks
+    # =========================================================================
+    # Measure Core Web Vitals via PageSpeed Insights — daily at 7:00 UTC
+    "measure-core-web-vitals": {
+        "task": "seo.measure_core_web_vitals",
+        "schedule": crontab(hour=7, minute=0),
+        "options": {"queue": "default"},
+    },
 }
 
 

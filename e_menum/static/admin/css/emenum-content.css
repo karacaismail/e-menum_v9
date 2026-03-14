@@ -769,6 +769,451 @@ a.addlink:hover {
   grid-column: 1;
 }
 /* ═══════════════════════════════════════════════════════════
+   CHANGE FORM  (add/edit pages — /admin/.../change/)
+   Enterprise dark-theme form styling
+═══════════════════════════════════════════════════════════ */
+
+/* Page wrapper */
+.change-form {
+  padding: 0 24px 24px;
+}
+
+/* Module (fieldset wrapper) */
+.module {
+  background: var(--c-bg-2);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.module h2,
+.module caption,
+.inline-group h2 {
+  padding: 10px 16px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-txt-2);
+  background: var(--c-bg-3);
+  border-bottom: 1px solid var(--c-border);
+}
+.module h2 img { vertical-align: middle; margin-right: 6px; }
+
+/* Fieldset */
+fieldset {
+  background: var(--c-bg-2);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  margin: 0 0 16px;
+  padding: 0;
+  overflow: hidden;
+}
+fieldset h2 {
+  padding: 10px 16px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-txt-2);
+  background: var(--c-bg-3);
+  border-bottom: 1px solid var(--c-border);
+  cursor: default;
+}
+fieldset .description {
+  padding: 10px 16px 0;
+  font-size: 12.5px;
+  color: var(--c-txt-3);
+  margin: 0;
+}
+
+/* Collapse fieldsets */
+fieldset.collapse:not(.open) .form-row { display: none; }
+fieldset.collapse:not(.open) .description { display: none; }
+fieldset.collapse h2 { cursor: pointer; }
+fieldset.collapse h2::after {
+  content: '\25B6';
+  float: right;
+  font-size: 9px;
+  color: var(--c-txt-3);
+  transition: transform var(--t-ui);
+}
+fieldset.collapse.open h2::after {
+  transform: rotate(90deg);
+}
+
+/* Form rows */
+.form-row {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--c-border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px;
+}
+.form-row:last-child { border-bottom: none; }
+.form-row.errors { background: var(--c-danger-bg); }
+
+/* Labels */
+.form-row label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--c-txt-1);
+  min-width: 160px;
+  padding-top: 6px;
+}
+.form-row label.required::after {
+  content: ' *';
+  color: var(--c-danger);
+  font-weight: 700;
+}
+
+/* Input / Select / Textarea — shared base */
+.form-row input[type="text"],
+.form-row input[type="url"],
+.form-row input[type="email"],
+.form-row input[type="password"],
+.form-row input[type="number"],
+.form-row input[type="tel"],
+.form-row input[type="date"],
+.form-row input[type="datetime-local"],
+.form-row textarea,
+.form-row select,
+.vTextField,
+.vURLField,
+.vLargeTextField,
+.vIntegerField,
+.vBigIntegerField,
+.vForeignKeyRawIdAdminField {
+  width: 100%;
+  max-width: 520px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-family: var(--font);
+  color: var(--c-txt-1);
+  background: var(--c-bg-3);
+  border: 1px solid var(--c-border-2);
+  border-radius: var(--radius-xs);
+  outline: none;
+  transition: border-color var(--t-ui), box-shadow var(--t-ui);
+}
+.form-row input:focus,
+.form-row textarea:focus,
+.form-row select:focus,
+.vTextField:focus,
+.vURLField:focus,
+.vLargeTextField:focus {
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 3px rgba(123,110,246,0.12);
+}
+.form-row textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+.form-row select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 32px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B96AD' d='M3 4.5l3 3 3-3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  cursor: pointer;
+}
+.form-row select option {
+  background: var(--c-bg-3);
+  color: var(--c-txt-1);
+}
+.form-row input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--c-bg-3);
+  border: 1.5px solid var(--c-border-2);
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  transition: all var(--t-ui);
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.form-row input[type="checkbox"]:checked {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+}
+.form-row input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Help text */
+.help,
+.form-row .help {
+  font-size: 11.5px;
+  color: var(--c-txt-3);
+  margin: 4px 0 0;
+  width: 100%;
+  max-width: 520px;
+}
+
+/* Inline help (next to input) */
+.help-tooltip { display: none; }
+
+/* Error list */
+.errorlist {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  width: 100%;
+}
+.errorlist li {
+  font-size: 12px;
+  color: var(--c-danger);
+  padding: 3px 0;
+}
+
+/* Aligned forms (Django default layout) */
+.aligned label { min-width: 160px; }
+.aligned .form-row input,
+.aligned .form-row select,
+.aligned .form-row textarea { flex: 1; min-width: 200px; }
+
+/* Object tools (buttons above form) */
+.object-tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+  float: right;
+}
+.object-tools li {
+  display: inline-flex;
+}
+.object-tools a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #fff;
+  background: var(--c-accent);
+  border-radius: var(--radius-xs);
+  transition: all var(--t-ui);
+}
+.object-tools a:hover {
+  background: var(--c-accent-b);
+  color: #fff;
+}
+
+/* Submit row (Save / Delete buttons) */
+.submit-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  margin: 0;
+  background: var(--c-bg-2);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+}
+.submit-row input[type="submit"],
+.submit-row button {
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font);
+  border: none;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: all var(--t-ui);
+}
+.submit-row input.default,
+.submit-row input[name="_save"] {
+  background: var(--c-accent);
+  color: #fff;
+}
+.submit-row input.default:hover,
+.submit-row input[name="_save"]:hover {
+  background: var(--c-accent-b);
+}
+.submit-row input[name="_continue"],
+.submit-row input[name="_addanother"] {
+  background: var(--c-bg-3);
+  color: var(--c-txt-2);
+  border: 1px solid var(--c-border-2);
+}
+.submit-row input[name="_continue"]:hover,
+.submit-row input[name="_addanother"]:hover {
+  background: var(--c-bg-4);
+  color: var(--c-txt-1);
+  border-color: var(--c-accent-bd);
+}
+.submit-row p {
+  margin: 0;
+  font-size: 12.5px;
+}
+.submit-row p.deletelink-box {
+  margin-left: auto;
+}
+.submit-row .deletelink {
+  color: var(--c-danger);
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 8px 16px;
+  background: var(--c-danger-bg);
+  border: 1px solid rgba(248,113,113,0.20);
+  border-radius: var(--radius-xs);
+  transition: all var(--t-ui);
+}
+.submit-row .deletelink:hover {
+  background: rgba(248,113,113,0.15);
+  border-color: rgba(248,113,113,0.35);
+  color: #fff;
+}
+
+/* Inline groups */
+.inline-group {
+  margin: 0 0 16px;
+}
+.inline-group .module {
+  margin-bottom: 0;
+}
+.inline-related {
+  background: var(--c-bg-2);
+  border-bottom: 1px solid var(--c-border);
+}
+.inline-related h3 {
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--c-txt-2);
+  background: var(--c-bg-3);
+  border-bottom: 1px solid var(--c-border);
+  margin: 0;
+}
+.inline-related .form-row { padding: 8px 16px; }
+
+/* Tabular inlines */
+.tabular .module table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.tabular th {
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-txt-3);
+  background: var(--c-bg-3);
+  border-bottom: 1px solid var(--c-border);
+  text-align: left;
+}
+.tabular td {
+  padding: 8px 12px;
+  color: var(--c-txt-2);
+  border-bottom: 1px solid var(--c-border);
+  vertical-align: middle;
+}
+.tabular td input,
+.tabular td select,
+.tabular td textarea {
+  width: 100%;
+  max-width: none;
+}
+.tabular tr.add-row td { border-bottom: none; }
+.tabular .add-row a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--c-accent-b);
+  padding: 6px 0;
+}
+.tabular .add-row a:hover { color: var(--c-txt-1); }
+
+/* Delete checkbox in inlines */
+.inline-deletelink {
+  color: var(--c-danger);
+  font-size: 11px;
+}
+
+/* Read-only fields */
+.readonly,
+.form-row .readonly {
+  font-size: 13px;
+  color: var(--c-txt-2);
+  padding: 8px 0;
+}
+
+/* Date/time widgets */
+.datetimeshortcuts { white-space: nowrap; }
+.datetimeshortcuts a {
+  font-size: 11px;
+  color: var(--c-accent-b);
+}
+.datetimeshortcuts a:hover { color: var(--c-txt-1); }
+
+/* Calendar popup overrides */
+.calendarbox { background: var(--c-bg-3); border: 1px solid var(--c-border-2); border-radius: var(--radius-sm); }
+.calendar td { padding: 4px; }
+.calendar td a { color: var(--c-txt-2); }
+.calendar td a:hover { background: var(--c-accent-bg); color: var(--c-accent-b); border-radius: 4px; }
+.calendar td.today a { background: var(--c-accent-bg); color: var(--c-accent-b); font-weight: 600; border-radius: 4px; }
+
+/* Related widget wrapper (+ pencil icon buttons) */
+.related-widget-wrapper { display: flex; align-items: center; gap: 4px; flex: 1; }
+.related-widget-wrapper select { flex: 1; }
+.related-widget-wrapper-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--c-bg-3);
+  border: 1px solid var(--c-border-2);
+  border-radius: var(--radius-xs);
+  color: var(--c-txt-3);
+  transition: all var(--t-ui);
+  flex-shrink: 0;
+}
+.related-widget-wrapper-link:hover {
+  background: var(--c-bg-4);
+  border-color: var(--c-accent-bd);
+  color: var(--c-accent-b);
+}
+.related-widget-wrapper-link img { filter: invert(0.7); width: 14px; height: 14px; }
+
+/* File input */
+.file-upload input[type="file"],
+.form-row input[type="file"] {
+  font-size: 12.5px;
+  color: var(--c-txt-2);
+  padding: 6px 0;
+}
+.form-row .file-upload .clearable-file-input { display: flex; align-items: center; gap: 8px; }
+
+/* JSON field */
+.jsoneditor-wrapper textarea { min-height: 120px; font-family: 'Geist Mono', monospace; font-size: 12px; }
+
+/* ═══════════════════════════════════════════════════════════
    DASHBOARD ENTERPRISE (ed-*)
 ═══════════════════════════════════════════════════════════ */
 .ed {
