@@ -199,14 +199,18 @@ def subscription_cancel(request):
 
     reason = request.POST.get("cancel_reason", "").strip()
 
+    from apps.subscriptions.choices import SubscriptionStatus
+
     subscription.cancelled_at = timezone.now()
     subscription.cancel_reason = reason
     subscription.cancel_at_period_end = True
+    subscription.status = SubscriptionStatus.CANCELLED
     subscription.save(
         update_fields=[
             "cancelled_at",
             "cancel_reason",
             "cancel_at_period_end",
+            "status",
             "updated_at",
         ]
     )

@@ -154,11 +154,18 @@ def team_invite(request):
                 status=UserStatus.INVITED,
                 organization=org,
             )
-        except IntegrityError:
-            logger.exception("IntegrityError creating invited user %s", email)
+        except (IntegrityError, ValidationError) as exc:
+            logger.exception("Error creating invited user %s: %s", email, exc)
             messages.error(
                 request,
                 _("Bu e-posta adresi ile kullanici olusturulamadi."),
+            )
+            return redirect("accounts:team-list")
+        except Exception as exc:
+            logger.exception("Unexpected error inviting %s: %s", email, exc)
+            messages.error(
+                request,
+                _("Davet gonderilirken bir hata olustu. Lutfen tekrar deneyin."),
             )
             return redirect("accounts:team-list")
 

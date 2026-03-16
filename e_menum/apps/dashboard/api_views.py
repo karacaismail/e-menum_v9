@@ -2,7 +2,7 @@
 Dashboard API views for the admin mainboard.
 
 All endpoints:
-- Require staff authentication (@staff_member_required)
+- Require staff authentication (@superadmin_required)
 - Return JsonResponse
 - Accept GET parameter: ?range=7d|30d|90d (default 30d)
 - Are independent (one failure doesn't affect others)
@@ -11,7 +11,7 @@ All endpoints:
 import logging
 
 from django.contrib.admin.models import LogEntry
-from django.contrib.admin.views.decorators import staff_member_required
+from shared.decorators import superadmin_required
 from django.http import JsonResponse
 from django.utils import timezone
 from django.views.decorators.http import require_GET
@@ -28,7 +28,7 @@ def _parse_range(request) -> int:
     return mapping.get(range_param, 30)
 
 
-@staff_member_required
+@superadmin_required
 @require_GET
 def api_kpis(request):
     """
@@ -93,7 +93,7 @@ def api_kpis(request):
         )
 
 
-@staff_member_required
+@superadmin_required
 @require_GET
 def api_qr_scan_trend(request):
     """
@@ -113,7 +113,7 @@ def api_qr_scan_trend(request):
         )
 
 
-@staff_member_required
+@superadmin_required
 @require_GET
 def api_org_activity_heatmap(request):
     """
@@ -132,7 +132,7 @@ def api_org_activity_heatmap(request):
         )
 
 
-@staff_member_required
+@superadmin_required
 @require_GET
 def api_plan_distribution(request):
     """
@@ -151,7 +151,7 @@ def api_plan_distribution(request):
         )
 
 
-@staff_member_required
+@superadmin_required
 @require_GET
 def api_city_distribution(request):
     """
@@ -170,7 +170,7 @@ def api_city_distribution(request):
         )
 
 
-@staff_member_required
+@superadmin_required
 @require_GET
 def api_insights(request):
     """
@@ -219,7 +219,7 @@ def api_insights(request):
         )
 
 
-@staff_member_required
+@superadmin_required
 @require_GET
 def api_recent_activity(request):
     """
@@ -259,7 +259,7 @@ def api_recent_activity(request):
         )
 
 
-@staff_member_required
+@superadmin_required
 @require_GET
 def api_subscription_funnel(request):
     """
@@ -278,7 +278,7 @@ def api_subscription_funnel(request):
         )
 
 
-@staff_member_required
+@superadmin_required
 @require_GET
 def api_search(request):
     """
@@ -395,7 +395,7 @@ def api_search(request):
         )
 
 
-@staff_member_required
+@superadmin_required
 @require_GET
 def api_sidebar_pins(request):
     """
@@ -416,7 +416,7 @@ def api_sidebar_pins(request):
         return JsonResponse({"success": False, "error": str(exc)}, status=500)
 
 
-@staff_member_required
+@superadmin_required
 def api_sidebar_pins_save(request):
     """
     POST /admin/api/sidebar/pins/save/
@@ -443,7 +443,7 @@ def api_sidebar_pins_save(request):
         return JsonResponse({"success": False, "error": str(exc)}, status=500)
 
 
-@staff_member_required
+@superadmin_required
 @require_GET
 def api_sidebar_recent(request):
     """
@@ -464,7 +464,7 @@ def api_sidebar_recent(request):
         return JsonResponse({"success": False, "error": str(exc)}, status=500)
 
 
-@staff_member_required
+@superadmin_required
 def api_sidebar_recent_save(request):
     """
     POST /admin/api/sidebar/recent/save/

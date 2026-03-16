@@ -2,8 +2,10 @@
 
 import json
 import logging
+import uuid
 
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
 from django.db.models import Prefetch
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -79,16 +81,21 @@ def zone_create(request):
     name = body.get("name", "").strip()
     if not name:
         return JsonResponse({"error": "Name is required"}, status=400)
+    base_slug = slugify(name) or "zone"
     zone = Zone(
         organization=org,
         name=name,
-        slug=slugify(name),
+        slug=base_slug,
         description=body.get("description", ""),
         color=body.get("color", "#6366f1"),
         capacity=body.get("capacity", 0),
         is_active=True,
     )
-    zone.save()
+    try:
+        zone.save()
+    except IntegrityError:
+        zone.slug = f"{base_slug}-{uuid.uuid4().hex[:6]}"
+        zone.save()
     return JsonResponse(
         {"success": True, "zone": {"id": str(zone.id), "name": zone.name}}, status=201
     )
@@ -160,17 +167,22 @@ def table_create(request):
     zone = get_object_or_404(
         Zone, id=zone_id, organization=org, deleted_at__isnull=True
     )
+    base_slug = slugify(name) or "table"
     table = Table(
         organization=org,
         zone=zone,
         name=name,
-        slug=slugify(name),
+        slug=base_slug,
         number=body.get("number", 0),
         capacity=body.get("capacity", 4),
         status="AVAILABLE",
         is_active=True,
     )
-    table.save()
+    try:
+        table.save()
+    except IntegrityError:
+        table.slug = f"{base_slug}-{uuid.uuid4().hex[:6]}"
+        table.save()
     return JsonResponse(
         {"success": True, "table": {"id": str(table.id), "name": table.name}},
         status=201,

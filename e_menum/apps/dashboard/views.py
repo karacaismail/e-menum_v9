@@ -6,11 +6,12 @@ All data is loaded via JavaScript fetch calls to API endpoints.
 The template renders as an empty shell with skeleton loaders.
 """
 
-from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 
+from shared.decorators import superadmin_required
 
-@staff_member_required
+
+@superadmin_required
 def mainboard(request):
     """
     Main dashboard view — renders the mainboard template.

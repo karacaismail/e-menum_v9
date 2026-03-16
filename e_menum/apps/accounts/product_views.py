@@ -227,6 +227,9 @@ def product_edit(request, product_id):
                 )
             except Category.DoesNotExist:
                 messages.error(request, _("Gecersiz kategori."))
+                categories = Category.objects.filter(
+                    organization=org, deleted_at__isnull=True
+                ).order_by("sort_order", "name")
                 return render(
                     request,
                     "accounts/products/form.html",
@@ -234,6 +237,7 @@ def product_edit(request, product_id):
                         "form": form,
                         "product": product,
                         "is_edit": True,
+                        "categories": categories,
                     },
                 )
 

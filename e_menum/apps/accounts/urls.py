@@ -289,6 +289,12 @@ urlpatterns = [
         subscription_views.invoice_download_pdf,
         name="invoice-download-pdf",
     ),
+    # ── Notification Page ──────────────────────────────────────────────
+    path(
+        "notifications/",
+        notification_views.notification_page,
+        name="notification-list",
+    ),
     # ── Notification API (navbar widget) ────────────────────────────────
     path(
         "api/notifications/count/",

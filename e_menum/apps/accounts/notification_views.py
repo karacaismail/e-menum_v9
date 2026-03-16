@@ -14,8 +14,10 @@ All views use session auth (login_required).
 import logging
 
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import JsonResponse
+from django.shortcuts import render
 from django.views.decorators.http import require_GET, require_POST
 
 logger = logging.getLogger(__name__)
@@ -48,8 +50,7 @@ def notification_unread_count(request):
 
     count = Notification.objects.filter(
         _base_filter(request),
-        status="UNREAD",
-    ).count()
+    ).exclude(status="READ").count()
 
     return JsonResponse({"count": count})
 
@@ -113,7 +114,35 @@ def notification_mark_all_read(request):
 
     updated = Notification.objects.filter(
         _base_filter(request),
-        status="UNREAD",
-    ).update(status="READ")
+    ).exclude(status="READ").update(status="READ")
 
     return JsonResponse({"success": True, "updated": updated})
+
+
+@login_required(login_url="/account/login/")
+@require_GET
+def notification_page(request):
+    """Full-page view of all notifications (paginated)."""
+    from apps.notifications.models import Notification
+
+    qs = Notification.objects.filter(
+        _base_filter(request),
+    ).order_by("-created_at")
+
+    ntype = request.GET.get("type", "").strip().upper()
+    if ntype and ntype in ("ORDER", "SYSTEM", "PROMOTION", "PAYMENT", "SECURITY"):
+        qs = qs.filter(notification_type=ntype)
+
+    paginator = Paginator(qs, 25)
+    page_number = request.GET.get("page", 1)
+    page_obj = paginator.get_page(page_number)
+
+    return render(
+        request,
+        "accounts/notifications/list.html",
+        {
+            "page_obj": page_obj,
+            "current_type": ntype,
+            "notification_types": ["ORDER", "SYSTEM", "PROMOTION", "PAYMENT", "SECURITY"],
+        },
+    )

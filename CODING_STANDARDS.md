@@ -1,8 +1,8 @@
 # E-Menum Coding Standards
 
-> **Auto-Claude Coding Standards Document**  
-> TypeScript conventions, naming, patterns, Git workflow.  
-> Son Güncelleme: 2026-01-31
+> **Auto-Claude Coding Standards Document**
+> Python/Django conventions, naming, patterns, Git workflow.
+> Son Guncelleme: 2026-03-16
 
 ---
 
@@ -18,167 +18,94 @@
 | **Fail Fast** | Validate early, error clearly |
 | **DRY but DAMP** | Don't repeat, but descriptive is okay |
 
-### 1.2 Vibecoding Optimization
+### 1.2 LLM-Friendly Code Patterns
 
 ```
 LLM-Friendly Code Patterns:
 
-✅ DO:
-├── Use established patterns (BaseService, BaseController)
-├── Explicit type annotations
-├── JSDoc comments on public methods
-├── Consistent file structure
-├── Descriptive variable names
-└── Small, focused functions (<30 lines)
+DO:
+  - Use established patterns (BaseTenantViewSet, SoftDeleteMixin)
+  - Type hints on all public functions
+  - Docstrings on modules, classes, and public methods
+  - Consistent file structure per app
+  - Descriptive variable names
+  - Small, focused functions (<30 lines)
 
-❌ DON'T:
-├── Custom abstractions without examples
-├── Magic strings or numbers
-├── Implicit type inference for complex types
-├── Circular dependencies
-├── Deep nesting (>3 levels)
-└── Side effects in unexpected places
+DON'T:
+  - Custom abstractions without examples
+  - Magic strings or numbers
+  - Circular imports
+  - Deep nesting (>3 levels)
+  - Side effects in unexpected places
+  - Bare except clauses
 ```
 
 ---
 
-## 2. TYPESCRIPT CONVENTIONS
+## 2. PYTHON CONVENTIONS
 
-### 2.1 Type Annotations
+### 2.1 Type Hints
 
-```typescript
-// ✅ GOOD: Explicit return types on public methods
-async function getMenuById(id: string): Promise<Menu | null> {
-  return prisma.menu.findUnique({ where: { id } });
-}
+```python
+# GOOD: Type hints on public methods
+from __future__ import annotations
+from typing import Optional
+from apps.menu.models import Menu
 
-// ✅ GOOD: Interface for complex objects
-interface CreateMenuInput {
-  name: string;
-  description?: string;
-  themeId?: string;
-}
+def get_menu_by_id(menu_id: str, org_id: str) -> Optional[Menu]:
+    return Menu.objects.filter(id=menu_id, organization_id=org_id).first()
 
-// ❌ BAD: Implicit any
-function processData(data) {  // Missing type!
-  return data.map(x => x.value);
-}
+# GOOD: Complex return types
+def get_dashboard_data(org_id: str) -> dict[str, Any]:
+    ...
 
-// ❌ BAD: Over-reliance on inference for public API
-const getUser = async (id) => {  // Missing types!
-  return await prisma.user.findUnique({ where: { id } });
-};
+# BAD: No type hints on public API
+def process_data(data):  # Missing types!
+    return [x.value for x in data]
 ```
 
-### 2.2 Type vs Interface
+### 2.2 Enums & Choices
 
-```typescript
-// Use INTERFACE for:
-// - Object shapes (data structures)
-// - Extendable contracts
-// - Class implementations
+```python
+# Use Django TextChoices for database-backed enums
+class OrderStatus(models.TextChoices):
+    PENDING = "pending", _("Pending")
+    CONFIRMED = "confirmed", _("Confirmed")
+    PREPARING = "preparing", _("Preparing")
+    READY = "ready", _("Ready")
+    DELIVERED = "delivered", _("Delivered")
+    CANCELLED = "cancelled", _("Cancelled")
 
-interface User {
-  id: string;
-  email: string;
-  name: string;
-}
+# Use in model fields
+status = models.CharField(
+    max_length=20,
+    choices=OrderStatus.choices,
+    default=OrderStatus.PENDING,
+)
 
-interface UserWithRoles extends User {
-  roles: Role[];
-}
-
-// Use TYPE for:
-// - Unions and intersections
-// - Computed types
-// - Function signatures
-
-type Status = 'active' | 'inactive' | 'pending';
-type Nullable<T> = T | null;
-type AsyncHandler<T> = () => Promise<T>;
-
-// ❌ AVOID: Mixing without reason
-type User = {  // Should be interface
-  id: string;
-};
+# BAD: Plain strings without choices
+status = models.CharField(max_length=20, default="pending")  # No validation!
 ```
 
-### 2.3 Enums vs Union Types
+### 2.3 None / Null Handling
 
-```typescript
-// Use STRING ENUMS for:
-// - Database values
-// - API contracts
-// - Values that need runtime existence
+```python
+# GOOD: Explicit None checks with AppException
+def get_menu(menu_id: str, org_id: str) -> Menu:
+    menu = Menu.objects.filter(
+        id=menu_id, organization_id=org_id
+    ).first()
+    if menu is None:
+        raise ResourceNotFoundException("Menu", menu_id)
+    return menu
 
-enum OrderStatus {
-  PENDING = 'pending',
-  CONFIRMED = 'confirmed',
-  PREPARING = 'preparing',
-  READY = 'ready',
-  DELIVERED = 'delivered',
-  CANCELLED = 'cancelled',
-}
+# GOOD: get_object_or_404 for simple cases
+from django.shortcuts import get_object_or_404
+menu = get_object_or_404(Menu, id=menu_id, organization_id=org_id)
 
-// Use UNION TYPES for:
-// - Internal type narrowing
-// - Simple string literals
-
-type ButtonVariant = 'primary' | 'secondary' | 'ghost';
-type Size = 'sm' | 'md' | 'lg';
-
-// ❌ AVOID: Numeric enums (unclear values)
-enum Status {
-  Active,   // = 0, unclear!
-  Inactive, // = 1
-}
-```
-
-### 2.4 Generics
-
-```typescript
-// ✅ GOOD: Descriptive generic names
-interface Repository<TEntity, TCreateInput, TUpdateInput> {
-  findById(id: string): Promise<TEntity | null>;
-  create(data: TCreateInput): Promise<TEntity>;
-  update(id: string, data: TUpdateInput): Promise<TEntity>;
-}
-
-// ✅ GOOD: Constrained generics
-function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
-  return obj[key];
-}
-
-// ❌ BAD: Single letter without context
-function process<T, U, V>(a: T, b: U): V {  // What are T, U, V?
-  // ...
-}
-```
-
-### 2.5 Null Handling
-
-```typescript
-// ✅ GOOD: Explicit null checks
-async function getMenu(id: string): Promise<Menu> {
-  const menu = await prisma.menu.findUnique({ where: { id } });
-  
-  if (!menu) {
-    throw new AppException('MENU_NOT_FOUND', 404);
-  }
-  
-  return menu;
-}
-
-// ✅ GOOD: Optional chaining with nullish coalescing
-const userName = user?.profile?.name ?? 'Anonymous';
-
-// ❌ BAD: Non-null assertion without validation
-const menu = await prisma.menu.findUnique({ where: { id } });
-return menu!.name;  // Dangerous!
-
-// ❌ BAD: Truthy check for potentially 0 or ''
-const count = data.count || 10;  // Fails if count is 0!
-const count = data.count ?? 10;  // ✅ Correct
+# BAD: Accessing attributes without null check
+menu = Menu.objects.filter(id=menu_id).first()
+return menu.name  # AttributeError if None!
 ```
 
 ---
@@ -188,340 +115,263 @@ const count = data.count ?? 10;  // ✅ Correct
 ### 3.1 Files & Folders
 
 ```
-Naming Patterns:
-
 Files:
-├── kebab-case.ts           # General files
-├── PascalCase.ts           # Classes, React components (N/A for now)
-├── kebab-case.spec.ts      # Test files
-├── kebab-case.dto.ts       # DTOs
-├── kebab-case.schema.prisma # Prisma schemas
-└── UPPER_CASE.md           # Documentation
+  snake_case.py          # All Python files
+  test_module.py         # Test files (test_ prefix)
+  conftest.py            # pytest fixtures
+  UPPER_CASE.md          # Documentation
 
 Folders:
-├── kebab-case/             # Feature modules
-├── __tests__/              # Test directories
-└── _system/                # System modules (prefix)
+  snake_case/            # Django apps and packages
+  tests/                 # Test directories
+  migrations/            # Django migrations
 
-Examples:
-├── menu.controller.ts
-├── menu.service.ts
-├── menu.service.spec.ts
-├── create-menu.dto.ts
-├── menu.schema.prisma
-└── menu/
-    ├── manifest.json
-    ├── menu.controller.ts
-    └── dto/
-        └── create-menu.dto.ts
+Examples (menu app):
+  apps/menu/
+    __init__.py
+    models.py
+    views.py
+    serializers.py
+    urls.py
+    admin.py
+    services.py           # Business logic (optional)
+    tasks.py              # Celery tasks (optional)
+    signals.py            # Django signals (optional)
+    tests/
+      __init__.py
+      test_views.py
+      test_models.py
+      test_services.py
 ```
 
 ### 3.2 Variables & Functions
 
-```typescript
-// Variables: camelCase
-const menuItems = [];
-const isActive = true;
-const hasPermission = false;
-let currentPage = 1;
+```python
+# Variables: snake_case
+menu_items = []
+is_active = True
+has_permission = False
+current_page = 1
 
-// Constants: SCREAMING_SNAKE_CASE (module-level)
-const MAX_ITEMS_PER_PAGE = 100;
-const DEFAULT_CURRENCY = 'TRY';
-const API_VERSION = 'v1';
+# Constants: SCREAMING_SNAKE_CASE (module-level)
+MAX_ITEMS_PER_PAGE = 100
+DEFAULT_CURRENCY = "TRY"
+API_VERSION = "v1"
 
-// Functions: camelCase, verb prefix
-function getMenuById(id: string) {}
-function createOrder(data: CreateOrderInput) {}
-function validateEmail(email: string) {}
-function isValidPrice(price: number) {}
-function hasPermission(user: User, action: string) {}
+# Functions: snake_case, verb prefix
+def get_menu_by_id(menu_id: str) -> Menu: ...
+def create_order(data: dict) -> Order: ...
+def validate_email(email: str) -> bool: ...
+def is_valid_price(price: Decimal) -> bool: ...
+def has_permission(user: User, action: str) -> bool: ...
 
-// Boolean variables: is/has/can/should prefix
-const isLoading = true;
-const hasError = false;
-const canEdit = user.role === 'owner';
-const shouldRefresh = lastUpdate < threshold;
-
-// Event handlers: handle prefix (for UI)
-function handleSubmit() {}
-function handleClick() {}
-function handleChange() {}
+# Boolean variables: is/has/can/should prefix
+is_loading = True
+has_error = False
+can_edit = user.role == "owner"
+should_refresh = last_update < threshold
 ```
 
-### 3.3 Classes & Interfaces
+### 3.3 Classes
 
-```typescript
-// Classes: PascalCase, noun
-class MenuService {}
-class OrderController {}
-class AuthMiddleware {}
+```python
+# Models: PascalCase, singular noun
+class Menu(models.Model): ...
+class Category(models.Model): ...
+class OrderItem(models.Model): ...
 
-// Interfaces: PascalCase, noun (no I prefix)
-interface User {}
-interface CreateMenuInput {}
-interface PaginationParams {}
+# ViewSets: PascalCase + ViewSet suffix
+class MenuViewSet(BaseTenantViewSet): ...
+class CategoryViewSet(BaseTenantViewSet): ...
 
-// ❌ AVOID: Hungarian notation
-interface IUser {}      // No I prefix
-interface UserInterface {} // No Interface suffix
+# Serializers: PascalCase + Serializer suffix
+class MenuCreateSerializer(TenantModelSerializer): ...
+class MenuListSerializer(TenantModelSerializer): ...
 
-// Abstract classes: Abstract prefix or Base prefix
-abstract class BaseService<T> {}
-abstract class BaseController {}
+# Mixins: PascalCase + Mixin suffix
+class SoftDeleteMixin(models.Model): ...
+class PlanEnforcementMixin: ...
 
-// Type aliases: PascalCase
-type MenuWithCategories = Menu & { categories: Category[] };
-type Nullable<T> = T | null;
+# Services: PascalCase + Service suffix (optional layer)
+class MenuService: ...
+class AnalyticsService: ...
 ```
 
 ### 3.4 Database & API
 
-```typescript
-// Database tables: PascalCase singular (Prisma convention)
-model Menu {}
-model Category {}
-model OrderItem {}
+```python
+# Database tables: Django auto-generates as {app_label}_{model_name}
+# e.g., menu_menu, menu_category, orders_order
 
-// Database columns: camelCase
-model Product {
-  id          String
-  categoryId  String   // FK
-  basePrice   Decimal
-  isActive    Boolean
-  createdAt   DateTime
-}
+# Database columns: snake_case
+class Product(models.Model):
+    id = models.UUIDField(primary_key=True)
+    category = models.ForeignKey(Category, ...)  # FK
+    base_price = models.DecimalField(...)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-// API endpoints: kebab-case plural
-GET  /api/v1/menus
-GET  /api/v1/menu-items
-POST /api/v1/qr-codes
+# API endpoints: kebab-case plural
+# GET  /api/v1/menus/
+# GET  /api/v1/menu-items/
+# POST /api/v1/qr-codes/
 
-// Query params: camelCase
-GET /api/v1/products?categoryId=xxx&isActive=true&sortBy=name
+# Query params: snake_case
+# GET /api/v1/products/?category_id=xxx&is_active=true&sort_by=name
 
-// JSON keys: camelCase
-{
-  "menuId": "xxx",
-  "categoryName": "Drinks",
-  "isPublished": true
-}
+# JSON keys: snake_case (DRF default)
+# {
+#   "menu_id": "xxx",
+#   "category_name": "Drinks",
+#   "is_published": true
+# }
 ```
 
 ---
 
 ## 4. FILE STRUCTURE PATTERNS
 
-### 4.1 Module Structure
+### 4.1 Django App Structure
 
 ```
-modules/menu/
-├── manifest.json           # Module metadata
-├── menu.controller.ts      # HTTP handlers
-├── menu.service.ts         # Business logic
-├── menu.repository.ts      # Data access (optional)
-├── menu.routes.ts          # Route definitions (optional)
-├── menu.schema.prisma      # Database schema
-├── dto/
-│   ├── create-menu.dto.ts
-│   ├── update-menu.dto.ts
-│   └── menu-response.dto.ts
-├── types/
-│   └── menu.types.ts       # Module-specific types
-├── hooks/
-│   ├── on-enable.ts
-│   └── on-disable.ts
-├── events/
-│   └── menu.events.ts      # Event definitions
-├── __tests__/
-│   ├── menu.service.spec.ts
-│   └── menu.e2e.spec.ts
-└── views/                  # EJS templates (if needed)
-    ├── index.ejs
-    └── partials/
+apps/menu/
+  __init__.py
+  admin.py              # Django admin config
+  apps.py               # AppConfig
+  models.py             # ORM models
+  views.py              # DRF ViewSets + Django views
+  serializers.py        # DRF serializers
+  urls.py               # URL routing
+  services.py           # Business logic (optional)
+  tasks.py              # Celery tasks (optional)
+  signals.py            # Signal handlers (optional)
+  choices.py            # TextChoices enums (if many)
+  filters.py            # django-filter FilterSets (optional)
+  tests/
+    __init__.py
+    test_views.py
+    test_models.py
+    test_services.py
+    conftest.py          # App-specific fixtures
 ```
 
 ### 4.2 File Organization Rules
 
-```typescript
-// File order within a file:
+```python
+# File order within a module:
 
-// 1. Imports (grouped)
-import { injectable, inject } from 'tsyringe';           // External
-import { PrismaClient } from '@prisma/client';           // External
+# 1. Docstring
+"""Menu views for E-Menum."""
 
-import { BaseService } from '@/core/base/base.service'; // Internal (alias)
-import { AppException } from '@/core/exceptions';        // Internal
+# 2. Standard library imports
+import logging
+from typing import Any, Optional
 
-import { CreateMenuDto } from './dto/create-menu.dto';   // Local
-import { Menu } from './types/menu.types';               // Local
+# 3. Third-party imports
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 
-// 2. Constants
-const MAX_CATEGORIES = 50;
+# 4. Local app imports
+from apps.menu.models import Menu, Category
+from apps.menu.serializers import MenuListSerializer, MenuCreateSerializer
 
-// 3. Types/Interfaces (if not in separate file)
-interface MenuFilters {
-  isPublished?: boolean;
-}
+# 5. Shared/project imports
+from shared.views.base import BaseTenantViewSet
+from shared.utils.exceptions import AppException
 
-// 4. Class/Function definition
-@injectable()
-export class MenuService extends BaseService<Menu> {
-  // 4a. Properties
-  private readonly cacheKey = 'menu';
-  
-  // 4b. Constructor
-  constructor(
-    @inject('PrismaClient') private prisma: PrismaClient,
-  ) {
-    super();
-  }
-  
-  // 4c. Public methods
-  async findAll(orgId: string): Promise<Menu[]> {}
-  
-  async create(data: CreateMenuDto): Promise<Menu> {}
-  
-  // 4d. Private methods
-  private validateMenu(menu: Menu): void {}
-}
+# 6. Constants
+MAX_CATEGORIES = 50
 
-// 5. Exports (if not inline)
-export { MenuService };
+# 7. Module-level logger
+logger = logging.getLogger(__name__)
+
+# 8. Classes / Functions
+class MenuViewSet(BaseTenantViewSet):
+    ...
 ```
 
 ### 4.3 Import Conventions
 
-```typescript
-// ✅ GOOD: Use path aliases
-import { BaseService } from '@/core/base/base.service';
-import { MenuService } from '@/modules/menu/menu.service';
+```python
+# GOOD: Explicit imports
+from apps.menu.models import Menu, Category
+from shared.views.base import BaseTenantViewSet
 
-// ❌ BAD: Relative paths climbing up
-import { BaseService } from '../../../core/base/base.service';
+# GOOD: Grouped and ordered (isort compatible)
+# 1. stdlib
+# 2. third-party
+# 3. django
+# 4. drf
+# 5. local apps
+# 6. shared
 
-// ✅ GOOD: Grouped and ordered imports
-// 1. Node built-ins
-import { join } from 'path';
+# BAD: Wildcard imports
+from apps.menu.models import *  # Never do this!
 
-// 2. External packages
-import { injectable } from 'tsyringe';
-import { z } from 'zod';
+# BAD: Relative imports climbing up
+from ...shared.views import BaseTenantViewSet  # Use absolute
 
-// 3. Internal aliases
-import { BaseService } from '@/core/base';
-import { AppException } from '@/core/exceptions';
-
-// 4. Relative imports
-import { CreateMenuDto } from './dto';
-
-// ✅ GOOD: Named exports
-import { MenuService, MenuController } from '@/modules/menu';
-
-// ❌ AVOID: Default exports (except for classes)
-export default { /* ... */ };  // Hard to refactor
+# GOOD: Relative imports within same app only
+from .models import Menu
+from .serializers import MenuCreateSerializer
 ```
 
 ---
 
-## 5. ASYNC PATTERNS
+## 5. ASYNC & CELERY PATTERNS
 
-### 5.1 Async/Await Best Practices
+### 5.1 Celery Task Best Practices
 
-```typescript
-// ✅ GOOD: Always use async/await (not raw promises)
-async function getMenu(id: string): Promise<Menu> {
-  const menu = await prisma.menu.findUnique({ where: { id } });
-  return menu;
-}
+```python
+# GOOD: Celery task with proper error handling
+from celery import shared_task
 
-// ❌ BAD: Mixing promise chains
-function getMenu(id: string): Promise<Menu> {
-  return prisma.menu.findUnique({ where: { id } })
-    .then(menu => menu)
-    .catch(err => { throw err; });
-}
+@shared_task(bind=True, max_retries=3, default_retry_delay=60)
+def send_order_notification(self, order_id: str) -> None:
+    """Send notification for new order."""
+    try:
+        order = Order.objects.get(id=order_id)
+        # ... send notification
+    except Order.DoesNotExist:
+        logger.error("Order %s not found", order_id)
+        return
+    except Exception as exc:
+        self.retry(exc=exc)
 
-// ✅ GOOD: Parallel execution when independent
-async function getDashboardData(orgId: string) {
-  const [menus, orders, stats] = await Promise.all([
-    menuService.findAll(orgId),
-    orderService.findRecent(orgId),
-    analyticsService.getStats(orgId),
-  ]);
-  
-  return { menus, orders, stats };
-}
+# GOOD: Pass IDs, not objects (serialization safety)
+send_order_notification.delay(str(order.id))
 
-// ❌ BAD: Sequential when could be parallel
-async function getDashboardData(orgId: string) {
-  const menus = await menuService.findAll(orgId);     // Waits...
-  const orders = await orderService.findRecent(orgId); // Then waits...
-  const stats = await analyticsService.getStats(orgId); // Then waits...
-  return { menus, orders, stats };
-}
-
-// ✅ GOOD: Error handling with Promise.allSettled
-async function batchProcess(items: Item[]) {
-  const results = await Promise.allSettled(
-    items.map(item => processItem(item))
-  );
-  
-  const succeeded = results.filter(r => r.status === 'fulfilled');
-  const failed = results.filter(r => r.status === 'rejected');
-  
-  return { succeeded, failed };
-}
+# BAD: Passing ORM objects to tasks
+send_order_notification.delay(order)  # Not serializable!
 ```
 
-### 5.2 Error Handling in Async
+### 5.2 QuerySet Performance
 
-```typescript
-// ✅ GOOD: Centralized error handling via middleware
-async function createMenu(data: CreateMenuDto): Promise<Menu> {
-  // Just throw, middleware catches
-  const existing = await prisma.menu.findFirst({
-    where: { organizationId: data.orgId, slug: data.slug }
-  });
-  
-  if (existing) {
-    throw new AppException('MENU_ALREADY_EXISTS', 409);
-  }
-  
-  return prisma.menu.create({ data });
-}
+```python
+# GOOD: Parallel-like with select_related / prefetch_related
+def get_dashboard_data(org):
+    menus = Menu.objects.filter(
+        organization=org
+    ).select_related("theme").prefetch_related("categories")
 
-// ✅ GOOD: Specific error handling when needed
-async function syncWithExternalApi(orgId: string): Promise<void> {
-  try {
-    await externalApi.sync(orgId);
-  } catch (error) {
-    if (error instanceof ExternalApiError) {
-      // Log but don't fail the main operation
-      logger.warn('External sync failed', { orgId, error });
-      return;
-    }
-    throw error; // Re-throw unexpected errors
-  }
-}
+    orders = Order.objects.filter(
+        organization=org
+    ).select_related("customer")[:10]
 
-// ❌ BAD: Swallowing errors
-async function riskyOperation() {
-  try {
-    await doSomething();
-  } catch (error) {
-    // Silent failure! BAD!
-  }
-}
+    return {"menus": menus, "orders": orders}
 
-// ❌ BAD: Generic catch without discrimination
-async function process() {
-  try {
-    await doSomething();
-  } catch (error) {
-    throw new Error('Something went wrong'); // Lost context!
-  }
-}
+# BAD: N+1 queries
+menus = Menu.objects.filter(organization=org)
+for menu in menus:
+    print(menu.theme.name)  # Separate query per menu!
+
+# GOOD: Use .only() / .defer() for large models
+products = Product.objects.filter(
+    organization=org
+).only("id", "name", "base_price", "is_active")
 ```
 
 ---
@@ -530,297 +380,201 @@ async function process() {
 
 ### 6.1 AppException Pattern
 
-```typescript
-// core/exceptions/app.exception.ts
+```python
+# shared/utils/exceptions.py
 
-export class AppException extends Error {
-  constructor(
-    public readonly code: string,
-    public readonly statusCode: number = 400,
-    public readonly details?: Record<string, unknown>,
-  ) {
-    super(code);
-    this.name = 'AppException';
-  }
-  
-  static notFound(resource: string, id?: string): AppException {
-    return new AppException(
-      `${resource.toUpperCase()}_NOT_FOUND`,
-      404,
-      { resource, id }
-    );
-  }
-  
-  static forbidden(action: string): AppException {
-    return new AppException('FORBIDDEN', 403, { action });
-  }
-  
-  static validation(errors: ValidationError[]): AppException {
-    return new AppException('VALIDATION_ERROR', 400, { errors });
-  }
-}
+class AppException(APIException):
+    """Custom exception base for E-Menum API errors."""
 
-// Usage:
-throw new AppException('MENU_NOT_FOUND', 404);
-throw AppException.notFound('Menu', menuId);
-throw AppException.forbidden('menu.delete');
+    def __init__(
+        self,
+        code: str,
+        message: str = "",
+        status_code: int = 400,
+        details: dict | None = None,
+    ):
+        self.code = code
+        self.detail = {"code": code, "message": message, "details": details}
+        self.status_code = status_code
+        super().__init__(detail=self.detail)
+
+
+class ResourceNotFoundException(AppException):
+    """Raised when a resource is not found."""
+
+    def __init__(self, resource: str, resource_id: str = ""):
+        super().__init__(
+            code=f"{resource.upper()}_NOT_FOUND",
+            message=f"{resource} with given ID not found",
+            status_code=404,
+            details={"resource": resource, "id": resource_id},
+        )
+
+# Usage:
+raise AppException("MENU_ALREADY_EXISTS", "A menu with this slug exists", 409)
+raise ResourceNotFoundException("Menu", menu_id)
 ```
 
 ### 6.2 Error Codes Catalog
 
-```typescript
-// core/exceptions/error-codes.ts
+```python
+class ErrorCodes:
+    # Authentication
+    AUTH_INVALID_CREDENTIALS = "AUTH_INVALID_CREDENTIALS"
+    AUTH_TOKEN_EXPIRED = "AUTH_TOKEN_EXPIRED"
 
-export const ErrorCodes = {
-  // Authentication (1xxx)
-  UNAUTHORIZED: { code: 'UNAUTHORIZED', status: 401 },
-  TOKEN_EXPIRED: { code: 'TOKEN_EXPIRED', status: 401 },
-  INVALID_CREDENTIALS: { code: 'INVALID_CREDENTIALS', status: 401 },
-  
-  // Authorization (2xxx)
-  FORBIDDEN: { code: 'FORBIDDEN', status: 403 },
-  INSUFFICIENT_PLAN: { code: 'INSUFFICIENT_PLAN', status: 403 },
-  FEATURE_DISABLED: { code: 'FEATURE_DISABLED', status: 403 },
-  
-  // Validation (3xxx)
-  VALIDATION_ERROR: { code: 'VALIDATION_ERROR', status: 400 },
-  INVALID_INPUT: { code: 'INVALID_INPUT', status: 400 },
-  
-  // Resources (4xxx)
-  NOT_FOUND: { code: 'NOT_FOUND', status: 404 },
-  ALREADY_EXISTS: { code: 'ALREADY_EXISTS', status: 409 },
-  CONFLICT: { code: 'CONFLICT', status: 409 },
-  
-  // Rate Limiting (5xxx)
-  RATE_LIMITED: { code: 'RATE_LIMITED', status: 429 },
-  QUOTA_EXCEEDED: { code: 'QUOTA_EXCEEDED', status: 429 },
-  
-  // Server (9xxx)
-  INTERNAL_ERROR: { code: 'INTERNAL_ERROR', status: 500 },
-  SERVICE_UNAVAILABLE: { code: 'SERVICE_UNAVAILABLE', status: 503 },
-} as const;
+    # Authorization
+    FORBIDDEN_NO_PERMISSION = "FORBIDDEN_NO_PERMISSION"
+    FORBIDDEN_INSUFFICIENT_PLAN = "FORBIDDEN_INSUFFICIENT_PLAN"
+
+    # Validation
+    VALIDATION_ERROR = "VALIDATION_ERROR"
+
+    # Resources
+    # Pattern: {RESOURCE}_NOT_FOUND
+    MENU_NOT_FOUND = "MENU_NOT_FOUND"
+    USER_NOT_FOUND = "USER_NOT_FOUND"
+
+    # Business Logic
+    BUSINESS_PLAN_LIMIT_EXCEEDED = "BUSINESS_PLAN_LIMIT_EXCEEDED"
+
+    # Server
+    SERVER_INTERNAL_ERROR = "SERVER_INTERNAL_ERROR"
 ```
 
-### 6.3 Validation with Zod
+### 6.3 Validation with DRF Serializers
 
-```typescript
-// dto/create-menu.dto.ts
-import { z } from 'zod';
+```python
+# serializers.py
+from rest_framework import serializers
+from django.utils.translation import gettext_lazy as _
 
-export const CreateMenuSchema = z.object({
-  name: z.string()
-    .min(1, 'Name is required')
-    .max(100, 'Name too long'),
-  
-  slug: z.string()
-    .regex(/^[a-z0-9-]+$/, 'Invalid slug format')
-    .optional(),
-  
-  description: z.string()
-    .max(500)
-    .optional(),
-  
-  themeId: z.string()
-    .cuid()
-    .optional(),
-  
-  settings: z.object({
-    showPrices: z.boolean().default(true),
-    currency: z.enum(['TRY', 'USD', 'EUR']).default('TRY'),
-  }).optional(),
-});
+class MenuCreateSerializer(TenantModelSerializer):
+    name = serializers.CharField(
+        min_length=1,
+        max_length=100,
+        error_messages={"blank": _("Name is required")},
+    )
+    slug = serializers.SlugField(required=False, max_length=120)
+    description = serializers.CharField(max_length=500, required=False)
+    theme = serializers.PrimaryKeyRelatedField(
+        queryset=Theme.objects.all(), required=False
+    )
 
-export type CreateMenuDto = z.infer<typeof CreateMenuSchema>;
+    class Meta:
+        model = Menu
+        fields = ["name", "slug", "description", "theme"]
 
-// Usage in controller:
-@Post('/')
-async create(@Body() body: unknown) {
-  const data = CreateMenuSchema.parse(body); // Throws ZodError
-  return this.menuService.create(data);
-}
+    def validate_slug(self, value):
+        org = self.context["request"].organization
+        if Menu.objects.filter(organization=org, slug=value).exists():
+            raise serializers.ValidationError(_("A menu with this slug already exists."))
+        return value
 ```
 
 ---
 
 ## 7. CODE PATTERNS
 
-### 7.1 Service Pattern
+### 7.1 ViewSet Pattern (API)
 
-```typescript
-// ✅ GOOD: BaseService extension
-@injectable()
-export class MenuService extends BaseService<Menu> {
-  constructor(
-    @inject('PrismaClient') private prisma: PrismaClient,
-    @inject(EventService) private events: EventService,
-  ) {
-    super();
-  }
-  
-  // Standard CRUD
-  async findAll(orgId: string, filters?: MenuFilters): Promise<Menu[]> {
-    return this.prisma.menu.findMany({
-      where: {
-        organizationId: orgId,
-        deletedAt: null,
-        ...this.buildFilters(filters),
-      },
-      orderBy: { sortOrder: 'asc' },
-    });
-  }
-  
-  async findById(id: string, orgId: string): Promise<Menu> {
-    const menu = await this.prisma.menu.findFirst({
-      where: { id, organizationId: orgId, deletedAt: null },
-    });
-    
-    if (!menu) {
-      throw AppException.notFound('Menu', id);
+```python
+# GOOD: BaseTenantViewSet handles org filtering + soft delete + response format
+class MenuViewSet(BaseTenantViewSet):
+    """
+    CRUD ViewSet for menus.
+
+    Inherits from BaseTenantViewSet which provides:
+    - Automatic organization filtering via get_queryset()
+    - Soft delete via perform_destroy()
+    - Standard JSON response format
+    """
+
+    queryset = Menu.objects.all()
+    permission_resource = "menu"
+
+    serializer_classes = {
+        "list": MenuListSerializer,
+        "retrieve": MenuDetailSerializer,
+        "create": MenuCreateSerializer,
+        "update": MenuUpdateSerializer,
     }
-    
-    return menu;
-  }
-  
-  async create(orgId: string, data: CreateMenuDto): Promise<Menu> {
-    const menu = await this.prisma.menu.create({
-      data: {
-        ...data,
-        organizationId: orgId,
-        slug: data.slug || this.generateSlug(data.name),
-      },
-    });
-    
-    await this.events.emit('menu.created', { menuId: menu.id, orgId });
-    
-    return menu;
-  }
-  
-  // Custom methods
-  async publish(id: string, orgId: string): Promise<Menu> {
-    const menu = await this.findById(id, orgId);
-    
-    const updated = await this.prisma.menu.update({
-      where: { id },
-      data: { isPublished: true, publishedAt: new Date() },
-    });
-    
-    await this.events.emit('menu.published', { menuId: id, orgId });
-    
-    return updated;
-  }
-  
-  // Private helpers
-  private buildFilters(filters?: MenuFilters) {
-    if (!filters) return {};
-    
-    return {
-      ...(filters.isPublished !== undefined && { isPublished: filters.isPublished }),
-    };
-  }
-  
-  private generateSlug(name: string): string {
-    return name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '');
-  }
-}
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.select_related("theme").order_by("sort_order")
+
+    @action(detail=True, methods=["post"])
+    def publish(self, request, pk=None):
+        """Publish a menu."""
+        menu = self.get_object()
+        menu.is_published = True
+        menu.published_at = timezone.now()
+        menu.save(update_fields=["is_published", "published_at"])
+        serializer = MenuDetailSerializer(menu)
+        return self.success_response(serializer.data)
 ```
 
-### 7.2 Controller Pattern
+### 7.2 Model Pattern
 
-```typescript
-// ✅ GOOD: BaseController extension with decorators
-@JsonController('/menus')
-@injectable()
-export class MenuController extends BaseController {
-  constructor(
-    @inject(MenuService) private menuService: MenuService,
-  ) {
-    super();
-  }
-  
-  @Get('/')
-  @Authorized(['menu.view'])
-  async list(
-    @CurrentOrg() org: Organization,
-    @QueryParams() query: ListMenusQuery,
-  ): Promise<ApiResponse<Menu[]>> {
-    const menus = await this.menuService.findAll(org.id, query);
-    return this.success(menus);
-  }
-  
-  @Get('/:id')
-  @Authorized(['menu.view'])
-  async get(
-    @Param('id') id: string,
-    @CurrentOrg() org: Organization,
-  ): Promise<ApiResponse<Menu>> {
-    const menu = await this.menuService.findById(id, org.id);
-    return this.success(menu);
-  }
-  
-  @Post('/')
-  @Authorized(['menu.create'])
-  async create(
-    @Body() body: unknown,
-    @CurrentOrg() org: Organization,
-  ): Promise<ApiResponse<Menu>> {
-    const data = CreateMenuSchema.parse(body);
-    const menu = await this.menuService.create(org.id, data);
-    return this.created(menu);
-  }
-  
-  @Post('/:id/publish')
-  @Authorized(['menu.publish'])
-  async publish(
-    @Param('id') id: string,
-    @CurrentOrg() org: Organization,
-  ): Promise<ApiResponse<Menu>> {
-    const menu = await this.menuService.publish(id, org.id);
-    return this.success(menu);
-  }
-}
+```python
+class Menu(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    Restaurant menu container.
+
+    Critical Rules:
+    - EVERY query MUST filter by organization (multi-tenant)
+    - Use soft_delete() - never call delete() directly
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    organization = models.ForeignKey(
+        "core.Organization",
+        on_delete=models.CASCADE,
+        related_name="menus",
+        verbose_name=_("Organization"),
+    )
+    name = models.CharField(max_length=100, verbose_name=_("Name"))
+    slug = models.SlugField(max_length=120, verbose_name=_("Slug"))
+    description = models.TextField(blank=True, default="", verbose_name=_("Description"))
+    is_published = models.BooleanField(default=False, verbose_name=_("Published"))
+    sort_order = models.PositiveIntegerField(default=0, verbose_name=_("Sort order"))
+
+    objects = SoftDeleteManager()
+    all_objects = models.Manager()
+
+    class Meta:
+        ordering = ["sort_order", "name"]
+        unique_together = [("organization", "slug")]
+        verbose_name = _("Menu")
+        verbose_name_plural = _("Menus")
+
+    def __str__(self) -> str:
+        return self.name
 ```
 
-### 7.3 Repository Pattern (Optional)
+### 7.3 Django Template View Pattern (Restaurant Portal)
 
-```typescript
-// Use when data access logic is complex
-@injectable()
-export class MenuRepository {
-  constructor(
-    @inject('PrismaClient') private prisma: PrismaClient,
-  ) {}
-  
-  async findWithCategories(id: string, orgId: string): Promise<MenuWithCategories | null> {
-    return this.prisma.menu.findFirst({
-      where: { id, organizationId: orgId, deletedAt: null },
-      include: {
-        categories: {
-          where: { deletedAt: null },
-          orderBy: { sortOrder: 'asc' },
-          include: {
-            products: {
-              where: { deletedAt: null, isActive: true },
-              orderBy: { sortOrder: 'asc' },
-            },
-          },
-        },
-      },
-    });
-  }
-  
-  async findPublished(orgId: string): Promise<Menu[]> {
-    return this.prisma.menu.findMany({
-      where: {
-        organizationId: orgId,
-        isPublished: true,
-        deletedAt: null,
-      },
-    });
-  }
-}
+```python
+# For SSR views (restaurant panel, admin panel)
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404
+
+@login_required
+def menu_list(request):
+    """List menus for the current organization."""
+    menus = Menu.objects.filter(
+        organization=request.organization
+    ).order_by("sort_order")
+    return render(request, "modules/menu/list.html", {"menus": menus})
+
+# For superadmin views
+from shared.decorators import superadmin_required
+
+@superadmin_required
+def admin_dashboard(request):
+    """Platform admin dashboard."""
+    ...
 ```
 
 ---
@@ -833,18 +587,18 @@ export class MenuRepository {
 Branch Model: GitHub Flow (simplified)
 
 main (production)
-  │
-  └── feature/xxx ─────────────► PR → main
-  └── fix/xxx ─────────────────► PR → main
-  └── hotfix/xxx ──────────────► PR → main (urgent)
+  |
+  +-- feature/xxx -----------> PR -> main
+  +-- fix/xxx ---------------> PR -> main
+  +-- hotfix/xxx ------------> PR -> main (urgent)
 
 Branch Naming:
-├── feature/menu-variants      # New feature
-├── fix/order-calculation      # Bug fix
-├── hotfix/auth-bypass         # Critical fix
-├── refactor/service-layer     # Code improvement
-├── docs/api-contracts         # Documentation
-└── chore/update-deps          # Maintenance
+  feature/menu-variants      # New feature
+  fix/order-calculation      # Bug fix
+  hotfix/auth-bypass         # Critical fix
+  refactor/service-layer     # Code improvement
+  docs/api-contracts         # Documentation
+  chore/update-deps          # Maintenance
 ```
 
 ### 8.2 Commit Convention
@@ -853,27 +607,21 @@ Branch Naming:
 Format: <type>(<scope>): <subject>
 
 Types:
-├── feat     # New feature
-├── fix      # Bug fix
-├── docs     # Documentation
-├── style    # Formatting (no code change)
-├── refactor # Code restructure
-├── test     # Adding tests
-├── chore    # Maintenance
-└── perf     # Performance
+  feat     # New feature
+  fix      # Bug fix
+  docs     # Documentation
+  style    # Formatting (no code change)
+  refactor # Code restructure
+  test     # Adding tests
+  chore    # Maintenance
+  perf     # Performance
 
 Examples:
-feat(menu): add category reordering
-fix(orders): correct tax calculation
-docs(api): update authentication section
-refactor(auth): extract token service
-test(menu): add service unit tests
-chore(deps): update prisma to 6.2
-
-Breaking Changes:
-feat(api)!: change response format
-  
-  BREAKING CHANGE: Response now wraps data in { success, data }
+  feat(menu): add category reordering
+  fix(orders): correct tax calculation
+  refactor(auth): extract token service
+  test(menu): add viewset unit tests
+  chore(deps): update Django to 5.0.4
 ```
 
 ### 8.3 Pull Request Template
@@ -887,167 +635,149 @@ Brief description of changes
 - [ ] Bug fix
 - [ ] Refactor
 - [ ] Documentation
-- [ ] Other: ___
 
 ## Checklist
 - [ ] Code follows style guide
 - [ ] Self-reviewed
 - [ ] Tests added/updated
-- [ ] Documentation updated
-- [ ] No console.log or debug code
+- [ ] No print() or debug code
+- [ ] Migrations included (if model changes)
 - [ ] PR title follows commit convention
-
-## Testing
-How was this tested?
-
-## Screenshots (if UI change)
-Before | After
 ```
 
-### 8.4 Code Review Guidelines
+### 8.4 Code Review Checklist
 
 ```
-Reviewer Checklist:
-
 Correctness:
-├── Does it solve the problem?
-├── Are edge cases handled?
-└── Are there potential bugs?
+  - Does it solve the problem?
+  - Are edge cases handled?
 
 Security:
-├── Tenant isolation maintained?
-├── Input validated?
-├── No sensitive data exposed?
+  - Tenant isolation maintained? (organization filtering)
+  - Input validated via serializers?
+  - No sensitive data exposed?
 
 Performance:
-├── N+1 queries avoided?
-├── Unnecessary operations?
-└── Caching considered?
+  - N+1 queries avoided? (select_related / prefetch_related)
+  - Unnecessary DB hits?
+  - Pagination used for lists?
 
 Maintainability:
-├── Clear naming?
-├── Appropriate abstractions?
-├── Tests included?
-
-Style:
-├── Follows conventions?
-├── Consistent with codebase?
-└── Well documented?
+  - Clear naming?
+  - Docstrings present?
+  - Tests included?
 ```
 
 ---
 
 ## 9. DOCUMENTATION
 
-### 9.1 JSDoc Standards
+### 9.1 Docstring Standards
 
-```typescript
-/**
- * Creates a new menu for the organization.
- * 
- * @param orgId - Organization ID
- * @param data - Menu creation data
- * @returns The created menu
- * @throws {AppException} MENU_ALREADY_EXISTS if slug exists
- * @throws {AppException} CATEGORY_LIMIT_EXCEEDED if plan limit reached
- * 
- * @example
- * ```typescript
- * const menu = await menuService.create('org_123', {
- *   name: 'Main Menu',
- *   description: 'Our main offerings',
- * });
- * ```
- */
-async create(orgId: string, data: CreateMenuDto): Promise<Menu> {
-  // ...
-}
+```python
+def create_menu(org_id: str, data: dict) -> Menu:
+    """
+    Create a new menu for the organization.
 
-/**
- * Menu service handles all menu-related operations.
- * 
- * @remarks
- * This service enforces tenant isolation and plan-based limits.
- * All methods require a valid organization context.
- */
-@injectable()
-export class MenuService {
-  // ...
-}
+    Args:
+        org_id: Organization UUID.
+        data: Menu creation data (name, slug, description).
+
+    Returns:
+        The created Menu instance.
+
+    Raises:
+        AppException: MENU_ALREADY_EXISTS if slug is taken.
+        AppException: BUSINESS_PLAN_LIMIT_EXCEEDED if plan limit reached.
+
+    Example:
+        menu = create_menu("org_123", {
+            "name": "Main Menu",
+            "description": "Our main offerings",
+        })
+    """
+    ...
+
+
+class MenuViewSet(BaseTenantViewSet):
+    """
+    CRUD ViewSet for restaurant menus.
+
+    Handles menu creation, listing, updating, and soft deletion.
+    Enforces tenant isolation and plan-based limits.
+    """
+    ...
 ```
 
 ### 9.2 Inline Comments
 
-```typescript
-// ✅ GOOD: Explain WHY, not WHAT
-// Using soft delete to maintain referential integrity with orders
-await prisma.menu.update({
-  where: { id },
-  data: { deletedAt: new Date() },
-});
+```python
+# GOOD: Explain WHY, not WHAT
+# Using soft delete to maintain referential integrity with orders
+instance.soft_delete()
 
-// ✅ GOOD: Explain complex business logic
-// Price includes 18% VAT for Turkey, but displayed separately
-const vatRate = 0.18;
-const basePrice = totalPrice / (1 + vatRate);
-const vatAmount = totalPrice - basePrice;
+# GOOD: Explain complex business logic
+# Price includes 18% VAT for Turkey, but displayed separately
+vat_rate = Decimal("0.18")
+base_price = total_price / (1 + vat_rate)
+vat_amount = total_price - base_price
 
-// ❌ BAD: Obvious comments
-// Get the menu
-const menu = await getMenu(id);
+# BAD: Obvious comments
+# Get the menu
+menu = get_menu(menu_id)
 
-// ❌ BAD: Outdated comments
-// TODO: Remove after Q1 2024  (It's 2026!)
+# BAD: Outdated comments
+# TODO: Remove after Q1 2024  (It's 2026!)
 ```
 
 ---
 
 ## 10. LINTING & FORMATTING
 
-### 10.1 ESLint Configuration
+### 10.1 Ruff Configuration (recommended)
 
-```javascript
-// .eslintrc.js (key rules)
-module.exports = {
-  parser: '@typescript-eslint/parser',
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-  ],
-  rules: {
-    // TypeScript
-    '@typescript-eslint/explicit-function-return-type': 'error',
-    '@typescript-eslint/no-explicit-any': 'error',
-    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-    
-    // General
-    'no-console': ['error', { allow: ['warn', 'error'] }],
-    'no-debugger': 'error',
-    'prefer-const': 'error',
-    'no-var': 'error',
-    
-    // Import
-    'import/order': ['error', {
-      groups: ['builtin', 'external', 'internal', 'parent', 'sibling'],
-      'newlines-between': 'always',
-    }],
-  },
-};
+```toml
+# pyproject.toml
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "DJ",   # flake8-django
+]
+ignore = ["E501"]  # Line length handled by formatter
+
+[tool.ruff.lint.isort]
+known-first-party = ["apps", "shared", "config"]
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "DJANGO", "DRF", "FIRSTPARTY", "LOCALFOLDER"]
+
+[tool.ruff.lint.isort.sections]
+"DJANGO" = ["django"]
+"DRF" = ["rest_framework"]
 ```
 
-### 10.2 Prettier Configuration
+### 10.2 pytest Configuration
 
-```json
-// .prettierrc
-{
-  "semi": true,
-  "singleQuote": true,
-  "trailingComma": "es5",
-  "tabWidth": 2,
-  "printWidth": 100,
-  "bracketSpacing": true,
-  "arrowParens": "avoid"
-}
+```toml
+# pyproject.toml
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short --strict-markers"
+markers = [
+    "slow: marks tests as slow",
+    "integration: marks integration tests",
+]
 ```
 
 ### 10.3 Editor Configuration
@@ -1058,11 +788,14 @@ root = true
 
 [*]
 indent_style = space
-indent_size = 2
+indent_size = 4
 end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
+
+[*.{html,css,js,json,yml,yaml}]
+indent_size = 2
 
 [*.md]
 trim_trailing_whitespace = false
@@ -1070,4 +803,4 @@ trim_trailing_whitespace = false
 
 ---
 
-*Bu döküman, E-Menum kod standartlarını tanımlar. Tüm kod bu kurallara uygun yazılmalıdır.*
+*Bu dokuman, E-Menum kod standartlarini tanimlar. Tum kod bu kurallara uygun yazilmalidir.*

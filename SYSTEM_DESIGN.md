@@ -1,8 +1,8 @@
 # E-Menum System Design
 
-> **Auto-Claude Architecture Document**  
-> Sistem mimarisi, veri akışı, entegrasyon noktaları ve deployment yapısı.  
-> Son Güncelleme: 2026-01-31
+> **Auto-Claude Architecture Document**
+> Sistem mimarisi, veri akisi, entegrasyon noktalari ve deployment yapisi.
+> Son Guncelleme: 2026-03-16
 
 ---
 
@@ -28,10 +28,10 @@
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                            E-MENUM PLATFORM                                 │
 │  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                         Web Application                               │ │
-│  │   • Public Menu Views (SSR)                                          │ │
-│  │   • Admin Dashboard (SSR + Alpine.js)                                │ │
-│  │   • REST API (JSON)                                                  │ │
+│  │                     Django Web Application                            │ │
+│  │   • Public Menu Views (Django Templates, SSR)                        │ │
+│  │   • Admin Dashboard (Django Templates + Alpine.js)                   │ │
+│  │   • REST API (Django REST Framework)                                 │ │
 │  └───────────────────────────────────────────────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────────────────────┘
                              │
@@ -59,96 +59,108 @@
 │                                   │                                        │
 │                                   ▼                                        │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                    EXPRESS.JS APPLICATION                           │   │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 │   │
-│  │  │   PUBLIC    │  │    ADMIN    │  │     API     │                 │   │
-│  │  │   ROUTES    │  │   ROUTES    │  │   ROUTES    │                 │   │
-│  │  │  /menu/:id  │  │  /admin/*   │  │  /api/v1/*  │                 │   │
-│  │  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘                 │   │
-│  │         │                │                │                         │   │
-│  │         └────────────────┼────────────────┘                         │   │
-│  │                          ▼                                          │   │
-│  │  ┌───────────────────────────────────────────────────────────────┐ │   │
-│  │  │                    MIDDLEWARE STACK                           │ │   │
-│  │  │  Auth → Tenant → Permission → RateLimit → Validation → Error │ │   │
-│  │  └───────────────────────────────────────────────────────────────┘ │   │
-│  │                          │                                          │   │
-│  │                          ▼                                          │   │
-│  │  ┌───────────────────────────────────────────────────────────────┐ │   │
-│  │  │                    MODULE LAYER                               │ │   │
-│  │  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ │ │   │
-│  │  │  │  Auth   │ │  Menu   │ │ Orders  │ │   AI    │ │Analytics│ │ │   │
-│  │  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘ └─────────┘ │ │   │
-│  │  └───────────────────────────────────────────────────────────────┘ │   │
-│  │                          │                                          │   │
-│  │                          ▼                                          │   │
-│  │  ┌───────────────────────────────────────────────────────────────┐ │   │
-│  │  │                    CORE SERVICES                              │ │   │
-│  │  │  EventBus • PermissionService • CacheService • QueueService  │ │   │
-│  │  └───────────────────────────────────────────────────────────────┘ │   │
+│  │                 GUNICORN (WSGI Application Server)                   │   │
+│  │  ┌─────────────────────────────────────────────────────────────┐   │   │
+│  │  │                   DJANGO APPLICATION                        │   │   │
+│  │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │   │   │
+│  │  │  │   PUBLIC    │  │ RESTAURANT  │  │   ADMIN     │        │   │   │
+│  │  │  │   VIEWS     │  │   PANEL     │  │   PANEL     │        │   │   │
+│  │  │  │  /menu/:slug│  │  /restaurant│  │  /admin/*   │        │   │   │
+│  │  │  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘        │   │   │
+│  │  │         │                │                │                │   │   │
+│  │  │  ┌──────┴────────────────┴────────────────┘                │   │   │
+│  │  │  │  ┌─────────────┐                                       │   │   │
+│  │  │  │  │  DRF API    │                                       │   │   │
+│  │  │  │  │  /api/v1/*  │                                       │   │   │
+│  │  │  │  └─────────────┘                                       │   │   │
+│  │  │  │                                                         │   │   │
+│  │  │  ▼                                                         │   │   │
+│  │  │  ┌───────────────────────────────────────────────────────┐ │   │   │
+│  │  │  │                  MIDDLEWARE STACK                      │ │   │   │
+│  │  │  │  Auth → Tenant → Permission → RateLimit → AuditLog   │ │   │   │
+│  │  │  └───────────────────────────────────────────────────────┘ │   │   │
+│  │  │                          │                                 │   │   │
+│  │  │                          ▼                                 │   │   │
+│  │  │  ┌───────────────────────────────────────────────────────┐ │   │   │
+│  │  │  │                   DJANGO APPS (17)                    │ │   │   │
+│  │  │  │  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐        │ │   │   │
+│  │  │  │  │  Auth  │ │  Menu  │ │ Orders │ │   AI   │        │ │   │   │
+│  │  │  │  ├────────┤ ├────────┤ ├────────┤ ├────────┤        │ │   │   │
+│  │  │  │  │  Users │ │Products│ │  QR    │ │Analytic│        │ │   │   │
+│  │  │  │  ├────────┤ ├────────┤ ├────────┤ ├────────┤        │ │   │   │
+│  │  │  │  │  Orgs  │ │ Tables │ │Billing │ │  ...   │        │ │   │   │
+│  │  │  │  └────────┘ └────────┘ └────────┘ └────────┘        │ │   │   │
+│  │  │  └───────────────────────────────────────────────────────┘ │   │   │
+│  │  │                          │                                 │   │   │
+│  │  │                          ▼                                 │   │   │
+│  │  │  ┌───────────────────────────────────────────────────────┐ │   │   │
+│  │  │  │                 SHARED SERVICES                       │ │   │   │
+│  │  │  │  Signals • Permissions • CacheService • CeleryTasks  │ │   │   │
+│  │  │  │  PlanEnforcement • AuditLog • SoftDeleteMixin        │ │   │   │
+│  │  │  └───────────────────────────────────────────────────────┘ │   │   │
+│  │  └─────────────────────────────────────────────────────────────┘   │   │
 │  └─────────────────────────────────────────────────────────────────────┘   │
 │                          │                                                 │
-│         ┌────────────────┼────────────────┐                               │
-│         ▼                ▼                ▼                               │
-│  ┌────────────┐   ┌────────────┐   ┌────────────┐                        │
-│  │ PostgreSQL │   │   Redis    │   │   File     │                        │
-│  │  (Primary) │   │  (Cache/   │   │  Storage   │                        │
-│  │            │   │   Queue)   │   │  (Local/S3)│                        │
-│  └────────────┘   └────────────┘   └────────────┘                        │
+│         ┌────────────────┼────────────────┬────────────────┐              │
+│         ▼                ▼                ▼                ▼              │
+│  ┌────────────┐   ┌────────────┐   ┌────────────┐   ┌────────────┐      │
+│  │ PostgreSQL │   │   Redis    │   │  Celery    │   │   File     │      │
+│  │  15        │   │  7         │   │  Workers   │   │  Storage   │      │
+│  │ (Primary)  │   │ (Cache +   │   │  (Async)   │   │ (Local/S3) │      │
+│  │            │   │  Broker)   │   │            │   │            │      │
+│  └────────────┘   └────────────┘   └────────────┘   └────────────┘      │
 │                                                                           │
 └───────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 1.3 Component Diagram (C4 Level 3) - Core Module
+### 1.3 Component Diagram (C4 Level 3) - Shared / Cross-Cutting Concerns
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                              CORE MODULE                                    │
+│                        SHARED MODULE (shared/)                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                           KERNEL                                    │   │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 │   │
-│  │  │  Bootstrap  │  │  Container  │  │   Module    │                 │   │
-│  │  │   (app     │  │    (DI      │  │   Loader    │                 │   │
-│  │  │   startup)  │  │  registry)  │  │ (discovery) │                 │   │
-│  │  └─────────────┘  └─────────────┘  └─────────────┘                 │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
 │  │                         BASE CLASSES                                │   │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 │   │
-│  │  │    Base     │  │    Base     │  │    Base     │                 │   │
-│  │  │ Controller  │  │   Service   │  │ Repository  │                 │   │
-│  │  │  (CRUD ops) │  │(biz logic)  │  │ (data ops)  │                 │   │
-│  │  └─────────────┘  └─────────────┘  └─────────────┘                 │   │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐              │   │
+│  │  │ BaseTenant   │  │ SoftDelete   │  │  BaseModel   │              │   │
+│  │  │  ViewSet     │  │   Mixin      │  │  (abstract)  │              │   │
+│  │  │ (org-scoped  │  │ (deletedAt,  │  │ (timestamps, │              │   │
+│  │  │  CRUD ops)   │  │  is_active)  │  │  uuid pk)    │              │   │
+│  │  └──────────────┘  └──────────────┘  └──────────────┘              │   │
 │  └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                          MIDDLEWARE                                 │   │
-│  │  ┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐      │   │
-│  │  │ Auth  │→│Tenant │→│ Perm  │→│ Rate  │→│ Valid │→│ Error │      │   │
-│  │  └───────┘ └───────┘ └───────┘ └───────┘ └───────┘ └───────┘      │   │
+│  │                          MIDDLEWARE                                  │   │
+│  │  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐           │   │
+│  │  │  Auth  │→│ Tenant │→│  Perm  │→│  Rate  │→│ Audit  │           │   │
+│  │  │(Django │ │Middleware│ │ Check │ │ Limit │ │  Log   │           │   │
+│  │  │ Auth)  │ │(sets   │ │(DRF   │ │(django-│ │(AuditLog│           │   │
+│  │  │        │ │req.org)│ │perms) │ │ratelim)│ │model)  │           │   │
+│  │  └────────┘ └────────┘ └────────┘ └────────┘ └────────┘           │   │
 │  └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
 │  │                         CORE SERVICES                               │   │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 │   │
-│  │  │    Auth     │  │ Permission  │  │    Event    │                 │   │
-│  │  │   Service   │  │   Service   │  │    Bus      │                 │   │
-│  │  └─────────────┘  └─────────────┘  └─────────────┘                 │   │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 │   │
-│  │  │   Cache     │  │   Queue     │  │  Installer  │                 │   │
-│  │  │   Service   │  │   Service   │  │   Service   │                 │   │
-│  │  └─────────────┘  └─────────────┘  └─────────────┘                 │   │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐              │   │
+│  │  │   Auth       │  │  Permission  │  │   Django     │              │   │
+│  │  │  (JWT +      │  │  Service     │  │   Signals    │              │   │
+│  │  │   Sessions)  │  │  (RBAC/ABAC) │  │  (Events)    │              │   │
+│  │  └──────────────┘  └──────────────┘  └──────────────┘              │   │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐              │   │
+│  │  │   Cache      │  │   Celery     │  │   Plan       │              │   │
+│  │  │   (Redis     │  │   Tasks      │  │  Enforcement │              │   │
+│  │  │   backend)   │  │  (async ops) │  │   Service    │              │   │
+│  │  └──────────────┘  └──────────────┘  └──────────────┘              │   │
 │  └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
 │  │                          EXCEPTIONS                                 │   │
-│  │  ┌─────────────┐  ┌─────────────┐                                  │   │
-│  │  │    App      │  │   Error     │                                  │   │
-│  │  │  Exception  │  │   Codes     │                                  │   │
-│  │  └─────────────┘  └─────────────┘                                  │   │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐              │   │
+│  │  │  AppException │  │   Error     │  │  DRF Custom  │              │   │
+│  │  │  (base)      │  │   Codes     │  │  Exception   │              │   │
+│  │  │              │  │   (enum)    │  │   Handler    │              │   │
+│  │  └──────────────┘  └──────────────┘  └──────────────┘              │   │
 │  └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -156,31 +168,35 @@
 
 ---
 
-## 2. MODULE BOUNDARIES
+## 2. DJANGO APP BOUNDARIES
 
-### 2.1 Module Dependency Graph
+### 2.1 App Dependency Graph
 
 ```
                     ┌─────────────┐
-                    │    CORE     │
-                    │   KERNEL    │
+                    │   SHARED    │
+                    │  (mixins,   │
+                    │ middleware)  │
                     └──────┬──────┘
                            │
          ┌─────────────────┼─────────────────┐
          │                 │                 │
          ▼                 ▼                 ▼
    ┌───────────┐    ┌───────────┐    ┌───────────┐
-   │   AUTH    │    │   CACHE   │    │   EVENTS  │
+   │   AUTH    │    │   CACHE   │    │  SIGNALS  │
+   │(apps.auth)│    │  (Redis)  │    │ (events)  │
    └─────┬─────┘    └───────────┘    └───────────┘
          │
          ▼
    ┌───────────┐
    │   USERS   │
+   │(apps.users)│
    └─────┬─────┘
          │
          ▼
    ┌───────────┐
    │   ORGS    │◄─────────────────────────────────────┐
+   │(apps.orgs)│                                      │
    └─────┬─────┘                                      │
          │                                            │
     ┌────┴────┬────────────┬────────────┐            │
@@ -213,36 +229,39 @@
         └──────────┘ └──────────┘ └──────────┘
 ```
 
-### 2.2 Module Interface Contract
+### 2.2 Django App Structure Convention
 
-Her modül şu interface'i implemente etmeli:
+Each Django app under `apps/` follows this layout:
 
 ```
-ModuleProvider Interface:
-├── name: string                    # Unique identifier
-├── displayName: string             # Human readable
-├── version: string                 # SemVer
-├── dependencies: string[]          # Required modules
-│
-├── register(container): void       # DI registration
-├── boot(app): Promise<void>        # Express setup
-├── ready(): Promise<void>          # Post-boot hook
-├── shutdown(): Promise<void>       # Graceful shutdown
-│
-├── getRoutes(): Router             # Express routes
-├── getPermissions(): Permission[]  # CASL permissions
-├── getEvents(): EventDefinition[]  # Event catalog
-└── getAdminMenu(): MenuItem[]      # Admin navigation
+apps/<app_name>/
+├── __init__.py
+├── apps.py                  # AppConfig with signals import
+├── models.py                # Django ORM models (SoftDeleteMixin)
+├── serializers.py           # DRF serializers (validation)
+├── views.py                 # DRF ViewSets (BaseTenantViewSet)
+├── urls.py                  # URL patterns (router.register)
+├── permissions.py           # DRF permission classes
+├── signals.py               # Django signal handlers
+├── tasks.py                 # Celery async tasks
+├── admin.py                 # Django admin registration
+├── filters.py               # django-filter FilterSets
+├── tests/
+│   ├── test_models.py
+│   ├── test_views.py
+│   └── test_tasks.py
+└── migrations/
+    └── 0001_initial.py
 ```
 
-### 2.3 Cross-Module Communication
+### 2.3 Cross-App Communication
 
-| Pattern | Kullanım | Örnek |
-|---------|----------|-------|
-| Direct Service Call | Senkron, aynı transaction | MenuService → ProductService |
-| Event Bus | Asenkron, loose coupling | OrderCreated → InventoryUpdate |
-| Shared Types | Type definitions | @/shared/types |
-| Queue Jobs | Background processing | ImageGeneration job |
+| Pattern | Usage | Example |
+|---------|-------|---------|
+| Direct Model Import | Synchronous, same transaction | `from apps.products.models import Product` |
+| Django Signals | Async-style, loose coupling | `order_created` signal -> inventory update |
+| Celery Tasks | Background processing | `send_order_confirmation.delay(order_id)` |
+| Shared Mixins | Cross-cutting behavior | `SoftDeleteMixin`, `BaseTenantViewSet` |
 
 ---
 
@@ -256,45 +275,47 @@ ModuleProvider Interface:
 ├──────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
 │  1. INGRESS                                                              │
-│  ┌─────────┐    ┌─────────┐    ┌─────────┐                              │
-│  │ Client  │───►│  Nginx  │───►│ Express │                              │
-│  │ Request │    │  Proxy  │    │  App    │                              │
-│  └─────────┘    └─────────┘    └─────────┘                              │
-│                                     │                                    │
-│  2. MIDDLEWARE CHAIN                ▼                                    │
-│  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │  Request Logger → CORS → Body Parser → Cookie Parser             │   │
-│  └──────────────────────────────────────────────────────────────────┘   │
-│                                     │                                    │
-│  3. AUTH & CONTEXT                  ▼                                    │
-│  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │  JWT Verify → User Load → Tenant Resolve → Ability Build         │   │
-│  └──────────────────────────────────────────────────────────────────┘   │
-│                                     │                                    │
-│  4. VALIDATION & SECURITY           ▼                                    │
-│  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │  Rate Limit → Permission Check → Input Validation (Zod)          │   │
-│  └──────────────────────────────────────────────────────────────────┘   │
-│                                     │                                    │
-│  5. CONTROLLER                      ▼                                    │
-│  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │  Route Match → Controller Method → DTO Transform                 │   │
-│  └──────────────────────────────────────────────────────────────────┘   │
-│                                     │                                    │
-│  6. SERVICE LAYER                   ▼                                    │
-│  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │  Business Logic → Repository Call → Event Emit                   │   │
-│  └──────────────────────────────────────────────────────────────────┘   │
-│                                     │                                    │
-│  7. DATA LAYER                      ▼                                    │
-│  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │  Prisma Query → PostgreSQL → Cache Update (if applicable)        │   │
-│  └──────────────────────────────────────────────────────────────────┘   │
-│                                     │                                    │
-│  8. RESPONSE                        ▼                                    │
-│  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │  Response Transform → Serialize → Compress → Send                │   │
-│  └──────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────┐    ┌─────────┐    ┌──────────┐    ┌─────────┐             │
+│  │ Client  │───►│  Nginx  │───►│ Gunicorn │───►│ Django  │             │
+│  │ Request │    │  Proxy  │    │  (WSGI)  │    │  App    │             │
+│  └─────────┘    └─────────┘    └──────────┘    └─────────┘             │
+│                                                      │                  │
+│  2. DJANGO MIDDLEWARE CHAIN                          ▼                  │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │  SecurityMiddleware → SessionMiddleware → CommonMiddleware       │  │
+│  │  → CsrfViewMiddleware → AuthenticationMiddleware                │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+│                                                      │                  │
+│  3. CUSTOM MIDDLEWARE (AUTH & CONTEXT)                ▼                  │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │  TenantMiddleware (sets request.organization from subdomain/     │  │
+│  │  header) → PlanEnforcementMiddleware → AuditLogMiddleware       │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+│                                                      │                  │
+│  4. DRF LAYER (API requests)                         ▼                  │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │  DRF Authentication → Permission Classes → Throttling           │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+│                                                      │                  │
+│  5. VIEW / VIEWSET                                   ▼                  │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │  URL Resolve → ViewSet Action → Serializer Validation           │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+│                                                      │                  │
+│  6. SERVICE / BUSINESS LOGIC                         ▼                  │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │  Business Logic → QuerySet (org-scoped) → Signal Emit           │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+│                                                      │                  │
+│  7. DATA LAYER                                       ▼                  │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │  Django ORM → PostgreSQL → Cache Update (Redis, if applicable)  │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+│                                                      │                  │
+│  8. RESPONSE                                         ▼                  │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │  Serializer Output → DRF Response / Template Render → Send      │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
 │                                                                          │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
@@ -309,88 +330,113 @@ ModuleProvider Interface:
 │  LOGIN FLOW:                                                            │
 │  ┌────────┐  email/pass   ┌────────┐  validate   ┌────────┐            │
 │  │ Client │──────────────►│  Auth  │────────────►│  User  │            │
-│  └────────┘               │Controller│            │Service │            │
-│       ▲                   └────────┘              └────┬───┘            │
-│       │                                                │                │
-│       │                   ┌────────┐  compare     ┌────▼───┐            │
-│       │                   │ bcrypt │◄─────────────│   DB   │            │
-│       │                   └────────┘              └────────┘            │
-│       │                        │                                        │
-│       │  access_token         │ match                                   │
-│       │  refresh_token        ▼                                         │
-│       │  (httpOnly cookie) ┌────────┐                                   │
-│       └────────────────────│  JWT   │                                   │
-│                            │ Sign   │                                   │
-│                            └────────┘                                   │
+│  └────────┘               │  View  │             │  Model │            │
+│       ▲                   └────────┘             └────┬───┘            │
+│       │                                               │                │
+│       │                   ┌─────────┐  check_pass ┌───▼────┐           │
+│       │                   │ Django  │◄────────────│   DB   │           │
+│       │                   │ hasher  │             └────────┘           │
+│       │                   └─────────┘                                  │
+│       │                        │                                       │
+│       │  access_token         │ match                                  │
+│       │  refresh_token        ▼                                        │
+│       │  (httpOnly cookie) ┌────────┐                                  │
+│       └────────────────────│  JWT   │                                  │
+│                            │ encode │                                  │
+│                            └────────┘                                  │
 │                                                                         │
-│  REQUEST AUTH:                                                          │
-│  ┌────────┐  Authorization  ┌────────┐  decode   ┌────────┐            │
-│  │ Client │─────────────────►│  Auth  │──────────►│  JWT   │            │
-│  │        │  Bearer {token} │Middleware│          │ Verify │            │
-│  └────────┘                 └────────┘           └────┬───┘            │
-│       ▲                          │                    │                 │
-│       │                          │ valid              │ payload         │
-│       │  req.user = user         ▼                    ▼                 │
-│       │  req.ability = ability ┌────────┐  load   ┌────────┐           │
-│       └────────────────────────│ Tenant │◄────────│  User  │           │
-│                                │Middleware│        │Service │           │
-│                                └────────┘         └────────┘           │
+│  REQUEST AUTH (API):                                                    │
+│  ┌────────┐  Authorization  ┌──────────────┐  decode  ┌────────┐       │
+│  │ Client │────────────────►│DRF JWT Auth  │────────►│  JWT   │       │
+│  │        │  Bearer {token} │(custom class)│         │ decode │       │
+│  └────────┘                 └──────────────┘         └────┬───┘       │
+│       ▲                          │                        │            │
+│       │                          │ valid                  │ payload    │
+│       │  request.user            ▼                        ▼            │
+│       │  request.organization ┌────────────┐  load   ┌────────┐       │
+│       └───────────────────────│  Tenant    │◄────────│  User  │       │
+│                               │ Middleware │         │  Model │       │
+│                               └────────────┘         └────────┘       │
+│                                                                         │
+│  REQUEST AUTH (Dashboard - Session):                                    │
+│  ┌────────┐  session cookie  ┌──────────────┐  lookup  ┌────────┐     │
+│  │ Client │─────────────────►│ Django       │─────────►│ Redis  │     │
+│  │        │                  │ Session Auth │          │(session│     │
+│  └────────┘                  └──────────────┘          │ store) │     │
+│       ▲                           │                     └────────┘     │
+│       │  request.user             │ valid                              │
+│       │  request.organization     ▼                                    │
+│       └───────────────────────┌────────────┐                          │
+│                               │  Tenant    │                          │
+│                               │ Middleware │                          │
+│                               └────────────┘                          │
 │                                                                         │
 │  TOKEN REFRESH:                                                         │
-│  ┌────────┐  refresh_token  ┌────────┐  validate  ┌────────┐           │
-│  │ Client │─────────────────►│  Auth  │───────────►│ Redis  │           │
-│  │        │  (cookie)       │Controller│           │(whitelist)│        │
-│  └────────┘                 └────────┘            └────┬───┘           │
-│       ▲                          │                     │                │
-│       │  new access_token        │ valid               │ exists         │
-│       │  new refresh_token       ▼                     ▼                │
-│       └──────────────────────┌────────┐  rotate    ┌────────┐          │
-│                              │  JWT   │◄───────────│ Revoke │          │
-│                              │ Sign   │  old token │  Old   │          │
-│                              └────────┘            └────────┘          │
+│  ┌────────┐  refresh_token  ┌────────┐  validate  ┌────────┐          │
+│  │ Client │────────────────►│  Auth  │───────────►│ Redis  │          │
+│  │        │  (cookie)       │  View  │            │(whitelist)│       │
+│  └────────┘                 └────────┘            └────┬───┘          │
+│       ▲                          │                     │               │
+│       │  new access_token        │ valid               │ exists        │
+│       │  new refresh_token       ▼                     ▼               │
+│       └──────────────────────┌────────┐  rotate    ┌────────┐         │
+│                              │  JWT   │◄───────────│ Revoke │         │
+│                              │ encode │  old token │  Old   │         │
+│                              └────────┘            └────────┘         │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 3.3 Event Flow
+### 3.3 Event & Async Task Flow
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                            EVENT FLOW                                   │
+│                      EVENT & ASYNC TASK FLOW                            │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│  DOMAIN EVENT EMISSION:                                                 │
-│  ┌────────────┐  action   ┌────────────┐  emit    ┌────────────┐       │
-│  │ Controller │──────────►│  Service   │─────────►│  EventBus  │       │
-│  └────────────┘           └────────────┘          └─────┬──────┘       │
-│                                                         │               │
-│  EVENT DISTRIBUTION:                                    ▼               │
-│                           ┌─────────────────────────────────────────┐   │
-│                           │              LISTENERS                  │   │
-│                           │  ┌─────────┐ ┌─────────┐ ┌─────────┐   │   │
-│                           │  │Analytics│ │Inventory│ │  Notify │   │   │
-│                           │  │ Update  │ │  Sync   │ │  Send   │   │   │
-│                           │  └─────────┘ └─────────┘ └─────────┘   │   │
-│                           └─────────────────────────────────────────┘   │
+│  DJANGO SIGNALS (Synchronous Domain Events):                            │
+│  ┌────────────┐  action   ┌────────────┐  signal  ┌────────────┐      │
+│  │   ViewSet  │──────────►│   Model    │─────────►│  Signal    │      │
+│  └────────────┘           │   .save()  │          │  Dispatch  │      │
+│                           └────────────┘          └─────┬──────┘      │
+│                                                         │              │
+│  SIGNAL RECEIVERS:                                      ▼              │
+│                           ┌─────────────────────────────────────────┐  │
+│                           │              RECEIVERS                  │  │
+│                           │  ┌──────────┐ ┌──────────┐ ┌─────────┐ │  │
+│                           │  │ AuditLog │ │  Cache   │ │ Celery  │ │  │
+│                           │  │  Create  │ │ Invalidate│ │Task Kick│ │  │
+│                           │  └──────────┘ └──────────┘ └─────────┘ │  │
+│                           └─────────────────────────────────────────┘  │
 │                                                                         │
-│  ASYNC JOB QUEUE:                                                       │
-│  ┌────────────┐  enqueue  ┌────────────┐  process  ┌────────────┐      │
-│  │  Service   │──────────►│   BullMQ   │──────────►│   Worker   │      │
-│  └────────────┘           │   (Redis)  │           └────────────┘      │
-│                           └────────────┘                                │
+│  CELERY ASYNC TASKS:                                                    │
+│  ┌────────────┐  .delay() ┌────────────┐  consume  ┌────────────┐     │
+│  │  View /    │──────────►│   Redis    │──────────►│  Celery    │     │
+│  │  Signal    │           │  (Broker)  │           │  Worker    │     │
+│  └────────────┘           └────────────┘           └────────────┘     │
 │                                                                         │
-│  EVENT CATALOG:                                                         │
+│  CELERY TASK CATALOG:                                                   │
 │  ┌──────────────────────────────────────────────────────────────────┐  │
-│  │  Domain          Event                    Payload                │  │
-│  │  ──────          ─────                    ───────                │  │
-│  │  menu            menu.created             { id, orgId, name }    │  │
-│  │  menu            menu.published           { id, orgId }          │  │
-│  │  order           order.created            { id, items, total }   │  │
-│  │  order           order.status_changed     { id, from, to }       │  │
-│  │  customer        customer.registered      { id, email }          │  │
-│  │  qr              qr.scanned               { id, timestamp, ip }  │  │
-│  │  ai              ai.content_generated     { type, credits }      │  │
-│  │  subscription    subscription.changed     { orgId, plan }        │  │
+│  │  App             Task                        Purpose              │  │
+│  │  ───             ────                        ───────              │  │
+│  │  auth            send_welcome_email          Onboarding           │  │
+│  │  auth            send_password_reset         Password recovery    │  │
+│  │  menu            generate_qr_code            QR code creation     │  │
+│  │  orders          send_order_confirmation     Email notification   │  │
+│  │  analytics       aggregate_daily_stats       Nightly aggregation  │  │
+│  │  ai              generate_ai_content         AI text generation   │  │
+│  │  billing         process_subscription_webhook Payment processing  │  │
+│  │  media           process_image_upload        Image resize/optimize│  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+│                                                                         │
+│  CELERY BEAT (Periodic Tasks):                                          │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │  Schedule          Task                                          │  │
+│  │  ────────          ────                                          │  │
+│  │  Every night 3AM   aggregate_daily_stats                         │  │
+│  │  Every hour        cleanup_expired_sessions                      │  │
+│  │  Every 5 min       process_webhook_retries                       │  │
+│  │  Weekly Sunday     generate_weekly_reports                       │  │
 │  └──────────────────────────────────────────────────────────────────┘  │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -398,9 +444,55 @@ ModuleProvider Interface:
 
 ---
 
-## 4. INTEGRATION POINTS
+## 4. MULTI-TENANCY ARCHITECTURE
 
-### 4.1 External API Integrations
+### 4.1 Tenant Resolution
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     TENANT RESOLUTION FLOW                              │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  TenantMiddleware (shared/middleware/tenant.py):                         │
+│                                                                         │
+│  ┌────────┐     ┌──────────────────────────────────────────────────┐   │
+│  │Request │────►│  1. Extract org slug from:                       │   │
+│  └────────┘     │     - Subdomain (cafe.emenum.com)                │   │
+│                 │     - X-Organization header (API)                 │   │
+│                 │     - Session data (dashboard)                    │   │
+│                 │                                                   │   │
+│                 │  2. Lookup Organization from DB (cached in Redis) │   │
+│                 │                                                   │   │
+│                 │  3. Set request.organization = org_instance       │   │
+│                 │                                                   │   │
+│                 │  4. Verify user belongs to organization           │   │
+│                 └──────────────────────────────────────────────────┘   │
+│                                                                         │
+│  BaseTenantViewSet (shared/mixins/tenant_viewset.py):                   │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │  class BaseTenantViewSet(ModelViewSet):                          │  │
+│  │      def get_queryset(self):                                     │  │
+│  │          return super().get_queryset().filter(                   │  │
+│  │              organization=self.request.organization              │  │
+│  │          )                                                       │  │
+│  │                                                                  │  │
+│  │      def perform_create(self, serializer):                       │  │
+│  │          serializer.save(                                        │  │
+│  │              organization=self.request.organization              │  │
+│  │          )                                                       │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+│                                                                         │
+│  CRITICAL: Every business query MUST be scoped to organization.         │
+│  BaseTenantViewSet enforces this automatically.                         │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 5. INTEGRATION POINTS
+
+### 5.1 External API Integrations
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -409,55 +501,48 @@ ModuleProvider Interface:
 │                                                                         │
 │  AI PROVIDERS (Failover Chain):                                         │
 │  ┌────────────────────────────────────────────────────────────────┐    │
-│  │                                                                │    │
 │  │  ┌─────────┐         ┌─────────┐         ┌─────────┐         │    │
 │  │  │ Claude  │─failover─►│  GPT-4  │─failover─►│  Gemini │         │    │
 │  │  │(Primary)│         │(Secondary)│         │(Tertiary)│         │    │
 │  │  └─────────┘         └─────────┘         └─────────┘         │    │
 │  │                                                                │    │
-│  │  Circuit Breaker: 5 failures → 30s open → half-open → retry   │    │
+│  │  Circuit Breaker: 5 failures -> 30s open -> half-open -> retry │    │
 │  │  Timeout: 30s (content), 60s (image)                          │    │
 │  │  Rate Limit: Per-provider, per-tenant                         │    │
+│  │  Implementation: Celery tasks with retry policy               │    │
 │  └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
 │  PAYMENT PROVIDERS:                                                     │
 │  ┌────────────────────────────────────────────────────────────────┐    │
-│  │                                                                │    │
 │  │  Turkey:  Iyzico (Primary)                                    │    │
 │  │  Global:  Stripe (Future)                                     │    │
 │  │                                                                │    │
 │  │  Webhook Events:                                              │    │
-│  │  • payment.success → Activate subscription                    │    │
-│  │  • payment.failed → Notify, retry                            │    │
-│  │  • subscription.cancelled → Downgrade to free                │    │
+│  │  • payment.success -> Activate subscription                   │    │
+│  │  • payment.failed -> Notify, retry                            │    │
+│  │  • subscription.cancelled -> Downgrade to free                │    │
 │  └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
 │  EMAIL PROVIDERS:                                                       │
 │  ┌────────────────────────────────────────────────────────────────┐    │
-│  │                                                                │    │
-│  │  Transactional: SendGrid / AWS SES                            │    │
+│  │  Transactional: SendGrid / AWS SES (via django-anymail)       │    │
 │  │  Marketing:     Mautic (self-hosted)                          │    │
 │  │                                                                │    │
-│  │  Templates:                                                   │    │
-│  │  • Welcome email                                              │    │
-│  │  • Password reset                                             │    │
-│  │  • Invoice/receipt                                            │    │
-│  │  • Feature announcements                                      │    │
+│  │  All emails dispatched via Celery tasks (non-blocking)        │    │
 │  └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
 │  MEDIA SERVICES:                                                        │
 │  ┌────────────────────────────────────────────────────────────────┐    │
-│  │                                                                │    │
 │  │  Stock Photos:  Unsplash API (free tier)                      │    │
 │  │  Image Gen:     DALL-E 3 / Midjourney API                     │    │
-│  │  Storage:       Local → S3 (future)                           │    │
+│  │  Storage:       Local (MEDIA_ROOT) -> S3 (future)             │    │
 │  │  CDN:           Cloudflare (future)                           │    │
 │  └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 4.2 Webhook Architecture
+### 5.2 Webhook Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -466,14 +551,15 @@ ModuleProvider Interface:
 │                                                                         │
 │  INBOUND WEBHOOKS (from external services):                             │
 │  ┌────────────────────────────────────────────────────────────────┐    │
-│  │  POST /webhooks/iyzico                                        │    │
-│  │  POST /webhooks/stripe                                        │    │
+│  │  POST /webhooks/iyzico/                                       │    │
+│  │  POST /webhooks/stripe/                                       │    │
 │  │                                                                │    │
 │  │  Security:                                                    │    │
 │  │  • Signature verification (HMAC-SHA256)                       │    │
-│  │  • IP whitelist (optional)                                    │    │
+│  │  • CSRF exempt (decorator)                                    │    │
 │  │  • Idempotency key check                                      │    │
 │  │  • Replay attack prevention (timestamp check)                 │    │
+│  │  • Processing delegated to Celery task                        │    │
 │  └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
 │  OUTBOUND WEBHOOKS (to customer systems):                               │
@@ -485,10 +571,10 @@ ModuleProvider Interface:
 │  │  • qr.scanned                                                 │    │
 │  │                                                                │    │
 │  │  Delivery:                                                    │    │
-│  │  • Async via BullMQ                                           │    │
-│  │  • Retry: 3 attempts (1min, 5min, 30min)                     │    │
+│  │  • Async via Celery task                                      │    │
+│  │  • Retry: 3 attempts (1min, 5min, 30min) using Celery retry   │    │
 │  │  • Signature: HMAC-SHA256 with org secret                    │    │
-│  │  • Timeout: 10s                                               │    │
+│  │  • Timeout: 10s (requests library)                            │    │
 │  └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -496,9 +582,9 @@ ModuleProvider Interface:
 
 ---
 
-## 5. SCALABILITY CONSIDERATIONS
+## 6. SCALABILITY CONSIDERATIONS
 
-### 5.1 Horizontal Scaling Strategy
+### 6.1 Horizontal Scaling Strategy
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -507,18 +593,22 @@ ModuleProvider Interface:
 │                                                                         │
 │  PHASE 1 (Current - 500 orgs):                                         │
 │  ┌────────────────────────────────────────────────────────────────┐    │
-│  │  Single VPS (CX21: 2vCPU, 4GB RAM)                            │    │
+│  │  Single VPS (Hetzner CX21: 2vCPU, 4GB RAM)                   │    │
 │  │  ├── Nginx                                                    │    │
-│  │  ├── Node.js (PM2 cluster: 2 workers)                        │    │
-│  │  ├── PostgreSQL                                               │    │
-│  │  └── Redis                                                    │    │
+│  │  ├── Gunicorn (4 workers, sync)                               │    │
+│  │  ├── Celery Worker (1 process, 4 threads)                     │    │
+│  │  ├── Celery Beat (scheduler)                                  │    │
+│  │  ├── PostgreSQL 15                                            │    │
+│  │  └── Redis 7                                                  │    │
 │  └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
 │  PHASE 2 (5,000 orgs):                                                 │
 │  ┌────────────────────────────────────────────────────────────────┐    │
 │  │  Load Balancer                                                │    │
-│  │  ├── App Server 1 (PM2 cluster: 4 workers)                   │    │
-│  │  ├── App Server 2 (PM2 cluster: 4 workers)                   │    │
+│  │  ├── App Server 1 (Gunicorn: 8 workers)                      │    │
+│  │  ├── App Server 2 (Gunicorn: 8 workers)                      │    │
+│  │  │                                                            │    │
+│  │  ├── Celery Worker Pool (2 servers, autoscale)                │    │
 │  │  │                                                            │    │
 │  │  ├── PostgreSQL Primary                                       │    │
 │  │  │   └── Read Replica                                        │    │
@@ -530,8 +620,8 @@ ModuleProvider Interface:
 │  ┌────────────────────────────────────────────────────────────────┐    │
 │  │  CDN (Cloudflare)                                             │    │
 │  │  ├── Load Balancer (HAProxy/Nginx)                           │    │
-│  │  │   ├── App Server Pool (auto-scaling)                      │    │
-│  │  │   └── Worker Server Pool (background jobs)                │    │
+│  │  │   ├── Gunicorn App Pool (auto-scaling)                    │    │
+│  │  │   └── Celery Worker Pool (auto-scaling, priority queues)  │    │
 │  │  │                                                            │    │
 │  │  ├── PostgreSQL Cluster                                       │    │
 │  │  │   ├── Primary                                             │    │
@@ -546,7 +636,7 @@ ModuleProvider Interface:
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 5.2 Caching Strategy
+### 6.2 Caching Strategy
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -555,24 +645,24 @@ ModuleProvider Interface:
 │                                                                         │
 │  LAYER 1: Browser Cache                                                 │
 │  ┌────────────────────────────────────────────────────────────────┐    │
-│  │  Static Assets: 30 days (versioned filenames)                 │    │
+│  │  Static Assets: 30 days (ManifestStaticFilesStorage hashes)   │    │
 │  │  API Responses: No cache (Cache-Control: private)             │    │
 │  │  Public Menus: 5 min (stale-while-revalidate)                │    │
 │  └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
-│  LAYER 2: Application Cache (Redis)                                     │
+│  LAYER 2: Application Cache (Django cache framework + Redis)            │
 │  ┌────────────────────────────────────────────────────────────────┐    │
-│  │  Session Data:        15 min TTL                              │    │
+│  │  Session Data:        Redis-backed sessions, 15 min TTL       │    │
 │  │  User Permissions:    5 min TTL (invalidate on change)        │    │
 │  │  Organization Config: 10 min TTL                              │    │
 │  │  Public Menu:         5 min TTL                               │    │
 │  │  Rate Limit Counters: 1 min sliding window                    │    │
-│  │  AI Response Cache:   24 hour TTL (same prompt)               │    │
+│  │  AI Response Cache:   24 hour TTL (same prompt hash)          │    │
 │  └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
 │  LAYER 3: Database Query Cache                                          │
 │  ┌────────────────────────────────────────────────────────────────┐    │
-│  │  Prisma Query Cache: Connection pool (20 connections)         │    │
+│  │  Django ORM: Connection pooling (django-db-connection-pool)   │    │
 │  │  PostgreSQL: shared_buffers = 25% RAM                         │    │
 │  └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
@@ -580,6 +670,7 @@ ModuleProvider Interface:
 │  ┌────────────────────────────────────────────────────────────────┐    │
 │  │  user:{userId}:permissions                                    │    │
 │  │  org:{orgId}:config                                           │    │
+│  │  org:{orgId}:plan                                             │    │
 │  │  menu:{menuId}:public                                         │    │
 │  │  session:{sessionId}                                          │    │
 │  │  rate:{ip}:{endpoint}                                         │    │
@@ -591,9 +682,9 @@ ModuleProvider Interface:
 
 ---
 
-## 6. DEPLOYMENT ARCHITECTURE
+## 7. DEPLOYMENT ARCHITECTURE
 
-### 6.1 Infrastructure Diagram
+### 7.1 Infrastructure Diagram
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -602,7 +693,7 @@ ModuleProvider Interface:
 │                                                                         │
 │  ┌─────────────────────────────────────────────────────────────────┐   │
 │  │                        CLOUDFLARE                               │   │
-│  │  DNS │ DDoS Protection │ SSL Edge │ (Future: CDN)              │   │
+│  │  DNS | DDoS Protection | SSL Edge | (Future: CDN)              │   │
 │  └────────────────────────────┬────────────────────────────────────┘   │
 │                               │                                        │
 │                               ▼                                        │
@@ -616,9 +707,9 @@ ModuleProvider Interface:
 │  │  ┌───────────────────────────┴───────────────────────────┐    │   │
 │  │  │                                                       │    │   │
 │  │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐   │    │   │
-│  │  │  │   NGINX     │  │   APP       │  │   WORKER    │   │    │   │
-│  │  │  │  (Proxy)    │  │  (Node.js)  │  │  (BullMQ)   │   │    │   │
-│  │  │  │  Port 80/443│  │  Port 3000  │  │  No port    │   │    │   │
+│  │  │  │   NGINX     │  │  GUNICORN   │  │   CELERY    │   │    │   │
+│  │  │  │  (Proxy)    │  │  (Django)   │  │  (Worker +  │   │    │   │
+│  │  │  │  Port 80/443│  │  Port 8000  │  │   Beat)     │   │    │   │
 │  │  │  └─────────────┘  └─────────────┘  └─────────────┘   │    │   │
 │  │  │                                                       │    │   │
 │  │  │  ┌─────────────┐  ┌─────────────┐                    │    │   │
@@ -630,15 +721,15 @@ ModuleProvider Interface:
 │  │                                                                │   │
 │  │  Storage:                                                      │   │
 │  │  ├── /var/lib/postgresql/data (DB)                            │   │
-│  │  ├── /var/lib/redis (Cache)                                   │   │
-│  │  └── /app/uploads (Media - future: S3)                        │   │
+│  │  ├── /var/lib/redis (Cache + Broker)                          │   │
+│  │  └── /app/media (Uploads - future: S3)                        │   │
 │  │                                                                │   │
 │  └─────────────────────────────────────────────────────────────────┘   │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 6.2 CI/CD Pipeline
+### 7.2 CI/CD Pipeline
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -657,33 +748,36 @@ ModuleProvider Interface:
 │  │                    GITHUB ACTIONS                                │ │
 │  │                                                                  │ │
 │  │  on: push                                                       │ │
-│  │  ├── Lint (ESLint)                                             │ │
-│  │  ├── Type Check (tsc)                                          │ │
-│  │  ├── Unit Tests (Vitest)                                       │ │
-│  │  ├── Integration Tests                                         │ │
-│  │  └── Build Check                                               │ │
+│  │  ├── Lint (ruff check)                                          │ │
+│  │  ├── Format (ruff format --check)                               │ │
+│  │  ├── Type Check (mypy)                                          │ │
+│  │  ├── Unit Tests (pytest)                                        │ │
+│  │  ├── Integration Tests (pytest + PostgreSQL service)            │ │
+│  │  └── Django Check (manage.py check --deploy)                    │ │
 │  │                                                                  │ │
 │  │  on: push to main                                               │ │
 │  │  ├── All above +                                               │ │
 │  │  ├── E2E Tests (Playwright)                                    │ │
-│  │  ├── Security Scan (Snyk)                                      │ │
+│  │  ├── Security Scan (safety / bandit)                           │ │
+│  │  ├── Migration Check (manage.py migrate --check)               │ │
 │  │  └── Deploy to Coolify (webhook)                               │ │
 │  └──────────────────────────────────────────────────────────────────┘ │
 │                                                                         │
 │  DEPLOYMENT:                                                            │
 │  ┌──────────────────────────────────────────────────────────────────┐ │
-│  │  GitHub Webhook → Coolify → Pull → Build → Deploy → Health Check│ │
+│  │  GitHub Webhook -> Coolify -> Pull -> Build -> collectstatic    │ │
+│  │  -> migrate -> Deploy -> Health Check                           │ │
 │  └──────────────────────────────────────────────────────────────────┘ │
 │                                                                         │
 │  ROLLBACK:                                                              │
 │  ┌──────────────────────────────────────────────────────────────────┐ │
-│  │  Manual trigger in Coolify → Previous image → Deploy            │ │
+│  │  Manual trigger in Coolify -> Previous image -> Deploy          │ │
 │  └──────────────────────────────────────────────────────────────────┘ │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 6.3 Environment Configuration
+### 7.3 Environment Configuration
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -693,17 +787,18 @@ ModuleProvider Interface:
 │  ┌──────────────┬─────────────┬─────────────┬─────────────┐           │
 │  │   Variable   │    Local    │   Staging   │  Production │           │
 │  ├──────────────┼─────────────┼─────────────┼─────────────┤           │
-│  │ NODE_ENV     │ development │ staging     │ production  │           │
+│  │ DJANGO_ENV   │ development │ staging     │ production  │           │
+│  │ DEBUG        │ True        │ False       │ False       │           │
 │  │ DATABASE_URL │ localhost   │ staging-db  │ prod-db     │           │
 │  │ REDIS_URL    │ localhost   │ staging-redis│ prod-redis │           │
-│  │ JWT_SECRET   │ dev-secret  │ staging-*** │ prod-***    │           │
+│  │ SECRET_KEY   │ dev-secret  │ staging-*** │ prod-***    │           │
 │  │ AI_PROVIDER  │ mock        │ claude      │ claude      │           │
-│  │ LOG_LEVEL    │ debug       │ info        │ warn        │           │
-│  │ RATE_LIMIT   │ disabled    │ relaxed     │ strict      │           │
+│  │ LOG_LEVEL    │ DEBUG       │ INFO        │ WARNING     │           │
+│  │ CELERY_BROKER│ localhost   │ staging-redis│ prod-redis │           │
 │  └──────────────┴─────────────┴─────────────┴─────────────┘           │
 │                                                                         │
 │  SECRET MANAGEMENT:                                                     │
-│  ├── Local: .env file (git-ignored)                                   │
+│  ├── Local: .env file (git-ignored), loaded by django-environ          │
 │  ├── CI: GitHub Secrets                                               │
 │  └── Production: Coolify Environment Variables                        │
 │                                                                         │
@@ -712,54 +807,60 @@ ModuleProvider Interface:
 
 ---
 
-## 7. MONITORING & OBSERVABILITY
+## 8. MONITORING & OBSERVABILITY
 
-### 7.1 Logging Strategy
+### 8.1 Logging Strategy
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                        LOGGING ARCHITECTURE                             │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│  LOG LEVELS:                                                            │
+│  LOG LEVELS (Python logging):                                           │
 │  ┌────────────────────────────────────────────────────────────────┐    │
-│  │  error  → System failures, unhandled exceptions               │    │
-│  │  warn   → Recoverable issues, deprecations                    │    │
-│  │  info   → Business events, state changes                      │    │
-│  │  debug  → Detailed flow (dev only)                            │    │
+│  │  CRITICAL → System failures, unrecoverable errors              │    │
+│  │  ERROR    → Unhandled exceptions, integration failures         │    │
+│  │  WARNING  → Recoverable issues, deprecations                   │    │
+│  │  INFO     → Business events, state changes                     │    │
+│  │  DEBUG    → Detailed flow (dev only)                           │    │
 │  └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
-│  LOG FORMAT (JSON):                                                     │
+│  LOG FORMAT (JSON via python-json-logger):                              │
 │  ┌────────────────────────────────────────────────────────────────┐    │
 │  │  {                                                            │    │
 │  │    "timestamp": "ISO8601",                                    │    │
-│  │    "level": "info",                                           │    │
+│  │    "level": "INFO",                                           │    │
 │  │    "message": "Order created",                                │    │
-│  │    "context": {                                               │    │
-│  │      "requestId": "uuid",                                     │    │
-│  │      "userId": "uuid",                                        │    │
-│  │      "orgId": "uuid",                                         │    │
-│  │      "duration": 45                                           │    │
-│  │    }                                                          │    │
+│  │    "logger": "apps.orders.views",                             │    │
+│  │    "request_id": "uuid",                                      │    │
+│  │    "user_id": "uuid",                                         │    │
+│  │    "org_id": "uuid",                                          │    │
+│  │    "duration_ms": 45                                          │    │
 │  │  }                                                            │    │
 │  └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
 │  LOG DESTINATIONS:                                                      │
-│  ├── Development: Console (pretty print)                              │
-│  ├── Production: stdout → Coolify logs → (future: Loki/ELK)          │
+│  ├── Development: Console (colorized, verbose)                         │
+│  ├── Production: stdout -> Coolify logs -> (future: Loki/ELK)         │
 │  └── Errors: Sentry (future)                                          │
+│                                                                         │
+│  DJANGO LOGGING CONFIG (settings.py LOGGING dict):                      │
+│  ├── django.request   -> WARNING                                       │
+│  ├── django.db        -> WARNING (INFO to see SQL in dev)              │
+│  ├── celery           -> INFO                                          │
+│  └── apps.*           -> INFO (DEBUG in dev)                           │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 7.2 Health Checks
+### 8.2 Health Checks
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                         HEALTH ENDPOINTS                                │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│  GET /health                                                            │
+│  GET /health/                                                           │
 │  ┌────────────────────────────────────────────────────────────────┐    │
 │  │  {                                                            │    │
 │  │    "status": "healthy",                                       │    │
@@ -769,18 +870,19 @@ ModuleProvider Interface:
 │  │  }                                                            │    │
 │  └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
-│  GET /health/ready (readiness probe)                                    │
+│  GET /health/ready/ (readiness probe)                                   │
 │  ┌────────────────────────────────────────────────────────────────┐    │
 │  │  Checks:                                                      │    │
-│  │  ├── Database connection                                      │    │
-│  │  ├── Redis connection                                         │    │
-│  │  └── Module loader complete                                   │    │
+│  │  ├── Database connection (SELECT 1)                           │    │
+│  │  ├── Redis connection (PING)                                  │    │
+│  │  ├── Celery broker reachable                                  │    │
+│  │  └── Migrations applied                                       │    │
 │  └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
-│  GET /health/live (liveness probe)                                      │
+│  GET /health/live/ (liveness probe)                                     │
 │  ┌────────────────────────────────────────────────────────────────┐    │
 │  │  Checks:                                                      │    │
-│  │  └── Event loop responsive                                    │    │
+│  │  └── Django process responsive (200 OK)                       │    │
 │  └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -788,25 +890,26 @@ ModuleProvider Interface:
 
 ---
 
-## 8. DISASTER RECOVERY
+## 9. DISASTER RECOVERY
 
-### 8.1 Backup Strategy
+### 9.1 Backup Strategy
 
-| Veri | Yöntem | Sıklık | Retention |
-|------|--------|--------|-----------|
-| PostgreSQL | pg_dump + S3 | Günlük | 30 gün |
-| Redis | RDB snapshot | Saatlik | 7 gün |
-| Media files | rsync + S3 | Günlük | 90 gün |
-| Configs | Git | Her değişiklik | Forever |
+| Data | Method | Frequency | Retention |
+|------|--------|-----------|-----------|
+| PostgreSQL | pg_dump + S3 | Daily | 30 days |
+| Redis | RDB snapshot | Hourly | 7 days |
+| Media files | rsync + S3 | Daily | 90 days |
+| Configs | Git | Every change | Forever |
 
-### 8.2 Recovery Time Objectives
+### 9.2 Recovery Time Objectives
 
-| Senaryo | RTO | RPO |
-|---------|-----|-----|
+| Scenario | RTO | RPO |
+|----------|-----|-----|
 | App server failure | 5 min | 0 (stateless) |
 | Database failure | 30 min | 1 hour |
 | Complete DC failure | 4 hour | 24 hour |
+| Celery worker failure | 2 min | 0 (tasks re-queued) |
 
 ---
 
-*Bu döküman, E-Menum sisteminin teknik mimarisini tanımlar. Tüm implementasyonlar bu tasarımla tutarlı olmalıdır.*
+*This document defines the technical architecture of the E-Menum platform. All implementations must be consistent with this design.*

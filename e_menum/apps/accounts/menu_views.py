@@ -67,14 +67,15 @@ def menu_create(request):
                     )
                 except Theme.DoesNotExist:
                     pass
-            base_slug = slugify(form.cleaned_data["name"]) or "menu"
+            base_slug = form.cleaned_data.get("slug") or slugify(form.cleaned_data["name"]) or "menu"
             menu = Menu(
                 organization=org,
                 name=form.cleaned_data["name"],
                 slug=base_slug,
                 description=form.cleaned_data.get("description", ""),
                 theme=theme,
-                is_published=True,
+                is_published=form.cleaned_data.get("is_published", False),
+                is_default=form.cleaned_data.get("is_default", False),
             )
             try:
                 menu.save()
@@ -137,6 +138,8 @@ def menu_edit(request, menu_id):
         if form.is_valid():
             menu.name = form.cleaned_data["name"]
             menu.description = form.cleaned_data.get("description", "")
+            menu.is_published = form.cleaned_data.get("is_published", False)
+            menu.is_default = form.cleaned_data.get("is_default", False)
             theme = None
             if form.cleaned_data.get("theme"):
                 try:
@@ -155,8 +158,11 @@ def menu_edit(request, menu_id):
         form = MenuForm(
             initial={
                 "name": menu.name,
+                "slug": menu.slug,
                 "description": menu.description,
                 "theme": str(menu.theme_id) if menu.theme_id else "",
+                "is_published": menu.is_published,
+                "is_default": menu.is_default,
             },
             organization=org,
         )
@@ -268,17 +274,29 @@ def category_create(request, menu_id):
         except Category.DoesNotExist:
             pass
 
+    base_slug = slugify(name) or "category"
+    sort_order = body.get("sort_order", 0)
+    try:
+        sort_order = int(sort_order)
+    except (TypeError, ValueError):
+        sort_order = 0
+
     cat = Category(
         organization=org,
         menu=menu,
         name=name,
-        slug=slugify(name),
+        slug=base_slug,
         description=body.get("description", ""),
         icon=body.get("icon", ""),
         parent=parent,
         is_active=body.get("is_active", True),
+        sort_order=sort_order,
     )
-    cat.save()
+    try:
+        cat.save()
+    except IntegrityError:
+        cat.slug = f"{base_slug}-{uuid_mod.uuid4().hex[:6]}"
+        cat.save()
     return JsonResponse(
         {
             "success": True,
@@ -405,7 +423,7 @@ def theme_create(request):
                 secondary_color=form.cleaned_data["secondary_color"],
                 background_color=form.cleaned_data["background_color"],
                 text_color=form.cleaned_data["text_color"],
-                accent_color=form.cleaned_data["accent_color"],
+                accent_color=form.cleaned_data.get("accent_color") or "#F5A623",
                 font_family=form.cleaned_data.get("font_family", "Inter"),
                 logo_position=form.cleaned_data.get("logo_position", "left"),
             )
@@ -414,6 +432,14 @@ def theme_create(request):
             except IntegrityError:
                 theme.slug = f"{base_slug}-{uuid_mod.uuid4().hex[:6]}"
                 theme.save()
+            except (ValueError, Exception) as exc:
+                logger.exception("Theme create error: %s", exc)
+                messages.error(request, _("Tema olusturulurken bir hata olustu."))
+                return render(
+                    request,
+                    "accounts/themes/form.html",
+                    {"form": form, "is_edit": False},
+                )
             messages.success(request, _("Tema olusturuldu."))
             return redirect("accounts:theme-list")
     else:
@@ -441,8 +467,20 @@ def theme_edit(request, theme_id):
         if form.is_valid():
             for field_name in form.cleaned_data:
                 if hasattr(theme, field_name):
-                    setattr(theme, field_name, form.cleaned_data[field_name])
-            theme.save()
+                    val = form.cleaned_data[field_name]
+                    if field_name == "accent_color" and not val:
+                        val = "#F5A623"
+                    setattr(theme, field_name, val)
+            try:
+                theme.save()
+            except Exception as exc:
+                logger.exception("Theme edit error: %s", exc)
+                messages.error(request, _("Tema guncellenirken bir hata olustu."))
+                return render(
+                    request,
+                    "accounts/themes/form.html",
+                    {"form": form, "theme": theme, "is_edit": True},
+                )
             messages.success(request, _("Tema guncellendi."))
             return redirect("accounts:theme-list")
     else:

@@ -19,14 +19,12 @@ class TestSEODashboardView(TestCase):
 
     def setUp(self):
         self.url = "/admin/seo-dashboard/"
-        self.user = User.objects.create_user(
+        self.user = User.objects.create_superuser(
             email="staff@test.com",
             password="testpass123",
             first_name="Staff",
             last_name="User",
         )
-        self.user.is_staff = True
-        self.user.save()
 
     def test_seo_dashboard_returns_200_for_staff(self):
         """Staff users should get a 200 response on the SEO dashboard."""
@@ -39,10 +37,10 @@ class TestSEODashboardView(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
 
-    def test_seo_dashboard_redirect_targets_admin_login(self):
-        """Anonymous users should be redirected to the admin login page."""
+    def test_seo_dashboard_redirect_targets_login(self):
+        """Anonymous users should be redirected to a login page."""
         response = self.client.get(self.url)
-        self.assertIn("/admin/login/", response.url)
+        self.assertIn("/login/", response.url)
 
     def test_seo_dashboard_context_contains_expected_keys(self):
         """The SEO dashboard context should contain all expected data keys."""
@@ -96,14 +94,12 @@ class TestShieldDashboardView(TestCase):
 
     def setUp(self):
         self.url = "/admin/shield-dashboard/"
-        self.user = User.objects.create_user(
+        self.user = User.objects.create_superuser(
             email="shieldstaff@test.com",
             password="testpass123",
             first_name="Shield",
             last_name="Staff",
         )
-        self.user.is_staff = True
-        self.user.save()
 
     def test_shield_dashboard_returns_200_for_staff(self):
         """Staff users should get a 200 response on the Shield dashboard."""
@@ -116,10 +112,10 @@ class TestShieldDashboardView(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
 
-    def test_shield_dashboard_redirect_targets_admin_login(self):
-        """Anonymous users should be redirected to the admin login page."""
+    def test_shield_dashboard_redirect_targets_login(self):
+        """Anonymous users should be redirected to a login page."""
         response = self.client.get(self.url)
-        self.assertIn("/admin/login/", response.url)
+        self.assertIn("/login/", response.url)
 
     def test_shield_dashboard_context_contains_expected_keys(self):
         """The Shield dashboard context should contain all expected data keys."""

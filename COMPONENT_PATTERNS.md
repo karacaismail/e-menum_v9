@@ -1,8 +1,8 @@
 # E-Menum Component Patterns & Design System
 
-> **Auto-Claude UI/UX Document**  
-> Accessibility, estetik standartlar, WCAG uyumluluğu, marka uyarlama, UX akışları.  
-> Son Güncelleme: 2026-01-31
+> **Auto-Claude UI/UX Document**
+> Django Templates, Tailwind CSS, Alpine.js patterns, accessibility, WCAG compliance.
+> Son Guncelleme: 2026-03-16
 
 ---
 
@@ -12,316 +12,168 @@
 
 | Principle | Description | Priority |
 |-----------|-------------|----------|
-| **Inclusive by Default** | Herkes için erişilebilir: yaşlılar, çocuklar, engelliler | P0 |
-| **Clarity over Cleverness** | Anlaşılırlık her zaman yaratıcılıktan önce gelir | P0 |
-| **Brand Flexibility** | Her işletmenin kimliğini yansıtabilmeli | P1 |
-| **Performance First** | Hızlı yükleme, akıcı etkileşim | P1 |
-| **Delightful Details** | Mikro-etkileşimler ile profesyonel his | P2 |
+| **Inclusive by Default** | Accessible to all: elderly, children, disabled users | P0 |
+| **Clarity over Cleverness** | Comprehension always before creativity | P0 |
+| **Brand Flexibility** | Each restaurant should reflect its own identity | P1 |
+| **Performance First** | Fast loading, smooth interactions | P1 |
+| **Delightful Details** | Micro-interactions for a professional feel | P2 |
 
 ### 1.2 User Spectrum
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                        TARGET USER SPECTRUM                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  AGE GROUPS:                                                                │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │  Children (8-12)     │  Touch-friendly, playful, simple navigation   │ │
-│  │  Teens (13-19)       │  Modern, fast, social-ready                   │ │
-│  │  Adults (20-50)      │  Efficient, professional, comprehensive       │ │
-│  │  Seniors (50+)       │  Large text, high contrast, clear hierarchy   │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  VISUAL ABILITIES:                                                          │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │  Normal vision       │  Standard design baseline                     │ │
-│  │  Myopia (Nearsighted)│  Scalable text, zoom support                  │ │
-│  │  Hyperopia (Farsighted)│  Larger default text, generous spacing     │ │
-│  │  Color blindness     │  Not relying on color alone, patterns        │ │
-│  │  Low vision          │  High contrast mode, screen reader support   │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  COGNITIVE ABILITIES:                                                       │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │  Dyslexia            │  OpenDyslexic font option, line spacing      │ │
-│  │  ADHD                │  Focused UI, minimal distractions            │ │
-│  │  Cognitive load      │  Progressive disclosure, chunked info        │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  MOTOR ABILITIES:                                                           │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │  Limited dexterity   │  Large touch targets (min 48px)              │ │
-│  │  Tremors             │  Generous spacing, no hover-only actions     │ │
-│  │  One-handed use      │  Thumb-friendly zones                        │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+| Group | Needs |
+|-------|-------|
+| Children (8-12) | Touch-friendly, playful, simple navigation |
+| Teens (13-19) | Modern, fast, social-ready |
+| Adults (20-50) | Efficient, professional, comprehensive |
+| Seniors (50+) | Large text, high contrast, clear hierarchy |
+| Color blindness | Not relying on color alone, patterns + icons |
+| Low vision | High contrast mode, screen reader support |
+| Motor impairment | Large touch targets (min 48px), no hover-only actions |
 
 ---
 
-## 2. ACCESSIBILITY STANDARDS (WCAG 2.1)
+## 2. FRONTEND STACK
 
-### 2.1 Compliance Targets
+### 2.1 Technology Overview
 
-| Level | Requirement | Status |
-|-------|-------------|--------|
-| **Level A** | Minimum accessibility | ZORUNLU |
-| **Level AA** | Standard compliance | ZORUNLU |
-| **Level AAA** | Enhanced accessibility | HEDEFLENİYOR |
-
-### 2.2 WCAG Checklist
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      WCAG 2.1 COMPLIANCE CHECKLIST                          │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  PERCEIVABLE (Algılanabilir):                                               │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │  [x] 1.1.1  Non-text content has text alternatives                   │ │
-│  │  [x] 1.2.1  Audio/video has captions or transcripts                  │ │
-│  │  [x] 1.3.1  Information conveyed through structure (not just visual) │ │
-│  │  [x] 1.3.2  Meaningful sequence preserved                            │ │
-│  │  [x] 1.3.3  Instructions don't rely on shape/size/location alone     │ │
-│  │  [x] 1.4.1  Color is not only visual means of conveying info         │ │
-│  │  [x] 1.4.3  Contrast ratio minimum 4.5:1 (text)                      │ │
-│  │  [x] 1.4.4  Text resizable up to 200% without loss                   │ │
-│  │  [x] 1.4.5  Images of text avoided (except logos)                    │ │
-│  │  [x] 1.4.10 Content reflows at 320px width                           │ │
-│  │  [x] 1.4.11 Non-text contrast minimum 3:1                            │ │
-│  │  [x] 1.4.12 Text spacing adjustable                                  │ │
-│  │  [x] 1.4.13 Hover/focus content dismissible                          │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  OPERABLE (Kullanılabilir):                                                 │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │  [x] 2.1.1  All functionality keyboard accessible                    │ │
-│  │  [x] 2.1.2  No keyboard trap                                         │ │
-│  │  [x] 2.2.1  Timing adjustable                                        │ │
-│  │  [x] 2.2.2  Pause/stop/hide for moving content                       │ │
-│  │  [x] 2.3.1  No content flashes more than 3 times/second              │ │
-│  │  [x] 2.4.1  Skip navigation link provided                            │ │
-│  │  [x] 2.4.2  Pages have descriptive titles                            │ │
-│  │  [x] 2.4.3  Focus order is logical                                   │ │
-│  │  [x] 2.4.4  Link purpose clear from text                             │ │
-│  │  [x] 2.4.5  Multiple ways to find pages                              │ │
-│  │  [x] 2.4.6  Headings and labels descriptive                          │ │
-│  │  [x] 2.4.7  Focus visible                                            │ │
-│  │  [x] 2.5.1  Pointer gestures have alternatives                       │ │
-│  │  [x] 2.5.2  Pointer actions cancellable                              │ │
-│  │  [x] 2.5.3  Label in name matches visible label                      │ │
-│  │  [x] 2.5.4  Motion-activated functions have alternatives             │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  UNDERSTANDABLE (Anlaşılabilir):                                            │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │  [x] 3.1.1  Page language defined                                    │ │
-│  │  [x] 3.1.2  Language of parts defined                                │ │
-│  │  [x] 3.2.1  Focus doesn't trigger unexpected context change          │ │
-│  │  [x] 3.2.2  Input doesn't trigger unexpected context change          │ │
-│  │  [x] 3.2.3  Consistent navigation                                    │ │
-│  │  [x] 3.2.4  Consistent identification                                │ │
-│  │  [x] 3.3.1  Input errors identified                                  │ │
-│  │  [x] 3.3.2  Labels or instructions provided                          │ │
-│  │  [x] 3.3.3  Error suggestions provided                               │ │
-│  │  [x] 3.3.4  Error prevention for legal/financial                     │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  ROBUST (Sağlam):                                                           │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │  [x] 4.1.1  HTML validates                                           │ │
-│  │  [x] 4.1.2  Name, role, value for UI components                      │ │
-│  │  [x] 4.1.3  Status messages announced                                │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+```yaml
+Templates:      Django Templates ({% extends %}, {% block %}, {% include %})
+CSS:            Tailwind CSS 3.4 (dark mode via class strategy)
+Interactivity:  Alpine.js 3.x (x-data, x-show, x-on, x-ref)
+Components:     Flowbite (modals, dropdowns, tabs, toasts)
+Icons:          Phosphor Icons (ph ph-icon-name)
+Charts:         Chart.js
+i18n:           Django {% trans %} / {% blocktrans %}
 ```
 
-### 2.3 Screen Reader Support
+### 2.2 Template Structure
+
+```
+templates/
+├── layouts/
+│   ├── base.html              # Root layout: Alpine.js, Tailwind, dark mode toggle
+│   ├── panel.html             # Restaurant owner portal (sidebar + topbar)
+│   └── marketing.html         # Public marketing pages
+├── partials/
+│   ├── _sidebar.html          # Navigation sidebar
+│   ├── _topbar.html           # Top navigation bar
+│   └── _notification_widget.html
+├── components/                # Reusable UI components ({% include %})
+├── accounts/                  # Restaurant owner portal pages
+├── admin/                     # Superadmin panel pages
+└── public/                    # Public-facing pages (menu viewer)
+```
+
+### 2.3 Template Conventions
 
 ```html
-<!-- ARIA Landmarks -->
-<header role="banner">
-  <nav role="navigation" aria-label="Ana menü">
-</header>
+{# RULE: Always extend a layout #}
+{% extends "layouts/panel.html" %}
+{% load i18n %}
 
-<main role="main" id="main-content">
-  <section aria-labelledby="menu-heading">
-    <h1 id="menu-heading">Menümüz</h1>
-  </section>
-</main>
+{% block title %}{% trans "Dashboard" %}{% endblock %}
 
-<footer role="contentinfo">
-</footer>
+{% block content %}
+  {# RULE: Use {% include %} for reusable components #}
+  {% include "components/stat_card.html" with title=total_orders icon="ph-receipt" %}
 
-<!-- Skip Link (ilk element) -->
-<a href="#main-content" class="skip-link">
-  Ana içeriğe geç
-</a>
+  {# RULE: Never use hardcoded strings #}
+  <h1>{% trans "Siparis Yonetimi" %}</h1>
 
-<!-- Live Regions (dinamik içerik) -->
-<div aria-live="polite" aria-atomic="true" class="sr-only">
-  <!-- Sepete ekleme, hata mesajları buraya -->
-</div>
-
-<!-- Form Labels -->
-<label for="table-number">Masa Numarası</label>
-<input 
-  id="table-number" 
-  type="text" 
-  aria-describedby="table-help"
-  aria-required="true"
->
-<span id="table-help" class="help-text">Örnek: A5, B12</span>
-
-<!-- Accessible Icons -->
-<button aria-label="Sepete ekle">
-  <i class="ph-shopping-cart" aria-hidden="true"></i>
-  <span class="sr-only">Sepete ekle</span>
-</button>
+  {# RULE: Alpine.js for client-side interactivity #}
+  <div x-data="{ open: false }">
+    <button @click="open = !open">{% trans "Filtrele" %}</button>
+    <div x-show="open" x-transition>
+      {% include "components/filter_panel.html" %}
+    </div>
+  </div>
+{% endblock %}
 ```
 
 ---
 
-## 3. COLOR SYSTEM
+## 3. DESIGN TOKENS
 
-### 3.1 Base Palette
+### 3.1 Color Palette
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         COLOR PALETTE                                       │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  SEMANTIC COLORS (Fixed - Theme Independent):                               │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  Success      │ #059669 │ bg: #D1FAE5 │ Contrast: 4.5:1+ │ ✓        │ │
-│  │  Warning      │ #D97706 │ bg: #FEF3C7 │ Contrast: 4.5:1+ │ ⚠        │ │
-│  │  Error        │ #DC2626 │ bg: #FEE2E2 │ Contrast: 4.5:1+ │ ✕        │ │
-│  │  Info         │ #2563EB │ bg: #DBEAFE │ Contrast: 4.5:1+ │ ℹ        │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  NEUTRAL SCALE (Light Mode):                                                │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  neutral-50   │ #FAFAFA │ Background (lightest)                      │ │
-│  │  neutral-100  │ #F4F4F5 │ Background (cards)                         │ │
-│  │  neutral-200  │ #E4E4E7 │ Borders (subtle)                           │ │
-│  │  neutral-300  │ #D4D4D8 │ Borders (visible)                          │ │
-│  │  neutral-400  │ #A1A1AA │ Placeholder text                           │ │
-│  │  neutral-500  │ #71717A │ Secondary text                             │ │
-│  │  neutral-600  │ #52525B │ Body text (muted)                          │ │
-│  │  neutral-700  │ #3F3F46 │ Body text                                  │ │
-│  │  neutral-800  │ #27272A │ Headlines                                  │ │
-│  │  neutral-900  │ #18181B │ Headlines (emphasis)                       │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  NEUTRAL SCALE (Dark Mode):                                                 │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  neutral-900  │ #18181B │ Background (darkest)                       │ │
-│  │  neutral-800  │ #27272A │ Background (cards)                         │ │
-│  │  neutral-700  │ #3F3F46 │ Borders (subtle)                           │ │
-│  │  neutral-600  │ #52525B │ Borders (visible)                          │ │
-│  │  neutral-500  │ #71717A │ Placeholder text                           │ │
-│  │  neutral-400  │ #A1A1AA │ Secondary text                             │ │
-│  │  neutral-300  │ #D4D4D8 │ Body text (muted)                          │ │
-│  │  neutral-200  │ #E4E4E7 │ Body text                                  │ │
-│  │  neutral-100  │ #F4F4F5 │ Headlines                                  │ │
-│  │  neutral-50   │ #FAFAFA │ Headlines (emphasis)                       │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+| Token | Value | Usage |
+|-------|-------|-------|
+| **Primary Teal** | `#1A6B5A` | Buttons, links, active states |
+| Primary Light | `#23896F` | Hover states |
+| Primary Dark | `#145648` | Active/pressed states |
+| Primary Subtle | `#E8F5F1` | Backgrounds, badges |
+| **Accent Amber** | `#F5A623` | Highlights, CTAs, warnings |
+| Accent Light | `#F7B84E` | Hover |
+| Accent Dark | `#D4901A` | Active |
 
-### 3.2 Contrast Requirements
+### 3.2 Semantic Colors
 
-| Element | Minimum Ratio | Target Ratio | WCAG Level |
-|---------|---------------|--------------|------------|
-| Body text | 4.5:1 | 7:1 | AA / AAA |
-| Large text (18px+) | 3:1 | 4.5:1 | AA / AAA |
-| UI components | 3:1 | 4.5:1 | AA |
-| Focus indicators | 3:1 | 4.5:1 | AA |
-| Icons (informative) | 3:1 | 4.5:1 | AA |
-| Disabled elements | No requirement | - | - |
+| Role | Color | Background | Icon |
+|------|-------|------------|------|
+| Success | `#059669` | `#D1FAE5` | `ph-check-circle` |
+| Warning | `#D97706` | `#FEF3C7` | `ph-warning` |
+| Error | `#DC2626` | `#FEE2E2` | `ph-x-circle` |
+| Info | `#2563EB` | `#DBEAFE` | `ph-info` |
 
-### 3.3 Color Blindness Support
+### 3.3 Tailwind Configuration (tailwind.config.js)
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    COLOR BLINDNESS CONSIDERATIONS                           │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  NEVER rely on color alone. Always provide:                                 │
-│                                                                             │
-│  Status Indicators:                                                         │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │  ✓ Success  │ Green + Checkmark icon + "Başarılı" text               │ │
-│  │  ⚠ Warning  │ Orange + Warning icon + "Dikkat" text                  │ │
-│  │  ✕ Error    │ Red + X icon + "Hata" text                             │ │
-│  │  ℹ Info     │ Blue + Info icon + descriptive text                    │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  Data Visualization:                                                        │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │  • Use patterns in addition to colors                                │ │
-│  │  • Provide data labels directly on charts                            │ │
-│  │  • Support high contrast mode                                        │ │
-│  │  • Test with color blindness simulators                              │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  Interactive Elements:                                                      │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │  • Links: Underline + color change                                   │ │
-│  │  • Buttons: Shape + color + text                                     │ │
-│  │  • Form validation: Icon + border + message                          │ │
-│  │  • Required fields: Asterisk + color + aria-required                 │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  Color Blindness Types to Test:                                             │
-│  ├── Protanopia (red-blind) ~1% male                                       │
-│  ├── Deuteranopia (green-blind) ~1% male                                   │
-│  ├── Tritanopia (blue-blind) ~0.01%                                        │
-│  └── Achromatopsia (total) ~0.003%                                         │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+```javascript
+module.exports = {
+  darkMode: 'class',  // Toggle via .dark class on <html>
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          50:  '#E8F5F1',
+          100: '#C5E8DE',
+          200: '#9DD8C8',
+          300: '#6EC4AE',
+          400: '#3DAF92',
+          500: '#1A6B5A',  // DEFAULT
+          600: '#165C4D',
+          700: '#145648',
+          800: '#0F4038',
+          900: '#0A2B25',
+        },
+        accent: {
+          50:  '#FEF7E8',
+          400: '#F7B84E',
+          500: '#F5A623',  // DEFAULT
+          600: '#D4901A',
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        heading: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+      },
+    },
+  },
+};
 ```
 
-### 3.4 High Contrast Mode
+### 3.4 Dark Mode
 
-```css
-/* High Contrast Mode Variables */
-@media (prefers-contrast: high) {
-  :root {
-    --text-primary: #000000;
-    --text-secondary: #1a1a1a;
-    --bg-primary: #ffffff;
-    --bg-secondary: #f0f0f0;
-    --border-color: #000000;
-    --border-width: 2px;
-    --focus-outline: 3px solid #000000;
-    --link-color: #0000EE;
-    --link-visited: #551A8B;
-  }
-}
-
-/* Windows High Contrast Mode */
-@media (forced-colors: active) {
-  .button {
-    border: 2px solid ButtonText;
-    background: ButtonFace;
-    color: ButtonText;
-  }
-  
-  .button:focus {
-    outline: 3px solid Highlight;
-  }
-}
+```html
+{# base.html: Dark mode toggle with Alpine.js #}
+<html x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }"
+      :class="{ 'dark': darkMode }">
+<head>
+  <script>
+    // Prevent FOUC: apply dark mode before render
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100">
+  {# Toggle button #}
+  <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)"
+          class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+          aria-label="{% trans 'Karanlik modu degistir' %}">
+    <i class="ph" :class="darkMode ? 'ph-sun' : 'ph-moon'" aria-hidden="true"></i>
+  </button>
+</body>
+</html>
 ```
 
 ---
@@ -330,614 +182,572 @@
 
 ### 4.1 Font Stack
 
-```css
-/* Primary Font Stack */
---font-sans: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 
-             'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-
-/* Monospace (for codes, prices) */
---font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Consolas, monospace;
-
-/* Dyslexia-Friendly Option */
---font-dyslexic: 'OpenDyslexic', 'Comic Sans MS', cursive;
-```
+| Role | Font | Tailwind Class |
+|------|------|----------------|
+| Body | Inter | `font-sans` |
+| Headings | Plus Jakarta Sans | `font-heading` |
+| Monospace (prices, codes) | JetBrains Mono | `font-mono` |
 
 ### 4.2 Type Scale
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                          TYPOGRAPHY SCALE                                   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  BASE SIZE: 16px (1rem) - WCAG recommends minimum 16px                     │
-│                                                                             │
-│  Scale (1.25 ratio - Major Third):                                          │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  Token      │ Size    │ Line Height │ Weight │ Usage                 │ │
-│  │  ─────────────────────────────────────────────────────────────────── │ │
-│  │  text-xs    │ 12px    │ 1.5 (18px)  │ 400    │ Captions, badges     │ │
-│  │  text-sm    │ 14px    │ 1.5 (21px)  │ 400    │ Secondary text       │ │
-│  │  text-base  │ 16px    │ 1.6 (26px)  │ 400    │ Body text (default)  │ │
-│  │  text-lg    │ 18px    │ 1.6 (29px)  │ 400    │ Lead paragraphs      │ │
-│  │  text-xl    │ 20px    │ 1.5 (30px)  │ 500    │ Card titles          │ │
-│  │  text-2xl   │ 24px    │ 1.4 (34px)  │ 600    │ Section headings     │ │
-│  │  text-3xl   │ 30px    │ 1.3 (39px)  │ 700    │ Page titles          │ │
-│  │  text-4xl   │ 36px    │ 1.2 (43px)  │ 700    │ Hero headlines       │ │
-│  │  text-5xl   │ 48px    │ 1.1 (53px)  │ 800    │ Display              │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  SENIOR/ACCESSIBILITY MODE (125% scale):                                    │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  text-base  │ 20px    │ 1.7 (34px)  │ 400    │ Body text            │ │
-│  │  text-lg    │ 22px    │ 1.7 (37px)  │ 400    │ Lead paragraphs      │ │
-│  │  text-xl    │ 25px    │ 1.6 (40px)  │ 500    │ Card titles          │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+| Token | Size | Line Height | Weight | Usage |
+|-------|------|-------------|--------|-------|
+| `text-xs` | 12px | 1.5 | 400 | Captions, badges |
+| `text-sm` | 14px | 1.5 | 400 | Secondary text |
+| `text-base` | 16px | 1.6 | 400 | Body text (default) |
+| `text-lg` | 18px | 1.6 | 400 | Lead paragraphs |
+| `text-xl` | 20px | 1.5 | 500 | Card titles |
+| `text-2xl` | 24px | 1.4 | 600 | Section headings |
+| `text-3xl` | 30px | 1.3 | 700 | Page titles |
+| `text-4xl` | 36px | 1.2 | 700 | Hero headlines |
 
-### 4.3 Readability Guidelines
+### 4.3 Readability Rules
 
 ```
-TEXT READABILITY RULES:
-
-Line Length:
-├── Optimal: 50-75 characters per line
-├── Maximum: 80 characters
-├── Mobile: Full width okay, but larger text
-└── Implementation: max-width: 65ch;
-
-Line Height:
-├── Body text: 1.5-1.7 (WCAG 1.4.12 requirement)
-├── Headings: 1.2-1.4
-├── Small text: 1.5+ (more space for readability)
-└── Dyslexia mode: 2.0 (double spacing)
-
-Letter Spacing:
-├── Body: normal (0)
-├── Headings: -0.02em (tighter for large text)
-├── All caps: 0.05em (required for readability)
-└── Dyslexia mode: 0.12em (increased)
-
-Word Spacing:
-├── Normal: default
-└── Dyslexia mode: 0.16em (increased)
-
-Paragraph Spacing:
-├── Between paragraphs: 1.5em minimum
-├── After headings: 0.5em
-└── Before headings: 2em
+Line Length:   max-w-prose (65ch optimal)
+Line Height:   Body 1.5-1.7, Headings 1.2-1.4
+Letter Spacing: Headings -0.02em, ALL CAPS 0.05em
+Paragraph Gap:  space-y-4 between paragraphs
 ```
 
-### 4.4 Text Accessibility Features
+---
+
+## 5. LAYOUT SYSTEM
+
+### 5.1 Panel Layout (panel.html)
 
 ```html
-<!-- User Preferences Panel -->
-<div class="accessibility-panel" role="region" aria-label="Erişilebilirlik ayarları">
-  
-  <!-- Font Size -->
-  <div class="setting-group">
-    <label id="font-size-label">Yazı Boyutu</label>
-    <div role="group" aria-labelledby="font-size-label">
-      <button aria-label="Yazıyı küçült" data-size="decrease">A-</button>
-      <span aria-live="polite">%<span id="current-size">100</span></span>
-      <button aria-label="Yazıyı büyüt" data-size="increase">A+</button>
-    </div>
+{# layouts/panel.html #}
+{% extends "layouts/base.html" %}
+
+<div class="flex h-screen overflow-hidden">
+  {# Sidebar: fixed on desktop, drawer on mobile #}
+  {% include "partials/_sidebar.html" %}
+
+  {# Main content area #}
+  <div class="flex-1 flex flex-col overflow-hidden">
+    {% include "partials/_topbar.html" %}
+
+    <main class="flex-1 overflow-y-auto p-4 lg:p-6">
+      {% block content %}{% endblock %}
+    </main>
   </div>
-  
-  <!-- Font Family -->
-  <div class="setting-group">
-    <label for="font-family">Yazı Tipi</label>
-    <select id="font-family">
-      <option value="default">Varsayılan (Inter)</option>
-      <option value="dyslexic">Disleksi Dostu (OpenDyslexic)</option>
-      <option value="serif">Serifli (Georgia)</option>
-    </select>
-  </div>
-  
-  <!-- Line Spacing -->
-  <div class="setting-group">
-    <label for="line-spacing">Satır Aralığı</label>
-    <select id="line-spacing">
-      <option value="normal">Normal</option>
-      <option value="relaxed">Geniş</option>
-      <option value="loose">Çok Geniş</option>
-    </select>
-  </div>
-  
-  <!-- High Contrast -->
-  <div class="setting-group">
-    <label>
-      <input type="checkbox" id="high-contrast">
-      Yüksek Kontrast Modu
-    </label>
-  </div>
-  
 </div>
 ```
 
----
+### 5.2 Responsive Breakpoints (Tailwind defaults)
 
-## 5. SPACING & LAYOUT
+| Prefix | Min Width | Target |
+|--------|-----------|--------|
+| (none) | 0px | Mobile (default) |
+| `sm:` | 640px | Large phones landscape |
+| `md:` | 768px | Tablets |
+| `lg:` | 1024px | Desktop |
+| `xl:` | 1280px | Large desktop |
+| `2xl:` | 1536px | Ultra wide |
 
-### 5.1 Spacing Scale
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                          SPACING SCALE                                      │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  Base Unit: 4px (0.25rem)                                                   │
-│                                                                             │
-│  Token      │ Value   │ Usage                                               │
-│  ────────────────────────────────────────────────────────────────────────── │
-│  space-0    │ 0       │ Reset                                               │
-│  space-1    │ 4px     │ Inline spacing, icon gaps                           │
-│  space-2    │ 8px     │ Tight spacing, form elements                        │
-│  space-3    │ 12px    │ Default gap                                         │
-│  space-4    │ 16px    │ Card padding, section gap                           │
-│  space-5    │ 20px    │ Component spacing                                   │
-│  space-6    │ 24px    │ Section padding                                     │
-│  space-8    │ 32px    │ Large section gaps                                  │
-│  space-10   │ 40px    │ Page sections                                       │
-│  space-12   │ 48px    │ Major sections                                      │
-│  space-16   │ 64px    │ Page margins                                        │
-│  space-20   │ 80px    │ Hero sections                                       │
-│  space-24   │ 96px    │ Major breaks                                        │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-### 5.2 Touch Target Guidelines
+### 5.3 Touch Target Requirements
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                       TOUCH TARGET REQUIREMENTS                             │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  WCAG 2.5.5 Target Size (Level AAA):                                        │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  Minimum touch target: 44 × 44 px                                    │ │
-│  │  Recommended:          48 × 48 px                                    │ │
-│  │  Senior/Accessibility: 56 × 56 px                                    │ │
-│  │                                                                       │ │
-│  │  Spacing between targets: minimum 8px                                │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  IMPLEMENTATION:                                                            │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  /* Even small icons get large tap area */                           │ │
-│  │  .icon-button {                                                      │ │
-│  │    min-width: 48px;                                                  │ │
-│  │    min-height: 48px;                                                 │ │
-│  │    display: flex;                                                    │ │
-│  │    align-items: center;                                              │ │
-│  │    justify-content: center;                                          │ │
-│  │  }                                                                   │ │
-│  │                                                                       │ │
-│  │  /* Extend tap area beyond visual bounds */                          │ │
-│  │  .link-with-extended-area {                                          │ │
-│  │    position: relative;                                               │ │
-│  │  }                                                                   │ │
-│  │  .link-with-extended-area::before {                                  │ │
-│  │    content: '';                                                      │ │
-│  │    position: absolute;                                               │ │
-│  │    inset: -8px; /* Extends clickable area */                        │ │
-│  │  }                                                                   │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  THUMB ZONE (Mobile):                                                       │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  ┌─────────────────────────┐                                         │ │
-│  │  │     HARD TO REACH       │  Top corners                            │ │
-│  │  │                         │                                         │ │
-│  │  │    OKAY (stretch)       │  Upper middle                           │ │
-│  │  │                         │                                         │ │
-│  │  │   NATURAL (easy)        │  Bottom 2/3                             │ │
-│  │  │                         │                                         │ │
-│  │  │ ████ SWEET SPOT ████    │  Bottom center/right                    │ │
-│  │  └─────────────────────────┘                                         │ │
-│  │                                                                       │ │
-│  │  Place primary actions in thumb-friendly zones                       │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-### 5.3 Responsive Breakpoints
-
-```css
-/* Breakpoint System */
---breakpoint-sm: 640px;   /* Large phones landscape */
---breakpoint-md: 768px;   /* Tablets */
---breakpoint-lg: 1024px;  /* Desktop */
---breakpoint-xl: 1280px;  /* Large desktop */
---breakpoint-2xl: 1536px; /* Ultra wide */
-
-/* Mobile-First Media Queries */
-/* Default: < 640px (mobile) */
-
-@media (min-width: 640px) { /* sm: Tablets & up */ }
-@media (min-width: 768px) { /* md: Small desktop */ }
-@media (min-width: 1024px) { /* lg: Desktop */ }
-@media (min-width: 1280px) { /* xl: Large desktop */ }
-
-/* Container Widths */
-.container {
-  width: 100%;
-  margin: 0 auto;
-  padding: 0 16px;
-}
-@media (min-width: 640px) { .container { max-width: 640px; } }
-@media (min-width: 768px) { .container { max-width: 768px; } }
-@media (min-width: 1024px) { .container { max-width: 1024px; } }
-@media (min-width: 1280px) { .container { max-width: 1280px; } }
+Minimum:      44 x 44 px (WCAG 2.5.5)
+Recommended:  48 x 48 px
+Senior mode:  56 x 56 px
+Gap between:  min 8px
 ```
 
 ---
 
-## 6. BRAND CUSTOMIZATION SYSTEM
+## 6. COMPONENT PATTERNS
 
-### 6.1 Theming Architecture
+### 6.1 Buttons
 
+```html
+{# components/button.html #}
+{# Usage: {% include "components/button.html" with variant="primary" label="Kaydet" %} #}
+
+{# PRIMARY #}
+<button class="inline-flex items-center gap-2 px-5 py-2.5
+               bg-primary-500 text-white rounded-lg
+               hover:bg-primary-600 focus:ring-4 focus:ring-primary-200
+               dark:focus:ring-primary-800
+               disabled:opacity-50 disabled:cursor-not-allowed
+               transition-colors duration-150">
+  <i class="ph ph-floppy-disk" aria-hidden="true"></i>
+  {% trans "Kaydet" %}
+</button>
+
+{# SECONDARY (outlined) #}
+<button class="inline-flex items-center gap-2 px-5 py-2.5
+               border border-primary-500 text-primary-500 rounded-lg
+               hover:bg-primary-50 dark:hover:bg-primary-900
+               focus:ring-4 focus:ring-primary-200">
+  {% trans "Iptal" %}
+</button>
+
+{# DANGER #}
+<button class="inline-flex items-center gap-2 px-5 py-2.5
+               bg-red-600 text-white rounded-lg
+               hover:bg-red-700 focus:ring-4 focus:ring-red-200">
+  <i class="ph ph-trash" aria-hidden="true"></i>
+  {% trans "Sil" %}
+</button>
+
+{# LOADING STATE with Alpine.js #}
+<button x-data="{ loading: false }"
+        @click="loading = true"
+        :disabled="loading"
+        class="inline-flex items-center gap-2 px-5 py-2.5
+               bg-primary-500 text-white rounded-lg">
+  <svg x-show="loading" class="animate-spin h-4 w-4" viewBox="0 0 24 24"
+       aria-hidden="true">
+    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+            stroke-width="4" fill="none"/>
+    <path class="opacity-75" fill="currentColor"
+          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+  </svg>
+  <span x-text="loading ? '{% trans "Yukleniyor..." %}' : '{% trans "Kaydet" %}'"></span>
+</button>
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      BRAND CUSTOMIZATION LAYERS                             │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  LAYER 1: Platform Defaults (E-Menum Base)                                  │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │  • Default colors, typography, spacing                               │ │
-│  │  • WCAG-compliant baseline                                           │ │
-│  │  • Cannot be broken by customization                                 │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  LAYER 2: Theme Presets (Restaurant Chooses)                                │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │  • Modern Minimal     │ Clean, white, minimal shadows                │ │
-│  │  • Classic Elegant    │ Serif fonts, warm tones, refined             │ │
-│  │  • Bold Contemporary  │ Strong colors, geometric, energetic          │ │
-│  │  • Rustic Natural     │ Earth tones, organic shapes, textured        │ │
-│  │  • Dark Luxe          │ Dark backgrounds, gold accents, premium      │ │
-│  │  • Playful Casual     │ Rounded, colorful, friendly                  │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  LAYER 3: Brand Customization (Deep Customization)                          │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │  • Primary brand color (auto-generates palette)                      │ │
-│  │  • Secondary color                                                   │ │
-│  │  • Logo upload (light/dark variants)                                 │ │
-│  │  • Custom font (from approved list)                                  │ │
-│  │  • Border radius preference                                          │ │
-│  │  • Button style preference                                           │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  LAYER 4: Advanced (Enterprise Only)                                        │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │  • Custom CSS injection (validated)                                  │ │
-│  │  • Custom favicon                                                    │ │
-│  │  • White-label domain                                                │ │
-│  │  • Complete color palette override                                   │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+
+**Button Sizes:**
+
+| Size | Height | Padding | Font | Tailwind |
+|------|--------|---------|------|----------|
+| xs | 28px | `px-3 py-1` | `text-xs` | Small inline actions |
+| sm | 36px | `px-4 py-2` | `text-sm` | Compact UI |
+| md | 44px | `px-5 py-2.5` | `text-sm` | Default |
+| lg | 52px | `px-6 py-3` | `text-base` | Prominent actions |
+
+### 6.2 Form Inputs
+
+```html
+{# components/form_input.html #}
+{# Usage: {% include "components/form_input.html" with field=form.email %} #}
+
+<div class="mb-4">
+  <label for="{{ field.id_for_label }}"
+         class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+    {{ field.label }}
+    {% if field.field.required %}
+      <span class="text-red-500" aria-hidden="true">*</span>
+    {% endif %}
+  </label>
+
+  <input type="{{ field.field.widget.input_type }}"
+         id="{{ field.id_for_label }}"
+         name="{{ field.html_name }}"
+         value="{{ field.value|default:'' }}"
+         {% if field.field.required %}aria-required="true"{% endif %}
+         {% if field.errors %}aria-invalid="true" aria-describedby="{{ field.id_for_label }}-error"{% endif %}
+         class="block w-full px-4 py-2.5 rounded-lg border
+                text-gray-900 dark:text-white
+                bg-white dark:bg-gray-700
+                border-gray-300 dark:border-gray-600
+                focus:ring-2 focus:ring-primary-500 focus:border-primary-500
+                {% if field.errors %}border-red-500 focus:ring-red-500{% endif %}
+                placeholder-gray-400 dark:placeholder-gray-500">
+
+  {% if field.help_text %}
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ field.help_text }}</p>
+  {% endif %}
+
+  {% if field.errors %}
+    <p id="{{ field.id_for_label }}-error"
+       class="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center gap-1"
+       role="alert">
+      <i class="ph ph-warning-circle" aria-hidden="true"></i>
+      {{ field.errors.0 }}
+    </p>
+  {% endif %}
+</div>
 ```
 
-### 6.2 CSS Custom Properties for Theming
+**Validation States:**
 
-```css
-:root {
-  /* === BRAND COLORS (Customizable) === */
-  --brand-primary: #2563eb;        /* Main brand color */
-  --brand-primary-light: #3b82f6;  /* Hover state */
-  --brand-primary-dark: #1d4ed8;   /* Active state */
-  --brand-primary-subtle: #dbeafe; /* Backgrounds */
-  
-  --brand-secondary: #7c3aed;
-  --brand-accent: #f59e0b;
-  
-  /* === AUTO-GENERATED FROM PRIMARY === */
-  --brand-text-on-primary: #ffffff; /* Calculated for contrast */
-  
-  /* === SURFACE COLORS === */
-  --surface-background: #ffffff;
-  --surface-card: #ffffff;
-  --surface-elevated: #ffffff;
-  --surface-overlay: rgba(0, 0, 0, 0.5);
-  
-  /* === TEXT COLORS === */
-  --text-primary: #18181b;
-  --text-secondary: #52525b;
-  --text-muted: #a1a1aa;
-  --text-inverse: #ffffff;
-  
-  /* === BORDER & SHADOWS === */
-  --border-color: #e4e4e7;
-  --border-radius-sm: 4px;
-  --border-radius-md: 8px;
-  --border-radius-lg: 12px;
-  --border-radius-full: 9999px;
-  
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-  
-  /* === TYPOGRAPHY === */
-  --font-family-primary: 'Inter', sans-serif;
-  --font-family-heading: var(--font-family-primary);
-  
-  /* === COMPONENT SPECIFIC === */
-  --button-radius: var(--border-radius-md);
-  --card-radius: var(--border-radius-lg);
-  --input-radius: var(--border-radius-md);
+| State | Border | Ring | Icon |
+|-------|--------|------|------|
+| Default | `border-gray-300` | none | none |
+| Focus | `border-primary-500` | `ring-primary-500` | none |
+| Valid | `border-green-500` | `ring-green-500` | `ph-check-circle` |
+| Invalid | `border-red-500` | `ring-red-500` | `ph-warning-circle` |
+| Disabled | `border-gray-200 bg-gray-100` | none | none |
+
+### 6.3 Cards
+
+```html
+{# components/stat_card.html #}
+{# Usage: {% include "components/stat_card.html" with title="Siparisler" value="142" icon="ph-receipt" %} #}
+
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200
+            dark:border-gray-700 p-5 hover:shadow-md transition-shadow">
+  <div class="flex items-center justify-between mb-3">
+    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ title }}</span>
+    <div class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/30
+                flex items-center justify-center">
+      <i class="ph {{ icon }} text-xl text-primary-500" aria-hidden="true"></i>
+    </div>
+  </div>
+  <p class="text-2xl font-bold font-heading text-gray-900 dark:text-white">{{ value }}</p>
+  {% if change %}
+    <p class="mt-1 text-sm {% if change > 0 %}text-green-600{% else %}text-red-600{% endif %}">
+      <i class="ph {% if change > 0 %}ph-arrow-up{% else %}ph-arrow-down{% endif %}"
+         aria-hidden="true"></i>
+      {{ change }}% {% trans "gecen haftaya gore" %}
+    </p>
+  {% endif %}
+</div>
+
+{# PRODUCT CARD (Menu Item) #}
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200
+            dark:border-gray-700 overflow-hidden group">
+  <div class="relative aspect-[4/3] overflow-hidden">
+    <img src="{{ product.image_url }}" alt="{{ product.name }}"
+         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+         loading="lazy">
+    {% if product.badges %}
+      <div class="absolute top-2 right-2 flex gap-1">
+        {% for badge in product.badges %}
+          <span class="px-2 py-0.5 text-xs font-medium rounded-full
+                       bg-primary-500 text-white">{{ badge }}</span>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+  <div class="p-4">
+    <div class="flex justify-between items-start mb-2">
+      <h3 class="font-heading font-semibold text-gray-900 dark:text-white">{{ product.name }}</h3>
+      <span class="font-mono font-bold text-primary-500">{{ product.price }}</span>
+    </div>
+    <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">{{ product.description }}</p>
+  </div>
+</div>
+```
+
+### 6.4 Modals (Flowbite + Alpine.js)
+
+```html
+{# components/modal.html #}
+<div x-data="{ open: false }" @open-modal.window="open = true">
+  {# Trigger #}
+  <button @click="open = true" class="btn-primary">
+    {% trans "Yeni Ekle" %}
+  </button>
+
+  {# Modal backdrop + content #}
+  <div x-show="open"
+       x-transition:enter="transition ease-out duration-300"
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       x-transition:leave="transition ease-in duration-200"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0"
+       class="fixed inset-0 z-50 flex items-center justify-center p-4"
+       @keydown.escape.window="open = false"
+       role="dialog" aria-modal="true" aria-labelledby="modal-title">
+
+    {# Overlay #}
+    <div class="fixed inset-0 bg-black/50" @click="open = false" aria-hidden="true"></div>
+
+    {# Panel #}
+    <div x-show="open"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 scale-95"
+         x-transition:enter-end="opacity-100 scale-100"
+         class="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl
+                w-full max-w-lg max-h-[90vh] overflow-y-auto">
+
+      {# Header #}
+      <div class="flex items-center justify-between p-5 border-b dark:border-gray-700">
+        <h3 id="modal-title" class="text-lg font-heading font-semibold
+                                     text-gray-900 dark:text-white">
+          {% trans "Kategori Ekle" %}
+        </h3>
+        <button @click="open = false"
+                class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                aria-label="{% trans 'Kapat' %}">
+          <i class="ph ph-x text-lg" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      {# Body #}
+      <div class="p-5">
+        {% block modal_body %}{% endblock %}
+      </div>
+
+      {# Footer #}
+      <div class="flex justify-end gap-3 p-5 border-t dark:border-gray-700">
+        <button @click="open = false"
+                class="px-5 py-2.5 text-sm text-gray-700 dark:text-gray-300
+                       border border-gray-300 dark:border-gray-600 rounded-lg
+                       hover:bg-gray-50 dark:hover:bg-gray-700">
+          {% trans "Iptal" %}
+        </button>
+        <button class="px-5 py-2.5 text-sm text-white bg-primary-500
+                       rounded-lg hover:bg-primary-600 focus:ring-4 focus:ring-primary-200">
+          {% trans "Kaydet" %}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+### 6.5 Toast Notifications
+
+```html
+{# components/toast.html - include in base.html #}
+<div x-data="toastManager()" class="fixed top-4 right-4 z-50 space-y-2">
+  <template x-for="toast in toasts" :key="toast.id">
+    <div x-show="toast.visible"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-x-8"
+         x-transition:enter-end="opacity-100 translate-x-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         :class="{
+           'bg-green-50 dark:bg-green-900/30 border-green-500': toast.type === 'success',
+           'bg-red-50 dark:bg-red-900/30 border-red-500': toast.type === 'error',
+           'bg-yellow-50 dark:bg-yellow-900/30 border-yellow-500': toast.type === 'warning',
+           'bg-blue-50 dark:bg-blue-900/30 border-blue-500': toast.type === 'info'
+         }"
+         class="flex items-center gap-3 px-4 py-3 rounded-lg border-l-4 shadow-lg
+                bg-white dark:bg-gray-800 min-w-[320px] max-w-md"
+         role="alert" aria-live="polite">
+      <i class="ph text-xl"
+         :class="{
+           'ph-check-circle text-green-600': toast.type === 'success',
+           'ph-x-circle text-red-600': toast.type === 'error',
+           'ph-warning text-yellow-600': toast.type === 'warning',
+           'ph-info text-blue-600': toast.type === 'info'
+         }" aria-hidden="true"></i>
+      <p class="flex-1 text-sm text-gray-700 dark:text-gray-200" x-text="toast.message"></p>
+      <button @click="dismiss(toast.id)"
+              class="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+              aria-label="{% trans 'Kapat' %}">
+        <i class="ph ph-x text-sm" aria-hidden="true"></i>
+      </button>
+    </div>
+  </template>
+</div>
+
+<script>
+function toastManager() {
+  return {
+    toasts: [],
+    add(type, message, duration = 5000) {
+      const id = Date.now();
+      this.toasts.push({ id, type, message, visible: true });
+      if (type !== 'error') {
+        setTimeout(() => this.dismiss(id), duration);
+      }
+    },
+    dismiss(id) {
+      const toast = this.toasts.find(t => t.id === id);
+      if (toast) toast.visible = false;
+      setTimeout(() => { this.toasts = this.toasts.filter(t => t.id !== id); }, 300);
+    }
+  };
 }
-
-/* Dark Mode Override */
-[data-theme="dark"] {
-  --surface-background: #18181b;
-  --surface-card: #27272a;
-  --surface-elevated: #3f3f46;
-  
-  --text-primary: #fafafa;
-  --text-secondary: #a1a1aa;
-  --text-muted: #71717a;
-  
-  --border-color: #3f3f46;
-}
-
-/* High Contrast Override */
-[data-contrast="high"] {
-  --text-primary: #000000;
-  --text-secondary: #1a1a1a;
-  --border-color: #000000;
-  --border-width: 2px;
-}
+</script>
 ```
 
-### 6.3 Theme Generator Logic
+### 6.6 Data Tables
 
+```html
+{# components/data_table.html #}
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border
+            border-gray-200 dark:border-gray-700 overflow-hidden">
+
+  {# Table toolbar #}
+  <div class="flex flex-col sm:flex-row items-start sm:items-center
+              justify-between gap-3 p-4 border-b dark:border-gray-700">
+    <div class="relative w-full sm:w-72">
+      <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2
+                text-gray-400" aria-hidden="true"></i>
+      <input type="search" placeholder="{% trans 'Ara...' %}"
+             class="w-full pl-10 pr-4 py-2 text-sm border border-gray-300
+                    dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700
+                    focus:ring-2 focus:ring-primary-500">
+    </div>
+    <div class="flex gap-2">
+      <button class="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600
+                     rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">
+        <i class="ph ph-funnel mr-1" aria-hidden="true"></i>
+        {% trans "Filtrele" %}
+      </button>
+      <button class="px-4 py-2 text-sm bg-primary-500 text-white rounded-lg
+                     hover:bg-primary-600">
+        <i class="ph ph-plus mr-1" aria-hidden="true"></i>
+        {% trans "Yeni Ekle" %}
+      </button>
+    </div>
+  </div>
+
+  {# Table #}
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm text-left">
+      <thead class="text-xs uppercase text-gray-500 dark:text-gray-400
+                    bg-gray-50 dark:bg-gray-700/50">
+        <tr>
+          <th scope="col" class="px-4 py-3">{% trans "Isim" %}</th>
+          <th scope="col" class="px-4 py-3">{% trans "Durum" %}</th>
+          <th scope="col" class="px-4 py-3 text-right">{% trans "Islemler" %}</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+        {% for item in items %}
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+          <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">{{ item.name }}</td>
+          <td class="px-4 py-3">
+            {% include "components/badge.html" with status=item.status %}
+          </td>
+          <td class="px-4 py-3 text-right">
+            {% include "components/row_actions.html" with item=item %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3" class="px-4 py-12 text-center text-gray-500">
+            {% include "components/empty_state.html" with message="Henuz kayit yok" %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {# Pagination #}
+  {% if is_paginated %}
+    {% include "components/pagination.html" with page_obj=page_obj %}
+  {% endif %}
+</div>
 ```
-AUTO-PALETTE GENERATION:
 
-Input: Brand Primary Color (#2563eb)
+### 6.7 Sidebar Navigation
 
-Algorithm:
-1. Extract HSL values
-2. Generate complementary shades:
-   - Light: Increase L by 10%, decrease S by 5%
-   - Dark: Decrease L by 10%, increase S by 5%
-   - Subtle: L at 95%, S at 30%
-   
-3. Calculate text color for contrast:
-   - If luminance > 0.5: use dark text
-   - If luminance < 0.5: use white text
+```html
+{# partials/_sidebar.html #}
+<aside x-data="{ collapsed: window.innerWidth < 1024, mobileOpen: false }"
+       @toggle-sidebar.window="mobileOpen = !mobileOpen"
+       :class="collapsed ? 'w-16' : 'w-64'"
+       class="hidden lg:flex flex-col h-screen bg-white dark:bg-gray-800
+              border-r border-gray-200 dark:border-gray-700 transition-all duration-300">
 
-4. Validate WCAG contrast:
-   - If fails, adjust until passes
-   - Notify user if impossible
+  {# Logo #}
+  <div class="flex items-center h-16 px-4 border-b dark:border-gray-700">
+    <img src="{% static 'images/logo.svg' %}" alt="E-Menum" class="h-8">
+    <span x-show="!collapsed" class="ml-3 font-heading font-bold text-primary-500">
+      E-Menum
+    </span>
+  </div>
 
-5. Generate success/warning/error variants:
-   - Blend with semantic colors
-   - Maintain recognizability
+  {# Navigation items #}
+  <nav class="flex-1 overflow-y-auto py-4" aria-label="{% trans 'Ana navigasyon' %}">
+    {% for item in nav_items %}
+    <a href="{{ item.url }}"
+       class="flex items-center gap-3 px-4 py-2.5 mx-2 rounded-lg
+              text-sm font-medium transition-colors
+              {% if item.active %}
+                bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400
+              {% else %}
+                text-gray-600 dark:text-gray-400
+                hover:bg-gray-100 dark:hover:bg-gray-700
+              {% endif %}"
+       {% if item.active %}aria-current="page"{% endif %}>
+      <i class="ph {{ item.icon }} text-xl" aria-hidden="true"></i>
+      <span x-show="!collapsed">{{ item.label }}</span>
+      {% if item.badge %}
+        <span x-show="!collapsed"
+              class="ml-auto px-2 py-0.5 text-xs rounded-full
+                     bg-red-100 text-red-600 dark:bg-red-900/50 dark:text-red-400">
+          {{ item.badge }}
+        </span>
+      {% endif %}
+    </a>
+    {% endfor %}
+  </nav>
+
+  {# Collapse toggle #}
+  <button @click="collapsed = !collapsed"
+          class="hidden lg:flex items-center justify-center h-12 border-t
+                 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+          aria-label="{% trans 'Kenar cubugunu daralt' %}">
+    <i class="ph text-lg" :class="collapsed ? 'ph-caret-right' : 'ph-caret-left'"
+       aria-hidden="true"></i>
+  </button>
+</aside>
 ```
 
 ---
 
-## 7. COMPONENT LIBRARY
+## 7. CHARTS (Chart.js)
 
-### 7.1 Button Components
+### 7.1 Chart Container Pattern
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                          BUTTON VARIANTS                                    │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  HIERARCHY:                                                                 │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  Primary    │ Main CTA, filled, brand color                          │ │
-│  │             │ Usage: 1 per screen ideally                            │ │
-│  │                                                                       │ │
-│  │  Secondary  │ Supporting action, outlined                            │ │
-│  │             │ Usage: Secondary options                               │ │
-│  │                                                                       │ │
-│  │  Tertiary   │ Minimal action, text only                              │ │
-│  │             │ Usage: Cancel, less important                          │ │
-│  │                                                                       │ │
-│  │  Ghost      │ Subtle, transparent                                    │ │
-│  │             │ Usage: Toolbars, inline actions                        │ │
-│  │                                                                       │ │
-│  │  Danger     │ Destructive action, red                                │ │
-│  │             │ Usage: Delete, cancel subscription                     │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  SIZES:                                                                     │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  Size   │ Height │ Padding     │ Font Size │ Touch Target           │ │
-│  │  ────────────────────────────────────────────────────────────────── │ │
-│  │  xs     │ 28px   │ 8px 12px    │ 12px      │ 44px (extended)        │ │
-│  │  sm     │ 36px   │ 8px 16px    │ 14px      │ 44px (extended)        │ │
-│  │  md     │ 44px   │ 12px 20px   │ 16px      │ 44px (native)          │ │
-│  │  lg     │ 52px   │ 16px 24px   │ 18px      │ 52px                   │ │
-│  │  xl     │ 60px   │ 20px 32px   │ 20px      │ 60px                   │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  STATES:                                                                    │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  Default  → Hover → Focus → Active → Disabled                        │ │
-│  │                                                                       │ │
-│  │  Focus: 2px outline, 2px offset, brand color                         │ │
-│  │  Disabled: 50% opacity, cursor: not-allowed                          │ │
-│  │  Loading: Spinner + "Yükleniyor..." text                             │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+```html
+{# components/chart_card.html #}
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border
+            border-gray-200 dark:border-gray-700 p-5">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="font-heading font-semibold text-gray-900 dark:text-white">
+      {% trans "Haftalik Satis" %}
+    </h3>
+    <div x-data="{ period: '7d' }" class="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-0.5">
+      <button @click="period = '7d'" :class="period === '7d' ? 'bg-white dark:bg-gray-600 shadow-sm' : ''"
+              class="px-3 py-1 text-xs rounded-md transition-colors">7G</button>
+      <button @click="period = '30d'" :class="period === '30d' ? 'bg-white dark:bg-gray-600 shadow-sm' : ''"
+              class="px-3 py-1 text-xs rounded-md transition-colors">30G</button>
+    </div>
+  </div>
+  <div class="relative h-64">
+    <canvas id="salesChart" role="img" aria-label="{% trans 'Haftalik satis grafigi' %}"></canvas>
+  </div>
+</div>
 
-### 7.2 Form Components
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const isDark = document.documentElement.classList.contains('dark');
+  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+  const textColor = isDark ? '#9CA3AF' : '#6B7280';
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                          FORM PATTERNS                                      │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  INPUT FIELD ANATOMY:                                                       │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  ┌─────────────────────────────────────────────────────────────────┐ │ │
-│  │  │  Label *                                            (Optional)  │ │ │
-│  │  │  ─────────────────────────────────────────────────  indicator   │ │ │
-│  │  │  ┌───────────────────────────────────────────────────────────┐ │ │ │
-│  │  │  │ [icon]  Placeholder text...                      [action] │ │ │ │
-│  │  │  └───────────────────────────────────────────────────────────┘ │ │ │
-│  │  │  Helper text or error message                                  │ │ │
-│  │  │  Character count: 0/100                                        │ │ │
-│  │  └─────────────────────────────────────────────────────────────────┘ │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  VALIDATION STATES:                                                         │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  Default   │ Gray border                                             │ │
-│  │  Focus     │ Brand color border + shadow                             │ │
-│  │  Valid     │ Green border + checkmark icon                           │ │
-│  │  Invalid   │ Red border + error icon + message                       │ │
-│  │  Disabled  │ Gray bg, lower opacity                                  │ │
-│  │  Read-only │ No border, subtle bg                                    │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  ACCESSIBILITY REQUIREMENTS:                                                │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  • Label always visible (no placeholder-only)                        │ │
-│  │  • Error messages linked via aria-describedby                        │ │
-│  │  • Required fields: aria-required="true" + visual indicator          │ │
-│  │  • Error announced: aria-live="polite"                               │ │
-│  │  • Input purpose: autocomplete attribute                             │ │
-│  │  • Minimum height: 44px                                              │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+  new Chart(document.getElementById('salesChart'), {
+    type: 'line',
+    data: {
+      labels: {{ chart_labels|safe }},
+      datasets: [{
+        label: '{% trans "Satis" %}',
+        data: {{ chart_data|safe }},
+        borderColor: '#1A6B5A',
+        backgroundColor: 'rgba(26, 107, 90, 0.1)',
+        fill: true,
+        tension: 0.3,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: gridColor }, ticks: { color: textColor } },
+        y: { grid: { color: gridColor }, ticks: { color: textColor } }
+      }
+    }
+  });
+});
+</script>
 ```
 
-### 7.3 Card Components
+### 7.2 Chart Color Palette
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                          CARD PATTERNS                                      │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  PRODUCT CARD (Menu Item):                                                  │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  ┌─────────────────────────────────────────────────────────────────┐ │ │
-│  │  │                                                                 │ │ │
-│  │  │  [IMAGE - 16:9 or 1:1 ratio]                                   │ │ │
-│  │  │                                                                 │ │ │
-│  │  │  [Badges: Vegan, Spicy, Chef's Pick - top right]               │ │ │
-│  │  │                                                                 │ │ │
-│  │  ├─────────────────────────────────────────────────────────────────┤ │ │
-│  │  │                                                                 │ │ │
-│  │  │  Product Name                                        ₺XX.XX    │ │ │
-│  │  │  Short description (max 2 lines)...                            │ │ │
-│  │  │                                                                 │ │ │
-│  │  │  [Allergen icons] [Prep time: ~15 min]                         │ │ │
-│  │  │                                                                 │ │ │
-│  │  │                                     [Add to Cart Button]       │ │ │
-│  │  │                                                                 │ │ │
-│  │  └─────────────────────────────────────────────────────────────────┘ │ │
-│  │                                                                       │ │
-│  │  Accessibility:                                                       │ │
-│  │  • Entire card clickable (for details)                               │ │
-│  │  • Add button separate focusable element                             │ │
-│  │  • Image alt text describes dish                                     │ │
-│  │  • Price announced clearly                                           │ │
-│  │  • Allergen icons have text alternatives                             │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  CARD VARIANTS:                                                             │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  Elevated   │ Shadow, white background                               │ │
-│  │  Outlined   │ Border, no shadow                                      │ │
-│  │  Filled     │ Subtle background color                                │ │
-│  │  Interactive│ Hover effect, cursor pointer                           │ │
-│  │  Compact    │ Horizontal layout, less padding                        │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-### 7.4 Navigation Components
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                       NAVIGATION PATTERNS                                   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  MOBILE BOTTOM NAVIGATION:                                                  │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  Position: Fixed bottom                                              │ │
-│  │  Height: 64px (safe area aware)                                      │ │
-│  │  Max items: 5                                                        │ │
-│  │  Touch target: Full width/5                                          │ │
-│  │                                                                       │ │
-│  │  ┌─────────────────────────────────────────────────────────────────┐ │ │
-│  │  │  [Home]    [Menu]    [Cart(3)]   [Orders]   [Account]          │ │ │
-│  │  │   🏠        📋         🛒          📦          👤              │ │ │
-│  │  └─────────────────────────────────────────────────────────────────┘ │ │
-│  │                                                                       │ │
-│  │  Active state: Brand color, bold label                               │ │
-│  │  Badge: Cart count, notification dot                                 │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  CATEGORY TABS (Horizontal Scroll):                                         │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  ← [Tümü] [Başlangıçlar] [Ana Yemekler] [Tatlılar] [İçecekler] →     │ │
-│  │                                                                       │ │
-│  │  • Horizontally scrollable                                           │ │
-│  │  • Active tab visually distinct                                      │ │
-│  │  • Scroll indicators on edges                                        │ │
-│  │  • Keyboard navigable (arrow keys)                                   │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  BREADCRUMBS:                                                               │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  Ana Sayfa > Menü > Yemekler > Köfte                                 │ │
-│  │                                                                       │ │
-│  │  • aria-label="Breadcrumb"                                           │ │
-│  │  • Current page: aria-current="page"                                 │ │
-│  │  • Separator: aria-hidden="true"                                     │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+| Use | Color | Hex |
+|-----|-------|-----|
+| Primary series | Teal | `#1A6B5A` |
+| Secondary series | Amber | `#F5A623` |
+| Tertiary series | Blue | `#3B82F6` |
+| Quaternary series | Purple | `#8B5CF6` |
+| Grid lines (light) | Gray | `rgba(0,0,0,0.06)` |
+| Grid lines (dark) | Gray | `rgba(255,255,255,0.06)` |
 
 ---
 
@@ -945,547 +755,225 @@ Algorithm:
 
 ### 8.1 Loading States
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         LOADING PATTERNS                                    │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  SKELETON SCREENS (Preferred):                                              │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  ┌─────────────────────────────────────────────────────────────────┐ │ │
-│  │  │  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │ │ │
-│  │  │  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │ │ │
-│  │  │                                                                 │ │ │
-│  │  │  ░░░░░░░░░░░░░░░░░░░░░░░░░░░                        ░░░░░░░░░ │ │ │
-│  │  │  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░                     │ │ │
-│  │  │                                                                 │ │ │
-│  │  │  ░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░                              │ │ │
-│  │  │                                                                 │ │ │
-│  │  └─────────────────────────────────────────────────────────────────┘ │ │
-│  │                                                                       │ │
-│  │  • Matches content layout                                            │ │
-│  │  • Subtle pulse animation                                            │ │
-│  │  • Reduces perceived wait time                                       │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  SPINNERS (For actions):                                                    │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  • Button loading: Replace text with spinner + "Yükleniyor..."       │ │
-│  │  • Modal loading: Center spinner with message                        │ │
-│  │  • Page transition: Top progress bar                                 │ │
-│  │                                                                       │ │
-│  │  Accessibility:                                                       │ │
-│  │  • role="status"                                                     │ │
-│  │  • aria-live="polite"                                                │ │
-│  │  • aria-label="Yükleniyor"                                           │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  PROGRESS INDICATORS:                                                       │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  Determinate:  [████████░░░░░░░░░░] 60%                              │ │
-│  │  Indeterminate: [▓▓▓░░░░░░▓▓▓░░░░] (animated)                        │ │
-│  │                                                                       │ │
-│  │  • role="progressbar"                                                │ │
-│  │  • aria-valuenow, aria-valuemin, aria-valuemax                       │ │
-│  │  • aria-label describing the process                                 │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+```html
+{# Skeleton loader #}
+<div class="animate-pulse space-y-3">
+  <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+  <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+  <div class="h-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
+</div>
+
+{# Inline spinner #}
+<div role="status" aria-live="polite" class="flex items-center gap-2">
+  <svg class="animate-spin h-5 w-5 text-primary-500" viewBox="0 0 24 24" aria-hidden="true">
+    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+            stroke-width="4" fill="none"/>
+    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+  </svg>
+  <span class="text-sm text-gray-500">{% trans "Yukleniyor..." %}</span>
+</div>
 ```
 
 ### 8.2 Empty States
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         EMPTY STATE PATTERNS                                │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  STRUCTURE:                                                                 │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │                         [Illustration]                                │ │
-│  │                                                                       │ │
-│  │                    Başlık (What's empty)                             │ │
-│  │                                                                       │ │
-│  │           Açıklama - neden boş, ne yapılabilir                       │ │
-│  │                                                                       │ │
-│  │                    [Primary Action Button]                            │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  EXAMPLES:                                                                  │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  Empty Cart:                                                         │ │
-│  │  • Icon: Shopping cart with dash                                     │ │
-│  │  • Title: "Sepetiniz boş"                                           │ │
-│  │  • Desc: "Lezzetli yemeklerimizi keşfedin"                          │ │
-│  │  • Action: "Menüyü İncele"                                          │ │
-│  │                                                                       │ │
-│  │  No Search Results:                                                  │ │
-│  │  • Icon: Magnifying glass with X                                     │ │
-│  │  • Title: "'pizza' için sonuç bulunamadı"                           │ │
-│  │  • Desc: "Farklı kelimelerle aramayı deneyin"                       │ │
-│  │  • Action: "Filtreleri Temizle"                                     │ │
-│  │                                                                       │ │
-│  │  No Orders Yet:                                                      │ │
-│  │  • Icon: Receipt/order slip                                          │ │
-│  │  • Title: "Henüz siparişiniz yok"                                   │ │
-│  │  • Desc: "İlk siparişinizi şimdi verin!"                            │ │
-│  │  • Action: "Sipariş Ver"                                            │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+```html
+{# components/empty_state.html #}
+<div class="flex flex-col items-center justify-center py-12 px-4 text-center">
+  <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700
+              flex items-center justify-center mb-4">
+    <i class="ph {{ icon|default:'ph-tray' }} text-3xl text-gray-400" aria-hidden="true"></i>
+  </div>
+  <h3 class="text-lg font-heading font-semibold text-gray-900 dark:text-white mb-1">
+    {{ title|default:"Henuz kayit yok" }}
+  </h3>
+  <p class="text-sm text-gray-500 dark:text-gray-400 max-w-sm mb-4">
+    {{ message|default:"Yeni bir kayit ekleyerek baslayabilirsiniz." }}
+  </p>
+  {% if action_url %}
+    <a href="{{ action_url }}"
+       class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-500 text-white
+              rounded-lg hover:bg-primary-600 text-sm">
+      <i class="ph ph-plus" aria-hidden="true"></i>
+      {{ action_label|default:"Yeni Ekle" }}
+    </a>
+  {% endif %}
+</div>
 ```
 
-### 8.3 Error States
+### 8.3 Error Pages
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         ERROR HANDLING UI                                   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  INLINE ERRORS (Forms):                                                     │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  • Appear below field immediately after blur/submit                  │ │
-│  │  • Red border + error icon + message                                 │ │
-│  │  • Connected via aria-describedby                                    │ │
-│  │  • Clear when user starts fixing                                     │ │
-│  │                                                                       │ │
-│  │  Example:                                                            │ │
-│  │  ┌─────────────────────────────────────────────────────────────────┐ │ │
-│  │  │  E-posta *                                                      │ │ │
-│  │  │  ┌───────────────────────────────────────────────────────────┐ │ │ │
-│  │  │  │ invalid@email                                      [!]   │ │ │ │
-│  │  │  └───────────────────────────────────────────────────────────┘ │ │ │
-│  │  │  ⚠ Geçerli bir e-posta adresi girin                           │ │ │
-│  │  └─────────────────────────────────────────────────────────────────┘ │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  TOAST NOTIFICATIONS:                                                       │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  Position: Top-center (mobile), top-right (desktop)                  │ │
-│  │  Duration: 5 seconds (errors persist until dismissed)                │ │
-│  │  Max visible: 3 stacked                                              │ │
-│  │                                                                       │ │
-│  │  ┌─────────────────────────────────────────────────────────────────┐ │ │
-│  │  │  [✕] ⚠ İşlem başarısız                                   [X]  │ │ │
-│  │  │      Lütfen daha sonra tekrar deneyin.                         │ │ │
-│  │  │      [Tekrar Dene]                                             │ │ │
-│  │  └─────────────────────────────────────────────────────────────────┘ │ │
-│  │                                                                       │ │
-│  │  • role="alert" for errors                                           │ │
-│  │  • Focus management for dismiss                                      │ │
-│  │  • Swipe to dismiss on mobile                                        │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  FULL PAGE ERRORS:                                                          │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  404 - Sayfa Bulunamadı                                              │ │
-│  │  • Friendly illustration                                             │ │
-│  │  • Clear message                                                     │ │
-│  │  • Navigation options (home, back, search)                           │ │
-│  │                                                                       │ │
-│  │  500 - Sunucu Hatası                                                 │ │
-│  │  • Apologetic tone                                                   │ │
-│  │  • Retry option                                                      │ │
-│  │  • Contact support link                                              │ │
-│  │                                                                       │ │
-│  │  Offline                                                             │ │
-│  │  • Clear offline indicator                                           │ │
-│  │  • What's available offline                                          │ │
-│  │  • Auto-retry when online                                            │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+```html
+{# templates/errors/404.html #}
+{% extends "layouts/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center px-4">
+  <div class="text-center">
+    <p class="text-6xl font-heading font-bold text-primary-500 mb-4">404</p>
+    <h1 class="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-2">
+      {% trans "Sayfa Bulunamadi" %}
+    </h1>
+    <p class="text-gray-500 dark:text-gray-400 mb-8">
+      {% trans "Aradiginiz sayfa mevcut degil veya tasindi." %}
+    </p>
+    <a href="{% url 'home' %}"
+       class="inline-flex items-center gap-2 px-6 py-3 bg-primary-500
+              text-white rounded-lg hover:bg-primary-600">
+      <i class="ph ph-house" aria-hidden="true"></i>
+      {% trans "Ana Sayfaya Don" %}
+    </a>
+  </div>
+</div>
+{% endblock %}
 ```
 
 ---
 
-## 9. ANIMATION & MOTION
+## 9. ACCESSIBILITY (WCAG 2.1 AA)
 
-### 9.1 Motion Principles
+### 9.1 Screen Reader Support
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         MOTION GUIDELINES                                   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  PRINCIPLES:                                                                │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  Purposeful    │ Every animation serves a function                   │ │
-│  │  Subtle        │ Enhance, don't distract                             │ │
-│  │  Quick         │ 200-300ms for micro, 300-500ms for page             │ │
-│  │  Respectful    │ Honor reduced-motion preferences                    │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  TIMING:                                                                    │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  Duration      │ Use Case                                            │ │
-│  │  ───────────────────────────────────────────────────────────────     │ │
-│  │  100ms         │ Button hover, focus ring                            │ │
-│  │  150ms         │ Toggle switches, checkboxes                         │ │
-│  │  200ms         │ Micro-interactions, tooltips                        │ │
-│  │  300ms         │ Modals, dropdowns, menus                            │ │
-│  │  500ms         │ Page transitions, large reveals                     │ │
-│  │                                                                       │ │
-│  │  Easing: ease-out for enter, ease-in for exit                       │ │
-│  │  Default: cubic-bezier(0.4, 0, 0.2, 1)                              │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  REDUCED MOTION:                                                            │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  @media (prefers-reduced-motion: reduce) {                           │ │
-│  │    *, *::before, *::after {                                          │ │
-│  │      animation-duration: 0.01ms !important;                          │ │
-│  │      animation-iteration-count: 1 !important;                        │ │
-│  │      transition-duration: 0.01ms !important;                         │ │
-│  │    }                                                                 │ │
-│  │  }                                                                   │ │
-│  │                                                                       │ │
-│  │  Essential animations (loading spinners) can use:                    │ │
-│  │  @media (prefers-reduced-motion: no-preference) { }                  │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+```html
+{# Skip link (first element in base.html) #}
+<a href="#main-content"
+   class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2
+          focus:z-50 focus:px-4 focus:py-2 focus:bg-primary-500 focus:text-white
+          focus:rounded-lg">
+  {% trans "Ana iceriğe gec" %}
+</a>
+
+{# ARIA landmarks #}
+<header role="banner">
+  <nav role="navigation" aria-label="{% trans 'Ana menu' %}"></nav>
+</header>
+<main id="main-content" role="main"></main>
+<footer role="contentinfo"></footer>
+
+{# Live region for dynamic updates #}
+<div aria-live="polite" aria-atomic="true" class="sr-only" id="live-region"></div>
+
+{# Accessible icon buttons #}
+<button aria-label="{% trans 'Sepete ekle' %}"
+        class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+  <i class="ph ph-shopping-cart text-xl" aria-hidden="true"></i>
+</button>
 ```
 
-### 9.2 Common Animations
+### 9.2 Color Contrast Requirements
+
+| Element | Minimum Ratio | WCAG Level |
+|---------|---------------|------------|
+| Body text | 4.5:1 | AA |
+| Large text (18px+) | 3:1 | AA |
+| UI components | 3:1 | AA |
+| Focus indicators | 3:1 | AA |
+
+### 9.3 Focus Management
 
 ```css
-/* Fade In */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* Visible focus rings via Tailwind */
+/* All interactive elements must use focus:ring-2 or focus:outline */
+.focus-ring {
+  @apply focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+         dark:focus:ring-offset-gray-900;
 }
 
-/* Slide Up (for modals, toasts) */
-@keyframes slideUp {
-  from { 
-    opacity: 0;
-    transform: translateY(16px);
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
-  to { 
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Scale In (for dialogs) */
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* Skeleton Pulse */
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-/* Spinner */
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Usage */
-.modal-enter {
-  animation: scaleIn 300ms ease-out;
-}
-
-.toast-enter {
-  animation: slideUp 200ms ease-out;
-}
-
-.skeleton {
-  animation: pulse 1.5s ease-in-out infinite;
 }
 ```
 
 ---
 
-## 10. UX FLOW PATTERNS
+## 10. ANIMATION & MOTION
 
-### 10.1 Menu Browsing Flow
+### 10.1 Transition Durations
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      MENU BROWSING UX FLOW                                  │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ENTRY POINTS:                                                              │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  1. QR Code Scan → Landing page with menu                            │ │
-│  │  2. Direct URL → /m/{restaurant-slug}                                │ │
-│  │  3. Search Engine → SEO landing + menu                               │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  USER JOURNEY:                                                              │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐           │ │
-│  │  │  Land   │───►│ Browse  │───►│ Select  │───►│ Detail  │           │ │
-│  │  │         │    │Categories│    │ Product │    │  View   │           │ │
-│  │  └─────────┘    └─────────┘    └─────────┘    └────┬────┘           │ │
-│  │                                                     │                │ │
-│  │                                    ┌────────────────┘                │ │
-│  │                                    │                                 │ │
-│  │                                    ▼                                 │ │
-│  │                              ┌─────────┐                             │ │
-│  │                              │Add Cart │                             │ │
-│  │                              └────┬────┘                             │ │
-│  │                                   │                                  │ │
-│  │                      ┌────────────┼────────────┐                    │ │
-│  │                      │            │            │                    │ │
-│  │                      ▼            ▼            ▼                    │ │
-│  │                 ┌─────────┐ ┌─────────┐ ┌─────────┐                │ │
-│  │                 │Continue │ │  View   │ │ Submit  │                │ │
-│  │                 │Browsing │ │  Cart   │ │  Order  │                │ │
-│  │                 └─────────┘ └─────────┘ └─────────┘                │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  KEY UX CONSIDERATIONS:                                                     │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  • Instant category switching (no page reload)                       │ │
-│  │  • Sticky header with search and cart                                │ │
-│  │  • Quick add without leaving list view                               │ │
-│  │  • Persistent cart indicator                                         │ │
-│  │  • Back gesture/button returns to previous position                  │ │
-│  │  • Scroll position preserved on return                               │ │
-│  │  • Filter/sort options easily accessible                             │ │
-│  │  • Price and availability always visible                             │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+| Duration | Use Case | Tailwind |
+|----------|----------|----------|
+| 100ms | Button hover, focus ring | `duration-100` |
+| 150ms | Toggle switches, checkboxes | `duration-150` |
+| 200ms | Tooltips, small reveals | `duration-200` |
+| 300ms | Modals, dropdowns, menus | `duration-300` |
+| 500ms | Page transitions | `duration-500` |
 
-### 10.2 Order Placement Flow
+### 10.2 Alpine.js Transitions
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      ORDER PLACEMENT UX FLOW                                │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  STEP INDICATOR:                                                            │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │   (1)────────(2)────────(3)────────(4)                               │ │
-│  │  Sepet     Detaylar    Onay     Tamamlandı                           │ │
-│  │   ●──────────○──────────○──────────○                                 │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  STEP 1 - CART REVIEW:                                                      │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  • List all items with quantity controls                             │ │
-│  │  • Show item customizations                                          │ │
-│  │  • Allow item removal                                                │ │
-│  │  • Show running total                                                │ │
-│  │  • "Alışverişe Devam Et" + "Siparişi Tamamla"                       │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  STEP 2 - ORDER DETAILS:                                                    │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  • Table number (required for dine-in)                               │ │
-│  │  • Special instructions (optional)                                   │ │
-│  │  • Contact number (optional, for updates)                            │ │
-│  │  • Pre-fill if returning customer                                    │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  STEP 3 - CONFIRMATION:                                                     │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  • Order summary                                                     │ │
-│  │  • Total breakdown (subtotal, tax, discounts)                       │ │
-│  │  • Estimated wait time                                               │ │
-│  │  • "Siparişi Onayla" (prominent CTA)                                │ │
-│  │  • "Düzenle" option to go back                                      │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  STEP 4 - SUCCESS:                                                          │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  • Order number prominently displayed                                │ │
-│  │  • Estimated time                                                    │ │
-│  │  • "Track Order" button                                              │ │
-│  │  • Share/save receipt option                                         │ │
-│  │  • Celebration animation (subtle)                                    │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  ERROR PREVENTION:                                                          │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  • Confirm before removing items                                     │ │
-│  │  • Warn if cart abandoned                                            │ │
-│  │  • Validate table number format                                      │ │
-│  │  • Double-confirm on final submit                                    │ │
-│  │  • Handle network errors gracefully                                  │ │
-│  │  • Prevent double submission                                         │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-### 10.3 Admin Dashboard UX
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      ADMIN DASHBOARD UX                                     │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  INFORMATION HIERARCHY:                                                     │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  Level 1: Critical Alerts (top banner if any)                        │ │
-│  │  Level 2: Key Metrics (today's sales, orders, etc.)                  │ │
-│  │  Level 3: Action Items (pending orders, low stock)                   │ │
-│  │  Level 4: Trends & Insights (charts, comparisons)                    │ │
-│  │  Level 5: Secondary Info (recent activity, tips)                     │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  QUICK ACTIONS:                                                             │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  • Floating action button (mobile): Most common action               │ │
-│  │  • Command palette (Ctrl+K): Power user quick access                 │ │
-│  │  • Contextual actions: Right-click/long-press menus                  │ │
-│  │  • Batch operations: Multi-select + bulk actions                     │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-│  NAVIGATION PATTERNS:                                                       │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                       │ │
-│  │  Desktop: Persistent left sidebar                                    │ │
-│  │  ├── Collapsed by default (icons only)                              │ │
-│  │  ├── Expand on hover or pin                                         │ │
-│  │  └── Grouped by function                                            │ │
-│  │                                                                       │ │
-│  │  Mobile: Bottom navigation + hamburger for secondary                 │ │
-│  │  ├── 4-5 primary items in bottom nav                                │ │
-│  │  ├── Full menu in slide-out drawer                                  │ │
-│  │  └── Swipe gestures for common actions                              │ │
-│  │                                                                       │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+```html
+{# Standard fade + slide pattern #}
+<div x-show="open"
+     x-transition:enter="transition ease-out duration-200"
+     x-transition:enter-start="opacity-0 -translate-y-1"
+     x-transition:enter-end="opacity-100 translate-y-0"
+     x-transition:leave="transition ease-in duration-150"
+     x-transition:leave-start="opacity-100 translate-y-0"
+     x-transition:leave-end="opacity-0 -translate-y-1">
+  {# Content #}
+</div>
 ```
 
 ---
 
 ## 11. IMPLEMENTATION CHECKLIST
 
-### 11.1 Accessibility Audit Checklist
+### 11.1 New Component Checklist
 
 ```
-Before Launch:
+TEMPLATE:
+[ ] Uses {% extends %} or {% include %} properly
+[ ] All strings wrapped in {% trans %}
+[ ] Follows naming: components/component_name.html
+[ ] Context variables documented in comment header
 
-AUTOMATED TESTING:
-[ ] axe-core scan passes (0 violations)
-[ ] Lighthouse accessibility score > 90
-[ ] WAVE tool scan clean
-[ ] HTML validation passes
-
-MANUAL TESTING:
-[ ] Keyboard-only navigation complete
-[ ] Screen reader testing (NVDA/VoiceOver)
-[ ] Zoom to 200% without horizontal scroll
-[ ] Color contrast verified (all text)
-[ ] Focus indicators visible
-[ ] Form error handling tested
-[ ] Touch targets measured (48px min)
-
-ASSISTIVE TECHNOLOGY:
-[ ] NVDA (Windows)
-[ ] VoiceOver (macOS/iOS)
-[ ] TalkBack (Android)
-[ ] Dragon NaturallySpeaking (voice)
-
-DEVICE TESTING:
-[ ] Mobile portrait
-[ ] Mobile landscape
-[ ] Tablet
-[ ] Desktop
-[ ] Large desktop
-```
-
-### 11.2 Component Development Checklist
-
-```
-For Each New Component:
+STYLING:
+[ ] Uses Tailwind utility classes (no custom CSS unless necessary)
+[ ] Dark mode classes (dark:) applied
+[ ] Responsive breakpoints (sm:, md:, lg:) tested
+[ ] Uses design tokens (primary-500, accent-500, font-heading)
 
 ACCESSIBILITY:
-[ ] Keyboard accessible
-[ ] Screen reader friendly
-[ ] ARIA attributes correct
-[ ] Focus management proper
-[ ] Color contrast passing
+[ ] Keyboard navigable (tab order, enter/space activation)
+[ ] ARIA attributes correct (aria-label, aria-describedby, role)
+[ ] Focus ring visible (focus:ring-2)
+[ ] Color contrast >= 4.5:1
+[ ] Screen reader tested
 
-RESPONSIVENESS:
-[ ] Mobile layout works
-[ ] Touch targets adequate
-[ ] No horizontal overflow
+INTERACTIVITY:
+[ ] Alpine.js for client state (x-data, x-show, x-on)
+[ ] Transitions use x-transition
+[ ] Loading states handled
+[ ] Error states handled
 
 STATES:
-[ ] Default state
-[ ] Hover state
-[ ] Focus state
-[ ] Active state
-[ ] Disabled state
-[ ] Loading state
-[ ] Error state
-[ ] Empty state
+[ ] Default, hover, focus, active, disabled
+[ ] Loading state with spinner/skeleton
+[ ] Error state with message
+[ ] Empty state with CTA
+```
 
-THEMING:
-[ ] Uses CSS variables
-[ ] Dark mode works
-[ ] High contrast works
-[ ] Brand colors applied correctly
+### 11.2 Pre-Launch Audit
 
-TESTING:
-[ ] Unit tests written
-[ ] Visual regression test
-[ ] Cross-browser tested
+```
+AUTOMATED:
+[ ] Lighthouse accessibility score > 90
+[ ] HTML validation passes
+[ ] No console errors in production build
+
+MANUAL:
+[ ] Keyboard-only navigation complete
+[ ] Screen reader testing (VoiceOver)
+[ ] Zoom to 200% without horizontal scroll
+[ ] Dark mode all pages verified
+[ ] Mobile, tablet, desktop tested
+[ ] Touch targets >= 48px measured
 ```
 
 ---
 
-*Bu döküman, E-Menum UI/UX standartlarını tanımlar. Tüm arayüz geliştirmeleri bu kurallara uygun olmalıdır.*
+*Bu dokuman, E-Menum UI/UX standartlarini tanimlar. Tum arayuz gelistirmeleri bu kurallara uygun olmalidir.*

@@ -178,13 +178,13 @@ def qrcode_create(request):
     qr.save()
 
     # Generate QR code image
-    if not qr.qr_image_url:
-        try:
-            from apps.orders.services.qr_generator import QRGeneratorService
+    try:
+        from apps.orders.services.qr_generator import QRGeneratorService
 
-            QRGeneratorService.generate_and_save(qr, force=False)
-        except Exception:
-            logger.warning("Failed to generate QR image for %s", qr.code)
+        QRGeneratorService.generate_and_save(qr, force=True)
+        qr.refresh_from_db()
+    except Exception:
+        logger.warning("Failed to generate QR image for %s", qr.code)
 
     messages.success(request, _("QR kod olusturuldu."))
     return redirect("accounts:qrcode-detail", qr_id=qr.id)
@@ -251,13 +251,13 @@ def qrcode_create_api(request):
     qr.save()
 
     # Ensure QR image is generated
-    if not qr.qr_image_url:
-        try:
-            from apps.orders.services.qr_generator import QRGeneratorService
+    try:
+        from apps.orders.services.qr_generator import QRGeneratorService
 
-            QRGeneratorService.generate_and_save(qr, force=False)
-        except Exception:
-            logger.warning("Failed to generate QR image for %s", qr.code)
+        QRGeneratorService.generate_and_save(qr, force=True)
+        qr.refresh_from_db()
+    except Exception:
+        logger.warning("Failed to generate QR image for %s", qr.code)
 
     return JsonResponse(
         {"success": True, "qr": {"id": str(qr.id), "code": qr.code}}, status=201

@@ -37,6 +37,34 @@ class MenuForm(forms.Form):
             }
         ),
     )
+    slug = forms.SlugField(
+        required=False,
+        label=_("URL Slug"),
+        widget=forms.TextInput(
+            attrs={
+                "class": "w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent",
+                "placeholder": _("ornegin: ana-menu"),
+            }
+        ),
+    )
+    is_published = forms.BooleanField(
+        required=False,
+        label=_("Yayinla"),
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-800",
+            }
+        ),
+    )
+    is_default = forms.BooleanField(
+        required=False,
+        label=_("Varsayilan Menu"),
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-800",
+            }
+        ),
+    )
 
     def __init__(self, *args, organization=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -92,7 +120,7 @@ class ThemeForm(forms.Form):
     )
     text_color = forms.CharField(max_length=7, initial="#0F1923", label=_("Yazi Rengi"))
     accent_color = forms.CharField(
-        max_length=7, initial="#F5A623", label=_("Vurgu Rengi")
+        max_length=7, initial="#F5A623", required=False, label=_("Vurgu Rengi")
     )
     FONT_CHOICES = [
         ("Inter", "Inter"),

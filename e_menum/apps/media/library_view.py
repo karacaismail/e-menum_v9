@@ -11,11 +11,12 @@ Custom admin view at /admin/media-library/ providing:
 - Full-screen preview modal
 """
 
-from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 
+from shared.decorators import superadmin_required
 
-@staff_member_required
+
+@superadmin_required
 def media_library(request):
     """
     Render the enterprise media library page.

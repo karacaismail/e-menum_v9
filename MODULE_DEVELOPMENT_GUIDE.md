@@ -1,1384 +1,1326 @@
-# E-Menum Module Development Guide
+# E-Menum App (Module) Development Guide
 
-> **Auto-Claude Module Development Guide**  
-> Yeni modül geliştirmek için adım adım rehber.  
-> Bu dökümanı takip ederek enterprise-ready modül geliştirebilirsiniz.  
-> Son Güncelleme: 2026-01-31
+> **Auto-Claude App Development Guide**
+> Yeni Django app gelistirmek icin adim adim rehber.
+> Bu dokumani takip ederek enterprise-ready Django app gelistirebilirsiniz.
+> Son Guncelleme: 2026-03-16
 
 ---
 
-## 1. BAŞLAMADAN ÖNCE
+## 1. BASLAMADAN ONCE
 
-### 1.1 Ön Koşullar
+### 1.1 On Kosullar
 
 ```yaml
-Okumuş Olmalısınız:
-  ✓ CLAUDE.md - Proje genel bakış
-  ✓ CONSTRAINTS.md - Kısıtlamalar
-  ✓ MODULE_SYSTEM.md - Modül mimarisi
-  ✓ CODING_STANDARDS.md - Kod standartları
-  ✓ API_CONTRACTS.md - API kuralları
-  ✓ DATABASE_SCHEMA.md - Veritabanı kuralları
+Okumus Olmalisiniz:
+  - CLAUDE.md - Proje genel bakis
+  - CONSTRAINTS.md - Kisitlamalar
+  - CODING_STANDARDS.md - Kod standartlari
+  - DATABASE_SCHEMA.md - Veritabani kurallari
 
-Referans Modül:
-  ✓ src/modules/_examples/advanced-example/ incelemiş olmalısınız
-  ✓ src/modules/menu/ production modülünü incelemiş olmalısınız
+Referans App:
+  - e_menum/apps/menu/ production app'ini incelemis olmalisiniz
+  - e_menum/shared/views/base.py - BaseTenantViewSet kaynak kodunu okumus olmalisiniz
+  - e_menum/shared/serializers/base.py - TenantModelSerializer kaynak kodunu okumus olmalisiniz
+  - e_menum/apps/core/models.py - SoftDeleteMixin, TimeStampedMixin mixin'lerini bilmelisiniz
 ```
 
-### 1.2 Modül Geliştirme Karar Ağacı
+### 1.2 App Gelistirme Karar Agaci
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    MODÜL GELİŞTİRME KARAR AĞACI                            │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  Bu özellik modül mü olmalı?                                               │
-│  │                                                                          │
-│  ├─► Bağımsız domain mi? ──────────────────────────────► EVET → MODÜL      │
-│  │   (Örn: Ödeme, Envanter, Rezervasyon)                                   │
-│  │                                                                          │
-│  ├─► Toggle edilebilir mi? ────────────────────────────► EVET → MODÜL      │
-│  │   (Örn: Bazı müşteriler istemeyebilir)                                  │
-│  │                                                                          │
-│  ├─► Tier-based mı? ───────────────────────────────────► EVET → MODÜL      │
-│  │   (Örn: Free'de yok, Pro'da var)                                        │
-│  │                                                                          │
-│  ├─► Başlı başına value sunuyor mu? ───────────────────► EVET → MODÜL      │
-│  │   (Örn: AI içerik üretimi)                                              │
-│  │                                                                          │
-│  └─► Yukarıdakilerin hiçbiri değilse ──────────────────► MEVCUT MODÜLE EKLE│
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------------------+
+|                    APP GELISTIRME KARAR AGACI                               |
++-----------------------------------------------------------------------------+
+|                                                                             |
+|  Bu ozellik ayri bir Django app mi olmali?                                  |
+|  |                                                                          |
+|  +-> Bagimsiz domain mi? --------------------------------> EVET -> APP     |
+|  |   (Orn: Odeme, Envanter, Rezervasyon)                                   |
+|  |                                                                          |
+|  +-> Toggle edilebilir mi? -------------------------------> EVET -> APP    |
+|  |   (Orn: Bazi musteriler istemeyebilir)                                  |
+|  |                                                                          |
+|  +-> Tier-based mi? -------------------------------------> EVET -> APP     |
+|  |   (Orn: Free'de yok, Pro'da var)                                        |
+|  |                                                                          |
+|  +-> Basli basina value sunuyor mu? ---------------------> EVET -> APP     |
+|  |   (Orn: AI icerik uretimi)                                              |
+|  |                                                                          |
+|  +-> Yukaridakilerin hicbiri degilse ---------------------> MEVCUT APP'E   |
+|      EKLE                                                                   |
+|                                                                             |
++-----------------------------------------------------------------------------+
 ```
 
 ---
 
-## 2. MODÜL OLUŞTURMA ADIMLARI
+## 2. APP OLUSTURMA ADIMLARI
 
-### 2.1 Adım 1: Klasör Yapısını Oluştur
+### 2.1 Adim 1: Django App Olustur
 
 ```bash
-# Terminal'de çalıştır
-mkdir -p src/modules/{module-name}
-cd src/modules/{module-name}
-
-# Gerekli dosyaları oluştur
-touch module.json
-touch index.ts
-touch {name}.module.ts
-touch {name}.controller.ts
-touch {name}.service.ts
-touch {name}.repository.ts
-touch {name}.schema.ts
-touch {name}.types.ts
-touch {name}.routes.ts
-touch {name}.events.ts
-touch {name}.constants.ts
-mkdir -p migrations seeds __tests__
+# Proje root'unda calistir
+cd e_menum/apps/
+python ../manage.py startapp payment
 ```
 
-**Örnek: Payment modülü için:**
+Sonra klasor yapisini tamamla:
+
+```bash
+cd e_menum/apps/payment/
+
+# Ek dosyalari olustur
+touch choices.py
+touch signals.py
+touch tasks.py
+touch filters.py
+touch serializers.py
+
+# Management commands dizini
+mkdir -p management/commands
+touch management/__init__.py
+touch management/commands/__init__.py
+touch management/commands/seed_payment.py
+
+# Test dizini
+mkdir -p tests
+touch tests/__init__.py
+touch tests/test_models.py
+touch tests/test_views.py
+touch tests/test_serializers.py
+```
+
+**Ornek: Payment app'i icin nihai yapi:**
 
 ```
-src/modules/payment/
-├── module.json
-├── index.ts
-├── payment.module.ts
-├── payment.controller.ts
-├── payment.service.ts
-├── payment.repository.ts
-├── payment.schema.ts
-├── payment.types.ts
-├── payment.routes.ts
-├── payment.events.ts
-├── payment.constants.ts
-├── providers/                  # Ödeme sağlayıcıları
-│   ├── iyzico.provider.ts
-│   └── stripe.provider.ts
+e_menum/apps/payment/
+├── __init__.py
+├── apps.py               # AppConfig with verbose_name
+├── models.py             # Models (SoftDeleteMixin + org FK)
+├── serializers.py        # DRF serializers (TenantModelSerializer)
+├── views.py              # ViewSets (BaseTenantViewSet)
+├── urls.py               # Router + urlpatterns
+├── admin.py              # ModelAdmin classes
+├── choices.py            # TextChoices enums
+├── signals.py            # post_save, pre_delete handlers
+├── tasks.py              # Celery @shared_task functions
+├── filters.py            # django-filter FilterSet classes
+├── management/
+│   ├── __init__.py
+│   └── commands/
+│       ├── __init__.py
+│       └── seed_payment.py
 ├── migrations/
-│   └── 001_create_payments.ts
-├── seeds/
-│   └── demo-payment.seed.ts
-└── __tests__/
-    ├── payment.service.test.ts
-    └── payment.controller.test.ts
+│   └── 0001_initial.py   # Auto-generated by makemigrations
+└── tests/
+    ├── __init__.py
+    ├── test_models.py
+    ├── test_views.py
+    └── test_serializers.py
 ```
 
-### 2.2 Adım 2: Module Manifest (module.json)
+### 2.2 Adim 2: AppConfig (apps.py)
 
-```json
-{
-  "$schema": "https://e-menum.net/schemas/module-v1.json",
-  "id": "payment",
-  "name": "Payment Module",
-  "version": "1.0.0",
-  "description": "Ödeme entegrasyonu ve işleme",
-  
-  "type": "feature",
-  "category": "commerce",
-  
-  "author": {
-    "name": "Your Name",
-    "email": "your.email@e-menum.net"
-  },
-  
-  "compatibility": {
-    "platform": ">=1.0.0",
-    "node": ">=20.0.0"
-  },
-  
-  "dependencies": {
-    "modules": ["auth", "organization", "order"],
-    "optional": ["notification"]
-  },
-  
-  "provides": {
-    "routes": true,
-    "events": [
-      "payment.initiated",
-      "payment.completed", 
-      "payment.failed",
-      "payment.refunded"
-    ],
-    "hooks": [
-      "beforePaymentProcess",
-      "afterPaymentComplete"
-    ],
-    "permissions": [
-      "payment:read",
-      "payment:process",
-      "payment:refund",
-      "payment:config"
-    ]
-  },
-  
-  "requires": {
-    "permissions": [
-      "auth:verify",
-      "organization:read",
-      "order:read",
-      "order:update"
-    ],
-    "events": [
-      "order.created",
-      "order.cancelled"
-    ]
-  },
-  
-  "tier": {
-    "minimum": "starter",
-    "features": {
-      "starter": ["basic_payment"],
-      "professional": ["multi_gateway", "subscriptions"],
-      "business": ["split_payment", "marketplace"],
-      "enterprise": ["custom_gateway", "white_label"]
-    }
-  },
-  
-  "lifecycle": {
-    "install": "migrations/install.ts",
-    "activate": "lifecycle/activate.ts",
-    "deactivate": "lifecycle/deactivate.ts",
-    "uninstall": "migrations/uninstall.ts"
-  },
-  
-  "admin": {
-    "menu": {
-      "label": "Ödemeler",
-      "icon": "ph-credit-card",
-      "route": "/admin/payments",
-      "order": 25
-    },
-    "settings": {
-      "label": "Ödeme Ayarları",
-      "route": "/admin/settings/payments"
-    }
-  },
-  
-  "settings": {
-    "schema": "settings.schema.json",
-    "defaults": {
-      "defaultGateway": "iyzico",
-      "currency": "TRY",
-      "testMode": true
-    }
-  }
-}
+```python
+# e_menum/apps/payment/apps.py
+
+from django.apps import AppConfig
+
+
+class PaymentConfig(AppConfig):
+    """
+    Configuration for the E-Menum Payment application.
+
+    This app provides payment processing functionality:
+    - Payment creation and processing
+    - Gateway integrations (iyzico, stripe)
+    - Refund management
+    """
+
+    name = "apps.payment"
+    verbose_name = "Payment Management"
+    default_auto_field = "django.db.models.BigAutoField"
+
+    def ready(self):
+        """
+        Perform initialization when the app is ready.
+        Register signals here.
+        """
+        try:
+            from apps.payment import signals  # noqa: F401
+        except ImportError:
+            pass
 ```
 
-### 2.3 Adım 3: TypeScript Types (payment.types.ts)
+### 2.3 Adim 3: Choices / Enums (choices.py)
 
-```typescript
-// src/modules/payment/payment.types.ts
+```python
+# e_menum/apps/payment/choices.py
 
-// === ENUMS ===
-export enum PaymentStatus {
-  PENDING = 'pending',
-  PROCESSING = 'processing',
-  COMPLETED = 'completed',
-  FAILED = 'failed',
-  REFUNDED = 'refunded',
-  PARTIALLY_REFUNDED = 'partially_refunded',
-}
+from django.db import models
+from django.utils.translation import gettext_lazy as _
 
-export enum PaymentMethod {
-  CREDIT_CARD = 'credit_card',
-  DEBIT_CARD = 'debit_card',
-  BANK_TRANSFER = 'bank_transfer',
-  WALLET = 'wallet',
-}
 
-export enum PaymentGateway {
-  IYZICO = 'iyzico',
-  STRIPE = 'stripe',
-  PAYTR = 'paytr',
-}
+class PaymentStatus(models.TextChoices):
+    PENDING = "pending", _("Pending")
+    PROCESSING = "processing", _("Processing")
+    COMPLETED = "completed", _("Completed")
+    FAILED = "failed", _("Failed")
+    REFUNDED = "refunded", _("Refunded")
+    PARTIALLY_REFUNDED = "partially_refunded", _("Partially Refunded")
 
-// === ENTITIES ===
-export interface Payment {
-  id: string;
-  organizationId: string;
-  orderId: string;
-  
-  // Amount
-  amount: number;           // Kuruş cinsinden
-  currency: string;
-  
-  // Status
-  status: PaymentStatus;
-  method: PaymentMethod;
-  gateway: PaymentGateway;
-  
-  // Gateway response
-  gatewayTransactionId?: string;
-  gatewayResponse?: Record<string, unknown>;
-  
-  // Timestamps
-  initiatedAt: Date;
-  completedAt?: Date;
-  failedAt?: Date;
-  
-  // Metadata
-  metadata?: Record<string, unknown>;
-  
-  createdAt: Date;
-  updatedAt: Date;
-}
 
-export interface PaymentRefund {
-  id: string;
-  paymentId: string;
-  amount: number;
-  reason?: string;
-  status: 'pending' | 'completed' | 'failed';
-  gatewayRefundId?: string;
-  createdAt: Date;
-}
+class PaymentMethod(models.TextChoices):
+    CREDIT_CARD = "credit_card", _("Credit Card")
+    DEBIT_CARD = "debit_card", _("Debit Card")
+    BANK_TRANSFER = "bank_transfer", _("Bank Transfer")
+    WALLET = "wallet", _("Wallet")
 
-// === DTOs ===
-export interface CreatePaymentDto {
-  orderId: string;
-  amount: number;
-  currency?: string;
-  method: PaymentMethod;
-  gateway?: PaymentGateway;
-  metadata?: Record<string, unknown>;
-}
 
-export interface ProcessPaymentDto {
-  paymentId: string;
-  cardToken?: string;          // Tokenized card
-  saveCard?: boolean;
-  installments?: number;
-}
-
-export interface RefundPaymentDto {
-  paymentId: string;
-  amount?: number;             // Partial refund
-  reason?: string;
-}
-
-// === RESPONSES ===
-export interface PaymentResult {
-  success: boolean;
-  payment: Payment;
-  redirectUrl?: string;        // 3D Secure için
-  error?: PaymentError;
-}
-
-export interface PaymentError {
-  code: string;
-  message: string;
-  details?: Record<string, unknown>;
-}
-
-// === EVENTS ===
-export interface PaymentInitiatedEvent {
-  paymentId: string;
-  orderId: string;
-  amount: number;
-  gateway: PaymentGateway;
-}
-
-export interface PaymentCompletedEvent {
-  paymentId: string;
-  orderId: string;
-  transactionId: string;
-}
-
-export interface PaymentFailedEvent {
-  paymentId: string;
-  orderId: string;
-  error: PaymentError;
-}
-
-// === CONFIG ===
-export interface PaymentModuleConfig {
-  defaultGateway: PaymentGateway;
-  currency: string;
-  testMode: boolean;
-  gateways: {
-    iyzico?: {
-      apiKey: string;
-      secretKey: string;
-      baseUrl: string;
-    };
-    stripe?: {
-      publishableKey: string;
-      secretKey: string;
-    };
-  };
-}
+class PaymentGateway(models.TextChoices):
+    IYZICO = "iyzico", _("Iyzico")
+    STRIPE = "stripe", _("Stripe")
+    PAYTR = "paytr", _("PayTR")
 ```
 
-### 2.4 Adım 4: Validation Schema (payment.schema.ts)
+### 2.4 Adim 4: Models (models.py)
 
-```typescript
-// src/modules/payment/payment.schema.ts
-import { z } from 'zod';
-import { PaymentMethod, PaymentGateway } from './payment.types';
+```python
+# e_menum/apps/payment/models.py
 
-// === CREATE PAYMENT ===
-export const createPaymentSchema = z.object({
-  orderId: z.string().uuid('Geçerli sipariş ID gerekli'),
-  amount: z.number().positive('Tutar pozitif olmalı'),
-  currency: z.string().length(3).default('TRY'),
-  method: z.nativeEnum(PaymentMethod),
-  gateway: z.nativeEnum(PaymentGateway).optional(),
-  metadata: z.record(z.unknown()).optional(),
-});
+"""
+Django ORM models for the Payment application.
 
-export type CreatePaymentInput = z.infer<typeof createPaymentSchema>;
+Critical Rules:
+- Every query MUST include organization for tenant isolation
+- All entities use soft delete (deleted_at timestamp)
+- No physical deletions allowed (use soft_delete method)
+"""
 
-// === PROCESS PAYMENT ===
-export const processPaymentSchema = z.object({
-  paymentId: z.string().uuid(),
-  cardToken: z.string().optional(),
-  saveCard: z.boolean().default(false),
-  installments: z.number().int().min(1).max(12).default(1),
-});
+import uuid
 
-export type ProcessPaymentInput = z.infer<typeof processPaymentSchema>;
+from django.db import models
+from django.utils.translation import gettext_lazy as _
 
-// === REFUND ===
-export const refundPaymentSchema = z.object({
-  paymentId: z.string().uuid(),
-  amount: z.number().positive().optional(),
-  reason: z.string().max(500).optional(),
-});
+from apps.core.models import (
+    Organization,
+    SoftDeleteManager,
+    SoftDeleteMixin,
+    TimeStampedMixin,
+)
+from apps.payment.choices import PaymentStatus, PaymentMethod, PaymentGateway
 
-export type RefundPaymentInput = z.infer<typeof refundPaymentSchema>;
 
-// === QUERY ===
-export const paymentQuerySchema = z.object({
-  organizationId: z.string().uuid().optional(),
-  orderId: z.string().uuid().optional(),
-  status: z.nativeEnum(PaymentStatus).optional(),
-  gateway: z.nativeEnum(PaymentGateway).optional(),
-  startDate: z.coerce.date().optional(),
-  endDate: z.coerce.date().optional(),
-  page: z.coerce.number().int().positive().default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(20),
-});
+class Payment(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    Payment model - tracks payment transactions for orders.
 
-// === CONFIG ===
-export const paymentConfigSchema = z.object({
-  defaultGateway: z.nativeEnum(PaymentGateway),
-  currency: z.string().length(3),
-  testMode: z.boolean(),
-  gateways: z.object({
-    iyzico: z.object({
-      apiKey: z.string().min(1),
-      secretKey: z.string().min(1),
-      baseUrl: z.string().url(),
-    }).optional(),
-    stripe: z.object({
-      publishableKey: z.string().startsWith('pk_'),
-      secretKey: z.string().startsWith('sk_'),
-    }).optional(),
-  }),
-});
-```
+    Critical Rules:
+    - EVERY query MUST filter by organization (multi-tenant isolation)
+    - Use soft_delete() - never call delete() directly
+    """
 
-### 2.5 Adım 5: Repository (payment.repository.ts)
-
-```typescript
-// src/modules/payment/payment.repository.ts
-import { Injectable } from '@/core/di';
-import { PrismaService } from '@/core/database';
-import { Payment, PaymentRefund, PaymentStatus } from './payment.types';
-
-@Injectable()
-export class PaymentRepository {
-  constructor(private prisma: PrismaService) {}
-  
-  async create(data: Omit<Payment, 'id' | 'createdAt' | 'updatedAt'>): Promise<Payment> {
-    return this.prisma.payment.create({
-      data: {
-        ...data,
-        initiatedAt: new Date(),
-      },
-    });
-  }
-  
-  async findById(id: string): Promise<Payment | null> {
-    return this.prisma.payment.findUnique({
-      where: { id },
-    });
-  }
-  
-  async findByOrderId(orderId: string): Promise<Payment[]> {
-    return this.prisma.payment.findMany({
-      where: { orderId },
-      orderBy: { createdAt: 'desc' },
-    });
-  }
-  
-  async findByOrganization(
-    organizationId: string,
-    options?: {
-      status?: PaymentStatus;
-      startDate?: Date;
-      endDate?: Date;
-      limit?: number;
-      offset?: number;
-    }
-  ): Promise<{ payments: Payment[]; total: number }> {
-    const where = {
-      organizationId,
-      ...(options?.status && { status: options.status }),
-      ...(options?.startDate && {
-        createdAt: {
-          gte: options.startDate,
-          ...(options?.endDate && { lte: options.endDate }),
-        },
-      }),
-    };
-    
-    const [payments, total] = await Promise.all([
-      this.prisma.payment.findMany({
-        where,
-        take: options?.limit ?? 20,
-        skip: options?.offset ?? 0,
-        orderBy: { createdAt: 'desc' },
-      }),
-      this.prisma.payment.count({ where }),
-    ]);
-    
-    return { payments, total };
-  }
-  
-  async updateStatus(
-    id: string,
-    status: PaymentStatus,
-    gatewayResponse?: Record<string, unknown>
-  ): Promise<Payment> {
-    const updateData: Record<string, unknown> = { status };
-    
-    if (status === PaymentStatus.COMPLETED) {
-      updateData.completedAt = new Date();
-    } else if (status === PaymentStatus.FAILED) {
-      updateData.failedAt = new Date();
-    }
-    
-    if (gatewayResponse) {
-      updateData.gatewayResponse = gatewayResponse;
-    }
-    
-    return this.prisma.payment.update({
-      where: { id },
-      data: updateData,
-    });
-  }
-  
-  async createRefund(
-    data: Omit<PaymentRefund, 'id' | 'createdAt'>
-  ): Promise<PaymentRefund> {
-    return this.prisma.paymentRefund.create({ data });
-  }
-}
-```
-
-### 2.6 Adım 6: Service (payment.service.ts)
-
-```typescript
-// src/modules/payment/payment.service.ts
-import { Injectable } from '@/core/di';
-import { EventBus } from '@/core/events';
-import { Logger } from '@/core/logger';
-import { PaymentRepository } from './payment.repository';
-import { PaymentGatewayFactory } from './providers/gateway.factory';
-import {
-  Payment,
-  PaymentStatus,
-  CreatePaymentDto,
-  ProcessPaymentDto,
-  RefundPaymentDto,
-  PaymentResult,
-  PaymentError,
-} from './payment.types';
-import {
-  PaymentNotFoundError,
-  PaymentAlreadyProcessedError,
-  PaymentProcessingError,
-  RefundNotAllowedError,
-} from './payment.errors';
-
-@Injectable()
-export class PaymentService {
-  constructor(
-    private repository: PaymentRepository,
-    private gatewayFactory: PaymentGatewayFactory,
-    private events: EventBus,
-    private logger: Logger,
-  ) {}
-  
-  /**
-   * Ödeme oluştur
-   */
-  async createPayment(
-    organizationId: string,
-    dto: CreatePaymentDto
-  ): Promise<Payment> {
-    this.logger.debug('Creating payment', { organizationId, dto });
-    
-    const payment = await this.repository.create({
-      organizationId,
-      orderId: dto.orderId,
-      amount: dto.amount,
-      currency: dto.currency ?? 'TRY',
-      status: PaymentStatus.PENDING,
-      method: dto.method,
-      gateway: dto.gateway ?? this.getDefaultGateway(organizationId),
-      metadata: dto.metadata,
-    });
-    
-    this.events.emit('payment.initiated', {
-      paymentId: payment.id,
-      orderId: payment.orderId,
-      amount: payment.amount,
-      gateway: payment.gateway,
-    });
-    
-    return payment;
-  }
-  
-  /**
-   * Ödeme işle
-   */
-  async processPayment(dto: ProcessPaymentDto): Promise<PaymentResult> {
-    const payment = await this.repository.findById(dto.paymentId);
-    
-    if (!payment) {
-      throw new PaymentNotFoundError(dto.paymentId);
-    }
-    
-    if (payment.status !== PaymentStatus.PENDING) {
-      throw new PaymentAlreadyProcessedError(dto.paymentId);
-    }
-    
-    // Update status to processing
-    await this.repository.updateStatus(dto.paymentId, PaymentStatus.PROCESSING);
-    
-    try {
-      // Get appropriate gateway
-      const gateway = this.gatewayFactory.getGateway(payment.gateway);
-      
-      // Process with gateway
-      const result = await gateway.processPayment({
-        amount: payment.amount,
-        currency: payment.currency,
-        orderId: payment.orderId,
-        cardToken: dto.cardToken,
-        installments: dto.installments,
-      });
-      
-      if (result.success) {
-        const updatedPayment = await this.repository.updateStatus(
-          dto.paymentId,
-          PaymentStatus.COMPLETED,
-          result.gatewayResponse
-        );
-        
-        this.events.emit('payment.completed', {
-          paymentId: payment.id,
-          orderId: payment.orderId,
-          transactionId: result.transactionId,
-        });
-        
-        return {
-          success: true,
-          payment: updatedPayment,
-        };
-      } else {
-        const updatedPayment = await this.repository.updateStatus(
-          dto.paymentId,
-          PaymentStatus.FAILED,
-          result.gatewayResponse
-        );
-        
-        this.events.emit('payment.failed', {
-          paymentId: payment.id,
-          orderId: payment.orderId,
-          error: result.error,
-        });
-        
-        return {
-          success: false,
-          payment: updatedPayment,
-          error: result.error,
-        };
-      }
-    } catch (error) {
-      this.logger.error('Payment processing failed', { error, paymentId: dto.paymentId });
-      
-      await this.repository.updateStatus(dto.paymentId, PaymentStatus.FAILED);
-      
-      throw new PaymentProcessingError(error.message);
-    }
-  }
-  
-  /**
-   * İade işle
-   */
-  async refundPayment(dto: RefundPaymentDto): Promise<PaymentResult> {
-    const payment = await this.repository.findById(dto.paymentId);
-    
-    if (!payment) {
-      throw new PaymentNotFoundError(dto.paymentId);
-    }
-    
-    if (payment.status !== PaymentStatus.COMPLETED) {
-      throw new RefundNotAllowedError('Only completed payments can be refunded');
-    }
-    
-    const refundAmount = dto.amount ?? payment.amount;
-    
-    // Process refund with gateway
-    const gateway = this.gatewayFactory.getGateway(payment.gateway);
-    const result = await gateway.refund({
-      transactionId: payment.gatewayTransactionId!,
-      amount: refundAmount,
-    });
-    
-    if (result.success) {
-      // Create refund record
-      await this.repository.createRefund({
-        paymentId: payment.id,
-        amount: refundAmount,
-        reason: dto.reason,
-        status: 'completed',
-        gatewayRefundId: result.refundId,
-      });
-      
-      // Update payment status
-      const newStatus = refundAmount === payment.amount
-        ? PaymentStatus.REFUNDED
-        : PaymentStatus.PARTIALLY_REFUNDED;
-      
-      const updatedPayment = await this.repository.updateStatus(
-        dto.paymentId,
-        newStatus
-      );
-      
-      this.events.emit('payment.refunded', {
-        paymentId: payment.id,
-        amount: refundAmount,
-        isPartial: newStatus === PaymentStatus.PARTIALLY_REFUNDED,
-      });
-      
-      return { success: true, payment: updatedPayment };
-    }
-    
-    return { success: false, payment, error: result.error };
-  }
-  
-  /**
-   * Ödeme getir
-   */
-  async getPayment(id: string): Promise<Payment | null> {
-    return this.repository.findById(id);
-  }
-  
-  /**
-   * Sipariş ödemelerini getir
-   */
-  async getOrderPayments(orderId: string): Promise<Payment[]> {
-    return this.repository.findByOrderId(orderId);
-  }
-  
-  // Private methods
-  private getDefaultGateway(organizationId: string): PaymentGateway {
-    // TODO: Get from organization settings
-    return PaymentGateway.IYZICO;
-  }
-}
-```
-
-### 2.7 Adım 7: Controller (payment.controller.ts)
-
-```typescript
-// src/modules/payment/payment.controller.ts
-import { Request, Response, NextFunction } from 'express';
-import { Injectable } from '@/core/di';
-import { PaymentService } from './payment.service';
-import {
-  createPaymentSchema,
-  processPaymentSchema,
-  refundPaymentSchema,
-  paymentQuerySchema,
-} from './payment.schema';
-
-@Injectable()
-export class PaymentController {
-  constructor(private service: PaymentService) {}
-  
-  /**
-   * POST /api/v1/payments
-   * Ödeme oluştur
-   */
-  async create(req: Request, res: Response, next: NextFunction) {
-    try {
-      const dto = createPaymentSchema.parse(req.body);
-      const payment = await this.service.createPayment(
-        req.user.organizationId,
-        dto
-      );
-      
-      res.status(201).json({
-        success: true,
-        data: payment,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-  
-  /**
-   * POST /api/v1/payments/:id/process
-   * Ödeme işle
-   */
-  async process(req: Request, res: Response, next: NextFunction) {
-    try {
-      const dto = processPaymentSchema.parse({
-        paymentId: req.params.id,
-        ...req.body,
-      });
-      
-      const result = await this.service.processPayment(dto);
-      
-      if (result.success) {
-        res.json({
-          success: true,
-          data: result.payment,
-          redirectUrl: result.redirectUrl,
-        });
-      } else {
-        res.status(400).json({
-          success: false,
-          error: result.error,
-        });
-      }
-    } catch (error) {
-      next(error);
-    }
-  }
-  
-  /**
-   * POST /api/v1/payments/:id/refund
-   * İade et
-   */
-  async refund(req: Request, res: Response, next: NextFunction) {
-    try {
-      const dto = refundPaymentSchema.parse({
-        paymentId: req.params.id,
-        ...req.body,
-      });
-      
-      const result = await this.service.refundPayment(dto);
-      
-      res.json({
-        success: result.success,
-        data: result.payment,
-        error: result.error,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-  
-  /**
-   * GET /api/v1/payments/:id
-   * Ödeme detayı
-   */
-  async getById(req: Request, res: Response, next: NextFunction) {
-    try {
-      const payment = await this.service.getPayment(req.params.id);
-      
-      if (!payment) {
-        return res.status(404).json({
-          success: false,
-          error: { code: 'NOT_FOUND', message: 'Payment not found' },
-        });
-      }
-      
-      res.json({
-        success: true,
-        data: payment,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-  
-  /**
-   * GET /api/v1/payments
-   * Ödeme listesi
-   */
-  async list(req: Request, res: Response, next: NextFunction) {
-    try {
-      const query = paymentQuerySchema.parse(req.query);
-      const { payments, total } = await this.service.listPayments(
-        req.user.organizationId,
-        query
-      );
-      
-      res.json({
-        success: true,
-        data: payments,
-        meta: {
-          total,
-          page: query.page,
-          limit: query.limit,
-          totalPages: Math.ceil(total / query.limit),
-        },
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-}
-```
-
-### 2.8 Adım 8: Routes (payment.routes.ts)
-
-```typescript
-// src/modules/payment/payment.routes.ts
-import { Router } from 'express';
-import { container } from '@/core/di';
-import { auth, rbac, tenantGuard } from '@/core/middleware';
-import { PaymentController } from './payment.controller';
-
-export function createPaymentRoutes(): Router {
-  const router = Router();
-  const controller = container.resolve(PaymentController);
-  
-  // All routes require authentication
-  router.use(auth());
-  router.use(tenantGuard());
-  
-  // CRUD
-  router.post(
-    '/',
-    rbac('payment:process'),
-    controller.create.bind(controller)
-  );
-  
-  router.get(
-    '/',
-    rbac('payment:read'),
-    controller.list.bind(controller)
-  );
-  
-  router.get(
-    '/:id',
-    rbac('payment:read'),
-    controller.getById.bind(controller)
-  );
-  
-  // Actions
-  router.post(
-    '/:id/process',
-    rbac('payment:process'),
-    controller.process.bind(controller)
-  );
-  
-  router.post(
-    '/:id/refund',
-    rbac('payment:refund'),
-    controller.refund.bind(controller)
-  );
-  
-  return router;
-}
-
-export const paymentRoutes = {
-  prefix: '/api/v1/payments',
-  router: createPaymentRoutes,
-};
-```
-
-### 2.9 Adım 9: Module Definition (payment.module.ts)
-
-```typescript
-// src/modules/payment/payment.module.ts
-import { Module, ModuleContext } from '@/core/module-loader';
-import { PaymentController } from './payment.controller';
-import { PaymentService } from './payment.service';
-import { PaymentRepository } from './payment.repository';
-import { PaymentEventHandlers } from './payment.events';
-import { PaymentGatewayFactory } from './providers/gateway.factory';
-import { paymentRoutes } from './payment.routes';
-import manifest from './module.json';
-
-@Module({
-  id: 'payment',
-  manifest,
-})
-export class PaymentModule {
-  static providers = [
-    PaymentService,
-    PaymentRepository,
-    PaymentEventHandlers,
-    PaymentGatewayFactory,
-  ];
-  
-  static controllers = [PaymentController];
-  
-  static routes = paymentRoutes;
-  
-  static async onInstall(context: ModuleContext): Promise<void> {
-    context.logger.info('Installing Payment module...');
-    
-    // Run migrations
-    await context.runMigrations(__dirname + '/migrations');
-    
-    context.logger.info('Payment module installed');
-  }
-  
-  static async onActivate(context: ModuleContext): Promise<void> {
-    context.logger.info('Activating Payment module...');
-    
-    // Register routes
-    context.registerRoutes(this.routes);
-    
-    // Subscribe to events
-    context.events.on('order.created', PaymentEventHandlers.onOrderCreated);
-    context.events.on('order.cancelled', PaymentEventHandlers.onOrderCancelled);
-    
-    // Register permissions
-    context.permissions.register([
-      { id: 'payment:read', name: 'View Payments', module: 'payment' },
-      { id: 'payment:process', name: 'Process Payments', module: 'payment' },
-      { id: 'payment:refund', name: 'Refund Payments', module: 'payment' },
-      { id: 'payment:config', name: 'Configure Payments', module: 'payment' },
-    ]);
-    
-    context.logger.info('Payment module activated');
-  }
-  
-  static async onDeactivate(context: ModuleContext): Promise<void> {
-    context.logger.info('Deactivating Payment module...');
-    
-    // Unregister routes
-    context.unregisterRoutes(this.routes);
-    
-    // Unsubscribe from events
-    context.events.off('order.created', PaymentEventHandlers.onOrderCreated);
-    context.events.off('order.cancelled', PaymentEventHandlers.onOrderCancelled);
-    
-    context.logger.info('Payment module deactivated');
-  }
-  
-  static async onUninstall(context: ModuleContext): Promise<void> {
-    if (!context.options.force) {
-      throw new Error('Use --force to delete payment data');
-    }
-    
-    context.logger.warn('Uninstalling Payment module - DATA WILL BE DELETED');
-    
-    // Rollback migrations
-    await context.rollbackMigrations(__dirname + '/migrations');
-    
-    context.logger.info('Payment module uninstalled');
-  }
-}
-```
-
-### 2.10 Adım 10: Public Exports (index.ts)
-
-```typescript
-// src/modules/payment/index.ts
-
-// Module
-export { PaymentModule } from './payment.module';
-
-// Types (public interface)
-export {
-  Payment,
-  PaymentStatus,
-  PaymentMethod,
-  PaymentGateway,
-  PaymentResult,
-  PaymentError,
-  CreatePaymentDto,
-  ProcessPaymentDto,
-  RefundPaymentDto,
-} from './payment.types';
-
-// Events
-export {
-  PaymentInitiatedEvent,
-  PaymentCompletedEvent,
-  PaymentFailedEvent,
-} from './payment.types';
-
-// Service (for DI in other modules)
-export { PaymentService } from './payment.service';
-
-// DO NOT EXPORT:
-// - Repository (internal)
-// - Controller (internal)
-// - Schema (internal)
-// - Providers (internal)
-```
-
----
-
-## 3. DATABASE MIGRATION
-
-### 3.1 Migration Dosyası Oluştur
-
-```typescript
-// src/modules/payment/migrations/001_create_payments.ts
-import { Prisma } from '@prisma/client';
-
-export const up = async (prisma: any) => {
-  // payments tablosu
-  await prisma.$executeRaw`
-    CREATE TABLE IF NOT EXISTS payments (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      organization_id UUID NOT NULL REFERENCES organizations(id),
-      order_id UUID NOT NULL REFERENCES orders(id),
-      
-      amount INTEGER NOT NULL,
-      currency VARCHAR(3) NOT NULL DEFAULT 'TRY',
-      
-      status VARCHAR(30) NOT NULL DEFAULT 'pending',
-      method VARCHAR(30) NOT NULL,
-      gateway VARCHAR(30) NOT NULL,
-      
-      gateway_transaction_id VARCHAR(255),
-      gateway_response JSONB,
-      
-      initiated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-      completed_at TIMESTAMPTZ,
-      failed_at TIMESTAMPTZ,
-      
-      metadata JSONB,
-      
-      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        related_name="payments",
+        verbose_name=_("Organization"),
     )
-  `;
-  
-  // payment_refunds tablosu
-  await prisma.$executeRaw`
-    CREATE TABLE IF NOT EXISTS payment_refunds (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      payment_id UUID NOT NULL REFERENCES payments(id),
-      amount INTEGER NOT NULL,
-      reason TEXT,
-      status VARCHAR(30) NOT NULL DEFAULT 'pending',
-      gateway_refund_id VARCHAR(255),
-      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    order = models.ForeignKey(
+        "orders.Order",
+        on_delete=models.CASCADE,
+        related_name="payments",
+        verbose_name=_("Order"),
     )
-  `;
-  
-  // Indexes
-  await prisma.$executeRaw`
-    CREATE INDEX IF NOT EXISTS idx_payments_organization 
-    ON payments(organization_id)
-  `;
-  
-  await prisma.$executeRaw`
-    CREATE INDEX IF NOT EXISTS idx_payments_order 
-    ON payments(order_id)
-  `;
-  
-  await prisma.$executeRaw`
-    CREATE INDEX IF NOT EXISTS idx_payments_status 
-    ON payments(status)
-  `;
-};
 
-export const down = async (prisma: any) => {
-  await prisma.$executeRaw`DROP TABLE IF EXISTS payment_refunds`;
-  await prisma.$executeRaw`DROP TABLE IF EXISTS payments`;
-};
+    # Amount
+    amount = models.DecimalField(
+        _("Amount"), max_digits=10, decimal_places=2
+    )
+    currency = models.CharField(
+        _("Currency"), max_length=3, default="TRY"
+    )
+
+    # Status
+    status = models.CharField(
+        _("Status"),
+        max_length=30,
+        choices=PaymentStatus.choices,
+        default=PaymentStatus.PENDING,
+        db_index=True,
+    )
+    method = models.CharField(
+        _("Payment Method"),
+        max_length=30,
+        choices=PaymentMethod.choices,
+    )
+    gateway = models.CharField(
+        _("Payment Gateway"),
+        max_length=30,
+        choices=PaymentGateway.choices,
+    )
+
+    # Gateway response
+    gateway_transaction_id = models.CharField(
+        _("Gateway Transaction ID"), max_length=255, blank=True, null=True
+    )
+    gateway_response = models.JSONField(
+        _("Gateway Response"), default=dict, blank=True
+    )
+
+    # Timestamps
+    initiated_at = models.DateTimeField(_("Initiated At"), auto_now_add=True)
+    completed_at = models.DateTimeField(_("Completed At"), blank=True, null=True)
+    failed_at = models.DateTimeField(_("Failed At"), blank=True, null=True)
+
+    # Metadata
+    metadata = models.JSONField(_("Metadata"), default=dict, blank=True)
+
+    objects = SoftDeleteManager()
+    all_objects = models.Manager()
+
+    class Meta:
+        db_table = "payments"
+        ordering = ["-created_at"]
+        verbose_name = _("Payment")
+        verbose_name_plural = _("Payments")
+        indexes = [
+            models.Index(fields=["organization", "status"]),
+            models.Index(fields=["order"]),
+            models.Index(fields=["-created_at"]),
+        ]
+
+    def __str__(self):
+        return f"Payment {self.id} - {self.amount} {self.currency} ({self.status})"
+
+
+class PaymentRefund(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    """
+    Refund record for a payment transaction.
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    payment = models.ForeignKey(
+        Payment,
+        on_delete=models.CASCADE,
+        related_name="refunds",
+        verbose_name=_("Payment"),
+    )
+    amount = models.DecimalField(
+        _("Refund Amount"), max_digits=10, decimal_places=2
+    )
+    reason = models.TextField(_("Reason"), blank=True, default="")
+    status = models.CharField(
+        _("Status"),
+        max_length=30,
+        choices=[
+            ("pending", _("Pending")),
+            ("completed", _("Completed")),
+            ("failed", _("Failed")),
+        ],
+        default="pending",
+    )
+    gateway_refund_id = models.CharField(
+        _("Gateway Refund ID"), max_length=255, blank=True, null=True
+    )
+
+    objects = SoftDeleteManager()
+    all_objects = models.Manager()
+
+    class Meta:
+        db_table = "payment_refunds"
+        ordering = ["-created_at"]
+        verbose_name = _("Payment Refund")
+        verbose_name_plural = _("Payment Refunds")
+
+    def __str__(self):
+        return f"Refund {self.id} - {self.amount} for Payment {self.payment_id}"
 ```
 
-### 3.2 Prisma Schema Güncelle
+**Model kurallari (kritik):**
 
-```prisma
-// prisma/schema.prisma içine ekle
+```python
+# DOGRU: Her model SoftDeleteMixin ve TimeStampedMixin inherit etmeli
+class MyModel(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    objects = SoftDeleteManager()  # Soft-deleted kayitlari otomatik filtreler
 
-model Payment {
-  id             String   @id @default(uuid())
-  organizationId String   @map("organization_id")
-  orderId        String   @map("order_id")
-  
-  amount         Int
-  currency       String   @default("TRY") @db.VarChar(3)
-  
-  status         String   @default("pending") @db.VarChar(30)
-  method         String   @db.VarChar(30)
-  gateway        String   @db.VarChar(30)
-  
-  gatewayTransactionId String? @map("gateway_transaction_id")
-  gatewayResponse      Json?   @map("gateway_response")
-  
-  initiatedAt    DateTime @default(now()) @map("initiated_at")
-  completedAt    DateTime? @map("completed_at")
-  failedAt       DateTime? @map("failed_at")
-  
-  metadata       Json?
-  
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
-  
-  // Relations
-  organization   Organization @relation(fields: [organizationId], references: [id])
-  order          Order        @relation(fields: [orderId], references: [id])
-  refunds        PaymentRefund[]
-  
-  @@index([organizationId])
-  @@index([orderId])
-  @@index([status])
-  @@map("payments")
-}
+# YANLIS: Mixin'siz model
+class MyModel(models.Model):  # SoftDeleteMixin YOK!
+    pass  # organization FK YOK!
+```
 
-model PaymentRefund {
-  id              String   @id @default(uuid())
-  paymentId       String   @map("payment_id")
-  amount          Int
-  reason          String?
-  status          String   @default("pending") @db.VarChar(30)
-  gatewayRefundId String?  @map("gateway_refund_id")
-  createdAt       DateTime @default(now()) @map("created_at")
-  
-  payment         Payment  @relation(fields: [paymentId], references: [id])
-  
-  @@map("payment_refunds")
-}
+### 2.5 Adim 5: Serializers (serializers.py)
+
+```python
+# e_menum/apps/payment/serializers.py
+
+"""
+Serializers for the Payment application.
+
+Critical Rules:
+- Use TenantModelSerializer for tenant-scoped models
+- Never expose deleted_at field in public API responses
+- Always validate cross-tenant references
+"""
+
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+
+from apps.payment.models import Payment, PaymentRefund
+from apps.payment.choices import PaymentStatus, PaymentMethod, PaymentGateway
+from shared.serializers.base import TenantModelSerializer, MinimalSerializer
+
+
+# =========================================================================
+# LIST / DETAIL SERIALIZERS
+# =========================================================================
+
+
+class PaymentListSerializer(TenantModelSerializer):
+    """Serializer for payment list view (lightweight)."""
+
+    class Meta:
+        model = Payment
+        fields = [
+            "id",
+            "order",
+            "amount",
+            "currency",
+            "status",
+            "method",
+            "gateway",
+            "initiated_at",
+            "completed_at",
+            "created_at",
+        ]
+        read_only_fields = fields
+
+
+class PaymentDetailSerializer(TenantModelSerializer):
+    """Serializer for payment detail view (full data)."""
+
+    refunds = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Payment
+        fields = [
+            "id",
+            "order",
+            "amount",
+            "currency",
+            "status",
+            "method",
+            "gateway",
+            "gateway_transaction_id",
+            "initiated_at",
+            "completed_at",
+            "failed_at",
+            "metadata",
+            "refunds",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = fields
+
+    def get_refunds(self, obj):
+        refunds = obj.refunds.filter(deleted_at__isnull=True)
+        return PaymentRefundSerializer(refunds, many=True).data
+
+
+# =========================================================================
+# CREATE / UPDATE SERIALIZERS
+# =========================================================================
+
+
+class PaymentCreateSerializer(TenantModelSerializer):
+    """Serializer for creating a new payment."""
+
+    class Meta:
+        model = Payment
+        fields = [
+            "order",
+            "amount",
+            "currency",
+            "method",
+            "gateway",
+            "metadata",
+        ]
+
+    def validate_amount(self, value):
+        if value <= 0:
+            raise ValidationError(_("Amount must be positive."))
+        return value
+
+    def validate(self, attrs):
+        # Cross-tenant validation: order must belong to same organization
+        request = self.context.get("request")
+        order = attrs.get("order")
+        if request and order:
+            org = getattr(request, "organization", None)
+            if org and str(order.organization_id) != str(org.id):
+                raise ValidationError(
+                    _("Order does not belong to your organization.")
+                )
+        return attrs
+
+
+class PaymentRefundSerializer(TenantModelSerializer):
+    """Serializer for payment refunds."""
+
+    class Meta:
+        model = PaymentRefund
+        fields = [
+            "id",
+            "payment",
+            "amount",
+            "reason",
+            "status",
+            "gateway_refund_id",
+            "created_at",
+        ]
+        read_only_fields = ["id", "status", "gateway_refund_id", "created_at"]
+
+
+class RefundCreateSerializer(serializers.Serializer):
+    """Serializer for refund action input."""
+
+    amount = serializers.DecimalField(
+        max_digits=10, decimal_places=2, required=False
+    )
+    reason = serializers.CharField(max_length=500, required=False, default="")
+```
+
+### 2.6 Adim 6: Filters (filters.py)
+
+```python
+# e_menum/apps/payment/filters.py
+
+import django_filters
+
+from apps.payment.models import Payment
+from apps.payment.choices import PaymentStatus, PaymentGateway
+
+
+class PaymentFilter(django_filters.FilterSet):
+    """FilterSet for payment listing with query parameter filtering."""
+
+    status = django_filters.ChoiceFilter(choices=PaymentStatus.choices)
+    gateway = django_filters.ChoiceFilter(choices=PaymentGateway.choices)
+    start_date = django_filters.DateTimeFilter(
+        field_name="created_at", lookup_expr="gte"
+    )
+    end_date = django_filters.DateTimeFilter(
+        field_name="created_at", lookup_expr="lte"
+    )
+    order = django_filters.UUIDFilter(field_name="order_id")
+
+    class Meta:
+        model = Payment
+        fields = ["status", "gateway", "order"]
+```
+
+### 2.7 Adim 7: ViewSets (views.py)
+
+```python
+# e_menum/apps/payment/views.py
+
+"""
+Views for the Payment application.
+
+All ViewSets use BaseTenantViewSet which automatically filters
+querysets by the current organization.
+
+Critical Rules:
+- EVERY query MUST include organization filtering (handled by BaseTenantViewSet)
+- Use soft_delete() - never call delete() directly (handled by SoftDeleteMixin)
+"""
+
+import logging
+
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+
+from apps.payment.models import Payment, PaymentRefund
+from apps.payment.serializers import (
+    PaymentListSerializer,
+    PaymentDetailSerializer,
+    PaymentCreateSerializer,
+    RefundCreateSerializer,
+    PaymentRefundSerializer,
+)
+from apps.payment.filters import PaymentFilter
+from apps.payment.choices import PaymentStatus
+from shared.views.base import BaseTenantViewSet
+
+logger = logging.getLogger(__name__)
+
+
+class PaymentViewSet(BaseTenantViewSet):
+    """
+    ViewSet for payment CRUD operations.
+
+    Endpoints:
+        GET    /api/v1/payments/              - List payments
+        POST   /api/v1/payments/              - Create payment
+        GET    /api/v1/payments/{id}/         - Get payment detail
+        POST   /api/v1/payments/{id}/refund/  - Refund payment
+    """
+
+    queryset = Payment.objects.all()
+    permission_resource = "payment"
+    filterset_class = PaymentFilter
+    search_fields = ["gateway_transaction_id"]
+    ordering_fields = ["created_at", "amount", "status"]
+    ordering = ["-created_at"]
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return PaymentListSerializer
+        if self.action == "create":
+            return PaymentCreateSerializer
+        return PaymentDetailSerializer
+
+    @action(detail=True, methods=["post"], url_path="refund")
+    def refund(self, request, pk=None):
+        """
+        POST /api/v1/payments/{id}/refund/
+        Process a refund for a completed payment.
+        """
+        payment = self.get_object()
+
+        if payment.status != PaymentStatus.COMPLETED:
+            return self.get_error_response(
+                code="REFUND_NOT_ALLOWED",
+                message=str(_("Only completed payments can be refunded.")),
+                status_code=400,
+            )
+
+        serializer = RefundCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        refund_amount = serializer.validated_data.get("amount", payment.amount)
+        reason = serializer.validated_data.get("reason", "")
+
+        # Create refund record
+        refund = PaymentRefund.objects.create(
+            payment=payment,
+            amount=refund_amount,
+            reason=reason,
+            status="completed",
+        )
+
+        # Update payment status
+        new_status = (
+            PaymentStatus.REFUNDED
+            if refund_amount >= payment.amount
+            else PaymentStatus.PARTIALLY_REFUNDED
+        )
+        payment.status = new_status
+        payment.save(update_fields=["status", "updated_at"])
+
+        return self.get_success_response(
+            PaymentRefundSerializer(refund).data,
+            message=str(_("Refund processed successfully.")),
+        )
+```
+
+### 2.8 Adim 8: URL Patterns (urls.py)
+
+```python
+# e_menum/apps/payment/urls.py
+
+"""
+URL configuration for the Payment application.
+
+URL Structure:
+    /api/v1/payments/
+        GET  /                  - List payments
+        POST /                  - Create payment
+        GET  /{id}/             - Get payment detail
+        POST /{id}/refund/      - Refund payment
+
+Usage:
+    In config/urls.py:
+        path('api/v1/', include('apps.payment.urls')),
+"""
+
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
+from apps.payment.views import PaymentViewSet
+
+app_name = "payment"
+
+router = DefaultRouter()
+router.register(r"payments", PaymentViewSet, basename="payment")
+
+urlpatterns = [
+    path("", include(router.urls)),
+]
+```
+
+### 2.9 Adim 9: Admin (admin.py)
+
+```python
+# e_menum/apps/payment/admin.py
+
+"""
+Django Admin configuration for the Payment application.
+Soft-deleted records are filtered out by default.
+"""
+
+from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
+
+from apps.payment.models import Payment, PaymentRefund
+from shared.permissions.admin_permission_mixin import EMenumPermissionMixin
+
+
+class SoftDeleteAdminMixin:
+    """Mixin that filters out soft-deleted records in admin."""
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(deleted_at__isnull=True)
+
+
+class PaymentRefundInline(admin.TabularInline):
+    model = PaymentRefund
+    extra = 0
+    readonly_fields = ["id", "amount", "reason", "status", "gateway_refund_id", "created_at"]
+
+
+@admin.register(Payment)
+class PaymentAdmin(SoftDeleteAdminMixin, EMenumPermissionMixin, admin.ModelAdmin):
+    list_display = [
+        "id",
+        "organization",
+        "order",
+        "amount",
+        "currency",
+        "status",
+        "gateway",
+        "created_at",
+    ]
+    list_filter = ["status", "gateway", "method", "currency"]
+    search_fields = ["id", "gateway_transaction_id"]
+    readonly_fields = ["id", "created_at", "updated_at", "initiated_at"]
+    inlines = [PaymentRefundInline]
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if hasattr(request, "organization"):
+            qs = qs.filter(organization=request.organization)
+        return qs
+
+
+@admin.register(PaymentRefund)
+class PaymentRefundAdmin(SoftDeleteAdminMixin, EMenumPermissionMixin, admin.ModelAdmin):
+    list_display = ["id", "payment", "amount", "status", "created_at"]
+    list_filter = ["status"]
+    readonly_fields = ["id", "created_at", "updated_at"]
+```
+
+### 2.10 Adim 10: Signals (signals.py)
+
+```python
+# e_menum/apps/payment/signals.py
+
+"""
+Signal handlers for the Payment application.
+Registered in apps.py via ready() method.
+"""
+
+import logging
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+from apps.payment.models import Payment
+from apps.payment.choices import PaymentStatus
+
+logger = logging.getLogger(__name__)
+
+
+@receiver(post_save, sender=Payment)
+def on_payment_status_change(sender, instance, created, **kwargs):
+    """
+    Handle payment status changes.
+    Trigger notifications or order updates when payment completes.
+    """
+    if created:
+        logger.info("Payment created: %s for order %s", instance.id, instance.order_id)
+        return
+
+    # Check if status changed to completed
+    if instance.status == PaymentStatus.COMPLETED:
+        logger.info("Payment completed: %s", instance.id)
+        # TODO: Update order status
+        # TODO: Send notification to customer
+
+    elif instance.status == PaymentStatus.FAILED:
+        logger.warning("Payment failed: %s", instance.id)
+        # TODO: Notify customer of failure
+```
+
+### 2.11 Adim 11: Celery Tasks (tasks.py)
+
+```python
+# e_menum/apps/payment/tasks.py
+
+"""
+Celery async tasks for the Payment application.
+"""
+
+import logging
+
+from celery import shared_task
+
+logger = logging.getLogger(__name__)
+
+
+@shared_task(bind=True, max_retries=3, default_retry_delay=60)
+def process_payment_with_gateway(self, payment_id):
+    """
+    Process payment through the payment gateway asynchronously.
+
+    Args:
+        payment_id: UUID of the Payment record.
+
+    Retries up to 3 times with 60s delay on failure.
+    """
+    from apps.payment.models import Payment
+    from apps.payment.choices import PaymentStatus
+
+    try:
+        payment = Payment.objects.get(id=payment_id)
+
+        if payment.status != PaymentStatus.PENDING:
+            logger.warning("Payment %s is not pending, skipping.", payment_id)
+            return
+
+        payment.status = PaymentStatus.PROCESSING
+        payment.save(update_fields=["status", "updated_at"])
+
+        # TODO: Call gateway API here
+        # result = gateway.process(payment)
+
+        logger.info("Payment %s processed successfully.", payment_id)
+
+    except Payment.DoesNotExist:
+        logger.error("Payment %s not found.", payment_id)
+    except Exception as exc:
+        logger.error("Payment processing failed: %s", exc)
+        raise self.retry(exc=exc)
+
+
+@shared_task
+def cleanup_stale_payments():
+    """
+    Periodic task: mark payments stuck in PROCESSING for > 30 minutes as FAILED.
+    Register in celery beat schedule.
+    """
+    from django.utils import timezone
+    from datetime import timedelta
+    from apps.payment.models import Payment
+    from apps.payment.choices import PaymentStatus
+
+    threshold = timezone.now() - timedelta(minutes=30)
+    stale = Payment.objects.filter(
+        status=PaymentStatus.PROCESSING,
+        updated_at__lt=threshold,
+    )
+    count = stale.update(status=PaymentStatus.FAILED, failed_at=timezone.now())
+    if count:
+        logger.warning("Marked %d stale payments as failed.", count)
+```
+
+### 2.12 Adim 12: Seed Data Management Command
+
+```python
+# e_menum/apps/payment/management/commands/seed_payment.py
+
+"""
+Management command to seed demo payment data for development.
+
+Usage:
+    python manage.py seed_payment
+    python manage.py seed_payment --organization=<uuid>
+"""
+
+from django.core.management.base import BaseCommand, CommandError
+from django.utils import timezone
+
+from apps.core.models import Organization
+from apps.payment.models import Payment, PaymentRefund
+from apps.payment.choices import PaymentStatus, PaymentMethod, PaymentGateway
+
+
+class Command(BaseCommand):
+    help = "Seed demo payment data for development."
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--organization",
+            type=str,
+            help="Organization UUID to seed data for. Uses first org if not specified.",
+        )
+
+    def handle(self, *args, **options):
+        org_id = options.get("organization")
+
+        if org_id:
+            try:
+                org = Organization.objects.get(id=org_id)
+            except Organization.DoesNotExist:
+                raise CommandError(f"Organization {org_id} not found.")
+        else:
+            org = Organization.objects.first()
+            if not org:
+                raise CommandError("No organizations found. Create one first.")
+
+        self.stdout.write(f"Seeding payment data for: {org.name}")
+
+        # Check if order model exists and get a sample order
+        try:
+            from apps.orders.models import Order
+            order = Order.objects.filter(organization=org).first()
+            if not order:
+                self.stdout.write(self.style.WARNING("No orders found. Skipping."))
+                return
+        except ImportError:
+            self.stdout.write(self.style.WARNING("Orders app not installed. Skipping."))
+            return
+
+        # Create sample payments
+        payments_data = [
+            {
+                "amount": 150.00,
+                "status": PaymentStatus.COMPLETED,
+                "method": PaymentMethod.CREDIT_CARD,
+                "gateway": PaymentGateway.IYZICO,
+                "completed_at": timezone.now(),
+            },
+            {
+                "amount": 75.50,
+                "status": PaymentStatus.PENDING,
+                "method": PaymentMethod.CREDIT_CARD,
+                "gateway": PaymentGateway.IYZICO,
+            },
+            {
+                "amount": 220.00,
+                "status": PaymentStatus.FAILED,
+                "method": PaymentMethod.BANK_TRANSFER,
+                "gateway": PaymentGateway.STRIPE,
+                "failed_at": timezone.now(),
+            },
+        ]
+
+        for data in payments_data:
+            Payment.objects.create(
+                organization=org,
+                order=order,
+                currency="TRY",
+                **data,
+            )
+
+        self.stdout.write(self.style.SUCCESS(f"Created {len(payments_data)} demo payments."))
 ```
 
 ---
 
-## 4. TEST YAZMA
+## 3. KAYIT ISLEMLERI
 
-### 4.1 Service Test
+### 3.1 INSTALLED_APPS'e Ekle
 
-```typescript
-// src/modules/payment/__tests__/payment.service.test.ts
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { PaymentService } from '../payment.service';
-import { PaymentRepository } from '../payment.repository';
-import { PaymentGatewayFactory } from '../providers/gateway.factory';
-import { EventBus } from '@/core/events';
-import { PaymentStatus, PaymentMethod, PaymentGateway } from '../payment.types';
+```python
+# config/settings/base.py
 
-describe('PaymentService', () => {
-  let service: PaymentService;
-  let mockRepository: jest.Mocked<PaymentRepository>;
-  let mockGatewayFactory: jest.Mocked<PaymentGatewayFactory>;
-  let mockEvents: jest.Mocked<EventBus>;
-  
-  beforeEach(() => {
-    mockRepository = {
-      create: vi.fn(),
-      findById: vi.fn(),
-      updateStatus: vi.fn(),
-    } as any;
-    
-    mockGatewayFactory = {
-      getGateway: vi.fn(),
-    } as any;
-    
-    mockEvents = {
-      emit: vi.fn(),
-    } as any;
-    
-    service = new PaymentService(
-      mockRepository,
-      mockGatewayFactory,
-      mockEvents,
-      console as any
-    );
-  });
-  
-  describe('createPayment', () => {
-    it('should create a pending payment', async () => {
-      const dto = {
-        orderId: 'order-123',
-        amount: 10000,
-        method: PaymentMethod.CREDIT_CARD,
-      };
-      
-      const expectedPayment = {
-        id: 'payment-123',
-        ...dto,
-        status: PaymentStatus.PENDING,
-        gateway: PaymentGateway.IYZICO,
-      };
-      
-      mockRepository.create.mockResolvedValue(expectedPayment as any);
-      
-      const result = await service.createPayment('org-123', dto);
-      
-      expect(result.status).toBe(PaymentStatus.PENDING);
-      expect(mockEvents.emit).toHaveBeenCalledWith(
-        'payment.initiated',
-        expect.objectContaining({ paymentId: 'payment-123' })
-      );
-    });
-  });
-  
-  describe('processPayment', () => {
-    it('should process payment successfully', async () => {
-      const payment = {
-        id: 'payment-123',
-        status: PaymentStatus.PENDING,
-        amount: 10000,
-        gateway: PaymentGateway.IYZICO,
-      };
-      
-      mockRepository.findById.mockResolvedValue(payment as any);
-      
-      const mockGateway = {
-        processPayment: vi.fn().mockResolvedValue({
-          success: true,
-          transactionId: 'tx-123',
-        }),
-      };
-      
-      mockGatewayFactory.getGateway.mockReturnValue(mockGateway as any);
-      mockRepository.updateStatus.mockResolvedValue({
-        ...payment,
-        status: PaymentStatus.COMPLETED,
-      } as any);
-      
-      const result = await service.processPayment({ paymentId: 'payment-123' });
-      
-      expect(result.success).toBe(true);
-      expect(result.payment.status).toBe(PaymentStatus.COMPLETED);
-      expect(mockEvents.emit).toHaveBeenCalledWith(
-        'payment.completed',
-        expect.any(Object)
-      );
-    });
-    
-    it('should throw error for non-pending payment', async () => {
-      const payment = {
-        id: 'payment-123',
-        status: PaymentStatus.COMPLETED,
-      };
-      
-      mockRepository.findById.mockResolvedValue(payment as any);
-      
-      await expect(
-        service.processPayment({ paymentId: 'payment-123' })
-      ).rejects.toThrow('already processed');
-    });
-  });
-});
+INSTALLED_APPS = [
+    # ... Django core apps ...
+    # ... Third-party apps ...
+
+    # E-Menum apps
+    "apps.core",
+    "apps.menu",
+    "apps.orders",
+    "apps.payment",  # <-- Yeni app'i buraya ekle
+    # ...
+]
+```
+
+### 3.2 URL'leri Kaydet
+
+```python
+# config/urls.py
+
+urlpatterns = [
+    # ... existing patterns ...
+
+    # API v1
+    path("api/v1/", include("apps.menu.urls")),
+    path("api/v1/", include("apps.orders.urls")),
+    path("api/v1/", include("apps.payment.urls")),  # <-- Yeni app URL'leri
+]
+```
+
+### 3.3 Migration Olustur ve Uygula
+
+```bash
+# Migration olustur
+python manage.py makemigrations payment
+
+# Migration'lari uygula
+python manage.py migrate
+
+# Seed data yukle (gelistirme icin)
+python manage.py seed_payment
 ```
 
 ---
 
-## 5. CHECKLIST
+## 4. KRITIK KURALLAR OZETI
 
-### 5.1 Modül Geliştirme Checklist
+### 4.1 Multi-Tenancy (Zorunlu)
+
+```python
+# DOGRU: Her model'de organization FK olmali
+class Payment(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+
+# DOGRU: BaseTenantViewSet kullanarak otomatik org filtreleme
+class PaymentViewSet(BaseTenantViewSet):
+    queryset = Payment.objects.all()
+    # BaseTenantViewSet otomatik olarak organization'a gore filtreler
+
+# YANLIS: Organization filtrelemesi olmayan queryset
+Payment.objects.all()  # TUM TENANT VERILERI SIZDIRILIR!
+```
+
+### 4.2 Soft Delete (Zorunlu)
+
+```python
+# DOGRU: SoftDeleteMixin + SoftDeleteManager
+class Payment(TimeStampedMixin, SoftDeleteMixin, models.Model):
+    objects = SoftDeleteManager()  # deleted_at__isnull=True otomatik
+
+# DOGRU: soft_delete() kullan
+payment.soft_delete()
+
+# YANLIS: Fiziksel silme
+payment.delete()  # ASLA!
+```
+
+### 4.3 Serializer Kaliplari
+
+```python
+# DOGRU: TenantModelSerializer kullan
+class PaymentSerializer(TenantModelSerializer):
+    class Meta:
+        model = Payment
+        fields = [...]
+
+# YANLIS: Duz ModelSerializer (tenant kontrolu yok)
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
+        fields = [...]
+```
+
+### 4.4 ViewSet Kaliplari
+
+```python
+# DOGRU: BaseTenantViewSet inherit et
+class PaymentViewSet(BaseTenantViewSet):
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
+    permission_resource = "payment"
+
+# DOGRU: Action-based serializer secimi
+def get_serializer_class(self):
+    if self.action == "list":
+        return PaymentListSerializer
+    if self.action == "create":
+        return PaymentCreateSerializer
+    return PaymentDetailSerializer
+```
+
+### 4.5 URL Kaliplari
+
+```python
+# DOGRU: DRF DefaultRouter kullan
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r"payments", PaymentViewSet, basename="payment")
+
+urlpatterns = [
+    path("", include(router.urls)),
+]
+
+# Nested resources icin drf-nested-routers kullan
+from rest_framework_nested import routers
+
+parent_router = DefaultRouter()
+parent_router.register(r"payments", PaymentViewSet, basename="payment")
+
+nested_router = routers.NestedDefaultRouter(parent_router, r"payments", lookup="payment")
+nested_router.register(r"refunds", PaymentRefundViewSet, basename="payment-refunds")
+```
+
+---
+
+## 5. TEST YAZMA
+
+### 5.1 Model Testleri
+
+```python
+# e_menum/apps/payment/tests/test_models.py
+
+from decimal import Decimal
+
+from django.test import TestCase
+
+from apps.core.models import Organization
+from apps.payment.models import Payment, PaymentRefund
+from apps.payment.choices import PaymentStatus, PaymentMethod, PaymentGateway
+
+
+class PaymentModelTest(TestCase):
+    def setUp(self):
+        self.org = Organization.objects.create(name="Test Org", slug="test-org")
+        # Assume order fixture exists
+        self.payment = Payment.objects.create(
+            organization=self.org,
+            order=self.order,
+            amount=Decimal("100.00"),
+            currency="TRY",
+            status=PaymentStatus.PENDING,
+            method=PaymentMethod.CREDIT_CARD,
+            gateway=PaymentGateway.IYZICO,
+        )
+
+    def test_soft_delete(self):
+        """Soft delete should set deleted_at, not remove the record."""
+        self.payment.soft_delete()
+        self.assertIsNotNone(self.payment.deleted_at)
+        # Record still exists in DB
+        self.assertTrue(
+            Payment.all_objects.filter(id=self.payment.id).exists()
+        )
+        # But not visible via default manager
+        self.assertFalse(
+            Payment.objects.filter(id=self.payment.id).exists()
+        )
+
+    def test_str_representation(self):
+        self.assertIn("100.00", str(self.payment))
+        self.assertIn("TRY", str(self.payment))
+```
+
+### 5.2 ViewSet Testleri
+
+```python
+# e_menum/apps/payment/tests/test_views.py
+
+from decimal import Decimal
+
+from django.test import TestCase
+from rest_framework.test import APIClient, APITestCase
+from rest_framework import status
+
+from apps.core.models import Organization, User
+
+
+class PaymentViewSetTest(APITestCase):
+    def setUp(self):
+        self.org = Organization.objects.create(name="Test Org", slug="test-org")
+        self.user = User.objects.create_user(
+            email="test@test.com",
+            password="testpass123!",
+            organization=self.org,
+        )
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+    def test_list_payments_filtered_by_org(self):
+        """Payments should be filtered by user's organization."""
+        response = self.client.get("/api/v1/payments/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data["success"])
+
+    def test_create_payment(self):
+        """Creating a payment should auto-inject organization."""
+        data = {
+            "order": str(self.order.id),
+            "amount": "150.00",
+            "method": "credit_card",
+            "gateway": "iyzico",
+        }
+        response = self.client.post("/api/v1/payments/", data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(
+            response.data["data"]["amount"], "150.00"
+        )
+
+    def test_cannot_access_other_org_payments(self):
+        """Users should not see payments from other organizations."""
+        other_org = Organization.objects.create(name="Other Org", slug="other-org")
+        # Create payment in other org (directly, bypassing ViewSet)
+        # Then verify it doesn't appear in list
+        response = self.client.get("/api/v1/payments/")
+        for payment in response.data.get("data", []):
+            self.assertNotEqual(payment.get("organization"), str(other_org.id))
+```
+
+### 5.3 Serializer Testleri
+
+```python
+# e_menum/apps/payment/tests/test_serializers.py
+
+from decimal import Decimal
+
+from django.test import TestCase, RequestFactory
+
+from apps.payment.serializers import PaymentCreateSerializer
+
+
+class PaymentCreateSerializerTest(TestCase):
+    def test_negative_amount_rejected(self):
+        """Negative amounts should fail validation."""
+        data = {
+            "order": "some-uuid",
+            "amount": "-50.00",
+            "method": "credit_card",
+            "gateway": "iyzico",
+        }
+        serializer = PaymentCreateSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn("amount", serializer.errors)
+
+    def test_valid_payment_data(self):
+        """Valid data should pass validation."""
+        # Setup with proper fixtures
+        pass
+```
+
+---
+
+## 6. CHECKLIST
+
+### 6.1 App Gelistirme Checklist
 
 ```yaml
 PLANLAMA:
-  [ ] Modül scope tanımlandı
-  [ ] Dependencies belirlendi
-  [ ] API endpoints tasarlandı
-  [ ] Database schema tasarlandı
-  [ ] Events/hooks tasarlandı
+  [ ] App scope tanimlandi
+  [ ] Dependencies belirlendi (diger app'ler)
+  [ ] API endpoints tasarlandi
+  [ ] Database schema tasarlandi
+  [ ] Signal/event ihtiyaclari belirlendi
 
 IMPLEMENTASYON:
-  [ ] module.json oluşturuldu
-  [ ] Types tanımlandı
-  [ ] Schemas yazıldı
-  [ ] Repository implement edildi
-  [ ] Service implement edildi
-  [ ] Controller implement edildi
-  [ ] Routes tanımlandı
-  [ ] Events implement edildi
-  [ ] Module class oluşturuldu
-  [ ] index.ts exports tanımlandı
+  [ ] python manage.py startapp ile app olusturuldu
+  [ ] apps.py - AppConfig tanimlandi
+  [ ] choices.py - TextChoices enum'lari yazildi
+  [ ] models.py - SoftDeleteMixin + org FK ile modeller yazildi
+  [ ] serializers.py - TenantModelSerializer ile serializer'lar yazildi
+  [ ] filters.py - django-filter FilterSet'ler yazildi
+  [ ] views.py - BaseTenantViewSet ile ViewSet'ler yazildi
+  [ ] urls.py - DefaultRouter ile URL pattern'ler tanimlandi
+  [ ] admin.py - ModelAdmin class'lar yazildi
+  [ ] signals.py - Signal handler'lar yazildi
+  [ ] tasks.py - Celery task'ler tanimlandi
 
-VERİTABANI:
-  [ ] Migration yazıldı
-  [ ] Prisma schema güncellendi
-  [ ] Indexes eklendi
-  [ ] Seeds hazırlandı (dev için)
+KAYIT:
+  [ ] INSTALLED_APPS'e eklendi (config/settings/base.py)
+  [ ] URL'ler kaydedildi (config/urls.py)
+  [ ] Migration olusturuldu (makemigrations)
+  [ ] Migration uygulanli (migrate)
+
+SEED DATA:
+  [ ] management/commands/seed_*.py olusturuldu
+  [ ] Seed komutu test edildi
 
 TEST:
-  [ ] Unit tests yazıldı
-  [ ] Integration tests yazıldı
-  [ ] Coverage %80+ 
-
-DOKÜMANTASYON:
-  [ ] README.md yazıldı
-  [ ] API docs güncellendi
-  [ ] JSDoc comments eklendi
+  [ ] tests/test_models.py yazildi
+  [ ] tests/test_views.py yazildi
+  [ ] tests/test_serializers.py yazildi
+  [ ] Coverage %80+
 
 REVIEW:
-  [ ] Kod review yapıldı
-  [ ] Security review yapıldı
-  [ ] Performance review yapıldı
+  [ ] Multi-tenancy: Her queryset'te organization filtresi var mi?
+  [ ] Soft delete: Hicbir yerde .delete() cagrilmiyor mu?
+  [ ] Serializer: TenantModelSerializer kullaniliyor mu?
+  [ ] ViewSet: BaseTenantViewSet inherit ediliyor mu?
+  [ ] Admin: Soft-deleted kayitlar filtreleniyor mu?
 ```
 
 ---
 
-## 6. YAYGN HATALAR
+## 7. YAYGIN HATALAR
 
 ```yaml
 YAPILMAMASI GEREKENLER:
 
-❌ Başka modülün internal dosyasını import etme
-❌ Global state kullanma
-❌ Hardcoded değerler
-❌ Circular dependencies
-❌ Test yazmadan PR açma
-❌ Migration olmadan schema değiştirme
-❌ Event'siz cross-module communication
-❌ Type'sız export
+  - Baska app'in internal fonksiyonunu dogrudan import etme
+    (Bunun yerine signal/event kullan)
+
+  - Organization filtresi olmadan queryset kullanma
+    (BaseTenantViewSet her zaman kullan)
+
+  - models.Model'den dogrudan inherit etme
+    (TimeStampedMixin + SoftDeleteMixin zorunlu)
+
+  - instance.delete() cagirma
+    (instance.soft_delete() kullan)
+
+  - serializers.ModelSerializer dogrudan kullanma
+    (TenantModelSerializer kullan)
+
+  - Migration olmadan model degistirme
+    (Her degisiklikte makemigrations calistir)
+
+  - Test yazmadan PR acma
+    (test_models, test_views, test_serializers zorunlu)
+
+  - Hardcoded string kullanma
+    (gettext_lazy ile i18n destegi sagla)
+
+  - SoftDeleteManager yerine default Manager kullanma
+    (objects = SoftDeleteManager() olmali)
+
+  - Celery task icinde uzun DB transaction'lar acma
+    (Kisa transaction'lar + idempotent tasarim)
 ```
 
 ---
 
-*Bu rehber, E-Menum için yeni modül geliştirmek isteyenler için referans niteliğindedir.*
+## 8. MEVCUT APP REFERANSLARI
+
+Yeni app gelistirirken asagidaki mevcut app'leri referans alin:
+
+| App | Konum | Aciklama |
+|-----|-------|----------|
+| menu | `e_menum/apps/menu/` | Tam CRUD ornegi, nested resources |
+| orders | `e_menum/apps/orders/` | Siparis yonetimi |
+| customers | `e_menum/apps/customers/` | Musteri yonetimi |
+| analytics | `e_menum/apps/analytics/` | Raporlama ornegi |
+| core | `e_menum/apps/core/` | Organization, User, base mixin'ler |
+
+Shared utilities:
+
+| Dosya | Konum | Aciklama |
+|-------|-------|----------|
+| Base ViewSets | `e_menum/shared/views/base.py` | BaseTenantViewSet, BaseModelViewSet |
+| Base Serializers | `e_menum/shared/serializers/base.py` | TenantModelSerializer |
+| Permissions | `e_menum/shared/permissions/` | DRF permission classes |
+| Exceptions | `e_menum/shared/utils/exceptions.py` | AppException, ErrorCodes |
+
+---
+
+*Bu rehber, E-Menum icin yeni Django app gelistirmek isteyenler icin referans niteligindedir. Tum app'ler bu dokumandaki kaliplara uygun olmalidir.*

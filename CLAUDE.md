@@ -1,44 +1,44 @@
 # E-Menum - Enterprise QR Menu SaaS
 
-> **Auto-Claude Master Reference Document**  
-> Bu dosya, Auto-Claude agent'ın projeyi anlaması için tek yetkili kaynaktır.  
-> Son Güncelleme: 2026-01-31
+> **Auto-Claude Master Reference Document**
+> Bu dosya, Auto-Claude agent'in projeyi anlamasi icin tek yetkili kaynaktir.
+> Son Guncelleme: 2026-03-16
 
 ---
 
 ## 1. PRODUCT OVERVIEW
 
-### 1.1 Ürün Tanımı
+### 1.1 Urun Tanimi
 
-E-Menum, restoran ve kafelere yönelik yapay zeka destekli dijital menü platformudur. Temel değer önerisi: **"Akıllı menüler, veri odaklı kararlar."**
+E-Menum, restoran ve kafelere yonelik yapay zeka destekli dijital menu platformudur. Temel deger onerisi: **"Akilli menuler, veri odakli kararlar."**
 
-| Özellik | Değer |
+| Ozellik | Deger |
 |---------|-------|
-| **Hedef Pazar** | Türkiye F&B sektörü (350.000+ işletme) |
-| **Hedef Segment** | Kafeler, restoranlar, zincir işletmeler |
-| **Fiyatlandırma** | Freemium + 4 ücretli tier (₺2K-8K/ay) |
-| **Diferansiyatör** | AI-powered içerik üretimi, analitik, tahminleme |
+| **Hedef Pazar** | Turkiye F&B sektoru (350.000+ isletme) |
+| **Hedef Segment** | Kafeler, restoranlar, zincir isletmeler |
+| **Fiyatlandirma** | Freemium + 4 ucretli tier (₺2K-8K/ay) |
+| **Diferansiyator** | AI-powered icerik uretimi, analitik, tahminleme |
 
-### 1.2 Hedef Kullanıcı Rolleri
+### 1.2 Hedef Kullanici Rolleri
 
-| Rol | Organizasyon İçi | Sorumluluk |
+| Rol | Organizasyon Ici | Sorumluluk |
 |-----|------------------|------------|
 | `owner` | Evet | Tam yetki, fatura, abonelik |
-| `manager` | Evet | Menü, sipariş, personel yönetimi |
-| `staff` | Evet | Sipariş alma, masa yönetimi |
+| `manager` | Evet | Menu, siparis, personel yonetimi |
+| `staff` | Evet | Siparis alma, masa yonetimi |
 | `viewer` | Evet | Salt okunur dashboard |
 
 | Rol | Platform (Sistem) | Sorumluluk |
 |-----|-------------------|------------|
 | `super_admin` | Platform | Tam sistem yetkisi |
-| `admin` | Platform | Müşteri, fatura, destek |
-| `sales` | Platform | CRM, lead yönetimi |
-| `support` | Platform | Destek ticket'ları |
+| `admin` | Platform | Musteri, fatura, destek |
+| `sales` | Platform | CRM, lead yonetimi |
+| `support` | Platform | Destek ticket'lari |
 
 | Rol | Public | Sorumluluk |
 |-----|--------|------------|
-| `customer` | Hayır | Menü görüntüleme, sipariş |
-| `anonymous` | Hayır | Sadece public menü |
+| `customer` | Hayir | Menu goruntuleme, siparis |
+| `anonymous` | Hayir | Sadece public menu |
 
 ---
 
@@ -47,31 +47,37 @@ E-Menum, restoran ve kafelere yönelik yapay zeka destekli dijital menü platfor
 ### 2.1 Backend
 
 ```yaml
-Runtime:        Node.js 20+ LTS
-Framework:      Express.js 4.x
-Language:       TypeScript 5.x (strict mode)
-ORM:            Prisma 6.x
-Database:       PostgreSQL 15+
-Cache:          Redis 7.x
-Queue:          BullMQ (Redis-based)
+Runtime:        Python 3.13
+Framework:      Django 5.0
+API:            Django REST Framework 3.15
+ORM:            Django ORM
+Database:       PostgreSQL 15+ (SQLite for local dev)
+Cache:          Redis 7.x (django-redis)
+Queue:          Celery 5.4 + Redis broker
+Task Scheduler: django-celery-beat
+Process:        Gunicorn (production)
 ```
 
 ### 2.2 Libraries
 
 ```yaml
-Routing:        routing-controllers (decorator-based)
-DI Container:   tsyringe (Microsoft)
-Validation:     Zod (runtime + TypeScript inference)
-Auth:           JWT + bcrypt + Passport
-Authorization:  CASL (ABAC/RBAC)
-Events:         EventEmitter2
-i18n:           i18next
+Auth:           djangorestframework-simplejwt (JWT)
+Authorization:  django-guardian (object-level RBAC/ABAC)
+Filtering:      django-filter
+CORS:           django-cors-headers
+Email:          django-anymail (Mailgun backend)
+Media:          django-filer + easy-thumbnails
+Translations:   django-modeltranslation
+Impersonate:    django-impersonate (superadmin)
+Environment:    django-environ
+Static:         whitenoise
+DB URL:         dj-database-url
 ```
 
 ### 2.3 Frontend
 
 ```yaml
-Template:       EJS 3.x (SSR)
+Template:       Django Templates (SSR)
 CSS:            Tailwind CSS 3.4.x
 Components:     Flowbite (Tailwind component library)
 Icons:          Phosphor Icons (CDN) - priority
@@ -85,107 +91,121 @@ Charts:         Chart.js / ApexCharts
 ```yaml
 Server:         Hetzner VPS (CX21+)
 PaaS:           Coolify (self-hosted)
-Process:        PM2 Cluster mode
+Process:        Gunicorn + Celery workers
 Proxy:          Nginx (reverse proxy)
 SSL:            Let's Encrypt (auto-renewal)
 CI/CD:          GitHub Actions → Coolify webhook
+Static:         WhiteNoise (compressed + cached)
 ```
 
 ---
 
-## 3. CRITICAL RULES (KESİNLİKLE KIRILMAMALI)
+## 3. CRITICAL RULES (KESINLIKLE KIRILMAMALI)
 
 ### 3.1 Multi-Tenancy
 
-```
-RULE: Her query'de organizationId ZORUNLU
+```python
+# RULE: Her queryset'te organization filtresi ZORUNLU
 
-✅ DOĞRU:
-await prisma.menu.findMany({ 
-  where: { organizationId: ctx.organization.id } 
-});
+# DOGRU:
+Menu.objects.filter(organization=request.organization)
 
-❌ YANLIŞ:
-await prisma.menu.findMany(); // TÜM TENANT VERİLERİ!
+# YANLIS:
+Menu.objects.all()  # TUM TENANT VERILERI!
 ```
+
+TenantMiddleware (`shared/middleware/tenant.py`) her request'e `request.organization` inject eder.
 
 ### 3.2 Authorization
 
-```
-RULE: Her endpoint @Authorized decorator ile korunmalı
+```python
+# RULE: Her ViewSet permission_classes ile korunmali
 
-✅ DOĞRU:
-@Authorized(['menu.view'])
-@Get('/')
-async getAll() {}
+# DOGRU:
+class MenuViewSet(ModelViewSet):
+    permission_classes = [IsAuthenticated, HasOrganizationPermission]
 
-❌ YANLIŞ:
-@Get('/') // Koruma yok!
-async getAll() {}
+# YANLIS:
+class MenuViewSet(ModelViewSet):
+    permission_classes = []  # Koruma yok!
 ```
 
 ### 3.3 Soft Delete
 
-```
-RULE: Hiçbir veri fiziksel silinmez
+```python
+# RULE: Hicbir veri fiziksel silinmez
 
-✅ DOĞRU:
-await prisma.menu.update({
-  where: { id },
-  data: { deletedAt: new Date() }
-});
+# DOGRU:
+menu.deleted_at = timezone.now()
+menu.save()
 
-❌ YANLIŞ:
-await prisma.menu.delete({ where: { id } });
+# YANLIS:
+menu.delete()  # Fiziksel silme!
 ```
 
-### 3.4 Import Alias
+Tum business entity'ler `SoftDeleteMixin` kullanmali (`shared/mixins/soft_delete.py`).
 
+### 3.4 Import Convention
+
+```python
+# RULE: Standard Python import'lari kullanilmali
+
+# DOGRU:
+from apps.core.models import Organization
+from shared.permissions.plan_enforcement import RequiresPlanFeature
+from shared.mixins.soft_delete import SoftDeleteMixin
+
+# YANLIS:
+from ../../../../core/models import Organization  # Relative import karmasasi
 ```
-RULE: Tüm import'lar @/ alias kullanmalı
 
-✅ DOĞRU:
-import { BaseService } from '@/core/base/base.service';
+### 3.5 i18n Zorunlulugu
 
-❌ YANLIŞ:
-import { BaseService } from '../../../core/base/base.service';
-```
+```python
+# RULE: UI'da hardcoded string YASAK
 
-### 3.5 i18n Zorunluluğu
+# DOGRU (Template):
+{% load i18n %}
+<h1>{% trans "Menu Olustur" %}</h1>
 
-```
-RULE: UI'da hardcoded string YASAK
+# DOGRU (Python):
+from django.utils.translation import gettext_lazy as _
+raise ValidationError(_("Menu bulunamadi"))
 
-✅ DOĞRU:
-<%= t('menu.create.title') %>
-
-❌ YANLIŞ:
-<h1>Menü Oluştur</h1>
+# YANLIS:
+<h1>Menu Olustur</h1>  # Hardcoded!
 ```
 
 ### 3.6 Error Handling
 
-```
-RULE: Tüm hatalar AppException ile fırlatılmalı
+```python
+# RULE: DRF exception handler ile tutarli hata formati
 
-✅ DOĞRU:
-throw new AppException('MENU_NOT_FOUND', 404);
+# DOGRU:
+from rest_framework.exceptions import NotFound
+raise NotFound(detail="Menu not found", code="MENU_NOT_FOUND")
 
-❌ YANLIŞ:
-throw new Error('Menu not found');
+# custom_exception_handler: shared/utils/exceptions.py
+# Response format: {"success": false, "error": {"code": "...", "message": "..."}}
+
+# YANLIS:
+raise Exception("Menu not found")  # Format tutarsizligi!
 ```
 
 ### 3.7 Validation
 
-```
-RULE: Tüm input'lar Zod schema ile validate edilmeli
+```python
+# RULE: Tum input'lar DRF Serializer ile validate edilmeli
 
-✅ DOĞRU:
-const schema = z.object({ name: z.string().min(1) });
-const data = schema.parse(req.body);
+# DOGRU:
+class CreateMenuSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(min_length=1, max_length=255)
+    class Meta:
+        model = Menu
+        fields = ['name', 'description', 'is_published']
 
-❌ YANLIŞ:
-const { name } = req.body; // Validation yok!
+# YANLIS:
+name = request.data.get('name')  # Validation yok!
 ```
 
 ---
@@ -193,173 +213,150 @@ const { name } = req.body; // Validation yok!
 ## 4. PROJECT STRUCTURE
 
 ```
-src/
+e_menum/                          # Django project root (manage.py here)
 ├── config/
-│   ├── env.ts                    # Zod-validated environment
-│   ├── database.ts               # Prisma client singleton
-│   └── redis.ts                  # Redis client config
+│   ├── settings/
+│   │   ├── base.py               # Common settings
+│   │   ├── development.py        # Dev overrides
+│   │   ├── staging.py            # Staging overrides
+│   │   └── production.py         # Production overrides
+│   ├── urls.py                   # Root URL configuration
+│   ├── celery.py                 # Celery app configuration
+│   ├── wsgi.py                   # WSGI entry point
+│   └── asgi.py                   # ASGI entry point
 │
-├── core/
-│   ├── kernel/
-│   │   ├── bootstrap.ts          # Application bootstrap
-│   │   ├── container.ts          # DI container setup
-│   │   └── module-loader.ts      # Module discovery & loading
-│   │
-│   ├── base/
-│   │   ├── base.controller.ts    # CRUD controller template
-│   │   ├── base.service.ts       # CRUD service template
-│   │   └── base.repository.ts    # Repository pattern base
-│   │
-│   ├── middleware/
-│   │   ├── auth.middleware.ts    # JWT verification
-│   │   ├── tenant.middleware.ts  # Multi-tenant context
-│   │   ├── permission.middleware.ts  # CASL ability check
-│   │   ├── rate-limit.middleware.ts  # Rate limiting
-│   │   └── error.middleware.ts   # Global error handler
-│   │
-│   ├── services/
-│   │   ├── auth.service.ts       # Authentication logic
-│   │   ├── permission.service.ts # CASL ability builder
-│   │   ├── event.service.ts      # Domain events
-│   │   └── installer.service.ts  # Module installer
-│   │
-│   └── exceptions/
-│       ├── app.exception.ts      # Custom exception base
-│       └── error-codes.ts        # Centralized error codes
-│
-├── modules/
-│   ├── _system/                  # System modules (prefix: _)
-│   │   ├── auth/
-│   │   ├── users/
-│   │   ├── organizations/
-│   │   └── permissions/
-│   │
-│   ├── menu/                     # Feature module example
-│   │   ├── manifest.json
-│   │   ├── menu.controller.ts
-│   │   ├── menu.service.ts
-│   │   ├── dto/
-│   │   │   ├── create-menu.dto.ts
-│   │   │   └── update-menu.dto.ts
-│   │   ├── menu.schema.prisma
-│   │   └── menu.routes.ts
-│   │
-│   └── [other-modules]/
+├── apps/
+│   ├── core/                     # Users, Organizations, Roles, Permissions
+│   ├── menu/                     # Menus, Categories, Products, Themes
+│   ├── orders/                   # Zones, Tables, QR Codes, Orders
+│   ├── subscriptions/            # Plans, Subscriptions, Invoices
+│   ├── customers/                # Customer profiles, feedback
+│   ├── accounts/                 # Account settings, team management
+│   ├── dashboard/                # Dashboard views & widgets
+│   ├── analytics/                # Visit & order analytics
+│   ├── reporting/                # Report generation
+│   ├── notifications/            # In-app notifications
+│   ├── campaigns/                # Marketing campaigns
+│   ├── inventory/                # Stock management
+│   ├── media/                    # Media/file management
+│   ├── ai/                       # AI content generation
+│   ├── website/                  # Public marketing site & CMS
+│   ├── seo/                      # SEO metadata, redirects, sitemaps
+│   └── seo_shield/               # Bot protection, rate limiting
 │
 ├── shared/
-│   ├── abilities/                # CASL ability definitions
-│   ├── decorators/               # Custom decorators
-│   ├── guards/                   # Route guards
-│   ├── utils/                    # Utility functions
-│   └── types/                    # Shared TypeScript types
+│   ├── middleware/
+│   │   └── tenant.py             # Multi-tenant context injection
+│   ├── mixins/
+│   │   └── soft_delete.py        # SoftDeleteMixin
+│   ├── permissions/
+│   │   └── plan_enforcement.py   # PlanEnforcementService, RequiresPlanFeature
+│   ├── serializers/              # Shared serializer mixins
+│   ├── utils/
+│   │   ├── exceptions.py         # Custom DRF exception handler
+│   │   ├── media.py              # Filer upload helpers
+│   │   └── impersonate.py        # Impersonation permission checks
+│   ├── views/                    # Shared view mixins
+│   ├── widgets/                  # Custom form widgets
+│   └── context_processors.py     # Template context processors
 │
-├── prisma/
-│   ├── schema/                   # Multi-file schema (merged)
-│   │   ├── base.prisma           # Datasource, generator
-│   │   ├── core.prisma           # Core entities
-│   │   └── [module].prisma       # Module-specific schemas
-│   ├── migrations/
-│   └── seed.ts
+├── templates/
+│   ├── layouts/                  # Base layout templates
+│   ├── partials/                 # Reusable partials (sidebar, navbar, etc.)
+│   ├── components/               # UI components
+│   └── modules/                  # App-specific templates
+│       ├── menu/
+│       ├── orders/
+│       ├── subscriptions/
+│       └── ...
 │
-├── views/
-│   ├── layouts/
-│   │   └── main.ejs
-│   ├── partials/
-│   └── [module]/                 # Module-specific views
+├── static/
+│   ├── css/                      # Compiled Tailwind + custom CSS
+│   ├── js/                       # Alpine.js + custom JS
+│   └── images/                   # Static images
 │
-├── public/
-│   ├── css/
-│   ├── js/
-│   └── images/
+├── locale/
+│   ├── tr/                       # Turkish (default)
+│   ├── en/                       # English
+│   ├── ar/                       # Arabic
+│   ├── fa/                       # Farsi
+│   └── uk/                       # Ukrainian
 │
-├── locales/
-│   ├── tr/
-│   └── en/
-│
-└── llms.txt                      # AI documentation (optional)
+├── media/                        # User uploads (gitignored)
+├── staticfiles/                  # collectstatic output (gitignored)
+└── manage.py
 ```
 
 ---
 
-## 5. MODULE SYSTEM
+## 5. DJANGO APP SYSTEM
 
-### 5.1 Module Categories
+### 5.1 App Categories
 
-| Kategori | Prefix | Örnek | Açıklama |
-|----------|--------|-------|----------|
-| System | `_system/` | `_system/users` | Core işlevler, kaldırılamaz |
-| Feature | - | `menu`, `orders` | İş özellikleri |
-| AI | `ai/` | `ai/content-gen` | AI-powered özellikler |
-| Integration | `integrations/` | `integrations/pos` | 3rd party bağlantılar |
+| Kategori | Apps | Aciklama |
+|----------|------|----------|
+| System/Core | `core`, `accounts` | Kullanici, organizasyon, auth — kaldirilmaz |
+| Feature | `menu`, `orders`, `subscriptions`, `customers`, `inventory` | Is ozellikleri |
+| Analytics | `analytics`, `reporting`, `dashboard` | Veri & raporlama |
+| AI | `ai` | AI-powered icerik uretimi |
+| Marketing | `campaigns`, `website`, `seo`, `seo_shield` | Pazarlama & SEO |
+| Infrastructure | `media`, `notifications` | Altyapi servisleri |
 
-### 5.2 Module Manifest Schema
+### 5.2 App Structure Convention
 
-Her modül `manifest.json` dosyası içermelidir:
-
-```json
-{
-  "name": "module-name",
-  "displayName": "Human Readable Name",
-  "version": "1.0.0",
-  "description": "Module purpose",
-  "author": "E-Menum",
-  "category": "feature|system|ai|integration",
-  "enabled": true,
-  "priority": 100,
-  
-  "dependencies": {
-    "required": ["organizations"],
-    "optional": ["analytics"]
-  },
-  
-  "permissions": [
-    "module.view",
-    "module.create", 
-    "module.update",
-    "module.delete"
-  ],
-  
-  "routes": {
-    "prefix": "/api/v1/module",
-    "admin": "/admin/module"
-  },
-  
-  "database": {
-    "schema": "module.schema.prisma",
-    "migrations": true
-  },
-  
-  "hooks": {
-    "onEnable": "hooks/on-enable.ts",
-    "onDisable": "hooks/on-disable.ts"
-  },
-  
-  "admin": {
-    "menu": {
-      "label": "i18n:module.menu.label",
-      "icon": "ph-icon-name",
-      "position": 50
-    }
-  },
-  
-  "events": {
-    "emits": ["module.created", "module.updated"],
-    "listens": ["organization.created"]
-  },
-  
-  "planRestrictions": {
-    "minPlan": "starter",
-    "features": {
-      "advancedFeature": "professional"
-    }
-  }
-}
-```
-
-### 5.3 Module Lifecycle
+Her Django app su yapida olmalidir:
 
 ```
-discover → validate → resolve dependencies → load → register routes → ready
+apps/menu/
+├── __init__.py
+├── apps.py                # AppConfig
+├── models.py              # Django models
+├── serializers.py         # DRF serializers
+├── views.py               # DRF ViewSets + Django views
+├── urls.py                # URL patterns
+├── admin.py               # Django admin registration
+├── forms.py               # Django forms (for template views)
+├── signals.py             # Signal handlers
+├── tasks.py               # Celery async tasks
+├── filters.py             # django-filter FilterSets
+├── translation.py         # modeltranslation registrations
+├── management/
+│   └── commands/          # Custom management commands
+├── migrations/            # Django migrations
+└── tests/
+    ├── test_models.py
+    ├── test_views.py
+    └── test_serializers.py
+```
+
+### 5.3 Custom Management Commands
+
+```bash
+# Core / Seeding
+python manage.py seed_roles              # Seed roles & permissions
+python manage.py seed_plans              # Seed subscription plans
+python manage.py seed_menu_data          # Seed demo menu data
+python manage.py seed_allergens          # Seed allergen list
+python manage.py seed_demo_data          # Seed full demo dataset
+python manage.py seed_all_data           # Seed everything
+python manage.py seed_extra_orgs         # Seed additional organizations
+python manage.py seed_cms_content        # Seed website CMS content
+python manage.py seed_seo_data           # Seed SEO metadata
+python manage.py seed_shield_data        # Seed SEO shield config
+python manage.py seed_report_definitions # Seed report templates
+
+# Database
+python manage.py safe_migrate            # Migration with safety checks
+python manage.py check_migrations        # Verify migration state
+
+# SEO
+python manage.py check_seo_health        # SEO health audit
+
+# Media
+python manage.py migrate_urls_to_media   # Migrate URL references to media
+
+# Shield
+python manage.py shield_status           # Check SEO shield status
 ```
 
 ---
@@ -369,108 +366,124 @@ discover → validate → resolve dependencies → load → register routes → 
 ### 6.1 Development
 
 ```bash
-# Start dev server (hot reload)
-npm run dev
+# Start dev server
+python manage.py runserver
 
-# Type check
-npm run type-check
+# Start with specific settings
+DJANGO_SETTINGS_MODULE=config.settings.development python manage.py runserver
 
-# Lint
-npm run lint
-npm run lint:fix
+# Celery worker (for async tasks)
+celery -A config worker -l info
+
+# Celery beat (for scheduled tasks)
+celery -A config beat -l info
+
+# Build Tailwind CSS
+npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch
+
+# Lint (Python)
+ruff check .
+ruff format .
 ```
 
 ### 6.2 Database
 
 ```bash
-# Generate Prisma client
-npm run prisma:generate
-
-# Create migration
-npm run prisma:migrate -- --name migration_name
+# Create migrations after model changes
+python manage.py makemigrations
 
 # Apply migrations
-npm run prisma:deploy
+python manage.py migrate
 
-# Open Prisma Studio
-npm run prisma:studio
+# Safe migrate (custom command with checks)
+python manage.py safe_migrate
 
-# Merge multi-file schemas
-npm run schema:merge
+# Create superuser
+python manage.py createsuperuser
+
+# Seed all demo data
+python manage.py seed_all_data
 ```
 
-### 6.3 Modules
+### 6.3 Static & Media
 
 ```bash
-# Create new module scaffold
-npm run module:create module-name
+# Collect static files (for production)
+python manage.py collectstatic --noinput
 
-# Install module from zip
-npm run module:install path/to/module.zip
+# Compile translations
+python manage.py compilemessages
 
-# Enable/disable module
-npm run module:enable module-name
-npm run module:disable module-name
+# Extract translation strings
+python manage.py makemessages -l tr -l en -l ar -l fa -l uk
 ```
 
 ### 6.4 Build & Deploy
 
 ```bash
-# Build for production
-npm run build
+# Install Python dependencies
+pip install -r requirements.txt
 
-# Start production server
-npm start
+# Install Node dependencies (for Tailwind)
+npm install
+
+# Build Tailwind for production
+npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --minify
 
 # Run tests
-npm test
-npm run test:coverage
+python manage.py test
+# or with pytest
+pytest
+
+# Start production server
+gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 4
 ```
 
 ---
 
 ## 7. ARCHITECTURE DECISIONS (ADRs)
 
-### ADR-001: Express over NestJS
+### ADR-001: Django over Node.js/Express
 
-**Karar:** Express.js + routing-controllers + tsyringe kullanımı  
-**Gerekçe:** 
-- LLM training data'da daha fazla Express örneği
-- Daha basit mental model
-- NestJS'in %80'i, overhead'in %20'si
+**Karar:** Django + DRF + Celery
+**Gerekce:**
+- Python ekosisteminde daha guclu ORM ve migration sistemi
+- Admin panel built-in (gelistirme hizi)
+- Celery ile production-grade async task yonetimi
+- Django'nun security middleware'leri (CSRF, XSS, SQL injection korumalari)
 
-### ADR-002: EJS over React
+### ADR-002: Django Templates over React/SPA
 
-**Karar:** Server-side EJS templates + Alpine.js  
-**Gerekçe:**
-- SEO-friendly SSR varsayılan
-- Daha hızlı initial load
-- Daha az bundle size
-- Admin panel için yeterli interaktivite
+**Karar:** Server-side Django Templates + Alpine.js
+**Gerekce:**
+- SEO-friendly SSR varsayilan
+- Daha hizli initial load
+- Daha az bundle size, deployment karmasikligi yok
+- Admin panel icin yeterli interaktivite (Alpine.js ile)
 
-### ADR-003: CASL for Authorization
+### ADR-003: django-guardian for Authorization
 
-**Karar:** CASL ABAC framework  
-**Gerekçe:**
-- Attribute-based access control esnekliği
+**Karar:** django-guardian (object-level permissions)
+**Gerekce:**
+- Object-level RBAC/ABAC esnekligi
 - Tenant-scoped permissions
-- Frontend + backend aynı ability tanımları
+- Django'nun built-in permission sistemiyle entegre
 
-### ADR-004: Multi-file Prisma Schema
+### ADR-004: Multi-App Django Architecture
 
-**Karar:** Her modül kendi .prisma dosyası  
-**Gerekçe:**
-- Modül bağımsızlığı
-- Merge script ile tek schema'ya birleştirme
-- Daha kolay maintenance
+**Karar:** Her domain 1 Django app
+**Gerekce:**
+- Domain-driven modul bagimsizligi
+- Her app kendi models, views, serializers, migrations
+- Kolay maintenance ve test isolation
 
 ### ADR-005: Soft Delete Default
 
-**Karar:** Tüm entity'lerde `deletedAt` timestamp  
-**Gerekçe:**
-- Veri kaybı önleme
+**Karar:** Tum entity'lerde `deleted_at` timestamp (SoftDeleteMixin)
+**Gerekce:**
+- Veri kaybi onleme
 - Audit trail
-- GDPR uyumlu (gerçek silme prosedürü ayrı)
+- GDPR uyumlu (gercek silme proseduru ayri)
 
 ---
 
@@ -478,21 +491,33 @@ npm run test:coverage
 
 ```
 Organization (Tenant)
-├── Users (many)
+├── Users (many) ─── UserRole ─── Role ─── Permission
+├── Branches (many)
 ├── Menus (many)
 │   ├── Categories (many)
 │   │   └── Products (many)
-│   │       ├── Variants (many)
-│   │       ├── Modifiers (many)
-│   │       └── Allergens (many-to-many)
+│   │       ├── ProductVariants (many)
+│   │       ├── ProductModifiers (many)
+│   │       ├── ProductAllergens (many-to-many)
+│   │       └── NutritionInfo (one)
 │   └── Themes (many)
-├── QRCodes (many)
-├── Tables (many)
+├── Zones (many)
+│   └── Tables (many)
+│       └── QRCodes (many)
+│           └── QRScans (many)
 ├── Orders (many)
-│   └── OrderItems (many)
+│   ├── OrderItems (many)
+│   └── Refunds (many)
+├── ServiceRequests (many)
+├── Reservations (many)
+├── Discounts (many)
 ├── Customers (many)
+├── Campaigns (many)
+├── Notifications (many)
+├── AuditLog (many)
 └── Subscription (one)
     └── Plan (one)
+        └── PlanFeatures (many)
 ```
 
 ---
@@ -502,9 +527,9 @@ Organization (Tenant)
 ### 9.1 URL Structure
 
 ```
-/api/v1/{resource}              # Collection
-/api/v1/{resource}/:id          # Single resource
-/api/v1/{resource}/:id/{sub}    # Nested resource
+/api/v1/{resource}/              # Collection (DRF Router)
+/api/v1/{resource}/{id}/         # Single resource
+/api/v1/{resource}/{id}/{sub}/   # Nested resource
 ```
 
 ### 9.2 Response Format
@@ -516,19 +541,15 @@ Organization (Tenant)
   "data": { ... }
 }
 
-// Success with pagination
+// Success with pagination (DRF PageNumberPagination)
 {
-  "success": true,
-  "data": [ ... ],
-  "meta": {
-    "page": 1,
-    "perPage": 20,
-    "total": 150,
-    "totalPages": 8
-  }
+  "count": 150,
+  "next": "http://api.example.com/items/?page=2",
+  "previous": null,
+  "results": [ ... ]
 }
 
-// Error
+// Error (custom_exception_handler)
 {
   "success": false,
   "error": {
@@ -541,11 +562,11 @@ Organization (Tenant)
 
 ### 9.3 HTTP Status Codes
 
-| Code | Kullanım |
+| Code | Kullanim |
 |------|----------|
-| 200 | GET, PUT, PATCH başarılı |
-| 201 | POST başarılı (resource created) |
-| 204 | DELETE başarılı |
+| 200 | GET, PUT, PATCH basarili |
+| 201 | POST basarili (resource created) |
+| 204 | DELETE basarili |
 | 400 | Bad request (validation error) |
 | 401 | Unauthorized (no/invalid token) |
 | 403 | Forbidden (no permission) |
@@ -560,21 +581,27 @@ Organization (Tenant)
 
 ### 10.1 Authentication
 
-- JWT access token (15 min expiry)
-- Refresh token (7 days, httpOnly cookie)
-- Password: bcrypt, min 12 rounds
+- JWT access token (15 min expiry) via `djangorestframework-simplejwt`
+- Refresh token (7 days, rotate on use, blacklist after rotation)
+- Password: bcrypt (BCryptSHA256PasswordHasher), min 12 chars
+- Session auth for template-based views (7 day cookie)
+- Custom `EmailOrUsernameBackend` for login
 
 ### 10.2 Authorization
 
-- RBAC: Role-based baseline
-- ABAC: Attribute-based fine-grained control
-- Tenant isolation: organizationId her query'de
+- RBAC: Role-based baseline (Role, Permission, UserRole models in core)
+- ABAC: Object-level via django-guardian
+- Tenant isolation: `request.organization` injected by TenantMiddleware
+- Plan enforcement: `PlanEnforcementService` gates features by subscription tier
+- Impersonation: django-impersonate (superadmin only, 1hr max, read-only admin)
 
 ### 10.3 Data Protection
 
-- Encryption at rest: PostgreSQL TDE
 - Encryption in transit: TLS 1.3
-- PII fields: encrypted with tenant-specific key
+- CSRF protection on all forms
+- Security headers: XSS filter, X-Frame-Options DENY, Content-Type nosniff
+- SEO Shield: Rate limiting, bot detection (`apps.seo_shield`)
+- File uploads: MIME type whitelist, 10MB max
 
 ---
 
@@ -582,7 +609,7 @@ Organization (Tenant)
 
 ### 11.1 Coverage Targets
 
-| Tür | Minimum |
+| Tur | Minimum |
 |-----|---------|
 | Unit | 80% |
 | Integration | 60% |
@@ -591,69 +618,80 @@ Organization (Tenant)
 ### 11.2 Test File Locations
 
 ```
-src/modules/menu/
-├── menu.service.ts
-├── menu.service.spec.ts        # Unit tests
-├── menu.controller.spec.ts     # Unit tests
-└── __tests__/
-    └── menu.e2e.spec.ts        # E2E tests
+apps/menu/
+├── models.py
+├── views.py
+├── serializers.py
+└── tests/
+    ├── __init__.py
+    ├── test_models.py          # Unit tests
+    ├── test_views.py           # API/view tests
+    ├── test_serializers.py     # Serializer tests
+    └── test_e2e.py             # E2E tests (optional)
+```
+
+### 11.3 Test Tools
+
+```yaml
+Framework:      pytest + pytest-django
+Fixtures:       factory_boy
+API Testing:    DRF APIClient / APITestCase
+Coverage:       pytest-cov
 ```
 
 ---
 
-## 12. VIBECODING PATTERNS
+## 12. AI-ASSISTED DEVELOPMENT PATTERNS
 
 ### 12.1 High Success Rate Patterns (>90%)
 
-- Prisma CRUD operations
-- Express middleware chains
-- Zod validation schemas
-- routing-controllers decorators
-- CASL permission definitions
-- EJS templates with partials
+- Django ORM CRUD operations
+- DRF ModelSerializer + ModelViewSet
+- DRF permission_classes
+- django-filter FilterSets
+- Django Template tags + Flowbite components
+- Celery task definitions
 
 ### 12.2 Always Specify in Prompts
 
 ```
-1. "BaseController extend et"           → CRUD otomatik
-2. "organizationId ile tenant filter"   → Multi-tenancy
-3. "@Authorized decorator kullan"       → Yetkilendirme
-4. "Zod schema ile validation"          → Tip güvenliği
-5. "deletedAt ile soft delete"          → Veri koruma
-6. "@/ alias kullan"                    → Import düzeni
+1. "ModelViewSet kullan"                    → CRUD otomatik
+2. "organization ile tenant filter"         → Multi-tenancy
+3. "permission_classes ekle"                → Yetkilendirme
+4. "Serializer ile validation"              → Tip guvenligi
+5. "SoftDeleteMixin kullan"                 → Veri koruma
+6. "{% trans %} ile i18n"                   → Ceviriler
 ```
 
 ### 12.3 Avoid in Prompts
 
 - Custom abstractions without examples
 - Magic strings
-- `any` type
-- Manual route definitions
-- Circular dependencies
+- `Any` type annotations
+- Manual URL patterns (use DRF routers)
+- Circular imports between apps
 
 ---
 
 ## 13. REFERENCE DOCUMENTS
 
-### 13.1 Kapsam & Kısıtlamalar (ÖNCELİKLİ OKUMA)
+### 13.1 Kapsam & Kisitlamalar (ONCELIKLI OKUMA)
 
-| Döküman | Konum | İçerik |
+| Dokuman | Konum | Icerik |
 |---------|-------|--------|
-| **CONSTRAINTS.md** | .auto-claude/ | ⚠️ Kısıtlamalar, sınırlar, yapılmaması gerekenler |
-| **MVP_SCOPE.md** | .auto-claude/ | ⚠️ MVP kapsamı, neler var/yok |
-| **MODULE_SYSTEM.md** | .auto-claude/ | Modül mimarisi, lifecycle, aktivasyon |
-| **MODULE_DEVELOPMENT_GUIDE.md** | .auto-claude/ | Yeni modül geliştirme rehberi |
+| **CONSTRAINTS.md** | .auto-claude/ | Kisitlamalar, sinirlar, yapilmamasi gerekenler |
+| **MVP_SCOPE.md** | .auto-claude/ | MVP kapsami, neler var/yok |
 
-### 13.2 Proje Bağlamı
+### 13.2 Proje Baglami
 
-| Döküman | Konum | İçerik |
+| Dokuman | Konum | Icerik |
 |---------|-------|--------|
-| PROJECT_CONTEXT.md | .auto-claude/ | Detaylı proje bağlamı |
-| GLOSSARY.md | domain/ | Terminoloji, kısaltmalar |
+| PROJECT_CONTEXT.md | .auto-claude/ | Detayli proje baglami |
+| GLOSSARY.md | domain/ | Terminoloji, kisaltmalar |
 
 ### 13.3 Mimari
 
-| Döküman | Konum | İçerik |
+| Dokuman | Konum | Icerik |
 |---------|-------|--------|
 | SYSTEM_DESIGN.md | architecture/ | C4 diagrams, data flow |
 | DATABASE_SCHEMA.md | architecture/ | Entity relationships |
@@ -662,29 +700,29 @@ src/modules/menu/
 
 ### 13.4 Standartlar
 
-| Döküman | Konum | İçerik |
+| Dokuman | Konum | Icerik |
 |---------|-------|--------|
-| CODING_STANDARDS.md | standards/ | Code conventions |
-| TESTING_STRATEGY.md | standards/ | Test approach |
-| COMPONENT_PATTERNS.md | standards/ | UI component patterns |
+| CODING_STANDARDS.md | standards/ | Python/Django code conventions |
+| TESTING_STRATEGY.md | standards/ | pytest test approach |
+| COMPONENT_PATTERNS.md | standards/ | Django Template + Flowbite patterns |
 
 ### 13.5 Domain
 
-| Döküman | Konum | İçerik |
+| Dokuman | Konum | Icerik |
 |---------|-------|--------|
 | BUSINESS_RULES.md | domain/ | Domain logic, pricing |
 
 ### 13.6 Design
 
-| Döküman | Konum | İçerik |
+| Dokuman | Konum | Icerik |
 |---------|-------|--------|
 | DESIGN_SYSTEM_PHILOSOPHY.md | design/ | UED, theming, accessibility |
 | PERSONA_USER_FLOWS.md | design/ | Personas, user journeys |
-| FRONTEND_ARCHITECTURE.md | design/ | CSS/JS approach, build |
+| FRONTEND_ARCHITECTURE.md | design/ | Tailwind/Alpine.js approach |
 
 ### 13.7 Module Specs
 
-| Döküman | Konum | İçerik |
+| Dokuman | Konum | Icerik |
 |---------|-------|--------|
 | spec.md | specs/001-menu-module/ | Menu module specification |
 | requirements.json | specs/001-menu-module/ | Structured requirements |
@@ -694,26 +732,26 @@ src/modules/menu/
 
 ## 14. SPEC WRITING GUIDELINES
 
-Her yeni özellik için `.auto-claude/specs/XXX-feature-name/` dizini oluştur:
+Her yeni ozellik icin `.auto-claude/specs/XXX-feature-name/` dizini olustur:
 
 1. `spec.md` - Feature specification
 2. `requirements.json` - Structured requirements
 3. `context.json` - Related files and references
 
-Spec numaralama: `001`, `002`, ... (üç haneli, sıralı)
+Spec numaralama: `001`, `002`, ... (uc haneli, sirali)
 
 ---
 
 ## 15. EMERGENCY CONTACTS
 
-| Rol | İsim | Sorumluluk |
+| Rol | Isim | Sorumluluk |
 |-----|------|------------|
-| Strategic Lead | İsmail | Mimari kararlar |
-| Frontend | Ali | Istanbul bölge dev |
-| Backend | Bora | Diğer bölge dev |
+| Strategic Lead | Ismail | Mimari kararlar |
+| Frontend | Ali | Istanbul bolge dev |
+| Backend | Bora | Diger bolge dev |
 | DevOps | Ahmet | GTM, Mautic, infra |
-| Sales | Pınar | Müşteri, destek |
+| Sales | Pinar | Musteri, destek |
 
 ---
 
-*Bu döküman, Auto-Claude agent'ın E-Menum projesini anlayabilmesi için tek yetkili referanstır. Tüm spec'ler ve implementasyonlar bu dökümanla tutarlı olmalıdır.*
+*Bu dokuman, Auto-Claude agent'in E-Menum projesini anlayabilmesi icin tek yetkili referanstir. Tum spec'ler ve implementasyonlar bu dokumanla tutarli olmalidir.*

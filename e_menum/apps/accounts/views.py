@@ -471,6 +471,13 @@ class SubscriptionView(LoginRequiredMixin, View):
             except ValueError:
                 current_tier_index = -1
 
+        # Annotate each plan with its tier index for template comparison
+        for p in available_plans:
+            try:
+                p.tier_index = tier_order.index(p.tier)
+            except ValueError:
+                p.tier_index = -1
+
         context = {
             "subscription": subscription,
             "plan": plan,

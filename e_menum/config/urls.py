@@ -41,7 +41,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 
 # RedirectView no longer needed — root now served by website app
-from django.contrib.admin.views.decorators import staff_member_required
+from shared.decorators import superadmin_required
 from django.shortcuts import render
 
 # Import core module components for proper URL structure
@@ -89,7 +89,7 @@ def health_check(request):
     )
 
 
-@staff_member_required
+@superadmin_required
 def admin_reports(request):
     """
     Custom admin reports page with basic stats.
@@ -110,7 +110,7 @@ def admin_reports(request):
     return render(request, "admin/reports.html", context)
 
 
-@staff_member_required
+@superadmin_required
 def admin_seo_dashboard(request):
     """
     SEO Dashboard — enterprise-grade overview of SEO health, tracking,
@@ -222,7 +222,7 @@ def admin_seo_dashboard(request):
     return render(request, "admin/seo_dashboard.html", context)
 
 
-@staff_member_required
+@superadmin_required
 def admin_shield_dashboard(request):
     """
     Shield Dashboard — overview of blocked requests, threats, and IP reputation.
@@ -287,7 +287,7 @@ def admin_shield_dashboard(request):
     return render(request, "admin/shield_dashboard.html", context)
 
 
-@staff_member_required
+@superadmin_required
 def admin_settings(request):
     """
     Settings hub page — central place for platform configuration.
@@ -303,7 +303,7 @@ def admin_settings(request):
     return render(request, "admin/settings.html", context)
 
 
-@staff_member_required
+@superadmin_required
 def permission_matrix(request):
     """
     Permission Matrix admin page — cross-role permission comparison.

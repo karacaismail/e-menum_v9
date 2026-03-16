@@ -5,7 +5,7 @@ Provides a secure file upload endpoint for the admin image upload widgets.
 Files are saved to MEDIA_ROOT with UUID filenames in per-organization directories.
 
 Security:
-- Requires staff authentication (@staff_member_required)
+- Requires staff authentication (@superadmin_required)
 - Validates file type (images only)
 - Validates file size (max 10MB from settings)
 - CSRF protection via Django's built-in middleware
@@ -28,7 +28,7 @@ import os
 from uuid import uuid4
 
 from django.conf import settings
-from django.contrib.admin.views.decorators import staff_member_required
+from shared.decorators import superadmin_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
@@ -55,7 +55,7 @@ ALLOWED_EXTENSIONS = {
 MAX_FILE_SIZE = getattr(settings, "FILE_UPLOAD_MAX_MEMORY_SIZE", 10 * 1024 * 1024)
 
 
-@staff_member_required
+@superadmin_required
 @require_POST
 def admin_upload_view(request):
     """
