@@ -4,7 +4,6 @@ import uuid
 from decimal import Decimal
 
 import pytest
-from django.db import IntegrityError
 
 from apps.menu.models import Category, Menu, Product, Theme
 
@@ -35,14 +34,17 @@ class TestMenuModel:
 
     def test_menu_org_scoped(self, organization, make_organization):
         org2 = make_organization(name="Other Org")
-        Menu.objects.create(
-            organization=organization, name="Menu 1", slug="m1"
+        Menu.objects.create(organization=organization, name="Menu 1", slug="m1")
+        Menu.objects.create(organization=org2, name="Menu 2", slug="m2")
+        assert (
+            Menu.objects.filter(
+                organization=organization, deleted_at__isnull=True
+            ).count()
+            == 1
         )
-        Menu.objects.create(
-            organization=org2, name="Menu 2", slug="m2"
+        assert (
+            Menu.objects.filter(organization=org2, deleted_at__isnull=True).count() == 1
         )
-        assert Menu.objects.filter(organization=organization, deleted_at__isnull=True).count() == 1
-        assert Menu.objects.filter(organization=org2, deleted_at__isnull=True).count() == 1
 
     def test_menu_publish_toggle(self, menu):
         assert menu.is_published is True  # fixture sets True
@@ -94,17 +96,25 @@ class TestCategoryModel:
         assert category.deleted_at is not None
 
     def test_category_sort_order(self, organization, menu):
-        cat1 = Category.objects.create(
-            organization=organization, menu=menu,
-            name="B", slug="b", sort_order=2,
+        Category.objects.create(
+            organization=organization,
+            menu=menu,
+            name="B",
+            slug="b",
+            sort_order=2,
         )
-        cat2 = Category.objects.create(
-            organization=organization, menu=menu,
-            name="A", slug="a", sort_order=1,
+        Category.objects.create(
+            organization=organization,
+            menu=menu,
+            name="A",
+            slug="a",
+            sort_order=1,
         )
         cats = list(
             Category.objects.filter(
-                organization=organization, menu=menu, deleted_at__isnull=True,
+                organization=organization,
+                menu=menu,
+                deleted_at__isnull=True,
             ).order_by("sort_order")[:2]
         )
         assert cats[0].sort_order <= cats[1].sort_order

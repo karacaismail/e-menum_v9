@@ -48,9 +48,7 @@ class TestUserModel:
         assert user.get_full_name() == "Jane Smith"
 
     def test_user_soft_delete(self):
-        user = User.objects.create_user(
-            email="delete@example.com", password="pass123"
-        )
+        user = User.objects.create_user(email="delete@example.com", password="pass123")
         user.soft_delete()
         assert user.deleted_at is not None
 
@@ -77,13 +75,19 @@ class TestOrganizationModel:
 
     def test_organization_slug_unique(self, free_plan):
         Organization.objects.create(
-            name="Org 1", slug="unique-slug", email="a@example.com",
-            status="ACTIVE", plan=free_plan,
+            name="Org 1",
+            slug="unique-slug",
+            email="a@example.com",
+            status="ACTIVE",
+            plan=free_plan,
         )
         with pytest.raises(IntegrityError):
             Organization.objects.create(
-                name="Org 2", slug="unique-slug", email="b@example.com",
-                status="ACTIVE", plan=free_plan,
+                name="Org 2",
+                slug="unique-slug",
+                email="b@example.com",
+                status="ACTIVE",
+                plan=free_plan,
             )
 
 
@@ -106,7 +110,9 @@ class TestRoleModel:
         )
         owner_role = Role.objects.get(name="owner", scope="ORGANIZATION")
         ur = UserRole.objects.create(
-            user=user, role=owner_role, organization=organization,
+            user=user,
+            role=owner_role,
+            organization=organization,
         )
         assert ur.user == user
         assert ur.role.name == "owner"

@@ -359,7 +359,9 @@ class TestTableAPI:
         for field in ("id", "name", "number", "capacity", "status", "is_active"):
             assert field in tbl, f"Missing field: {field}"
 
-    def test_empty_org_returns_empty_zones(self, client: Client, make_user, make_organization):
+    def test_empty_org_returns_empty_zones(
+        self, client: Client, make_user, make_organization
+    ):
         """An org with no zones should return an empty list."""
         org = make_organization()
         u = make_user(organization=org)

@@ -3,7 +3,6 @@
 import uuid
 
 import pytest
-from django.test import Client
 
 from apps.core.models import User
 
@@ -57,9 +56,7 @@ class TestSuperadminAccess:
     def test_superuser_can_access_admin(self, client, admin_user):
         client.force_login(admin_user)
         response = client.get("/admin/dashboard/")
-        assert response.status_code == 200, (
-            "Superuser should access admin dashboard"
-        )
+        assert response.status_code == 200, "Superuser should access admin dashboard"
 
 
 @pytest.mark.django_db

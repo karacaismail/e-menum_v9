@@ -4,8 +4,6 @@ Shared view decorators for E-Menum.
 Provides access control decorators for Django views (non-DRF).
 """
 
-from functools import wraps
-
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import user_passes_test
 

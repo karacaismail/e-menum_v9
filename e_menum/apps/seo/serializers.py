@@ -36,7 +36,13 @@ class RedirectSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["id", "organization", "hit_count", "created_at", "updated_at"]
+        read_only_fields = [
+            "id",
+            "organization",
+            "hit_count",
+            "created_at",
+            "updated_at",
+        ]
 
 
 class AuthorProfileSerializer(serializers.ModelSerializer):

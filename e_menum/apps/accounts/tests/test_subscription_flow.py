@@ -151,9 +151,7 @@ class TestSubscriptionCancel:
         assert sub.status == SubscriptionStatus.CANCELLED
         assert sub.cancel_reason == ""
 
-    def test_cancel_no_subscription_shows_error(
-        self, client, organization_with_owner
-    ):
+    def test_cancel_no_subscription_shows_error(self, client, organization_with_owner):
         org, owner = organization_with_owner
 
         client.force_login(owner)
@@ -283,9 +281,7 @@ class TestDowngradeIdentification:
     current_tier_index.  The template relies on this comparison.
     """
 
-    def test_lower_tier_plans_are_downgrades(
-        self, client, organization_with_owner
-    ):
+    def test_lower_tier_plans_are_downgrades(self, client, organization_with_owner):
         growth_plan = _create_plan("growth-d", "Growth", "GROWTH", 4500, sort_order=2)
         _create_plan("free-d", "Free", "FREE", 0, sort_order=0)
         _create_plan("starter-d", "Starter", "STARTER", 2000, sort_order=1)

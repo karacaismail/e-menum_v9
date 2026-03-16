@@ -19,7 +19,9 @@ class TestMenuAPI:
         response = authenticated_api_client.get("/api/v1/menus/")
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
-    def test_list_menus_authenticated_with_org(self, api_client, organization_with_owner, menu):
+    def test_list_menus_authenticated_with_org(
+        self, api_client, organization_with_owner, menu
+    ):
         """User with org + owner role can list menus."""
         org, owner = organization_with_owner
         api_client.force_authenticate(user=owner)
@@ -55,9 +57,7 @@ class TestMenuAPI:
 class TestMenuTenantIsolation:
     """Tests for multi-tenant data isolation on menu endpoints."""
 
-    def test_cannot_see_other_org_menus(
-        self, api_client, make_user, make_organization
-    ):
+    def test_cannot_see_other_org_menus(self, api_client, make_user, make_organization):
         from apps.menu.models import Menu
 
         org1 = make_organization(name="Org A")
@@ -65,11 +65,13 @@ class TestMenuTenantIsolation:
         user1 = make_user(email="u1@test.com", organization=org1)
 
         Menu.objects.create(
-            organization=org1, name="My Menu",
+            organization=org1,
+            name="My Menu",
             slug=f"my-{uuid.uuid4().hex[:6]}",
         )
         Menu.objects.create(
-            organization=org2, name="Other Menu",
+            organization=org2,
+            name="Other Menu",
             slug=f"other-{uuid.uuid4().hex[:6]}",
         )
 

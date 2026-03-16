@@ -365,9 +365,7 @@ class TestOrgScopedFiltering:
     ):
         # Create a second org with its own user
         other_org = make_organization(name="Other Org")
-        other_user = make_user(
-            email="other@example.com", organization=other_org
-        )
+        other_user = make_user(email="other@example.com", organization=other_org)
 
         # Create notification in the other org
         Notification.objects.create(
@@ -380,9 +378,7 @@ class TestOrgScopedFiltering:
         )
 
         # Create notification in the test org for our user
-        org_user = make_user(
-            email="myorguser@example.com", organization=organization
-        )
+        org_user = make_user(email="myorguser@example.com", organization=organization)
         Notification.objects.create(
             organization=organization,
             user=org_user,
@@ -406,9 +402,7 @@ class TestOrgScopedFiltering:
         self, make_user, make_organization, organization
     ):
         other_org = make_organization(name="Other Org 2")
-        other_user = make_user(
-            email="other2@example.com", organization=other_org
-        )
+        other_user = make_user(email="other2@example.com", organization=other_org)
 
         # Notification in other org
         Notification.objects.create(
@@ -421,9 +415,7 @@ class TestOrgScopedFiltering:
         )
 
         # Notification in our org
-        org_user = make_user(
-            email="myorguser2@example.com", organization=organization
-        )
+        org_user = make_user(email="myorguser2@example.com", organization=organization)
         Notification.objects.create(
             organization=organization,
             user=org_user,
@@ -443,9 +435,7 @@ class TestOrgScopedFiltering:
         self, make_user, make_organization, organization
     ):
         other_org = make_organization(name="Other Org 3")
-        other_user = make_user(
-            email="other3@example.com", organization=other_org
-        )
+        other_user = make_user(email="other3@example.com", organization=other_org)
 
         other_notif = Notification.objects.create(
             organization=other_org,
@@ -456,9 +446,7 @@ class TestOrgScopedFiltering:
             status="DELIVERED",
         )
 
-        org_user = make_user(
-            email="myorguser3@example.com", organization=organization
-        )
+        org_user = make_user(email="myorguser3@example.com", organization=organization)
         c = Client()
         c.force_login(org_user)
 
