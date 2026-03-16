@@ -32,7 +32,7 @@ jobs:
           cache-dependency-path: e_menum/requirements-dev.txt
 
       - name: Install ruff
-        run: pip install ruff
+        run: pip install ruff==0.15.6
 
       - name: Ruff lint
         run: ruff check . --output-format=github

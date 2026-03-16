@@ -67,7 +67,11 @@ def menu_create(request):
                     )
                 except Theme.DoesNotExist:
                     pass
-            base_slug = form.cleaned_data.get("slug") or slugify(form.cleaned_data["name"]) or "menu"
+            base_slug = (
+                form.cleaned_data.get("slug")
+                or slugify(form.cleaned_data["name"])
+                or "menu"
+            )
             menu = Menu(
                 organization=org,
                 name=form.cleaned_data["name"],

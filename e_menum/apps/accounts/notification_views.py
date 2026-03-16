@@ -48,9 +48,13 @@ def notification_unread_count(request):
     """Return unread notification count for the current user."""
     from apps.notifications.models import Notification
 
-    count = Notification.objects.filter(
-        _base_filter(request),
-    ).exclude(status="READ").count()
+    count = (
+        Notification.objects.filter(
+            _base_filter(request),
+        )
+        .exclude(status="READ")
+        .count()
+    )
 
     return JsonResponse({"count": count})
 
@@ -112,9 +116,13 @@ def notification_mark_all_read(request):
     """Mark all unread notifications as read for the current user."""
     from apps.notifications.models import Notification
 
-    updated = Notification.objects.filter(
-        _base_filter(request),
-    ).exclude(status="READ").update(status="READ")
+    updated = (
+        Notification.objects.filter(
+            _base_filter(request),
+        )
+        .exclude(status="READ")
+        .update(status="READ")
+    )
 
     return JsonResponse({"success": True, "updated": updated})
 
@@ -143,6 +151,12 @@ def notification_page(request):
         {
             "page_obj": page_obj,
             "current_type": ntype,
-            "notification_types": ["ORDER", "SYSTEM", "PROMOTION", "PAYMENT", "SECURITY"],
+            "notification_types": [
+                "ORDER",
+                "SYSTEM",
+                "PROMOTION",
+                "PAYMENT",
+                "SECURITY",
+            ],
         },
     )
