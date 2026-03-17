@@ -228,11 +228,13 @@ run_docker_deploy() {
     log_err "Web loglari: docker compose -f docker-compose.prod.yml logs web"
     exit 1
   fi
-  docker compose -f docker-compose.prod.yml exec -T web python manage.py collectstatic --noinput 2>/dev/null || true
 
-  # Seed data: core seeds with --force (kod degisikliklerini DB'ye yansitir)
-  log_info "Seed data (roles, plans, allergens --force)..."
-  for cmd in seed_roles seed_plans seed_allergens; do
+  log_info "Ceviri dosyalari derleniyor (.po → .mo)..."
+  docker compose -f docker-compose.prod.yml exec -T web python manage.py compilemessages 2>/dev/null || log_warn "compilemessages atlandi veya hata."
+
+  # Seed data: core seeds with --force (kod degisikliklerini DB'ye yansitir, yeni cevirilerle)
+  log_info "Seed data (roles, plans, allergens, menu_data --force)..."
+  for cmd in seed_roles seed_plans seed_allergens seed_menu_data; do
     if docker compose -f docker-compose.prod.yml exec -T web python manage.py "$cmd" --force; then
       log_ok "  $cmd tamamlandi."
     else
@@ -240,9 +242,9 @@ run_docker_deploy() {
     fi
   done
 
-  # Seed data: menu, all, demo (lezzetsarayi, plan FK, sifreleme guncellemeleri)
-  log_info "Seed data (menu, all, demo)..."
-  for cmd in seed_menu_data seed_all_data seed_demo_data; do
+  # Seed data: all, demo (lezzetsarayi, plan FK, sifreleme guncellemeleri)
+  log_info "Seed data (all, demo)..."
+  for cmd in seed_all_data seed_demo_data; do
     if docker compose -f docker-compose.prod.yml exec -T web python manage.py "$cmd"; then
       log_ok "  $cmd tamamlandi."
     else
@@ -259,6 +261,12 @@ run_docker_deploy() {
       log_warn "  $cmd atlandi veya hata (devam ediliyor)."
     fi
   done
+
+  log_info "Ceviri alanlari senkronize ediliyor (update_translation_fields)..."
+  docker compose -f docker-compose.prod.yml exec -T web python manage.py update_translation_fields --language=tr 2>/dev/null || log_warn "update_translation_fields atlandi veya hata."
+
+  log_info "Static dosyalar toplaniyor..."
+  docker compose -f docker-compose.prod.yml exec -T web python manage.py collectstatic --noinput 2>/dev/null || true
 
   # Restart: her deploy'da web/celery tam restart (migration + seed sonrasi guvenli)
   if [[ "$NEED_FULL_BUILD" == "1" ]]; then
@@ -323,6 +331,21 @@ run_bare_deploy() {
   log_info "Veritabanı migration..."
   python manage.py migrate --noinput
   log_ok "Migration tamamlandı."
+
+  log_info "Çeviri dosyaları derleniyor (.po → .mo)..."
+  python manage.py compilemessages 2>/dev/null || log_warn "compilemessages atlandi veya hata."
+
+  log_info "Seed data (roles, plans, allergens, menu_data --force)..."
+  for cmd in seed_roles seed_plans seed_allergens seed_menu_data; do
+    if python manage.py "$cmd" --force; then
+      log_ok "  $cmd tamamlandi."
+    else
+      log_warn "  $cmd atlandi veya hata (devam ediliyor)."
+    fi
+  done
+
+  log_info "Çeviri alanları senkronize ediliyor (update_translation_fields)..."
+  python manage.py update_translation_fields --language=tr 2>/dev/null || log_warn "update_translation_fields atlandi veya hata."
 
   if [[ -f package.json ]] && grep -q '"css:build"' package.json 2>/dev/null; then
     log_info "Tailwind CSS build..."
