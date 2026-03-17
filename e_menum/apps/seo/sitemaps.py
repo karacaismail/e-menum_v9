@@ -32,7 +32,7 @@ import logging
 
 from django.conf import settings
 from django.contrib.sitemaps import Sitemap
-from django.urls import reverse
+from django.urls import NoReverseMatch, reverse
 from django.utils import translation
 
 logger = logging.getLogger("apps.seo")
@@ -43,10 +43,15 @@ def _reverse_i18n(url_name, **kwargs):
 
     Website URLs live inside ``i18n_patterns`` so ``reverse()`` needs an
     active language to produce the correct, language-prefixed path.
+    Returns ``None`` if the URL cannot be resolved (prevents sitemap 500).
     """
     lang = getattr(settings, "LANGUAGE_CODE", "tr")
-    with translation.override(lang):
-        return reverse(url_name, **kwargs)
+    try:
+        with translation.override(lang):
+            return reverse(url_name, **kwargs)
+    except NoReverseMatch:
+        logger.warning("Sitemap: cannot reverse '%s' kwargs=%s", url_name, kwargs)
+        return None
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -88,7 +93,13 @@ class StaticPageSitemap(Sitemap):
     ]
 
     def items(self):
-        return self._page_names
+        """Return only page names that can be resolved."""
+        resolved = []
+        for name in self._page_names:
+            url = _reverse_i18n(name)
+            if url is not None:
+                resolved.append(name)
+        return resolved
 
     def location(self, item):
         return _reverse_i18n(item)
@@ -432,6 +443,7 @@ class HelpArticleSitemap(Sitemap):
             HelpArticle.objects.filter(
                 is_active=True,
                 deleted_at__isnull=True,
+                category__isnull=False,
                 category__is_active=True,
                 category__deleted_at__isnull=True,
             )
@@ -443,13 +455,19 @@ class HelpArticleSitemap(Sitemap):
         return getattr(obj, "updated_at", None)
 
     def location(self, obj):
-        return _reverse_i18n(
-            "website:help_article",
-            kwargs={
-                "category_slug": obj.category.slug,
-                "article_slug": obj.slug,
-            },
-        )
+        try:
+            if not obj.category:
+                return None
+            return _reverse_i18n(
+                "website:help_article",
+                kwargs={
+                    "category_slug": obj.category.slug,
+                    "article_slug": obj.slug,
+                },
+            )
+        except Exception:
+            logger.warning("Sitemap: cannot build URL for HelpArticle pk=%s", obj.pk)
+            return None
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -514,20 +532,40 @@ class PSEOPageSitemap(Sitemap):
 # Module-level dict for urls.py
 # ──────────────────────────────────────────────────────────────────────────────
 
-sitemaps = {
-    "static": StaticPageSitemap,
-    "blog": BlogPostSitemap,
-    "legal": LegalPageSitemap,
-    "solutions": SolutionPageSitemap,
-    "case_studies": CaseStudySitemap,
-    "free_tools": FreeToolSitemap,
-    "reports": IndustryReportSitemap,
-    "webinars": WebinarSitemap,
-    "careers": CareerPositionSitemap,
-    "press": PressReleaseSitemap,
-    "partners": PartnerProgramSitemap,
-    "help_categories": HelpCategorySitemap,
-    "help_articles": HelpArticleSitemap,
-    "menus": MenuSitemap,
-    "pseo": PSEOPageSitemap,
-}
+
+def _safe_sitemaps():
+    """Build the sitemaps dict, skipping any whose model import fails.
+
+    This prevents a single broken app from crashing the entire sitemap.xml.
+    """
+    _candidates = {
+        "static": StaticPageSitemap,
+        "blog": BlogPostSitemap,
+        "legal": LegalPageSitemap,
+        "solutions": SolutionPageSitemap,
+        "case_studies": CaseStudySitemap,
+        "free_tools": FreeToolSitemap,
+        "reports": IndustryReportSitemap,
+        "webinars": WebinarSitemap,
+        "careers": CareerPositionSitemap,
+        "press": PressReleaseSitemap,
+        "partners": PartnerProgramSitemap,
+        "help_categories": HelpCategorySitemap,
+        "help_articles": HelpArticleSitemap,
+        "menus": MenuSitemap,
+        "pseo": PSEOPageSitemap,
+    }
+    safe = {}
+    for key, cls in _candidates.items():
+        try:
+            # Attempt to instantiate to verify imports / DB access
+            cls()
+            safe[key] = cls
+        except Exception:
+            logger.warning(
+                "Sitemap section '%s' disabled due to error", key, exc_info=True
+            )
+    return safe
+
+
+sitemaps = _safe_sitemaps()

@@ -33,7 +33,7 @@ For more information please see:
 """
 
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
@@ -647,9 +647,29 @@ urlpatterns += i18n_patterns(
 # DEVELOPMENT-ONLY URLS
 # =============================================================================
 
+# ─────────────────────────────────────────────────────────────────────────────
+# MEDIA FILE SERVING
+# ─────────────────────────────────────────────────────────────────────────────
+# Serve user-uploaded media files.  When a dedicated web-server (Nginx) handles
+# /media/, these patterns are never reached because Nginx intercepts the path
+# first.  In Coolify/Traefik deployments without a separate Nginx layer Django
+# must serve media itself.  ``static()`` only works when DEBUG=True, so we
+# register a manual pattern that is always active.
+#
+# NOTE: For high-traffic production, replace with Nginx alias or S3/CDN.
+from django.views.static import serve as _static_serve  # noqa: E402
+
+urlpatterns += [
+    re_path(
+        r"^media/(?P<path>.*)$",
+        _static_serve,
+        {"document_root": settings.MEDIA_ROOT},
+        name="media-file-serve",
+    ),
+]
+
 if settings.DEBUG:
-    # Serve media files in development
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    # Also serve static files directly in development
     urlpatterns += static(
         settings.STATIC_URL,
         document_root=settings.STATICFILES_DIRS[0]

@@ -4,7 +4,7 @@
 **Date:** 2026-03-17
 **SAFe Role:** Security Architect
 **Auditor:** E-Menum Engineering Team -- Automated Audit System
-**Report Version:** 1.0.0
+**Report Version:** 1.1.0
 **Classification:** CONFIDENTIAL
 
 ---
@@ -382,6 +382,8 @@ AUTHENTICATION_BACKENDS = [
 
 **Finding SEC-15 (LOW):** The production settings correctly raise `ValueError` if `DJANGO_SECRET_KEY` is not set. This is a strong safeguard. Consider implementing periodic key rotation.
 
+**Finding SEC-16 (RESOLVED):** Media files now served in production via Django `re_path` in urls.py, eliminating the need for users to bypass security for file access.
+
 ---
 
 ## 8. Recommendations (Prioritized)
@@ -429,3 +431,4 @@ AUTHENTICATION_BACKENDS = [
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0.0 | 2026-03-17 | Automated Audit System | Initial security audit |
+| 1.1.0 | 2026-03-17 | Automated Audit System | Updated with post-deploy fixes and accurate metrics |

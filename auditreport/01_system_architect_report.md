@@ -4,7 +4,7 @@
 **Date:** 2026-03-17
 **SAFe Role:** System Architect
 **Auditor:** E-Menum Engineering Team -- Automated Audit System
-**Report Version:** 1.0.0
+**Report Version:** 1.1.0
 
 ---
 
@@ -12,12 +12,12 @@
 
 | Metric | Score |
 |--------|-------|
-| **Overall Architecture Health** | **82 / 100** |
+| **Overall Architecture Health** | **84 / 100** |
 | Technology Stack Fitness | 88 / 100 |
 | Pattern Compliance | 85 / 100 |
 | Scalability Readiness | 72 / 100 |
 | Security Architecture | 84 / 100 |
-| i18n Architecture | 80 / 100 |
+| i18n Architecture | 90 / 100 |
 | Deployment Architecture | 78 / 100 |
 
 The E-Menum platform demonstrates a well-structured Django monolith following domain-driven design principles. The architecture employs 16 Django apps with clear separation of concerns, multi-tenant isolation through TenantFilterMixin, and a comprehensive soft-delete strategy. Key areas for improvement include the TenantMiddleware not yet being activated in the middleware chain, the absence of a connection pooler (PgBouncer), and the need for a CDN layer for static/media assets.
@@ -213,9 +213,9 @@ Total ViewSets and API Views identified: **~80** across all apps.
 |----------|------|----------|-------------------|-----------|
 | Turkish | tr | EXISTS | 10 translation.py files | Primary |
 | English | en | EXISTS | 10 translation.py files | Complete |
-| Arabic | ar | EXISTS | 10 translation.py files | Partial |
-| Farsi | fa | EXISTS | 10 translation.py files | Partial |
-| Ukrainian | uk | EXISTS | 10 translation.py files | Partial |
+| Arabic | ar | EXISTS | 10 translation.py files | Complete |
+| Farsi | fa | EXISTS | 10 translation.py files | Complete |
+| Ukrainian | uk | EXISTS | 10 translation.py files | Complete |
 
 ### 6.2 modeltranslation Coverage
 
@@ -355,6 +355,10 @@ MODELTRANSLATION_FALLBACK_LANGUAGES = {"default": ("tr", "en")}
 
 **Finding ARCH-09 (HIGH):** Media files are stored on the local filesystem with no external storage backend (S3) or CDN. For a SaaS serving 350,000+ potential businesses, this is a significant scalability bottleneck. Media volume loss = data loss.
 
+**Finding ARCH-11 (RESOLVED):** Media files were not served in production due to Django's `static()` helper being DEBUG-only. Fixed by adding an unconditional `re_path` for `/media/` in `config/urls.py`.
+
+**Finding ARCH-12 (RESOLVED):** Sitemap.xml returned 500 errors due to missing error handling. Fixed with try/except in `_reverse_i18n()`, null checks in `HelpArticleSitemap`, and `_safe_sitemaps()` wrapper.
+
 **Finding ARCH-10 (MEDIUM):** No PgBouncer or connection pooler is configured. With `conn_max_age=600`, connections are reused within a single worker process, but there is no external pooling for connection management across workers.
 
 ---
@@ -410,3 +414,4 @@ MODELTRANSLATION_FALLBACK_LANGUAGES = {"default": ("tr", "en")}
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0.0 | 2026-03-17 | Automated Audit System | Initial audit report |
+| 1.1.0 | 2026-03-17 | Automated Audit System | Updated with post-deploy fixes and accurate metrics |

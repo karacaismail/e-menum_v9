@@ -85,7 +85,9 @@
                         </label>
                         <div class="flex items-center gap-4 mb-3">
                             <div class="relative group cursor-pointer flex-shrink-0" @click="$refs.logoFile.click()">
-                                <img x-show="logoUrl" :src="logoUrl" alt="" class="h-16 w-16 rounded-xl object-cover ring-2 ring-gray-200 dark:ring-gray-600" x-cloak>
+                                <img x-show="logoUrl" :src="logoUrl" alt=""
+                                     @error="logoUrl = ''"
+                                     class="h-16 w-16 rounded-xl object-cover ring-2 ring-gray-200 dark:ring-gray-600" x-cloak>
                                 <div x-show="!logoUrl" class="h-16 w-16 rounded-xl bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center ring-2 ring-gray-200 dark:ring-gray-600">
                                     <i class="ph ph-storefront text-2xl text-primary-600 dark:text-primary-400"></i>
                                 </div>

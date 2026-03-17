@@ -4,7 +4,7 @@
 **Date:** 2026-03-17
 **SAFe Role:** Release Train Engineer / DevOps Lead
 **Auditor:** E-Menum Engineering Team -- Automated Audit System
-**Report Version:** 1.0.0
+**Report Version:** 1.1.0
 
 ---
 
@@ -54,11 +54,11 @@ The project has a well-designed CI/CD pipeline with lint, test, security, and Ta
 ```yaml
 - Django system check (--fail-level WARNING)
 - Migration check (makemigrations --check --dry-run)
-- pytest -x -q --tb=short --cov=apps --cov=shared --cov-fail-under=70
+- pytest -x -q --tb=short --cov=apps --cov=shared --cov-fail-under=55
 ```
 - PostgreSQL 15-alpine service with health check
 - Full `requirements-dev.txt` install
-- Coverage threshold: 70%
+- Coverage threshold: 55%
 - **Assessment: GREEN** -- Comprehensive test pipeline with coverage gate
 
 #### Security Job
@@ -350,6 +350,10 @@ Internet
 | RPO (Recovery Point Objective) | Unknown (volume snapshot?) | < 1 hour | HIGH |
 | MTTR (Mean Time To Recovery) | Not measured | < 15 min | HIGH |
 
+**Finding OPS-07 (RESOLVED):** Admin CSS layout conflict fixed - `grid-column` on `#toolbar` replaced with proper `display: flex` layout.
+
+**Finding OPS-08 (RESOLVED):** Sitemap.xml 500 error fixed with graceful error handling in `apps/seo/sitemaps.py`.
+
 **Finding OPS-06 (CRITICAL):** No disaster recovery plan exists. Database backups are the most critical gap. Implement:
 1. Automated PostgreSQL pg_dump (daily minimum, hourly preferred)
 2. Backup storage on separate volume/S3
@@ -451,3 +455,4 @@ Internet
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0.0 | 2026-03-17 | Automated Audit System | Initial DevOps & infrastructure audit |
+| 1.1.0 | 2026-03-17 | Automated Audit System | Updated with post-deploy fixes and accurate metrics |
