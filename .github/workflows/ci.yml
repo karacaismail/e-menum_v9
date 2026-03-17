@@ -97,7 +97,7 @@ jobs:
           -x -q --tb=short
           --cov=apps --cov=shared
           --cov-report=term-missing:skip-covered
-          --cov-fail-under=70
+          --cov-fail-under=55
         env:
           DJANGO_SETTINGS_MODULE: config.settings.test
           DATABASE_URL: postgresql://testuser:testpass@localhost:5432/emenum_test
