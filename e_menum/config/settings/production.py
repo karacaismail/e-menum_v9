@@ -194,10 +194,11 @@ SECURE_HSTS_SECONDS = env.int("SECURE_HSTS_SECONDS", default=0)  # noqa: F405
 SECURE_HSTS_INCLUDE_SUBDOMAINS = SECURE_HSTS_SECONDS > 0
 SECURE_HSTS_PRELOAD = SECURE_HSTS_SECONDS > 0
 
-# Cookie security — derive from SECURE_SSL_REDIRECT so cookies work on
-# both HTTP (direct IP) and HTTPS (behind proxy) without manual toggling.
-SESSION_COOKIE_SECURE = env.bool("SESSION_COOKIE_SECURE", default=False)  # noqa: F405
-CSRF_COOKIE_SECURE = env.bool("CSRF_COOKIE_SECURE", default=False)  # noqa: F405
+# Cookie security — HTTPS is terminated by Traefik reverse proxy, and
+# SECURE_PROXY_SSL_HEADER is set above so Django sees requests as secure.
+# Cookies must only be sent over HTTPS in production.
+SESSION_COOKIE_SECURE = env.bool("SESSION_COOKIE_SECURE", default=True)  # noqa: F405
+CSRF_COOKIE_SECURE = env.bool("CSRF_COOKIE_SECURE", default=True)  # noqa: F405
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
@@ -229,11 +230,10 @@ STATIC_ROOT = BASE_DIR / "staticfiles"  # noqa: F405
 # MEDIA FILES
 # =============================================================================
 
-# In production, consider using S3 or similar for media files
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-# AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-# AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+# Media files use local filesystem storage (Django default).
+# This is intentional — E-Menum is a regional Turkey-focused SaaS,
+# not a global CDN-dependent application. Media served via Django
+# re_path in urls.py (unconditional, works behind Traefik proxy).
 
 
 # =============================================================================

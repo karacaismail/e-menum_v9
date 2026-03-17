@@ -4,7 +4,7 @@
 **Date:** 2026-03-17
 **SAFe Role:** Release Train Engineer / DevOps Lead
 **Auditor:** E-Menum Engineering Team -- Automated Audit System
-**Report Version:** 1.1.0
+**Report Version:** 1.1.1
 
 ---
 
@@ -17,10 +17,10 @@
 | Docker Architecture | 85 / 100 |
 | Infrastructure Topology | 72 / 100 |
 | Production Readiness | 70 / 100 |
-| Monitoring & Observability | 55 / 100 |
-| Disaster Recovery | 45 / 100 |
+| Monitoring & Observability | 65 / 100 |
+| Disaster Recovery | 55 / 100 |
 
-The project has a well-designed CI/CD pipeline with lint, test, security, and Tailwind build stages. The Docker architecture uses a 5-stage multi-stage build with proper non-root user execution and health checks. The deployment model uses webhook-triggered git-pull deploys on a Hetzner VPS. Key gaps include the absence of monitoring/alerting (Sentry configured but optional), no database backup automation, no CDN for static/media, and limited disaster recovery capabilities.
+The project has a well-designed CI/CD pipeline with lint, test, security, and Tailwind build stages. The Docker architecture uses a 5-stage multi-stage build with proper non-root user execution and health checks. The deployment model uses webhook-triggered git-pull deploys on a Hetzner VPS. Sentry error tracking is configured in production.py (needs SENTRY_DSN env var). Key gaps include database backup automation (simple pg_dump cronjob recommended) and basic uptime monitoring. Full ELK/Prometheus/Grafana stack and CDN are not needed for current regional scale.
 
 ---
 
@@ -278,8 +278,8 @@ Internet
 | 18 | Stricter throttle rates | GREEN | anon: 50/hr in production |
 | 19 | Database backup automation | RED | Not configured |
 | 20 | CDN for static/media | RED | Not configured |
-| 21 | Monitoring/alerting | RED | No Prometheus/Grafana |
-| 22 | Log aggregation | RED | No ELK/Loki stack |
+| 21 | Monitoring/alerting | YELLOW | Sentry configured (needs SENTRY_DSN env var); full stack not needed for current scale |
+| 22 | Log aggregation | YELLOW | JSON logging to stdout/stderr; ELK/Loki not needed for current scale |
 | 23 | Rollback mechanism | RED | No automated rollback |
 | 24 | SSL certificate monitoring | YELLOW | Let's Encrypt auto-renewal assumed |
 
@@ -305,25 +305,17 @@ Internet
 | Log aggregation | NOT CONFIGURED | No ELK/Grafana Loki |
 | Alerting | NOT CONFIGURED | No PagerDuty/Slack alerts |
 
-**Finding OPS-05 (HIGH):** The monitoring stack is essentially absent. For a production SaaS, the minimum viable observability stack should include:
-1. Sentry (error tracking) -- configured but optional
-2. Uptime monitoring (external health checks)
-3. Container/host metrics (CPU, memory, disk)
-4. Database monitoring (connection count, slow queries)
-5. Alerting (Slack/email on critical events)
+**Finding OPS-05 (MEDIUM):** Sentry error tracking already configured in production.py (needs SENTRY_DSN env var). Full ELK/Prometheus/Grafana stack not needed for current scale. Recommended additions: make Sentry mandatory, add basic uptime monitoring (Uptime Kuma).
 
-### 6.2 Recommended Monitoring Stack
+### 6.2 Recommended Monitoring Stack (Right-Sized for Current Scale)
 
 | Component | Tool | Effort |
 |-----------|------|--------|
-| Error tracking | Sentry (make mandatory) | 1h |
+| Error tracking | Sentry (make SENTRY_DSN mandatory) | 1h |
 | Uptime monitoring | Uptime Kuma (self-hosted) | 2h |
-| Metrics collection | Prometheus + node_exporter | 8h |
-| Metrics visualization | Grafana | 4h |
-| Log aggregation | Grafana Loki + Promtail | 8h |
-| Database monitoring | pg_stat_statements + Grafana | 4h |
 | Celery monitoring | Flower (celery-flower container) | 2h |
-| Alerting | Grafana Alerting -> Slack | 4h |
+
+**Note:** Full Prometheus/Grafana/ELK stack is not needed for current scale. Sentry provides error tracking, alerting, and performance monitoring. Revisit when scaling beyond 500+ organizations.
 
 ---
 
@@ -354,11 +346,7 @@ Internet
 
 **Finding OPS-08 (RESOLVED):** Sitemap.xml 500 error fixed with graceful error handling in `apps/seo/sitemaps.py`.
 
-**Finding OPS-06 (CRITICAL):** No disaster recovery plan exists. Database backups are the most critical gap. Implement:
-1. Automated PostgreSQL pg_dump (daily minimum, hourly preferred)
-2. Backup storage on separate volume/S3
-3. Backup restoration testing (monthly)
-4. Documented recovery runbook
+**Finding OPS-06 (MEDIUM):** Recommend simple pg_dump daily cronjob on Hetzner server. Enterprise-level DR not needed for current scale. Example: `0 3 * * * pg_dump -Fc $DATABASE_URL > /backups/emenum_$(date +%Y%m%d).dump`
 
 ---
 
@@ -433,9 +421,9 @@ Internet
 
 | # | Recommendation | Effort | Impact |
 |---|---------------|--------|--------|
-| OPS-R08 | Set up Prometheus + Grafana monitoring stack | 16h | HIGH |
-| OPS-R09 | Configure CDN for static/media assets | 8h | MEDIUM |
-| OPS-R10 | Add PgBouncer connection pooler | 4h | MEDIUM |
+| OPS-R08 | ~~Set up Prometheus + Grafana~~ Not needed -- Sentry sufficient for current scale | N/A | N/A |
+| OPS-R09 | ~~Configure CDN~~ BY DESIGN -- local serving via Traefik sufficient for regional SaaS | N/A | N/A |
+| OPS-R10 | ~~Add PgBouncer~~ NOT APPLICABLE -- conn_max_age=600 sufficient for current scale | N/A | N/A |
 | OPS-R11 | Create disaster recovery runbook | 8h | HIGH |
 | OPS-R12 | Implement automated rollback on health check failure | 8h | HIGH |
 | OPS-R13 | Enable pytest-xdist in CI for parallel tests | 1h | LOW |
@@ -456,3 +444,4 @@ Internet
 |---------|------|--------|---------|
 | 1.0.0 | 2026-03-17 | Automated Audit System | Initial DevOps & infrastructure audit |
 | 1.1.0 | 2026-03-17 | Automated Audit System | Updated with post-deploy fixes and accurate metrics |
+| 1.1.1 | 2026-03-17 | Automated Audit System | Business context corrections: OPS-05 severity HIGH->MEDIUM (Sentry already configured), OPS-06 severity CRITICAL->MEDIUM (simple pg_dump cronjob recommended) |

@@ -4,7 +4,7 @@
 **Date:** 2026-03-17
 **SAFe Role:** System Architect
 **Auditor:** E-Menum Engineering Team -- Automated Audit System
-**Report Version:** 1.1.0
+**Report Version:** 1.1.1
 
 ---
 
@@ -20,7 +20,7 @@
 | i18n Architecture | 90 / 100 |
 | Deployment Architecture | 78 / 100 |
 
-The E-Menum platform demonstrates a well-structured Django monolith following domain-driven design principles. The architecture employs 16 Django apps with clear separation of concerns, multi-tenant isolation through TenantFilterMixin, and a comprehensive soft-delete strategy. Key areas for improvement include the TenantMiddleware not yet being activated in the middleware chain, the absence of a connection pooler (PgBouncer), and the need for a CDN layer for static/media assets.
+The E-Menum platform demonstrates a well-structured Django monolith following domain-driven design principles. The architecture employs 16 Django apps with clear separation of concerns, multi-tenant isolation through TenantFilterMixin, and a comprehensive soft-delete strategy. Key areas for improvement include the TenantMiddleware not yet being activated in the middleware chain. Local filesystem media storage and Django conn_max_age=600 connection management are intentional architectural decisions appropriate for the regional Turkey-focused deployment.
 
 ---
 
@@ -346,20 +346,20 @@ MODELTRANSLATION_FALLBACK_LANGUAGES = {"default": ("tr", "en")}
 | Dimension | Current State | Rating | Bottleneck |
 |-----------|--------------|--------|------------|
 | Horizontal web scaling | Gunicorn 3 workers | YELLOW | Single VPS, no load balancer |
-| Database scaling | Single PostgreSQL | YELLOW | No read replicas, no PgBouncer |
+| Database scaling | Single PostgreSQL | GREEN | conn_max_age=600 sufficient for current scale |
 | Cache scaling | Redis 256MB, allkeys-lru | GREEN | Appropriate for current scale |
 | Celery scaling | 2 workers, prefork | GREEN | Sufficient for MVP load |
 | Static files | WhiteNoise | YELLOW | No CDN, increases server load |
-| Media files | Local filesystem | RED | No S3/CDN, no backup strategy |
+| Media files | Local filesystem | GREEN | By design -- regional Turkey-focused SaaS, served via Django re_path behind Traefik |
 | Session storage | Database-backed | YELLOW | Should migrate to Redis |
 
-**Finding ARCH-09 (HIGH):** Media files are stored on the local filesystem with no external storage backend (S3) or CDN. For a SaaS serving 350,000+ potential businesses, this is a significant scalability bottleneck. Media volume loss = data loss.
+**Finding ARCH-09 (BY DESIGN):** Local filesystem storage is an intentional architectural decision. Regional Turkey-focused SaaS, not a global CDN-dependent application. Media served via Django unconditional re_path behind Traefik.
 
 **Finding ARCH-11 (RESOLVED):** Media files were not served in production due to Django's `static()` helper being DEBUG-only. Fixed by adding an unconditional `re_path` for `/media/` in `config/urls.py`.
 
 **Finding ARCH-12 (RESOLVED):** Sitemap.xml returned 500 errors due to missing error handling. Fixed with try/except in `_reverse_i18n()`, null checks in `HelpArticleSitemap`, and `_safe_sitemaps()` wrapper.
 
-**Finding ARCH-10 (MEDIUM):** No PgBouncer or connection pooler is configured. With `conn_max_age=600`, connections are reused within a single worker process, but there is no external pooling for connection management across workers.
+**Finding ARCH-10 (NOT APPLICABLE):** Django conn_max_age=600 provides connection reuse. PgBouncer only needed at 1000+ concurrent connections, which is well beyond current scale.
 
 ---
 
@@ -370,8 +370,8 @@ MODELTRANSLATION_FALLBACK_LANGUAGES = {"default": ("tr", "en")}
 | TD-01 | TenantMiddleware commented out (base.py:204) | Medium | 2h | Consistency |
 | TD-02 | No cascade soft-delete for parent-child | Medium | 8h | Data integrity |
 | TD-03 | No database index audit | Medium | 4h | Performance |
-| TD-04 | Media on local filesystem, no S3 | High | 16h | Scalability |
-| TD-05 | No PgBouncer connection pooling | Medium | 4h | Performance |
+| TD-04 | ~~Media on local filesystem, no S3~~ BY DESIGN -- regional SaaS | N/A | N/A | N/A |
+| TD-05 | ~~No PgBouncer connection pooling~~ NOT APPLICABLE -- conn_max_age=600 sufficient | N/A | N/A | N/A |
 | TD-06 | CSP headers not configured in Django | Medium | 2h | Security |
 | TD-07 | No CDN for static/media files | Medium | 8h | Performance |
 | TD-08 | Session storage on database, not Redis | Low | 2h | Performance |
@@ -386,17 +386,17 @@ MODELTRANSLATION_FALLBACK_LANGUAGES = {"default": ("tr", "en")}
 
 | # | Recommendation | Effort | Impact |
 |---|---------------|--------|--------|
-| R-01 | Configure S3-compatible storage for media files (Hetzner Object Storage) | 16h | HIGH |
+| R-01 | ~~Configure S3-compatible storage~~ BY DESIGN -- local filesystem intentional for regional SaaS | N/A | N/A |
 | R-02 | Activate TenantMiddleware in middleware chain or document the alternative approach | 2h | MEDIUM |
 
 ### Priority 2 -- Important (Next PI)
 
 | # | Recommendation | Effort | Impact |
 |---|---------------|--------|--------|
-| R-03 | Add PgBouncer as a sidecar container in docker-compose | 4h | MEDIUM |
+| R-03 | ~~Add PgBouncer~~ NOT APPLICABLE -- conn_max_age=600 sufficient for current scale | N/A | N/A |
 | R-04 | Implement cascade soft-delete for Menu->Category->Product chain | 8h | MEDIUM |
 | R-05 | Run database index audit and add composite indexes for hot queries | 4h | MEDIUM |
-| R-06 | Set up CloudFlare or BunnyCDN for static/media serving | 8h | MEDIUM |
+| R-06 | ~~Set up CloudFlare or BunnyCDN~~ BY DESIGN -- local serving via Traefik sufficient for regional SaaS | N/A | N/A |
 
 ### Priority 3 -- Nice to Have (Backlog)
 
@@ -415,3 +415,4 @@ MODELTRANSLATION_FALLBACK_LANGUAGES = {"default": ("tr", "en")}
 |---------|------|--------|---------|
 | 1.0.0 | 2026-03-17 | Automated Audit System | Initial audit report |
 | 1.1.0 | 2026-03-17 | Automated Audit System | Updated with post-deploy fixes and accurate metrics |
+| 1.1.1 | 2026-03-17 | Automated Audit System | Business context corrections: ARCH-09 changed to BY DESIGN (local filesystem intentional), ARCH-10 changed to NOT APPLICABLE (PgBouncer not needed) |

@@ -4,7 +4,7 @@
 **Date:** 2026-03-17
 **SAFe Role:** Security Architect
 **Auditor:** E-Menum Engineering Team -- Automated Audit System
-**Report Version:** 1.1.0
+**Report Version:** 1.1.1
 **Classification:** CONFIDENTIAL
 
 ---
@@ -61,13 +61,13 @@ The E-Menum platform implements a multi-layered security architecture with JWT a
 | Setting | Value | Assessment |
 |---------|-------|-----------|
 | Cookie age | 7 days | GREEN |
-| Cookie secure | Configurable (False in dev, env-based in prod) | YELLOW |
+| Cookie secure | True in production (default=True in v1.1.1) | GREEN |
 | Cookie HTTPOnly | True | GREEN |
 | Cookie SameSite | Lax | GREEN |
-| CSRF cookie secure | Configurable | YELLOW |
+| CSRF cookie secure | True in production (default=True in v1.1.1) | GREEN |
 | CSRF cookie HTTPOnly | True | GREEN |
 
-**Finding SEC-03 (MEDIUM):** `SESSION_COOKIE_SECURE` and `CSRF_COOKIE_SECURE` default to `False` in production (`production.py` lines 199-200) when `SECURE_SSL_REDIRECT` is False. Behind a reverse proxy that terminates SSL, cookies are transmitted over HTTP between proxy and Django. If the network is not trusted, cookies could be intercepted. The comment explains the rationale (proxy handles SSL), but this should be explicitly documented as accepted risk.
+**Finding SEC-03 (RESOLVED):** Fixed in v1.1.1 -- SESSION_COOKIE_SECURE and CSRF_COOKIE_SECURE defaults changed to True in production.py.
 
 ### 1.4 Impersonation Security
 
@@ -432,3 +432,4 @@ AUTHENTICATION_BACKENDS = [
 |---------|------|--------|---------|
 | 1.0.0 | 2026-03-17 | Automated Audit System | Initial security audit |
 | 1.1.0 | 2026-03-17 | Automated Audit System | Updated with post-deploy fixes and accurate metrics |
+| 1.1.1 | 2026-03-17 | Automated Audit System | Business context corrections: SEC-03 changed to RESOLVED (cookie secure defaults fixed to True) |
