@@ -243,12 +243,12 @@
                     <div class="price-range">
                         <div class="range-inputs">
                             <div class="range-field">
-                                <label>Min</label>
+                                <label>{% trans "Min" %}</label>
                                 <input type="number" x-model.number="priceRange.min" min="0" max="500">
                             </div>
                             <span class="range-separator">-</span>
                             <div class="range-field">
-                                <label>Max</label>
+                                <label>{% trans "Max" %}</label>
                                 <input type="number" x-model.number="priceRange.max" min="0" max="500">
                             </div>
                         </div>
@@ -310,13 +310,13 @@
                     <h4>{% trans "Hazirlik Suresi" %}</h4>
                     <div class="prep-time-chips">
                         <button class="prep-chip" :class="{ 'active': maxPrepTime === 10 }" @click="maxPrepTime = maxPrepTime === 10 ? 999 : 10">
-                            <i class="ph ph-timer"></i> &lt;10 dk
+                            <i class="ph ph-timer"></i> &lt;10 {% trans "dk" %}
                         </button>
                         <button class="prep-chip" :class="{ 'active': maxPrepTime === 15 }" @click="maxPrepTime = maxPrepTime === 15 ? 999 : 15">
-                            <i class="ph ph-timer"></i> &lt;15 dk
+                            <i class="ph ph-timer"></i> &lt;15 {% trans "dk" %}
                         </button>
                         <button class="prep-chip" :class="{ 'active': maxPrepTime === 20 }" @click="maxPrepTime = maxPrepTime === 20 ? 999 : 20">
-                            <i class="ph ph-timer"></i> &lt;20 dk
+                            <i class="ph ph-timer"></i> &lt;20 {% trans "dk" %}
                         </button>
                     </div>
                 </div>
@@ -714,9 +714,7 @@
             filters_cleared: "{% trans 'Filtreler temizlendi' %}",
             added_to_favorites: "{% trans 'Favorilere eklendi' %}",
             removed_from_favorites: "{% trans 'Favorilerden kaldirildi' %}",
-            added_to_cart: "{% trans 'sepete eklendi!' %}",
-            removed_from_cart: "{% trans 'sepetten kaldirildi' %}",
-            search_results_for: "{% trans 'için sonuçlar' %}",
+            search_results_for: "{% trans 'icin sonuclar' %}",
         };
     </script>
     <script src="{% static 'public/menu/js/menu-app.js' %}"></script>
