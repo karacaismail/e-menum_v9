@@ -10,7 +10,7 @@ function menuApp() {
         scrolled: false,
         searchFocused: false,
         searchQuery: '',
-        recentSearches: ['Kebap', 'Pizza', 'Vegan'],
+        recentSearches: [],
         sidebarCollapsed: false,
         darkMode: false,
         showPhotos: true,
@@ -45,13 +45,7 @@ function menuApp() {
         couponCode: '',
         appliedCoupon: null,
         couponDiscount: 0,
-        paymentMethod: 'card',
-
         // Storefront Config (from server — admin-managed)
-        deliveryFee: (window.__MENU_DATA__ && window.__MENU_DATA__.storefront && window.__MENU_DATA__.storefront.deliveryFee) || 15,
-        freeDeliveryThreshold: (window.__MENU_DATA__ && window.__MENU_DATA__.storefront && window.__MENU_DATA__.storefront.freeDeliveryThreshold) || 300,
-        taxRate: (window.__MENU_DATA__ && window.__MENU_DATA__.storefront && window.__MENU_DATA__.storefront.taxRate) || 0.10,
-        deliveryTime: (window.__MENU_DATA__ && window.__MENU_DATA__.storefront && window.__MENU_DATA__.storefront.deliveryTime) || '30-45 dk',
         promoBanner: (window.__MENU_DATA__ && window.__MENU_DATA__.storefront && window.__MENU_DATA__.storefront.promoBanner) || {},
         serverCoupons: (window.__MENU_DATA__ && window.__MENU_DATA__.storefront && window.__MENU_DATA__.storefront.coupons) || {},
 
@@ -137,18 +131,9 @@ function menuApp() {
             return this.cartItems.reduce((sum, item) => sum + (item.totalPrice * item.quantity), 0);
         },
 
-        get taxAmount() {
-            return (this.cartSubtotal - this.couponDiscount) * this.taxRate;
-        },
-
         get cartTotal() {
-            const subtotal = this.cartSubtotal;
-            const delivery = subtotal >= this.freeDeliveryThreshold ? 0 : this.deliveryFee;
-            return subtotal - this.couponDiscount + delivery + this.taxAmount;
-        },
-
-        get taxPercent() {
-            return Math.round(this.taxRate * 100);
+            // Fiyatlar KDV dahil, sadece kupon indirimi dusulur
+            return this.cartSubtotal - this.couponDiscount;
         },
 
         get promoBannerEnabled() {
@@ -171,7 +156,7 @@ function menuApp() {
         formatPrice(price) {
             const currency = (window.__MENU_DATA__ && window.__MENU_DATA__.currency) || 'TRY';
             const locale = (window.__MENU_DATA__ && window.__MENU_DATA__.locale) || 'tr-TR';
-            return new Intl.NumberFormat(locale, { style: 'currency', currency: currency, minimumFractionDigits: 0 }).format(price);
+            return new Intl.NumberFormat(locale, { style: 'currency', currency: currency, minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(price);
         },
 
         getDiscountedPrice(product) {
@@ -191,25 +176,27 @@ function menuApp() {
         },
 
         getSortLabel() {
+            const t = window.__i18n || {};
             const labels = {
-                'default': 'Sirala',
-                'price-low': 'Fiyat: Dusuk',
-                'price-high': 'Fiyat: Yuksek',
-                'rating': 'Puan',
-                'popular': 'Populer',
-                'newest': 'En Yeni'
+                'default': t.sort_default || 'Sirala',
+                'price-low': t.sort_price_low || 'Fiyat: Dusuk',
+                'price-high': t.sort_price_high || 'Fiyat: Yuksek',
+                'rating': t.sort_rating || 'Puan',
+                'popular': t.sort_popular || 'Populer',
+                'newest': t.sort_newest || 'En Yeni'
             };
-            return labels[this.sortBy] || 'Sirala';
+            return labels[this.sortBy] || t.sort_default || 'Sirala';
         },
 
         getResultsTitle() {
+            const t = window.__i18n || {};
             if (this.searchQuery) return `"${this.searchQuery}" icin sonuclar`;
-            if (this.showFavoritesOnly) return 'Favorilerim';
+            if (this.showFavoritesOnly) return t.my_favorites || 'Favorilerim';
             if (this.activeCategory !== 'all') {
                 const cat = this.categories.find(c => c.id === this.activeCategory);
-                return cat ? cat.name : 'Tum Urunler';
+                return cat ? cat.name : (t.all_products || 'Tum Urunler');
             }
-            return 'Tum Urunler';
+            return t.all_products || 'Tum Urunler';
         },
 
         getTotalFilteredCount() {
@@ -350,7 +337,7 @@ function menuApp() {
             this.excludedAllergens = [];
             this.showFavoritesOnly = false;
             this.activeCategory = 'all';
-            this.showToast('Filtreler temizlendi', 'success', 'ph-fill ph-check-circle');
+            this.showToast((window.__i18n || {}).filters_cleared || 'Filtreler temizlendi', 'success', 'ph-fill ph-check-circle');
         },
 
         // ==================== NAVIGATION ====================
@@ -369,10 +356,10 @@ function menuApp() {
             const index = this.favorites.indexOf(productId);
             if (index > -1) {
                 this.favorites.splice(index, 1);
-                this.showToast('Favorilerden kaldirildi', 'warning', 'ph ph-heart-break');
+                this.showToast((window.__i18n || {}).removed_from_favorites || 'Favorilerden kaldirildi', 'warning', 'ph ph-heart-break');
             } else {
                 this.favorites.push(productId);
-                this.showToast('Favorilere eklendi', 'success', 'ph-fill ph-heart');
+                this.showToast((window.__i18n || {}).added_to_favorites || 'Favorilere eklendi', 'success', 'ph-fill ph-heart');
             }
             localStorage.setItem('menuFavorites', JSON.stringify(this.favorites));
         },
@@ -441,7 +428,7 @@ function menuApp() {
             this.cartItems.push(item);
             this.modalOpen = false;
             document.body.style.overflow = '';
-            this.showToast(`${this.selectedProduct.name} sepete eklendi!`, 'success', 'ph-fill ph-shopping-bag');
+            this.showToast(`${this.selectedProduct.name} ${(window.__i18n || {}).added_to_cart || 'sepete eklendi!'}`, 'success', 'ph-fill ph-shopping-bag');
         },
 
         isInCart(productId) {
@@ -478,7 +465,7 @@ function menuApp() {
         removeItem(cartId) {
             const item = this.cartItems.find(i => i.cartId === cartId);
             this.cartItems = this.cartItems.filter(i => i.cartId !== cartId);
-            if (item) this.showToast(`${item.name} sepetten kaldirildi`, 'warning', 'ph ph-trash');
+            if (item) this.showToast(`${item.name} ${(window.__i18n || {}).removed_from_cart || 'sepetten kaldirildi'}`, 'warning', 'ph ph-trash');
         },
 
         formatItemOptions(item) {
@@ -486,7 +473,7 @@ function menuApp() {
             if (item.size) parts.push(item.size);
             if (item.extras?.length) parts.push(item.extras.join(', '));
             if (item.sauces?.length) parts.push(item.sauces.join(', '));
-            return parts.join(' \u2022 ') || 'Standart';
+            return parts.join(' \u2022 ') || (window.__i18n || {}).standard || 'Standart';
         },
 
         applyCoupon() {
@@ -508,9 +495,9 @@ function menuApp() {
                     ? this.cartSubtotal * (coupon.discount / 100)
                     : coupon.discount;
                 this.appliedCoupon = coupon.name;
-                this.showToast(`Kupon uygulandi: ${coupon.name}`, 'success', 'ph-fill ph-ticket');
+                this.showToast(`${(window.__i18n || {}).coupon_applied || 'Kupon uygulandi'}: ${coupon.name}`, 'success', 'ph-fill ph-ticket');
             } else {
-                this.showToast('Gecersiz kupon kodu', 'error', 'ph ph-x-circle');
+                this.showToast((window.__i18n || {}).coupon_invalid || 'Gecersiz kupon kodu', 'error', 'ph ph-x-circle');
             }
             this.couponCode = '';
         },
@@ -518,7 +505,7 @@ function menuApp() {
         removeCoupon() {
             this.appliedCoupon = null;
             this.couponDiscount = 0;
-            this.showToast('Kupon kaldirildi', 'warning', 'ph ph-ticket');
+            this.showToast((window.__i18n || {}).coupon_removed || 'Kupon kaldirildi', 'warning', 'ph ph-ticket');
         },
 
         // ==================== TOAST ====================

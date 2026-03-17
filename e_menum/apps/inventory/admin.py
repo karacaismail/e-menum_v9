@@ -6,6 +6,7 @@ providing list displays, filters, and search capabilities.
 """
 
 from django.contrib import admin
+from modeltranslation.admin import TabbedTranslationAdmin
 
 from apps.inventory.models import (
     InventoryItem,
@@ -37,7 +38,7 @@ class SupplierAdmin(EMenumPermissionMixin, admin.ModelAdmin):
 
 
 @admin.register(InventoryItem)
-class InventoryItemAdmin(EMenumPermissionMixin, admin.ModelAdmin):
+class InventoryItemAdmin(EMenumPermissionMixin, TabbedTranslationAdmin):
     list_display = [
         "name",
         "sku",
@@ -107,7 +108,7 @@ class PurchaseOrderItemAdmin(EMenumPermissionMixin, admin.ModelAdmin):
 
 
 @admin.register(Recipe)
-class RecipeAdmin(EMenumPermissionMixin, admin.ModelAdmin):
+class RecipeAdmin(EMenumPermissionMixin, TabbedTranslationAdmin):
     list_display = [
         "name",
         "product",

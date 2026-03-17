@@ -675,6 +675,79 @@ textarea.is-invalid,
 }
 
 
+/* === Cross-Platform Custom Scrollbar === */
+/* Webkit (Chrome, Safari, Edge, iOS, Android Chrome) */
+.overflow-y-auto::-webkit-scrollbar,
+nav.overflow-y-auto::-webkit-scrollbar,
+main.overflow-y-auto::-webkit-scrollbar {
+    width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track,
+nav.overflow-y-auto::-webkit-scrollbar-track,
+main.overflow-y-auto::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb,
+nav.overflow-y-auto::-webkit-scrollbar-thumb,
+main.overflow-y-auto::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.4);
+    border-radius: 9999px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover,
+nav.overflow-y-auto::-webkit-scrollbar-thumb:hover,
+main.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(156, 163, 175, 0.6);
+}
+
+.dark .overflow-y-auto::-webkit-scrollbar-thumb,
+.dark nav.overflow-y-auto::-webkit-scrollbar-thumb,
+.dark main.overflow-y-auto::-webkit-scrollbar-thumb {
+    background-color: rgba(107, 114, 128, 0.4);
+}
+
+.dark .overflow-y-auto::-webkit-scrollbar-thumb:hover,
+.dark nav.overflow-y-auto::-webkit-scrollbar-thumb:hover,
+.dark main.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(107, 114, 128, 0.6);
+}
+
+/* Firefox */
+.overflow-y-auto,
+nav.overflow-y-auto,
+main.overflow-y-auto {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.4) transparent;
+}
+
+.dark .overflow-y-auto,
+.dark nav.overflow-y-auto,
+.dark main.overflow-y-auto {
+    scrollbar-color: rgba(107, 114, 128, 0.4) transparent;
+}
+
+/* Notification dropdown scrollbar */
+.notification-dropdown-body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.notification-dropdown-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.notification-dropdown-body::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.3);
+    border-radius: 9999px;
+}
+
+.notification-dropdown-body {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+}
+
+
 /* === Reduced Motion === */
 @media (prefers-reduced-motion: reduce) {
     .panel-skeleton {

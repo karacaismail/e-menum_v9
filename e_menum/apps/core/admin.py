@@ -21,6 +21,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
+from modeltranslation.admin import TabbedTranslationAdmin
 
 from apps.core.forms import OrganizationAdminForm
 from apps.core.models import (
@@ -588,7 +589,7 @@ class RolePermissionInline(admin.TabularInline):
 
 
 @admin.register(Role)
-class RoleAdmin(EMenumPermissionMixin, admin.ModelAdmin):
+class RoleAdmin(EMenumPermissionMixin, TabbedTranslationAdmin):
     """
     Enhanced admin interface for Role management.
 

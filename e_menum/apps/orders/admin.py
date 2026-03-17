@@ -17,6 +17,7 @@ Soft-deleted records are filtered out by default in all applicable models.
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
+from modeltranslation.admin import TabbedTranslationAdmin
 
 from apps.orders.models import (
     Order,
@@ -113,7 +114,7 @@ class QRCodeInline(admin.TabularInline):
 
 
 @admin.register(Zone)
-class ZoneAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
+class ZoneAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, TabbedTranslationAdmin):
     """
     Admin interface for Zone management.
 
@@ -290,7 +291,7 @@ class ZoneAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(Table)
-class TableAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
+class TableAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, TabbedTranslationAdmin):
     """
     Admin interface for Table management.
 
@@ -490,7 +491,7 @@ class TableAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(QRCode)
-class QRCodeAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
+class QRCodeAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, TabbedTranslationAdmin):
     """
     Admin interface for QRCode management.
 

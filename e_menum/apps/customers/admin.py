@@ -13,6 +13,7 @@ All admin classes implement multi-tenant filtering where applicable.
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
+from modeltranslation.admin import TabbedTranslationAdmin
 
 from apps.customers.models import Customer, CustomerVisit, Feedback, LoyaltyPoint
 from shared.permissions.admin_permission_mixin import EMenumPermissionMixin
@@ -144,7 +145,7 @@ class CustomerVisitAdmin(EMenumPermissionMixin, admin.ModelAdmin):
 
 
 @admin.register(Feedback)
-class FeedbackAdmin(EMenumPermissionMixin, admin.ModelAdmin):
+class FeedbackAdmin(EMenumPermissionMixin, TabbedTranslationAdmin):
     """Admin interface for Feedback management."""
 
     list_display = [

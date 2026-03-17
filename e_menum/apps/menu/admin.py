@@ -19,6 +19,7 @@ Soft-deleted records are filtered out by default in all applicable models.
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
+from modeltranslation.admin import TabbedTranslationAdmin
 
 from apps.menu.forms import CategoryAdminForm, ProductAdminForm
 from apps.menu.models import (
@@ -142,7 +143,7 @@ class ProductAllergenInline(admin.TabularInline):
 
 
 @admin.register(Theme)
-class ThemeAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
+class ThemeAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, TabbedTranslationAdmin):
     """
     Admin interface for Theme management.
 
@@ -372,7 +373,7 @@ class ThemeAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(Menu)
-class MenuAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
+class MenuAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, TabbedTranslationAdmin):
     """
     Admin interface for Menu management.
 
@@ -542,7 +543,9 @@ class MenuAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(Category)
-class CategoryAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
+class CategoryAdmin(
+    EMenumPermissionMixin, SoftDeleteAdminMixin, TabbedTranslationAdmin
+):
     """
     Admin interface for Category management.
 
@@ -665,7 +668,7 @@ class CategoryAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmi
 
 
 @admin.register(Product)
-class ProductAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
+class ProductAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, TabbedTranslationAdmin):
     """
     Admin interface for Product management.
 
@@ -961,7 +964,9 @@ class ProductAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin
 
 
 @admin.register(Allergen)
-class AllergenAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
+class AllergenAdmin(
+    EMenumPermissionMixin, SoftDeleteAdminMixin, TabbedTranslationAdmin
+):
     """
     Admin interface for Allergen management.
 
@@ -1064,7 +1069,7 @@ class AllergenAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmi
 
 @admin.register(ProductVariant)
 class ProductVariantAdmin(
-    EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin
+    EMenumPermissionMixin, SoftDeleteAdminMixin, TabbedTranslationAdmin
 ):
     """Admin interface for ProductVariant management."""
 
@@ -1132,7 +1137,7 @@ class ProductVariantAdmin(
 
 @admin.register(ProductModifier)
 class ProductModifierAdmin(
-    EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin
+    EMenumPermissionMixin, SoftDeleteAdminMixin, TabbedTranslationAdmin
 ):
     """Admin interface for ProductModifier management."""
 

@@ -156,7 +156,7 @@
 
                 {# Edit Category #}
                 <button type="button"
-                        @click="openEditModal({{ category.id }}, '{{ category.name|escapejs }}', '{{ category.description|default:''|escapejs }}', '{{ category.icon|default:''|escapejs }}', {{ category.is_active|yesno:'true,false' }}, {{ category.sort_order|default:'0' }})"
+                        @click="openEditModal('{{ category.id }}', '{{ category.name|escapejs }}', '{{ category.description|default:''|escapejs }}', '{{ category.icon|default:''|escapejs }}', {{ category.is_active|yesno:'true,false' }}, {{ category.sort_order|default:'0' }})"
                         class="px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 inline-flex items-center gap-1 transition-all">
                     <i class="ph ph-pencil-simple text-sm"></i>
                     {% trans "Duzenle" %}
@@ -164,7 +164,7 @@
 
                 {# Delete Category #}
                 <button type="button"
-                        @click="confirmDeleteCategory({{ category.id }}, '{{ category.name|escapejs }}')"
+                        @click="confirmDeleteCategory('{{ category.id }}', '{{ category.name|escapejs }}')"
                         class="px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 border border-red-300 dark:border-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 inline-flex items-center gap-1 transition-all ml-auto">
                     <i class="ph ph-trash text-sm"></i>
                     {% trans "Sil" %}

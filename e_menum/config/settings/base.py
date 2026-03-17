@@ -538,13 +538,13 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# Available languages — 5 languages
+# Available languages — 5 languages (TR default)
 LANGUAGES = [
-    ("tr", _("Turkce")),
+    ("tr", _("Türkçe")),
     ("en", _("English")),
-    ("ar", _("Arabic")),
-    ("ru", _("Russian")),
-    ("de", _("Deutsch")),
+    ("ar", _("العربية")),
+    ("fa", _("فارسی")),
+    ("uk", _("Українська")),
 ]
 
 LOCALE_PATHS = [
@@ -556,7 +556,7 @@ LOCALE_PATHS = [
 # =============================================================================
 
 MODELTRANSLATION_DEFAULT_LANGUAGE = "tr"
-MODELTRANSLATION_LANGUAGES = ("tr", "en", "ar", "ru", "de")
+MODELTRANSLATION_LANGUAGES = ("tr", "en", "ar", "fa", "uk")
 MODELTRANSLATION_FALLBACK_LANGUAGES = {"default": ("tr", "en")}
 MODELTRANSLATION_PREPOPULATE_LANGUAGE = "tr"
 
@@ -720,7 +720,9 @@ WEBSITE_ADMIN_EMAIL = os.environ.get("WEBSITE_ADMIN_EMAIL", DEFAULT_FROM_EMAIL)
 ANYMAIL = {
     "MAILGUN_API_KEY": os.environ.get("MAILGUN_API_KEY", ""),
     "MAILGUN_SENDER_DOMAIN": os.environ.get("MAILGUN_SENDER_DOMAIN", SITE_DOMAIN),
-    "MAILGUN_API_URL": "https://api.eu.mailgun.net/v3",  # EU region
+    # US region by default. Set MAILGUN_API_URL env var for EU region.
+    # EU region: https://api.eu.mailgun.net/v3
+    "MAILGUN_API_URL": os.environ.get("MAILGUN_API_URL", "https://api.mailgun.net/v3"),
 }
 
 

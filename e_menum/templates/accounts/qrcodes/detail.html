@@ -24,7 +24,7 @@
 {% endblock %}
 
 {% block panel_content %}
-<div x-data="{ active: {{ qr.is_active|yesno:'true,false' }}, loading: false }">
+<div x-data="qrDetail()" x-init="active = {{ qr.is_active|yesno:'true,false' }}">
 
     {# ── Header ── #}
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
@@ -85,7 +85,7 @@
                 </div>
                 <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">{% trans "Toplam Tarama" %}</p>
             </div>
-            <p class="text-3xl font-bold text-gray-900 dark:text-white mt-auto">{{ stats.total_scans|default:"0" }}</p>
+            <p class="text-3xl font-bold text-gray-900 dark:text-white mt-auto">{{ total_scans|default:"0" }}</p>
         </div>
 
         {# ── Unique Scans ── #}
@@ -96,7 +96,7 @@
                 </div>
                 <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">{% trans "Benzersiz Tarama" %}</p>
             </div>
-            <p class="text-3xl font-bold text-gray-900 dark:text-white mt-auto">{{ stats.unique_scans|default:"0" }}</p>
+            <p class="text-3xl font-bold text-gray-900 dark:text-white mt-auto">{{ unique_scans|default:"0" }}</p>
         </div>
 
         {# ── Device Breakdown ── #}
@@ -108,9 +108,9 @@
                 <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">{% trans "Cihaz Dagilimi" %}</p>
             </div>
             <div class="space-y-2 mt-auto">
-                {% for device in stats.devices %}
+                {% for device in device_stats %}
                 <div class="flex items-center justify-between text-xs">
-                    <span class="text-gray-600 dark:text-gray-400">{{ device.name }}</span>
+                    <span class="text-gray-600 dark:text-gray-400">{{ device.device_type|default:"-" }}</span>
                     <span class="font-semibold text-gray-900 dark:text-white">{{ device.count }}</span>
                 </div>
                 {% empty %}
@@ -565,7 +565,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                    {% for scan in recent_scans %}
+                    {% for scan in scans %}
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                         <td class="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">{{ scan.scanned_at|date:"d.m.Y H:i" }}</td>
                         <td class="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">
@@ -631,26 +631,28 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.addEventListener('alpine:init', () => {
-    // Toggle active is defined inline on the x-data scope
-});
+    Alpine.data('qrDetail', () => ({
+        active: true,
+        loading: false,
 
-async function toggleActive() {
-    const el = document.querySelector('[x-data]');
-    if (!el || !el.__x) return;
-    try {
-        const resp = await fetchWithCsrf("{% url 'accounts:qrcode-toggle' qr.pk %}", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-        });
-        const data = await resp.json();
-        if (data.success) {
-            window.location.reload();
+        async toggleActive() {
+            this.loading = true;
+            try {
+                const resp = await fetchWithCsrf("{% url 'accounts:qrcode-toggle-api' qr.pk %}", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await resp.json();
+                if (data.success) {
+                    this.active = data.is_active;
+                }
+            } catch (err) {
+                console.error('Toggle error:', err);
+            } finally {
+                this.loading = false;
+            }
         }
-    } catch (err) {
-        console.error('Toggle error:', err);
-    }
-}
-// Expose to Alpine
-window.toggleActive = toggleActive;
+    }));
+});
 </script>
 {% endblock %}

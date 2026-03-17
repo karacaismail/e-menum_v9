@@ -6,6 +6,7 @@ providing list displays, filters, and search capabilities.
 """
 
 from django.contrib import admin
+from modeltranslation.admin import TabbedTranslationAdmin
 
 from apps.campaigns.models import (
     Campaign,
@@ -17,7 +18,7 @@ from shared.permissions.admin_permission_mixin import EMenumPermissionMixin
 
 
 @admin.register(Campaign)
-class CampaignAdmin(EMenumPermissionMixin, admin.ModelAdmin):
+class CampaignAdmin(EMenumPermissionMixin, TabbedTranslationAdmin):
     list_display = [
         "name",
         "campaign_type",

@@ -11,6 +11,7 @@ Field mapping (serializer ↔ model):
 - title            → Media.title
 """
 
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from apps.media.models import Media, MediaFolder
@@ -202,7 +203,7 @@ class MediaUploadSerializer(serializers.Serializer):
     def validate_file(self, value):
         # Max 10MB
         if value.size > 10 * 1024 * 1024:
-            raise serializers.ValidationError("Dosya boyutu 10MB'dan buyuk olamaz.")
+            raise serializers.ValidationError(_("Dosya boyutu 10MB'dan buyuk olamaz."))
 
         # Allowed types
         allowed_types = [

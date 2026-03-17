@@ -29,7 +29,7 @@ from decimal import Decimal
 
 from django.db.models import Prefetch
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views import View
@@ -97,6 +97,31 @@ class PublicMenuView(View):
                 deleted_at__isnull=True,
             )
         except Menu.DoesNotExist:
+            # Fallback: slug might be an organization slug — find org's
+            # default published menu and redirect to the correct URL.
+            from apps.core.models import Organization
+
+            try:
+                org = Organization.objects.get(slug=menu_slug, deleted_at__isnull=True)
+                fallback_menu = (
+                    Menu.objects.filter(
+                        organization=org,
+                        is_published=True,
+                        deleted_at__isnull=True,
+                    )
+                    .order_by("-is_default", "-created_at")
+                    .first()
+                )
+                if fallback_menu:
+                    # Preserve query params (e.g. ?table=16)
+                    qs = request.GET.urlencode()
+                    redirect_url = f"/m/{fallback_menu.slug}/"
+                    if qs:
+                        redirect_url += f"?{qs}"
+                    return redirect(redirect_url, permanent=False)
+            except Organization.DoesNotExist:
+                pass
+
             logger.warning("Public menu not found: slug=%s", menu_slug)
             raise Http404(_("Menu not found"))
 

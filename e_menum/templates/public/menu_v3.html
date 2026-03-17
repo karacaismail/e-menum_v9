@@ -1,6 +1,6 @@
-{% load static %}
+{% load static i18n %}
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="{{ LANGUAGE_CODE|default:'tr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -91,7 +91,7 @@
             <!-- Search -->
             <div class="search-container" :class="{ 'focused': searchFocused }">
                 <div class="search-wrapper">
-                    <input type="text" class="search-input" placeholder="Yemek ara..."
+                    <input type="text" class="search-input" placeholder="{% trans 'Yemek ara...' %}"
                            x-model="searchQuery"
                            @focus="searchFocused = true"
                            @blur="setTimeout(() => searchFocused = false, 200)">
@@ -103,7 +103,7 @@
                 <div class="search-dropdown" x-show="searchFocused" x-transition>
                     <template x-if="searchQuery.length > 0">
                         <div class="dropdown-section">
-                            <h4>Sonuclar</h4>
+                            <h4>{% trans "Sonuclar" %}</h4>
                             <template x-for="product in getSearchResults().slice(0, 5)" :key="product.id">
                                 <a href="#" class="search-result" @click.prevent="openProductModal(product)">
                                     <img :src="product.image" :alt="product.name" class="result-image" x-show="product.image">
@@ -118,7 +118,7 @@
                     <template x-if="searchQuery.length === 0">
                         <div>
                             <div class="dropdown-section">
-                                <h4>Son Aramalar</h4>
+                                <h4>{% trans "Son Aramalar" %}</h4>
                                 <template x-for="term in recentSearches" :key="term">
                                     <a href="#" class="recent-item" @click.prevent="searchQuery = term">
                                         <i class="ph ph-clock-counter-clockwise"></i>
@@ -127,7 +127,7 @@
                                 </template>
                             </div>
                             <div class="dropdown-section">
-                                <h4>Populer Aramalar</h4>
+                                <h4>{% trans "Populer Aramalar" %}</h4>
                                 <div class="popular-tags">
                                     <button class="popular-tag" @click="searchQuery = 'Kebap'">Kebap</button>
                                     <button class="popular-tag" @click="searchQuery = 'Pizza'">Pizza</button>
@@ -142,27 +142,22 @@
 
             <!-- Header Actions -->
             <div class="header-actions">
-                <div class="delivery-indicator">
-                    <i class="ph-fill ph-map-pin"></i>
-                    <span x-text="deliveryTime"></span>
-                </div>
-
-                <button class="header-btn" :class="{ 'active': darkMode }" @click="darkMode = !darkMode" title="Tema">
+                <button class="header-btn" :class="{ 'active': darkMode }" @click="darkMode = !darkMode" title="{% trans 'Tema' %}">
                     <i :class="darkMode ? 'ph-fill ph-sun' : 'ph-fill ph-moon'"></i>
                 </button>
 
-                <button class="header-btn" :class="{ 'active': showFavoritesOnly }" @click="showFavoritesOnly = !showFavoritesOnly" title="Favoriler">
+                <button class="header-btn" :class="{ 'active': showFavoritesOnly }" @click="showFavoritesOnly = !showFavoritesOnly" title="{% trans 'Favoriler' %}">
                     <i class="ph-fill ph-heart"></i>
                     <span class="btn-badge" x-show="favorites.length > 0" x-text="favorites.length"></span>
                 </button>
 
-                <button class="cart-button" @click="cartOpen = true">
+                <button class="cart-button" :class="{ 'has-items': cartSubtotal > 0 }" @click="cartOpen = true">
                     <div class="cart-icon-wrapper">
                         <i class="ph-fill ph-shopping-bag"></i>
                         <span class="cart-badge" x-show="cartItemCount > 0" x-text="cartItemCount"></span>
                     </div>
                     <div class="cart-summary" x-show="cartSubtotal > 0">
-                        <span>Sepetim</span>
+                        <span>{% trans "Sepetim" %}</span>
                         <strong x-text="formatPrice(cartSubtotal)"></strong>
                     </div>
                 </button>
@@ -176,7 +171,7 @@
             <div class="categories-scroll">
                 <button class="category-chip" :class="{ 'active': activeCategory === 'all' }" @click="activeCategory = 'all'">
                     <i class="ph-fill ph-squares-four"></i>
-                    <span>Tumu</span>
+                    <span>{% trans "Tumu" %}</span>
                 </button>
                 <template x-for="cat in categories" :key="cat.id">
                     <button class="category-chip" :class="{ 'active': activeCategory === cat.id }" @click="scrollToCategory(cat.id)">
@@ -190,13 +185,13 @@
             <div class="nav-actions">
                 <div class="filter-pills">
                     <button class="filter-pill" :class="{ 'active': quickFilters.popular }" @click="quickFilters.popular = !quickFilters.popular">
-                        <i class="ph-fill ph-fire"></i> Populer
+                        <i class="ph-fill ph-fire"></i> {% trans "Populer" %}
                     </button>
                     <button class="filter-pill" :class="{ 'active': quickFilters.discount }" @click="quickFilters.discount = !quickFilters.discount">
-                        <i class="ph-fill ph-percent"></i> Indirimli
+                        <i class="ph-fill ph-percent"></i> {% trans "Indirimli" %}
                     </button>
                     <button class="filter-pill" :class="{ 'active': quickFilters.vegan }" @click="quickFilters.vegan = !quickFilters.vegan">
-                        <i class="ph-fill ph-leaf"></i> Vegan
+                        <i class="ph-fill ph-leaf"></i> {% trans "Vegan" %}
                     </button>
                 </div>
 
@@ -208,22 +203,22 @@
                     </button>
                     <div class="sort-menu" x-ref="sortMenu" x-show="false" @click.away="$refs.sortMenu.classList.remove('show')" x-transition>
                         <button class="sort-option" :class="{ 'active': sortBy === 'default' }" @click="sortBy = 'default'; $refs.sortMenu.classList.remove('show')">
-                            <i class="ph ph-list"></i> Varsayilan
+                            <i class="ph ph-list"></i> {% trans "Varsayilan" %}
                         </button>
                         <button class="sort-option" :class="{ 'active': sortBy === 'price-low' }" @click="sortBy = 'price-low'; $refs.sortMenu.classList.remove('show')">
-                            <i class="ph ph-arrow-down"></i> Fiyat: Dusuk
+                            <i class="ph ph-arrow-down"></i> {% trans "Fiyat: Dusuk" %}
                         </button>
                         <button class="sort-option" :class="{ 'active': sortBy === 'price-high' }" @click="sortBy = 'price-high'; $refs.sortMenu.classList.remove('show')">
-                            <i class="ph ph-arrow-up"></i> Fiyat: Yuksek
+                            <i class="ph ph-arrow-up"></i> {% trans "Fiyat: Yuksek" %}
                         </button>
                         <button class="sort-option" :class="{ 'active': sortBy === 'rating' }" @click="sortBy = 'rating'; $refs.sortMenu.classList.remove('show')">
-                            <i class="ph ph-star"></i> Puan
+                            <i class="ph ph-star"></i> {% trans "Puan" %}
                         </button>
                         <button class="sort-option" :class="{ 'active': sortBy === 'popular' }" @click="sortBy = 'popular'; $refs.sortMenu.classList.remove('show')">
-                            <i class="ph ph-fire"></i> Populer
+                            <i class="ph ph-fire"></i> {% trans "Populer" %}
                         </button>
                         <button class="sort-option" :class="{ 'active': sortBy === 'newest' }" @click="sortBy = 'newest'; $refs.sortMenu.classList.remove('show')">
-                            <i class="ph ph-sparkle"></i> En Yeni
+                            <i class="ph ph-sparkle"></i> {% trans "En Yeni" %}
                         </button>
                     </div>
                 </div>
@@ -236,7 +231,7 @@
         <!-- Sidebar Filters -->
         <aside class="sidebar-filters" :class="{ 'collapsed': sidebarCollapsed }">
             <div class="sidebar-header">
-                <h3 class="sidebar-title"><i class="ph-fill ph-funnel"></i> Filtreler</h3>
+                <h3 class="sidebar-title"><i class="ph-fill ph-funnel"></i> {% trans "Filtreler" %}</h3>
                 <button class="sidebar-toggle" @click="sidebarCollapsed = !sidebarCollapsed">
                     <i class="ph ph-caret-left"></i>
                 </button>
@@ -244,7 +239,7 @@
             <div class="sidebar-body">
                 <!-- Price Range -->
                 <div class="filter-group">
-                    <h4>Fiyat Araligi</h4>
+                    <h4>{% trans "Fiyat Araligi" %}</h4>
                     <div class="price-range">
                         <div class="range-inputs">
                             <div class="range-field">
@@ -262,7 +257,7 @@
 
                 <!-- Rating -->
                 <div class="filter-group">
-                    <h4>Minimum Puan</h4>
+                    <h4>{% trans "Minimum Puan" %}</h4>
                     <div class="rating-options">
                         <template x-for="rating in [4.5, 4, 3.5, 3]" :key="rating">
                             <button class="rating-option" :class="{ 'active': minRating === rating }" @click="minRating = minRating === rating ? 0 : rating">
@@ -279,30 +274,30 @@
 
                 <!-- Dietary -->
                 <div class="filter-group">
-                    <h4>Diyet Tercihleri</h4>
+                    <h4>{% trans "Diyet Tercihleri" %}</h4>
                     <div class="dietary-options">
                         <button class="dietary-option" :class="{ 'active': dietaryFilters.vegan }" @click="dietaryFilters.vegan = !dietaryFilters.vegan">
                             <div class="custom-checkbox"><i class="ph ph-check" x-show="dietaryFilters.vegan"></i></div>
-                            <span class="checkbox-label">Vegan</span>
+                            <span class="checkbox-label">{% trans "Vegan" %}</span>
                         </button>
                         <button class="dietary-option" :class="{ 'active': dietaryFilters.vegetarian }" @click="dietaryFilters.vegetarian = !dietaryFilters.vegetarian">
                             <div class="custom-checkbox"><i class="ph ph-check" x-show="dietaryFilters.vegetarian"></i></div>
-                            <span class="checkbox-label">Vejetaryen</span>
+                            <span class="checkbox-label">{% trans "Vejetaryen" %}</span>
                         </button>
                         <button class="dietary-option" :class="{ 'active': dietaryFilters.glutenFree }" @click="dietaryFilters.glutenFree = !dietaryFilters.glutenFree">
                             <div class="custom-checkbox"><i class="ph ph-check" x-show="dietaryFilters.glutenFree"></i></div>
-                            <span class="checkbox-label">Glutensiz</span>
+                            <span class="checkbox-label">{% trans "Glutensiz" %}</span>
                         </button>
                         <button class="dietary-option" :class="{ 'active': dietaryFilters.spicy }" @click="dietaryFilters.spicy = !dietaryFilters.spicy">
                             <div class="custom-checkbox"><i class="ph ph-check" x-show="dietaryFilters.spicy"></i></div>
-                            <span class="checkbox-label">Acili</span>
+                            <span class="checkbox-label">{% trans "Acili" %}</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Allergens -->
                 <div class="filter-group">
-                    <h4>Alerjen Haric Tut</h4>
+                    <h4>{% trans "Alerjen Haric Tut" %}</h4>
                     <div class="allergen-chips">
                         <template x-for="allergen in allergens" :key="allergen.id">
                             <button class="allergen-chip" :class="{ 'active': excludedAllergens.includes(allergen.id) }" @click="toggleAllergen(allergen.id)" x-text="allergen.name"></button>
@@ -312,7 +307,7 @@
 
                 <!-- Prep Time -->
                 <div class="filter-group">
-                    <h4>Hazirlik Suresi</h4>
+                    <h4>{% trans "Hazirlik Suresi" %}</h4>
                     <div class="prep-time-chips">
                         <button class="prep-chip" :class="{ 'active': maxPrepTime === 10 }" @click="maxPrepTime = maxPrepTime === 10 ? 999 : 10">
                             <i class="ph ph-timer"></i> &lt;10 dk
@@ -328,7 +323,7 @@
 
                 <!-- Clear Filters -->
                 <button class="clear-filters-btn" @click="clearAllFilters" x-show="hasActiveFilters()">
-                    <i class="ph ph-x"></i> Filtreleri Temizle
+                    <i class="ph ph-x"></i> {% trans "Filtreleri Temizle" %}
                 </button>
             </div>
         </aside>
@@ -343,7 +338,7 @@
                 </div>
                 <div class="view-options">
                     <label class="toggle-label">
-                        <span>Fotograflar</span>
+                        <span>{% trans "Fotograflar" %}</span>
                         <button class="toggle-switch" :class="{ 'active': showPhotos }" @click="showPhotos = !showPhotos">
                             <span class="toggle-knob"></span>
                         </button>
@@ -376,17 +371,17 @@
                                         <i class="ph ph-fork-knife"></i>
                                     </div>
                                     <div class="card-badges">
-                                        <span class="badge badge-popular" x-show="product.popular">Populer</span>
-                                        <span class="badge badge-new" x-show="product.isNew">Yeni</span>
+                                        <span class="badge badge-popular" x-show="product.popular">{% trans "Populer" %}</span>
+                                        <span class="badge badge-new" x-show="product.isNew">{% trans "Yeni" %}</span>
                                         <span class="badge badge-discount" x-show="product.discount > 0" x-text="'%' + product.discount"></span>
-                                        <span class="badge badge-spicy" x-show="product.spicy">Acili</span>
-                                        <span class="badge badge-vegan" x-show="product.vegan">Vegan</span>
+                                        <span class="badge badge-spicy" x-show="product.spicy">{% trans "Acili" %}</span>
+                                        <span class="badge badge-vegan" x-show="product.vegan">{% trans "Vegan" %}</span>
                                     </div>
                                     <button class="favorite-btn" :class="{ 'active': favorites.includes(product.id) }" @click.stop="toggleFavorite(product.id)">
                                         <i :class="favorites.includes(product.id) ? 'ph-fill ph-heart' : 'ph ph-heart'"></i>
                                     </button>
                                     <button class="quick-view-btn" @click="openProductModal(product)">
-                                        <i class="ph ph-eye"></i> Detay
+                                        <i class="ph ph-eye"></i> {% trans "Detay" %}
                                     </button>
                                 </div>
                                 <div class="card-content">
@@ -410,7 +405,7 @@
                                         <template x-if="!isInCart(product.id)">
                                             <button class="add-to-cart-btn" @click="openProductModal(product)">
                                                 <i class="ph-fill ph-plus"></i>
-                                                <span>Ekle</span>
+                                                <span>{% trans "Ekle" %}</span>
                                             </button>
                                         </template>
                                         <template x-if="isInCart(product.id)">
@@ -431,10 +426,10 @@
             <!-- Empty State -->
             <div class="global-empty" x-show="getTotalFilteredCount() === 0">
                 <div class="empty-illustration"><i class="ph ph-magnifying-glass"></i></div>
-                <h3>Sonuc Bulunamadi</h3>
-                <p>Arama kriterlerinize uygun urun bulunamadi.</p>
+                <h3>{% trans "Sonuc Bulunamadi" %}</h3>
+                <p>{% trans "Arama kriterlerinize uygun urun bulunamadi." %}</p>
                 <button class="primary-btn" @click="clearAllFilters">
-                    <i class="ph ph-arrow-counter-clockwise"></i> Filtreleri Temizle
+                    <i class="ph ph-arrow-counter-clockwise"></i> {% trans "Filtreleri Temizle" %}
                 </button>
             </div>
         </div>
@@ -452,7 +447,7 @@
                     <i class="ph ph-fork-knife"></i>
                 </div>
                 <div class="modal-badges">
-                    <span class="badge badge-popular" x-show="selectedProduct?.popular">Populer</span>
+                    <span class="badge badge-popular" x-show="selectedProduct?.popular">{% trans "Populer" %}</span>
                     <span class="badge badge-discount" x-show="selectedProduct?.discount > 0" x-text="'%' + selectedProduct?.discount"></span>
                 </div>
             </div>
@@ -477,25 +472,25 @@
                     <div class="info-card">
                         <i class="ph ph-timer"></i>
                         <span x-text="selectedProduct?.prepTime + ' dk'"></span>
-                        <small>Hazirlik</small>
+                        <small>{% trans "Hazirlik" %}</small>
                     </div>
                     <div class="info-card">
                         <i class="ph ph-fire"></i>
                         <span x-text="selectedProduct?.calories"></span>
-                        <small>Kalori</small>
+                        <small>{% trans "Kalori" %}</small>
                     </div>
                     <div class="info-card">
                         <i class="ph ph-star"></i>
                         <span x-text="selectedProduct?.rating"></span>
-                        <small>Puan</small>
+                        <small>{% trans "Puan" %}</small>
                     </div>
                 </div>
 
                 <!-- Size Options -->
                 <div class="option-section" x-show="selectedProduct?.sizes?.length > 1">
                     <div class="option-header">
-                        <h4>Boyut Secin</h4>
-                        <span class="required">Zorunlu</span>
+                        <h4>{% trans "Boyut Secin" %}</h4>
+                        <span class="required">{% trans "Zorunlu" %}</span>
                     </div>
                     <div class="size-options">
                         <template x-for="size in selectedProduct?.sizes" :key="size.name">
@@ -510,8 +505,8 @@
                 <!-- Extras -->
                 <div class="option-section" x-show="selectedProduct?.extras?.length > 0">
                     <div class="option-header">
-                        <h4>Ekstralar</h4>
-                        <span class="optional">Opsiyonel</span>
+                        <h4>{% trans "Ekstralar" %}</h4>
+                        <span class="optional">{% trans "Opsiyonel" %}</span>
                     </div>
                     <div class="extras-list">
                         <template x-for="extra in selectedProduct?.extras" :key="extra.name">
@@ -527,8 +522,8 @@
                 <!-- Sauces -->
                 <div class="option-section" x-show="selectedProduct?.sauces?.length > 0">
                     <div class="option-header">
-                        <h4>Sos Secimi</h4>
-                        <span class="free">Ucretsiz</span>
+                        <h4>{% trans "Sos Secimi" %}</h4>
+                        <span class="free">{% trans "Ucretsiz" %}</span>
                     </div>
                     <div class="sauce-chips">
                         <template x-for="sauce in selectedProduct?.sauces" :key="sauce">
@@ -543,10 +538,10 @@
                 <!-- Notes -->
                 <div class="option-section">
                     <div class="option-header">
-                        <h4>Notlar</h4>
-                        <span class="optional">Opsiyonel</span>
+                        <h4>{% trans "Notlar" %}</h4>
+                        <span class="optional">{% trans "Opsiyonel" %}</span>
                     </div>
-                    <textarea class="notes-input" rows="2" placeholder="Ozel isteklerinizi yazin..." x-model="modalOptions.notes"></textarea>
+                    <textarea class="notes-input" rows="2" placeholder="{% trans 'Ozel isteklerinizi yazin...' %}" x-model="modalOptions.notes"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
@@ -557,7 +552,7 @@
                 </div>
                 <button class="add-to-cart-main" @click="addToCart()">
                     <i class="ph-fill ph-shopping-bag"></i>
-                    <span>Sepete Ekle</span>
+                    <span>{% trans "Sepete Ekle" %}</span>
                     <span class="btn-total" x-text="formatPrice(getModalTotal() * modalOptions.quantity)"></span>
                 </button>
             </div>
@@ -570,36 +565,23 @@
         <div class="cart-header">
             <div class="cart-title">
                 <i class="ph-fill ph-shopping-bag"></i>
-                <h3>Sepetim</h3>
+                <h3>{% trans "Sepetim" %}</h3>
                 <span class="item-count" x-text="cartItemCount + ' urun'"></span>
             </div>
             <button class="cart-close" @click="cartOpen = false"><i class="ph ph-x"></i></button>
         </div>
 
-        <!-- Delivery Progress -->
-        <div class="delivery-progress" x-show="cartSubtotal > 0 && cartSubtotal < freeDeliveryThreshold">
-            <div class="progress-text">
-                <i class="ph-fill ph-truck"></i>
-                <span>Ucretsiz teslimat icin <strong x-text="formatPrice(freeDeliveryThreshold - cartSubtotal)"></strong> daha ekleyin</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" :style="'width: ' + Math.min((cartSubtotal / freeDeliveryThreshold) * 100, 100) + '%'"></div>
-            </div>
-        </div>
-        <div class="free-delivery-badge" x-show="cartSubtotal >= freeDeliveryThreshold">
-            <i class="ph-fill ph-check-circle"></i>
-            <span>Ucretsiz Teslimat Kazandiniz!</span>
-        </div>
+        {# Delivery progress removed — QR menu is dine-in only #}
 
         <!-- Cart Items -->
         <div class="cart-items">
             <template x-if="cartItems.length === 0">
                 <div class="cart-empty">
                     <div class="empty-icon"><i class="ph ph-shopping-bag"></i></div>
-                    <h4>Sepetiniz Bos</h4>
-                    <p>Lezzetli yemeklerimizi kesfedin!</p>
+                    <h4>{% trans "Sepetiniz Bos" %}</h4>
+                    <p>{% trans "Lezzetli yemeklerimizi kesfedin!" %}</p>
                     <button class="explore-btn" @click="cartOpen = false">
-                        <i class="ph ph-arrow-left"></i> Menuyu Incele
+                        <i class="ph ph-arrow-left"></i> {% trans "Menuyu Incele" %}
                     </button>
                 </div>
             </template>
@@ -630,8 +612,8 @@
             <template x-if="!appliedCoupon">
                 <div class="coupon-input">
                     <i class="ph ph-ticket"></i>
-                    <input type="text" placeholder="Kupon kodu" x-model="couponCode" @keyup.enter="applyCoupon()">
-                    <button @click="applyCoupon()">Uygula</button>
+                    <input type="text" placeholder="{% trans 'Kupon kodu' %}" x-model="couponCode" @keyup.enter="applyCoupon()">
+                    <button @click="applyCoupon()">{% trans "Uygula" %}</button>
                 </div>
             </template>
             <template x-if="appliedCoupon">
@@ -646,57 +628,28 @@
         <!-- Cart Summary -->
         <div class="cart-summary" x-show="cartItems.length > 0">
             <div class="summary-row">
-                <span>Ara Toplam</span>
+                <span>{% trans "Ara Toplam" %}</span>
                 <span x-text="formatPrice(cartSubtotal)"></span>
             </div>
             <div class="summary-row" x-show="couponDiscount > 0">
-                <span>Indirim</span>
+                <span>{% trans "Indirim" %}</span>
                 <span class="discount" x-text="'-' + formatPrice(couponDiscount)"></span>
             </div>
-            <div class="summary-row">
-                <span>Teslimat</span>
-                <span x-text="cartSubtotal >= freeDeliveryThreshold ? 'Ucretsiz' : formatPrice(deliveryFee)"></span>
-            </div>
-            <div class="summary-row">
-                <span x-text="'KDV (%' + taxPercent + ')'"></span>
-                <span x-text="formatPrice(taxAmount)"></span>
-            </div>
             <div class="summary-row total">
-                <span>Toplam</span>
+                <span>{% trans "Toplam" %} <small style="font-weight:400;font-size:0.75rem;color:var(--text-muted)">({% trans "KDV Dahil" %})</small></span>
                 <span x-text="formatPrice(cartTotal)"></span>
             </div>
         </div>
 
-        <!-- Payment Methods -->
-        <div class="payment-methods" x-show="cartItems.length > 0">
-            <h4>Odeme Yontemi</h4>
-            <div class="payment-options">
-                <button class="payment-option" :class="{ 'selected': paymentMethod === 'card' }" @click="paymentMethod = 'card'">
-                    <i class="ph ph-credit-card"></i>
-                    <span>Kart</span>
-                </button>
-                <button class="payment-option" :class="{ 'selected': paymentMethod === 'cash' }" @click="paymentMethod = 'cash'">
-                    <i class="ph ph-money"></i>
-                    <span>Nakit</span>
-                </button>
-                <button class="payment-option" :class="{ 'selected': paymentMethod === 'ticket' }" @click="paymentMethod = 'ticket'">
-                    <i class="ph ph-ticket"></i>
-                    <span>Yemek Karti</span>
-                </button>
-            </div>
-        </div>
+        {# Payment methods removed — QR menu is dine-in, payment at table #}
 
-        <!-- Checkout Button -->
+        <!-- Order Button -->
         <div class="cart-footer" x-show="cartItems.length > 0">
             <button class="checkout-btn">
-                <i class="ph-fill ph-lock"></i>
-                <span>Odemeye Gec</span>
+                <i class="ph-fill ph-bell-ringing"></i>
+                <span>{% trans "Siparis Ver" %}</span>
                 <span class="checkout-total" x-text="formatPrice(cartTotal)"></span>
             </button>
-            <div class="secure-note">
-                <i class="ph-fill ph-shield-check"></i>
-                <span>256-bit SSL ile guvenli odeme</span>
-            </div>
         </div>
     </aside>
 
@@ -736,6 +689,34 @@
     <!-- Django-injected JSON data for Alpine.js -->
     <script>
         window.__MENU_DATA__ = {{ menu_data_json|safe }};
+        window.__i18n = {
+            search_placeholder: "{% trans 'Yemek ara...' %}",
+            all_products: "{% trans 'Tum Urunler' %}",
+            my_favorites: "{% trans 'Favorilerim' %}",
+            sort_default: "{% trans 'Sirala' %}",
+            sort_price_low: "{% trans 'Fiyat: Dusuk' %}",
+            sort_price_high: "{% trans 'Fiyat: Yuksek' %}",
+            sort_rating: "{% trans 'Puan' %}",
+            sort_popular: "{% trans 'Populer' %}",
+            sort_newest: "{% trans 'En Yeni' %}",
+            product_count: "{% trans 'urun bulundu' %}",
+            product_unit: "{% trans 'urun' %}",
+            minutes_short: "{% trans 'dk' %}",
+            kcal: "{% trans 'kcal' %}",
+            reviews_suffix: "{% trans 'degerlendirme' %}",
+            and_above: "{% trans 've uzeri' %}",
+            standard: "{% trans 'Standart' %}",
+            added_to_cart: "{% trans 'Sepete eklendi' %}",
+            removed_from_cart: "{% trans 'Sepetten cikarildi' %}",
+            coupon_applied: "{% trans 'Kupon uygulandi' %}",
+            coupon_invalid: "{% trans 'Gecersiz kupon kodu' %}",
+            coupon_removed: "{% trans 'Kupon kaldirildi' %}",
+            filters_cleared: "{% trans 'Filtreler temizlendi' %}",
+            added_to_favorites: "{% trans 'Favorilere eklendi' %}",
+            removed_from_favorites: "{% trans 'Favorilerden kaldirildi' %}",
+            added_to_cart: "{% trans 'sepete eklendi!' %}",
+            removed_from_cart: "{% trans 'sepetten kaldirildi' %}",
+        };
     </script>
     <script src="{% static 'public/menu/js/menu-app.js' %}"></script>
 </body>

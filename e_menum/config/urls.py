@@ -39,6 +39,8 @@ from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from django.http import JsonResponse
 from django.utils import timezone
+from django.views.decorators.cache import cache_page
+from django.views.i18n import JavaScriptCatalog
 
 # RedirectView no longer needed — root now served by website app
 from shared.decorators import superadmin_required
@@ -535,6 +537,14 @@ urlpatterns = [
     # -------------------------------------------------------------------------
     path("i18n/", include("django.conf.urls.i18n")),
     # -------------------------------------------------------------------------
+    # JavaScript i18n Catalog (for JS gettext support)
+    # -------------------------------------------------------------------------
+    path(
+        "jsi18n/",
+        cache_page(86400)(JavaScriptCatalog.as_view()),
+        name="javascript-catalog",
+    ),
+    # -------------------------------------------------------------------------
     # Custom Admin Pages (must be BEFORE admin/ catch-all)
     # -------------------------------------------------------------------------
     path("admin/settings/", admin_settings, name="admin-settings"),
@@ -666,3 +676,16 @@ if settings.DEBUG:
 admin.site.site_header = "E-Menum Administration"
 admin.site.site_title = "E-Menum Admin"
 admin.site.index_title = "Dashboard"
+
+# Restrict Django admin to superusers only (not just is_staff)
+# Restaurant admins may have is_staff=True but should NOT access Django admin
+_original_has_permission = admin.site.__class__.has_permission
+
+
+def _superuser_only_admin_permission(self, request):
+    return request.user.is_active and request.user.is_superuser
+
+
+admin.site.has_permission = lambda request: _superuser_only_admin_permission(
+    admin.site, request
+)

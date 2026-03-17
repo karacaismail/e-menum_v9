@@ -134,6 +134,9 @@
         </h3>
         <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {% for p in available_plans %}
+            {# Hide plans below current tier — only show current plan and upgrades #}
+            {% if plan and p.tier_index < current_tier_index %}
+            {% else %}
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border {% if plan and p.id == plan.id %}border-primary-400 dark:border-primary-500 ring-2 ring-primary-200 dark:ring-primary-800{% else %}border-gray-200 dark:border-gray-700{% endif %} p-5 flex flex-col">
 
                 {# Highlight badge #}
@@ -198,11 +201,6 @@
                 <span class="block text-center py-2.5 px-4 text-sm font-semibold text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-900/30 rounded-lg">
                     <i class="ph ph-check-circle"></i> {% trans "Mevcut Plan" %}
                 </span>
-                {% elif plan and p.tier_index <= current_tier_index %}
-                {# Don't show downgrade options -- cancel flow handles downgrade to free #}
-                <span class="block text-center py-2.5 px-4 text-sm font-medium text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-700/50 rounded-lg cursor-not-allowed">
-                    {% trans "Alt Plan" %}
-                </span>
                 {% else %}
                 <form method="post" action="{% url 'accounts:subscription-upgrade' %}">
                     {% csrf_token %}
@@ -217,6 +215,7 @@
                 </form>
                 {% endif %}
             </div>
+            {% endif %}{# end: skip lower-tier plans #}
             {% endfor %}
         </div>
     </div>

@@ -127,7 +127,7 @@
 
             {# ═══════ Section: Business ═══════ #}
             <div class="sidebar-section-label">
-                <span class="sidebar-text">{% trans "Isletme" %}</span>
+                <span class="sidebar-text">{% trans "İşletme" %}</span>
             </div>
 
             {# 1. Dashboard #}
@@ -150,7 +150,7 @@
                 >
                     <span class="flex items-center">
                         <i class="ph ph-book-open mr-3 text-xl sidebar-nav-icon"></i>
-                        <span class="sidebar-text">{% trans "Menus" %}</span>
+                        <span class="sidebar-text">{% trans "Menüler" %}</span>
                     </span>
                     <i class="ph ph-caret-down transition-transform sidebar-caret" :class="{ 'rotate-180': open }"></i>
                 </button>
@@ -159,19 +159,19 @@
                         href="{{ menu_list_url }}"
                         class="block px-4 py-2 text-sm rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 {% if current_path == menu_list_url %}text-primary-700 dark:text-primary-300 font-medium bg-gray-50 dark:bg-gray-700{% else %}text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white{% endif %}"
                     >
-                        {% trans "All Menus" %}
+                        {% trans "Tüm Menüler" %}
                     </a>
                     <a
                         href="{{ product_list_url }}"
                         class="block px-4 py-2 text-sm rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 {% if current_path == product_list_url or '/account/products' in current_path %}text-primary-700 dark:text-primary-300 font-medium bg-gray-50 dark:bg-gray-700{% else %}text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white{% endif %}"
                     >
-                        {% trans "Products" %}
+                        {% trans "Ürünler" %}
                     </a>
                     <a
                         href="{{ theme_list_url }}"
                         class="block px-4 py-2 text-sm rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 {% if current_path == theme_list_url or '/account/themes' in current_path %}text-primary-700 dark:text-primary-300 font-medium bg-gray-50 dark:bg-gray-700{% else %}text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white{% endif %}"
                     >
-                        {% trans "Themes" %}
+                        {% trans "Temalar" %}
                     </a>
                 </div>
             </div>
@@ -183,7 +183,7 @@
                 :title="sidebarCollapsed ? '{% trans "Orders" %}' : ''"
             >
                 <i class="ph ph-receipt mr-3 text-xl sidebar-nav-icon"></i>
-                <span class="sidebar-text">{% trans "Orders" %}</span>
+                <span class="sidebar-text">{% trans "Siparişler" %}</span>
                 {% block order_count_badge %}{% endblock %}
             </a>
 
@@ -197,7 +197,7 @@
                 >
                     <span class="flex items-center">
                         <i class="ph ph-qr-code mr-3 text-xl sidebar-nav-icon"></i>
-                        <span class="sidebar-text">{% trans "Tables & QR" %}</span>
+                        <span class="sidebar-text">{% trans "Masalar & QR" %}</span>
                     </span>
                     <i class="ph ph-caret-down transition-transform sidebar-caret" :class="{ 'rotate-180': open }"></i>
                 </button>
@@ -206,13 +206,13 @@
                         href="{{ table_management_url }}"
                         class="block px-4 py-2 text-sm rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 {% if current_path == table_management_url or '/account/tables' in current_path %}text-primary-700 dark:text-primary-300 font-medium bg-gray-50 dark:bg-gray-700{% else %}text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white{% endif %}"
                     >
-                        {% trans "Table Management" %}
+                        {% trans "Masa Yönetimi" %}
                     </a>
                     <a
                         href="{{ qrcode_list_url }}"
                         class="block px-4 py-2 text-sm rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 {% if current_path == qrcode_list_url or '/account/qrcodes' in current_path %}text-primary-700 dark:text-primary-300 font-medium bg-gray-50 dark:bg-gray-700{% else %}text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white{% endif %}"
                     >
-                        {% trans "QR Codes" %}
+                        {% trans "QR Kodlar" %}
                     </a>
                 </div>
             </div>
@@ -224,7 +224,7 @@
                 :title="sidebarCollapsed ? '{% trans "Customers" %}' : ''"
             >
                 <i class="ph ph-users mr-3 text-xl sidebar-nav-icon"></i>
-                <span class="sidebar-text">{% trans "Customers" %}</span>
+                <span class="sidebar-text">{% trans "Müşteriler" %}</span>
             </a>
 
             {# 6. Team Management #}
@@ -234,7 +234,7 @@
                 :title="sidebarCollapsed ? '{% trans "Team" %}' : ''"
             >
                 <i class="ph ph-users-three mr-3 text-xl sidebar-nav-icon"></i>
-                <span class="sidebar-text">{% trans "Team" %}</span>
+                <span class="sidebar-text">{% trans "Ekip" %}</span>
             </a>
 
             {# 7. Analytics #}
@@ -244,7 +244,7 @@
                 :title="sidebarCollapsed ? '{% trans "Analytics" %}' : ''"
             >
                 <i class="ph ph-chart-line mr-3 text-xl sidebar-nav-icon"></i>
-                <span class="sidebar-text">{% trans "Analytics" %}</span>
+                <span class="sidebar-text">{% trans "Analitik" %}</span>
             </a>
 
             {# ═══════ Section: Settings ═══════ #}
@@ -259,47 +259,47 @@
                 :title="sidebarCollapsed ? '{% trans "Profile" %}' : ''"
             >
                 <i class="ph ph-user-circle mr-3 text-xl sidebar-nav-icon"></i>
-                <span class="sidebar-text">{% trans "Profile" %}</span>
+                <span class="sidebar-text">{% trans "Profil" %}</span>
             </a>
 
             {# 9. Restaurant Settings #}
             <a
                 href="{{ restaurant_settings_url }}"
                 class="sidebar-nav-link flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/restaurant-settings' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 sidebar-nav-active{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
-                :title="sidebarCollapsed ? '{% trans "Restaurant" %}' : ''"
+                :title="sidebarCollapsed ? '{% trans "Restoran" %}' : ''"
             >
                 <i class="ph ph-storefront mr-3 text-xl sidebar-nav-icon"></i>
-                <span class="sidebar-text">{% trans "Restaurant" %}</span>
+                <span class="sidebar-text">{% trans "Restoran" %}</span>
             </a>
 
             {# 10. Account Settings #}
             <a
                 href="{{ settings_url }}"
                 class="sidebar-nav-link flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/settings' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 sidebar-nav-active{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
-                :title="sidebarCollapsed ? '{% trans "Settings" %}' : ''"
+                :title="sidebarCollapsed ? '{% trans "Ayarlar" %}' : ''"
             >
                 <i class="ph ph-gear mr-3 text-xl sidebar-nav-icon"></i>
-                <span class="sidebar-text">{% trans "Settings" %}</span>
+                <span class="sidebar-text">{% trans "Ayarlar" %}</span>
             </a>
 
             {# 11. Subscription #}
             <a
                 href="{{ subscription_url }}"
                 class="sidebar-nav-link flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/subscription' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 sidebar-nav-active{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
-                :title="sidebarCollapsed ? '{% trans "Subscription" %}' : ''"
+                :title="sidebarCollapsed ? '{% trans "Abonelik" %}' : ''"
             >
                 <i class="ph ph-credit-card mr-3 text-xl sidebar-nav-icon"></i>
-                <span class="sidebar-text">{% trans "Subscription" %}</span>
+                <span class="sidebar-text">{% trans "Abonelik" %}</span>
             </a>
 
             {# 12. Support Tickets #}
             <a
                 href="{{ support_list_url }}"
                 class="sidebar-nav-link flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors touch-target {% if '/account/support' in current_path %}bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 sidebar-nav-active{% else %}text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700{% endif %}"
-                :title="sidebarCollapsed ? '{% trans "Support" %}' : ''"
+                :title="sidebarCollapsed ? '{% trans "Destek" %}' : ''"
             >
                 <i class="ph ph-headset mr-3 text-xl sidebar-nav-icon"></i>
-                <span class="sidebar-text">{% trans "Support" %}</span>
+                <span class="sidebar-text">{% trans "Destek" %}</span>
             </a>
 
         </nav>
@@ -418,21 +418,21 @@
                                 <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ user.email }}</p>
                             </div>
                             <a href="{{ profile_url }}" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                                <i class="ph ph-user-circle text-lg"></i>{% trans "Profile" %}
+                                <i class="ph ph-user-circle text-lg"></i>{% trans "Profil" %}
                             </a>
                             <a href="{{ settings_url }}" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                                <i class="ph ph-gear text-lg"></i>{% trans "Settings" %}
+                                <i class="ph ph-gear text-lg"></i>{% trans "Ayarlar" %}
                             </a>
                             {% if user.is_superuser %}
                             <a href="/admin/" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                                <i class="ph ph-shield-check text-lg"></i>{% trans "Admin Panel" %}
+                                <i class="ph ph-shield-check text-lg"></i>{% trans "Yönetim Paneli" %}
                             </a>
                             {% endif %}
                             <hr class="my-1 border-gray-100 dark:border-gray-700">
                             <form method="post" action="{% url 'accounts:logout' %}">
                                 {% csrf_token %}
                                 <button type="submit" class="flex items-center gap-2.5 w-full text-left px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
-                                    <i class="ph ph-sign-out text-lg"></i>{% trans "Logout" %}
+                                    <i class="ph ph-sign-out text-lg"></i>{% trans "Çıkış Yap" %}
                                 </button>
                             </form>
                         </div>
@@ -607,6 +607,23 @@
 {{ block.super }}
 <script src="{% static 'panel/js/panel.js' %}"></script>
 <script>
+    /**
+     * Global AJAX helper: fetch wrapper with CSRF token
+     * Used by menu list, menu detail, notification widget, etc.
+     */
+    function fetchWithCsrf(url, options) {
+        options = options || {};
+        var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')
+            ? document.querySelector('[name=csrfmiddlewaretoken]').value
+            : (document.cookie.split(';').find(function(c) { return c.trim().startsWith('csrftoken='); }) || '').split('=')[1] || '';
+        options.headers = Object.assign({
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+            'X-Requested-With': 'XMLHttpRequest'
+        }, options.headers || {});
+        return fetch(url, options);
+    }
+
     // Panel-specific JavaScript utilities
     document.addEventListener('alpine:init', () => {
         // Data table component

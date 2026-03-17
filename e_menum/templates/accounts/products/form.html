@@ -128,16 +128,16 @@
                         {# Category #}
                         <div>
                             <label for="id_category" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                                {% trans "Category" %} <span class="text-red-500">*</span>
+                                {% trans "Kategori" %} <span class="text-red-500">*</span>
                             </label>
                             <select id="id_category"
                                     name="category"
                                     required
                                     class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
-                                <option value="">{% trans "Select a category" %}</option>
+                                <option value="">{% trans "Kategori secin" %}</option>
                                 {% for category in categories %}
                                 <option value="{{ category.id }}" {% if form.category.value == category.id|stringformat:"s" or product.category_id == category.id %}selected{% endif %}>
-                                    {{ category.name }}
+                                    {% if category.menu %}{{ category.menu.name }} &rsaquo; {% endif %}{{ category.name }}
                                 </option>
                                 {% endfor %}
                             </select>
@@ -154,16 +154,17 @@
 
                     <div>
                         <label for="id_base_price" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                            {% trans "Base Price" %} (&#8378;) <span class="text-red-500">*</span>
+                            {% trans "Fiyat" %} (&#8378;) <span class="text-red-500">*</span>
                         </label>
                         <div class="relative">
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 font-medium">&#8378;</span>
-                            <input type="number"
+                            <input type="text"
+                                   inputmode="decimal"
+                                   pattern="[0-9]*[.,]?[0-9]*"
                                    id="id_base_price"
                                    name="base_price"
-                                   value="{{ form.base_price.value|default:'0.00' }}"
+                                   value="{% if product %}{{ product.base_price }}{% elif form.base_price.value %}{{ form.base_price.value }}{% else %}0.00{% endif %}"
                                    required
-                                   step="0.01"
                                    min="0"
                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
                         </div>
@@ -182,9 +183,9 @@
                             {% trans "Image URL" %}
                         </label>
                         <input type="url"
-                               id="id_image_url"
-                               name="image_url"
-                               value="{{ form.image_url.value|default:'' }}"
+                               id="id_image"
+                               name="image"
+                               value="{{ form.image.value|default:'' }}"
                                placeholder="https://example.com/image.jpg"
                                class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
                         <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
@@ -289,7 +290,7 @@
                                 <div class="grid grid-cols-12 gap-3 items-end">
                                     <div class="col-span-5">
                                         <label x-show="i === 0" class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{% trans "Variant Name" %}</label>
-                                        <input :name="'variant_name_' + i"
+                                        <input name="variant_name"
                                                x-model="v.name"
                                                type="text"
                                                placeholder="{% trans 'e.g. Large' %}"
@@ -297,10 +298,10 @@
                                     </div>
                                     <div class="col-span-5">
                                         <label x-show="i === 0" class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{% trans "Price" %} (&#8378;)</label>
-                                        <input :name="'variant_price_' + i"
+                                        <input name="variant_price"
                                                x-model="v.price"
-                                               type="number"
-                                               step="0.01"
+                                               type="text"
+                                               inputmode="decimal"
                                                min="0"
                                                placeholder="0.00"
                                                class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">
@@ -346,7 +347,7 @@
                                 <div class="grid grid-cols-12 gap-3 items-end">
                                     <div class="col-span-5">
                                         <label x-show="i === 0" class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{% trans "Modifier Name" %}</label>
-                                        <input :name="'modifier_name_' + i"
+                                        <input name="modifier_name"
                                                x-model="m.name"
                                                type="text"
                                                placeholder="{% trans 'e.g. Extra Cheese' %}"
@@ -354,10 +355,10 @@
                                     </div>
                                     <div class="col-span-5">
                                         <label x-show="i === 0" class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{% trans "Extra Price" %} (&#8378;)</label>
-                                        <input :name="'modifier_price_' + i"
+                                        <input name="modifier_price"
                                                x-model="m.price"
-                                               type="number"
-                                               step="0.01"
+                                               type="text"
+                                               inputmode="decimal"
                                                min="0"
                                                placeholder="0.00"
                                                class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm">

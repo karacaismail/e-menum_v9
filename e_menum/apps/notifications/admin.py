@@ -10,6 +10,7 @@ All admin classes implement multi-tenant filtering where applicable.
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
+from modeltranslation.admin import TabbedTranslationAdmin
 
 from apps.notifications.choices import NotificationPriority, NotificationStatus
 from apps.notifications.models import Notification
@@ -17,7 +18,7 @@ from shared.permissions.admin_permission_mixin import EMenumPermissionMixin
 
 
 @admin.register(Notification)
-class NotificationAdmin(EMenumPermissionMixin, admin.ModelAdmin):
+class NotificationAdmin(EMenumPermissionMixin, TabbedTranslationAdmin):
     """Admin interface for Notification management."""
 
     list_display = [

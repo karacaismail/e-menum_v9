@@ -1,5 +1,6 @@
 """Product management views for the restaurant owner portal."""
 
+import json
 import logging
 
 from django.contrib import messages
@@ -160,9 +161,11 @@ def product_create(request):
         form = ProductForm(organization=org)
 
     allergens = _get_allergens()
-    categories = Category.objects.filter(
-        organization=org, deleted_at__isnull=True
-    ).order_by("sort_order", "name")
+    categories = (
+        Category.objects.filter(organization=org, deleted_at__isnull=True)
+        .select_related("menu")
+        .order_by("menu__name", "sort_order", "name")
+    )
     return render(
         request,
         "accounts/products/form.html",
@@ -171,6 +174,7 @@ def product_create(request):
             "is_edit": False,
             "allergens": allergens,
             "categories": categories,
+            "selected_allergens": [],
         },
     )
 
@@ -301,9 +305,15 @@ def product_edit(request, product_id):
     except Exception:
         pass
 
-    categories = Category.objects.filter(
-        organization=org, deleted_at__isnull=True
-    ).order_by("sort_order", "name")
+    categories = (
+        Category.objects.filter(organization=org, deleted_at__isnull=True)
+        .select_related("menu")
+        .order_by("menu__name", "sort_order", "name")
+    )
+
+    # Build variants/modifiers JSON for Alpine.js pre-population
+    variants_json, modifiers_json = _get_product_options_json(product)
+
     return render(
         request,
         "accounts/products/form.html",
@@ -312,8 +322,10 @@ def product_edit(request, product_id):
             "product": product,
             "is_edit": True,
             "allergens": allergens,
-            "existing_allergens": [str(a) for a in existing_allergens],
+            "selected_allergens": [str(a) for a in existing_allergens],
             "categories": categories,
+            "variants_json": variants_json,
+            "modifiers_json": modifiers_json,
         },
     )
 
@@ -457,3 +469,42 @@ def _save_allergens(request, product):
             )
         except Exception:
             pass
+
+
+def _get_product_options_json(product):
+    """Build variants and modifiers JSON for Alpine.js pre-population."""
+    from apps.menu.models import ProductVariant, ProductModifier
+
+    # Variants
+    variants = list(
+        ProductVariant.objects.filter(
+            product=product,
+            deleted_at__isnull=True,
+        )
+        .order_by("sort_order")
+        .values("name", "price")
+    )
+    if variants:
+        variants_list = [
+            {"name": v["name"], "price": float(v["price"])} for v in variants
+        ]
+    else:
+        variants_list = [{"name": "", "price": 0}]
+
+    # Modifiers
+    modifiers = list(
+        ProductModifier.objects.filter(
+            product=product,
+            deleted_at__isnull=True,
+        )
+        .order_by("sort_order")
+        .values("name", "price")
+    )
+    if modifiers:
+        modifiers_list = [
+            {"name": m["name"], "price": float(m["price"])} for m in modifiers
+        ]
+    else:
+        modifiers_list = [{"name": "", "price": 0}]
+
+    return json.dumps(variants_list), json.dumps(modifiers_list)

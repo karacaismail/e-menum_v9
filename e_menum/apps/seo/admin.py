@@ -20,6 +20,7 @@ from django.contrib import admin
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
+from modeltranslation.admin import TabbedTranslationAdmin
 
 from apps.seo.models import (
     AuthorProfile,
@@ -569,7 +570,7 @@ class TXTFileConfigAdmin(EMenumPermissionMixin, admin.ModelAdmin):
 
 
 @admin.register(PSEOTemplate)
-class PSEOTemplateAdmin(EMenumPermissionMixin, admin.ModelAdmin):
+class PSEOTemplateAdmin(EMenumPermissionMixin, TabbedTranslationAdmin):
     """
     Admin interface for PSEOTemplate management.
 

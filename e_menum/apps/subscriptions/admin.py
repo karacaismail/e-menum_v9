@@ -24,6 +24,7 @@ from django.db.models import Count, Q
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
+from modeltranslation.admin import TabbedTranslationAdmin
 
 from apps.subscriptions.choices import (
     BillingPeriod,
@@ -234,7 +235,7 @@ class FeaturePermissionInline(admin.TabularInline):
 
 
 @admin.register(Feature)
-class FeatureAdmin(EMenumPermissionMixin, admin.ModelAdmin):
+class FeatureAdmin(EMenumPermissionMixin, TabbedTranslationAdmin):
     """
     Admin interface for Feature management.
 
@@ -475,7 +476,7 @@ class FeatureAdmin(EMenumPermissionMixin, admin.ModelAdmin):
 
 
 @admin.register(Plan)
-class PlanAdmin(EMenumPermissionMixin, admin.ModelAdmin):
+class PlanAdmin(EMenumPermissionMixin, TabbedTranslationAdmin):
     """
     Admin interface for Plan management.
 
