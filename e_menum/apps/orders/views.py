@@ -30,6 +30,7 @@ import logging
 from django.db.models import Prefetch, Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers as drf_serializers
 from rest_framework import status
 from rest_framework.decorators import action
 
@@ -41,6 +42,7 @@ from apps.orders.models import (
     Order,
     OrderItem,
     ServiceRequest,
+    Discount,
 )
 from apps.orders.choices import (
     TableStatus,
@@ -76,6 +78,11 @@ from apps.orders.serializers import (
     ServiceRequestDetailSerializer,
     ServiceRequestCreateSerializer,
     ServiceRequestUpdateSerializer,
+    # Discount
+    DiscountListSerializer,
+    DiscountDetailSerializer,
+    DiscountCreateSerializer,
+    DiscountUpdateSerializer,
 )
 from shared.permissions.plan_enforcement import PlanEnforcementMixin
 from shared.views.base import (
@@ -735,8 +742,17 @@ class OrderViewSet(BaseTenantViewSet):
         POST /api/v1/orders/{id}/cancel/
         Body: {"reason": "Customer request"}
         """
+
+        class CancelOrderSerializer(drf_serializers.Serializer):
+            reason = drf_serializers.CharField(
+                required=False, allow_blank=True, allow_null=True, max_length=500
+            )
+
+        serializer = CancelOrderSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         order = self.get_object()
-        reason = request.data.get("reason")
+        reason = serializer.validated_data.get("reason")
 
         try:
             order.cancel(reason=reason)
@@ -758,8 +774,20 @@ class OrderViewSet(BaseTenantViewSet):
         POST /api/v1/orders/{id}/mark-paid/
         Body: {"method": "CASH"}  // Optional payment method
         """
+        from apps.orders.choices import PaymentMethod
+
+        class MarkPaidSerializer(drf_serializers.Serializer):
+            method = drf_serializers.ChoiceField(
+                choices=PaymentMethod.choices,
+                required=False,
+                allow_null=True,
+            )
+
+        serializer = MarkPaidSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         order = self.get_object()
-        method = request.data.get("method")
+        method = serializer.validated_data.get("method")
 
         try:
             order.mark_paid(method=method)
@@ -931,6 +959,83 @@ class ServiceRequestViewSet(BaseTenantViewSet):
 
 
 # =============================================================================
+# DISCOUNT VIEWSET
+# =============================================================================
+
+
+class DiscountViewSet(BaseTenantViewSet):
+    """
+    ViewSet for discount management.
+
+    Discounts track percentage-based, fixed amount, loyalty rewards,
+    coupon codes, staff discounts, or happy hour promotions applied
+    to orders.
+
+    API Endpoints:
+        GET    /api/v1/discounts/              - List discounts
+        POST   /api/v1/discounts/              - Create discount
+        GET    /api/v1/discounts/{id}/         - Get discount details
+        PUT    /api/v1/discounts/{id}/         - Update discount
+        PATCH  /api/v1/discounts/{id}/         - Partial update
+        DELETE /api/v1/discounts/{id}/         - Soft delete
+
+    Query Parameters:
+        - discount_type: Filter by type (PERCENTAGE, FIXED_AMOUNT, etc.)
+        - order_id: Filter by order
+        - code: Filter by coupon/promo code
+        - search: Search by code or reason
+
+    Permissions:
+        - Requires authentication
+        - Requires organization membership
+    """
+
+    queryset = Discount.objects.all()
+    permission_resource = "discount"
+
+    def get_serializer_class(self):
+        """Return the appropriate serializer based on action."""
+        if self.action == "list":
+            return DiscountListSerializer
+        elif self.action == "create":
+            return DiscountCreateSerializer
+        elif self.action in ["update", "partial_update"]:
+            return DiscountUpdateSerializer
+        return DiscountDetailSerializer
+
+    def get_queryset(self):
+        """Return discounts filtered by organization with optimizations."""
+        queryset = super().get_queryset()
+
+        # Optimize with select_related
+        queryset = queryset.select_related("order", "applied_by")
+
+        # Filter by discount type
+        discount_type = self.request.query_params.get("discount_type")
+        if discount_type:
+            queryset = queryset.filter(discount_type=discount_type.upper())
+
+        # Filter by order
+        order_id = self.request.query_params.get("order_id")
+        if order_id:
+            queryset = queryset.filter(order_id=order_id)
+
+        # Filter by code
+        code = self.request.query_params.get("code")
+        if code:
+            queryset = queryset.filter(code__iexact=code)
+
+        # Search
+        search = self.request.query_params.get("search")
+        if search:
+            queryset = queryset.filter(
+                Q(code__icontains=search) | Q(reason__icontains=search)
+            )
+
+        return queryset.order_by("-created_at")
+
+
+# =============================================================================
 # EXPORTS
 # =============================================================================
 
@@ -940,4 +1045,5 @@ __all__ = [
     "QRCodeViewSet",
     "OrderViewSet",
     "ServiceRequestViewSet",
+    "DiscountViewSet",
 ]

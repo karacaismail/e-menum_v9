@@ -43,7 +43,7 @@ workers = int(os.environ.get("GUNICORN_WORKERS", _default_workers))
 # 'gevent' - Async workers using gevent
 # 'eventlet' - Async workers using eventlet
 # 'gthread' - Threaded workers
-worker_class = os.environ.get("GUNICORN_WORKER_CLASS", "sync")
+worker_class = os.environ.get("GUNICORN_WORKER_CLASS", "gthread")
 
 # Threads per worker (for gthread worker class)
 # Also affects sync workers for handling concurrent requests

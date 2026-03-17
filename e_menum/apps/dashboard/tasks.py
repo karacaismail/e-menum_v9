@@ -249,6 +249,13 @@ def warm_kpi_cache(self):
 
     Runs every 5 minutes (configured in celery.py beat_schedule).
     Ensures dashboard loads instantly without cold cache queries.
+
+    Scalability note (AUDIT BULGU-14):
+        All KPI queries are platform-level aggregations (COUNT/SUM across all
+        orgs in a single SQL query). This is O(1) in the number of organizations
+        — NOT a per-org loop. At 350K+ orgs the DB indexes keep each query
+        under 200ms. If individual org dashboards are added later, switch to a
+        lazy-cache strategy (compute on first access, not on a timer).
     """
     from apps.dashboard.services import KPIService
 

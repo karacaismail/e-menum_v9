@@ -3257,6 +3257,10 @@ class Refund(TimeStampedMixin, SoftDeleteMixin, models.Model):
     """
     Refund model - represents refunds for orders or order items.
 
+    MVP-FUTURE: This model is defined but NOT yet connected to any ViewSet,
+    Serializer, URL route, or Admin interface. It will be activated when
+    the payment-module is implemented post-MVP. See CONSTRAINTS.md.
+
     Refunds track the return of money to customers, including the type
     (full, partial, or item-level), amount, reason, approval status,
     and who processed it.
@@ -3395,6 +3399,10 @@ class Refund(TimeStampedMixin, SoftDeleteMixin, models.Model):
 class Reservation(TimeStampedMixin, SoftDeleteMixin, models.Model):
     """
     Reservation model - represents table reservations for guests.
+
+    MVP-FUTURE: This model is defined but NOT yet connected to any ViewSet,
+    Serializer, URL route, or Admin interface. It will be activated when
+    the reservation-module is implemented post-MVP. See CONSTRAINTS.md.
 
     Reservations allow customers to book tables in advance, specifying
     the date, time, guest count, and preferred seating area. Staff can

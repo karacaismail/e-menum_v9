@@ -31,6 +31,7 @@ from datetime import timedelta
 
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers as drf_serializers
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -406,14 +407,13 @@ class TokenVerifyView(APIView):
 
     def post(self, request, *args, **kwargs):
         """Handle token verification request."""
-        token = request.data.get("token")
 
-        if not token:
-            return build_error_response(
-                code=ErrorCodes.VALIDATION_ERROR,
-                message=str(_("Token is required")),
-                status_code=status.HTTP_400_BAD_REQUEST,
-            )
+        class TokenVerifyInputSerializer(drf_serializers.Serializer):
+            token = drf_serializers.CharField(required=True)
+
+        serializer = TokenVerifyInputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        token = serializer.validated_data["token"]
 
         try:
             from rest_framework_simplejwt.tokens import AccessToken

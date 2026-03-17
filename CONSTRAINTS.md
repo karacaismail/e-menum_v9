@@ -711,4 +711,30 @@ const result = await prisma.$queryRaw`...`;
 
 ---
 
+---
+
+## AUDIT NOTLARI (2026-03-17)
+
+### Bekleyen Teknik Borçlar (P3)
+
+| # | Konu | Durum | Aksiyon Zamanı |
+|---|------|-------|----------------|
+| BULGU-6 | Website app migration şişkinliği (15 migration, 12K+ satır) | Çalışıyor | Production stabilize olduktan sonra `squashmigrations` ile birleştir |
+| BULGU-7 | S3/CDN storage yorum satırında — media uploads tek disk | Çalışıyor | Object storage (Hetzner/R2) entegrasyonu planla, `django-storages` ekle |
+| BULGU-16 | Website app monolitik yapı (30+ model, 3000+ satır) | Çalışıyor, refactor gerekli DEĞİL | Bakım maliyeti arttığında `website_blog`, `website_cms`, `website_legal` sub-app'lere bölünebilir |
+| BULGU-19 | Payment gateway entegrasyonu yok (İyzico/Stripe) | Altyapı alanları hazır, kod yok | MVP sonrası: `apps/subscriptions/payment_gateway.py` + webhook endpoint'leri oluştur |
+| BULGU-22 | AI app ↔ Product/Campaign frontend entegrasyonu yok | AI API endpoint'leri çalışıyor | MVP sonrası: Product/Campaign formlarına "AI ile oluştur" butonları ekle (Alpine.js) |
+| BULGU-25 | Search ORM LIKE query — full-text search yok | Çalışıyor ama suboptimal | PostgreSQL `SearchVector` + `SearchRank` veya Meilisearch entegrasyonu planla |
+| BULGU-27 | E2E browser testleri yok (Playwright) | Unit/integration test yeterli (MVP) | MVP sonrası: 5 kritik yol için Playwright E2E test yaz |
+| BULGU-29 | 9 app'te test dosyası yok (customers, campaigns, vb.) | Factory'ler oluşturuldu | Öncelik sırasıyla: customers → subscriptions → campaigns → inventory |
+| BULGU-30 | i18n migration `_de`/`_ru` → `_fa`/`_uk` veri kaybı riski | Production'da kontrol gerekli | `BlogPost.objects.exclude(title_de='')` ile veri var mı kontrol et |
+| BULGU-31 | Seed idempotency testleri yok | `get_or_create` kullanılıyor | 2× çalıştırma idempotency testi yaz; `seed_seo_data` yıkıcı `.delete()` pattern'ini düzelt |
+| BULGU-32 | Order status machine kapsamlı transition testi yok | Temel testler mevcut | `test_order_status.py` ile tüm geçerli/geçersiz transition kombinasyonlarını test et |
+| BULGU-34 | `test_phase2.py` geçici dosya adı | Çalışıyor | İçerik anlamlı testler — uygun app test dizinine taşı veya rename et |
+| BULGU-40 | AI app SSRF riski | SDK kullanımı (OpenAI, Anthropic, Google) — ham HTTP yok | Risk düşük; gelecekte custom URL kabul edilirse IP whitelist ekle |
+
+> Detaylar: `AUDIT_REPORT.md` — Boyut 1 (Bulgu 6-7), Boyut 3 (Bulgu 16), Boyut 4 (Bulgu 19, 22), Boyut 5 (Bulgu 25, 27), Boyut 6 (Bulgu 29-32), Boyut 7 (Bulgu 34), Boyut 8 (Bulgu 40).
+
+---
+
 *Bu döküman, E-Menum projesinin KESİN SINIRLARINI tanımlar. Tüm geliştirmeler bu kısıtlara uygun olmalıdır.*

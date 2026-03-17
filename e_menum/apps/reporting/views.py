@@ -12,6 +12,7 @@ ViewSets and APIViews:
 import logging
 
 from django.utils import timezone
+from rest_framework import serializers as drf_serializers
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -301,7 +302,9 @@ class ReportFavoriteViewSet(BaseTenantViewSet):
         )
 
     def perform_destroy(self, instance):
-        """Favorites are hard-deleted (no soft delete)."""
+        """Intentional hard delete: ReportFavorite is a user-preference record
+        with no business audit requirement. The model deliberately omits
+        SoftDeleteMixin — see apps/reporting/models.py:450-454."""
         instance.delete()
 
 
@@ -380,16 +383,18 @@ class ConversationalView(BaseTenantAPIView):
             ConversationalAnalyticsService,
         )
 
-        org = self.require_organization()
-        message = request.data.get("message", "").strip()
-        session_id = request.data.get("session_id", None)
-
-        if not message:
-            return self.get_error_response(
-                code="EMPTY_MESSAGE",
-                message="Message cannot be empty",
-                status_code=status.HTTP_400_BAD_REQUEST,
+        class ConversationalQuerySerializer(drf_serializers.Serializer):
+            message = drf_serializers.CharField(
+                required=True, min_length=1, max_length=2000
             )
+            session_id = drf_serializers.UUIDField(required=False, allow_null=True)
+
+        serializer = ConversationalQuerySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        org = self.require_organization()
+        message = serializer.validated_data["message"].strip()
+        session_id = serializer.validated_data.get("session_id")
 
         service = ConversationalAnalyticsService()
 
@@ -552,7 +557,16 @@ class VoiceQueryView(BaseTenantAPIView):
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
-        language = request.data.get("language", "tr")
+        class VoiceQuerySerializer(drf_serializers.Serializer):
+            language = drf_serializers.ChoiceField(
+                choices=["tr", "en", "ar", "fa", "uk"],
+                default="tr",
+                required=False,
+            )
+
+        voice_serializer = VoiceQuerySerializer(data=request.data)
+        voice_serializer.is_valid(raise_exception=True)
+        language = voice_serializer.validated_data.get("language", "tr")
 
         try:
             audio_data = audio_file.read()
@@ -619,16 +633,29 @@ class AdvancedExportView(BaseTenantAPIView):
 
         org = self.require_organization()
 
-        execution_id = request.data.get("execution_id")
-        export_format = request.data.get("format", "white_label_pdf")
-        branding = request.data.get("branding", {})
-
-        if not execution_id:
-            return self.get_error_response(
-                code="MISSING_EXECUTION_ID",
-                message="execution_id is required",
-                status_code=status.HTTP_400_BAD_REQUEST,
+        class AdvancedExportSerializer(drf_serializers.Serializer):
+            execution_id = drf_serializers.UUIDField(required=True)
+            format = drf_serializers.ChoiceField(
+                choices=[
+                    "white_label_pdf",
+                    "branded_pdf",
+                    "excel",
+                    "csv",
+                    "json",
+                ],
+                default="white_label_pdf",
+                required=False,
             )
+            branding = drf_serializers.DictField(required=False, default=dict)
+
+        export_serializer = AdvancedExportSerializer(data=request.data)
+        export_serializer.is_valid(raise_exception=True)
+
+        execution_id = export_serializer.validated_data["execution_id"]
+        export_format = export_serializer.validated_data.get(
+            "format", "white_label_pdf"
+        )
+        branding = export_serializer.validated_data.get("branding", {})
 
         try:
             execution = ReportExecution.objects.get(

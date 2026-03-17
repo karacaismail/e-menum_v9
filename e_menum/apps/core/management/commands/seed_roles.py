@@ -385,32 +385,64 @@ class Command(BaseCommand):
             # Platform roles
             {
                 "name": "super_admin",
-                "display_name": "Super Administrator",
-                "description": "Full system access with all permissions. Can manage platform settings, all organizations, and system configuration.",
+                "display_name_tr": "Süper Yönetici",
+                "display_name_en": "Super Administrator",
+                "description_tr": "Tüm izinlere sahip tam sistem erişimi. Platform ayarlarını, tüm organizasyonları ve sistem yapılandırmasını yönetebilir.",
+                "description_en": "Full system access with all permissions. Can manage platform settings, all organizations, and system configuration.",
+                "display_name_ar": "المدير الأعلى",
+                "display_name_fa": "مدیر ارشد",
+                "display_name_uk": "Суперадміністратор",
+                "description_ar": "وصول كامل للنظام مع جميع الصلاحيات. يمكنه إدارة إعدادات المنصة وجميع المؤسسات وتكوين النظام.",
+                "description_fa": "دسترسی کامل به سیستم با تمام مجوزها. می‌تواند تنظیمات پلتفرم، تمام سازمان‌ها و پیکربندی سیستم را مدیریت کند.",
+                "description_uk": "Повний доступ до системи з усіма дозволами. Може керувати налаштуваннями платформи, усіма організаціями та конфігурацією системи.",
                 "scope": RoleScope.PLATFORM,
                 "is_system": True,
                 "organization": None,
             },
             {
                 "name": "admin",
-                "display_name": "Platform Administrator",
-                "description": "Customer, billing, and support management. Can manage organizations and handle billing operations.",
+                "display_name_tr": "Platform Yöneticisi",
+                "display_name_en": "Platform Administrator",
+                "description_tr": "Müşteri, fatura ve destek yönetimi. Organizasyonları yönetebilir ve fatura işlemlerini gerçekleştirebilir.",
+                "description_en": "Customer, billing, and support management. Can manage organizations and handle billing operations.",
+                "display_name_ar": "مدير المنصة",
+                "display_name_fa": "مدیر پلتفرم",
+                "display_name_uk": "Адміністратор платформи",
+                "description_ar": "إدارة العملاء والفوترة والدعم. يمكنه إدارة المؤسسات والتعامل مع عمليات الفوترة.",
+                "description_fa": "مدیریت مشتریان، صورتحساب و پشتیبانی. می‌تواند سازمان‌ها را مدیریت کرده و عملیات صورتحساب را انجام دهد.",
+                "description_uk": "Управління клієнтами, рахунками та підтримкою. Може керувати організаціями та обробляти платіжні операції.",
                 "scope": RoleScope.PLATFORM,
                 "is_system": True,
                 "organization": None,
             },
             {
                 "name": "sales",
-                "display_name": "Sales Representative",
-                "description": "CRM and lead management. Can manage leads, potential customers, and sales pipelines.",
+                "display_name_tr": "Satış Temsilcisi",
+                "display_name_en": "Sales Representative",
+                "description_tr": "CRM ve potansiyel müşteri yönetimi. Potansiyel müşterileri ve satış süreçlerini yönetebilir.",
+                "description_en": "CRM and lead management. Can manage leads, potential customers, and sales pipelines.",
+                "display_name_ar": "مندوب المبيعات",
+                "display_name_fa": "نماینده فروش",
+                "display_name_uk": "Торговий представник",
+                "description_ar": "إدارة علاقات العملاء والعملاء المحتملين. يمكنه إدارة العملاء المحتملين وعمليات المبيعات.",
+                "description_fa": "مدیریت ارتباط با مشتری و سرنخ‌ها. می‌تواند سرنخ‌ها، مشتریان بالقوه و فرآیندهای فروش را مدیریت کند.",
+                "description_uk": "CRM та управління потенційними клієнтами. Може керувати лідами, потенційними клієнтами та процесами продажів.",
                 "scope": RoleScope.PLATFORM,
                 "is_system": True,
                 "organization": None,
             },
             {
                 "name": "support",
-                "display_name": "Support Agent",
-                "description": "Support tickets only. Can view and manage customer support tickets.",
+                "display_name_tr": "Destek Uzmanı",
+                "display_name_en": "Support Agent",
+                "description_tr": "Sadece destek talepleri. Müşteri destek taleplerini görüntüleyebilir ve yönetebilir.",
+                "description_en": "Support tickets only. Can view and manage customer support tickets.",
+                "display_name_ar": "أخصائي الدعم",
+                "display_name_fa": "کارشناس پشتیبانی",
+                "display_name_uk": "Спеціаліст підтримки",
+                "description_ar": "تذاكر الدعم فقط. يمكنه عرض وإدارة تذاكر دعم العملاء.",
+                "description_fa": "فقط تیکت‌های پشتیبانی. می‌تواند تیکت‌های پشتیبانی مشتریان را مشاهده و مدیریت کند.",
+                "description_uk": "Лише тікети підтримки. Може переглядати та керувати тікетами підтримки клієнтів.",
                 "scope": RoleScope.PLATFORM,
                 "is_system": True,
                 "organization": None,
@@ -418,32 +450,64 @@ class Command(BaseCommand):
             # Organization roles
             {
                 "name": "owner",
-                "display_name": "Organization Owner",
-                "description": "Full organization access with billing. Complete control over the organization including subscription management.",
+                "display_name_tr": "İşletme Sahibi",
+                "display_name_en": "Organization Owner",
+                "description_tr": "Faturalandırma dahil tam organizasyon erişimi. Abonelik yönetimi dahil organizasyon üzerinde tam kontrol.",
+                "description_en": "Full organization access with billing. Complete control over the organization including subscription management.",
+                "display_name_ar": "مالك المنشأة",
+                "display_name_fa": "مالک کسب‌وکار",
+                "display_name_uk": "Власник бізнесу",
+                "description_ar": "وصول كامل للمؤسسة مع الفوترة. تحكم كامل بالمؤسسة بما في ذلك إدارة الاشتراكات.",
+                "description_fa": "دسترسی کامل به سازمان شامل صورتحساب. کنترل کامل بر سازمان از جمله مدیریت اشتراک.",
+                "description_uk": "Повний доступ до організації включно з білінгом. Повний контроль над організацією, включаючи управління підписками.",
                 "scope": RoleScope.ORGANIZATION,
                 "is_system": True,
                 "organization": None,
             },
             {
                 "name": "manager",
-                "display_name": "Manager",
-                "description": "Menu, order, and staff management. Can manage menus, handle orders, and manage team members.",
+                "display_name_tr": "Yönetici",
+                "display_name_en": "Manager",
+                "description_tr": "Menü, sipariş ve personel yönetimi. Menüleri yönetebilir, siparişleri takip edebilir ve ekip üyelerini yönetebilir.",
+                "description_en": "Menu, order, and staff management. Can manage menus, handle orders, and manage team members.",
+                "display_name_ar": "مدير",
+                "display_name_fa": "مدیر",
+                "display_name_uk": "Менеджер",
+                "description_ar": "إدارة القوائم والطلبات والموظفين. يمكنه إدارة القوائم ومعالجة الطلبات وإدارة أعضاء الفريق.",
+                "description_fa": "مدیریت منو، سفارشات و کارکنان. می‌تواند منوها را مدیریت کرده، سفارشات را پیگیری کرده و اعضای تیم را مدیریت کند.",
+                "description_uk": "Управління меню, замовленнями та персоналом. Може керувати меню, обробляти замовлення та керувати членами команди.",
                 "scope": RoleScope.ORGANIZATION,
                 "is_system": True,
                 "organization": None,
             },
             {
                 "name": "staff",
-                "display_name": "Staff",
-                "description": "Order taking and table management. Can take orders, manage tables, and handle service requests.",
+                "display_name_tr": "Personel",
+                "display_name_en": "Staff",
+                "description_tr": "Sipariş alma ve masa yönetimi. Sipariş alabilir, masaları yönetebilir ve servis taleplerini karşılayabilir.",
+                "description_en": "Order taking and table management. Can take orders, manage tables, and handle service requests.",
+                "display_name_ar": "موظف",
+                "display_name_fa": "کارمند",
+                "display_name_uk": "Персонал",
+                "description_ar": "أخذ الطلبات وإدارة الطاولات. يمكنه أخذ الطلبات وإدارة الطاولات والتعامل مع طلبات الخدمة.",
+                "description_fa": "دریافت سفارش و مدیریت میزها. می‌تواند سفارشات را دریافت کرده، میزها را مدیریت کرده و درخواست‌های خدمات را پیگیری کند.",
+                "description_uk": "Прийом замовлень та управління столиками. Може приймати замовлення, керувати столиками та обробляти запити на обслуговування.",
                 "scope": RoleScope.ORGANIZATION,
                 "is_system": True,
                 "organization": None,
             },
             {
                 "name": "viewer",
-                "display_name": "Viewer",
-                "description": "Read-only dashboard access. Can view menus, orders, and analytics but cannot make changes.",
+                "display_name_tr": "İzleyici",
+                "display_name_en": "Viewer",
+                "description_tr": "Salt okunur dashboard erişimi. Menüleri, siparişleri ve analizleri görüntüleyebilir ancak değişiklik yapamaz.",
+                "description_en": "Read-only dashboard access. Can view menus, orders, and analytics but cannot make changes.",
+                "display_name_ar": "مشاهد",
+                "display_name_fa": "مشاهده‌کننده",
+                "display_name_uk": "Спостерігач",
+                "description_ar": "وصول للوحة القيادة للقراءة فقط. يمكنه عرض القوائم والطلبات والتحليلات ولكن لا يمكنه إجراء تغييرات.",
+                "description_fa": "دسترسی فقط خواندنی به داشبورد. می‌تواند منوها، سفارشات و تحلیل‌ها را مشاهده کند اما نمی‌تواند تغییراتی اعمال کند.",
+                "description_uk": "Доступ лише для читання до панелі керування. Може переглядати меню, замовлення та аналітику, але не може вносити зміни.",
                 "scope": RoleScope.ORGANIZATION,
                 "is_system": True,
                 "organization": None,
@@ -466,15 +530,17 @@ class Command(BaseCommand):
                 for key, value in data.items():
                     setattr(role, key, value)
                 role.save()
-                self.stdout.write(f"  + Created role: {data['display_name']} ({name})")
+                self.stdout.write(
+                    f"  + Created role: {data['display_name_tr']} ({name})"
+                )
             else:
                 if force:
                     self.stdout.write(
-                        f"  ~ Updated role: {data['display_name']} ({name})"
+                        f"  ~ Updated role: {data['display_name_tr']} ({name})"
                     )
                 else:
                     self.stdout.write(
-                        f"  - Skipped role: {data['display_name']} ({name}) (already exists)"
+                        f"  - Skipped role: {data['display_name_tr']} ({name}) (already exists)"
                     )
 
             roles[name] = role

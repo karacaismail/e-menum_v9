@@ -15,7 +15,12 @@ import logging
 from django.db.models import Q
 from django.utils import timezone
 from django_filters import rest_framework as filters
-from rest_framework import generics, parsers, permissions
+from rest_framework import (
+    generics,
+    parsers,
+    permissions,
+    serializers as drf_serializers,
+)
 
 from apps.media.models import Media, MediaFolder
 from apps.media.serializers import (
@@ -248,9 +253,12 @@ class MediaUploadView(MediaCreateMixin, generics.CreateAPIView):
                 pass
 
         # Accept is_public from request data (defaults to False)
-        is_public = self.request.data.get("is_public", False)
-        if isinstance(is_public, str):
-            is_public = is_public.lower() in ("true", "1", "yes")
+        class IsPublicSerializer(drf_serializers.Serializer):
+            is_public = drf_serializers.BooleanField(default=False, required=False)
+
+        pub_serializer = IsPublicSerializer(data=self.request.data)
+        pub_serializer.is_valid(raise_exception=True)
+        is_public = pub_serializer.validated_data.get("is_public", False)
 
         # Resolve organization — request.organization or user's org fallback
         org = getattr(self.request, "organization", None)

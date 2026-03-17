@@ -6,6 +6,8 @@ Uses SQLite in-memory, disables unnecessary middleware, and uses
 fast password hashing.
 """
 
+import os
+
 from .base import *  # noqa: F401, F403
 
 # =============================================================================
@@ -17,15 +19,25 @@ SECRET_KEY = "django-insecure-test-key-only-for-ci-testing"
 ALLOWED_HOSTS = ["*"]
 
 # =============================================================================
-# DATABASE — SQLite in-memory for speed
+# DATABASE — PostgreSQL in CI (via DATABASE_URL), SQLite locally for speed
 # =============================================================================
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": ":memory:",
+if os.environ.get("DATABASE_URL"):
+    import dj_database_url
+
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=os.environ["DATABASE_URL"],
+            conn_max_age=0,
+        )
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": ":memory:",
+        }
+    }
 
 # =============================================================================
 # CACHING — Local memory

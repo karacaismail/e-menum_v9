@@ -20,6 +20,7 @@ from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TabbedTranslationAdmin
 
 from apps.orders.models import (
+    Discount,
     Order,
     OrderItem,
     QRCode,
@@ -1642,3 +1643,127 @@ class ServiceRequestAdmin(
         self.message_user(
             request, _("%(count)d request(s) have been cancelled.") % {"count": count}
         )
+
+
+# =============================================================================
+# Discount Admin
+# =============================================================================
+
+
+@admin.register(Discount)
+class DiscountAdmin(EMenumPermissionMixin, SoftDeleteAdminMixin, admin.ModelAdmin):
+    """
+    Admin interface for Discount management.
+
+    Provides management of order discounts including:
+    - Discount type tracking (percentage, fixed, loyalty, coupon, etc.)
+    - Order linkage
+    - Staff tracking (who applied)
+
+    Note: Soft-deleted discounts are hidden by default.
+    """
+
+    list_display = [
+        "discount_type_badge",
+        "organization",
+        "order",
+        "value",
+        "applied_amount_display",
+        "code",
+        "applied_by",
+        "created_at",
+    ]
+    list_filter = [
+        "discount_type",
+        "organization",
+        "created_at",
+    ]
+    search_fields = [
+        "code",
+        "reason",
+        "organization__name",
+        "order__order_number",
+        "applied_by__email",
+    ]
+    readonly_fields = [
+        "id",
+        "created_at",
+        "updated_at",
+        "deleted_at",
+    ]
+    ordering = ["-created_at"]
+    date_hierarchy = "created_at"
+    list_per_page = 25
+    autocomplete_fields = ["organization", "order", "applied_by"]
+
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": ("id", "organization", "order"),
+                "description": _("Discount identification"),
+            },
+        ),
+        (
+            _("Discount Details"),
+            {
+                "fields": (
+                    "discount_type",
+                    "value",
+                    "applied_amount",
+                    "code",
+                    "reason",
+                ),
+            },
+        ),
+        (
+            _("Staff"),
+            {
+                "fields": ("applied_by",),
+            },
+        ),
+        (
+            _("Timestamps"),
+            {
+                "fields": ("created_at", "updated_at", "deleted_at"),
+                "classes": ("collapse",),
+            },
+        ),
+    )
+
+    def discount_type_badge(self, obj):
+        """Display discount type with color-coded badge."""
+        colors = {
+            "PERCENTAGE": "#17a2b8",
+            "FIXED_AMOUNT": "#28a745",
+            "BUY_X_GET_Y": "#ffc107",
+            "LOYALTY": "#6f42c1",
+            "COUPON": "#fd7e14",
+            "STAFF": "#e83e8c",
+            "HAPPY_HOUR": "#20c997",
+        }
+        text_colors = {
+            "BUY_X_GET_Y": "#000",
+        }
+        color = colors.get(obj.discount_type, "#6c757d")
+        text_color = text_colors.get(obj.discount_type, "#fff")
+        return format_html(
+            '<span style="background-color: {}; color: {}; padding: 3px 10px; '
+            'border-radius: 3px; font-size: 11px; font-weight: bold;">{}</span>',
+            color,
+            text_color,
+            obj.get_discount_type_display(),
+        )
+
+    discount_type_badge.short_description = _("Type")
+    discount_type_badge.admin_order_field = "discount_type"
+
+    def applied_amount_display(self, obj):
+        """Display formatted applied amount."""
+        return format_html(
+            '<span style="font-weight: bold; color: #dc3545;">-₺{}</span>',
+            f"{obj.applied_amount:,.2f}",
+        )
+
+    applied_amount_display.short_description = _("Applied")
+    applied_amount_display.admin_order_field = "applied_amount"

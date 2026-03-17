@@ -82,6 +82,13 @@ if [ "$DJANGO_MIGRATE" = "true" ]; then
         python manage.py migrate --noinput
         echo "Migrations complete (standard fallback)."
     fi
+
+    # Sync modeltranslation default-language columns.
+    # After migrations add *_tr / *_en / … columns, existing rows may have
+    # the value only in the original field.  update_translation_fields copies
+    # that value into the default-language column so queries work correctly.
+    echo "Syncing translation fields..."
+    python manage.py update_translation_fields --language=tr 2>&1 || echo "update_translation_fields skipped."
 fi
 
 # ─── Create superuser if requested ──────────────────────────

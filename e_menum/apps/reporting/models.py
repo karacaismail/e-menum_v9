@@ -207,6 +207,20 @@ class ReportExecution(TimeStampedMixin, SoftDeleteMixin):
         help_text=_("Error message if execution failed"),
     )
 
+    # Progress tracking (AUDIT BULGU-15)
+    progress_percentage = models.PositiveSmallIntegerField(
+        default=0,
+        help_text=_(
+            "Execution progress 0-100. Updated periodically by the Celery task."
+        ),
+    )
+    progress_message = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        help_text=_("Human-readable progress status, e.g. 'Generating charts…'"),
+    )
+
     # Timing
     started_at = models.DateTimeField(
         null=True,

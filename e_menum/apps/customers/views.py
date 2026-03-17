@@ -76,7 +76,13 @@ class CustomerViewSet(BaseTenantViewSet):
 
     def get_queryset(self):
         """Return customers with optional filtering."""
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().select_related("organization")
+
+        # Prefetch related sets for detail views (avoids N+1)
+        if self.action in ("retrieve", "loyalty_history"):
+            queryset = queryset.prefetch_related(
+                "visits", "feedbacks", "loyalty_transactions", "preferences"
+            )
 
         # Search
         search = self.request.query_params.get("search")
@@ -188,7 +194,7 @@ class FeedbackViewSet(BaseTenantViewSet):
     def get_queryset(self):
         """Return feedback with optional filtering."""
         queryset = super().get_queryset()
-        queryset = queryset.select_related("customer")
+        queryset = queryset.select_related("customer", "organization")
 
         # Status filter
         status_filter = self.request.query_params.get("status")

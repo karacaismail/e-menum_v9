@@ -90,157 +90,225 @@ class Command(BaseCommand):
         allergens_data = [
             {
                 "code": "GLU",
-                "name": "Gluten",
+                "name_tr": "Gluten",
+                "name_en": "Gluten",
                 "slug": "gluten",
-                "description": (
-                    "Cereals containing gluten, namely: wheat (such as spelt and khorasan wheat), "
-                    "rye, barley, oats or their hybridised strains, and products thereof."
-                ),
+                "description_tr": "Gluten içeren tahıllar: buğday (spelt ve khorasan buğdayı dahil), çavdar, arpa, yulaf veya bunların melezleri ve ürünleri.",
+                "description_en": "Cereals containing gluten, namely: wheat (such as spelt and khorasan wheat), rye, barley, oats or their hybridised strains, and products thereof.",
+                "name_ar": "الغلوتين",
+                "name_fa": "گلوتن",
+                "name_uk": "Глютен",
+                "description_ar": "الحبوب المحتوية على الغلوتين: القمح والجاودار والشعير والشوفان أو سلالاتها المهجنة ومنتجاتها.",
+                "description_fa": "غلات حاوی گلوتن: گندم، چاودار، جو، جو دوسر یا گونه‌های هیبریدی و محصولات آنها.",
+                "description_uk": "Злаки, що містять глютен: пшениця, жито, ячмінь, овес або їх гібриди та продукти з них.",
                 "sort_order": 10,
                 "is_active": True,
             },
             {
                 "code": "CRU",
-                "name": "Crustaceans",
+                "name_tr": "Kabuklular",
+                "name_en": "Crustaceans",
                 "slug": "crustaceans",
-                "description": (
-                    "Crustaceans and products thereof, including shrimp, crab, lobster, "
-                    "crayfish, and prawns."
-                ),
+                "description_tr": "Kabuklular ve ürünleri: karides, yengeç, ıstakoz, kerevit ve karides türleri.",
+                "description_en": "Crustaceans and products thereof, including shrimp, crab, lobster, crayfish, and prawns.",
+                "name_ar": "القشريات",
+                "name_fa": "سخت‌پوستان",
+                "name_uk": "Ракоподібні",
+                "description_ar": "القشريات ومنتجاتها: الروبيان والسلطعون والكركند وجراد البحر.",
+                "description_fa": "سخت‌پوستان و محصولات آنها: میگو، خرچنگ، لابستر و شاه‌میگو.",
+                "description_uk": "Ракоподібні та продукти з них: креветки, краби, омари, раки.",
                 "sort_order": 20,
                 "is_active": True,
             },
             {
                 "code": "EGG",
-                "name": "Eggs",
+                "name_tr": "Yumurta",
+                "name_en": "Eggs",
                 "slug": "eggs",
-                "description": (
-                    "Eggs and products thereof, including whole eggs, egg whites, egg yolks, "
-                    "egg powder, and any preparations containing eggs."
-                ),
+                "description_tr": "Yumurta ve ürünleri: bütün yumurta, yumurta akı, yumurta sarısı, yumurta tozu ve yumurta içeren tüm hazır ürünler.",
+                "description_en": "Eggs and products thereof, including whole eggs, egg whites, egg yolks, egg powder, and any preparations containing eggs.",
+                "name_ar": "البيض",
+                "name_fa": "تخم‌مرغ",
+                "name_uk": "Яйця",
+                "description_ar": "البيض ومنتجاته: البيض الكامل وبياض البيض وصفار البيض ومسحوق البيض وجميع المنتجات المحتوية على البيض.",
+                "description_fa": "تخم‌مرغ و محصولات آن: تخم‌مرغ کامل، سفیده، زرده، پودر تخم‌مرغ و تمام فرآورده‌های حاوی تخم‌مرغ.",
+                "description_uk": "Яйця та продукти з них: цілі яйця, білки, жовтки, яєчний порошок та будь-які вироби з яєць.",
                 "sort_order": 30,
                 "is_active": True,
             },
             {
                 "code": "FSH",
-                "name": "Fish",
+                "name_tr": "Balık",
+                "name_en": "Fish",
                 "slug": "fish",
-                "description": (
-                    "Fish and products thereof, including all fish species, fish sauce, "
-                    "fish oil, and products containing fish-derived ingredients."
-                ),
+                "description_tr": "Balık ve ürünleri: tüm balık türleri, balık sosu, balık yağı ve balık türevi içerenler.",
+                "description_en": "Fish and products thereof, including all fish species, fish sauce, fish oil, and products containing fish-derived ingredients.",
+                "name_ar": "الأسماك",
+                "name_fa": "ماهی",
+                "name_uk": "Риба",
+                "description_ar": "الأسماك ومنتجاتها: جميع أنواع الأسماك وصلصة السمك وزيت السمك والمنتجات المحتوية على مشتقات الأسماك.",
+                "description_fa": "ماهی و محصولات آن: تمام گونه‌های ماهی، سس ماهی، روغن ماهی و محصولات حاوی مشتقات ماهی.",
+                "description_uk": "Риба та продукти з неї: усі види риби, рибний соус, рибний жир та продукти з рибних інгредієнтів.",
                 "sort_order": 40,
                 "is_active": True,
             },
             {
                 "code": "PNT",
-                "name": "Peanuts",
+                "name_tr": "Yer Fıstığı",
+                "name_en": "Peanuts",
                 "slug": "peanuts",
-                "description": (
-                    "Peanuts and products thereof, including peanut butter, peanut oil, "
-                    "and products containing peanut-derived ingredients."
-                ),
+                "description_tr": "Yer fıstığı ve ürünleri: fıstık ezmesi, fıstık yağı ve yer fıstığı türevi içerenler.",
+                "description_en": "Peanuts and products thereof, including peanut butter, peanut oil, and products containing peanut-derived ingredients.",
+                "name_ar": "الفول السوداني",
+                "name_fa": "بادام‌زمینی",
+                "name_uk": "Арахіс",
+                "description_ar": "الفول السوداني ومنتجاته: زبدة الفول السوداني وزيت الفول السوداني والمنتجات المحتوية على مشتقاته.",
+                "description_fa": "بادام‌زمینی و محصولات آن: کره بادام‌زمینی، روغن بادام‌زمینی و محصولات حاوی مشتقات آن.",
+                "description_uk": "Арахіс та продукти з нього: арахісова паста, арахісова олія та продукти з арахісових інгредієнтів.",
                 "sort_order": 50,
                 "is_active": True,
             },
             {
                 "code": "SOY",
-                "name": "Soy",
+                "name_tr": "Soya",
+                "name_en": "Soy",
                 "slug": "soy",
-                "description": (
-                    "Soybeans and products thereof, including soy sauce, tofu, soy milk, "
-                    "soy lecithin, and products containing soy-derived ingredients."
-                ),
+                "description_tr": "Soya fasulyesi ve ürünleri: soya sosu, tofu, soya sütü, soya lesitini ve soya türevi içerenler.",
+                "description_en": "Soybeans and products thereof, including soy sauce, tofu, soy milk, soy lecithin, and products containing soy-derived ingredients.",
+                "name_ar": "الصويا",
+                "name_fa": "سویا",
+                "name_uk": "Соя",
+                "description_ar": "فول الصويا ومنتجاته: صلصة الصويا والتوفو وحليب الصويا وليسيثين الصويا.",
+                "description_fa": "سویا و محصولات آن: سس سویا، توفو، شیر سویا، لسیتین سویا و محصولات حاوی مشتقات سویا.",
+                "description_uk": "Соєві боби та продукти з них: соєвий соус, тофу, соєве молоко, соєвий лецитин.",
                 "sort_order": 60,
                 "is_active": True,
             },
             {
                 "code": "MLK",
-                "name": "Milk",
+                "name_tr": "Süt",
+                "name_en": "Milk",
                 "slug": "milk",
-                "description": (
-                    "Milk and products thereof, including lactose, butter, cheese, cream, "
-                    "yogurt, and any preparations containing milk proteins."
-                ),
+                "description_tr": "Süt ve ürünleri: laktoz, tereyağı, peynir, krema, yoğurt ve süt proteini içeren tüm ürünler.",
+                "description_en": "Milk and products thereof, including lactose, butter, cheese, cream, yogurt, and any preparations containing milk proteins.",
+                "name_ar": "الحليب",
+                "name_fa": "شیر",
+                "name_uk": "Молоко",
+                "description_ar": "الحليب ومنتجاته: اللاكتوز والزبدة والجبن والقشدة والزبادي وجميع المنتجات المحتوية على بروتينات الحليب.",
+                "description_fa": "شیر و محصولات آن: لاکتوز، کره، پنیر، خامه، ماست و تمام فرآورده‌های حاوی پروتئین شیر.",
+                "description_uk": "Молоко та продукти з нього: лактоза, масло, сир, вершки, йогурт та будь-які вироби з молочних білків.",
                 "sort_order": 70,
                 "is_active": True,
             },
             {
                 "code": "NUT",
-                "name": "Tree Nuts",
+                "name_tr": "Sert Kabuklu Meyveler",
+                "name_en": "Tree Nuts",
                 "slug": "tree-nuts",
-                "description": (
-                    "Tree nuts: almonds, hazelnuts, walnuts, cashews, pecans, Brazil nuts, "
-                    "pistachios, macadamia nuts, and products thereof."
-                ),
+                "description_tr": "Sert kabuklu meyveler: badem, fındık, ceviz, kaju, pekan, brezilya fıstığı, antep fıstığı, makadamya ve ürünleri.",
+                "description_en": "Tree nuts: almonds, hazelnuts, walnuts, cashews, pecans, Brazil nuts, pistachios, macadamia nuts, and products thereof.",
+                "name_ar": "المكسرات",
+                "name_fa": "آجیل درختی",
+                "name_uk": "Горіхи",
+                "description_ar": "المكسرات: اللوز والبندق والجوز والكاجو والفستق والمكاديميا وجوز البقان وجوز البرازيل ومنتجاتها.",
+                "description_fa": "آجیل درختی: بادام، فندق، گردو، بادام هندی، پسته، ماکادمیا، پکان، بادام برزیلی و محصولات آنها.",
+                "description_uk": "Горіхи: мигдаль, фундук, волоські горіхи, кешʼю, фісташки, макадамія, пекан, бразильські горіхи та продукти з них.",
                 "sort_order": 80,
                 "is_active": True,
             },
             {
                 "code": "CEL",
-                "name": "Celery",
+                "name_tr": "Kereviz",
+                "name_en": "Celery",
                 "slug": "celery",
-                "description": (
-                    "Celery and products thereof, including celery stalks, leaves, seeds, "
-                    "celeriac (celery root), and celery salt."
-                ),
+                "description_tr": "Kereviz ve ürünleri: kereviz sapı, yaprakları, tohumları, kök kereviz ve kereviz tuzu.",
+                "description_en": "Celery and products thereof, including celery stalks, leaves, seeds, celeriac (celery root), and celery salt.",
+                "name_ar": "الكرفس",
+                "name_fa": "کرفس",
+                "name_uk": "Селера",
+                "description_ar": "الكرفس ومنتجاته: سيقان الكرفس وأوراقه وبذوره وجذر الكرفس وملح الكرفس.",
+                "description_fa": "کرفس و محصولات آن: ساقه، برگ، دانه، ریشه کرفس و نمک کرفس.",
+                "description_uk": "Селера та продукти з неї: стебла, листя, насіння, коренева селера та сіль із селери.",
                 "sort_order": 90,
                 "is_active": True,
             },
             {
                 "code": "MUS",
-                "name": "Mustard",
+                "name_tr": "Hardal",
+                "name_en": "Mustard",
                 "slug": "mustard",
-                "description": (
-                    "Mustard and products thereof, including mustard seeds, mustard powder, "
-                    "prepared mustard, and mustard oil."
-                ),
+                "description_tr": "Hardal ve ürünleri: hardal tohumu, hardal tozu, hazır hardal ve hardal yağı.",
+                "description_en": "Mustard and products thereof, including mustard seeds, mustard powder, prepared mustard, and mustard oil.",
+                "name_ar": "الخردل",
+                "name_fa": "خردل",
+                "name_uk": "Гірчиця",
+                "description_ar": "الخردل ومنتجاته: بذور الخردل ومسحوق الخردل والخردل الجاهز وزيت الخردل.",
+                "description_fa": "خردل و محصولات آن: دانه خردل، پودر خردل، خردل آماده و روغن خردل.",
+                "description_uk": "Гірчиця та продукти з неї: насіння гірчиці, гірчичний порошок, готова гірчиця та гірчична олія.",
                 "sort_order": 100,
                 "is_active": True,
             },
             {
                 "code": "SES",
-                "name": "Sesame",
+                "name_tr": "Susam",
+                "name_en": "Sesame",
                 "slug": "sesame",
-                "description": (
-                    "Sesame seeds and products thereof, including sesame oil, tahini, "
-                    "halva, and products containing sesame-derived ingredients."
-                ),
+                "description_tr": "Susam tohumu ve ürünleri: susam yağı, tahin, helva ve susam türevi içerenler.",
+                "description_en": "Sesame seeds and products thereof, including sesame oil, tahini, halva, and products containing sesame-derived ingredients.",
+                "name_ar": "السمسم",
+                "name_fa": "کنجد",
+                "name_uk": "Кунжут",
+                "description_ar": "بذور السمسم ومنتجاتها: زيت السمسم والطحينة والحلاوة والمنتجات المحتوية على مشتقات السمسم.",
+                "description_fa": "دانه کنجد و محصولات آن: روغن کنجد، ارده، حلوا و محصولات حاوی مشتقات کنجد.",
+                "description_uk": "Насіння кунжуту та продукти з нього: кунжутна олія, тахіні, халва та продукти з кунжутних інгредієнтів.",
                 "sort_order": 110,
                 "is_active": True,
             },
             {
                 "code": "SUL",
-                "name": "Sulphites",
+                "name_tr": "Sülfitler",
+                "name_en": "Sulphites",
                 "slug": "sulphites",
-                "description": (
-                    "Sulphur dioxide and sulphites at concentrations of more than "
-                    "10 mg/kg or 10 mg/litre expressed as SO2. Common in wine, dried fruits, "
-                    "and processed foods."
-                ),
+                "description_tr": "Kükürt dioksit ve sülfitler (10 mg/kg veya 10 mg/litre üzeri SO2). Şarap, kurutulmuş meyveler ve işlenmiş gıdalarda yaygın.",
+                "description_en": "Sulphur dioxide and sulphites at concentrations of more than 10 mg/kg or 10 mg/litre expressed as SO2. Common in wine, dried fruits, and processed foods.",
+                "name_ar": "الكبريتات",
+                "name_fa": "سولفیت‌ها",
+                "name_uk": "Сульфіти",
+                "description_ar": "ثاني أكسيد الكبريت والكبريتات بتركيز أكثر من 10 مغ/كغ أو 10 مغ/لتر. شائعة في النبيذ والفواكه المجففة والأطعمة المصنعة.",
+                "description_fa": "دی‌اکسید گوگرد و سولفیت‌ها با غلظت بیش از ۱۰ میلی‌گرم بر کیلوگرم یا ۱۰ میلی‌گرم بر لیتر. رایج در شراب، میوه‌های خشک و غذاهای فرآوری شده.",
+                "description_uk": "Діоксид сірки та сульфіти в концентрації понад 10 мг/кг або 10 мг/л. Поширені у вині, сухофруктах та оброблених продуктах.",
                 "sort_order": 120,
                 "is_active": True,
             },
             {
                 "code": "LUP",
-                "name": "Lupin",
+                "name_tr": "Acı Bakla",
+                "name_en": "Lupin",
                 "slug": "lupin",
-                "description": (
-                    "Lupin and products thereof, including lupin seeds, lupin flour, "
-                    "and products containing lupin-derived ingredients. Often found in "
-                    "gluten-free alternatives."
-                ),
+                "description_tr": "Acı bakla ve ürünleri: acı bakla tohumu, acı bakla unu ve türevi içerenler. Glutensiz alternatiflerde sıkça bulunur.",
+                "description_en": "Lupin and products thereof, including lupin seeds, lupin flour, and products containing lupin-derived ingredients. Often found in gluten-free alternatives.",
+                "name_ar": "الترمس",
+                "name_fa": "لوبیای لوپین",
+                "name_uk": "Люпин",
+                "description_ar": "الترمس ومنتجاته: بذور الترمس ودقيق الترمس. يوجد غالباً في البدائل الخالية من الغلوتين.",
+                "description_fa": "لوپین و محصولات آن: دانه و آرد لوپین. اغلب در جایگزین‌های بدون گلوتن یافت می‌شود.",
+                "description_uk": "Люпин та продукти з нього: насіння та борошно люпину. Часто зустрічається у безглютенових альтернативах.",
                 "sort_order": 130,
                 "is_active": True,
             },
             {
                 "code": "MOL",
-                "name": "Molluscs",
+                "name_tr": "Yumuşakçalar",
+                "name_en": "Molluscs",
                 "slug": "molluscs",
-                "description": (
-                    "Molluscs and products thereof, including oysters, mussels, clams, "
-                    "scallops, squid, octopus, and snails."
-                ),
+                "description_tr": "Yumuşakçalar ve ürünleri: istiridye, midye, tarak, kalamar, ahtapot ve salyangoz.",
+                "description_en": "Molluscs and products thereof, including oysters, mussels, clams, scallops, squid, octopus, and snails.",
+                "name_ar": "الرخويات",
+                "name_fa": "نرم‌تنان",
+                "name_uk": "Молюски",
+                "description_ar": "الرخويات ومنتجاتها: المحار وبلح البحر والأسقلوب والحبار والأخطبوط والحلزون.",
+                "description_fa": "نرم‌تنان و محصولات آنها: صدف، میگوی دریایی، اسکالوپ، ماهی مرکب، اختاپوس و حلزون.",
+                "description_uk": "Молюски та продукти з них: устриці, мідії, гребінці, кальмари, восьминоги та равлики.",
                 "sort_order": 140,
                 "is_active": True,
             },
@@ -263,7 +331,7 @@ class Command(BaseCommand):
                 )
                 action = "+" if created else "-"
 
-            self.stdout.write(f"  {action} Allergen: {data['name']} ({code})")
+            self.stdout.write(f"  {action} Allergen: {data['name_tr']} ({code})")
             created_allergens[code] = allergen
 
         return created_allergens

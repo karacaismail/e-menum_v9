@@ -43,12 +43,14 @@ from apps.orders.models import (
     Order,
     OrderItem,
     ServiceRequest,
+    Discount,
 )
 from apps.orders.choices import (
     TableStatus,
     QRCodeType,
     OrderStatus,
     OrderType,
+    DiscountType,
 )
 from shared.serializers.base import (
     TenantModelSerializer,
@@ -1332,6 +1334,254 @@ class ServiceRequestUpdateSerializer(TenantModelSerializer):
 
 
 # =============================================================================
+# DISCOUNT SERIALIZERS
+# =============================================================================
+
+
+class DiscountMinimalSerializer(MinimalSerializer):
+    """Minimal discount serializer for nested representations."""
+
+    class Meta:
+        model = Discount
+        fields = ["id", "discount_type", "value", "applied_amount", "code"]
+
+
+class DiscountListSerializer(TenantModelSerializer):
+    """Serializer for discount list view."""
+
+    order_number = serializers.SerializerMethodField(
+        help_text=_("Order number the discount was applied to")
+    )
+    applied_by_name = serializers.SerializerMethodField(
+        help_text=_("Staff member who applied the discount")
+    )
+
+    class Meta:
+        model = Discount
+        fields = [
+            "id",
+            "discount_type",
+            "value",
+            "applied_amount",
+            "code",
+            "reason",
+            "order",
+            "order_number",
+            "applied_by",
+            "applied_by_name",
+            "organization_id",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = [
+            "organization_id",
+            "created_at",
+            "updated_at",
+            "order_number",
+            "applied_by_name",
+        ]
+
+    def get_order_number(self, obj) -> Optional[str]:
+        """Get the order number if linked."""
+        return obj.order.order_number if obj.order else None
+
+    def get_applied_by_name(self, obj) -> Optional[str]:
+        """Get the name of the staff member who applied the discount."""
+        if obj.applied_by:
+            return obj.applied_by.get_full_name() or obj.applied_by.email
+        return None
+
+
+class DiscountDetailSerializer(TenantModelSerializer):
+    """Serializer for discount detail view."""
+
+    order = OrderMinimalSerializer(read_only=True)
+    applied_by_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Discount
+        fields = [
+            "id",
+            "discount_type",
+            "value",
+            "applied_amount",
+            "code",
+            "reason",
+            "order",
+            "applied_by",
+            "applied_by_name",
+            "organization_id",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = [
+            "organization_id",
+            "created_at",
+            "updated_at",
+            "applied_by_name",
+        ]
+
+    def get_applied_by_name(self, obj) -> Optional[str]:
+        if obj.applied_by:
+            return obj.applied_by.get_full_name() or obj.applied_by.email
+        return None
+
+
+class DiscountCreateSerializer(TenantModelSerializer):
+    """Serializer for creating a new discount."""
+
+    order_id = serializers.UUIDField(
+        required=False,
+        allow_null=True,
+        help_text=_("Order UUID to apply this discount to"),
+    )
+
+    class Meta:
+        model = Discount
+        fields = [
+            "discount_type",
+            "value",
+            "applied_amount",
+            "code",
+            "reason",
+            "order_id",
+        ]
+
+    def validate_value(self, value):
+        """Validate discount value is positive."""
+        if value <= 0:
+            raise ValidationError(_("Discount value must be positive."))
+        return value
+
+    def validate_applied_amount(self, value):
+        """Validate applied amount is non-negative."""
+        if value < 0:
+            raise ValidationError(_("Applied amount cannot be negative."))
+        return value
+
+    def validate_order_id(self, value):
+        """Validate order belongs to the same organization."""
+        if value is None:
+            return None
+
+        request = self.context.get("request")
+        organization = getattr(request, "organization", None) if request else None
+
+        if organization:
+            try:
+                order = Order.objects.get(
+                    id=value, organization=organization, deleted_at__isnull=True
+                )
+                return order
+            except Order.DoesNotExist:
+                raise ValidationError(_("Order not found."))
+
+        return value
+
+    def validate(self, attrs):
+        """Validate percentage discounts don't exceed 100%."""
+        attrs = super().validate(attrs)
+
+        discount_type = attrs.get("discount_type")
+        value = attrs.get("value")
+
+        if discount_type == DiscountType.PERCENTAGE and value > 100:
+            raise ValidationError(
+                {"value": _("Percentage discount cannot exceed 100%.")}
+            )
+
+        return attrs
+
+    def create(self, validated_data):
+        """Create discount with order handling and applied_by tracking."""
+        order = validated_data.pop("order_id", None)
+        if order:
+            validated_data["order"] = order
+
+        # Track who applied the discount
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            validated_data["applied_by"] = request.user
+
+        return super().create(validated_data)
+
+
+class DiscountUpdateSerializer(TenantModelSerializer):
+    """Serializer for updating an existing discount."""
+
+    order_id = serializers.UUIDField(
+        required=False,
+        allow_null=True,
+        help_text=_("Order UUID to apply this discount to"),
+    )
+
+    class Meta:
+        model = Discount
+        fields = [
+            "discount_type",
+            "value",
+            "applied_amount",
+            "code",
+            "reason",
+            "order_id",
+        ]
+
+    def validate_value(self, value):
+        """Validate discount value is positive."""
+        if value <= 0:
+            raise ValidationError(_("Discount value must be positive."))
+        return value
+
+    def validate_applied_amount(self, value):
+        """Validate applied amount is non-negative."""
+        if value < 0:
+            raise ValidationError(_("Applied amount cannot be negative."))
+        return value
+
+    def validate_order_id(self, value):
+        """Validate order belongs to the same organization."""
+        if value is None:
+            return None
+
+        request = self.context.get("request")
+        organization = getattr(request, "organization", None) if request else None
+
+        if organization:
+            try:
+                order = Order.objects.get(
+                    id=value, organization=organization, deleted_at__isnull=True
+                )
+                return order
+            except Order.DoesNotExist:
+                raise ValidationError(_("Order not found."))
+
+        return value
+
+    def validate(self, attrs):
+        """Validate percentage discounts don't exceed 100%."""
+        attrs = super().validate(attrs)
+
+        discount_type = attrs.get(
+            "discount_type", getattr(self.instance, "discount_type", None)
+        )
+        value = attrs.get("value", getattr(self.instance, "value", 0))
+
+        if discount_type == DiscountType.PERCENTAGE and value > 100:
+            raise ValidationError(
+                {"value": _("Percentage discount cannot exceed 100%.")}
+            )
+
+        return attrs
+
+    def update(self, instance, validated_data):
+        """Update discount with order handling."""
+        order = validated_data.pop("order_id", None)
+        if order is not None:
+            validated_data["order"] = order
+        return super().update(instance, validated_data)
+
+
+# =============================================================================
 # EXPORTS
 # =============================================================================
 
@@ -1370,4 +1620,10 @@ __all__ = [
     "ServiceRequestDetailSerializer",
     "ServiceRequestCreateSerializer",
     "ServiceRequestUpdateSerializer",
+    # Discount serializers
+    "DiscountMinimalSerializer",
+    "DiscountListSerializer",
+    "DiscountDetailSerializer",
+    "DiscountCreateSerializer",
+    "DiscountUpdateSerializer",
 ]

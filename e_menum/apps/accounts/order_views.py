@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST
 
 logger = logging.getLogger(__name__)
@@ -229,22 +230,31 @@ def _get_transitions(current_status):
     """Get available status transitions for an order."""
     transitions_map = {
         "PENDING": [
-            ("confirm", "Onayla", "ph-check-circle", "bg-blue-600 hover:bg-blue-700"),
-            ("cancel", "Iptal", "ph-x-circle", "bg-red-600 hover:bg-red-700"),
+            (
+                "confirm",
+                _("Onayla"),
+                "ph-check-circle",
+                "bg-blue-600 hover:bg-blue-700",
+            ),
+            ("cancel", _("Iptal"), "ph-x-circle", "bg-red-600 hover:bg-red-700"),
         ],
         "CONFIRMED": [
             (
                 "prepare",
-                "Hazirlaniyor",
+                _("Hazirlaniyor"),
                 "ph-cooking-pot",
                 "bg-purple-600 hover:bg-purple-700",
             ),
-            ("cancel", "Iptal", "ph-x-circle", "bg-red-600 hover:bg-red-700"),
+            ("cancel", _("Iptal"), "ph-x-circle", "bg-red-600 hover:bg-red-700"),
         ],
-        "PREPARING": [("ready", "Hazir", "ph-bell", "bg-cyan-600 hover:bg-cyan-700")],
-        "READY": [("deliver", "Teslim", "ph-package", "bg-teal-600 hover:bg-teal-700")],
+        "PREPARING": [
+            ("ready", _("Hazir"), "ph-bell", "bg-cyan-600 hover:bg-cyan-700")
+        ],
+        "READY": [
+            ("deliver", _("Teslim"), "ph-package", "bg-teal-600 hover:bg-teal-700")
+        ],
         "DELIVERED": [
-            ("complete", "Tamamla", "ph-check", "bg-green-600 hover:bg-green-700")
+            ("complete", _("Tamamla"), "ph-check", "bg-green-600 hover:bg-green-700")
         ],
     }
     return transitions_map.get(current_status, [])

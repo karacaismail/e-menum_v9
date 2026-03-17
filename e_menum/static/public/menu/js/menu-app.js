@@ -190,7 +190,7 @@ function menuApp() {
 
         getResultsTitle() {
             const t = window.__i18n || {};
-            if (this.searchQuery) return `"${this.searchQuery}" icin sonuclar`;
+            if (this.searchQuery) return `"${this.searchQuery}" ${t.search_results_for || 'icin sonuclar'}`;
             if (this.showFavoritesOnly) return t.my_favorites || 'Favorilerim';
             if (this.activeCategory !== 'all') {
                 const cat = this.categories.find(c => c.id === this.activeCategory);

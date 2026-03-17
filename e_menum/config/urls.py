@@ -513,8 +513,13 @@ api_v1_patterns = [
     # campaigns/, coupons/, referrals/
     path("", include(("apps.campaigns.urls", "campaigns"), namespace="campaigns")),
     # -------------------------------------------------------------------------
-    # Analytics Module (STUB - not yet implemented)
+    # Analytics Module
     # -------------------------------------------------------------------------
+    # MVP-FUTURE: Analytics API endpoints are implemented (DashboardMetricListView,
+    # SalesAggregationListView, ProductPerformanceListView, CustomerMetricListView)
+    # but disabled until the analytics-module is formally activated post-MVP.
+    # Celery tasks aggregate data; enable this route to expose via API.
+    # See CONSTRAINTS.md and AUDIT_REPORT.md BULGU-3.
     # path('', include(('apps.analytics.urls', 'analytics'), namespace='analytics')),
     # -------------------------------------------------------------------------
     # AI Module

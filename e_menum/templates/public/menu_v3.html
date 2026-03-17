@@ -84,7 +84,7 @@
                 <div class="logo-icon"><i class="ph-fill ph-chef-hat"></i></div>
                 <div class="logo-text">
                     <h1>{{ organization.name }}</h1>
-                    <span>{{ menu.description|default:"Dijital Menu" }}</span>
+                    {% trans "Dijital Menü" as default_menu_desc %}<span>{{ menu.description|default:default_menu_desc }}</span>
                 </div>
             </a>
 
@@ -266,7 +266,7 @@
                                         <i :class="i <= Math.floor(rating) ? 'ph-fill ph-star' : (i - 0.5 <= rating ? 'ph-fill ph-star-half' : 'ph ph-star empty')"></i>
                                     </template>
                                 </div>
-                                <span class="rating-label" x-text="rating + ' ve uzeri'"></span>
+                                <span class="rating-label" x-text="rating + ' ' + ((window.__i18n || {}).and_above || 've uzeri')"></span>
                             </button>
                         </template>
                     </div>
@@ -334,7 +334,7 @@
             <div class="results-header">
                 <div class="results-info">
                     <h2 x-text="getResultsTitle()"></h2>
-                    <p><span x-text="getTotalFilteredCount()"></span> urun bulundu</p>
+                    <p><span x-text="getTotalFilteredCount()"></span> <span x-text="(window.__i18n || {}).product_count || 'urun bulundu'"></span></p>
                 </div>
                 <div class="view-options">
                     <label class="toggle-label">
@@ -360,7 +360,7 @@
                             <h2 x-text="cat.name"></h2>
                             <p x-text="cat.description"></p>
                         </div>
-                        <div class="section-count"><strong x-text="getFilteredProducts(cat.id).length"></strong> urun</div>
+                        <div class="section-count"><strong x-text="getFilteredProducts(cat.id).length"></strong> <span x-text="(window.__i18n || {}).product_unit || 'urun'"></span></div>
                     </div>
                     <div class="products-grid" :style="'--columns: ' + gridColumns">
                         <template x-for="(product, index) in getFilteredProducts(cat.id)" :key="product.id">
@@ -394,8 +394,8 @@
                                     </div>
                                     <p class="card-description" x-text="product.description"></p>
                                     <div class="card-meta">
-                                        <span><i class="ph ph-timer"></i> <span x-text="product.prepTime + ' dk'"></span></span>
-                                        <span><i class="ph ph-fire"></i> <span x-text="product.calories + ' kcal'"></span></span>
+                                        <span><i class="ph ph-timer"></i> <span x-text="product.prepTime + ' ' + ((window.__i18n || {}).minutes_short || 'dk')"></span></span>
+                                        <span><i class="ph ph-fire"></i> <span x-text="product.calories + ' ' + ((window.__i18n || {}).kcal || 'kcal')"></span></span>
                                     </div>
                                     <div class="card-footer">
                                         <div class="card-price">
@@ -458,7 +458,7 @@
                         <div class="modal-rating">
                             <i class="ph-fill ph-star"></i>
                             <span x-text="selectedProduct?.rating"></span>
-                            <span class="reviews" x-text="'(' + selectedProduct?.reviews + ' degerlendirme)'"></span>
+                            <span class="reviews" x-text="'(' + selectedProduct?.reviews + ' ' + ((window.__i18n || {}).reviews_suffix || 'degerlendirme') + ')'"></span>
                         </div>
                     </div>
                     <div class="modal-price">
@@ -471,7 +471,7 @@
                 <div class="modal-info-cards">
                     <div class="info-card">
                         <i class="ph ph-timer"></i>
-                        <span x-text="selectedProduct?.prepTime + ' dk'"></span>
+                        <span x-text="selectedProduct?.prepTime + ' ' + ((window.__i18n || {}).minutes_short || 'dk')"></span>
                         <small>{% trans "Hazirlik" %}</small>
                     </div>
                     <div class="info-card">
@@ -496,7 +496,7 @@
                         <template x-for="size in selectedProduct?.sizes" :key="size.name">
                             <button class="size-option" :class="{ 'selected': modalOptions.size === size.name }" @click="modalOptions.size = size.name">
                                 <span class="size-name" x-text="size.name"></span>
-                                <span class="size-price" x-text="size.price > 0 ? '+' + formatPrice(size.price) : 'Standart'"></span>
+                                <span class="size-price" x-text="size.price > 0 ? '+' + formatPrice(size.price) : ((window.__i18n || {}).standard || 'Standart')"></span>
                             </button>
                         </template>
                     </div>
@@ -566,7 +566,7 @@
             <div class="cart-title">
                 <i class="ph-fill ph-shopping-bag"></i>
                 <h3>{% trans "Sepetim" %}</h3>
-                <span class="item-count" x-text="cartItemCount + ' urun'"></span>
+                <span class="item-count" x-text="cartItemCount + ' ' + ((window.__i18n || {}).product_unit || 'urun')"></span>
             </div>
             <button class="cart-close" @click="cartOpen = false"><i class="ph ph-x"></i></button>
         </div>
@@ -716,6 +716,7 @@
             removed_from_favorites: "{% trans 'Favorilerden kaldirildi' %}",
             added_to_cart: "{% trans 'sepete eklendi!' %}",
             removed_from_cart: "{% trans 'sepetten kaldirildi' %}",
+            search_results_for: "{% trans 'için sonuçlar' %}",
         };
     </script>
     <script src="{% static 'public/menu/js/menu-app.js' %}"></script>

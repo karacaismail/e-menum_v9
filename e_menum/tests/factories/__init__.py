@@ -80,6 +80,41 @@ from tests.factories.core import (
     UpdateAuditLogFactory,
 )
 
+# Menu module factories
+from tests.factories.menu import (
+    MenuFactory,
+    CategoryFactory,
+    ProductFactory,
+)
+
+# Orders module factories
+from tests.factories.orders import (
+    ZoneFactory,
+    TableFactory,
+    QRCodeFactory,
+    OrderFactory,
+    OrderItemFactory,
+    ServiceRequestFactory,
+)
+
+# Subscriptions module factories
+from tests.factories.subscriptions import (
+    PlanFactory,
+    SubscriptionFactory,
+    FeatureFactory,
+)
+
+# Customers module factories
+from tests.factories.customers import (
+    CustomerFactory,
+    FeedbackFactory,
+)
+
+# Notifications module factories
+from tests.factories.notifications import (
+    NotificationFactory,
+)
+
 __all__ = [
     # Organization
     "OrganizationFactory",
@@ -113,4 +148,24 @@ __all__ = [
     "SystemAuditLogFactory",
     "LoginAuditLogFactory",
     "UpdateAuditLogFactory",
+    # Menu
+    "MenuFactory",
+    "CategoryFactory",
+    "ProductFactory",
+    # Orders
+    "ZoneFactory",
+    "TableFactory",
+    "QRCodeFactory",
+    "OrderFactory",
+    "OrderItemFactory",
+    "ServiceRequestFactory",
+    # Subscriptions
+    "PlanFactory",
+    "SubscriptionFactory",
+    "FeatureFactory",
+    # Customers
+    "CustomerFactory",
+    "FeedbackFactory",
+    # Notifications
+    "NotificationFactory",
 ]

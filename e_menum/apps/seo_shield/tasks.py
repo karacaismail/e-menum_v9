@@ -93,13 +93,14 @@ def decay_risk_scores(self, decay_factor: float = 0.9):
     soft_time_limit=300,
     time_limit=600,
 )
-def cleanup_block_logs(self, retention_days: int = 30):
+def cleanup_block_logs(self, retention_days: int = 90):
     """
     Delete BlockLog entries older than the retention period.
 
     Block logs are append-only audit records. To prevent unbounded
     storage growth, this task permanently deletes entries older than
-    the configured retention period (default 30 days).
+    the configured retention period (default 90 days).
+    (AUDIT BULGU-39: retention extended from 30 to 90 days)
 
     Args:
         retention_days: Number of days to retain logs (default 30).

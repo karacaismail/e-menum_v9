@@ -32,6 +32,7 @@ import logging
 from django.db import models
 from django.db.models import Prefetch
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers as drf_serializers
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAdminUser
@@ -729,7 +730,15 @@ class InvoiceViewSet(BaseTenantViewSet):
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
-        reason = request.data.get("reason")
+        class VoidInvoiceSerializer(drf_serializers.Serializer):
+            reason = drf_serializers.CharField(
+                required=False, allow_blank=True, allow_null=True, max_length=500
+            )
+
+        serializer = VoidInvoiceSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        reason = serializer.validated_data.get("reason")
         invoice.void(reason=reason)
 
         return self.get_success_response(

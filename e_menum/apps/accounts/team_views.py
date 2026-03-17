@@ -227,13 +227,24 @@ def team_invite(request):
         }
         html_message = render_to_string("emails/team_invite.html", email_context)
         send_mail(
-            subject=f"{org_name} ekibine davet edildiniz",
-            message=(
-                f"Merhaba {first_name},\n\n"
-                f"{inviter_name} sizi {org_name} ekibine davet etti.\n\n"
-                f"Giris yapmak icin: {invite_url}\n"
-                f"E-posta: {email}\n\n"
-                f"Iyi calismalar,\n{org_name}"
+            subject=str(
+                _("%(org_name)s ekibine davet edildiniz") % {"org_name": org_name}
+            ),
+            message=str(
+                _(
+                    "Merhaba %(first_name)s,\n\n"
+                    "%(inviter_name)s sizi %(org_name)s ekibine davet etti.\n\n"
+                    "Giris yapmak icin: %(invite_url)s\n"
+                    "E-posta: %(email)s\n\n"
+                    "Iyi calismalar,\n%(org_name)s"
+                )
+                % {
+                    "first_name": first_name,
+                    "inviter_name": inviter_name,
+                    "org_name": org_name,
+                    "invite_url": invite_url,
+                    "email": email,
+                }
             ),
             from_email=django_settings.DEFAULT_FROM_EMAIL,
             recipient_list=[email],

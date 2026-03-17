@@ -81,6 +81,7 @@ from apps.orders.views import (
     QRCodeViewSet,
     OrderViewSet,
     ServiceRequestViewSet,
+    DiscountViewSet,
 )
 
 
@@ -98,6 +99,7 @@ router.register(r"tables", TableViewSet, basename="table")
 router.register(r"qr-codes", QRCodeViewSet, basename="qr-code")
 router.register(r"orders", OrderViewSet, basename="order")
 router.register(r"service-requests", ServiceRequestViewSet, basename="service-request")
+router.register(r"discounts", DiscountViewSet, basename="discount")
 
 
 # =============================================================================

@@ -5,3 +5,6 @@ class CampaignsConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "apps.campaigns"
     verbose_name = "Campaign Management"
+
+    def ready(self):
+        import apps.campaigns.signals  # noqa: F401
