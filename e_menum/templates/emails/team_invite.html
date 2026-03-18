@@ -1,40 +1,45 @@
 {% extends "emails/_base_email.html" %}
+{% load i18n %}
 
-{% block title %}Ekip Daveti - E-Menum{% endblock %}
+{% block title %}{% trans "Ekip Daveti - E-Menum" %}{% endblock %}
 
 {% block content %}
-<h2>Ekibimize Hosgeldiniz!</h2>
+<h2>{% trans "Ekibimize Hoş Geldiniz!" %}</h2>
 
-<p>Merhaba {{ first_name }},</p>
+<p>{% blocktrans with name=first_name %}Merhaba {{ name }},{% endblocktrans %}</p>
 
 <p>
-  <strong>{{ inviter_name }}</strong> sizi <strong>{{ org_name }}</strong> ekibine davet etti.
-  Asagidaki bilgilerle giris yaparak hemen baslayabilirsiniz.
+  {% blocktrans with inviter=inviter_name org=org_name %}
+    <strong>{{ inviter }}</strong> sizi <strong>{{ org }}</strong> ekibine davet etti.
+    Aşağıdaki bilgilerle giriş yaparak hemen başlayabilirsiniz.
+  {% endblocktrans %}
 </p>
 
 <table class="info-table">
   <tr>
-    <td class="label">Organizasyon</td>
+    <td class="label">{% trans "Organizasyon" %}</td>
     <td class="value">{{ org_name }}</td>
   </tr>
   <tr>
-    <td class="label">Rol</td>
+    <td class="label">{% trans "Rol" %}</td>
     <td class="value">{{ role_name }}</td>
   </tr>
   <tr>
-    <td class="label">E-posta</td>
+    <td class="label">{% trans "E-posta" %}</td>
     <td class="value">{{ email }}</td>
   </tr>
 </table>
 
 <div style="text-align:center; margin:28px 0;">
-  <a href="{{ invite_url }}" class="btn">Giris Yap</a>
+  <a href="{{ invite_url }}" class="btn">{% trans "Giriş Yap" %}</a>
 </div>
 
 <div class="divider"></div>
 
 <p style="font-size:13px; color:#6b7280;">
-  Bu e-posta <strong>{{ inviter_name }}</strong> tarafindan gonderilmistir.
-  Eger bu daveti beklemiyorsaniz, bu e-postayi dikkate almayabilirsiniz.
+  {% blocktrans with inviter=inviter_name %}
+    Bu e-posta <strong>{{ inviter }}</strong> tarafından gönderilmiştir.
+    Eğer bu daveti beklemiyorsanız, bu e-postayı dikkate almayabilirsiniz.
+  {% endblocktrans %}
 </p>
 {% endblock %}

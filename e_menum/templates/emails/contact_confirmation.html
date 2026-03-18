@@ -1,27 +1,28 @@
 {% extends "emails/_base_email.html" %}
-{% block title %}Mesajiniz Alindi — E-Menum{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Mesajınız Alındı — E-Menum" %}{% endblock %}
 
 {% block content %}
-<h2>Mesajiniz Alindi!</h2>
-<p>Sayin <strong>{{ submission.name }}</strong>,</p>
+<h2>{% trans "Mesajınız Alındı!" %}</h2>
+<p>{% blocktrans with name=submission.name %}Sayın <strong>{{ name }}</strong>,{% endblocktrans %}</p>
 <p>
-  Iletisim formunuz araciligiyla gonderdiginiz mesaji aldik.
-  Ekibimiz en kisa surede size donecektir.
+  {% trans "İletişim formunuz aracılığıyla gönderdiğiniz mesajı aldık." %}
+  {% trans "Ekibimiz en kısa sürede size dönecektir." %}
 </p>
 
 <table class="info-table">
-  <tr><td class="label">Konu</td><td class="value">{{ submission.get_subject_display }}</td></tr>
-  <tr><td class="label">Tarih</td><td class="value">{{ submission.created_at|date:"d.m.Y H:i" }}</td></tr>
+  <tr><td class="label">{% trans "Konu" %}</td><td class="value">{{ submission.get_subject_display }}</td></tr>
+  <tr><td class="label">{% trans "Tarih" %}</td><td class="value">{{ submission.created_at|date:"d.m.Y H:i" }}</td></tr>
 </table>
 
 <div style="text-align:center;margin:24px 0;">
   <a href="{{ site_url }}" class="btn">
-    E-Menum'u Ziyaret Et
+    {% trans "E-Menum'u Ziyaret Et" %}
   </a>
 </div>
 
 <div class="divider"></div>
 <p style="font-size:13px;color:#6b7280;">
-  Sorulariniz icin <a href="mailto:info@e-menum.net">info@e-menum.net</a> adresine yazabilirsiniz.
+  {% blocktrans %}Sorularınız için <a href="mailto:info@e-menum.net">info@e-menum.net</a> adresine yazabilirsiniz.{% endblocktrans %}
 </p>
 {% endblock %}
