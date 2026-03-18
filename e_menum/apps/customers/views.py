@@ -209,16 +209,25 @@ class FeedbackViewSet(BaseTenantViewSet):
         # Exact rating filter
         rating = self.request.query_params.get("rating")
         if rating:
-            queryset = queryset.filter(rating=int(rating))
+            try:
+                queryset = queryset.filter(rating=int(rating))
+            except (ValueError, TypeError):
+                pass
 
         # Rating range filters
         min_rating = self.request.query_params.get("min_rating")
         if min_rating:
-            queryset = queryset.filter(rating__gte=int(min_rating))
+            try:
+                queryset = queryset.filter(rating__gte=int(min_rating))
+            except (ValueError, TypeError):
+                pass
 
         max_rating = self.request.query_params.get("max_rating")
         if max_rating:
-            queryset = queryset.filter(rating__lte=int(max_rating))
+            try:
+                queryset = queryset.filter(rating__lte=int(max_rating))
+            except (ValueError, TypeError):
+                pass
 
         # Public filter
         is_public = self.request.query_params.get("is_public")

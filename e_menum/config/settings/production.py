@@ -433,16 +433,20 @@ REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = {  # noqa: F405
 
 # Template caching — avoid re-reading templates from disk on every render.
 # APP_DIRS and loaders are mutually exclusive; remove APP_DIRS first.
-TEMPLATES[0]["APP_DIRS"] = False  # noqa: F405
-TEMPLATES[0]["OPTIONS"]["loaders"] = [  # noqa: F405
-    (
-        "django.template.loaders.cached.Loader",
-        [
-            "django.template.loaders.filesystem.Loader",
-            "django.template.loaders.app_directories.Loader",
-        ],
-    ),
-]
+# Iterate to find the DjangoTemplates backend instead of relying on index [0].
+for _tpl in TEMPLATES:  # noqa: F405
+    if _tpl.get("BACKEND") == "django.template.backends.django.DjangoTemplates":
+        _tpl["APP_DIRS"] = False
+        _tpl["OPTIONS"]["loaders"] = [
+            (
+                "django.template.loaders.cached.Loader",
+                [
+                    "django.template.loaders.filesystem.Loader",
+                    "django.template.loaders.app_directories.Loader",
+                ],
+            ),
+        ]
+        break
 
 
 # =============================================================================

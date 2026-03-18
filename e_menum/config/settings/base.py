@@ -200,8 +200,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "impersonate.middleware.ImpersonateMiddleware",  # User impersonation
-    # TenantMiddleware will be added after core app is created
-    # 'shared.middleware.tenant.TenantMiddleware',
+    "shared.middleware.tenant.TenantMiddleware",  # Multi-tenancy context injection
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "apps.seo.middleware.SEOHeadersMiddleware",  # Must be late to modify responses
@@ -535,7 +534,6 @@ LANGUAGE_CODE = "tr"  # Turkish as default
 TIME_ZONE = "Europe/Istanbul"
 
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 
 # Available languages — 5 languages (TR default)
