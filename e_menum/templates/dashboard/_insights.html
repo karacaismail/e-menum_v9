@@ -1,10 +1,11 @@
+{% load i18n %}
 {# Dashboard Insights — 1/3 width #}
 <div class="dashboard-card db-col-4"
      data-endpoint="/admin/api/insights/"
      data-chart-type="insights">
     <div class="chart-header">
         <div class="chart-header-left">
-            <h3><i class="ph ph-lightbulb"></i> İçgörüler</h3>
+            <h3><i class="ph ph-lightbulb"></i> {% trans "İçgörüler" %}</h3>
         </div>
     </div>
     <div class="chart-body insights-body loading">

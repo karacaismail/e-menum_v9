@@ -1,11 +1,12 @@
+{% load i18n %}
 {# Subscription Funnel — 1/2 width #}
 <div class="dashboard-card db-col-6"
      data-endpoint="/admin/api/subscription-funnel/"
      data-chart-type="funnel">
     <div class="chart-header">
         <div class="chart-header-left">
-            <h3><i class="ph ph-funnel"></i> Abonelik Dönüşüm Hunisi</h3>
-            <span class="chart-subtitle">Kayıt → Trial → Aktif → Yenileme</span>
+            <h3><i class="ph ph-funnel"></i> {% trans "Abonelik Dönüşüm Hunisi" %}</h3>
+            <span class="chart-subtitle">{% trans "Kayıt → Trial → Aktif → Yenileme" %}</span>
         </div>
     </div>
     <div class="chart-body loading">
