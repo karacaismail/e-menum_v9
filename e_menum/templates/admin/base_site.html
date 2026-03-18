@@ -101,77 +101,77 @@
                 <span class="rail-tooltip">Core</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'customers' }"
-                @click="setGroup('customers')" title="Müşteriler" x-show="hasGroupItems('customers')">
+                @click="setGroup('customers')" title="{% trans "Müşteriler" %}" x-show="hasGroupItems('customers')">
                 <span class="rail-item-icon"><i class="ph-bold ph-users-three"></i></span>
-                <span class="rail-item-label">Müşteriler</span>
-                <span class="rail-tooltip">Müşteriler</span>
+                <span class="rail-item-label">{% trans "Müşteriler" %}</span>
+                <span class="rail-tooltip">{% trans "Müşteriler" %}</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'menu' }"
-                @click="setGroup('menu')" title="Menü" x-show="hasGroupItems('menu')">
+                @click="setGroup('menu')" title="{% trans "Menü" %}" x-show="hasGroupItems('menu')">
                 <span class="rail-item-icon"><i class="ph-bold ph-fork-knife"></i></span>
-                <span class="rail-item-label">Menü</span>
-                <span class="rail-tooltip">Menü</span>
+                <span class="rail-item-label">{% trans "Menü" %}</span>
+                <span class="rail-tooltip">{% trans "Menü" %}</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'orders' }"
-                @click="setGroup('orders')" title="Siparişler" x-show="hasGroupItems('orders')">
+                @click="setGroup('orders')" title="{% trans "Siparişler" %}" x-show="hasGroupItems('orders')">
                 <span class="rail-item-icon"><i class="ph-bold ph-receipt"></i></span>
-                <span class="rail-item-label">Siparişler</span>
-                <span class="rail-tooltip">Siparişler</span>
+                <span class="rail-item-label">{% trans "Siparişler" %}</span>
+                <span class="rail-tooltip">{% trans "Siparişler" %}</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'subscriptions' }"
-                @click="setGroup('subscriptions')" title="Abonelik" x-show="hasGroupItems('subscriptions')">
+                @click="setGroup('subscriptions')" title="{% trans "Abonelik" %}" x-show="hasGroupItems('subscriptions')">
                 <span class="rail-item-icon"><i class="ph-bold ph-credit-card"></i></span>
-                <span class="rail-item-label">Abonelik</span>
-                <span class="rail-tooltip">Abonelik</span>
+                <span class="rail-item-label">{% trans "Abonelik" %}</span>
+                <span class="rail-tooltip">{% trans "Abonelik" %}</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'inventory' }"
-                @click="setGroup('inventory')" title="Envanter" x-show="hasGroupItems('inventory')">
+                @click="setGroup('inventory')" title="{% trans "Envanter" %}" x-show="hasGroupItems('inventory')">
                 <span class="rail-item-icon"><i class="ph-bold ph-package"></i></span>
-                <span class="rail-item-label">Envanter</span>
-                <span class="rail-tooltip">Envanter</span>
+                <span class="rail-item-label">{% trans "Envanter" %}</span>
+                <span class="rail-tooltip">{% trans "Envanter" %}</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'campaigns' }"
-                @click="setGroup('campaigns')" title="Kampanyalar" x-show="hasGroupItems('campaigns')">
+                @click="setGroup('campaigns')" title="{% trans "Kampanyalar" %}" x-show="hasGroupItems('campaigns')">
                 <span class="rail-item-icon"><i class="ph-bold ph-megaphone"></i></span>
-                <span class="rail-item-label">Kampanyalar</span>
-                <span class="rail-tooltip">Kampanyalar</span>
+                <span class="rail-item-label">{% trans "Kampanyalar" %}</span>
+                <span class="rail-tooltip">{% trans "Kampanyalar" %}</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'analytics' }"
-                @click="setGroup('analytics')" title="Analitik" x-show="hasGroupItems('analytics')">
+                @click="setGroup('analytics')" title="{% trans "Analitik" %}" x-show="hasGroupItems('analytics')">
                 <span class="rail-item-icon"><i class="ph-bold ph-chart-line-up"></i></span>
-                <span class="rail-item-label">Analitik</span>
-                <span class="rail-tooltip">Analitik</span>
+                <span class="rail-item-label">{% trans "Analitik" %}</span>
+                <span class="rail-tooltip">{% trans "Analitik" %}</span>
             </button>
             {# Notifications moved to topbar dropdown widget #}
             <button class="rail-item" :class="{ 'active': activeGroup === 'ai' }"
-                @click="setGroup('ai')" title="AI & API" x-show="hasGroupItems('ai')">
+                @click="setGroup('ai')" title="{% trans "AI & API" %}" x-show="hasGroupItems('ai')">
                 <span class="rail-item-icon"><i class="ph-bold ph-sparkle"></i></span>
-                <span class="rail-item-label">AI & API</span>
-                <span class="rail-tooltip">AI & API</span>
+                <span class="rail-item-label">{% trans "AI & API" %}</span>
+                <span class="rail-tooltip">{% trans "AI & API" %}</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'website' }"
-                @click="setGroup('website')" title="CMS" x-show="hasGroupItems('website')">
+                @click="setGroup('website')" title="{% trans "CMS" %}" x-show="hasGroupItems('website')">
                 <span class="rail-item-icon"><i class="ph-bold ph-layout"></i></span>
-                <span class="rail-item-label">CMS</span>
-                <span class="rail-tooltip">CMS</span>
+                <span class="rail-item-label">{% trans "CMS" %}</span>
+                <span class="rail-tooltip">{% trans "CMS" %}</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'media' }"
-                @click="setGroup('media')" title="Medya" x-show="hasGroupItems('media')">
+                @click="setGroup('media')" title="{% trans "Medya" %}" x-show="hasGroupItems('media')">
                 <span class="rail-item-icon"><i class="ph-bold ph-images"></i></span>
-                <span class="rail-item-label">Medya</span>
-                <span class="rail-tooltip">Medya</span>
+                <span class="rail-item-label">{% trans "Medya" %}</span>
+                <span class="rail-tooltip">{% trans "Medya" %}</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'seo' }"
-                @click="setGroup('seo')" title="SEO" x-show="hasGroupItems('seo')">
+                @click="setGroup('seo')" title="{% trans "SEO" %}" x-show="hasGroupItems('seo')">
                 <span class="rail-item-icon"><i class="ph-bold ph-magnifying-glass"></i></span>
-                <span class="rail-item-label">SEO</span>
-                <span class="rail-tooltip">SEO</span>
+                <span class="rail-item-label">{% trans "SEO" %}</span>
+                <span class="rail-tooltip">{% trans "SEO" %}</span>
             </button>
             <button class="rail-item" :class="{ 'active': activeGroup === 'reports' }"
-                @click="setGroup('reports')" title="Raporlar" x-show="hasGroupItems('reports')">
+                @click="setGroup('reports')" title="{% trans "Raporlar" %}" x-show="hasGroupItems('reports')">
                 <span class="rail-item-icon"><i class="ph-bold ph-chart-bar"></i></span>
-                <span class="rail-item-label">Raporlar</span>
-                <span class="rail-tooltip">Raporlar</span>
+                <span class="rail-item-label">{% trans "Raporlar" %}</span>
+                <span class="rail-tooltip">{% trans "Raporlar" %}</span>
             </button>
         </nav>
 
