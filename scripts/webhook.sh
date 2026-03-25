@@ -56,6 +56,12 @@ if [[ ! -x "$DEPLOY_SCRIPT" ]]; then
   exit 1
 fi
 
+# Calisan servis /usr/local/bin/webhook dosyasini tuttugu icin uzerine cp "Text file busy" verir.
+if command -v systemctl &>/dev/null && sudo systemctl is-active --quiet emenum-webhook 2>/dev/null; then
+  log_info "emenum-webhook calisiyor; binary guncellemesi icin durduruluyor..."
+  sudo systemctl stop emenum-webhook
+fi
+
 # -----------------------------------------------------------------------------
 # webhook binary indir
 # -----------------------------------------------------------------------------
