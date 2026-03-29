@@ -123,9 +123,9 @@
             container.innerHTML = `
                 <div class="card-error">
                     <i class="ph ph-warning-circle"></i>
-                    <span>Veri yüklenemedi</span>
+                    <span>${this._t('errorLoading', 'Veri yüklenemedi')}</span>
                     <button class="card-error-retry" onclick="window._dashboard.loadCard(this.closest('[data-endpoint]'))">
-                        Yeniden dene →
+                        ${this._t('retryBtn', 'Yeniden dene')} →
                     </button>
                 </div>
             `;
@@ -254,7 +254,7 @@
         renderHeatmap(cardEl, data) {
             const body = cardEl.querySelector('.chart-body');
             if (!body || !data || data.length === 0) {
-                body.innerHTML = '<div class="card-error"><i class="ph ph-chart-bar"></i><span>Heatmap verisi yok</span></div>';
+                body.innerHTML = `<div class="card-error"><i class="ph ph-chart-bar"></i><span>${this._t('heatmapNoData', 'Heatmap verisi yok')}</span></div>`;
                 return;
             }
 
@@ -432,7 +432,7 @@
             body.appendChild(mapEl);
 
             if (typeof L === 'undefined') {
-                body.innerHTML = '<div class="card-error"><i class="ph ph-map-pin"></i><span>Leaflet yüklenemedi</span></div>';
+                body.innerHTML = `<div class="card-error"><i class="ph ph-map-pin"></i><span>${this._t('leafletFailed', 'Leaflet yüklenemedi')}</span></div>`;
                 return;
             }
 
@@ -466,7 +466,7 @@
             if (!body) return;
 
             if (!data || data.length === 0) {
-                body.innerHTML = '<div class="card-error"><i class="ph ph-clock"></i><span>Henüz aktivite yok</span></div>';
+                body.innerHTML = `<div class="card-error"><i class="ph ph-clock"></i><span>${this._t('noActivity', 'Henüz aktivite yok')}</span></div>`;
                 return;
             }
 
@@ -510,7 +510,7 @@
                 body.innerHTML = `
                     <div class="insights-empty">
                         <i class="ph ph-check-circle"></i>
-                        <span>Şu an aktif içgörü yok</span>
+                        <span>${this._t('noInsights', 'Şu an aktif içgörü yok')}</span>
                     </div>
                 `;
                 return;
@@ -561,7 +561,7 @@
                 input.value = '';
                 input.focus();
                 focusedIdx = -1;
-                results.innerHTML = '<div class="cmd-palette-empty"><i class="ph ph-magnifying-glass"></i><span>Aramak için en az 2 karakter yazın</span></div>';
+                results.innerHTML = `<div class="cmd-palette-empty"><i class="ph ph-magnifying-glass"></i><span>${this._t('searchMinChars', 'Aramak için en az 2 karakter yazın')}</span></div>`;
             };
 
             const close = () => {
@@ -577,11 +577,11 @@
                 clearTimeout(debounceTimer);
                 const q = input.value.trim();
                 if (q.length < 2) {
-                    results.innerHTML = '<div class="cmd-palette-empty"><i class="ph ph-magnifying-glass"></i><span>Aramak için en az 2 karakter yazın</span></div>';
+                    results.innerHTML = `<div class="cmd-palette-empty"><i class="ph ph-magnifying-glass"></i><span>${this._t('searchMinChars', 'Aramak için en az 2 karakter yazın')}</span></div>`;
                     return;
                 }
 
-                results.innerHTML = '<div class="cmd-palette-loading"><i class="ph ph-spinner"></i> Aranıyor...</div>';
+                results.innerHTML = `<div class="cmd-palette-loading"><i class="ph ph-spinner"></i> ${this._t('searching', 'Aranıyor...')}</div>`;
 
                 debounceTimer = setTimeout(async () => {
                     try {
@@ -593,7 +593,7 @@
                         this.renderSearchResults(results, json.data.groups);
                         focusedIdx = -1;
                     } catch (e) {
-                        results.innerHTML = '<div class="cmd-palette-empty"><i class="ph ph-warning-circle"></i><span>Arama başarısız</span></div>';
+                        results.innerHTML = `<div class="cmd-palette-empty"><i class="ph ph-warning-circle"></i><span>${this._t('searchFailed', 'Arama başarısız')}</span></div>`;
                     }
                 }, 250);
             });
@@ -633,7 +633,7 @@
 
         renderSearchResults(container, groups) {
             if (!groups || groups.length === 0) {
-                container.innerHTML = '<div class="cmd-palette-empty"><i class="ph ph-magnifying-glass"></i><span>Sonuç bulunamadı</span></div>';
+                container.innerHTML = `<div class="cmd-palette-empty"><i class="ph ph-magnifying-glass"></i><span>${this._t('noResults', 'Sonuç bulunamadı')}</span></div>`;
                 return;
             }
 
@@ -759,11 +759,11 @@
             const then = new Date(isoString).getTime();
             const diff = Math.floor((now - then) / 1000);
 
-            if (diff < 60) return 'az önce';
-            if (diff < 3600) return `${Math.floor(diff / 60)} dk önce`;
-            if (diff < 86400) return `${Math.floor(diff / 3600)} saat önce`;
-            if (diff < 604800) return `${Math.floor(diff / 86400)} gün önce`;
-            return new Date(isoString).toLocaleDateString('tr-TR');
+            if (diff < 60) return this._t('timeJustNow', 'az önce');
+            if (diff < 3600) return `${Math.floor(diff / 60)} ${this._t('timeMinAgo', 'dk önce')}`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)} ${this._t('timeHourAgo', 'saat önce')}`;
+            if (diff < 604800) return `${Math.floor(diff / 86400)} ${this._t('timeDayAgo', 'gün önce')}`;
+            return new Date(isoString).toLocaleDateString(document.documentElement.lang || 'tr-TR');
         }
 
         escHtml(str) {
@@ -771,6 +771,14 @@
             const div = document.createElement('div');
             div.textContent = str;
             return div.innerHTML;
+        }
+
+        /**
+         * Return a translated string from window.DashboardI18n,
+         * falling back to the provided default if the key is missing.
+         */
+        _t(key, fallback) {
+            return (window.DashboardI18n && window.DashboardI18n[key]) || fallback;
         }
     }
 

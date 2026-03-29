@@ -81,6 +81,25 @@
 {% include "dashboard/_command_palette.html" %}
 
 {# ═══ JavaScript ═══ #}
+<script>
+/* i18n strings for mainboard.js — generated server-side */
+window.DashboardI18n = {
+    errorLoading:     "{% trans 'Veri yüklenemedi' %}",
+    heatmapNoData:    "{% trans 'Heatmap verisi yok' %}",
+    leafletFailed:    "{% trans 'Leaflet yüklenemedi' %}",
+    noActivity:       "{% trans 'Henüz aktivite yok' %}",
+    noInsights:       "{% trans 'Şu an aktif içgörü yok' %}",
+    searchMinChars:   "{% trans 'Aramak için en az 2 karakter yazın' %}",
+    searching:        "{% trans 'Aranıyor...' %}",
+    searchFailed:     "{% trans 'Arama başarısız' %}",
+    noResults:        "{% trans 'Sonuç bulunamadı' %}",
+    retryBtn:         "{% trans 'Yeniden dene' %}",
+    timeJustNow:      "{% trans 'az önce' %}",
+    timeMinAgo:       "{% trans 'dk önce' %}",
+    timeHourAgo:      "{% trans 'saat önce' %}",
+    timeDayAgo:       "{% trans 'gün önce' %}"
+};
+</script>
 <script src="{% static 'dashboard/js/echarts_theme.js' %}"></script>
 <script src="{% static 'dashboard/js/mainboard.js' %}"></script>
 {% endblock %}

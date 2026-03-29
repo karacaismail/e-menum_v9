@@ -381,21 +381,30 @@ def qrcode_branded_preview(request, qr_id):
     if not table_name and hasattr(qr, "table") and qr.table:
         table_name = getattr(qr.table, "name", None) or getattr(qr.table, "label", None)
 
-    buf = QRPrintDesignService.generate_branded_print(
-        data_url=target_url,
-        design_template=design_template,
-        design_size=design_size,
-        org_name=org_name,
-        org_logo_url=org_logo_url,
-        theme_colors=theme_colors,
-        table_name=table_name,
-        custom_text=custom_text,
-    )
+    try:
+        buf = QRPrintDesignService.generate_branded_print(
+            data_url=target_url,
+            design_template=design_template,
+            design_size=design_size,
+            org_name=org_name,
+            org_logo_url=org_logo_url,
+            theme_colors=theme_colors,
+            table_name=table_name,
+            custom_text=custom_text,
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.exception(
+            "QR branded preview generation failed for qr=%s template=%s: %s",
+            qr_id,
+            design_template,
+            exc,
+        )
+        return HttpResponse(status=500)
 
     buf.seek(0)
     response = HttpResponse(buf.read(), content_type="application/pdf")
     response["Content-Disposition"] = "inline"
-    response["Cache-Control"] = "no-cache"
+    response["Cache-Control"] = "no-cache, no-store, must-revalidate"
     return response
 
 

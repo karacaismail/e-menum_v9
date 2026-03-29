@@ -65,8 +65,6 @@ from apps.media.library_view import media_library
 # Import public media serve endpoint
 from apps.media.serve_view import media_serve
 
-# Import temporary diagnostics view (remove after debugging)
-from apps.core.diagnostics_view import diagnostics_view
 
 
 # =============================================================================
@@ -586,8 +584,6 @@ urlpatterns = [
     # -------------------------------------------------------------------------
     path("health/", health_check, name="health-check"),
     path("healthz/", health_check, name="health-check-k8s"),  # Kubernetes style
-    # TEMPORARY: production diagnostics (protected by DIAGNOSTICS_TOKEN env)
-    path("diag/", diagnostics_view, name="diagnostics"),
     # -------------------------------------------------------------------------
     # API Versioned Routes
     # -------------------------------------------------------------------------

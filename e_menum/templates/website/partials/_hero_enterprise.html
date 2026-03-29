@@ -160,14 +160,16 @@
     <div style="position:relative;z-index:2;padding:0;" data-hero-enter>
       <div class="hero-sep-grad"></div>
       <div class="hero-city-bar">
-        <div class="hero-city"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>İstanbul — 450+</div>
-        <div class="hero-city"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Ankara — 120+</div>
-        <div class="hero-city"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>İzmir — 95+</div>
-        <div class="hero-city"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Antalya — 80+</div>
-        <div class="hero-city"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Adana — 45+</div>
-        <div class="hero-city"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Gaziantep — 40+</div>
-        <div class="hero-city"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Konya — 35+</div>
-        <div class="hero-city"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>{% trans "Diğer İller" %} — 160+</div>
+        {% with pin_svg='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' %}
+        <div class="hero-city">{{ pin_svg|safe }}{% trans "İstanbul" %} — 450+</div>
+        <div class="hero-city">{{ pin_svg|safe }}{% trans "Ankara" %} — 120+</div>
+        <div class="hero-city">{{ pin_svg|safe }}{% trans "İzmir" %} — 95+</div>
+        <div class="hero-city">{{ pin_svg|safe }}{% trans "Antalya" %} — 80+</div>
+        <div class="hero-city">{{ pin_svg|safe }}{% trans "Adana" %} — 45+</div>
+        <div class="hero-city">{{ pin_svg|safe }}{% trans "Gaziantep" %} — 40+</div>
+        <div class="hero-city">{{ pin_svg|safe }}{% trans "Konya" %} — 35+</div>
+        <div class="hero-city">{{ pin_svg|safe }}{% trans "Diğer İller" %} — 160+</div>
+        {% endwith %}
       </div>
     </div>
   </div>

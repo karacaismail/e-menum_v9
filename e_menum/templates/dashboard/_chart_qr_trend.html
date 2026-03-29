@@ -1,10 +1,11 @@
+{% load i18n %}
 {# QR Scan Trend Line Chart — 2/3 width #}
 <div class="dashboard-card db-col-8"
      data-endpoint="/admin/api/qr-scan-trend/"
      data-chart-type="line">
     <div class="chart-header">
         <div class="chart-header-left">
-            <h3><i class="ph ph-chart-line-up"></i> QR Tarama Trendi</h3>
+            <h3><i class="ph ph-chart-line-up"></i> {% trans "QR Tarama Trendi" %}</h3>
             <span class="chart-subtitle" data-total></span>
         </div>
     </div>

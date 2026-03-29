@@ -1,11 +1,12 @@
+{% load i18n %}
 {# Recent Activity Table — Full width #}
 <div class="dashboard-card db-col-12"
      data-endpoint="/admin/api/recent-activity/"
      data-chart-type="table">
     <div class="chart-header">
         <div class="chart-header-left">
-            <h3><i class="ph ph-clock-counter-clockwise"></i> Son Aktiviteler</h3>
-            <span class="chart-subtitle">Son 20 admin işlemi</span>
+            <h3><i class="ph ph-clock-counter-clockwise"></i> {% trans "Son Aktiviteler" %}</h3>
+            <span class="chart-subtitle">{% trans "Son 20 admin işlemi" %}</span>
         </div>
     </div>
     <div class="chart-body loading">
